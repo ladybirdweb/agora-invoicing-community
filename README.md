@@ -1,4 +1,4 @@
-<h3>About Faveo</h3>
+<h3>About Agora Invocing</h3>
 
 Billing and subscription management for SaaS billing businesses. Handling signups, provisioning, billing and support
 

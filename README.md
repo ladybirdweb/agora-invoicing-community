@@ -1,5 +1,5 @@
 <h3>About Agora Invocing</h3>
-<img src="https://img.shields.io/badge/License-OSL-blue.svg"></br>
+<br><img src="https://travis-ci.org/ladybirdweb/agorainvoicing.svg?branch=master">&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg"></br>
 
 Billing and subscription management for SaaS billing businesses. Handling signups, provisioning, billing and support
 

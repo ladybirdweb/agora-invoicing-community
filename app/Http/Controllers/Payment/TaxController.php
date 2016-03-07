@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Payment;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxRules;
+use App\Http\Requests\Payment\TaxRequest;
 use App\Model\Common\Country;
 use App\Model\Common\State;
-use App\Http\Requests\Payment\TaxRequest;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxRules;
+use Illuminate\Http\Request;
 
-class TaxController extends Controller {
-
+class TaxController extends Controller
+{
     public $tax;
     public $rule;
     public $country;
     public $state;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
 
@@ -40,36 +40,39 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function index() {
-        try{
-        $rule = $this->rule->findOrNew('1');
-        return view('themes.default1.payment.tax.index', compact('rule'));
+    public function index()
+    {
+        try {
+            $rule = $this->rule->findOrNew('1');
+
+            return view('themes.default1.payment.tax.index', compact('rule'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function GetTax() {
+    public function GetTax()
+    {
         return \Datatable::collection($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate')->get())
-                        ->addColumn('#', function($model) {
-                            return "<input type='checkbox' value=" . $model->id . " name=select[] id=check>";
+                        ->addColumn('#', function ($model) {
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->showColumns('name', 'level')
-                        ->addColumn('country', function($model) {
+                        ->addColumn('country', function ($model) {
                             if ($this->country->where('id', $model->country)->first()) {
                                 return $this->country->where('id', $model->country)->first()->name;
                             }
-                            return null;
+
                         })
-                        ->addColumn('state', function($model) {
+                        ->addColumn('state', function ($model) {
                             if ($this->state->where('id', $model->state)->first()) {
                                 return $this->state->where('id', $model->state)->first()->name;
                             }
-                            return null;
+
                         })
                         ->showColumns('rate')
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('tax/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')
@@ -81,7 +84,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
@@ -90,9 +94,11 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function store(TaxRequest $request) {
+    public function store(TaxRequest $request)
+    {
         try {
             $this->tax->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -102,23 +108,28 @@ class TaxController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function edit($id) {
-        try{
-        $tax = $this->tax->where('id', $id)->first();
-        return view('themes.default1.payment.tax.edit', compact('tax'));
+    public function edit($id)
+    {
+        try {
+            $tax = $this->tax->where('id', $id)->first();
+
+            return view('themes.default1.payment.tax.edit', compact('tax'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -127,13 +138,16 @@ class TaxController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
         try {
             $tax = $this->tax->where('id', $id)->first();
             $tax->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -143,10 +157,12 @@ class TaxController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -157,64 +173,66 @@ class TaxController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.no-record') . "
-                </div>";
+                        '.\Lang::get('message.no-record').'
+                </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.deleted-successfully') . "
-                </div>";
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.select-a-row') . "
-                </div>";
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . $e->getMessage() . "
-                </div>";
+                        '.$e->getMessage().'
+                </div>';
         }
     }
 
-    public function Rule(Request $request) {
+    public function Rule(Request $request)
+    {
         try {
             $rule = $this->rule->where('id', '1')->first();
-            if($rule){
-            $rule->fill($request->input())->save();
-            }else{
-                $this->rule->create(['id'=>1]); 
+            if ($rule) {
+                $rule->fill($request->input())->save();
+            } else {
+                $this->rule->create(['id' => 1]);
             }
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function GetState(Request $request) {
+    public function GetState(Request $request)
+    {
         try {
             $id = $request->input('country_id');
             //dd($id);
             $states = \App\Model\Common\State::where('country_id', $id)->get();
             //dd($states);
             foreach ($states as $state) {
-                echo "<option value=" . $state->id . ">" . $state->name . "</option>";
+                echo '<option value='.$state->id.'>'.$state->name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
         }
     }
-
 }

@@ -24,10 +24,10 @@ class PromotionRequest extends Request
     public function rules()
     {
         return [
-            'code'=>'required|min:6|max:6',
-            'type'=>'required',
-            'applied'=>'required',
-            
+            'code'    => 'required|min:6|max:6',
+            'type'    => 'required',
+            'applied' => 'required',
+
         ];
     }
 }

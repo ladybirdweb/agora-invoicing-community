@@ -1,20 +1,19 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class CreateInvoiceItemsTable extends Migration {
-
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('invoice_items', function(Blueprint $table)
-		{
-			$table->increments('id');
+class CreateInvoiceItemsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('invoice_items', function (Blueprint $table) {
+            $table->increments('id');
                         $table->integer('invoice_id')->unsigned();
                         $table->foreign('invoice_id')->references('id')->on('invoices');
                         $table->string('product_name');
@@ -26,18 +25,17 @@ class CreateInvoiceItemsTable extends Migration {
                         $table->string('tax_code');
                         $table->string('discount_mode');
                         $table->string('subtotal');
-			$table->timestamps();
-		});
-	}
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('invoice_items');
-	}
-
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('invoice_items');
+    }
 }

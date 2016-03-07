@@ -2,21 +2,21 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Http\Requests\Product\BundleRequest;
 use App\Model\Product\Product;
 use App\Model\Product\ProductBundle;
 use App\Model\Product\ProductBundleRelation;
-use App\Http\Requests\Product\BundleRequest;
+use Illuminate\Http\Request;
 
-class BundleController extends Controller {
-
+class BundleController extends Controller
+{
     public $product;
     public $bundle;
     public $relation;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
 
@@ -35,7 +35,8 @@ class BundleController extends Controller {
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         try {
             return view('themes.default1.product.bundle.index');
         } catch (\Exception $e) {
@@ -43,24 +44,25 @@ class BundleController extends Controller {
         }
     }
 
-    public function GetBundles() {
+    public function GetBundles()
+    {
         return \Datatable::collection($this->bundle->select('id', 'name', 'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
-                        ->addColumn('#', function($model) {
-                            return "<input type='checkbox' value=" . $model->id . " name=select[] id=check>";
+                        ->addColumn('#', function ($model) {
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->showColumns('name', 'valid_from', 'valid_till', 'uses', 'maximum_uses')
-                        ->addColumn('item', function($model) {
+                        ->addColumn('item', function ($model) {
                             $name = $this->relation->where('bundle_id', $model->id)->pluck('product_id');
                             //dd($name);
-                            $result = array();
+                            $result = [];
                             foreach ($name as $key => $id) {
                                 $result[$key] = (string) $this->product->where('id', $id)->first()->name;
                             }
                             //dd($result);
                             return implode(',', $result);
                         })
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('bundles/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('bundles/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name', 'item')
                         ->orderColumns('name')
@@ -72,9 +74,11 @@ class BundleController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         try {
             $products = $this->product->lists('name', 'id')->toArray();
+
             return view('themes.default1.product.bundle.create', compact('products'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -86,7 +90,8 @@ class BundleController extends Controller {
      *
      * @return Response
      */
-    public function store(BundleRequest $request) {
+    public function store(BundleRequest $request)
+    {
         try {
             $this->bundle->fill($request->input())->save();
             $items = $request->input('items');
@@ -95,6 +100,7 @@ class BundleController extends Controller {
                     $this->relation->create(['product_id' => $item, 'bundle_id' => $this->bundle->id]);
                 }
             }
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (Exception $e) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -104,20 +110,24 @@ class BundleController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $bundle = $this->bundle->where('id', $id)->first();
             $products = $this->product->lists('name', 'id')->toArray();
@@ -134,6 +144,7 @@ class BundleController extends Controller {
             } else {
                 $from = null;
             }
+
             return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
         } catch (Exception $e) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -141,6 +152,7 @@ class BundleController extends Controller {
             if ($e->getMessage() == 'Unexpected data found.') {
                 $till = null;
                 $from = null;
+
                 return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
             }
         }
@@ -149,10 +161,12 @@ class BundleController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function update($id, BundleRequest $request) {
+    public function update($id, BundleRequest $request)
+    {
         // dd($request);
         try {
             $bundle = $this->bundle->where('id', $id)->first();
@@ -160,7 +174,6 @@ class BundleController extends Controller {
 
             $items = $request->input('items');
             if (is_array($items) && !empty($items)) {
-
                 $delete = $this->relation->where('bundle_id', $id)->get();
                 foreach ($delete as $del) {
                     $del->delete();
@@ -180,10 +193,11 @@ class BundleController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * 
+     *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -194,36 +208,35 @@ class BundleController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.no-record') . "
-                </div>";
+                        '.\Lang::get('message.no-record').'
+                </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.deleted-successfully') . "
-                </div>";
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.select-a-row') . "
-                </div>";
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . $e->getMessage() . "
-                </div>";
+                        '.$e->getMessage().'
+                </div>';
         }
     }
-
 }

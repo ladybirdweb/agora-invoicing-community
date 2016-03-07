@@ -2,19 +2,18 @@
 
 namespace App\Http\Controllers\Order;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
+use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use App\User;
-use App\Model\Common\Template;
-use App\Model\Common\Setting;
-use Input;
 use App\Model\Order\Payment;
+use App\User;
+use Illuminate\Http\Request;
+use Input;
 
-class InvoiceController extends Controller {
-
+class InvoiceController extends Controller
+{
     public $invoice;
     public $invoiceItem;
     public $user;
@@ -22,7 +21,8 @@ class InvoiceController extends Controller {
     public $setting;
     public $payment;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         //$this->middleware('admin');
 
@@ -40,12 +40,13 @@ class InvoiceController extends Controller {
 
         $seting = new Setting();
         $this->setting = $seting;
-        
+
         $payment = new Payment();
         $this->payment = $payment;
     }
 
-    public function index() {
+    public function index()
+    {
         try {
             //dd($this->invoice->get());
             return view('themes.default1.invoice.index');
@@ -54,28 +55,30 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function GetInvoices() {
+    public function GetInvoices()
+    {
         //dd($this->invoice->get());
         return \Datatable::collection($this->invoice->get())
-                        ->addColumn('client', function($model) {
+                        ->addColumn('client', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
                             $id = $this->user->where('id', $model->user_id)->first()->id;
-                            return "<a href=" . url('clients/' . $id) . ">" . ucfirst($first) . ' ' . ucfirst($last) . "</a>";
+
+                            return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                         ->showColumns('number', 'date', 'grand_total')
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('invoices/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('invoices/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                         })
                         ->searchColumns('date')
                         ->orderColumns('date')
                         ->make();
     }
 
-    public function show(Request $request) {
-
+    public function show(Request $request)
+    {
         try {
-//            $invoiceTemplateId = $this->setting->where('id',1)->first()->invoice_template;
+            //            $invoiceTemplateId = $this->setting->where('id',1)->first()->invoice_template;
 //            $template = $this->template->where('id',$invoiceTemplateId)->first()->data;
             $id = $request->input('invoiceid');
             $invoice = $this->invoice->where('id', $id)->first();
@@ -91,7 +94,7 @@ class InvoiceController extends Controller {
 //            $taxes= '';
 //            $price='';
 //            $subtotal='';
-//            
+//
 //            foreach($invoiceItems as $item){
 //                $products .='<td>'.$item->product_name.'</td>' ;
 //                $quantities.= '<td>'.$item->quantity.'</td>' ;
@@ -99,13 +102,13 @@ class InvoiceController extends Controller {
 //                $taxes.= '<td>'.$item->regular_price.'</td>' ;
 //                $subtotal.= '<td>'.$item->subtotal.'</td>' ;
 //            }
-//            
-//            
+//
+//
 //            $array1 = ['{{invoice_number}}', '{{address}}', '{{name}}', '{{products}}', '{{quantities}}', '{{taxes}}', '{{price}}', '{{subtotal}}','{{grandtotal}}'];
 //            $array2 = [$number,$address,$name,$products,$quantities,$taxes,$price,$subtotal,$grandtotal];
 //
 //            $template = str_replace($array1, $array2, $template);
-//            
+//
             //dd($template);
             //echo $template;
 
@@ -116,15 +119,19 @@ class InvoiceController extends Controller {
     }
 
     /**
-     * not in use case
+     * not in use case.
+     *
      * @param Request $request
+     *
      * @return type
      */
-    public function generateById(Request $request) {
+    public function generateById(Request $request)
+    {
         try {
             $clientid = $request->input('clientid');
             $user = new User();
             $user = $user->where('id', $clientid)->first();
+
             return view('themes.default1.invoice.generate', compact('user'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -132,12 +139,13 @@ class InvoiceController extends Controller {
     }
 
     /**
-     * Generate invoice 
+     * Generate invoice.
+     *
      * @throws \Exception
      */
-    public function GenerateInvoice() {
+    public function GenerateInvoice()
+    {
         try {
-
             $user_id = \Auth::user()->id;
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -147,6 +155,7 @@ class InvoiceController extends Controller {
             foreach (\Cart::getContent() as $cart) {
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
+
             return $invoice;
         } catch (\Exception $ex) {
             dd($ex);
@@ -154,9 +163,9 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function CreateInvoiceItems($invoiceid, $cart) {
+    public function CreateInvoiceItems($invoiceid, $cart)
+    {
         try {
-
             $product_name = $cart->name;
             $regular_price = $cart->price;
             $quantity = $cart->quantity;
@@ -167,8 +176,8 @@ class InvoiceController extends Controller {
 
             foreach ($cart->attributes['tax'] as $tax) {
                 //dd($tax['name']);
-                $tax_name .= $tax['name'] . ',';
-                $tax_percentage .= $tax['rate'] . ',';
+                $tax_name .= $tax['name'].',';
+                $tax_percentage .= $tax['rate'].',';
             }
 
             //dd($tax_name);
@@ -180,23 +189,23 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function doPayment($payment_method,$invoiceid,$amount,$parent_id='',$userid='',$payment_status='pending') {
+    public function doPayment($payment_method, $invoiceid, $amount, $parent_id = '', $userid = '', $payment_status = 'pending')
+    {
         try {
-            if($userid==''){
+            if ($userid == '') {
                 $userid = \Auth::user()->id;
             }
             $this->payment->create([
-                'parent_id'=>$parent_id,
-                'invoice_id'=>$invoiceid,
-                'user_id'=>$userid,
-                'amount'=>$amount,
-                'payment_method'=>$payment_method,
-                'payment_status'=>$payment_status,
-                
+                'parent_id'      => $parent_id,
+                'invoice_id'     => $invoiceid,
+                'user_id'        => $userid,
+                'amount'         => $amount,
+                'payment_method' => $payment_method,
+                'payment_status' => $payment_status,
+
             ]);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

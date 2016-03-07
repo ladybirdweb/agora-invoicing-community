@@ -68,7 +68,7 @@ return [
       | will not be safe. Please do this before deploying an application!
       |
      */
-    'key' => env('APP_KEY', 'SomeRandomString'),
+    'key'    => env('APP_KEY', 'SomeRandomString'),
     'cipher' => MCRYPT_RIJNDAEL_128,
     /*
       |--------------------------------------------------------------------------
@@ -94,23 +94,14 @@ return [
       |
      */
     'providers' => [
-        
-        
-        /**
+
+        /*
          * Payment Gateways
          */
-        
+
         'App\Plugins\Ccavanue\ServiceProvider',
         'App\Plugins\Ping\ServiceProvider',
         'App\Plugins\Twilio\ServiceProvider',
-        
-        
-        
-        
-        
-        
-        
-        
 
         /*
          * Laravel Framework Service Providers...
@@ -145,9 +136,7 @@ return [
         //'Laravel\Cashier\CashierServiceProvider',
         //'LinkThrow\Billing\BillingServiceProvider',
         'Darryldecode\Cart\CartServiceProvider',
-        
-        
-        
+
         /*
          * Application Service Providers...
          */
@@ -170,55 +159,55 @@ return [
      */
     'aliases' => [
 
-        'App' => 'Illuminate\Support\Facades\App',
-        'Artisan' => 'Illuminate\Support\Facades\Artisan',
-        'Auth' => 'Illuminate\Support\Facades\Auth',
-        'Blade' => 'Illuminate\Support\Facades\Blade',
-        'Bus' => 'Illuminate\Support\Facades\Bus',
-        'Cache' => 'Illuminate\Support\Facades\Cache',
-        'Config' => 'Illuminate\Support\Facades\Config',
-        'Cookie' => 'Illuminate\Support\Facades\Cookie',
-        'Crypt' => 'Illuminate\Support\Facades\Crypt',
-        'DB' => 'Illuminate\Support\Facades\DB',
-        'Eloquent' => 'Illuminate\Database\Eloquent\Model',
-        'Event' => 'Illuminate\Support\Facades\Event',
-        'File' => 'Illuminate\Support\Facades\File',
-        'Hash' => 'Illuminate\Support\Facades\Hash',
-        'Input' => 'Illuminate\Support\Facades\Input',
+        'App'       => 'Illuminate\Support\Facades\App',
+        'Artisan'   => 'Illuminate\Support\Facades\Artisan',
+        'Auth'      => 'Illuminate\Support\Facades\Auth',
+        'Blade'     => 'Illuminate\Support\Facades\Blade',
+        'Bus'       => 'Illuminate\Support\Facades\Bus',
+        'Cache'     => 'Illuminate\Support\Facades\Cache',
+        'Config'    => 'Illuminate\Support\Facades\Config',
+        'Cookie'    => 'Illuminate\Support\Facades\Cookie',
+        'Crypt'     => 'Illuminate\Support\Facades\Crypt',
+        'DB'        => 'Illuminate\Support\Facades\DB',
+        'Eloquent'  => 'Illuminate\Database\Eloquent\Model',
+        'Event'     => 'Illuminate\Support\Facades\Event',
+        'File'      => 'Illuminate\Support\Facades\File',
+        'Hash'      => 'Illuminate\Support\Facades\Hash',
+        'Input'     => 'Illuminate\Support\Facades\Input',
         'Inspiring' => 'Illuminate\Foundation\Inspiring',
-        'Lang' => 'Illuminate\Support\Facades\Lang',
-        'Log' => 'Illuminate\Support\Facades\Log',
-        'Mail' => 'Illuminate\Support\Facades\Mail',
-        'Password' => 'Illuminate\Support\Facades\Password',
-        'Queue' => 'Illuminate\Support\Facades\Queue',
-        'Redirect' => 'Illuminate\Support\Facades\Redirect',
-        'Redis' => 'Illuminate\Support\Facades\Redis',
-        'Request' => 'Illuminate\Support\Facades\Request',
-        'Response' => 'Illuminate\Support\Facades\Response',
-        'Route' => 'Illuminate\Support\Facades\Route',
-        'Schema' => 'Illuminate\Support\Facades\Schema',
-        'Session' => 'Illuminate\Support\Facades\Session',
-        'Storage' => 'Illuminate\Support\Facades\Storage',
-        'URL' => 'Illuminate\Support\Facades\URL',
+        'Lang'      => 'Illuminate\Support\Facades\Lang',
+        'Log'       => 'Illuminate\Support\Facades\Log',
+        'Mail'      => 'Illuminate\Support\Facades\Mail',
+        'Password'  => 'Illuminate\Support\Facades\Password',
+        'Queue'     => 'Illuminate\Support\Facades\Queue',
+        'Redirect'  => 'Illuminate\Support\Facades\Redirect',
+        'Redis'     => 'Illuminate\Support\Facades\Redis',
+        'Request'   => 'Illuminate\Support\Facades\Request',
+        'Response'  => 'Illuminate\Support\Facades\Response',
+        'Route'     => 'Illuminate\Support\Facades\Route',
+        'Schema'    => 'Illuminate\Support\Facades\Schema',
+        'Session'   => 'Illuminate\Support\Facades\Session',
+        'Storage'   => 'Illuminate\Support\Facades\Storage',
+        'URL'       => 'Illuminate\Support\Facades\URL',
         'Validator' => 'Illuminate\Support\Facades\Validator',
-        'View' => 'Illuminate\Support\Facades\View',
-        'Form' => Collective\Html\FormFacade::class,
-        'HTML' => Collective\Html\HtmlFacade::class,
-        'Form-ill' => 'Illuminate\Html\FormFacade',
-        'HTML-ill' => 'Illuminate\Html\HtmlFacade',
-        'Gravatar' => 'Thomaswelton\LaravelGravatar\Facades\Gravatar',
+        'View'      => 'Illuminate\Support\Facades\View',
+        'Form'      => Collective\Html\FormFacade::class,
+        'HTML'      => Collective\Html\HtmlFacade::class,
+        'Form-ill'  => 'Illuminate\Html\FormFacade',
+        'HTML-ill'  => 'Illuminate\Html\HtmlFacade',
+        'Gravatar'  => 'Thomaswelton\LaravelGravatar\Facades\Gravatar',
         //'Socialize' => 'Laravel\Socialite\Facades\Socialite',
         'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
-        'Cart' => 'Darryldecode\Cart\Facades\CartFacade',
+        'Cart'      => 'Darryldecode\Cart\Facades\CartFacade',
     ],
-    /**
-     * 
+    /*
+     *
      * ----------------------------------------------------------------------
-     * Version 
+     * Version
      * ----------------------------------------------------------------------
-     * 
+     *
      * It return the current version of the appliction
-     * 
+     *
      */
     'version' => '1.0',
 ];

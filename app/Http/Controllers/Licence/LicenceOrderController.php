@@ -2,29 +2,30 @@
 
 namespace App\Http\Controllers\Licence;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\Model\Licence\LicencedOrganization;
 use App\Organization;
+use Illuminate\Http\Request;
 
-class LicenceOrderController extends Controller {
-
+class LicenceOrderController extends Controller
+{
     public $LicencedOrg;
     public $org;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
 
         $licenced = new LicencedOrganization();
         $this->LicencedOrg = $licenced;
-        
+
         $organization = new Organization();
         $this->org = $organization;
     }
 
-    public function index() {
+    public function index()
+    {
         try {
             return view('themes.default1.licence.order.index');
         } catch (\Exception $ex) {
@@ -32,17 +33,19 @@ class LicenceOrderController extends Controller {
         }
     }
 
-    public function GetOrders() {
+    public function GetOrders()
+    {
         return \Datatable::collection($this->LicencedOrg->get())
-                        ->addColumn('organization', function($model) {
-                            $org = $this->org->where('id',$model->organization_id)->first();
-                            return "<a href=".url('organization/'.$org->id).">".ucfirst($org->name)."</a>";
+                        ->addColumn('organization', function ($model) {
+                            $org = $this->org->where('id', $model->organization_id)->first();
+
+                            return '<a href='.url('organization/'.$org->id).'>'.ucfirst($org->name).'</a>';
                         })
-                        ->showColumns('licence_name', 'licence_description', 'number_of_sla', 'price','payment_status')
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('licence-orders/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->showColumns('licence_name', 'licence_description', 'number_of_sla', 'price', 'payment_status')
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('licence-orders/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        
+
                         ->searchColumns('licence_name')
                         ->orderColumns('licence_name')
                         ->make();
@@ -87,5 +90,4 @@ class LicenceOrderController extends Controller {
 //            return redirect()->back()->with('fails', $ex->getMessage());
 //        }
 //    }
-
 }

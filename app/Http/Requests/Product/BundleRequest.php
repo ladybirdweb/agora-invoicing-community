@@ -24,8 +24,8 @@ class BundleRequest extends Request
     public function rules()
     {
         return [
-            'name'=>'required',
-            'items'=>'required'
+            'name'  => 'required',
+            'items' => 'required',
         ];
     }
 }

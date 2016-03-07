@@ -2,24 +2,25 @@
 
 namespace App\Plugins\Twilio\Controllers;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Plugins\Twilio\Model\Twilio;
+use Illuminate\Http\Request;
 use Schema;
 
-class SettingsController extends Controller {
-
-    public function __construct() {
+class SettingsController extends Controller
+{
+    public function __construct()
+    {
         $this->middleware('auth');
         //$this->middleware('admin');
     }
 
-    public function Settings() {
+    public function Settings()
+    {
         //dd('sdkcjdsh');
         try {
             if (!Schema::hasTable('twilio')) {
-                Schema::create('twilio', function($table) {
+                Schema::create('twilio', function ($table) {
                     $table->increments('id');
                     $table->string('account_sid');
                     $table->string('auth_token');
@@ -35,32 +36,31 @@ class SettingsController extends Controller {
             if (!$twilio) {
                 $twilio1->create(['id' => '1']);
             }
-            $path = app_path() . '/Plugins/Twilio/views';
+            $path = app_path().'/Plugins/Twilio/views';
             \View::addNamespace('plugins', $path);
+
             return view('plugins::settings', compact('twilio'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function postSettings(Request $request) {
-
+    public function postSettings(Request $request)
+    {
         try {
             $this->validate($request, [
                 'account_sid' => 'required',
-                'auth_token' => 'required',
+                'auth_token'  => 'required',
                 'from_number' => 'required',
-                
+
             ]);
             $twilio1 = new Twilio();
             $twilio = $twilio1->where('id', '1')->first();
             $twilio->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
-    
-
 }

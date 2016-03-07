@@ -7,16 +7,22 @@ Billing and subscription management for SaaS billing businesses. Handling signup
 
 Agora can also be customised according to requirement and we do undertake such request. 
 
-Agora is designed & developed by Ladybird Web Solution Pvt Ltd
+Faveo is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
 
-<h4>To run Faveo your host just needs a couple of things:</h4>
+<p>To run Agora your host just needs a couple of things:</p>
 <ul>
-<li>PHP 5.5 or greater</li>
-<li>MySQL 5.5 or greater</li>
-<li>The mod_rewrite Apache module</li>
+<li> Web Server: Apache or IIS or Nginx</li>
+<li> PHP Version: 5.5+</li>
+<li> PHP Extensions: Mcrypt, OpenSSL, Mbstring, Tokenizer</li>
+<li> Database: MySQL(5.0+) or Postgres or SQLite or SQL Server</li>
+<li> Web Server Extension: Pretty URLs or Search Engine Friendly URL's have to be enabled in your web server configuration</li>
 </ul>
 <h4>Credits</h4>
 <ul>
 <li>Laravel Framework</li>
 <li>Admin LTE Theme</li>
 </ul>
+
+<h3>Faveo Probe:</h3>
+<p>Helps verify whether your server can run Agora or not. 
+<a href="https://github.com/ladybirdweb/faveo-probe" target="_blank">Download here</a></p>

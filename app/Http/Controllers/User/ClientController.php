@@ -2,28 +2,26 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\User;
-use App\Model\User\AccountActivate;
 use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\User\AccountActivate;
+use App\User;
+use Illuminate\Http\Request;
 
-
-class ClientController extends Controller {
-
+class ClientController extends Controller
+{
     public $user;
     public $activate;
 
-
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
-        $user = new User;
+        $user = new User();
         $this->user = $user;
-        $activate = new AccountActivate;
+        $activate = new AccountActivate();
         $this->activate = $activate;
     }
 
@@ -32,38 +30,40 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         return view('themes.default1.user.client.index');
     }
 
     /**
-     * Get Clients for chumper datatable
+     * Get Clients for chumper datatable.
      */
-    public function GetClients() {
+    public function GetClients()
+    {
 
         //$user = new User;
         $user = $this->user->where('role', '!=', 'user')->get();
         //dd($user);
 
         return \Datatable::collection($user)
-                        ->addColumn('#', function($model) {
-                            return "<input type='checkbox' value=" . $model->id . " name=select[] id=check>";
+                        ->addColumn('#', function ($model) {
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->addColumn('first_name', function($model) {
-                            return "<a href=" . url('clients/' . $model->id) .">".  ucfirst($model->first_name)." ".ucfirst($model->last_name)."</a>";
+                        ->addColumn('first_name', function ($model) {
+                            return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
-                        
+
                         ->showColumns('email')
-                        
-                        ->addColumn('active', function($model) {
+
+                        ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
                                 return "<span style='color:green'>Activated</span>";
                             } else {
                                 return "<span style='color:red'>Not activated</span>";
                             }
                         })
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('clients/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('first_name', 'email')
                         ->orderColumns('first_name', 'email')
@@ -75,7 +75,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         return view('themes.default1.user.client.create');
     }
 
@@ -84,7 +85,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function store(ClientRequest $request) {
+    public function store(ClientRequest $request)
+    {
         $user = $this->user;
         $str = str_random(6);
         $password = \Hash::make($str);
@@ -93,7 +95,7 @@ class ClientController extends Controller {
         $token = str_random(40);
         $this->activate->create(['email' => $user->email, 'token' => $token]);
 
-        \Mail::send('emails.welcome', ['token' => $token, 'email' => $user->email, 'pass' => $str], function($message) use($user) {
+        \Mail::send('emails.welcome', ['token' => $token, 'email' => $user->email, 'pass' => $str], function ($message) use ($user) {
             $message->to($user->email, $user->first_name)->subject('Welcome!');
         });
 
@@ -103,53 +105,63 @@ class ClientController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function show($id) {
-        try{
-            
+    public function show($id)
+    {
+        try {
             $invoice = new Invoice();
             $order = new Order();
-            $invoices = $invoice->where('user_id',$id)->get();
-            $client = $this->user->where('id',$id)->first();
-            $orders = $order->where('client',$id)->get();
-            return view('themes.default1.user.client.show',compact('client','invoices','model_popup','orders'));
+            $invoices = $invoice->where('user_id', $id)->get();
+            $client = $this->user->where('id', $id)->first();
+            $orders = $order->where('client', $id)->get();
+
+            return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
-        }   
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         $user = $this->user->where('id', $id)->first();
+
         return view('themes.default1.user.client.edit', compact('user'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function update($id, ClientRequest $request) {
+    public function update($id, ClientRequest $request)
+    {
         $user = $this->user->where('id', $id)->first();
         $user->fill($request->input())->save();
+
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $ids = $request->input('select');
         if (!empty($ids)) {
             foreach ($ids as $id) {
@@ -159,28 +171,27 @@ class ClientController extends Controller {
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.no-record') . "
-                </div>";
+                        '.\Lang::get('message.no-record').'
+                </div>';
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.deleted-successfully') . "
-                </div>";
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.select-a-row') . "
-                </div>";
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
             //echo \Lang::get('message.select-a-row');
         }
     }
-
 }

@@ -6,6 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductAddonRelation extends Model
 {
-   protected $table = 'product_addon_relations';
-   protected $fillable = ['addon_id','product_id'];
+    protected $table = 'product_addon_relations';
+    protected $fillable = ['addon_id', 'product_id'];
 }

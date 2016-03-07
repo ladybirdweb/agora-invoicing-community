@@ -1,20 +1,19 @@
 <?php
 
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
 
-class CreateSettingsTable extends Migration {
-
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('settings', function(Blueprint $table)
-		{
-			$table->increments('id');
+class CreateSettingsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('settings', function (Blueprint $table) {
+            $table->increments('id');
                         $table->string('company')->default('Ladybird Web Solution');
                         $table->string('website')->default('http://www.ladybirdweb.com');
                         $table->string('phone');
@@ -34,18 +33,17 @@ class CreateSettingsTable extends Migration {
                         $table->integer('order_mail');
                         $table->integer('welcome_mail');
                         $table->integer('invoice_template');
-			$table->timestamps();
-		});
-	}
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('settings');
-	}
-
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('settings');
+    }
 }

@@ -5,8 +5,8 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
-class Admin {
-
+class Admin
+{
     /**
      * The Guard implementation.
      *
@@ -17,22 +17,25 @@ class Admin {
     /**
      * Create a new filter instance.
      *
-     * @param  Guard  $auth
+     * @param Guard $auth
+     *
      * @return void
      */
-    public function __construct(Guard $auth) {
+    public function __construct(Guard $auth)
+    {
         $this->auth = $auth;
     }
 
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
-    public function handle($request, Closure $next) {
-       
+    public function handle($request, Closure $next)
+    {
         if (\Auth::user()->role == 'admin') {
             return $next($request);
         } else {
@@ -40,9 +43,8 @@ class Admin {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {
-                return redirect('auth/login')->with('fails','Unauthorized');
+                return redirect('auth/login')->with('fails', 'Unauthorized');
             }
         }
     }
-
 }

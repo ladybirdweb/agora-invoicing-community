@@ -4,14 +4,15 @@ namespace App\Http\Requests\Product;
 
 use App\Http\Requests\Request;
 
-class ProductRequest extends Request {
-
+class ProductRequest extends Request
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         return true;
     }
 
@@ -20,22 +21,17 @@ class ProductRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
-
-        
-            return [
-                'name' => 'required',
-                'type' => 'required',
-                'group' => 'required',
+    public function rules()
+    {
+        return [
+                'name'         => 'required',
+                'type'         => 'required',
+                'group'        => 'required',
                 'subscription' => 'required',
-                'currency' => 'required',
-                'price' => 'required',
-                'file' => 'required_if:type,2|mimes:zip',
-                'image' => 'required_if:type,2|mimes:png'
+                'currency'     => 'required',
+                'price'        => 'required',
+                'file'         => 'required_if:type,2|mimes:zip',
+                'image'        => 'required_if:type,2|mimes:png',
             ];
-        
     }
-
-    
-
 }

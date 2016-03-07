@@ -1,0 +1,28 @@
+<li>
+  <div class="bootstrap-wysihtml5-insert-image-modal modal fade" data-wysihtml5-dialog="insertImage">
+    <div class="modal-dialog {{#if options.toolbar.smallmodals}}modal-sm{{/if}}">
+      <div class="modal-content">
+        <div class="modal-header">
+          <a class="close" data-dismiss="modal">&times;</a>
+          <h3>{{locale.image.insert}}</h3>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <input value="http://" class="bootstrap-wysihtml5-insert-image-url form-control" data-wysihtml5-dialog-field="src">
+          </div> 
+        </div>
+        <div class="modal-footer">
+          <a class="btn btn-default" data-dismiss="modal" data-wysihtml5-dialog-action="cancel" href="#">{{locale.image.cancel}}</a>
+          <a class="btn btn-primary" data-dismiss="modal"  data-wysihtml5-dialog-action="save" href="#">{{locale.image.insert}}</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <a class="btn {{#if options.toolbar.size}}btn-{{options.toolbar.size}}{{/if}} btn-default" data-wysihtml5-command="insertImage" title="{{locale.image.insert}}" tabindex="-1">
+    {{#if options.toolbar.fa}}
+      <span class="fa fa-file-image-o"></span>
+    {{else}}
+      <span class="glyphicon glyphicon-picture"></span>
+    {{/if}}
+  </a>
+</li>

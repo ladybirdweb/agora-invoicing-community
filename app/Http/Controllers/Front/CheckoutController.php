@@ -2,26 +2,25 @@
 
 namespace App\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use Cart;
-use App\Model\Product\Subscription;
-use App\Model\Payment\Plan;
 use App\Http\Controllers\Common\TemplateController;
-use App\Model\Product\Product;
-use App\Model\Product\Price;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Front\CheckoutRequest;
-use App\User;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
-use App\Model\Order\Order;
-use App\Model\Product\Addon;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
+use App\Model\Order\Order;
+use App\Model\Payment\Plan;
+use App\Model\Product\Addon;
+use App\Model\Product\Price;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use App\User;
+use Cart;
+use Illuminate\Http\Request;
 
-class CheckoutController extends Controller {
-
+class CheckoutController extends Controller
+{
     public $subscription;
     public $plan;
     public $templateController;
@@ -35,7 +34,8 @@ class CheckoutController extends Controller {
     public $invoice;
     public $invoiceItem;
 
-    public function __construct() {
+    public function __construct()
+    {
         $subscription = new Subscription();
         $this->subscription = $subscription;
 
@@ -70,24 +70,24 @@ class CheckoutController extends Controller {
         $this->invoiceItem = $invoiceItem;
     }
 
-    public function CheckoutForm() {
-
+    public function CheckoutForm()
+    {
         try {
             $content = Cart::getContent();
+
             return view('themes.default1.front.checkout', compact('content'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function postCheckout(CheckoutRequest $request) {
-
+    public function postCheckout(CheckoutRequest $request)
+    {
         try {
             if (\Cart::getSubTotal() > 0) {
                 $v = $this->validate($request, [
-                    'payment_gateway' => 'required'
+                    'payment_gateway' => 'required',
                 ]);
-                
             }
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
@@ -97,7 +97,7 @@ class CheckoutController extends Controller {
             //dd($httpMethod);
             if ($httpMethod == 'PATCH') {
                 //do update the auth user
-                
+
                 \Auth::user()->fill($request->input())->save();
             } elseif ($httpMethod == 'POST') {
                 //do saving user
@@ -107,18 +107,18 @@ class CheckoutController extends Controller {
                 $this->user->password = $password;
                 $this->user->fill($request->input())->save();
 
-                //send welcome note 
+                //send welcome note
                 $settings = $this->setting->where('id', 1)->first();
                 $from = $settings->email;
                 $to = $this->user->email;
                 $data = $this->template->where('id', $settings->where('id', 1)->first()->welcome_mail)->first()->data;
-                $replace = ['name' => $this->user->first_name . ' ' . $this->user->last_name, 'username' => $this->user->email, 'password' => $str];
+                $replace = ['name' => $this->user->first_name.' '.$this->user->last_name, 'username' => $this->user->email, 'password' => $str];
                 $this->templateController->Mailing($from, $to, $data, 'Welcome Email', $replace);
 
                 \Auth::login($this->user);
             }
 
-            /**
+            /*
              * Do order, invoicing etc
              */
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
@@ -126,13 +126,12 @@ class CheckoutController extends Controller {
             $payment_method = $request->input('payment_gateway');
             $invoiceid = $invoice->id;
             $amount = $invoice->grand_total;
-            $payment = $invoice_controller->doPayment($payment_method,$invoiceid,$amount);
-            
+            $payment = $invoice_controller->doPayment($payment_method, $invoiceid, $amount);
+
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0) {
                 //\Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => []]));
             } else {
-                
             }
         } catch (\Exception $ex) {
             //dd($ex);

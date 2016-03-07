@@ -4,15 +4,16 @@ namespace App\Http\Requests\User;
 
 use App\Http\Requests\Request;
 
-class ClientRequest extends Request {
-
+class ClientRequest extends Request
+{
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-    public function authorize() {
-        return TRUE;
+    public function authorize()
+    {
+        return true;
     }
 
     /**
@@ -20,38 +21,40 @@ class ClientRequest extends Request {
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
         switch ($this->method()) {
-            case 'POST' : {
+            case 'POST': {
                     return [
                         'first_name' => 'required',
-                        'last_name' => 'required',
-                        'email' => 'required|email|unique:users',
-                        'company' => 'required',
-                        'mobile' => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
-                        'address' => 'required',
-                        'zip' => 'required|min:5|numeric',
+                        'last_name'  => 'required',
+                        'email'      => 'required|email|unique:users',
+                        'company'    => 'required',
+                        'mobile'     => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+                        'address'    => 'required',
+                        'zip'        => 'required|min:5|numeric',
                     ];
                 }
 
-            case 'PATCH' : {
+            case 'PATCH': {
                     return [
                         'first_name' => 'required',
-                        'last_name' => 'required',
-                        'email' => 'required|email|unique:users,email,' . $this->getSegmentFromEnd() . ',id',
-                        'company' => 'required',
-                        'mobile' => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
-                        'address' => 'required',
-                        'zip' => 'required|min:5|numeric',
+                        'last_name'  => 'required',
+                        'email'      => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
+                        'company'    => 'required',
+                        'mobile'     => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+                        'address'    => 'required',
+                        'zip'        => 'required|min:5|numeric',
                     ];
                 }
-            default :break;
+            default:break;
         }
     }
 
-    private function getSegmentFromEnd($position_from_end = 1) {
+    private function getSegmentFromEnd($position_from_end = 1)
+    {
         $segments = $this->segments();
-        return $segments[sizeof($segments) - $position_from_end];
-    }
 
+        return $segments[count($segments) - $position_from_end];
+    }
 }

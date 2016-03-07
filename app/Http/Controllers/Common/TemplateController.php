@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\Product\Product;
-use App\Model\Product\Price;
-use App\Model\Product\Subscription;
-use App\Http\Controllers\Product\ProductController;
-use App\Model\Payment\Plan;
 use App\Model\licence\Licence;
+use App\Model\Payment\Plan;
+use App\Model\Product\Price;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use Illuminate\Http\Request;
 
-class TemplateController extends Controller {
-
+class TemplateController extends Controller
+{
     public $template;
     public $type;
     public $product;
@@ -24,8 +23,8 @@ class TemplateController extends Controller {
     public $plan;
     public $licence;
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->middleware('auth', ['except' => ['show']]);
         $this->middleware('admin', ['except' => ['show']]);
 
@@ -51,7 +50,8 @@ class TemplateController extends Controller {
         $this->licence = $licence;
     }
 
-    public function index() {
+    public function index()
+    {
         try {
             return view('themes.default1.common.template.inbox');
         } catch (\Exception $ex) {
@@ -59,67 +59,76 @@ class TemplateController extends Controller {
         }
     }
 
-    public function GetTemplates() {
+    public function GetTemplates()
+    {
         return \Datatable::collection($this->template->select('id', 'name', 'type')->get())
-                        ->addColumn('#', function($model) {
-                            return "<input type='checkbox' value=" . $model->id . " name=select[] id=check>";
+                        ->addColumn('#', function ($model) {
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->showColumns('name')
-                        ->addColumn('type', function($model) {
+                        ->addColumn('type', function ($model) {
                             return $this->type->where('id', $model->type)->first()->name;
                         })
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('templates/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')
                         ->make();
     }
 
-    public function create() {
+    public function create()
+    {
         try {
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
-            $cartUrl = $url . "/" . $i;
+            $cartUrl = $url.'/'.$i;
             $type = $this->type->lists('name', 'id')->toArray();
+
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         try {
-//dd($request);
+            //dd($request);
             $this->template->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
 
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
-            $cartUrl = $url . "/" . $i;
+            $cartUrl = $url.'/'.$i;
             //dd($cartUrl);
             $template = $this->template->where('id', $id)->first();
             $type = $this->type->lists('name', 'id')->toArray();
+
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
         try {
-//dd($request);
+            //dd($request);
             $template = $this->template->where('id', $id)->first();
             $template->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -129,10 +138,12 @@ class TemplateController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -143,68 +154,68 @@ class TemplateController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.no-record') . "
-                </div>";
+                        '.\Lang::get('message.no-record').'
+                </div>';
 //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.deleted-successfully') . "
-                </div>";
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.select-a-row') . "
-                </div>";
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . $e->getMessage() . "
-                </div>";
+                        '.$e->getMessage().'
+                </div>';
         }
     }
 
-    public function Mailing($from, $to, $data, $subject, $replace = [], $fromname = '', $toname = '', $cc = [], $attach = []) {
-
+    public function Mailing($from, $to, $data, $subject, $replace = [], $fromname = '', $toname = '', $cc = [], $attach = [])
+    {
         try {
-            if (!key_exists('title', $replace)) {
+            if (!array_key_exists('title', $replace)) {
                 $replace['title'] = '';
             }
-            if (!key_exists('currency', $replace)) {
+            if (!array_key_exists('currency', $replace)) {
                 $replace['currency'] = '';
             }
-            if (!key_exists('price', $replace)) {
+            if (!array_key_exists('price', $replace)) {
                 $replace['price'] = '';
             }
-            if (!key_exists('subscription', $replace)) {
+            if (!array_key_exists('subscription', $replace)) {
                 $replace['subscription'] = '';
             }
-            if (!key_exists('name', $replace)) {
+            if (!array_key_exists('name', $replace)) {
                 $replace['name'] = '';
             }
-            if (!key_exists('url', $replace)) {
+            if (!array_key_exists('url', $replace)) {
                 $replace['url'] = '';
             }
-            if (!key_exists('password', $replace)) {
+            if (!array_key_exists('password', $replace)) {
                 $replace['password'] = '';
             }
-            if (!key_exists('address', $replace)) {
+            if (!array_key_exists('address', $replace)) {
                 $replace['address'] = '';
             }
-            if (!key_exists('username', $replace)) {
+            if (!array_key_exists('username', $replace)) {
                 $replace['username'] = '';
             }
-            if (!key_exists('email', $replace)) {
+            if (!array_key_exists('email', $replace)) {
                 $replace['email'] = '';
             }
             $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}'];
@@ -212,7 +223,7 @@ class TemplateController extends Controller {
 
             $data = str_replace($array1, $array2, $data);
 
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use($from, $to, $subject, $fromname, $toname, $cc, $attach) {
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc,$attach) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -227,7 +238,6 @@ class TemplateController extends Controller {
                 /*  if attachment is need */
                 if (!empty($attach)) {
                     foreach ($attach as $file) {
-
                         $m->attach($file['path'], $options = []);
                     }
                 }
@@ -238,7 +248,8 @@ class TemplateController extends Controller {
         }
     }
 
-    public function mailtest($id) {
+    public function mailtest($id)
+    {
         $from = 'vijaycodename47@gmail.com';
         $to = 'vijay.sebastian@ladybirdweb.com';
         $subject = 'Tsting the mailer';
@@ -250,33 +261,31 @@ class TemplateController extends Controller {
         }
         $cc = [
             0 => [
-                'name' => 'vijay',
-                'address' => 'vijaysebastian111@gmail.com'
+                'name'    => 'vijay',
+                'address' => 'vijaysebastian111@gmail.com',
             ],
             1 => [
-                'name' => 'vijay sebastian',
-                'address' => 'vijaysebastian23@gmail.com'
-            ]
+                'name'    => 'vijay sebastian',
+                'address' => 'vijaysebastian23@gmail.com',
+            ],
         ];
         $attachments = [
             0 => [
-                'path' => public_path('dist/img/avatar.png')
-            ]
+                'path' => public_path('dist/img/avatar.png'),
+            ],
         ];
         $replace = [
-            'name' => 'vijay sebastian',
+            'name'     => 'vijay sebastian',
             'usernmae' => 'vijay',
             'password' => 'jfdvhd',
-            'address' => 'dshbcvhjdsbvchdff'
+            'address'  => 'dshbcvhjdsbvchdff',
         ];
         $this->Mailing($from, $to, $data, $subject, 'from', 'to', $cc, $attachments, $replace);
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         try {
-
-
-
             if ($this->template->where('type', 3)->where('id', $id)->first()) {
                 $data = $this->template->where('type', 3)->where('id', $id)->first()->data;
                 //dd($data);
@@ -295,7 +304,6 @@ class TemplateController extends Controller {
                             $description = '';
                         }
 
-
                         $price = $this->price->where('product_id', $product->id)->where('currency', 'USD')->first()->price;
 
                         $currency = $this->price->where('product_id', $product->id)->where('currency', 'USD')->first()->currency;
@@ -311,10 +319,10 @@ class TemplateController extends Controller {
                     return view('themes.default1.common.template.shoppingcart', compact('template'));
                 } else {
                     $template = '<p>No Products</p>';
+
                     return view('themes.default1.common.template.shoppingcart', compact('template'));
                 }
             } else {
-
                 return redirect('/')->with('fails', 'no such record');
             }
         } catch (\Exception $e) {
@@ -323,19 +331,20 @@ class TemplateController extends Controller {
         }
     }
 
-    public function popup($title,$body,$name='',$modelid='',$class='null',$trigger=false) {
+    public function popup($title, $body, $name = '', $modelid = '', $class = 'null', $trigger = false)
+    {
         try {
-            if($modelid==''){
-                $modelid=$title;
+            if ($modelid == '') {
+                $modelid = $title;
             }
-            if($trigger==true){
-               $trigger =  "<a href=# class=$class  data-toggle='modal' data-target=#edit" . $modelid . ">" . $name . "</a>";
-            }else{
-                $trigger='';
+            if ($trigger == true) {
+                $trigger = "<a href=# class=$class  data-toggle='modal' data-target=#edit".$modelid.'>'.$name.'</a>';
+            } else {
+                $trigger = '';
             }
-            
+
             return $trigger."
-                        <div class='modal fade' id=edit" . $modelid . ">
+                        <div class='modal fade' id=edit".$modelid.">
                             <div class='modal-dialog'>
                                 <div class='modal-content'>
                                     <div class='modal-header'>
@@ -347,14 +356,13 @@ class TemplateController extends Controller {
                                     </div>
                                     <div class='modal-footer'>
                                         <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value=" . \Lang::get('message.save') . ">
+                                        <input type=submit class='btn btn-primary' value=".\Lang::get('message.save').'>
                                     </div>
                                 </div>
                             </div>
-                        </div>";
+                        </div>';
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

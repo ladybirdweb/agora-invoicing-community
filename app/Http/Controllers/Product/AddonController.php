@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Model\Product\Product;
-use App\Model\Product\Subscription;
-use App\Model\Product\Addon;
-use App\Model\Product\ProductAddonRelation;
 use App\Http\Requests\Product\AddonRequest;
 use App\Model\Payment\Plan;
+use App\Model\Product\Addon;
+use App\Model\Product\Product;
+use App\Model\Product\ProductAddonRelation;
+use App\Model\Product\Subscription;
+use Illuminate\Http\Request;
 
-class AddonController extends Controller {
-
-    public function __construct() {
+class AddonController extends Controller
+{
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
         $product = new Product();
@@ -30,32 +30,34 @@ class AddonController extends Controller {
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         try {
-            
             return view('themes.default1.product.addon.index');
         } catch (\Exception $ex) {
-            return redirect() -> back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function GetAddons() {
+    public function GetAddons()
+    {
         return \Datatable::collection($this->addon->get())
-                        ->addColumn('#', function($model) {
-                            return "<input type='checkbox' value=" . $model->id . " name=select[] id=check>";
+                        ->addColumn('#', function ($model) {
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name','regular_price','selling_price')
-                        ->addColumn('associated', function($model) {
+                        ->showColumns('name', 'regular_price', 'selling_price')
+                        ->addColumn('associated', function ($model) {
                             $relations = new ProductAddonRelation();
-                            $relations = $relations->where('addon_id',$model->id)->get();
-                            $products = array();
-                            foreach($relations as $key=>$relation){
-                            $products[$key] = $this->product->where('id',$relation->product_id)->first()->name;
+                            $relations = $relations->where('addon_id', $model->id)->get();
+                            $products = [];
+                            foreach ($relations as $key => $relation) {
+                                $products[$key] = $this->product->where('id', $relation->product_id)->first()->name;
                             }
+
                             return implode(',', $products);
                         })
-                        ->addColumn('action', function($model) {
-                            return "<a href=" . url('addons/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                        ->addColumn('action', function ($model) {
+                            return '<a href='.url('addons/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')
@@ -67,14 +69,15 @@ class AddonController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         try {
             $product = $this->product->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             //dd($subscription);
             return view('themes.default1.product.addon.create', compact('product', 'subscription'));
         } catch (Exception $ex) {
-            return redirect() -> back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -83,16 +86,15 @@ class AddonController extends Controller {
      *
      * @return Response
      */
-    public function store(AddonRequest $request) {
+    public function store(AddonRequest $request)
+    {
         try {
-
             $this->addon->fill($request->input())->save();
             $products = $request->input('products');
             $relation = new ProductAddonRelation();
             if (is_array($products)) {
                 foreach ($products as $product) {
                     if ($product) {
-
                         $relation->create(['addon_id' => $this->addon->id, 'product_id' => $product]);
                     }
                 }
@@ -107,26 +109,31 @@ class AddonController extends Controller {
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $product = $this->product->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             $relation = new ProductAddonRelation();
             $relation = $relation->where('addon_id', $id)->pluck('product_id')->toArray();
             $addon = $this->addon->where('id', $id)->first();
+
             return view('themes.default1.product.addon.edit', compact('product', 'addon', 'subscription', 'relation'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -136,10 +143,12 @@ class AddonController extends Controller {
     /**
      * Update the specified resource in storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function update($id, AddonRequest $request) {
+    public function update($id, AddonRequest $request)
+    {
         try {
             $addon = $this->addon->where('id', $id)->first();
             $addon->fill($request->input())->save();
@@ -147,7 +156,6 @@ class AddonController extends Controller {
             $products = $request->input('products');
             $relation = new ProductAddonRelation();
             if (is_array($products)) {
-
                 $delete = $relation->where('addon_id', $id)->get();
 
                 foreach ($delete as $del) {
@@ -156,7 +164,6 @@ class AddonController extends Controller {
 
                 foreach ($products as $product) {
                     if ($product) {
-
                         $relation->create(['addon_id' => $addon->id, 'product_id' => $product]);
                     }
                 }
@@ -171,10 +178,12 @@ class AddonController extends Controller {
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -185,36 +194,35 @@ class AddonController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.no-record') . "
-                </div>";
+                        '.\Lang::get('message.no-record').'
+                </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.success') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.deleted-successfully') . "
-                </div>";
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . \Lang::get('message.select-a-row') . "
-                </div>";
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . "!</b> " . \Lang::get('message.failed') . "
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        " . $e->getMessage() . "
-                </div>";
+                        '.$e->getMessage().'
+                </div>';
         }
     }
-
 }

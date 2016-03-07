@@ -2,31 +2,32 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Model\Common\Setting;
 use App\Http\Requests\Common\SettingRequest;
+use App\Model\Common\Setting;
 use App\Model\Common\Template;
 
-class SettingsController extends Controller {
-
-    public function __construct() {
+class SettingsController extends Controller
+{
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
     }
 
-    public function Settings(Setting $settings) {
+    public function Settings(Setting $settings)
+    {
         if (!$settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
         $setting = $settings->where('id', '1')->first();
         $template = new Template();
-        
-        return view('themes.default1.common.settings', compact('setting','template'));
+
+        return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 
-    public function UpdateSettings(Setting $settings, SettingRequest $request) {
+    public function UpdateSettings(Setting $settings, SettingRequest $request)
+    {
         //dd($request);
         $setting = $settings->where('id', '1')->first();
         if ($request->has('password')) {
@@ -39,10 +40,9 @@ class SettingsController extends Controller {
             $destinationPath = public_path('cart/img/logo');
             $request->file('logo')->move($destinationPath, $name);
             $setting->logo = $name;
-            
         }
-        $setting->fill($request->except('password','logo'))->save();
-        return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
-    }
+        $setting->fill($request->except('password', 'logo'))->save();
 
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }
 }

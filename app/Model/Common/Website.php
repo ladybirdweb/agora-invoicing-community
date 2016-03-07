@@ -2,17 +2,17 @@
 
 namespace App\Model\Common;
 
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use LinkThrow\Billing\SubscriptionBillableTrait;
-use App\User;
 
-class Website extends Model {
-
+class Website extends Model
+{
     use SubscriptionBillableTrait;
 
-    public function customermodel() {
+    public function customermodel()
+    {
         // Return an Eloquent relationship.
         return $this->belongsTo('User', 'user_id');
     }
-
 }

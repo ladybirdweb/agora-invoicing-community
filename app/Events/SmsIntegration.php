@@ -2,15 +2,14 @@
 
 namespace App\Events;
 
-use App\Events\Event;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class SmsIntegration extends Event
 {
     use SerializesModels;
 
     public $para;
+
     /**
      * Create a new event instance.
      *

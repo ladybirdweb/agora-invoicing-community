@@ -2,22 +2,20 @@
 
 namespace App\Http\Controllers\Github;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Github\GithubApiController;
-use Exception;
 use App\Model\Github\Github;
+use Exception;
+use Illuminate\Http\Request;
 
-class GithubController extends Controller {
-
+class GithubController extends Controller
+{
     public $github_api;
     public $client_id;
     public $client_secret;
     public $github;
 
-    public function __construct() {
-
+    public function __construct()
+    {
         $this->middleware('auth');
 
         $github_controller = new GithubApiController();
@@ -25,21 +23,24 @@ class GithubController extends Controller {
 
         $model = new Github();
         $this->github = $model->firstOrFail();
-   
+
         $this->client_id = $this->github->client_id;
         $this->client_secret = $this->github->client_secret;
     }
 
     /**
-     * Authenticate a user entirly
+     * Authenticate a user entirly.
+     *
      * @return type
      */
-    public function authenticate() {
+    public function authenticate()
+    {
         try {
-            $url = "https://api.github.com/user";
-            $data = array("bio" => "This is my bio");
+            $url = 'https://api.github.com/user';
+            $data = ['bio' => 'This is my bio'];
             $data_string = json_encode($data);
             $auth = $this->github_api->postCurl($url, $data_string);
+
             return $auth;
 //            if($auth!='true'){
 //                throw new Exception('can not authenticate with github', 401);
@@ -52,28 +53,33 @@ class GithubController extends Controller {
     }
 
     /**
-     * Authenticate a user for a perticular application
+     * Authenticate a user for a perticular application.
+     *
      * @return type
      */
-    public function authForSpecificApp() {
+    public function authForSpecificApp()
+    {
         try {
             $url = "https://api.github.com/authorizations/clients/$this->client_id";
-            $data = array("client_secret" => "$this->client_secret");
+            $data = ['client_secret' => "$this->client_secret"];
             $data_string = json_encode($data);
-            $method = "PUT";
+            $method = 'PUT';
             $auth = $this->github_api->postCurl($url, $data_string, $method);
+
             return $auth;
             //dd($auth);
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
-        } 
+        }
     }
 
     /**
-     * List all release
+     * List all release.
+     *
      * @return type
      */
-    public function listRepositories($owner,$repo) {
+    public function listRepositories($owner, $repo)
+    {
         try {
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $releases = $this->github_api->getCurl($url);
@@ -85,21 +91,23 @@ class GithubController extends Controller {
     }
 
     /**
-     * List only one release by tag
+     * List only one release by tag.
+     *
      * @param Request $request
+     *
      * @return type
      */
-    public function getReleaseByTag($owner,$repo) {
+    public function getReleaseByTag($owner, $repo)
+    {
         try {
             $tag = \Input::get('tag');
-            $all_releases = $this->listRepositories($owner,$repo);
+            $all_releases = $this->listRepositories($owner, $repo);
             //dd($all_releases);
             if ($tag) {
                 foreach ($all_releases as $key => $release) {
                     //dd($release);
                     if (in_array($tag, $release)) {
-
-                        $version[$tag] = $this->getReleaseById($release["id"]);
+                        $version[$tag] = $this->getReleaseById($release['id']);
                     }
                 }
             } else {
@@ -107,9 +115,9 @@ class GithubController extends Controller {
             }
             //dd($version);
             //execute download
-            
-            if($this->download($version)=="success"){
-                return "success";
+
+            if ($this->download($version) == 'success') {
+                return 'success';
             }
             //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
         } catch (Exception $ex) {
@@ -118,14 +126,18 @@ class GithubController extends Controller {
     }
 
     /**
-     * List only one release by id
+     * List only one release by id.
+     *
      * @param type $id
+     *
      * @return type
      */
-    public function getReleaseById($id) {
+    public function getReleaseById($id)
+    {
         try {
             $url = "https://api.github.com/repos/ladybirdweb/faveo-helpdesk/releases/$id";
             $releaseid = $this->github_api->getCurl($url);
+
             return $releaseid;
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -133,13 +145,16 @@ class GithubController extends Controller {
     }
 
     /**
-     * Get the count of download of the release
+     * Get the count of download of the release.
+     *
      * @return array||redirect
      */
-    public function getDownloadCount() {
+    public function getDownloadCount()
+    {
         try {
-            $url = "https://api.github.com/repos/ladybirdweb/faveo-helpdesk/downloads";
+            $url = 'https://api.github.com/repos/ladybirdweb/faveo-helpdesk/downloads';
             $downloads = $this->github_api->getCurl($url);
+
             return $downloads;
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -147,19 +162,20 @@ class GithubController extends Controller {
     }
 
     /**
-     * 
      * @param type $release
+     *
      * @return type .zip file
      */
-    public function download($release) {
+    public function download($release)
+    {
         try {
             foreach ($release as $url) {
-                $download_link = $url["zipball_url"];
+                $download_link = $url['zipball_url'];
             }
             echo "<form action=$download_link method=get name=download>";
             echo '</form>';
             echo"<script language='javascript'>document.download.submit();</script>";
-            
+
             //return "success";
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -167,29 +183,33 @@ class GithubController extends Controller {
     }
 
     /**
-     * get the settings page for github 
+     * get the settings page for github.
+     *
      * @return view
      */
-    public function getSettings() {
+    public function getSettings()
+    {
         try {
             $model = $this->github;
-            return view('themes.default1.github.settings',  compact('model'));
+
+            return view('themes.default1.github.settings', compact('model'));
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
-    
-    public function postSettings(Request $request){
-         $this->validate($request, [
-                "username"=>"required",
-                "password"=>"required"
+
+    public function postSettings(Request $request)
+    {
+        $this->validate($request, [
+                'username' => 'required',
+                'password' => 'required',
             ]);
-        try{
+        try {
             $this->github->fill($request->input())->save();
-            return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
-        }   
+        }
     }
-
 }

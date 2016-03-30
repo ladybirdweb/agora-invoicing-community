@@ -87,8 +87,8 @@ use AuthenticatesAndRegistersUsers;
         return redirect()->back()
                         ->withInput($request->only('email', 'remember'))
                         ->withErrors([
-                            'email' => $this->getFailedLoginMessage(),
-                            'active'=>'Please activate your account'
+                            'email'  => $this->getFailedLoginMessage(),
+                            'active' => 'Please activate your account',
         ]);
     }
 

@@ -9,8 +9,8 @@ use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Foundation\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-class Handler extends ExceptionHandler {
-
+class Handler extends ExceptionHandler
+{
     /**
      * A list of the exception types that should not be reported.
      *
@@ -32,7 +32,8 @@ class Handler extends ExceptionHandler {
      *
      * @return void
      */
-    public function report(Exception $e) {
+    public function report(Exception $e)
+    {
         return parent::report($e);
     }
 
@@ -44,10 +45,11 @@ class Handler extends ExceptionHandler {
      *
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e) {
+    public function render($request, Exception $e)
+    {
         switch ($e) {
 
-            case ($e instanceof ModelNotFoundException):
+            case $e instanceof ModelNotFoundException:
 
                 return $this->renderException($e);
                 break;
@@ -58,12 +60,12 @@ class Handler extends ExceptionHandler {
         }
     }
 
-    protected function renderException($e) {
-
+    protected function renderException($e)
+    {
         switch ($e) {
 
-            case ($e instanceof ModelNotFoundException):
-                return redirect('/')->with('fails',"Please configure ". $e->getMessage());
+            case $e instanceof ModelNotFoundException:
+                return redirect('/')->with('fails', 'Please configure '.$e->getMessage());
                 break;
 
             default:
@@ -71,5 +73,4 @@ class Handler extends ExceptionHandler {
                                 ->createResponse($e);
         }
     }
-
 }

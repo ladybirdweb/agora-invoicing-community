@@ -1,7 +1,7 @@
 <?php
 
 return  [
-  'providers' =>  [
+  'providers' => [
     0  => 'App\\Plugins\\Ccavanue\\ServiceProvider',
     1  => 'App\\Plugins\\Ping\\ServiceProvider',
     2  => 'App\\Plugins\\Twilio\\ServiceProvider',
@@ -35,7 +35,7 @@ return  [
     30 => 'App\\Providers\\RouteServiceProvider',
     31 => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
   ],
-  'eager' =>  [
+  'eager' => [
     0  => 'App\\Plugins\\Ccavanue\\ServiceProvider',
     1  => 'App\\Plugins\\Ping\\ServiceProvider',
     2  => 'App\\Plugins\\Twilio\\ServiceProvider',
@@ -55,7 +55,7 @@ return  [
     16 => 'App\\Providers\\EventServiceProvider',
     17 => 'App\\Providers\\RouteServiceProvider',
   ],
-  'deferred' =>  [
+  'deferred' => [
     'Illuminate\\Bus\\Dispatcher'                         => 'Illuminate\\Bus\\BusServiceProvider',
     'Illuminate\\Contracts\\Bus\\Dispatcher'              => 'Illuminate\\Bus\\BusServiceProvider',
     'Illuminate\\Contracts\\Bus\\QueueingDispatcher'      => 'Illuminate\\Bus\\BusServiceProvider',
@@ -123,34 +123,34 @@ return  [
     'Illuminate\\Contracts\\Broadcasting\\Factory'        => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Broadcaster'    => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
   ],
-  'when' =>  [
-    'Illuminate\\Bus\\BusServiceProvider' =>  [
+  'when' => [
+    'Illuminate\\Bus\\BusServiceProvider' => [
     ],
-    'Illuminate\\Cache\\CacheServiceProvider' =>  [
+    'Illuminate\\Cache\\CacheServiceProvider' => [
     ],
-    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' =>  [
+    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => [
     ],
-    'Illuminate\\Hashing\\HashServiceProvider' =>  [
+    'Illuminate\\Hashing\\HashServiceProvider' => [
     ],
-    'Illuminate\\Mail\\MailServiceProvider' =>  [
+    'Illuminate\\Mail\\MailServiceProvider' => [
     ],
-    'Illuminate\\Pipeline\\PipelineServiceProvider' =>  [
+    'Illuminate\\Pipeline\\PipelineServiceProvider' => [
     ],
-    'Illuminate\\Queue\\QueueServiceProvider' =>  [
+    'Illuminate\\Queue\\QueueServiceProvider' => [
     ],
-    'Illuminate\\Redis\\RedisServiceProvider' =>  [
+    'Illuminate\\Redis\\RedisServiceProvider' => [
     ],
-    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' =>  [
+    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' => [
     ],
-    'Illuminate\\Translation\\TranslationServiceProvider' =>  [
+    'Illuminate\\Translation\\TranslationServiceProvider' => [
     ],
-    'Illuminate\\Validation\\ValidationServiceProvider' =>  [
+    'Illuminate\\Validation\\ValidationServiceProvider' => [
     ],
-    'Illuminate\\Html\\HtmlServiceProvider' =>  [
+    'Illuminate\\Html\\HtmlServiceProvider' => [
     ],
-    'Collective\\Html\\HtmlServiceProvider' =>  [
+    'Collective\\Html\\HtmlServiceProvider' => [
     ],
-    'Illuminate\\Broadcasting\\BroadcastServiceProvider' =>  [
+    'Illuminate\\Broadcasting\\BroadcastServiceProvider' => [
     ],
   ],
 ];

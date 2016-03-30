@@ -40,6 +40,8 @@ class CreateProductsTable extends Migration
                         $table->string('file');
                         $table->string('image');
                         $table->string('process_url');
+                        $table->string('github_owner');
+                        $table->string('github_repository');
             $table->timestamps();
         });
     }

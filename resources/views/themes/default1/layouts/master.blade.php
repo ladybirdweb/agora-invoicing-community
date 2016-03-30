@@ -198,6 +198,7 @@
                             <ul class="treeview-menu">
                                 <li><a href="{{url('settings')}}"><i class="fa fa-gears"></i>{{Lang::get('message.settings')}}</a></li>
                                 <li><a href="{{url('templates')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.templates')}}</a></li>
+                                <li><a href="{{url('github')}}"><i class="fa fa-github"></i>{{Lang::get('message.github')}}</a></li>
 
                             </ul>
                         </li>
@@ -217,6 +218,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
+                    
                     @yield('header')
                 </section>
 

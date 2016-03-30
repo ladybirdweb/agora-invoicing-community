@@ -55,6 +55,9 @@
                 [
                 "text" => "Delete",
                 "action" => "function ( e, dt, node, config ) {
+                e.preventDefault();
+                    var answer = confirm ('Are you sure you want to delete from the database?');
+                    if(answer){
                     $.ajax({
                         url: 'products-delete',
                         type: 'GET',
@@ -69,6 +72,7 @@
                             }
                         
                     });
+                    }
                 }"
                 ]
                 ],

@@ -1,6 +1,8 @@
 @extends('themes.default1.layouts.master')
 @section('content')
 
+
+
 <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
@@ -114,6 +116,9 @@
                 [
                 "text" => "Delete",
                 "action" => "function ( e, dt, node, config ) {
+                e.preventDefault();
+                    var answer = confirm ('Are you sure you want to delete from the database?');
+                    if(answer){
                 $.ajax({
                 url: 'clients-delete',
                 type: 'GET',
@@ -128,12 +133,15 @@
                 }
 
                 });
+                }
                 }"
                 ]
                 ],
 
                 ])
+                
 
+                
                 ->render() !!}
 
             </div>

@@ -17,7 +17,7 @@ Route::get('/', 'HomeController@index');
  * Front end
  */
 
-Route::get('home', 'Front\CartController@ProductList');
+Route::match(['get','post'],'home', 'Front\CartController@ProductList');
 Route::get('pricing', 'Front\CartController@Cart');
 Route::get('cart/remove', 'Front\CartController@CartRemove');
 Route::get('cart/reduseqty', 'Front\CartController@ReduseQty');
@@ -210,3 +210,19 @@ Route::get('get-url', 'Front\PageController@Generate');
 Route::resource('widgets', 'Front\WidgetController');
 Route::get('get-widgets', 'Front\WidgetController@GetPages');
 Route::get('widgets-delete', 'Front\WidgetController@destroy');
+
+/*
+ * github
+ */
+Route::get('github-auth','Github\GithubController@authenticate');
+Route::get('github-auth-app','Github\GithubController@authForSpecificApp');
+Route::get('github-releases','Github\GithubController@listRepositories');
+Route::get('github-one-release','Github\GithubController@getReleaseByTag');
+Route::get('github-downloads','Github\GithubController@getDownloadCount');
+Route::get('github','Github\GithubController@getSettings');
+Route::patch('github','Github\GithubController@postSettings');
+
+/**
+ * download
+ */
+Route::get('download/{userid}/{invoice_number}','Product\ProductController@userDownload');

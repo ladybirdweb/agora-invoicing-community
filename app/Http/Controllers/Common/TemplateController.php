@@ -13,8 +13,8 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 
-class TemplateController extends Controller
-{
+class TemplateController extends Controller {
+
     public $template;
     public $type;
     public $product;
@@ -23,8 +23,7 @@ class TemplateController extends Controller
     public $plan;
     public $licence;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth', ['except' => ['show']]);
         $this->middleware('admin', ['except' => ['show']]);
 
@@ -50,8 +49,7 @@ class TemplateController extends Controller
         $this->licence = $licence;
     }
 
-    public function index()
-    {
+    public function index() {
         try {
             return view('themes.default1.common.template.inbox');
         } catch (\Exception $ex) {
@@ -59,31 +57,29 @@ class TemplateController extends Controller
         }
     }
 
-    public function GetTemplates()
-    {
+    public function GetTemplates() {
         return \Datatable::collection($this->template->select('id', 'name', 'type')->get())
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
                         })
                         ->showColumns('name')
                         ->addColumn('type', function ($model) {
                             return $this->type->where('id', $model->type)->first()->name;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href=' . url('templates/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')
                         ->make();
     }
 
-    public function create()
-    {
+    public function create() {
         try {
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
-            $cartUrl = $url.'/'.$i;
+            $cartUrl = $url . '/' . $i;
             $type = $this->type->lists('name', 'id')->toArray();
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
@@ -92,8 +88,7 @@ class TemplateController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         try {
             //dd($request);
             $this->template->fill($request->input())->save();
@@ -104,14 +99,13 @@ class TemplateController extends Controller
         }
     }
 
-    public function edit($id)
-    {
+    public function edit($id) {
         try {
             $controller = new ProductController();
             $url = $controller->GetMyUrl();
 
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
-            $cartUrl = $url.'/'.$i;
+            $cartUrl = $url . '/' . $i;
             //dd($cartUrl);
             $template = $this->template->where('id', $id)->first();
             $type = $this->type->lists('name', 'id')->toArray();
@@ -122,8 +116,7 @@ class TemplateController extends Controller
         }
     }
 
-    public function update($id, Request $request)
-    {
+    public function update($id, Request $request) {
         try {
             //dd($request);
             $template = $this->template->where('id', $id)->first();
@@ -142,8 +135,7 @@ class TemplateController extends Controller
      *
      * @return Response
      */
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request) {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -154,39 +146,38 @@ class TemplateController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        ' . \Lang::get('message.no-record') . '
                 </div>';
 //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        ' . \Lang::get('message.deleted-successfully') . '
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        ' . \Lang::get('message.select-a-row') . '
                 </div>';
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
+                        ' . $e->getMessage() . '
                 </div>';
         }
     }
 
-    public function Mailing($from, $to, $data, $subject, $replace = [], $fromname = '', $toname = '', $cc = [], $attach = [])
-    {
+    public function Mailing($from, $to, $data, $subject, $replace = [], $fromname = '', $toname = '', $cc = [], $attach = []) {
         try {
             if (!array_key_exists('title', $replace)) {
                 $replace['title'] = '';
@@ -218,12 +209,15 @@ class TemplateController extends Controller
             if (!array_key_exists('email', $replace)) {
                 $replace['email'] = '';
             }
-            $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}'];
-            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email']];
+            if (!array_key_exists('product', $replace)) {
+                $replace['product'] = '';
+            }
+            $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}','{{product}}'];
+            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product']];
 
             $data = str_replace($array1, $array2, $data);
 
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc,$attach) {
+            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -248,8 +242,7 @@ class TemplateController extends Controller
         }
     }
 
-    public function mailtest($id)
-    {
+    public function mailtest($id) {
         $from = 'vijaycodename47@gmail.com';
         $to = 'vijay.sebastian@ladybirdweb.com';
         $subject = 'Tsting the mailer';
@@ -261,11 +254,11 @@ class TemplateController extends Controller
         }
         $cc = [
             0 => [
-                'name'    => 'vijay',
+                'name' => 'vijay',
                 'address' => 'vijaysebastian111@gmail.com',
             ],
             1 => [
-                'name'    => 'vijay sebastian',
+                'name' => 'vijay sebastian',
                 'address' => 'vijaysebastian23@gmail.com',
             ],
         ];
@@ -275,16 +268,17 @@ class TemplateController extends Controller
             ],
         ];
         $replace = [
-            'name'     => 'vijay sebastian',
+            'name' => 'vijay sebastian',
             'usernmae' => 'vijay',
             'password' => 'jfdvhd',
-            'address'  => 'dshbcvhjdsbvchdff',
+            'address' => 'dshbcvhjdsbvchdff',
         ];
         $this->Mailing($from, $to, $data, $subject, 'from', 'to', $cc, $attachments, $replace);
     }
 
-    public function show($id)
-    {
+    public function show($id) {
+        $currency = \Session::get('currency');
+//        dd($currency);
         try {
             if ($this->template->where('type', 3)->where('id', $id)->first()) {
                 $data = $this->template->where('type', 3)->where('id', $id)->first()->data;
@@ -303,12 +297,15 @@ class TemplateController extends Controller
                         } else {
                             $description = '';
                         }
+                        if ($this->price->where('product_id', $product->id)->where('currency', $currency)->first()) {
+                            $price = $this->price->where('product_id', $product->id)->where('currency', $currency)->first()->price;
 
-                        $price = $this->price->where('product_id', $product->id)->where('currency', 'USD')->first()->price;
+                            $currency = $this->price->where('product_id', $product->id)->where('currency', $currency)->first()->currency;
 
-                        $currency = $this->price->where('product_id', $product->id)->where('currency', 'USD')->first()->currency;
-
-                        $subscription = $this->plan->where('id', $this->price->where('product_id', $product->id)->where('currency', 'USD')->first()->subscription)->first()->name;
+                            $subscription = $this->plan->where('id', $this->price->where('product_id', $product->id)->where('currency', $currency)->first()->subscription)->first()->name;
+                        }else{
+                            return redirect('/')->with('fails',\Lang::get('message.no-such-currency-in-system'));
+                        }
 
                         $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '<li>{{feature}}</li>', '{{url}}'];
                         $array2 = [$title, $currency, $price, $subscription, $description, $url];
@@ -331,32 +328,31 @@ class TemplateController extends Controller
         }
     }
 
-    public function popup($title, $body, $name = '', $modelid = '', $class = 'null', $trigger = false)
-    {
+    public function popup($title, $body, $name = '', $modelid = '', $class = 'null', $trigger = false) {
         try {
             if ($modelid == '') {
                 $modelid = $title;
             }
             if ($trigger == true) {
-                $trigger = "<a href=# class=$class  data-toggle='modal' data-target=#edit".$modelid.'>'.$name.'</a>';
+                $trigger = "<a href=# class=$class  data-toggle='modal' data-target=#edit" . $modelid . '>' . $name . '</a>';
             } else {
                 $trigger = '';
             }
 
-            return $trigger."
-                        <div class='modal fade' id=edit".$modelid.">
+            return $trigger . "
+                        <div class='modal fade' id=edit" . $modelid . ">
                             <div class='modal-dialog'>
                                 <div class='modal-content'>
                                     <div class='modal-header'>
                                         <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-                                        <h4 class='modal-title'>".$title."</h4>
+                                        <h4 class='modal-title'>" . $title . "</h4>
                                     </div>
                                     <div class='modal-body'>
-                                    ".$body."
+                                    " . $body . "
                                     </div>
                                     <div class='modal-footer'>
                                         <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value=".\Lang::get('message.save').'>
+                                        <input type=submit class='btn btn-primary' value=" . \Lang::get('message.save') . '>
                                     </div>
                                 </div>
                             </div>
@@ -365,4 +361,5 @@ class TemplateController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
+
 }

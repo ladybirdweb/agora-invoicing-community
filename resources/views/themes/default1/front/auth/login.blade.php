@@ -15,7 +15,7 @@ main
 @section('content')
 <div class="row">
     <div class="col-md-12">
-
+        
         <div class="featured-boxes">
             <div class="row">
                 <div class="col-sm-6 col-md-6 col-md-offset-3">

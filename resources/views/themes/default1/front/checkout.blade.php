@@ -11,7 +11,13 @@ Checkout
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
-
+<?php
+if ($attributes[0]['currency'][0]['symbol'] == '') {
+    $symbol = $attributes[0]['currency'][0]['code'];
+} else {
+    $symbol = $attributes[0]['currency'][0]['symbol'];
+}
+?>
     <div class="row">
         <div class="col-md-8">
             <div class="panel panel-default">
@@ -150,7 +156,7 @@ Checkout
                             <tr>
                                 <td>{{$item->name}}</td>
                                 <td>{{$item->quantity}}</td>
-                                <td>{{$item->getPriceSumWithConditions()}}</td>
+                                <td><small>{!! $symbol !!} </small> {{$item->getPriceSumWithConditions()}}</td>
                             </tr>
                             @empty 
                             <p>Your Cart is void</p>
@@ -160,7 +166,7 @@ Checkout
                         <div class="col-md-12">
                             <table class="table table-responsive">
                                 <tr>
-                                    <td>Grand Total</td><td>{{Cart::getSubTotal()}}</td>
+                                    <td>Grand Total</td><td><small>{!! $symbol !!} </small>{{Cart::getSubTotal()}}</td>
                                 </tr>
                             </table>
                         </div>

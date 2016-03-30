@@ -91,9 +91,6 @@
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
 
-
-
-
                                 </div>
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
@@ -105,22 +102,50 @@
 
                                             </div>
                                         </li>
-                                        <li>
-                                            <div class="form-group {{ $errors->has('file') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('file',Lang::get('message.file')) !!}
-                                                {!! Form::file('file') !!}
+                                        <div class="row">
+                                            <div class="col-md-5">
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('file') ? 'has-error' : '' }}">
+                                                        <!-- first name -->
+                                                        {!! Form::label('file',Lang::get('message.file')) !!}
+                                                        {!! Form::file('file') !!}
 
-                                            </div>  
-                                        </li>
-                                        <li>
-                                            <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
-                                                <!-- last name -->
-                                                {!! Form::label('image',Lang::get('message.image')) !!}
-                                                {!! Form::file('image') !!}
+                                                    </div>  
+                                                </li>
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                        {!! Form::label('image',Lang::get('message.image')) !!}
+                                                        {!! Form::file('image') !!}
 
+                                                    </div>
+                                                </li>
                                             </div>
-                                        </li>
+                                            <div class="col-md-2">
+                                                <p>
+                                                    <b>OR</b>
+                                                </p>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
+                                                        <!-- first name -->
+                                                        {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
+                                                        {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+
+                                                    </div>  
+                                                </li>
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                        {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
+                                                        {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+
+                                                    </div>
+                                                </li>
+                                            </div>
+                                        </div>
+
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -229,6 +254,42 @@
                                 <tr>
                                     <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
                                     <td>
+                                        
+                                        <table class="table table-responsive">
+                                                <tr>
+                                                    <th></th>
+                                                    <th>{{Lang::get('message.regular-price')}}</th>
+                                                    <th>{{Lang::get('message.sales-price')}}</th>
+                                                </tr>
+                                                <tr>
+                                                    @foreach($currency as $key=>$value)
+                                                    <td>
+                                                        
+                                                            <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
+                                                            <p>{{$key}}</p>
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                            {!! Form::text('price['.$key.']',null) !!}
+                                                        
+                                                    </td>
+                                                    <td>
+                                                        
+                                                            {!! Form::text('sales_price['.$key.']',null) !!}
+                                                        
+                                                    </td>
+                                                    @endforeach
+                                                </tr>
+
+                                            </table>
+                                        
+                                    </td>
+                                </tr>
+
+<!--                                <tr>
+                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
+                                    <td>
                                         <div class="form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                                             <div class="row">
                                                 <div class="col-md-6">
@@ -237,9 +298,9 @@
                                             </div>
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>-->
 
-                                <tr>
+<!--                                <tr>
                                     <td><b>{!! Form::label('price',Lang::get('message.regular-price')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
@@ -248,9 +309,9 @@
 
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>-->
 
-                                <tr>
+<!--                                <tr>
                                     <td><b>{!! Form::label('sales_price',Lang::get('message.sales-price')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('sales_price') ? 'has-error' : '' }}">
@@ -259,7 +320,7 @@
 
                                         </div>
                                     </td>
-                                </tr>
+                                </tr>-->
 
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>

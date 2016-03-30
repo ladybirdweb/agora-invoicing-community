@@ -19,8 +19,8 @@ use App\User;
 use Cart;
 use Illuminate\Http\Request;
 
-class CheckoutController extends Controller
-{
+class CheckoutController extends Controller {
+
     public $subscription;
     public $plan;
     public $templateController;
@@ -34,8 +34,7 @@ class CheckoutController extends Controller
     public $invoice;
     public $invoiceItem;
 
-    public function __construct()
-    {
+    public function __construct() {
         $subscription = new Subscription();
         $this->subscription = $subscription;
 
@@ -70,19 +69,20 @@ class CheckoutController extends Controller
         $this->invoiceItem = $invoiceItem;
     }
 
-    public function CheckoutForm()
-    {
+    public function CheckoutForm() {
         try {
             $content = Cart::getContent();
+            foreach ($content as $item) {
+                $attributes[] = $item->attributes;
+            }
 
-            return view('themes.default1.front.checkout', compact('content'));
+            return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function postCheckout(CheckoutRequest $request)
-    {
+    public function postCheckout(CheckoutRequest $request) {
         try {
             if (\Cart::getSubTotal() > 0) {
                 $v = $this->validate($request, [
@@ -100,19 +100,26 @@ class CheckoutController extends Controller
 
                 \Auth::user()->fill($request->input())->save();
             } elseif ($httpMethod == 'POST') {
+                
+                
                 //do saving user
 
                 $str = str_random(8);
                 $password = \Hash::make($str);
                 $this->user->password = $password;
                 $this->user->fill($request->input())->save();
+                
+                $token = str_random(40);
+                $activate = new \App\Model\User\AccountActivate();
+                $activate->create(['email' => $this->user->email, 'token' => $token]);
+                $url = url("activate/$token");
 
                 //send welcome note
                 $settings = $this->setting->where('id', 1)->first();
                 $from = $settings->email;
                 $to = $this->user->email;
                 $data = $this->template->where('id', $settings->where('id', 1)->first()->welcome_mail)->first()->data;
-                $replace = ['name' => $this->user->first_name.' '.$this->user->last_name, 'username' => $this->user->email, 'password' => $str];
+                $replace = ['name' => $this->user->first_name . ' ' . $this->user->last_name, 'username' => $this->user->email, 'password' => $str,'url'=>$url];
                 $this->templateController->Mailing($from, $to, $data, 'Welcome Email', $replace);
 
                 \Auth::login($this->user);
@@ -124,17 +131,53 @@ class CheckoutController extends Controller
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $invoice = $invoice_controller->GenerateInvoice();
             $payment_method = $request->input('payment_gateway');
+            if (!$payment_method) {
+                $payment_method = 'free';
+            }
             $invoiceid = $invoice->id;
             $amount = $invoice->grand_total;
             $payment = $invoice_controller->doPayment($payment_method, $invoiceid, $amount);
 
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0) {
-                //\Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => []]));
+                \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => []]));
             } else {
+                $this->checkoutAction($invoice);
             }
+            return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails'));
         } catch (\Exception $ex) {
-            //dd($ex);
+            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function checkoutAction($invoice) {
+        try {
+            //dd($invoice);
+            //get elements from invoice
+            $invoice_number = $invoice->number;
+            $invoice_id = $invoice->id;
+            $invoice_items = $this->invoiceItem->findOrFail($invoice_id);
+            $product = $invoice_items->product_name;
+            
+            $user_id = \Auth::user()->id;
+            $url = url("download/$user_id/$invoice_number");
+            
+            //get system values
+            $settings = new Setting();
+            $settings = $settings->findOrFail(1);
+            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
+            $from = $settings->email;
+            $to = \Auth::user()->email;
+            $data = $this->template->where('name','download link')->first()->data;
+            $subject = "download";
+            $replace = ['url'=>$url,'name'=>$name,'product'=>$product];
+            
+            //send mail
+            $template_controller = new TemplateController();
+            $template_controller->Mailing($from, $to, $data, $subject,$replace);
+        } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

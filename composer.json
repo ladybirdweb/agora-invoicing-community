@@ -12,6 +12,7 @@
                 "laravelcollective/html": "5.2.*",
                "darryldecode/cart": "dev-master",
                "pingplusplus/pingpp-php": "dev-master"
+		
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

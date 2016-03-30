@@ -146,6 +146,7 @@ return [
         'App\Providers\EventServiceProvider',
         'App\Providers\RouteServiceProvider',
         'Illuminate\Broadcasting\BroadcastServiceProvider',
+       
     ],
     /*
       |--------------------------------------------------------------------------
@@ -199,6 +200,8 @@ return [
         //'Socialize' => 'Laravel\Socialite\Facades\Socialite',
         'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
         'Cart'      => 'Darryldecode\Cart\Facades\CartFacade',
+        
+        
     ],
     /*
      *

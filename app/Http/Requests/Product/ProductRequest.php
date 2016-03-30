@@ -30,8 +30,11 @@ class ProductRequest extends Request
                 'subscription' => 'required',
                 'currency'     => 'required',
                 'price'        => 'required',
-                'file'         => 'required_if:type,2|mimes:zip',
-                'image'        => 'required_if:type,2|mimes:png',
+                'file'         => 'required_without_all:github_owner,github_repository|mimes:zip',
+                'image'        => 'required_without_all:github_owner,github_repository|mimes:png',
+                'github_owner'=>'required_without_all:file,image',
+                'github_repository'=>'required_without_all:file,image|required_if:type,2'
+                
             ];
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
+use App\User;
 
 class Authenticate
 {
@@ -43,7 +44,11 @@ class Authenticate
                 return redirect()->guest('auth/login');
             }
         }
-
-        return $next($request);
+        if(\Auth::user()->active==1){
+          return $next($request);
+        }else{
+            \Auth::logout();
+            return redirect('home')->with('fails','Activate Your Account');
+        }
     }
 }

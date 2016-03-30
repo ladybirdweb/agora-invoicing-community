@@ -12,6 +12,7 @@ use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use App\Model\Github\Github;
 
 class DatabaseSeeder extends Seeder
 {
@@ -24,7 +25,7 @@ class DatabaseSeeder extends Seeder
     {
         //Model::unguard();
 
-                $this->call('PlanTableSeeder');
+        $this->call('PlanTableSeeder');
         $this->command->info('Plan table seeded!');
 
         $this->call('TemplateTypeTableSeeder');
@@ -45,14 +46,14 @@ class DatabaseSeeder extends Seeder
         $this->call('PromotionTableSeeder');
         $this->command->info('Promotion table seeded!');
 
-//                $this->call('SubsricptionTableSeeder');
-//                $this->command->info('Subscription table seeded!');
-//
-                $this->call('CurrencyTableSeeder');
+        $this->call('CurrencyTableSeeder');
         $this->command->info('Currency table seeded!');
 
         $this->call('ProductTableSeeder');
         $this->command->info('Product table seeded!');
+        
+        $this->call('GitHubTableSeeder');
+        $this->command->info('Github table seeded!');
     }
 }
 
@@ -164,5 +165,13 @@ class TemplateTableSeeder extends Seeder
     {
         \DB::table('templates')->delete();
         Template::create(['id' => 1, 'name' => 'cart1', 'type' => 3, 'data' => '<div class="col-sm-6 col-md-3 col-lg-3"><div class="pricing-item"><div class="pricing-item-inner"><div class="pricing-wrap"><div class="pricing-icon"><i class="fa fa-credit-card-alt"></i></div><div class="pricing-title">{{title}}</div><div class="pricing-features font-alt"><ul class="sf-list pr-list"><li>{{feature}}</li></ul></div><div class="pricing-num"><sup>{{currency}}</sup>{{price}}</div><div class="pr-per">{{subscription}}</div><div class="pr-button"><a href="{{url}}" class="btn btn-mod">Buy Now</a></div></div> </div> </div></div>']);
+    }
+}
+class GitHubTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::table('githubs')->delete();
+        Github::create(['id' => 1]);
     }
 }

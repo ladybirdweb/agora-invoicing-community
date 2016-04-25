@@ -4,22 +4,21 @@ namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Promotion extends Model {
-
+class Promotion extends Model
+{
     protected $table = 'promotions';
     protected $fillable = ['code', 'type', 'uses', 'value', 'start', 'expiry'];
    // protected $dates = ['start','expiry'];
-    
-    
-    
-    public function relation() {
+
+    public function relation()
+    {
         return $this->hasMany('App\Model\Payment\PromoProductRelation', 'promotion_id');
     }
 
-    public function delete() {
+    public function delete()
+    {
         $this->relation()->delete();
 
         return parent::delete();
     }
-
 }

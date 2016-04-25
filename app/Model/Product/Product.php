@@ -9,10 +9,8 @@ class Product extends Model
     protected $table = 'products';
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
         'stock_control', 'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden', 'multiple_qty', 'auto_terminate',
-        'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner','github_repository',
-        'deny_after_subscription','version'];
-
-    
+        'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner', 'github_repository',
+        'deny_after_subscription', 'version', ];
 
     public function order()
     {
@@ -33,9 +31,10 @@ class Product extends Model
     {
         return $this->hasMany('App\Model\Payment\PromoProductRelation', 'product_id');
     }
-    
-    public function tax(){
-        return $this->hasMany('App\Model\Payment\TaxProductRelation','product_id');
+
+    public function tax()
+    {
+        return $this->hasMany('App\Model\Payment\TaxProductRelation', 'product_id');
     }
 
     public function delete()
@@ -46,13 +45,15 @@ class Product extends Model
 
         return parent::delete();
     }
-    
-    public function getImageAttribute($value){
-        if(!$value){
-            $image = asset("dist/product/images/No-image-found.jpg");
-        }else{
-             $image = asset("dist/product/images/$value");
+
+    public function getImageAttribute($value)
+    {
+        if (!$value) {
+            $image = asset('dist/product/images/No-image-found.jpg');
+        } else {
+            $image = asset("dist/product/images/$value");
         }
+
         return $image;
     }
 }

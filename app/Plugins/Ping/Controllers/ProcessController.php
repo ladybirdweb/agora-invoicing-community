@@ -14,7 +14,6 @@ class ProcessController extends Controller
 
     public function Process($event)
     {
-        
         $order = $event['order'];
         $extra = [
             'success_url' => 'http://ladybirdweb.com/support/',

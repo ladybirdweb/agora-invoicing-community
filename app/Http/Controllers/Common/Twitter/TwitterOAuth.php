@@ -8,7 +8,6 @@ namespace App\Http\Controllers\Common\Twitter;
 
 use App\Http\Controllers\Common\Twitter\Util\JsonDecoder;
 
-
 /**
  * TwitterOAuth class for interacting with the Twitter API.
  *
@@ -33,7 +32,7 @@ class TwitterOAuth extends Config
     private $signatureMethod;
 
     /**
-     * Constructor
+     * Constructor.
      *
      * @param string      $consumerKey      The Application Consumer Key
      * @param string      $consumerSecret   The Application Consumer Secret
@@ -115,6 +114,7 @@ class TwitterOAuth extends Config
         $this->resetLastResponse();
         $this->response->setApiPath($path);
         $query = http_build_query($parameters);
+
         return sprintf('%s/%s?%s', self::API_HOST, $path, $query);
     }
 
@@ -124,8 +124,9 @@ class TwitterOAuth extends Config
      * @param string $path
      * @param array  $parameters
      *
-     * @return array
      * @throws TwitterOAuthException
+     *
+     * @return array
      */
     public function oauth($path, array $parameters = [])
     {
@@ -160,10 +161,11 @@ class TwitterOAuth extends Config
         $this->response->setApiPath($path);
         $url = sprintf('%s/%s', self::API_HOST, $path);
         $request = Request::fromConsumerAndToken($this->consumer, $this->token, $method, $url, $parameters);
-        $authorization = 'Authorization: Basic ' . $this->encodeAppAuthorization($this->consumer);
+        $authorization = 'Authorization: Basic '.$this->encodeAppAuthorization($this->consumer);
         $result = $this->request($request->getNormalizedHttpUrl(), $method, $authorization, $parameters);
         $response = JsonDecoder::decode($result, $this->decodeJsonAsArray);
         $this->response->setBody($response);
+
         return $response;
     }
 
@@ -224,7 +226,7 @@ class TwitterOAuth extends Config
      *
      * @param string $path
      * @param array  $parameters
-     * @param boolean  $chunked
+     * @param bool   $chunked
      *
      * @return array|object
      */
@@ -250,6 +252,7 @@ class TwitterOAuth extends Config
         $file = file_get_contents($parameters['media']);
         $base = base64_encode($file);
         $parameters['media'] = $base;
+
         return $this->http('POST', self::UPLOAD_HOST, $path, $parameters);
     }
 
@@ -265,28 +268,28 @@ class TwitterOAuth extends Config
     {
         // Init
         $init = $this->http('POST', self::UPLOAD_HOST, $path, [
-            'command' => 'INIT',
-            'media_type' => $parameters['media_type'],
-            'total_bytes' => filesize($parameters['media'])
+            'command'     => 'INIT',
+            'media_type'  => $parameters['media_type'],
+            'total_bytes' => filesize($parameters['media']),
         ]);
         // Append
         $segment_index = 0;
         $media = fopen($parameters['media'], 'rb');
-        while (!feof($media))
-        {
+        while (!feof($media)) {
             $this->http('POST', self::UPLOAD_HOST, 'media/upload', [
-                'command' => 'APPEND',
-                'media_id' => $init->media_id_string,
+                'command'       => 'APPEND',
+                'media_id'      => $init->media_id_string,
                 'segment_index' => $segment_index++,
-                'media_data' => base64_encode(fread($media, self::UPLOAD_CHUNK))
+                'media_data'    => base64_encode(fread($media, self::UPLOAD_CHUNK)),
             ]);
         }
         fclose($media);
         // Finalize
         $finalize = $this->http('POST', self::UPLOAD_HOST, 'media/upload', [
-            'command' => 'FINALIZE',
-            'media_id' => $init->media_id_string
+            'command'  => 'FINALIZE',
+            'media_id' => $init->media_id_string,
         ]);
+
         return $finalize;
     }
 
@@ -306,18 +309,20 @@ class TwitterOAuth extends Config
         $result = $this->oAuthRequest($url, $method, $parameters);
         $response = JsonDecoder::decode($result, $this->decodeJsonAsArray);
         $this->response->setBody($response);
+
         return $response;
     }
 
     /**
-     * Format and sign an OAuth / API request
+     * Format and sign an OAuth / API request.
      *
      * @param string $url
      * @param string $method
      * @param array  $parameters
      *
-     * @return string
      * @throws TwitterOAuthException
+     *
+     * @return string
      */
     private function oAuthRequest($url, $method, array $parameters)
     {
@@ -330,40 +335,42 @@ class TwitterOAuth extends Config
             $request->signRequest($this->signatureMethod, $this->consumer, $this->token);
             $authorization = $request->toHeader();
         } else {
-            $authorization = 'Authorization: Bearer ' . $this->bearer;
+            $authorization = 'Authorization: Bearer '.$this->bearer;
         }
+
         return $this->request($request->getNormalizedHttpUrl(), $method, $authorization, $parameters);
     }
 
     /**
-     * Make an HTTP request
+     * Make an HTTP request.
      *
      * @param string $url
      * @param string $method
      * @param string $authorization
-     * @param array $postfields
+     * @param array  $postfields
+     *
+     * @throws TwitterOAuthException
      *
      * @return string
-     * @throws TwitterOAuthException
      */
     private function request($url, $method, $authorization, $postfields)
     {
         /* Curl settings */
         $options = [
             // CURLOPT_VERBOSE => true,
-            CURLOPT_CAINFO => __DIR__ . DIRECTORY_SEPARATOR . 'cacert.pem',
+            CURLOPT_CAINFO         => __DIR__.DIRECTORY_SEPARATOR.'cacert.pem',
             CURLOPT_CONNECTTIMEOUT => $this->connectionTimeout,
-            CURLOPT_HEADER => true,
-            CURLOPT_HTTPHEADER => ['Accept: application/json', $authorization, 'Expect:'],
+            CURLOPT_HEADER         => true,
+            CURLOPT_HTTPHEADER     => ['Accept: application/json', $authorization, 'Expect:'],
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
             CURLOPT_SSL_VERIFYPEER => true,
-            CURLOPT_TIMEOUT => $this->timeout,
-            CURLOPT_URL => $url,
-            CURLOPT_USERAGENT => $this->userAgent,
+            CURLOPT_TIMEOUT        => $this->timeout,
+            CURLOPT_URL            => $url,
+            CURLOPT_USERAGENT      => $this->userAgent,
         ];
 
-        if($this->gzipEncoding) {
+        if ($this->gzipEncoding) {
             $options[CURLOPT_ENCODING] = 'gzip';
         }
 
@@ -391,9 +398,8 @@ class TwitterOAuth extends Config
         }
 
         if (in_array($method, ['GET', 'PUT', 'DELETE']) && !empty($postfields)) {
-            $options[CURLOPT_URL] .= '?' . Util::buildHttpQuery($postfields);
+            $options[CURLOPT_URL] .= '?'.Util::buildHttpQuery($postfields);
         }
-
 
         $curlHandle = curl_init();
         curl_setopt_array($curlHandle, $options);
@@ -427,11 +433,12 @@ class TwitterOAuth extends Config
         $headers = [];
         foreach (explode("\r\n", $header) as $line) {
             if (strpos($line, ':') !== false) {
-                list ($key, $value) = explode(': ', $line);
+                list($key, $value) = explode(': ', $line);
                 $key = str_replace('-', '_', strtolower($key));
                 $headers[$key] = trim($value);
             }
         }
+
         return $headers;
     }
 
@@ -447,6 +454,7 @@ class TwitterOAuth extends Config
         // TODO: key and secret should be rfc 1738 encoded
         $key = $consumer->key;
         $secret = $consumer->secret;
-        return base64_encode($key . ':' . $secret);
+
+        return base64_encode($key.':'.$secret);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 /**
  * The MIT License
- * Copyright (c) 2007 Andy Smith
+ * Copyright (c) 2007 Andy Smith.
  */
 namespace App\Http\Controllers\Common\Twitter;
 
@@ -24,13 +24,13 @@ class Token
 
     /**
      * Generates the basic string serialization of a token that a server
-     * would respond to request_token and access_token calls with
+     * would respond to request_token and access_token calls with.
      *
      * @return string
      */
     public function __toString()
     {
-        return sprintf("oauth_token=%s&oauth_token_secret=%s",
+        return sprintf('oauth_token=%s&oauth_token_secret=%s',
             Util::urlencodeRfc3986($this->key),
             Util::urlencodeRfc3986($this->secret)
         );

@@ -21,7 +21,7 @@ class CreatePromotionsTable extends Migration
                         $table->string('value');
                         $table->timestamp('start'); //start date
                         $table->timestamp('expiry'); //expiry date
-                        
+
             $table->timestamps();
         });
     }

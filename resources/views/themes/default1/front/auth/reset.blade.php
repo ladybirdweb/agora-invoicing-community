@@ -12,18 +12,16 @@ Reset Password
 @section('main-class') 
 main
 @stop
-@sectio
 @section('content')
 <div class="row">
     <div class="col-md-12">
 
         <div class="featured-boxes">
+            
             <div class="row">
                 <div class="col-sm-6 col-md-6 col-md-offset-3">
                     @if(Session::has('success'))
                     <div class="alert alert-success alert-dismissable">
-                        <i class="fa fa-ban"></i>
-                        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         {{Session::get('success')}}
                     </div>
@@ -49,20 +47,10 @@ main
                     @endif
                     <div class="featured-box featured-box-primary align-left mt-xlg">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">{{Lang::get('message.sign-in-to-start-your-session')}}</h4>
+                            <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
                             {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
                             <input type="hidden" name="token" value="{{ $token }}">
-                            <div class="row">
-                                <div class="form-group  {{ $errors->has('email') ? 'has-error' : '' }}">
-                                    <div class="col-md-12">
-
-                                        {!! Form::text('email',null,['placeholder'=>Lang::get('message.email'),'class' => 'form-control input-lg']) !!}
-                                       
-                                        <!--                                            <label>Username or E-mail Address</label>
-                                                                                    <input type="text" value="" class="form-control input-lg">-->
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <div class="row">
                                 <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                                     <div class="col-md-12">
@@ -84,8 +72,10 @@ main
                             </div>
                             <div class="row">
                                 
-                                <div class="col-md-6">
-                                     <input type="submit" value="{{Lang::get('message.sign-in')}}" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                               
+                                
+                                <div class="col-md-12">
+                                     <input type="submit" value="Reset Password" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
                                     <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
                                 </div>
                             </div>

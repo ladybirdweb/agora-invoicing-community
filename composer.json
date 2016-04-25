@@ -11,7 +11,11 @@
 		"chumper/datatable": "dev-develop",
                 "laravelcollective/html": "5.2.*",
                "darryldecode/cart": "dev-master",
-               "pingplusplus/pingpp-php": "dev-master"
+               "pingplusplus/pingpp-php": "dev-master",
+               "pacely/mailchimp-apiv3": "dev-master",
+               "barryvdh/laravel-dompdf": "0.6.*",
+               "torann/geoip": "0.2.*@dev"
+		
 		
 	},
 	"require-dev": {

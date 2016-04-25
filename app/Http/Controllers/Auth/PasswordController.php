@@ -8,20 +8,19 @@ use Illuminate\Contracts\Auth\PasswordBroker;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Illuminate\Http\Request;
 
-class PasswordController extends Controller
-{
+class PasswordController extends Controller {
     /*
-    |--------------------------------------------------------------------------
-    | Password Reset Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller is responsible for handling password reset requests
-    | and uses a simple trait to include this behavior. You're free to
-    | explore this trait and override any methods you wish to tweak.
-    |
-    */
+      |--------------------------------------------------------------------------
+      | Password Reset Controller
+      |--------------------------------------------------------------------------
+      |
+      | This controller is responsible for handling password reset requests
+      | and uses a simple trait to include this behavior. You're free to
+      | explore this trait and override any methods you wish to tweak.
+      |
+     */
 
-    use ResetsPasswords;
+use ResetsPasswords;
 
     /**
      * Create a new password controller instance.
@@ -31,13 +30,11 @@ class PasswordController extends Controller
      *
      * @return void
      */
-    public function __construct(Guard $auth, PasswordBroker $passwords)
-    {
+    public function __construct(Guard $auth, PasswordBroker $passwords) {
         $this->middleware('guest');
     }
 
-    public function getEmail()
-    {
+    public function getEmail() {
         try {
             return view('themes.default1.front.auth.password');
         } catch (\Exception $ex) {
@@ -52,8 +49,7 @@ class PasswordController extends Controller
      *
      * @return Response
      */
-    public function getReset($token = null)
-    {
+    public function getReset($token = null) {
         if (is_null($token)) {
             throw new NotFoundHttpException();
         }
@@ -68,34 +64,79 @@ class PasswordController extends Controller
      *
      * @return Response
      */
-    public function postReset(Request $request)
-    {
+    public function postReset(Request $request) {
+        //dd($request->input('token'));
         $this->validate($request, [
-            'token'    => 'required',
-            'email'    => 'required|email',
+            'token' => 'required',
+            //'email' => 'required|email',
             'password' => 'required|confirmed',
         ]);
-
-        $credentials = $request->only(
-            'email', 'password', 'password_confirmation', 'token'
-        );
-
-        $response = \Password::reset($credentials, function ($user, $password) {
-            $user->password = bcrypt($password);
-
-            $user->save();
-
-            \Auth::login($user);
-        });
-
-        switch ($response) {
-            case PasswordBroker::PASSWORD_RESET:
-                return redirect($this->redirectPath());
-
-            default:
+        $token = $request->input('token');
+        $pass = $request->input('password');
+        $password = new \App\Model\User\Password();
+        $password = $password->where('token', $token)->first();
+        if ($password) {
+            $user = new \App\User();
+            $user = $user->where('email', $password->email)->first();
+            if ($user) {
+                $user->password = \Hash::make($pass);
+                $user->save();
+                return redirect('auth/login')->with('success', 'You have successfully changed your password');
+            } else {
                 return redirect()->back()
+                                ->withInput($request->only('email'))
+                                ->withErrors([
+                                    'email' => 'Invalid email']);
+            }
+        } else {
+            return redirect()->back()
                             ->withInput($request->only('email'))
-                            ->withErrors(['email' => trans($response)]);
+                            ->withErrors([
+                                'email' => 'Invalid email']);
         }
     }
+
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sendResetLinkEmail(Request $request) {
+        $this->validate($request, ['email' => 'required|email|exists:users,email']);
+        $email = $request->input('email');
+        $token = str_random(40);
+        $password = new \App\Model\User\Password();
+        if ($password->where('email', $email)->first()) {
+            $token = $password->where('email', $email)->first()->token;
+        } else {
+            $activate = $password->create(['email' => $email, 'token' => $token]);
+            $token = $activate->token;
+        }
+        
+        $url = url("password/reset/$token");
+        $user = new \App\User();
+        $user = $user->where('email', $email)->first();
+        if (!$user) {
+            return redirect()->back()->with('fails', 'Invalid Email');
+        }
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $settings = $settings->where('id', 1)->first();
+        //template
+        $template = new \App\Model\Common\Template();
+
+        $from = $settings->email;
+        $to = $user->email;
+        
+        $subject = $template->where('id', $settings->where('id', 1)->first()->forgot_password)->first()->name;
+        $data = $template->where('id', $settings->where('id', 1)->first()->forgot_password)->first()->data;
+        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'username' => $user->email, 'url' => $url];
+
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $templateController->Mailing($from, $to, $data, $subject, $replace);
+        return redirect()->back()->with('success', "Reset instructions have been mailed to $to
+Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
+    }
+
 }

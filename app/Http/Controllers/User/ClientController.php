@@ -42,10 +42,10 @@ class ClientController extends Controller
     {
 
         //$user = new User;
-        $user = $this->user->where('role', '!=', 'user')->get();
+        $user = $this->user->select('id','first_name','last_name','email','created_at','active')->orderBy('created_at','desc');
         //dd($user);
 
-        return \Datatable::collection($user)
+        return \Datatable::query($user)
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -53,7 +53,7 @@ class ClientController extends Controller
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
 
-                        ->showColumns('email')
+                        ->showColumns('email','created_at')
 
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -65,8 +65,8 @@ class ClientController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('first_name', 'email')
-                        ->orderColumns('first_name', 'email')
+                        ->searchColumns('email','first_name')
+                        ->orderColumns('email','first_name','created_at')
                         ->make();
     }
 
@@ -77,7 +77,11 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('themes.default1.user.client.create');
+        $timezones = new \App\Model\Common\Timezone();
+        $timezones = $timezones->lists('name','id')->toArray();
+        
+            
+        return view('themes.default1.user.client.create',compact('timezones'));
     }
 
     /**
@@ -117,6 +121,7 @@ class ClientController extends Controller
             $invoices = $invoice->where('user_id', $id)->get();
             $client = $this->user->where('id', $id)->first();
             $orders = $order->where('client', $id)->get();
+            //dd($client);
 
             return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders'));
         } catch (\Exception $ex) {
@@ -133,9 +138,19 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
+        try{
         $user = $this->user->where('id', $id)->first();
-
-        return view('themes.default1.user.client.edit', compact('user'));
+        $timezones = new \App\Model\Common\Timezone();
+        $timezones = $timezones->lists('name','id')->toArray();
+        
+        $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
+        
+        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+            
+        return view('themes.default1.user.client.edit', compact('user','timezones','state','states'));
+        }catch (\Exception $ex) {
+             return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**

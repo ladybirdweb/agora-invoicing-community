@@ -3,9 +3,15 @@
 <div class="box box-primary">
 
     <div class="box-header">
-
+        @if($user!='')
+        {!! Form::open(['url'=>'generate/invoice/'.$user->id]) !!}
+        
         <h4>{{ucfirst($user->first_name)}} {{ucfirst($user->last_name)}}, ({{$user->email}}) </h4>
-
+        @else 
+        {!! Form::open(['url'=>'generate/invoice']) !!}
+        <h4>Place Order</h4>
+        @endif
+        {!! Form::submit(Lang::get('message.generate'),['class'=>'btn btn-primary pull-right'])!!}
     </div>
 
     @if (count($errors) > 0)
@@ -42,53 +48,37 @@
         <div class="row">
 
             <div class="col-md-12">
-
+                
+                @if($user=='')
+                <?php 
+                $users = \App\User::lists('email','id')->toArray();
+                
+                ?>
+                    <div class="col-md-4 form-group">
+                    {!! Form::label('user',Lang::get('message.clients')) !!}
+                    {!! Form::select('user',[''=>'Select','Users'=>$users],null,['class'=>'form-control']) !!}
+                </div>
+                @endif
+                
                 <div class="col-md-4 form-group">
-                    {!! Form::label('address',Lang::get('message.address')) !!}
-                    {!! Form::textarea('address',$user->address,['class'=>'form-control']) !!}
+                    {!! Form::label('product',Lang::get('message.product')) !!}
+                    {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class'=>'form-control','onChange'=>'getPrice(this.value);']) !!}
+                </div>
+                
+                <div class="col-md-4 form-group">
+                    {!! Form::label('price',Lang::get('message.price')) !!}
+                    {!! Form::text('price',null,['class'=>'form-control']) !!}
                 </div>
                 <div class="col-md-4 form-group">
-                    {!! Form::label('invoice_date',Lang::get('message.invoice_date')) !!}
-                    {!! Form::date('invoice_date',null,['class'=>'form-control']) !!}
+                    {!! Form::label('code',Lang::get('message.promotion-code')) !!}
+                    {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
-                <div class="col-md-4 form-group">
-                    {!! Form::label('due_date',Lang::get('message.due_date')) !!}
-                    {!! Form::date('due_date',null,['class'=>'form-control']) !!}
-                </div>
+                
+               
 
             </div>
-            <div class="col-md-12">
-                <div class="input_fields_wrap2">
-
-
-
-                    <div class='row form-group'>
-
-                        <div class="col-md-3 ">
-                            <b>{!! Form::label('hidden',Lang::get('message.product')) !!}</b>
-                            <input type="text" name="product[][name]" class="form-control" value="{{ old('product.0.name') }}">
-                        </div>
-                        <div class="col-md-3 ">
-                            <b>{!! Form::label('hidden',Lang::get('message.quantity')) !!}</b>
-                            <input type="text" name="quantity[][name]" class="form-control" value="{{ old('quantity.0.name') }}">
-                        </div>
-                        <div class="col-md-3 ">
-                            <b>{!! Form::label('hidden',Lang::get('message.rate')) !!}</b>
-                            <input type="text" name="rate[][name]" class="form-control" value="{{ old('rate.0.name') }}">
-                        </div>
-                        <div class="col-md-2 ">
-                            <b>{!! Form::label('hidden',Lang::get('message.price')) !!}</b>
-                            <input type="text" name="price[][name]" class="form-control" value="{{ old('price.0.name') }}">
-                        
-                        </div>
-                        <div class="col-md-1">
-                            <br>
-                            <a href="#" class="add_field_button2"><i class="fa fa-plus"></i></a>
-                        </div>
-
-
-
-                    </div>
+            {!! Form::close() !!}
+            
                 </div>
             </div>
         </div>
@@ -97,32 +87,19 @@
 
 </div>
 
-
-
-@stop
-<script src="{{asset('plugins/jQuery/jquery.js')}}"></script>
-
-
-
 <script>
-    $(document).ready(function () {
-        var max_fields = 10; //maximum input boxes allowed
-        var wrapper = $(".input_fields_wrap2"); //Fields wrapper
-        var add_button = $(".add_field_button2"); //Add button ID
+    function getPrice(val) {
 
-        var x = 1; //initlal text box count
-        $(add_button).click(function (e) { //on add input button click
-            e.preventDefault();
-            if (x < max_fields) { //max input box allowed
-                x++; //text box increment
-                $(wrapper).append('<div class="row"><div class="col-md-3 form-group"><input type="text" name="product[][name]" class="form-control"/></div><div class="col-md-3 form-group"><input type="text" name="quantity[][name]" class="form-control"/></div><div class="col-md-3 form-group"><input type="text" name="rate[][name]" class="form-control"/></div><div class="col-md-2 form-group"><input type="text" name="price[][name]" class="form-control"/></div><a href="#" class="remove_field"><i class="fa fa-minus"></i></a></div>'); //add input box
+
+        $.ajax({
+            type: "POST",
+            url: "{{url('get-price')}}",
+            data: 'product=' + val,
+            success: function (data) {
+                $("#price").val(data);
             }
         });
-
-        $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text
-            e.preventDefault();
-            $(this).parent('div').remove();
-            x--;
-        })
-    });
+    }
 </script>
+
+@stop

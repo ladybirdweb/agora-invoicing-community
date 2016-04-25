@@ -24,12 +24,65 @@ Route::get('cart/reduseqty', 'Front\CartController@ReduseQty');
 Route::get('cart/increaseqty', 'Front\CartController@IncreaseQty');
 Route::get('cart/addon/{id}', 'Front\CartController@AddAddons');
 Route::get('cart/clear', 'Front\CartController@ClearCart');
+Route::get('show/cart', 'Front\CartController@showCart');
 
 Route::get('checkout', 'Front\CheckoutController@CheckoutForm');
 //Route::get('checkout', 'Front\CheckoutController@CheckoutForm');
 Route::match(['post', 'patch'], 'checkout', 'Front\CheckoutController@postCheckout');
 
 Route::get('ping', 'Front\CheckoutController@PingRecieve');
+Route::post('pricing/update','Front\CartController@addCouponUpdate');
+//Route::get('mail-chimp','Common\MailChimpController@getList');
+Route::get('mail-chimp/subcribe','Common\MailChimpController@addSubscriberByClientPanel');
+Route::get('mail-chimp/merge-fields','Common\MailChimpController@addFieldsToAgora');
+Route::get('mail-chimp/add-lists','Common\MailChimpController@addListsToAgora');
+Route::get('mailchimp','Common\MailChimpController@mailChimpSettings');
+Route::patch('mailchimp','Common\MailChimpController@postMailChimpSettings');
+Route::get('mail-chimp/mapping','Common\MailChimpController@mapField');
+Route::patch('mail-chimp/mapping','Common\MailChimpController@postMapField');
+
+Route::get('contact-us','Front\CartController@contactUs');
+Route::post('contact-us','Front\CartController@postContactUs');
+
+
+Route::get('add-cart/{slug}','Front\CartController@addCartBySlug');        
+
+
+
+/**
+ * Front Client Pages
+ */
+
+Route::get('my-invoices','Front\ClientController@invoices');
+
+Route::get('get-my-invoices','Front\ClientController@getInvoices');
+Route::get('get-my-invoices/{orderid}/{userid}','Front\ClientController@getInvoicesByOrderId');
+Route::get('get-my-payment/{orderid}/{userid}','Front\ClientController@getPaymentByOrderId');
+
+Route::get('my-orders','Front\ClientController@orders');
+Route::get('get-my-orders','Front\ClientController@getOrders');
+Route::get('my-subscriptions','Front\ClientController@subscriptions');
+Route::get('get-my-subscriptions','Front\ClientController@getSubscriptions');
+Route::get('my-invoice/{id}','Front\ClientController@getInvoice');
+Route::get('my-order/{id}','Front\ClientController@getOrder');
+Route::get('my-subscription/{id}','Front\ClientController@getSubscription');
+Route::get('my-profile','Front\ClientController@profile');
+Route::patch('my-profile','Front\ClientController@postProfile');
+Route::patch('my-password','Front\ClientController@postPassword');
+
+/**
+ * Social Media
+ */
+
+Route::resource('social-media','Common\SocialMediaController');
+Route::get('get-social-media','Common\SocialMediaController@getSocials');
+Route::get('social-media-delete','Common\SocialMediaController@destroy');
+/**
+ * Tweeter api
+ */
+Route::get('twitter','Common\SocialMediaController@getTweets');
+
+
 
 /*
  * Authentication
@@ -38,6 +91,7 @@ Route::controllers([
     'auth'     => 'Auth\AuthController',
     'password' => 'Auth\PasswordController',
 ]);
+Route::get('resend/activation/{email}','Auth\AuthController@sendActivationByGet');
 
 Route::get('activate/{token}', 'Auth\AuthController@Activate');
 
@@ -71,6 +125,7 @@ Route::get('clients-delete', 'User\ClientController@destroy');
 Route::resource('products', 'Product\ProductController');
 Route::get('get-products', 'Product\ProductController@GetProducts');
 Route::get('products-delete', 'Product\ProductController@destroy');
+Route::Post('get-price', 'Product\ProductController@getPrice');
 
 /*
  * Plan
@@ -109,10 +164,11 @@ Route::get('currency-delete', 'Payment\CurrencyController@destroy');
  */
 
 Route::resource('tax', 'Payment\TaxController');
-Route::patch('tax-rule', 'Payment\TaxController@Rule');
 Route::post('get-state', 'Payment\TaxController@GetState');
 Route::get('get-tax', 'Payment\TaxController@GetTax');
 Route::get('tax-delete', 'Payment\TaxController@destroy');
+Route::patch('taxes/option', 'Payment\TaxController@options');
+Route::post('taxes/option', 'Payment\TaxController@options');
 
 /*
  * Promotion
@@ -165,8 +221,10 @@ Route::get('testcart', 'Common\TemplateController@cartesting');
 Route::get('invoices', 'Order\InvoiceController@index');
 Route::get('invoices/{id}', 'Order\InvoiceController@show');
 Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
-
+Route::get('pdf', 'Order\InvoiceController@pdf');
+Route::get('invoice-delete', 'Order\InvoiceController@destroy');
 Route::get('invoice/generate', 'Order\InvoiceController@generateById');
+Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
 
 /*
  * Subscriptions
@@ -226,3 +284,20 @@ Route::patch('github','Github\GithubController@postSettings');
  * download
  */
 Route::get('download/{userid}/{invoice_number}','Product\ProductController@userDownload');
+
+/**
+ * testings
+ */
+Route::get('test-curl','Github\GithubApiController@testCurl');
+Route::get('test-curl-result','Github\GithubApiController@testCurlResult');
+
+/**
+ * check version
+ */
+
+Route::post('version','HomeController@version');
+Route::get('version','HomeController@getVersion');
+Route::get('version-test','HomeController@versionTest');
+Route::post('version-result','HomeController@versionResult');
+Route::post('serial','HomeController@serial');
+Route::get('download-url','Github\GithubController@getlatestReleaseForUpdate');

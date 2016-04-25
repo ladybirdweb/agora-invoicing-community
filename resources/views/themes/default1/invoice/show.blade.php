@@ -148,7 +148,7 @@
 
                                     <tr>
                                         <th style="width:50%">Total:</th>
-                                        <td>INR {{$invoice->grand_total}}</td>
+                                        <td><small>{!! $invoice->currency !!}</small> {{$invoice->grand_total}}</td>
                                     </tr>
                                     
                                 </table>
@@ -159,7 +159,7 @@
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
                         <div class="col-xs-12">	
-                            <a href="{{url('')}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
+                            <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>
                 </section><!-- /.content -->

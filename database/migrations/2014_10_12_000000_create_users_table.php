@@ -24,8 +24,11 @@ class CreateUsersTable extends Migration
             $table->string('town');
             $table->string('state');
             $table->string('zip');
+            $table->string('country');
             $table->string('profile_pic');
             $table->integer('active');
+            $table->integer('timezone_id')->unsigned()->default('114');
+            $table->foreign('timezone_id')->references('timezone')->on('id');
             $table->string('role');
             $table->decimal('debit', 8, 2);
 

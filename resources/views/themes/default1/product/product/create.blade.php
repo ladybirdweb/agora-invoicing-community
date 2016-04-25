@@ -86,7 +86,15 @@
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                                    <script>tinymce.init({selector: 'textarea'});</script>
+                                    <script>
+    tinymce.init({
+    selector: 'textarea',
+    plugins: "code",
+    toolbar: "code",
+    menubar: "tools"
+});
+</script>
+
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
@@ -117,6 +125,14 @@
                                                         <!-- last name -->
                                                         {!! Form::label('image',Lang::get('message.image')) !!}
                                                         {!! Form::file('image') !!}
+
+                                                    </div>
+                                                </li>
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                        {!! Form::label('version',Lang::get('message.version')) !!}
+                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
 
                                                     </div>
                                                 </li>
@@ -228,6 +244,7 @@
 
                                             </div>  
                                         </li>
+                                        
 
                                     </ul>
                                 </div>
@@ -246,47 +263,55 @@
                                                 <div class="col-md-6">
                                                     {!! Form::select('subscription',[''=>'Select','Subscription'=>$subscription],null,['class'=>'form-control']) !!}
                                                 </div>
+                                                
+                                                <div class="col-md-6">
+                                                    {!! Form::hidden('deny_after_subscription',0) !!}
+                                                    {!! Form::checkbox('deny_after_subscription',1,true) !!}
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
 
-                                <tr>
+                                 <tr>
                                     <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
                                     <td>
-                                        
-                                        <table class="table table-responsive">
-                                                <tr>
-                                                    <th></th>
-                                                    <th>{{Lang::get('message.regular-price')}}</th>
-                                                    <th>{{Lang::get('message.sales-price')}}</th>
-                                                </tr>
-                                                <tr>
-                                                    @foreach($currency as $key=>$value)
-                                                    <td>
-                                                        
-                                                            <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
-                                                            <p>{{$key}}</p>
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                            {!! Form::text('price['.$key.']',null) !!}
-                                                        
-                                                    </td>
-                                                    <td>
-                                                        
-                                                            {!! Form::text('sales_price['.$key.']',null) !!}
-                                                        
-                                                    </td>
-                                                    @endforeach
-                                                </tr>
 
-                                            </table>
-                                        
+                                        <table class="table table-responsive">
+                                            <tr>
+                                                <th></th>
+                                                <th>{{Lang::get('message.regular-price')}}</th>
+                                                <th>{{Lang::get('message.sales-price')}}</th>
+                                            </tr>
+                                            
+                                            @foreach($currency as $key=>$value)
+                                            <tr>
+                                                <td>
+
+                                                    <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
+                                                    <p>{{$value}}</p>
+
+                                                </td>
+          
+                                                <td>
+
+                                                    {!! Form::text('price['.$key.']',null) !!}
+
+                                                </td>
+                                                <td>
+
+                                                    {!! Form::text('sales_price['.$key.']',null) !!}
+
+                                                </td>
+                                            </tr>
+                                            @endforeach
+                                           
+
+                                        </table>
+
                                     </td>
                                 </tr>
-
 <!--                                <tr>
                                     <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
                                     <td>
@@ -339,6 +364,24 @@
                                         <div class="form-group {{ $errors->has('auto_terminate') ? 'has-error' : '' }}">
 
                                             <p>{!! Form::text('auto_terminate',null) !!} {{Lang::get('message.enter-the-number-of-days-after-activation-to-automatically-terminate')}}</p>
+
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
+                                    <td>
+                                        <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
+                                            <div class="row">
+                                                @forelse($taxes as $key=>$value)
+                                                <div class="col-md-2">
+                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                </div>
+                                                @empty 
+                                                <p>No taxes</p>
+                                                @endforelse
+                                            </div>
 
                                         </div>
                                     </td>

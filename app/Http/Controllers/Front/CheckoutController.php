@@ -11,12 +11,12 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
-use App\Model\Product\Addon;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Cart;
+use App\Http\Controllers\Common\MailChimpController;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller {
@@ -33,6 +33,7 @@ class CheckoutController extends Controller {
     public $addon;
     public $invoice;
     public $invoiceItem;
+    public $mailchimp;
 
     public function __construct() {
         $subscription = new Subscription();
@@ -67,14 +68,44 @@ class CheckoutController extends Controller {
 
         $invoiceItem = new InvoiceItem();
         $this->invoiceItem = $invoiceItem;
+
+        $mailchimp = new MailChimpController();
+        $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm() {
-        try {
-            $content = Cart::getContent();
-            foreach ($content as $item) {
-                $attributes[] = $item->attributes;
+    public function CheckoutForm(Request $request) {
+
+        if (!\Auth::user()) {
+            $url = $request->segments();
+
+            \Session::put('session-url', $url[0]);
+            return redirect('auth/login')->with('fails', 'Please login');
+        }
+        $content = Cart::getContent();
+        $require = [];
+        foreach ($content as $key => $item) {
+            $attributes[] = $item->attributes;
+            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+            if ($require_domain == 1) {
+                $require[$key] = $item->id;
             }
+        }
+        if(count($require)>0){
+            $this->validate($request, [
+                'domain.*'=>'required|url'
+            ],[
+               'domain.*.required'=>'Please provide Domain name',
+                'domain.*.url'=>'Domain name is not valid'
+            ]);
+        }
+        try {
+            $domain = $request->input('domain');
+            if (count($domain) > 0) {
+                foreach ($domain as $key => $value) {
+                    \Session::put('domain' . $key, $value);
+                }
+            }
+
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
@@ -82,69 +113,49 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function postCheckout(CheckoutRequest $request) {
+    public function postCheckout(Request $request) {
+
+        if (\Cart::getSubTotal() > 0) {
+            $v = $this->validate($request, [
+                'payment_gateway' => 'required',
+                    ], [
+
+                'payment_gateway.required' => 'Please choose a payment gateway'
+            ]);
+        }
         try {
-            if (\Cart::getSubTotal() > 0) {
-                $v = $this->validate($request, [
-                    'payment_gateway' => 'required',
-                ]);
-            }
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
-
-            $httpMethod = $request->method();
-            //dd($httpMethod);
-            if ($httpMethod == 'PATCH') {
-                //do update the auth user
-
-                \Auth::user()->fill($request->input())->save();
-            } elseif ($httpMethod == 'POST') {
-                
-                
-                //do saving user
-
-                $str = str_random(8);
-                $password = \Hash::make($str);
-                $this->user->password = $password;
-                $this->user->fill($request->input())->save();
-                
-                $token = str_random(40);
-                $activate = new \App\Model\User\AccountActivate();
-                $activate->create(['email' => $this->user->email, 'token' => $token]);
-                $url = url("activate/$token");
-
-                //send welcome note
-                $settings = $this->setting->where('id', 1)->first();
-                $from = $settings->email;
-                $to = $this->user->email;
-                $data = $this->template->where('id', $settings->where('id', 1)->first()->welcome_mail)->first()->data;
-                $replace = ['name' => $this->user->first_name . ' ' . $this->user->last_name, 'username' => $this->user->email, 'password' => $str,'url'=>$url];
-                $this->templateController->Mailing($from, $to, $data, 'Welcome Email', $replace);
-
-                \Auth::login($this->user);
-            }
-
             /*
              * Do order, invoicing etc
              */
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $invoice = $invoice_controller->GenerateInvoice();
             $payment_method = $request->input('payment_gateway');
+            $status='pending';
             if (!$payment_method) {
                 $payment_method = 'free';
+                $status = 'success';
             }
             $invoiceid = $invoice->id;
             $amount = $invoice->grand_total;
-            $payment = $invoice_controller->doPayment($payment_method, $invoiceid, $amount);
-
+            
+            //dd($payment);
+            $url = '';
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0) {
-                \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => []]));
+                
+                //$invoice_controller->doPayment($payment_method, $invoiceid, $amount,'','',$status);
+                \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $this->checkoutAction($invoice);
+                $url = "<a href=" . url("download/" . \Auth::user()->id . "/$invoice->number") . ">here</a>";
+                 \Cart::clear();
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails') . $url);
+                
             }
-            return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails'));
+           
         } catch (\Exception $ex) {
             dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -157,25 +168,34 @@ class CheckoutController extends Controller {
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
-            $invoice_items = $this->invoiceItem->findOrFail($invoice_id);
+            $invoice->status = 'success';
+            $invoice->save();
+
+            $invoice_items = $this->invoiceItem->where('invoice_id', $invoice_id)->first();
+            //dd($invoice_items);
             $product = $invoice_items->product_name;
-            
+
             $user_id = \Auth::user()->id;
             $url = url("download/$user_id/$invoice_number");
-            
+
+            //execute the order
+            $order = new \App\Http\Controllers\Order\OrderController();
+            $order->executeOrder($invoice->id, $order_status = 'executed');
+
+
             //get system values
             $settings = new Setting();
             $settings = $settings->findOrFail(1);
-            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
+            $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
             $from = $settings->email;
             $to = \Auth::user()->email;
-            $data = $this->template->where('name','download link')->first()->data;
-            $subject = "download";
-            $replace = ['url'=>$url,'name'=>$name,'product'=>$product];
-            
+            $data = $this->template->where('type', 7)->first()->data;
+            $subject = $this->template->where('type', 7)->first()->name;
+            $replace = ['url' => $url, 'name' => $name, 'product' => $product];
+
             //send mail
             $template_controller = new TemplateController();
-            $template_controller->Mailing($from, $to, $data, $subject,$replace);
+            $template_controller->Mailing($from, $to, $data, $subject, $replace);
         } catch (\Exception $ex) {
             dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());

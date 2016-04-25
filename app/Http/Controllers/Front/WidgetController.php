@@ -39,7 +39,7 @@ class WidgetController extends Controller
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('widgets/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name', 'content')
                         ->orderColumns('name')
@@ -59,7 +59,7 @@ class WidgetController extends Controller
     {
         try {
             $widget = $this->widget->where('id', $id)->first();
-
+            //dd($widget);
             return view('themes.default1.front.widgets.edit', compact('widget'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

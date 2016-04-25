@@ -83,6 +83,20 @@
                     </tr>
                     <tr>
 
+                        <td><b>{!! Form::label('value',Lang::get('message.value')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('value') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('value',null,['class' => 'form-control']) !!}
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
                         <td><b>{!! Form::label('uses',Lang::get('message.uses')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('uses') ? 'has-error' : '' }}">
@@ -113,7 +127,7 @@
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
 
-                                {!! Form::date('start',$start,['class'=>'form-control']) !!}
+                                {!! Form::text('start',null,['class'=>'form-control']) !!}
 
                             </div>
                         </td>
@@ -128,68 +142,15 @@
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
 
-                                {!! Form::date('expiry',$expiry,['class' => 'form-control']) !!}
+                                {!! Form::text('expiry',null,['class' => 'form-control']) !!}
 
                             </div>
                         </td>
 
                     </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('lifetime',Lang::get('message.lifetime')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('lifetime') ? 'has-error' : '' }}">
-
-
-                                <p>{!! Form::checkbox('lifetime',1) !!}  {{Lang::get('message.discounted-pricing-is-applied-even-on-upgrade-and-downgrade-orders-in-the-future-regardless-of-settings-like-max-uses-expiry-etc')}}</p>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('once',Lang::get('message.once')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('once') ? 'has-error' : '' }}">
-
-
-                                <p>{!! Form::checkbox('once',1) !!}  {{Lang::get('message.apply-only-once-per-order')}}</p>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('signups',Lang::get('message.signups')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('signups') ? 'has-error' : '' }}">
-
-
-                                <p>{!! Form::checkbox('signups',1) !!} {{Lang::get('message.apply-to-new-signups-only') }}</p>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('existing_client',Lang::get('message.existing_client')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('existing_client') ? 'has-error' : '' }}">
-
-
-                                <p>{!! Form::checkbox('existing_client',1) !!}  {{Lang::get('message.apply-to-existing-clients-only')}}</p>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
+                    
+                   
+                    
 
                     {!! Form::close() !!}
                 </table>
@@ -220,4 +181,19 @@
             }
         });
     }
+</script>
+
+<script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
+
+<script type="text/javascript">
+    $(function () {
+        $('#start').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+    });
+    $(function () {
+        $('#expiry').datetimepicker({
+            format: 'YYYY-MM-DD'
+        });
+    });
 </script>

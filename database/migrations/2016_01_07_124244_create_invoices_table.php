@@ -22,6 +22,8 @@ class CreateInvoicesTable extends Migration
                         $table->string('discount_mode');
                         $table->string('coupon_code');
                         $table->string('grand_price');
+                        $table->string('status');
+                        $table->string('currency')->default('USD');
             $table->timestamps();
         });
     }

@@ -58,7 +58,7 @@
                         {!! Form::select('publish',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
 
                     </div>
-                    
+
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.type')) !!}
@@ -66,16 +66,23 @@
 
                     </div>
 
-                   
+
 
 
                 </div>
-                
+
                 <div class="row">
                     <div class="col-md-12 form-group">
 
-                        <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                        <script>tinymce.init({selector: 'textarea'});</script>
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+<script>
+    tinymce.init({
+    selector: 'textarea',
+    plugins: "code",
+    toolbar: "code",
+    menubar: "tools"
+});
+</script>
 
                         {!! Form::label('content',Lang::get('message.content'),['class'=>'required']) !!}
                         {!! Form::textarea('content',null,['class'=>'form-control','id'=>'textarea']) !!}
@@ -99,10 +106,10 @@
 <script>
 
     $(document).on('input', '#name', function () {
-        
-         $.ajax({
+
+        $.ajax({
             type: "get",
-            data:{'url':this.value},
+            data: {'url': this.value},
             url: "{{url('get-url')}}",
             success: function (data) {
                 $("#url").val(data)
@@ -110,10 +117,10 @@
         });
     });
     $(document).on('input', '#name', function () {
-        
-         $.ajax({
+
+        $.ajax({
             type: "get",
-            data:{'slug':this.value},
+            data: {'slug': this.value},
             url: "{{url('get-url')}}",
             success: function (data) {
                 $("#slug").val(data)

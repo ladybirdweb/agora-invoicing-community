@@ -45,51 +45,99 @@
 
                 <div class="row">
 
-                    <div class="col-md-6 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                         {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                     </div>
-                    <div class="col-md-6 form-group {{ $errors->has('level') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('tax_class') ? 'has-error' : '' }}">
                         <!-- name -->
-                        {!! Form::label('level',Lang::get('message.level'),['class'=>'required']) !!}
-                        {!! Form::select('level',[1=>1,2=>2],null,['class' => 'form-control']) !!}
+                        {!! Form::label('tax_class',Lang::get('message.tax_class'),['class'=>'required']) !!}
+                        {!! Form::select('tax_classes_id',[$classes],null,['class' => 'form-control']) !!}
 
                     </div>
+                    <div class="col-md-3 form-group {{ $errors->has('level') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('level',Lang::get('message.level'),['class'=>'required']) !!}
+                        {!! Form::text('level',null,['class' => 'form-control']) !!}
+
+                    </div>
+                    <div class="col-md-3 form-group">
+                        <!-- name -->
+                        {!! Form::label('status',Lang::get('message.status')) !!}
+                        <div class="row">
+                            <div class="col-md-6 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                                <!-- name -->
+                                {!! Form::label('active',Lang::get('message.active')) !!}
+                                {!! Form::radio('active',1) !!}
+
+                            </div>
+                            <div class="col-md-6 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                                <!-- name -->
+                                {!! Form::label('active',Lang::get('message.inactive')) !!}
+                                {!! Form::radio('active',0) !!}
+
+                            </div>
+                        </div>
+
+                    </div>
+
 
                 </div>
 
                 <div class="row">
 
-                    <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::lists('name', 'id')->toArray(); ?>
+                        <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
                         {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
 
                         <select name="state" id="state-list" class="form-control">
-                            <?php
-                            if (App\Model\Common\State::where('id', $tax->state)->first()) {
-                                $state = App\Model\Common\State::where('id', $tax->state)->first()->name;
-                                echo "<option value=$tax->state>$state</option>";
-                            }
-                            ?>
-                            <option value="">Select a State</option>
+                            @if(count($state)>0)
+                            <option value="{{$state['id']}}">{{$state['name']}}</option>
+                            @endif
+                            <option value="">Select State</option>
+                            @if(count($states)>0)
+                            @foreach($states as $key=>$value)
+                            <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
+                            @endif
                         </select>
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
+                    <div class="col-md-3 form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
                         {!! Form::text('rate',null,['class' => 'form-control']) !!}
 
                     </div>
+                    <div class="col-md-3 form-group">
+                        <!-- name -->
+                        {!! Form::label('compound',Lang::get('message.compound')) !!}
+                        <div class="row">
+                            <div class="col-md-6 form-group {{ $errors->has('compound') ? 'has-error' : '' }}">
+                                <!-- name -->
+                                {!! Form::label('compound',Lang::get('message.yes')) !!}
+                                {!! Form::radio('compound',1) !!}
+
+                            </div>
+                            <div class="col-md-6 form-group {{ $errors->has('compound') ? 'has-error' : '' }}">
+                                <!-- name -->
+                                {!! Form::label('compound',Lang::get('message.no')) !!}
+                                {!! Form::radio('compound',0) !!}
+
+                            </div>
+                        </div>
+
+                    </div>
+
 
                 </div>
 

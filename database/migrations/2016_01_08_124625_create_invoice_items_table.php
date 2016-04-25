@@ -25,6 +25,7 @@ class CreateInvoiceItemsTable extends Migration
                         $table->string('tax_code');
                         $table->string('discount_mode');
                         $table->string('subtotal');
+                        $table->string('domain');
             $table->timestamps();
         });
     }

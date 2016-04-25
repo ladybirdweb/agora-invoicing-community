@@ -75,7 +75,15 @@
                     <div class="col-md-12 form-group">
 
                         <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                        <script>tinymce.init({selector: 'textarea'});</script>
+                        <script>
+    tinymce.init({
+    selector: 'textarea',
+    plugins: "code",
+    toolbar: "code",
+    menubar: "tools"
+});
+</script>
+
 
                         {!! Form::label('content',Lang::get('message.content'),['class'=>'required']) !!}
                         {!! Form::textarea('content',null,['class'=>'form-control','id'=>'textarea']) !!}

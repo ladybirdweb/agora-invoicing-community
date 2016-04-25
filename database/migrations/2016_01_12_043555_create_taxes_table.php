@@ -16,9 +16,14 @@ class CreateTaxesTable extends Migration
             $table->increments('id');
                         $table->integer('level');
                         $table->string('name');
+                        $table->integer('active');
                         $table->string('country');
                         $table->string('state');
                         $table->string('rate');
+                        $table->integer('compound');
+                        $table->integer('tax_classes_id')->unsigned();
+                        $table->foreign('tax_classes_id')->references('id')->on('tax_classes');
+                        
             $table->timestamps();
         });
     }

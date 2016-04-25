@@ -68,7 +68,7 @@ return [
       | will not be safe. Please do this before deploying an application!
       |
      */
-    'key'    => env('APP_KEY', 'SomeRandomString'),
+    'key'    => env('APP_KEY', 'AEVQf2ecD6Czpw6r2jairFxbXohG72fH'),
     'cipher' => MCRYPT_RIJNDAEL_128,
     /*
       |--------------------------------------------------------------------------
@@ -136,6 +136,8 @@ return [
         //'Laravel\Cashier\CashierServiceProvider',
         //'LinkThrow\Billing\BillingServiceProvider',
         'Darryldecode\Cart\CartServiceProvider',
+        //'Spatie\Newsletter\NewsletterServiceProvider',
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -146,6 +148,8 @@ return [
         'App\Providers\EventServiceProvider',
         'App\Providers\RouteServiceProvider',
         'Illuminate\Broadcasting\BroadcastServiceProvider',
+        Mailchimp\MailchimpServiceProvider::class,
+        'Torann\GeoIP\GeoIPServiceProvider',
        
     ],
     /*
@@ -200,6 +204,10 @@ return [
         //'Socialize' => 'Laravel\Socialite\Facades\Socialite',
         'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
         'Cart'      => 'Darryldecode\Cart\Facades\CartFacade',
+        //'Newsletter' => 'Spatie\Newsletter\NewsletterFacade',
+        'MC' => Mailchimp\MailchimpFacade::class,
+        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
         
         
     ],

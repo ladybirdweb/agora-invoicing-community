@@ -46,41 +46,14 @@ main
                     {{Session::get('fails')}}
                 </div>
                 @endif
-    <div class="col-md-2">
-        <?php
-        $currency = new App\Model\Payment\Currency();
-        $currency = $currency->lists('name', 'code')->toArray();
-        ?>
-        {!! Form::open(['url'=>'home']) !!}
-        <div class="col-md-10 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-            <!-- last name -->
-            {!! Form::label('currency',Lang::get('message.currency')) !!}
-            {!! Form::select('currency',[''=>'Choose your currency','Currency'=>$currency],null) !!}
-
-        </div>
-        <div class="col-md-10 form-group">
-            {!! Form::submit('submit',null) !!}
-        </div>
-        {!! Form::close() !!}
-    </div>
-    <div class="col-md-10" id="pricing">
-
+    
+    <div class="col-md-12 col-md-offset-3">
+        <div class="pricing-table princig-table-flat">
         {!! html_entity_decode($template) !!}
+        </div>
     </div>
 
 </div>
 
 @stop
-<script>
-    function currency(val){
-        //alert(val.value);
-        $.ajax({
-           type: "get",
-           url:"{{url('home')}}",
-           data:{currency:val.value},
-//           success: function () {
-//                location.reload();
-//            }
-        });
-    }
-</script>
+

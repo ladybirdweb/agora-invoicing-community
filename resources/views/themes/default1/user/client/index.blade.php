@@ -10,7 +10,7 @@
 
             <div class="info-box-content">
                 <span class="info-box-text">Open</span>
-                <span class="info-box-number">90<small>%</small></span>
+                <span class="info-box-number">0<small>%</small></span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -23,7 +23,7 @@
 
             <div class="info-box-content">
                 <span class="info-box-text">Over due</span>
-                <span class="info-box-number">41,410</span>
+                <span class="info-box-number">0</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -40,7 +40,7 @@
 
             <div class="info-box-content">
                 <span class="info-box-text">Paid</span>
-                <span class="info-box-number">760</span>
+                <span class="info-box-number">0</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -53,7 +53,7 @@
 
             <div class="info-box-content">
                 <span class="info-box-text">unpaid members</span>
-                <span class="info-box-number">2,000</span>
+                <span class="info-box-number">0</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -68,7 +68,7 @@
 
     <div class="box-header">
 
-        <h4>{{Lang::get('message.clients')}}
+        <h4>{{Lang::get('message.users')}}
             <a href="{{url('clients/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
     </div>
 
@@ -107,10 +107,10 @@
 
             <div class="col-md-12">
                 {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Email','Status','Action')
+                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Email','Registered On','Status','Action')
                 ->setUrl('get-clients')
                 ->setOptions([
-
+                "order"=> [ 3, "desc" ],
                 "dom" => "Bfrtip",
                 "buttons" => [
                 [

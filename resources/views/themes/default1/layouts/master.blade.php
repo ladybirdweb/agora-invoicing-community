@@ -14,10 +14,10 @@
         <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
-        
-         <!-- Custom style -->
+
+        <!-- Custom style -->
         <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
-        
+
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
@@ -33,11 +33,16 @@
             <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
             <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
         <![endif]-->
-
+        
         <!-- jQuery 2.1.4 -->
-        <script src="{{asset('plugins/jQuery/jQuery-2.1.4.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+        <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
 
     </head>
+    <?php 
+    $set = new \App\Model\Common\Setting();
+    $set = $set->findOrFail(1);
+    ?>
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
     <!-- the fixed layout is not compatible with sidebar-mini -->
     <body class="skin-blue fixed sidebar-mini">
@@ -66,21 +71,17 @@
 
                             <li class="dropdown user user-menu">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                    @if(Auth::user()->profile_pic)
-                                    <img src="{{asset('dist/app/users/'.Auth::user()->profile_pic)}}" class="user-image" alt="User Image" />
-                                    @else
-                                    <img src="{{ Gravatar::src(Auth::user()->email) }}" class="user-image" alt="User Image" />
-                                    @endif
+                                    
+                                    <img src="{{Auth::user()->profile_pic}}" class="user-image" alt="User Image" />
+                                    
                                     <span class="hidden-xs">{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</span>
                                 </a>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
                                     <li class="user-header">
-                                        @if(Auth::user()->profile_pic)
-                                        <img src="{{asset('dist/app/users/'.Auth::user()->profile_pic)}}" class="img-circle" alt="User Image" />
-                                        @else
-                                        <img src="{{ Gravatar::src(Auth::user()->email) }}" class="img-circle" alt="User Image" />
-                                        @endif
+                                        
+                                        <img src="{{Auth::user()->profile_pic}}" class="img-circle" alt="User Image" />
+                                        
                                         <p>
                                             {{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}
                                         </p>
@@ -109,11 +110,9 @@
                     <!-- Sidebar user panel -->
                     <div class="user-panel">
                         <div class="pull-left image">
-                            @if(Auth::user()->profile_pic)
-                            <img src="{{asset('dist/app/users/'.Auth::user()->profile_pic)}}" class="img-circle" alt="User Image" />
-                            @else
-                            <img src="{{ Gravatar::src(Auth::user()->email) }}" class="img-circle" alt="User Image" />
-                            @endif
+                            
+                            <img src="{{Auth::user()->profile_pic}}" class="img-circle" alt="User Image" />
+                           
                         </div>
                         <div class="info">
                             <p>{{ucfirst(Auth::user()->first_name)}} {{ucfirst(Auth::user()->last_name)}}</p>
@@ -125,41 +124,47 @@
 
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-user"></i> <span>{{Lang::get('message.clients')}}</span>
+                                <i class="fa fa-user"></i> <span>{{Lang::get('message.users')}}</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{url('clients')}}"><i class="fa fa-users"></i>{{Lang::get('message.clients')}}</a></li>
-                                <li><a href="{{url('clients/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.addnew')}}</a></li>
+                                <li><a href="{{url('clients')}}"><i class="fa fa-users"></i>{{Lang::get('message.all-users')}}</a></li>
+                                <li><a href="{{url('clients/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
                             </ul>
                         </li>
 
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-user"></i> <span>{{Lang::get('message.orders')}}</span>
+                                <i class="fa fa-paper-plane"></i> <span>{{Lang::get('message.orders')}}</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{url('orders')}}"><i class="fa fa-users"></i>{{Lang::get('message.orders')}}</a></li>
-                                <li><a href="{{url('orders/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.addnew')}}</a></li>
+                                <li><a href="{{url('orders')}}"><i class="fa fa-paper-plane"></i>{{Lang::get('message.all-orders')}}</a></li>
+                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
                             </ul>
                         </li>
-                        <li>
-                            <a href="{{url('invoices')}}">
-                                <i class="fa fa-circle-o text-aqua"></i> <span>{{Lang::get('message.invoices')}}</span>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-paperclip"></i> <span>{{Lang::get('message.invoices')}}</span>
+                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{url('invoices')}}"><i class="fa fa-paperclip"></i>{{Lang::get('message.all-invoices')}}</a></li>
+                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                            </ul>
                         </li>
-                        <li>
-                            <a href="{{url('subscriptions')}}">
-                                <i class="fa fa-circle-o text-red"></i> <span>{{Lang::get('message.subscription')}}</span>
+                        
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-paragraph"></i> <span>{{Lang::get('message.pages')}}</span>
+                                <i class="fa fa-angle-left pull-right"></i>
                             </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{url('pages')}}"><i class="fa fa-paragraph"></i>{{Lang::get('message.all-pages')}}</a></li>
+                                <li><a href="{{url('pages/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                            </ul>
                         </li>
-
-                        <li>
-                            <a href="{{url('pages')}}">
-                                <i class="fa fa-circle-o text-yellow"></i> <span>{{Lang::get('message.pages')}}</span>
-                            </a>
-                        </li>
+                        
                         <li>
                             <a href="{{url('widgets')}}">
                                 <i class="fa fa-circle-o text-orange"></i> <span>{{Lang::get('message.widgets')}}</span>
@@ -171,34 +176,30 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{url('products')}}"><i class="fa fa-folder"></i>{{Lang::get('message.products')}}</a></li>
-                                <li><a href="{{url('groups')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.groups')}}</a></li>
+                                <li><a href="{{url('products')}}"><i class="fa fa-codepen"></i>{{Lang::get('message.all-products')}}</a></li>
+                                 <li><a href="{{url('products/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-products')}}</a></li>
+                                <li><a href="{{url('groups')}}"><i class="fa fa-group"></i>{{Lang::get('message.groups')}}</a></li>
                                 <!--<li><a href="{{url('addons')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.addons')}}</a></li>-->
-                                <li><a href="{{url('bundles')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.bundles')}}</a></li>
-
+                                <li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>
+                                <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
                             </ul>
                         </li>
 
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-files-o"></i> <span>{{Lang::get('message.payment')}}</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="{{url('currency')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.currency')}}</a></li>
-                                <li><a href="{{url('tax')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.tax')}}</a></li>
-                                <li><a href="{{url('promotions')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.promotion')}}</a></li>
-                            </ul>
-                        </li>
+                        
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-gears"></i> <span>{{Lang::get('message.settings')}}</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{url('settings')}}"><i class="fa fa-gears"></i>{{Lang::get('message.settings')}}</a></li>
+                                <li><a href="{{url('settings')}}"><i class="fa fa-gears"></i>{{Lang::get('message.system-settings')}}</a></li>
+                                <li><a href="{{url('currency')}}"><i class="fa fa-dollar"></i>{{Lang::get('message.currency')}}</a></li>
+                                <li><a href="{{url('tax')}}"><i class="fa fa-money"></i>{{Lang::get('message.tax')}}</a></li>
                                 <li><a href="{{url('templates')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.templates')}}</a></li>
                                 <li><a href="{{url('github')}}"><i class="fa fa-github"></i>{{Lang::get('message.github')}}</a></li>
+                                <li><a href="{{url('mailchimp')}}"><i class="fa fa-mail-forward"></i>{{Lang::get('message.mailchimp')}}</a></li>
+                                <li><a href="{{url('social-media')}}"><i class="fa fa-medium"></i>{{Lang::get('message.social-media')}}</a></li>
+                                <li><a href="{{url('payment-gateway/ccavanue')}}"><i class="fa fa-cc-mastercard"></i>{{Lang::get('message.ccavanue')}}</a></li>
 
                             </ul>
                         </li>
@@ -218,7 +219,7 @@
             <div class="content-wrapper">
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
-                    
+
                     @yield('header')
                 </section>
 
@@ -243,7 +244,7 @@
                 <div class="pull-right hidden-xs">
                     <b>{{Lang::get('message.version')}}</b> {{Config::get('app.version')}}
                 </div>
-                <strong>Copyright &copy; {{date('Y')}} <a href="http://ladybirdweb.com/" target="_blank">Ladybird web Solution</a>.</strong> All rights reserved.
+                <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>.</strong> All rights reserved. Powered by <a href="http://ladybirdweb.com" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a>
             </footer>
 
 
@@ -262,5 +263,8 @@
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->
         <script src="{{asset('dist/js/demo.js')}}" type="text/javascript"></script>
+        <!--<script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>-->
+        <script src="{{asset("plugins/datepicker/bootstrap-datetimepicker4.7.14.min.js")}}" type="text/javascript"></script>
+
     </body>
 </html>

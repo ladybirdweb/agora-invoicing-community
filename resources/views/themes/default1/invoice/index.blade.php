@@ -5,7 +5,7 @@
     <div class="box-header">
 
         <h4>{{Lang::get('message.invoices')}}
-        <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
+        <a href="{{url('invoice/generate')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.place-an-order')}}</a></h4>
     </div>
 
     @if (count($errors) > 0)
@@ -43,8 +43,40 @@
             
             <div class="col-md-12">
                 {!! Datatable::table()
-                ->addColumn('Client','Invoice Number','Date','Total','Action')
+                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Client','Invoice Number','Date','Total','Status','Action')
                 ->setUrl('get-invoices') 
+                ->setOptions([
+                "order"=> [ 3, "desc" ],
+                "dom" => "Bfrtip",
+                "buttons" => [
+                [
+                "text" => "Delete",
+                "action" => "function ( e, dt, node, config ) {
+                    e.preventDefault();
+                    var answer = confirm ('Are you sure you want to delete from the database?');
+                    if(answer){
+                    $.ajax({
+                        url: 'invoice-delete',
+                        type: 'GET',
+                        data: $('#check:checked').serialize(),
+                       
+                        beforeSend: function () {
+                                $('#gif').show();
+                            },
+                        success: function (data) {
+                                $('#gif').hide();
+                                $('#response').html(data);
+                                location.reload();
+                            }
+                        
+                    });
+                }
+                }"
+                ]
+                ],
+
+                ])
+                
                 ->render() !!}
                 
             </div>
@@ -56,5 +88,30 @@
 
 
 
+@stop
+
+@section('icheck')
+<script>
+    $(function () {
+
+
+        //Enable check and uncheck all functionality
+        $(".checkbox-toggle").click(function () {
+            var clicks = $(this).data('clicks');
+            if (clicks) {
+                //Uncheck all checkboxes
+                $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+            } else {
+                //Check all checkboxes
+                $(".mailbox-messages input[type='checkbox']").iCheck("check");
+                $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+            }
+            $(this).data("clicks", !clicks);
+        });
+
+
+    });
+</script>
 @stop
 

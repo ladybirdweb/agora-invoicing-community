@@ -38,6 +38,14 @@ return [
     'description' => 'Description',
     'can-not-delete-default' => 'Can not delete default',
     'no-payment' => 'No Payment',
+    'add-new'=>'Add New',
+    'all-users'=>'All Users',
+    'all-invoices'=>'All invoices',
+    'users'=>'Users',
+    'all-orders'=>'All Orders',
+    'timezone'=>'Timezone',
+    'created-successfully'=>'Created Successfully',
+    'ccavanue'=>'Ccavanue',
     /*
      * Profile Page
      */
@@ -57,6 +65,7 @@ return [
     'confirm_password' => 'Confirm Password',
     'email' => 'Email',
     'currency' => 'Currency',
+    'all-pages'=>'All Pages',
     /*
      * registration
      */
@@ -85,6 +94,7 @@ return [
      * Settings
      */
     'settings' => 'Settings',
+    'system-settings'=>'System Settings',
     'company' => 'Company',
     'name' => 'Name',
     'website' => 'Website',
@@ -125,6 +135,7 @@ return [
     'choose-subscription-going-to-end-notification-email-template' => 'Choose Subscription Going To End Notification Email Template',
     'choose-mail-template-to-notify-subscription-has-over' => 'Choose Mail Template To Notify Subscription Has Over',
     'choose-shoping-cart-template' => 'Choose Shoping Cart Template',
+    'check-your-mail-for-further-datails'=>'Order confirmed. Please check your email for further details. You can also download the product ',
     /*
      * Clients
      */
@@ -140,6 +151,7 @@ return [
     'transation_detail' => 'Transation Detail',
     'customer_detail' => 'Customer Detail',
     'order_detail' => 'Order Detail',
+    'payment_detail'=>'Payment Detail',
     /*
      * Plan
      */
@@ -154,6 +166,8 @@ return [
      */
     'products' => 'Products',
     'product' => 'Product',
+    'all-products'=>'All Products',
+    'add-products'=>'Add Products',
     'type' => 'Type',
     'related-services' => 'Related Services',
     'related-addons' => 'Related Addons',
@@ -186,6 +200,9 @@ return [
     'shoping-cart-link' => 'Shoping cart link',
     'category' => 'Category',
     'parent' => 'Parent',
+    'tax_compound'=>'Tax Compound',
+    'tick-to-apply-compund-taxing'=>'Tick to apply compund taxing',
+    'deny_after_subscription'=>'Deny after subscription',
     /*
      * Addons
      */
@@ -228,11 +245,25 @@ return [
     'level' => 'Level',
     'country' => 'Country',
     'rate' => 'Rate',
+    'active'=>'Active',
+    'inactive'=>'Inactive',
+    'status'=>'Status',
+    'taxes'=>'Taxes',
+    'prices-entered-with-tax'=>'Prices Entered With Tax',
+    'display-prices-in-the-shop'=>'Display Prices in the Shop',
+    'display-prices-during-cart-and-checkout'=>'Display Prices During Cart and Checkout',
+    'rounding'=>'Rounding',
+    'before-decimal'=>'Before Decimal',
+    'after-decimal'=>'After Decimal',
+    'round-tax-at-subtotal'=>' Round tax at subtotal',
+    'tax_class'=>'Tax Class',
+    'compound'=>'Compound',
     /*
      * Promotion
      */
     'promotion' => 'Promotion',
     'promotions' => 'Promotions',
+    'coupons'=>'Coupons',
     'uses' => 'Uses',
     'applied' => 'Applied for',
     'start' => 'Start',
@@ -269,6 +300,9 @@ return [
     'domain' => 'Domain',
     'price-override' => 'Price Override',
     'quantity' => 'Quantity',
+    'place-an-order'=>'Place an Order',
+    'generate'=>'Generate',
+    'invoice-generated-successfully'=>'Invoice generated successfully',
     /*
      * Groups
      */
@@ -325,7 +359,7 @@ return [
      * Widgets
      */
     'widget' => 'Widget',
-    'widgets' => 'widgets',
+    'widgets' => 'Widgets',
     /*
      * Service Provider
      */
@@ -345,5 +379,39 @@ return [
     'client_secret'=>'Client Secret',
     'github-owner'=>'Github Owner',
     'github-repository-name'=>'Github Repository Name',
+    /**
+     * Mail chimp
+     */
+    'mailchimp'=>'Mailchimp',
+    'api_key'=>'Api Key',
+    'list_id'=>'List id',
+    'subscribe_status'=>'Subscribe status',
+    'mapping'=>'Mapping',
+    'enter-the-mailchimp-api-key'=>'Enter the mailchimp api key',
+    'enter-the-mailchimp-list-id'=>'Enter the mailchimp list id',
+    'enter-the-mailchimp-subscribe-status'=>'Enter the mailchimp subscribe status',
+    'map-the-mailchimp-field-with-agora'=>'Map the mailchimp field with agora',
+    'mapping'=>'Mapping',
+    'add-mailchimp-lists-to-agora'=>'Add mailchimp lists to agora',
+    'mailchimp-list-added-to-agora'=>'Mailchimp list added to agora',
+    'agora-fields'=>'Agora fields',
+    'mailchimp-fields'=>'Mailchimp fields',
+    /**
+     * Socail Media
+     */
+    
+    'social-media'=>'Social Media',
+    'class'=>'Class',
+    'fa-class'=>'Fa Class',
+    'link'=>'Link',
+    'enter-the-name-of-the-social-media'=>'Enter the name of the social media',
+    'enter-the-css-class-of-the-social-media'=>'Enter the css class of the social media',
+    'enter-the-fa-class-of-the-social-media'=>'Enter the fa class of the social media',
+    'enter-the-link-of-the-social-media'=>'Enter the link of the social media',
+    
+    /**
+     * client panel
+     */
+    'coupon-code'=>'Coupon Code',
     
 ];

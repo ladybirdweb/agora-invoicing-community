@@ -18,7 +18,7 @@ class GithubController extends Controller {
 
     public function __construct() {
 
-        $this->middleware('auth');
+        $this->middleware('auth',['except'=>'getlatestReleaseForUpdate']);
 
         $github_controller = new GithubApiController();
         $this->github_api = $github_controller;
@@ -40,12 +40,46 @@ class GithubController extends Controller {
             $data = array("bio" => "This is my bio");
             $data_string = json_encode($data);
             $auth = $this->github_api->postCurl($url, $data_string);
+            dd($auth);
             return $auth;
 //            if($auth!='true'){
 //                throw new Exception('can not authenticate with github', 401);
 //            }
             //$authenticated = json_decode($auth);
             //dd($authenticated);
+        } catch (Exception $ex) {
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function createNewAuth($note){
+        try{
+            $url = "https://api.github.com/authorizations";
+            $data = array("note" => $note);
+            $data_string = json_encode($data);
+            //dd($data_string);
+            $auth = $this->github_api->postCurl($url, $data_string);
+            return $auth;
+        } catch (Exception $ex) {
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function getAllAuth(){
+        try{
+            $url = "https://api.github.com/authorizations";
+            $all = $this->github_api->getCurl($url);
+            return $all;
+        } catch (Exception $ex) {
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function getAuthById($id){
+        try{
+            $url = "https://api.github.com/authorizations/$id";
+            $auth = $this->github_api->getCurl($url);
+            return $auth;
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -62,7 +96,8 @@ class GithubController extends Controller {
             $data_string = json_encode($data);
             $method = "PUT";
             $auth = $this->github_api->postCurl($url, $data_string, $method);
-            return $auth;
+            //dd($auth['hashed_token']);
+            return $auth['hashed_token'];
             //dd($auth);
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -75,11 +110,32 @@ class GithubController extends Controller {
      */
     public function listRepositories($owner,$repo) {
         try {
-            $url = "https://api.github.com/repos/$owner/$repo/releases";
-            $releases = $this->github_api->getCurl($url);
+            
+            $releases = $this->downloadLink($owner, $repo);
             //dd($releases);
-            return $releases;
+            if(key_exists('Location', $releases)){
+                $release = $releases['Location'];
+            }else{
+                $release = $this->latestRelese($owner,$repo);
+                //dd($release);
+            }
+//            dd($release);
+            return $release;
+            
+            //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
         } catch (Exception $ex) {
+            //dd($ex);
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function latestRelese($owner,$repo){
+        try{
+            $url = "https://api.github.com/repos/$owner/$repo/releases/latest";
+            $release = $this->github_api->getCurl($url);
+            return $release;
+        } catch (Exception $ex) {
+            //dd($ex);
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -93,7 +149,8 @@ class GithubController extends Controller {
         try {
             $tag = \Input::get('tag');
             $all_releases = $this->listRepositories($owner,$repo);
-            //dd($all_releases);
+            
+            $this->download($result['header']['Location']);
             if ($tag) {
                 foreach ($all_releases as $key => $release) {
                     //dd($release);
@@ -105,7 +162,7 @@ class GithubController extends Controller {
             } else {
                 $version[0] = $all_releases[0];
             }
-            //dd($version);
+//            dd($version);
             //execute download
             
             if($this->download($version)=="success"){
@@ -113,6 +170,7 @@ class GithubController extends Controller {
             }
             //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
         } catch (Exception $ex) {
+            //dd($ex);
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -153,10 +211,8 @@ class GithubController extends Controller {
      */
     public function download($release) {
         try {
-            foreach ($release as $url) {
-                $download_link = $url["zipball_url"];
-            }
-            echo "<form action=$download_link method=get name=download>";
+            //dd($release);
+            echo "<form action=$release method=get name=download>";
             echo '</form>';
             echo"<script language='javascript'>document.download.submit();</script>";
             
@@ -190,6 +246,37 @@ class GithubController extends Controller {
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }   
+    }
+    
+    public function downloadLink($owner,$repo){
+        try{
+            $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
+            //dd($url);
+            $link = $this->github_api->getCurl1($url);
+            //dd($link);
+            return $link['header'];
+
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function findVersion($owner,$repo){
+        try{
+            $release = $this->latestRelese($owner, $repo);
+            return $release['tag_name'];
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+    
+    public function getlatestReleaseForUpdate(){
+        $name = \Input::get('name');
+        $product = \App\Model\Product\Product::where('name',$name)->first();
+        $owner = $product->github_owner;
+        $repo = $product->github_repository;
+        $release  = $this->latestRelese($owner, $repo);
+        return $release;
     }
 
 }

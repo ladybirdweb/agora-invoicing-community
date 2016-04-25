@@ -7,9 +7,11 @@
 
         <h4>{{Lang::get('message.tax')}}
             <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
-            <a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>
+            <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
+            <a href="#create-tax-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-tax-option">{{Lang::get('message.create')}}</a>
         </h4>
-        @include('themes.default1.payment.tax.create')
+        @include('themes.default1.payment.tax.create-tax-option')
+
     </div>
 
     @if (count($errors) > 0)
@@ -40,72 +42,108 @@
         {{Session::get('fails')}}
     </div>
     @endif
-    <div id="response"></div>
+
 
     <div class="box-body">
         <div class="row">
-
             <div class="col-md-12">
-                {!! Form::model($rule,['url'=>'tax-rule','method'=>'patch']) !!}
-                <table class="table table-condensed">
+                <div class="header-body">
+                    <h4>Options
+                        {!! Form::model($options,['url'=>'taxes/option','method'=>'patch']) !!}
+                    </h4>
+                </div>
 
+                <table class="table table-responsive">
                     <tr>
-                        <td><b>{!! Form::label('company',Lang::get('message.tax-enable')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
-
-                                <p>{!! Form::checkbox('status',1) !!} {{Lang::get('message.tick-this-box-to-enable-tax-support')}}</p>
-
-                            </div>
+                            {!! Form::label('tax_enable',Lang::get('message.tax-enable')) !!}
+                        </td>
+                        <td>
+                            {!! Form::hidden('tax_enable',0) !!}
+                            <p>{!! Form::checkbox('tax_enable',1) !!}
+                                {{Lang::get('message.tick-this-box-to-enable-tax-support')}}</p>
                         </td>
                     </tr>
-
                     <tr>
-                        <td><b>{!! Form::label('company',Lang::get('message.tax-type')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
-
-                                <div class="row">
-
-                                    <div class="col-md-3">
-                                        <p>{!! Form::radio('type','exclusive') !!} {{Lang::get('message.exclusive')}}</p>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <p>{!! Form::radio('type','inclusive') !!} {{Lang::get('message.inclusive')}}</p>
-                                    </div>
-
-                                </div>
-
-                            </div>
+                            {!! Form::label('inclusive',Lang::get('message.prices-entered-with-tax')) !!}
+                        </td>
+                        <td>
+                            <p>{!! Form::radio('inclusive',1) !!}
+                                {{Lang::get('message.inclusive')}}</p>
+                            <p>{!! Form::radio('inclusive',0,true) !!}
+                                {{Lang::get('message.exclusive')}}</p>
                         </td>
                     </tr>
-                    
                     <tr>
-                        <td><b>{!! Form::label('company',Lang::get('message.compound-tax')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
-
-                                <p>{!! Form::checkbox('compound',1) !!} {{Lang::get('message.tick-this-box-to-charge-compound-tax-on-level-2')}}</p>
-
-                            </div>
+                            {!! Form::label('shop_inclusive',Lang::get('message.display-prices-in-the-shop')) !!}
+                        </td>
+                        <td>
+                            <p>{!! Form::radio('shop_inclusive',1) !!}
+                                {{Lang::get('message.inclusive')}}</p>
+                            <p>{!! Form::radio('shop_inclusive',0,true) !!}
+                                {{Lang::get('message.exclusive')}}</p>
                         </td>
                     </tr>
-                    
+                    <tr>
+                        <td>
+                            {!! Form::label('cart_inclusive',Lang::get('message.display-prices-during-cart-and-checkout')) !!}
+                        </td>
+                        <td>
+                            <p>{!! Form::radio('cart_inclusive',1) !!}
+                                {{Lang::get('message.inclusive')}}</p>
+                            <p>{!! Form::radio('cart_inclusive',0,true) !!}
+                                {{Lang::get('message.exclusive')}}</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {!! Form::label('rounding',Lang::get('message.rounding')) !!}
+                        </td>
+                        <td>
+                            {!! Form::hidden('rounding',0) !!}
+                            <p>{!! Form::checkbox('rounding',1) !!}
+                                {{Lang::get('message.round-tax-at-subtotal')}}</p>
+                        </td>
+                    </tr>
                     <tr>
                         <td></td>
-                        <td>
-                            {!! Form::submit('save',['class'=>'btn btn-primary']) !!}
-                        </td>
-                    </tr>
+                        <td>{!! Form::submit('save',['class'=>'btn btn-primary']) !!}</td>
 
+                    </tr>
                 </table>
+
                 {!! Form::close() !!}
+
+                <div class="box">
+                    <div class="box-header">
+                        Classes
+                    </div>
+                    <div class="box-body">
+                       
+                        @forelse($classes as $key=>$value)
+                        <div class="col-md-2">
+                            <a href="#create" data-toggle="modal" data-target="#create{{$key}}">{{ucfirst($value)}}</a>
+                        </div>
+                        @include('themes.default1.payment.tax.create')
+                        @empty 
+                        <div class="col-md-2">
+                            <a href="#create" data-toggle="modal" data-target="#create-tax-option">Add Class</a>
+                        </div>
+                        
+                        @endforelse
+                    </div>
+                </div>
+
+
             </div>
 
-            
+
+
             <div class="col-md-12">
                 {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Level','Country','State','Rate (%)','Action')
+                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Class Name','Name','Level','Country','State','Rate (%)','Action')
                 ->setUrl('get-tax')
                 ->setOptions([
 
@@ -114,27 +152,27 @@
                 [
                 "text" => "Delete",
                 "action" => "function ( e, dt, node, config ) {
-                    $.ajax({
-                        url: 'tax-delete',
-                        type: 'GET',
-                        data: $('#check:checked').serialize(),
-                        beforeSend: function () {
-                                $('#gif').show();
-                            },
-                        success: function (data) {
-                                $('#gif').hide();
-                                $('#response').html(data);
-                                location.reload();
-                            }
-                        
-                    });
+                $.ajax({
+                url: 'tax-delete',
+                type: 'GET',
+                data: $('#check:checked').serialize(),
+                beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+
+                });
                 }"
                 ]
                 ],
 
                 ])
                 ->render() !!}
-                
+
             </div>
         </div>
 

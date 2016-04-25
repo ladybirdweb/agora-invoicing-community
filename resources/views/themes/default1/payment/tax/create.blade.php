@@ -1,4 +1,4 @@
-<div class="modal fade" id="create">
+<div class="modal fade" id="create{{$key}}">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,6 +11,7 @@
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
+                    {!! Form::hidden('tax_classes_id',$key) !!}
                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                     {!! Form::text('name',null,['class' => 'form-control']) !!}
 
@@ -18,13 +19,32 @@
                 <div class="form-group {{ $errors->has('level') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('level',Lang::get('message.level'),['class'=>'required']) !!}
-                    {!! Form::select('level',[1=>1,2=>2],null,['class' => 'form-control']) !!}
+                    {!! Form::text('level',null,['class' => 'form-control']) !!}
 
+                </div>
+                <div class="form-group">
+                    <!-- name -->
+                    {!! Form::label('status',Lang::get('message.status')) !!}
+                    
+                </div>
+                <div class="row">
+                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        {!! Form::radio('active',1,true) !!}
+
+                    </div>
+                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('active',Lang::get('message.inactive')) !!}
+                        {!! Form::radio('active',0) !!}
+
+                    </div>
                 </div>
                 <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}
-                    <?php $countries = \App\Model\Common\Country::lists('name', 'id')->toArray(); ?>
+                    <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
                     {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                 </div>

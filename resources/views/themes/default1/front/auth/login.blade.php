@@ -15,7 +15,7 @@ main
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        
+
         <div class="featured-boxes">
             <div class="row">
                 <div class="col-sm-6 col-md-6 col-md-offset-3">
@@ -30,18 +30,17 @@ main
                     <!-- fail message -->
                     @if(Session::has('fails'))
                     <div class="alert alert-danger alert-dismissable">
-                        <i class="fa fa-ban"></i>
-                        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                         {{Session::get('fails')}}
                     </div>
                     @endif
                     @if (count($errors) > 0)
                     <div class="alert alert-danger">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                        <strong>Whoops!</strong> Something went wrong<br><br>
                         <ul>
                             @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{!! $error !!}</li>
                             @endforeach
                         </ul>
                     </div>
@@ -53,11 +52,9 @@ main
                             <div class="row">
                                 <div class="form-group  {{ $errors->has('email') ? 'has-error' : '' }}">
                                     <div class="col-md-12">
-
+                                        <label>Username or E-mail Address</label>
                                         {!! Form::text('email',null,['placeholder'=>Lang::get('message.email'),'class' => 'form-control input-lg']) !!}
-                                       
-                                        <!--                                            <label>Username or E-mail Address</label>
-                                                                                    <input type="text" value="" class="form-control input-lg">-->
+
                                     </div>
                                 </div>
                             </div>
@@ -65,6 +62,7 @@ main
                                 <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                                     <div class="col-md-12">
                                         <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
+                                        <label>Password</label>
                                         {!! Form::password('password',['placeholder'=>Lang::get('message.password'),'class' => 'form-control input-lg']) !!}
                                         <!--<input type="password" value="" class="form-control input-lg">-->
                                     </div>
@@ -74,13 +72,15 @@ main
                                 <div class="col-md-6">
                                     <span class="remember-box checkbox">
                                         <label for="rememberme">
-                                             <input type="checkbox" name="remember"> {{Lang::get('message.remember-me')}}
+                                            <input type="checkbox" name="remember"> {{Lang::get('message.remember-me')}}
                                         </label>
                                     </span>
                                 </div>
+
                                 <div class="col-md-6">
-                                     <input type="submit" value="{{Lang::get('message.sign-in')}}" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                                    <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
+                                    <a href="{{url('auth/register')}}" class="btn btn-warning">Register</a>
+                                    <input type="submit" value="{{Lang::get('message.sign-in')}}" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                   <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
                                 </div>
                             </div>
                             </form>

@@ -1,0 +1,175 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{{Lang::get('message.faveo-billing-application')}}</title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.4 -->
+        <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+        <!-- Font Awesome Icons -->
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+        <!-- Ionicons -->
+        <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Theme style -->
+        <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
+
+        <!-- Custom style -->
+        <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+
+        <!-- AdminLTE Skins. Choose a skin from the css/skins 
+             folder instead of downloading all of them to reduce the load. -->
+        <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
+
+        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+
+        <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
+
+    </head>
+    <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
+    <!-- the fixed layout is not compatible with sidebar-mini -->
+    <body class="skin-white fixed">
+        <!-- Site wrapper -->
+        <div class="wrapper">
+            <!--<div class="content-wrapper">-->
+
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="box box-primary">
+
+                    <div class="box-header">
+
+                        <h4>{{Lang::get('message.invoice')}}
+                            <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
+                    </div>
+                    <div id="response"></div>
+
+                    <div class="box-body">
+                        <div class="row">
+
+                            <div class="col-md-12">
+
+                                <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
+                                <!-- Main content -->
+                                <section class="invoice">
+                                    <!-- title row -->
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <h2 class="page-header">
+                                                {{ucfirst($set->company)}}
+                                                <small class="pull-right">Date: {{$invoice->created_at}}</small>
+                                            </h2>
+                                        </div><!-- /.col -->
+                                    </div>
+                                    <!-- info row -->
+                                    <div class="row invoice-info">
+                                        <div class="col-sm-4 invoice-col">
+                                            From
+                                            <address>
+
+                                                <strong>{{$set->company}}</strong><br>
+                                                {{$set->address}}<br>
+                                                Phone: {{$set->phone}}<br/>
+                                                Email: {{$set->email}}
+                                            </address>
+                                        </div><!-- /.col -->
+                                        <div class="col-sm-4 invoice-col">
+                                            To
+                                            <address>
+                                                <strong>{{$user->first_name}} {{$user->last_name}}</strong><br>
+                                                {{$user->address}}<br/>
+                                                {{$user->town}}<br/>
+                                                {{$user->state}} {{$user->zip}}<br/>
+                                                Country : {{$user->country}}<br/>
+                                                Mobile: {{$user->mobile}}<br/>
+                                                Email : {{$user->email}}
+                                            </address>
+                                        </div><!-- /.col -->
+                                        <div class="col-sm-4 invoice-col">
+                                            <b>Invoice   #{{$invoice->number}}</b><br/>
+                                            <br/>
+
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+                                    <!-- Table row -->
+                                    <div class="row">
+                                        <div class="col-xs-12 table-responsive">
+                                            <table class="table table-responsive">
+
+                                                <tr>
+                                                    <td></td>
+                                                    <td>Product</td>
+                                                    <td>Quantity</td>
+                                                    <td>Price</td>
+                                                    <td>Taxes</td>
+                                                    <td>Tax Rates</td>
+                                                    <td>Subtotal</td>
+                                                </tr>
+
+                                                @foreach($invoiceItems as $item)
+                                                <tr>
+                                                    <td>{{$item->product_name}}</td>
+                                                    <td>{{$item->quantity}}</td>
+                                                    <td>{{$item->regular_price}}</td>
+                                                    <td>
+                                                        <?php $taxes = explode(',', $item->tax_name); ?>
+                                                        <ul class="list-unstyled">
+                                                            @forelse($taxes as $tax)
+                                                            <li>{{$tax}}</li>
+                                                            @empty 
+                                                            <li>No Tax</li>
+                                                            @endif
+                                                        </ul>
+                                                    </td>
+                                                    <td>
+                                                        <?php $taxes = explode(',', $item->tax_percentage); ?>
+                                                        <ul class="list-unstyled">
+                                                            @forelse($taxes as $tax)
+                                                            <li>{{$tax}}</li>
+                                                            @empty 
+                                                            <li>No Tax Rates</li>
+                                                            @endif
+                                                        </ul>
+                                                    </td>
+                                                    <td>{{$item->subtotal}}</td>
+                                                </tr>
+                                                @endforeach
+
+                                            </table>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+                                    <div class="row">
+                                        <!-- accepted payments column -->
+                                        <div class="col-xs-6">
+
+                                        </div><!-- /.col -->
+                                        <div class="col-xs-6">
+                                            <p class="lead">Amount</p>
+                                            <div class="table-responsive">
+                                                <table class="table">
+
+                                                    <tr>
+                                                        <th style="width:50%">Total:</th>
+                                                        <td><small>{!! $invoice->currency !!}</small> {{$invoice->grand_total}}</td>
+                                                    </tr>
+
+                                                </table>
+                                            </div>
+                                        </div><!-- /.col -->
+                                    </div><!-- /.row -->
+
+
+                                </section><!-- /.content -->
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section><!-- /.content -->
+        </div><!-- /.content-wrapper -->
+        <!--</div>-->
+    </body>
+</html>

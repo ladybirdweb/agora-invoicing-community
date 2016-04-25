@@ -27,12 +27,12 @@ class SettingRequest extends Request
                     'company'     => 'required',
                     'website'     => 'url',
                     'phone'       => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
-                    'address'     => 'required|max:100',
+                    'address'     => 'required|max:300',
                     'logo'        => 'mimes:png',
                     'driver'      => 'required',
                     'port'        => 'integer',
                     'email'       => 'required|email',
-                    'password'    => 'required|min:6',
+                    'password'    => 'required',
                     'error_email' => 'email',
 
         ];

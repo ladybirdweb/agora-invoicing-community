@@ -85,7 +85,15 @@
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                                    <script>tinymce.init({selector: 'textarea'});</script>
+                                    <script>
+    tinymce.init({
+    selector: 'textarea',
+    plugins: "code",
+    toolbar: "code",
+    menubar: "tools"
+});
+</script>
+
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
 
@@ -121,6 +129,14 @@
 
                                                     </div>
                                                 </li>
+                                                <li>
+                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                        {!! Form::label('version',Lang::get('message.version')) !!}
+                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
+
+                                                    </div>
+                                                </li>
                                             </div>
                                             <div class="col-md-2">
                                                 <p>
@@ -151,6 +167,7 @@
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('require_domain',Lang::get('message.require_domain')) !!}
+                                                {!! Form::hidden('require_domain', 0) !!}
                                                 <p>{!! Form::checkbox('require_domain',1) !!} {{Lang::get('message.tick-to-show-domain-registration-options')}}</p>
 
                                             </div>
@@ -178,6 +195,7 @@
                                                 {!! Form::label('stock_control',Lang::get('message.stock_control')) !!}
                                                 <div class="row">
                                                     <div class="col-md-12">
+                                                        {!! Form::hidden('stock_control', 0) !!}
                                                         <p>{!! Form::checkbox('stock_control',1) !!}     {{Lang::get('message.enable-quantity-in-stock')}}       
                                                             {!! Form::text('stock_qty',null) !!} </p>
                                                     </div>
@@ -200,6 +218,7 @@
                                                 <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
                                                     <!-- last name -->
                                                     {!! Form::label('tax_apply',Lang::get('message.apply_tax')) !!}
+                                                    {!! Form::hidden('tax_apply', 0) !!}
                                                     <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
 
                                                 </div>
@@ -216,6 +235,7 @@
                                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
+                                                {!! Form::hidden('hidden', 0) !!}
                                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
@@ -224,10 +244,12 @@
                                             <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('retired',Lang::get('message.retired')) !!}
+                                                {!! Form::hidden('retired', 0) !!}
                                                 <p>{!! Form::checkbox('retired',1) !!}  {{Lang::get('message.tick-to-hide-from-admin-area-product-dropdown-menus')}}</p>
 
                                             </div>  
                                         </li>
+                                        
 
                                     </ul>
                                 </div>
@@ -250,6 +272,11 @@
                                                     {!! Form::select('subscription',[''=>'Select','Subscription'=>$subscription],null,['class'=>'form-control']) !!}
                                                     @endif
                                                 </div>
+                                                <div class="col-md-6">
+                                                    {!! Form::hidden('deny_after_subscription',0) !!}
+                                                    {!! Form::checkbox('deny_after_subscription',1) !!}
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                                </div>
                                             </div>
                                         </div>
                                     </td>
@@ -265,7 +292,7 @@
                                                 <th>{{Lang::get('message.regular-price')}}</th>
                                                 <th>{{Lang::get('message.sales-price')}}</th>
                                             </tr>
-                                            
+
                                             @foreach($currency as $key=>$value)
                                             <tr>
                                                 <td>
@@ -274,7 +301,7 @@
                                                     <p>{{$value}}</p>
 
                                                 </td>
-          
+
                                                 <td>
 
                                                     {!! Form::text('price['.$key.']',$regular[$key]) !!}
@@ -287,7 +314,7 @@
                                                 </td>
                                             </tr>
                                             @endforeach
-                                           
+
 
                                         </table>
 
@@ -327,6 +354,40 @@
                                         <div class="form-group {{ $errors->has('auto_terminate') ? 'has-error' : '' }}">
 
                                             <p>{!! Form::text('auto_terminate',null) !!} {{Lang::get('message.enter-the-number-of-days-after-activation-to-automatically-terminate')}}</p>
+
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
+                                    <td>
+                                        <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
+                                            <div class="row">
+                                                <?php
+                                                if (count($saved_taxes) > 0) {
+                                                    foreach ($saved_taxes as $tax) {
+                                                        $saved[$tax->tax_class_id] = 'true';
+                                                    }
+                                                }
+                                                //dd($saved);
+                                                ?>
+                                                @forelse($taxes as $key=>$value)
+
+                                                <div class="col-md-2">
+                                                    @if(count($saved_taxes) > 0)
+                                                    @if(key_exists($key,$saved))
+                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key,$saved[$key]) !!}</b>
+                                                    @else
+                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                    @endif
+                                                    @else 
+                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                    @endif
+                                                </div>
+                                                @empty 
+                                                <p>No taxes</p>
+                                                @endforelse
+                                            </div>
 
                                         </div>
                                     </td>

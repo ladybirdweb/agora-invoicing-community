@@ -5,7 +5,7 @@
     <div class="box-header">
 
         <h4>{{Lang::get('message.orders')}}
-        <a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+        <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
     </div>
 
     @if (count($errors) > 0)
@@ -43,10 +43,12 @@
             
             <div class="col-md-12">
                 {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Date','Client Name','Payment Method','Total','Status','Action')
+                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Date','Serial Key','Client Name','Number','Total','Status','Ends At','Action')
                 ->setUrl('get-orders') 
-                ->setOptions([
-
+                ->setOptions(
+                
+                [
+                "order"=> [ 1, "desc" ],
                 "dom" => "Bfrtip",
                 "buttons" => [
                 [

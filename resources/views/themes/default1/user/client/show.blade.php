@@ -4,11 +4,9 @@
 
     <div class="col-md-8 col-sm-4 padzero">
         <div class="widget-user-image">
-            @if($client->profile_pic)
-            <img class="img-circle" src="img/user7-128x128.jpg" alt="User Avatar">
-            @else 
-            <img class="img-circle" src="{{ Gravatar::src($client->email) }}" alt="User Avatar">
-            @endif
+
+            <img class="img-circle" src="{{ $client->profile_pic }}" alt="User Avatar">
+
         </div>
         <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}</h3>
         <h5 class="widget-user-desc">{{ucfirst($client->town)}}</h5>
@@ -17,15 +15,15 @@
     <div class="col-md-2 col-sm-4 padzero">
         <div class="padleft">
             <h6 class="rupee colorblack margintopzero"><span class="font18">Rs: {{$client->debit}}</span><br>Open</h6> 
-            <h6 class="rupee colorred"><span class="font18">Rs: 65465</span><br>Overdue</h6> 
+            <h6 class="rupee colorred"><span class="font18">Rs: 0</span><br>Overdue</h6> 
         </div>
     </div>
 
     <div class="box-tools pull-right col-md-2 col-sm-4 padfull paddownfive">
 
-        <!--        <a data-toggle="modal" data-target="#editdetail" class="btn btn-block btn-default btn-sm btn-flat ">
-                    Edit 
-                </a>-->
+        <!--                <a data-toggle="modal" data-target="#editdetail" class="btn btn-block btn-default btn-sm btn-flat ">
+                            Edit 
+                        </a>-->
         <a href="{{url('clients/'.$client->id.'/edit')}}" class="btn btn-block btn-default btn-sm btn-flat ">
             {{Lang::get('message.edit')}}
         </a>
@@ -107,7 +105,9 @@
             </li>
             <li><a href="#settings" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
             </li>
-            <li><a href="#timeline" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
+            <li><a href="#timeline" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
+            </li>
+            <li><a href="#order" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
             </li>
         </ul>
         <div class="tab-content">
@@ -151,16 +151,22 @@
                                                 <?php
                                                 $template_controller = new \App\Http\Controllers\Common\TemplateController();
                                                 $user = $client;
-                                                $invoiceItems= \App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->get();
-                                                $body = view('themes.default1.invoice.show',compact('invoice','user','invoiceItems'))->render();
-                                                $model_popup = $template_controller->popup('Invoice',$body , 'execute order', 'invoice' . $invoice->id);
+                                                $invoiceItems = \App\Model\Order\InvoiceItem::where('invoice_id', $invoice->id)->get();
+                                                $body = Form::open(['url' => 'order/execute', 'method' => 'GET']);
+                                                $body .= "<input type=hidden value=$invoice->id name=invoiceid />";
+                                                $body .= view('themes.default1.invoice.pdfinvoice', compact('invoice', 'user', 'invoiceItems'))->render();
+                                                $model_popup = $template_controller->popup('Invoice', $body, 897, 'execute order', 'invoice' . $invoice->id);
                                                 ?>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">execute order</a></li>
+                                                    @if(empty($invoice->order()->get()))
+                                                    <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
+                                                    @endif
+                                                    @if($invoice->payment()->first()->payment_status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
-
+                                                    @endif
                                                 </ul>
                                                 {!! $model_popup !!}
+
                                             </div>
                                         </td>
 
@@ -195,7 +201,7 @@
                             </thead>
                             <tbody>
                                 @forelse($orders as $order)
-                                <?php $payment = \App\Model\Order\Payment::where('invoice_id',$order->invoice_id)->first();  ?>
+                                <?php $payment = \App\Model\Order\Payment::where('invoice_id', $order->invoice_id)->first(); ?>
                                 <tr>
                                     <td>{{$order->created_at}}</td>
                                     <td>
@@ -234,7 +240,7 @@
                                     </td>
                                 </tr>
                                 @endforelse
-                                
+
 
 
                             </tbody>
@@ -322,26 +328,42 @@
                     <!-- /.box box-widget widget-user -->
                 </div>
             </div>
+
+            <!-- order !-->
+
+
+            <div class="tab-pane" id="order">
+
+                <div>
+                    <div class="box box-widget widget-user">
+
+                       
+                    </div>
+                    <!-- /.box box-widget widget-user -->
+                </div>
+            </div>
+
+
         </div>
     </div>
 </div>
 <div class='modal fade' id=editinvoice23>
-                            <div class='modal-dialog'>
-                                <div class='modal-content'>
-                                    <div class='modal-header'>
-                                        <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-                                        <h4 class='modal-title'>Invoice</h4>
-                                    </div>
-                                    <div class='modal-body'>
-                                    body
-                                    </div>
-                                    <div class='modal-footer'>
-                                        <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value=Save>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class='modal-dialog'>
+        <div class='modal-content'>
+            <div class='modal-header'>
+                <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+                <h4 class='modal-title'>Invoice</h4>
+            </div>
+            <div class='modal-body'>
+                body
+            </div>
+            <div class='modal-footer'>
+                <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
+                <input type=submit class='btn btn-primary' value=Save>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @stop

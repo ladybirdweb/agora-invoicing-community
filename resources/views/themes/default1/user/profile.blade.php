@@ -2,7 +2,7 @@
 @section('content')
 
 <div class="row">
-    
+
     <div class="col-md-12">
 
         @if (count($errors) > 0)
@@ -98,38 +98,58 @@
                     {!! Form::textarea('address',null,['class' => 'form-control']) !!}
 
                 </div>
-                
-                <div class="form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-                    <!-- mobile -->
-                    {!! Form::label('currency',Lang::get('message.currency')) !!}
-                    {!! Form::select('currency',DB::table('currencies')->lists('name','id'),null,['class' => 'form-control']) !!}
 
-                </div>
+                <div class="row">
 
-                <div class="form-group {{ $errors->has('town') ? 'has-error' : '' }}">
-                    <!-- mobile -->
-                    {!! Form::label('town',Lang::get('message.town')) !!}
-                    {!! Form::text('town',null,['class' => 'form-control']) !!}
+                    <div class="col-md-6 form-group {{ $errors->has('town') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('town',Lang::get('message.town')) !!}
+                        {!! Form::text('town',null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    <div class="col-md-6 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                        {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
+
+                    </div>
 
                 </div>
 
                 <div class="row">
 
+                    <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('country',Lang::get('message.country')) !!}
+                        <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
+                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+
+                    </div>
                     <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                        <!-- mobile -->
+                        <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
-                        {!! Form::text('state',null,['class' => 'form-control']) !!}
+                        <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+                        <select name="state" id="state-list" class="form-control">
+                            @if(count($state)>0)
+                            <option value="{{$state['id']}}">{{$state['name']}}</option>
+                            @endif
+                            <option value="">Select State</option>
+                            @foreach($states as $key=>$value)
+                            <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
+                        </select>
 
                     </div>
 
-                    <div class="col-md-6 form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('zip',Lang::get('message.zip')) !!}
-                        {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
-                    </div>
                 </div>
+                <div class="form-group {{ $errors->has('zip') ? 'has-error' : '' }}">
+                    <!-- mobile -->
+                    {!! Form::label('zip',Lang::get('message.zip')) !!}
+                    {!! Form::text('zip',null,['class' => 'form-control']) !!}
 
+                </div>
 
                 <div class="form-group {{ $errors->has('profile_pic') ? 'has-error' : '' }}">
                     <!-- profile pic -->
@@ -203,4 +223,18 @@
 
 
 {!! Form::close() !!}
+<script>
+    function getState(val) {
+
+
+        $.ajax({
+            type: "POST",
+            url: "{{url('get-state')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#state-list").html(data);
+            }
+        });
+    }
+</script>
 @stop

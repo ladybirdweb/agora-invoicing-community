@@ -2,25 +2,26 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
+use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use App\Model\Common\SocialMedia;
 use Exception;
-use App\Http\Controllers\Common\Twitter\TwitterOAuth;
+use Illuminate\Http\Request;
 
-class SocialMediaController extends Controller {
-
+class SocialMediaController extends Controller
+{
     protected $social;
 
-    public function __construct() {
-        $this->middleware('auth',['except'=>'getTweets']);
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => 'getTweets']);
 
         $social = new SocialMedia();
         $this->social = $social;
     }
 
-    public function index() {
+    public function index()
+    {
         try {
             return view('themes.default1.common.social.index');
         } catch (Exception $ex) {
@@ -28,16 +29,18 @@ class SocialMediaController extends Controller {
         }
     }
 
-    public function getSocials() {
+    public function getSocials()
+    {
         try {
             $social = $this->social->get();
+
             return \Datatable::collection($social)
                             ->addColumn('#', function ($model) {
-                                return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
+                                return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                             })
                             ->showColumns('name', 'class', 'link')
                             ->addColumn('action', function ($model) {
-                                return '<a href=' . url('social-media/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                                return '<a href='.url('social-media/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                             })
                             ->searchColumns('name')
                             ->orderColumns('class')
@@ -47,7 +50,8 @@ class SocialMediaController extends Controller {
         }
     }
 
-    public function create() {
+    public function create()
+    {
         try {
             return view('themes.default1.common.social.create');
         } catch (Exception $ex) {
@@ -55,34 +59,40 @@ class SocialMediaController extends Controller {
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $this->validate($request, [
-            'name' => 'required',
-            'link' => 'required|url',
-            'class' => 'required',
-            'fa_class' => 'required'
+            'name'     => 'required',
+            'link'     => 'required|url',
+            'class'    => 'required',
+            'fa_class' => 'required',
         ]);
         try {
             $this->social->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $social = $this->social->findOrFail($id);
+
             return view('themes.default1.common.social.edit', compact('social'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -96,7 +106,8 @@ class SocialMediaController extends Controller {
      *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -107,41 +118,41 @@ class SocialMediaController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.no-record') . '
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.deleted-successfully') . '
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.select-a-row') . '
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . $e->getMessage() . '
+                        '.$e->getMessage().'
                 </div>';
         }
     }
 
-    public function getTweets() {
+    public function getTweets()
+    {
         try {
-
             $tweet_limit = 2;
             $username = 'faveohelpdesk';
             $consumer_key = '1BcWlYMQsiQqgBB4ZEw6eLvcy';
@@ -151,22 +162,22 @@ class SocialMediaController extends Controller {
 
             $twitter = new TwitterOAuth($consumer_key, $consumer_secrete, $access_token, $access_token_secrete);
 
-            # Migrate over to SSL/TLS
+            // Migrate over to SSL/TLS
             $twitter->ssl_verifypeer = true;
-            # Load the Tweets
-            $tweets = $twitter->get('statuses/user_timeline', array('screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit));
+            // Load the Tweets
+            $tweets = $twitter->get('statuses/user_timeline', ['screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit]);
             //dd($tweets);
-            # Example output
-            # Put this after fetching Tweets
+            // Example output
+            // Put this after fetching Tweets
             $twitter = '';
-            # Create the HTML output
+            // Create the HTML output
             //dd($tweets[0]->text);
             if (!empty($tweets)) {
                 foreach ($tweets as $tweet) {
                     $twitter .= '<article>
            
-            <p><i class="fa fa-twitter"></i> ' . $tweet->text. '</p>
-                <p><b>' . date('d-m-Y',strtotime($tweet->created_at)). '</p></b>
+            <p><i class="fa fa-twitter"></i> '.$tweet->text.'</p>
+                <p><b>'.date('d-m-Y', strtotime($tweet->created_at)).'</p></b>
         </article>';
                 }
             }
@@ -175,5 +186,4 @@ class SocialMediaController extends Controller {
             echo $ex->getMessage();
         }
     }
-
 }

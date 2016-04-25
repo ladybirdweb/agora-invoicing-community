@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class MailchimpSetting extends Model
 {
     protected $table = 'mailchimp_settings';
-    protected $fillable = ['api_key','list_id','subscribe_status'];
+    protected $fillable = ['api_key', 'list_id', 'subscribe_status'];
 }

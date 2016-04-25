@@ -150,7 +150,7 @@ return [
         'Illuminate\Broadcasting\BroadcastServiceProvider',
         Mailchimp\MailchimpServiceProvider::class,
         'Torann\GeoIP\GeoIPServiceProvider',
-       
+
     ],
     /*
       |--------------------------------------------------------------------------
@@ -205,11 +205,10 @@ return [
         'Datatable' => 'Chumper\Datatable\Facades\DatatableFacade',
         'Cart'      => 'Darryldecode\Cart\Facades\CartFacade',
         //'Newsletter' => 'Spatie\Newsletter\NewsletterFacade',
-        'MC' => Mailchimp\MailchimpFacade::class,
-        'PDF' => Barryvdh\DomPDF\Facade::class,
+        'MC'    => Mailchimp\MailchimpFacade::class,
+        'PDF'   => Barryvdh\DomPDF\Facade::class,
         'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
-        
-        
+
     ],
     /*
      *

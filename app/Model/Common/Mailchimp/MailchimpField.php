@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class MailchimpField extends Model
 {
     protected $table = 'mailchimp_fields';
-    protected $fillable = ['list_id','merge_id','name','type','options','required','tag'];
+    protected $fillable = ['list_id', 'merge_id', 'name', 'type', 'options', 'required', 'tag'];
 }

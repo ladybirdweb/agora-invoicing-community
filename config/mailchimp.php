@@ -11,5 +11,5 @@ return [
     | you will find Extras -> API keys. Paste the key below.
     |
     */
-    'apikey' => ''
+    'apikey' => '',
 ];

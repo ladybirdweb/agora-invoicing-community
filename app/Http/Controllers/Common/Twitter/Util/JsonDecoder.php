@@ -8,7 +8,7 @@ namespace App\Http\Controllers\Common\Twitter\Util;
 class JsonDecoder
 {
     /**
-     * Decodes a JSON string to stdObject or associative array
+     * Decodes a JSON string to stdObject or associative array.
      *
      * @param string $string
      * @param bool   $asArray

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Front\CheckoutRequest;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -16,11 +16,10 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Cart;
-use App\Http\Controllers\Common\MailChimpController;
 use Illuminate\Http\Request;
 
-class CheckoutController extends Controller {
-
+class CheckoutController extends Controller
+{
     public $subscription;
     public $plan;
     public $templateController;
@@ -35,7 +34,8 @@ class CheckoutController extends Controller {
     public $invoiceItem;
     public $mailchimp;
 
-    public function __construct() {
+    public function __construct()
+    {
         $subscription = new Subscription();
         $this->subscription = $subscription;
 
@@ -73,12 +73,13 @@ class CheckoutController extends Controller {
         $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm(Request $request) {
-
+    public function CheckoutForm(Request $request)
+    {
         if (!\Auth::user()) {
             $url = $request->segments();
 
             \Session::put('session-url', $url[0]);
+
             return redirect('auth/login')->with('fails', 'Please login');
         }
         $content = Cart::getContent();
@@ -90,22 +91,21 @@ class CheckoutController extends Controller {
                 $require[$key] = $item->id;
             }
         }
-        if(count($require)>0){
+        if (count($require) > 0) {
             $this->validate($request, [
-                'domain.*'=>'required|url'
-            ],[
-               'domain.*.required'=>'Please provide Domain name',
-                'domain.*.url'=>'Domain name is not valid'
+                'domain.*' => 'required|url',
+            ], [
+               'domain.*.required' => 'Please provide Domain name',
+                'domain.*.url'     => 'Domain name is not valid',
             ]);
         }
         try {
             $domain = $request->input('domain');
             if (count($domain) > 0) {
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain' . $key, $value);
+                    \Session::put('domain'.$key, $value);
                 }
             }
-
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
@@ -113,14 +113,14 @@ class CheckoutController extends Controller {
         }
     }
 
-    public function postCheckout(Request $request) {
-
+    public function postCheckout(Request $request)
+    {
         if (\Cart::getSubTotal() > 0) {
             $v = $this->validate($request, [
                 'payment_gateway' => 'required',
                     ], [
 
-                'payment_gateway.required' => 'Please choose a payment gateway'
+                'payment_gateway.required' => 'Please choose a payment gateway',
             ]);
         }
         try {
@@ -133,36 +133,37 @@ class CheckoutController extends Controller {
             $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
             $invoice = $invoice_controller->GenerateInvoice();
             $payment_method = $request->input('payment_gateway');
-            $status='pending';
+            $status = 'pending';
             if (!$payment_method) {
                 $payment_method = 'free';
                 $status = 'success';
             }
             $invoiceid = $invoice->id;
             $amount = $invoice->grand_total;
-            
+
             //dd($payment);
             $url = '';
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0) {
-                
+
                 //$invoice_controller->doPayment($payment_method, $invoiceid, $amount,'','',$status);
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $this->checkoutAction($invoice);
-                $url = "<a href=" . url("download/" . \Auth::user()->id . "/$invoice->number") . ">here</a>";
-                 \Cart::clear();
-                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails') . $url);
-                
+                $url = '<a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
+                \Cart::clear();
+
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
             }
-           
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function checkoutAction($invoice) {
+    public function checkoutAction($invoice)
+    {
         try {
             //dd($invoice);
             //get elements from invoice
@@ -182,11 +183,10 @@ class CheckoutController extends Controller {
             $order = new \App\Http\Controllers\Order\OrderController();
             $order->executeOrder($invoice->id, $order_status = 'executed');
 
-
             //get system values
             $settings = new Setting();
             $settings = $settings->findOrFail(1);
-            $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
+            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
             $from = $settings->email;
             $to = \Auth::user()->email;
             $data = $this->template->where('type', 7)->first()->data;
@@ -198,6 +198,7 @@ class CheckoutController extends Controller {
             $template_controller->Mailing($from, $to, $data, $subject, $replace);
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

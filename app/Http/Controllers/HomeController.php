@@ -93,18 +93,7 @@ class HomeController extends Controller
         return str_replace('v', '', $product->version);
     }
 
-    public function versionTest()
-    {
-        $url = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version';
-        $response = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version-result';
-        $name = 'faveo helpdesk community';
-        echo "<form action=$url method=post name=redirect >";
-        echo '<input type=hidden name=_token value=csrf_token() />';
-        echo "<input type=hidden name=response_url value=$response />";
-        echo "<input type=hidden name=title value='faveo helpdesk community' />";
-        echo '</form>';
-        echo"<script language='javascript'>document.redirect.submit();</script>";
-    }
+    
 
     public function versionResult(Request $request)
     {

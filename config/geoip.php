@@ -35,16 +35,16 @@ return array(
       |
      */
     'default_location' => array(
-        "ip" => "122.172.180.5",
-        "isoCode" => "IN",
-        "country" => "India",
-        "city" => "Bengaluru",
-        "state" => "KA",
-        "postal_code" => 560076,
-        "lat" => 12.9833,
-        "lon" => 77.5833,
-        "timezone" => "Asia/Kolkata",
-        "continent" => "AS",
-        "default" => false
+        //"ip" => "103.10.252.10",
+//        "isoCode" => "IN",
+//        "country" => "India",
+//        "city" => "Bengaluru",
+//        "state" => "KA",
+//        "postal_code" => 560076,
+//        "lat" => 12.9833,
+//        "lon" => 77.5833,
+//        "timezone" => "Asia/Kolkata",
+//        "continent" => "AS",
+//        "default" => false
     ),
 );

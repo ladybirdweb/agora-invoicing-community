@@ -164,15 +164,15 @@ class CheckoutController extends Controller {
 
     public function checkoutAction($invoice) {
         try {
-            //dd($invoice);
+           
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
             $invoice->status = 'success';
             $invoice->save();
+            //dd($invoice->id);
 
-            $invoice_items = $this->invoiceItem->where('invoice_id', $invoice_id)->first();
-            //dd($invoice_items);
+            $invoice_items = $this->invoiceItem->where('invoice_id',$invoice->id)->first();
             $product = $invoice_items->product_name;
 
             $user_id = \Auth::user()->id;

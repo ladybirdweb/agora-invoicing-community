@@ -115,7 +115,7 @@ class CartController extends Controller {
             $geoip_country = '';
             $geoip_state = '';
             if (\Auth::user()) {
-                
+
                 $geoip_country = \Auth::user()->country;
                 $geoip_state = \Auth::user()->state;
             }
@@ -124,9 +124,11 @@ class CartController extends Controller {
             }
             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
-                $geoip_state = $geoip_state_array['id'];
+                if (key_exists('id', $geoip_state_array)) {
+                    $geoip_state = $geoip_state_array['id'];
+                }
             }
-            
+
 
 
 
@@ -550,9 +552,24 @@ class CartController extends Controller {
         try {
 
             $country = \App\Model\Common\Country::where('country_code_char2', $iso)->first();
-            return $country->country_code_char2;
+            if ($country) {
+                return $country->country_code_char2;
+            } else {
+                return "US";
+            }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    static function getCountryByCode($code) {
+        try {
+            $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
+            if ($country) {
+                return $country->country_name;
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -565,7 +582,7 @@ class CartController extends Controller {
             }
             return $states;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -573,13 +590,17 @@ class CartController extends Controller {
         try {
             if ($name) {
                 $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
-                $timezone = $timezone->id;
+                if ($timezone) {
+                    $timezone = $timezone->id;
+                } else {
+                    $timezone = '114';
+                }
             } else {
                 $timezone = '114';
             }
             return $timezone;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -598,7 +619,7 @@ class CartController extends Controller {
                 return [];
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 

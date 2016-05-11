@@ -49,7 +49,7 @@ class ProfileRequest extends Request
                     'last_name'  => 'required',
                     'email'      => 'required|email|unique:users',
                     //'company'    => 'required',
-                    //'mobile'     => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
+                    'mobile'     => 'required|numeric',
                     'user_name'  =>'required|unique:users',
                     'terms'                 => 'accepted',
                     'zip'                   => 'required|min:5|numeric',

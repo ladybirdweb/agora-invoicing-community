@@ -461,10 +461,11 @@ class ProductController extends Controller {
                     $item = $invoice_item->where('invoice_id', $invoice->id)->first();
                     $product_id = $this->product->where('name', $item->product_name)->first()->id;
                     $release = $this->downloadProduct($product_id);
-                    $form = '';
-                    $form.= "<form action=$release method=get name=redirect>";
-                    $form.='</form>';
-                    $form.="<script language='javascript'>document.redirect.submit();</script>";
+                    
+//                    $form = '';
+//                    $form.= "<form action=$release method=get name=redirect>";
+//                    $form.='</form>';
+//                    $form.="<script language='javascript'>document.redirect.submit();</script>";
                     //dd($release);
                     return view('themes.default1.front.download', compact('release', 'form'));
                 } else {
@@ -481,10 +482,25 @@ class ProductController extends Controller {
     public function getPrice(Request $request) {
         try {
             $id = $request->input('product');
+            $userid = $request->input('user');
+            $user = new \App\User();
+            $user = $user->find($userid);
+            $currency = $user->currency;
+            //dd($currency);
             $product = $this->product->findOrFail($id);
-            $price = $product->price()->where('product_id', $id)->first()->sales_price;
+            $price = $product
+                    ->price()
+                    ->where('product_id', $id)
+                    ->where('currency',$currency)
+                    ->first()
+                    ->sales_price;
             if (!$price) {
-                $price = $product->price()->where('product_id', $id)->first()->price;
+                $price = $product
+                    ->price()
+                    ->where('product_id', $id)
+                    ->where('currency',$currency)
+                    ->first()
+                    ->price;
             }
             echo $price;
         } catch (\Exception $ex) {

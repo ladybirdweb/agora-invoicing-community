@@ -95,7 +95,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','id')],$user->currency,['class' => 'form-control']) !!}
+                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','code')],$user->currency,['class' => 'form-control']) !!}
 
                     </div>
 

@@ -5,7 +5,7 @@
     <div class="box-header">
         @if($user!='')
         {!! Form::open(['url'=>'generate/invoice/'.$user->id]) !!}
-        
+        <input type="hidden" name="user" value="{{$user->id}}">
         <h4>{{ucfirst($user->first_name)}} {{ucfirst($user->last_name)}}, ({{$user->email}}) </h4>
         @else 
         {!! Form::open(['url'=>'generate/invoice']) !!}
@@ -56,7 +56,7 @@
                 ?>
                     <div class="col-md-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients')) !!}
-                    {!! Form::select('user',[''=>'Select','Users'=>$users],null,['class'=>'form-control']) !!}
+                    {!! Form::select('user',[''=>'Select','Users'=>$users],null,['class'=>'form-control','id'=>'user']) !!}
                 </div>
                 @endif
                 
@@ -89,12 +89,14 @@
 
 <script>
     function getPrice(val) {
-
-
+        var user = document.getElementsByName('user')[0].value;
+        
+        
         $.ajax({
             type: "POST",
             url: "{{url('get-price')}}",
-            data: 'product=' + val,
+            data: {'product':val,'user':user},
+            //data: 'product=' + val+'user='+user,
             success: function (data) {
                 $("#price").val(data);
             }

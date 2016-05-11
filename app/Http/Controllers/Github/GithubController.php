@@ -276,7 +276,7 @@ class GithubController extends Controller {
         $owner = $product->github_owner;
         $repo = $product->github_repository;
         $release  = $this->latestRelese($owner, $repo);
-        return $release;
+        return json_encode($release);
     }
 
 }

@@ -67,9 +67,9 @@ use AuthenticatesAndRegistersUsers;
     public function postLogin(Request $request) {
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
-        ],[
+                ], [
             'email1.required' => 'Username/Email is required',
-            'password1.required'=>'Password is required'
+            'password1.required' => 'Password is required'
         ]);
         $usernameinput = $request->input('email1');
         //$email = $request->input('email');
@@ -79,13 +79,13 @@ use AuthenticatesAndRegistersUsers;
 
         //$credentials = $request->only('email', 'password');
         $auth = \Auth::attempt($credentials, $request->has('remember'));
-        
+
         if ($auth) {
             return redirect()->intended($this->redirectPath());
         }
 
         $user = new User();
-        $user = $user->where('email', $usernameinput)->orWhere('user_name',$usernameinput)->first();
+        $user = $user->where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
         if ($user) {
             if ($user->active != 1) {
                 $url = url("resend/activation/$user->email");
@@ -100,7 +100,7 @@ use AuthenticatesAndRegistersUsers;
             $error = "Email and/or password invalid.";
         }
         return redirect()->back()
-                        ->withInput($request->only('email', 'remember'))
+                        ->withInput($request->only('email1', 'remember'))
                         ->withErrors([
                             'email1' => $error,
         ]);
@@ -123,25 +123,29 @@ use AuthenticatesAndRegistersUsers;
      * @return \Illuminate\Http\Response
      */
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate) {
-        $pass = $request->input('password');
-        $currency = 'INR';
-        $location = \GeoIP::getLocation();
-        if($location['country']=='India'){
+        try {
+            $pass = $request->input('password');
             $currency = 'INR';
-        }else{
-            $currency = 'USD'; 
+            $location = \GeoIP::getLocation();
+            if ($location['country'] == 'India') {
+                $currency = 'INR';
+            } else {
+                $currency = 'USD';
+            }
+            if (\Session::has('currency')) {
+                $currency = \Session::get('currency');
+            }
+            $password = \Hash::make($pass);
+            $user->password = $password;
+            $user->role = 'user';
+            $user->currency = $currency;
+            $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
+            $user->fill($request->except('password'))->save();
+            $this->sendActivation($user->email, $request->method(), $pass);
+            return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-        if (\Session::has('currency')) {
-            $currency = \Session::get('currency');
-        }
-        $password = \Hash::make($pass);
-        $user->password = $password;
-        $user->role = 'user';
-        $user->currency = $currency;
-        $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
-        $user->fill($request->except('password'))->save();
-        $this->sendActivation($user->email, $request->method(), $pass);
-        return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
     }
 
     public function sendActivationByGet($email, Request $request) {
@@ -197,24 +201,26 @@ use AuthenticatesAndRegistersUsers;
             } else {
                 throw new NotFoundHttpException();
             }
+            //dd($email);
             $url = 'auth/login';
             $user = $user->where('email', $email)->first();
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
+
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $mailchimp->addSubscriber($user->email);
+                $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
                     return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
                 }
-                return redirect($url);
+                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
             } else {
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
-            if($ex->getCode()==400){
-                return redirect($url);
+            if ($ex->getCode() == 400) {
+                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
             }
             return redirect($url)->with('fails', $ex->getMessage());
         }
@@ -256,12 +262,12 @@ use AuthenticatesAndRegistersUsers;
      * @return string
      */
     public function redirectPath() {
-        
+
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
             return property_exists($this, 'redirectTo') ? $this->redirectTo : $url;
         } else {
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : 'home';
         }
     }
 

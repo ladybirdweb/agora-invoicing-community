@@ -7,7 +7,7 @@ Faveo Download
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Downloads</li>
+<li class="active">Download</li>
 @stop
 @section('main-class') "main shop" @stop
 @section('content')
@@ -18,7 +18,7 @@ Faveo Download
             <div class="page-Download-main">
                 
                 <h2><span >Download</span>&nbsp;<i class="fa fa fa-download "></i></h2>
-                <p>Your download will begin in a moment. If it doesn't, Click <a href="{{$release}}">here</a> to download.</p>
+                <p>&nbsp;&nbsp;&nbsp;Your download will begin in a moment. If it doesn't, Click <a href="{{$release}}">here</a> to download.</p>
             </div>
         </div>
 
@@ -26,5 +26,8 @@ Faveo Download
 </section>
 @stop
 @section('end')
-{!! $form !!}
+<?php 
+header("Location: $release"); 
+exit;
+?>
 @stop

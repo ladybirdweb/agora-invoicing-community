@@ -140,7 +140,7 @@ $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code)
                             <div class="row">
                                 <div class="form-group">
                                     <div class="col-md-6 {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                                        <label>Mobile No</label>
+                                        <label class="required">Mobile No</label>
                                         {!! Form::text('mobile',null,['class'=>'form-control input-lg']) !!}
                                     </div>
 
@@ -176,7 +176,9 @@ $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code)
                                             
                                             <!--{!! Form::select('state',[$states],$state,['class' => 'form-control','id'=>'state-list']) !!}-->
                                             <select class="form-control input-lg" id="state-list" name="state">
+                                                @if(key_exists('id',$state)&& key_exists('name',$state))
                                                 <option value="{{$state['id']}}">{{$state['name']}}</option>
+                                                @endif
                                                 @foreach($states as $key=>$value)
                                                 
                                                 <option value="{{$key}}">{{$value}}</option>

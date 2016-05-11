@@ -104,7 +104,7 @@ active
                         <!--<a href="#" class="btn btn-desiable pull-left mb-xl" data-loading-text="Loading...">Invoice</a>--> 
 
                         {!! Datatable::table()
-                        ->addColumn('Number','Date','Total','Action')
+                        ->addColumn('Number','Products','Date','Total','Action')
                         ->setUrl('../get-my-invoices/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],

@@ -29,10 +29,16 @@
                         <div class="col-md-6">
 
                             <table class="table table-hover">
-                                <tbody><tr><td><b>Name:</b></td><td>{{ucfirst($user->first_name)}}</td></tr>
+                                <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
                                     <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
-                                    <tr><td><b>Address:</b></td><td>{{$user->address}}</td></tr>
-                                    <tr><td><b>Country:</b></td><td>{{$user->country}}</td></tr>
+                                    <tr><td><b>Mobile:</b></td><td>{{$user->mobile}}</td></tr>
+                                    <tr><td><b>Address:</b></td><td>{{$user->address}}, 
+                                            {{ucfirst($user->town)}}, 
+                                            @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
+                                            {{\App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                            @endif
+                                        </td></tr>
+                                    <tr><td><b>Country:</b></td><td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
                                 </tbody></table>
                         </div>
@@ -69,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         {!! Datatable::table()
-                        ->addColumn('Number','Date','Total','Action')
+                        ->addColumn('Number','Products','Date','Total','Action')
                         ->setUrl('../get-my-invoices/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],

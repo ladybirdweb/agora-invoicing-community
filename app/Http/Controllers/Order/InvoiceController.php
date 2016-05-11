@@ -232,7 +232,7 @@ class InvoiceController extends Controller {
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending']);
             if ($grand_total > 0) {
-                $this->doPayment('admin', $invoice->id, $grand_total, '', $user_id);
+                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             }
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency);
             if ($items) {
@@ -272,11 +272,11 @@ class InvoiceController extends Controller {
             }
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending']);
-            //dd($invoice);
+            
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
-
+            
             return $invoice;
         } catch (\Exception $ex) {
             dd($ex);

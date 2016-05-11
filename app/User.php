@@ -54,6 +54,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     }
     
+    public function invoiceItem(){
+        return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
+    }
+    
+    public function orderRelation(){
+        return $this->hasManyThrough('App\Model\Order\OrderInvoiceRelation', 'App\Model\Order\Invoice');
+    }
+    
     public function invoice(){
         return $this->hasMany('App\Model\Order\Invoice');
     }
@@ -76,10 +84,16 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
         return $image;
     }
+    
+    public function payment(){
+        return $this->hasMany('App\Model\Order\Payment');
+    }
 
     
     public function delete()
     {
+        $this->invoiceItem()->delete();
+        $this->orderRelation()->delete();
         $this->invoice()->delete();
         $this->order()->delete();
         $this->subscription()->delete();

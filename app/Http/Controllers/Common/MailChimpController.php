@@ -63,6 +63,7 @@ class MailChimpController extends Controller {
 
     public function addSubscriber($email) {
         try {
+            //dd($email);
             $merge_fields = $this->field($email);
             //dd($merge_fields);
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
@@ -70,8 +71,10 @@ class MailChimpController extends Controller {
                 'email_address' => $email,
                 'merge_fields' => $merge_fields
             ]);
+            
             return $result;
         } catch (Exception $ex) {
+            
             $exe = json_decode($ex->getMessage(),true);
             if($exe['status']==400){
                 throw new Exception("$email is already subscribed to newsletter", 400);

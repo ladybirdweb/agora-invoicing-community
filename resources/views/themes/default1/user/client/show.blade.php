@@ -122,7 +122,7 @@
                                         <th>{{Lang::get('message.date')}}</th>
                                         <th>{{Lang::get('message.invoice_number')}}</th>
                                         <th>{{Lang::get('message.total')}}</th>
-                                        <th>{{Lang::get('message.due_balance')}}</th>
+                                        
                                         <th>{{Lang::get('message.action')}}</th>
                                     </tr>
                                 </thead>
@@ -138,9 +138,7 @@
                                         <td>
                                             {{$invoice->grand_total}}
                                         </td>
-                                        <td>
-
-                                        </td>
+                                        
                                         <td>
                                             <div class="btn-group">
                                                 <button type="button" class="btn btn-default">{{Lang::get('message.action')}}</button>
@@ -161,9 +159,12 @@
                                                     @if(empty($invoice->order()->get()))
                                                     <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
                                                     @endif
+                                                    @if($invoice->payment()->first())
                                                     @if($invoice->payment()->first()->payment_status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
                                                     @endif
+                                                    @endif
+                                                     <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
                                                 </ul>
                                                 {!! $model_popup !!}
 
@@ -196,42 +197,20 @@
                                     <th>Payment Method</th>
                                     <th>Total</th>
                                     <th>Status</th>
-                                    <th>Action</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($orders as $order)
-                                <?php $payment = \App\Model\Order\Payment::where('invoice_id', $order->invoice_id)->first(); ?>
+                                @forelse($client->payment()->get() as $payment)
                                 <tr>
-                                    <td>{{$order->created_at}}</td>
+                                    <td>{{$payment->created_at}}</td>
                                     <td>
-                                        @if($payment)
                                         {{ucfirst($payment->payment_method)}}
-                                        @else 
-                                        {{Lang::get('message.no-payment')}}
-                                        @endif
                                     </td>
 
-                                    <td>{{$order->price_override}}</td>
-                                    <td>Overdue</td>
-                                    <td style="text-align: center">
-                                        <div class="tools">
-
-                                            <span data-toggle="modal" data-target="#myModaledit1">
-                                                <a data-toggle="tooltip" data-placement="top" title="Edit"><i class="fa fa-edit"></i></a>
-                                            </span>
-
-                                            <span data-toggle="modal" data-target="#id">
-                                                <a data-toggle="tooltip" data-placement="top" title="Delete"><i class="fa fa-trash-o"></i></a>
-                                            </span>
-
-                                            <span data-toggle="modal" data-target="#id">
-                                                <a data-toggle="tooltip" data-placement="top" title="View" href="#"><i class="fa fa-eye"></i></a>
-                                            </span>
-
-                                        </div>
-
-                                    </td>
+                                    <td>{{$payment->amount}}</td>
+                                    <td>{{ucfirst($payment->payment_status)}}</td>
+                                    
                                 </tr>
                                 @empty 
                                 <tr>
@@ -277,8 +256,8 @@
                                 <!-- /.col -->
                                 <div class="col-sm-4">
                                     <div class="description-block">
-                                        <h5 class="description-header">{{$client->website}}</h5>
-                                        <span class="description-text">{{Lang::get('message.website')}}</span>
+                                        <h5 class="description-header">{{$client->mobile}}</h5>
+                                        <span class="description-text">{{Lang::get('message.mobile')}}</span>
                                     </div>
                                     <!-- /.description-block -->
 
@@ -307,7 +286,20 @@
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.state')}} :</strong> <span class="pull-right">{{ucfirst($client->state)}}</span>
+                                            <strong>{{Lang::get('message.state')}} :</strong> <span class="pull-right">
+                                                @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($client->state)))
+                                            {{\App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name']}}
+                                            @endif
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <strong>{{Lang::get('message.country')}} :</strong> <span class="pull-right">
+                                               
+                                            {{\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)}}
+                                            
+                                            </span>
                                         </a>
                                     </li>
                                     <li>
@@ -336,8 +328,39 @@
 
                 <div>
                     <div class="box box-widget widget-user">
+                         <div class="box-body">
+                        <table id="example4" class="table table-bordered table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Number</th>
+                                    <th>Total</th>
+                                    <th>Status</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($client->order()->get() as $order)
+                                <tr>
+                                    <td>{{$order->created_at}}</td>
+                                    <td>{{$order->number}}</td>
+                                    <td>{{$order->price_override}}</td>
+                                    <td>{{$order->order_status}}</td>
+                                </tr>
+                                @empty 
+                                <tr>
+                                    <td>
+                                        {{Lang::get('message.no-record')}}
+                                    </td>
+                                </tr>
+                                @endforelse
 
-                       
+
+
+                            </tbody>
+                        </table>
+                    </div>  
+
                     </div>
                     <!-- /.box box-widget widget-user -->
                 </div>
@@ -345,6 +368,7 @@
 
 
         </div>
+         
     </div>
 </div>
 <div class='modal fade' id=editinvoice23>

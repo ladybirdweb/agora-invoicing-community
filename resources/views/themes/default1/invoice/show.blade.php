@@ -73,8 +73,12 @@
                                 <strong>{{$user->first_name}} {{$user->last_name}}</strong><br>
                                 {{$user->address}}<br/>
                                 {{$user->town}}<br/>
-                                {{$user->state}} {{$user->zip}}<br/>
-                                Country : {{$user->country}}<br/>
+                                @if(key_exists('name',App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
+                                    {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                    @endif
+                                    {{$user->zip}}<br/>
+                                    Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
+                                    
                                 Mobile: {{$user->mobile}}<br/>
                                 Email : {{$user->email}}
                             </address>

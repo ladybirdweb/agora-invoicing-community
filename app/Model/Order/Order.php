@@ -31,6 +31,10 @@ class Order extends Model {
     public function invoiceRelation(){
         return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
     }
+    
+    public function invoiceItem(){
+        return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
+    }
 
     public function delete() {
         $this->invoiceRelation()->delete();

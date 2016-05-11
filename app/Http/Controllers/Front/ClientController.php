@@ -238,19 +238,29 @@ class ClientController extends Controller {
         try{
             
             $order = $this->order->where('id',$orderid)->where('client',$userid)->first();
-            $invoices = $order->invoice()                 
-                    ->select('number','created_at','grand_total','id');
+            $invoices = $order->invoice()->get();
             
-            return \Datatable::query($invoices)
+            return \Datatable::collection($invoices)
                         ->addColumn('number', function ($model) {
                             return $model->number;
+                        })
+                        ->addColumn('invoice_item', function ($model) {
+                            $products = $model->invoiceItem()->lists('product_name')->toArray();
+                            
+                            return ucfirst(implode(',', $products));
                         })
                         ->showColumns('created_at')
                         ->addColumn('total', function ($model) {
                             return $model->grand_total;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href=' . url('my-invoice/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
+                            if(\Auth::user()->role=='admin'){
+                                $url = '/invoices/show?invoiceid='.$model->id;
+                            }else{
+                               $url = 'my-invoice';
+                            }
+                             
+                            return '<a href=' . url($url.'/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
                         })
                         ->searchColumns('number','created_at','grand_total')
                         ->orderColumns('number','created_at','grand_total')

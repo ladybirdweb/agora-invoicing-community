@@ -275,11 +275,11 @@ class InvoiceController extends Controller
             }
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending']);
-            
+
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
-            
+
             return $invoice;
         } catch (\Exception $ex) {
             dd($ex);

@@ -507,14 +507,14 @@ class ProductController extends Controller
             $price = $product
                     ->price()
                     ->where('product_id', $id)
-                    ->where('currency',$currency)
+                    ->where('currency', $currency)
                     ->first()
                     ->sales_price;
             if (!$price) {
                 $price = $product
                     ->price()
                     ->where('product_id', $id)
-                    ->where('currency',$currency)
+                    ->where('currency', $currency)
                     ->first()
                     ->price;
             }

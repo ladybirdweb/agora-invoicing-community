@@ -165,7 +165,7 @@ class CheckoutController extends Controller
     public function checkoutAction($invoice)
     {
         try {
-           
+
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
@@ -173,7 +173,7 @@ class CheckoutController extends Controller
             $invoice->save();
             //dd($invoice->id);
 
-            $invoice_items = $this->invoiceItem->where('invoice_id',$invoice->id)->first();
+            $invoice_items = $this->invoiceItem->where('invoice_id', $invoice->id)->first();
             $product = $invoice_items->product_name;
 
             $user_id = \Auth::user()->id;

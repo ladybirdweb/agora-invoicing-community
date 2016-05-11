@@ -77,7 +77,7 @@ class MailChimpController extends Controller
                 'email_address' => $email,
                 'merge_fields'  => $merge_fields,
             ]);
-            
+
             return $result;
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);

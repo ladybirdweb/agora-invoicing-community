@@ -290,12 +290,11 @@ Route::get('test-curl-result', 'Github\GithubApiController@testCurlResult');
  * check version
  */
 
-Route::post('version','HomeController@version');
-Route::get('version','HomeController@getVersion');
-Route::get('version-test','HomeController@versionTest');
-Route::post('version-result','HomeController@versionResult');
-Route::post('verification','HomeController@faveoVerification');
-Route::post('download-url','Github\GithubController@getlatestReleaseForUpdate');
-Route::get('create-keys','HomeController@createEncryptionKeys');
-Route::get('encryption','HomeController@getEncryptedData');
-
+Route::post('version', 'HomeController@version');
+Route::get('version', 'HomeController@getVersion');
+Route::get('version-test', 'HomeController@versionTest');
+Route::post('version-result', 'HomeController@versionResult');
+Route::post('verification', 'HomeController@faveoVerification');
+Route::post('download-url', 'Github\GithubController@getlatestReleaseForUpdate');
+Route::get('create-keys', 'HomeController@createEncryptionKeys');
+Route::get('encryption', 'HomeController@getEncryptedData');

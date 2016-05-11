@@ -246,8 +246,6 @@ class ClientController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
-  
 
     public function getInvoicesByOrderId($orderid, $userid)
     {
@@ -262,7 +260,7 @@ class ClientController extends Controller
                         })
                         ->addColumn('invoice_item', function ($model) {
                             $products = $model->invoiceItem()->lists('product_name')->toArray();
-                            
+
                             return ucfirst(implode(',', $products));
                         })
                         ->showColumns('created_at')
@@ -270,13 +268,13 @@ class ClientController extends Controller
                             return $model->grand_total;
                         })
                         ->addColumn('action', function ($model) {
-                            if(\Auth::user()->role=='admin'){
+                            if (\Auth::user()->role == 'admin') {
                                 $url = '/invoices/show?invoiceid='.$model->id;
-                            }else{
-                               $url = 'my-invoice';
+                            } else {
+                                $url = 'my-invoice';
                             }
-                             
-                            return '<a href=' . url($url.'/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
+
+                            return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
 
                         })
                         ->searchColumns('number', 'created_at', 'grand_total')

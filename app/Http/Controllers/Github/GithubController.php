@@ -305,7 +305,8 @@ class GithubController extends Controller
         $product = \App\Model\Product\Product::where('name', $name)->first();
         $owner = $product->github_owner;
         $repo = $product->github_repository;
-        $release  = $this->latestRelese($owner, $repo);
+        $release = $this->latestRelese($owner, $repo);
+
         return json_encode($release);
     }
 }

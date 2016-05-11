@@ -124,7 +124,7 @@ class CartController extends Controller
             }
             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
-                if (key_exists('id', $geoip_state_array)) {
+                if (array_key_exists('id', $geoip_state_array)) {
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
@@ -572,14 +572,15 @@ class CartController extends Controller
             if ($country) {
                 return $country->country_code_char2;
             } else {
-                return "US";
+                return 'US';
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-    static function getCountryByCode($code) {
+    public static function getCountryByCode($code)
+    {
         try {
             $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
             if ($country) {

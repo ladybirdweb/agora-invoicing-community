@@ -524,11 +524,10 @@ class TemplateController extends Controller
             }
             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
-                if(key_exists('id', $geoip_state_array)){
+                if (array_key_exists('id', $geoip_state_array)) {
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
-            
 
             //dd($geoip_country);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {

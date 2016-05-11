@@ -63,8 +63,8 @@ class ClientController extends Controller
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return "<a href=".url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
-                                    . "  <a href=".url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
+                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                         })
                         ->searchColumns('email', 'first_name')
                         ->orderColumns('email', 'first_name', 'created_at')

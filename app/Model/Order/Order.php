@@ -36,8 +36,9 @@ class Order extends Model
     {
         return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
     }
-    
-    public function invoiceItem(){
+
+    public function invoiceItem()
+    {
         return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
     }
 

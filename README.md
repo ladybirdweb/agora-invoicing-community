@@ -7,7 +7,7 @@ Billing and subscription management for SaaS billing businesses. Handling signup
 
 Agora can also be customised according to requirement and we do undertake such request. 
 
-Faveo is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
+Agora is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
 
 <h4>To run Agora your host just needs a couple of things:</h4>
 <ul>
@@ -22,6 +22,9 @@ Faveo is designed & developed by <a href="http://www.ladybirdweb.com/" target="_
 <li>Laravel Framework</li>
 <li>Admin LTE Theme</li>
 </ul>
+
+<h4>Agora Features</h4>
+https://github.com/ladybirdweb/agorainvoicing/wiki/Agora-Features
 
 <h3>Faveo Probe:</h3>
 <p>Helps verify whether your server can run Agora or not. 

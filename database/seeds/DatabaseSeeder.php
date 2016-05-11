@@ -2,6 +2,7 @@
 
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
+use App\Model\Github\Github;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
@@ -12,7 +13,6 @@ use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use App\Model\Github\Github;
 
 class DatabaseSeeder extends Seeder
 {
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call('ProductTableSeeder');
         $this->command->info('Product table seeded!');
-        
+
         $this->call('GitHubTableSeeder');
         $this->command->info('Github table seeded!');
     }

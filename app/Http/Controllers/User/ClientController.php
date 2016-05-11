@@ -42,7 +42,7 @@ class ClientController extends Controller
     {
 
         //$user = new User;
-        $user = $this->user->select('id','first_name','last_name','email','created_at','active')->orderBy('created_at','desc');
+        $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
         //dd($user);
 
         return \Datatable::query($user)
@@ -53,7 +53,7 @@ class ClientController extends Controller
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
 
-                        ->showColumns('email','created_at')
+                        ->showColumns('email', 'created_at')
 
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -66,8 +66,8 @@ class ClientController extends Controller
                             return "<a href=".url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
                                     . "  <a href=".url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                         })
-                        ->searchColumns('email','first_name')
-                        ->orderColumns('email','first_name','created_at')
+                        ->searchColumns('email', 'first_name')
+                        ->orderColumns('email', 'first_name', 'created_at')
                         ->make();
     }
 
@@ -79,10 +79,9 @@ class ClientController extends Controller
     public function create()
     {
         $timezones = new \App\Model\Common\Timezone();
-        $timezones = $timezones->lists('name','id')->toArray();
-        
-            
-        return view('themes.default1.user.client.create',compact('timezones'));
+        $timezones = $timezones->lists('name', 'id')->toArray();
+
+        return view('themes.default1.user.client.create', compact('timezones'));
     }
 
     /**
@@ -139,18 +138,18 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
-        try{
-        $user = $this->user->where('id', $id)->first();
-        $timezones = new \App\Model\Common\Timezone();
-        $timezones = $timezones->lists('name','id')->toArray();
-        
-        $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
-        
-        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            
-        return view('themes.default1.user.client.edit', compact('user','timezones','state','states'));
-        }catch (\Exception $ex) {
-             return redirect()->back()->with('fails', $ex->getMessage());
+        try {
+            $user = $this->user->where('id', $id)->first();
+            $timezones = new \App\Model\Common\Timezone();
+            $timezones = $timezones->lists('name', 'id')->toArray();
+
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
+
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+
+            return view('themes.default1.user.client.edit', compact('user', 'timezones', 'state', 'states'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

@@ -23,7 +23,7 @@ class CreateTaxesTable extends Migration
                         $table->integer('compound');
                         $table->integer('tax_classes_id')->unsigned();
                         $table->foreign('tax_classes_id')->references('id')->on('tax_classes');
-                        
+
             $table->timestamps();
         });
     }

@@ -6,7 +6,7 @@ use Closure;
 //use Illuminate\Routing\Middleware;
 use Illuminate\Contracts\Auth\Guard;
 
-class Admin 
+class Admin
 {
     /**
      * The Guard implementation.

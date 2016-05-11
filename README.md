@@ -3,11 +3,11 @@
 
 <a href="https://styleci.io/repos/51429040"><img src="https://styleci.io/repos/51429040/shield" alt="StyleCI"></a>&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg">&nbsp;<img src="https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=master" alt="scrutinizerCI">&nbsp;<img src="https://travis-ci.org/ladybirdweb/agorainvoicing.svg?branch=master">&nbsp;
 
-Billing and subscription management for SaaS billing businesses. Handling signups, provisioning, billing and support
+Billing and subscription management for SaaS & other billing businesses. Handling signups, provisioning, billing and support
 
 Agora can also be customised according to requirement and we do undertake such request. 
 
-Faveo is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
+Agora is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
 
 <h4>To run Agora your host just needs a couple of things:</h4>
 <ul>
@@ -22,6 +22,9 @@ Faveo is designed & developed by <a href="http://www.ladybirdweb.com/" target="_
 <li>Laravel Framework</li>
 <li>Admin LTE Theme</li>
 </ul>
+
+<h4>Agora Features</h4>
+https://github.com/ladybirdweb/agorainvoicing/wiki/Agora-Features
 
 <h3>Faveo Probe:</h3>
 <p>Helps verify whether your server can run Agora or not. 

@@ -1,18 +1,18 @@
 <?php
 /**
  * The MIT License
- * Copyright (c) 2007 Andy Smith
+ * Copyright (c) 2007 Andy Smith.
  */
 namespace App\Http\Controllers\Common\Twitter;
 
 /**
  * A class for implementing a Signature Method
- * See section 9 ("Signing Requests") in the spec
+ * See section 9 ("Signing Requests") in the spec.
  */
 abstract class SignatureMethod
 {
     /**
-     * Needs to return the name of the Signature Method (ie HMAC-SHA1)
+     * Needs to return the name of the Signature Method (ie HMAC-SHA1).
      *
      * @return string
      */
@@ -22,23 +22,23 @@ abstract class SignatureMethod
      * Build up the signature
      * NOTE: The output of this function MUST NOT be urlencoded.
      * the encoding is handled in OAuthRequest when the final
-     * request is serialized
+     * request is serialized.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Consumer $consumer
-     * @param Token $token
+     * @param Token    $token
      *
      * @return string
      */
     abstract public function buildSignature(Request $request, Consumer $consumer, Token $token = null);
 
     /**
-     * Verifies that a given signature is correct
+     * Verifies that a given signature is correct.
      *
-     * @param Request $request
+     * @param Request  $request
      * @param Consumer $consumer
-     * @param Token $token
-     * @param string $signature
+     * @param Token    $token
+     * @param string   $signature
      *
      * @return bool
      */

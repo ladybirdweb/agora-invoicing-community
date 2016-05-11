@@ -48,11 +48,12 @@ class SubscriptionController extends Controller
         return \Datatable::collection($this->subscription->get())
 
                         ->addColumn('user_id', function ($model) {
-                            $user  = $model->user()->first();
+                            $user = $model->user()->first();
                             $first = $user->first_name;
                             $last = $user->last_name;
                             $id = $user->id;
-                            return "<a href=".url('clients/'.$id).">".ucfirst($first).' '.ucfirst($last)."</a>";
+
+                            return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                         ->addColumn('plan_id', function ($model) {
                             $name = $this->plan->where('id', $model->plan_id)->first()->name;

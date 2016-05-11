@@ -6,16 +6,18 @@ use App\Http\Controllers\Controller;
 use App\Plugins\Ccavanue\Model\Ccavanue;
 use Illuminate\Http\Request;
 
-class ProcessController extends Controller {
-
+class ProcessController extends Controller
+{
     public $ccavanue;
 
-    public function __construct() {
+    public function __construct()
+    {
         $ccavanue = new Ccavanue();
         $this->ccavanue = $ccavanue;
     }
 
-    public function PassToPayment($requests) {
+    public function PassToPayment($requests)
+    {
         try {
             //dd($requests);
             $request = $requests['request'];
@@ -23,9 +25,7 @@ class ProcessController extends Controller {
             //dd($order);
 
             if ($request->input('payment_gateway') == 'ccavenue') {
-
                 if (!\Schema::hasTable('ccavanue')) {
-
                     throw new \Exception('Ccavanue is not configured');
                 }
 
@@ -40,7 +40,7 @@ class ProcessController extends Controller {
                 $merchant_id = $ccavanue->merchant_id;
                 $redirect_url = $ccavanue->redirect_url;
                 $cancel_url = $ccavanue->cancel_url;
-                $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
+                $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
                 $address = \Auth::user()->address;
                 $city = \Auth::user()->town;
                 $state = \Auth::user()->state;
@@ -59,21 +59,21 @@ class ProcessController extends Controller {
                 $working_key = $ccavanue->working_key;
                 $access_code = $ccavanue->access_code;
 
-                $merchant_data = 'order_id' . '=' . $orderid .
-                        '&amount' . '=' . $total .
-                        '&merchant_id' . '=' . $merchant_id .
-                        '&redirect_url' . '=' . $redirect_url .
-                        '&cancel_url' . '=' . $cancel_url .
-                        '&language' . '=' . 'EN' .
-                        '&billing_name' . '=' . $name .
-                        '&billing_address' . '=' . $address .
-                        '&billing_city' . '=' . $city .
-                        '&billing_state' . '=' . $state .
-                        '&billing_zip' . '=' . $zip .
-                        '&billing_email' . '=' . $email .
-                        '&billing_tel' . '=' . $mobile .
-                        '&billing_country' . '=' . $country .
-                        '&currency' . '=' . $currency . '&';
+                $merchant_data = 'order_id'.'='.$orderid.
+                        '&amount'.'='.$total.
+                        '&merchant_id'.'='.$merchant_id.
+                        '&redirect_url'.'='.$redirect_url.
+                        '&cancel_url'.'='.$cancel_url.
+                        '&language'.'='.'EN'.
+                        '&billing_name'.'='.$name.
+                        '&billing_address'.'='.$address.
+                        '&billing_city'.'='.$city.
+                        '&billing_state'.'='.$state.
+                        '&billing_zip'.'='.$zip.
+                        '&billing_email'.'='.$email.
+                        '&billing_tel'.'='.$mobile.
+                        '&billing_country'.'='.$country.
+                        '&currency'.'='.$currency.'&';
                 $merchant_data = str_replace(' ', '%20', $merchant_data);
                 $this->submitData($merchant_data, $ccavanue_url, $access_code, $working_key);
             }
@@ -82,7 +82,8 @@ class ProcessController extends Controller {
         }
     }
 
-    public function submitData($data, $url, $access_code, $working_key) {
+    public function submitData($data, $url, $access_code, $working_key)
+    {
         try {
             //dd($url);
             $crypto = new Crypto();
@@ -99,25 +100,28 @@ class ProcessController extends Controller {
         }
     }
 
-    public function response(Request $request) {
+    public function response(Request $request)
+    {
         try {
-            $crypto = new Crypto;
+            $crypto = new Crypto();
             $ccavanue = $this->ccavanue->findOrFail(1);
             $workingKey = $ccavanue->working_key;  //Working Key should be provided here.
             $encResponse = $request->get('encResp');   //This is the response sent by the CCAvenue Server
 
             $rcvdString = $crypto->decrypt($encResponse, $workingKey);  //Crypto Decryption used as per the specified working key.
-            $order_status = "";
+            $order_status = '';
             $decryptValues = explode('&', $rcvdString);
-            $dataSize = sizeof($decryptValues);
+            $dataSize = count($decryptValues);
             for ($i = 0; $i < $dataSize; $i++) {
                 $information = explode('=', $decryptValues[$i]);
-                if ($i == 3)
+                if ($i == 3) {
                     $order_status = $information[1];
-                if ($i == 0)
+                }
+                if ($i == 0) {
                     $order_id = $information[1];
+                }
             }
-            if ($order_status == "Success") {
+            if ($order_status == 'Success') {
                 $invoiceid = $request->input('orderNo');
                 $invoice = new \App\Model\Order\Invoice();
                 $invoice = $invoice->findOrFail($invoiceid);
@@ -126,20 +130,18 @@ class ProcessController extends Controller {
                 \Cart::clear();
             }
 
-            echo "<br><br>";
+            echo '<br><br>';
 
-            echo "<table cellspacing=4 cellpadding=4>";
+            echo '<table cellspacing=4 cellpadding=4>';
             for ($i = 0; $i < $dataSize; $i++) {
                 $information = explode('=', $decryptValues[$i]);
 
-                echo '<tr><td>' . $information[0] . '</td><td>' . $information[1] . '</td></tr>';
+                echo '<tr><td>'.$information[0].'</td><td>'.$information[1].'</td></tr>';
             }
 
-
-            echo "</table><br>";
+            echo '</table><br>';
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
-
 }

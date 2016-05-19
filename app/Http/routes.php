@@ -222,12 +222,12 @@ Route::get('invoice-delete', 'Order\InvoiceController@destroy');
 Route::get('invoice/generate', 'Order\InvoiceController@generateById');
 Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
 
-/**
+/*
  * Payment
  */
 
-Route::get('payment/receive','Order\InvoiceController@payment');
-Route::post('payment/receive/{id}','Order\InvoiceController@postPayment');
+Route::get('payment/receive', 'Order\InvoiceController@payment');
+Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
 
 /*
  * Subscriptions
@@ -265,7 +265,6 @@ Route::get('get-pages', 'Front\PageController@GetPages');
 Route::get('pages-delete', 'Front\PageController@destroy');
 Route::get('get-url', 'Front\PageController@Generate');
 
-
 /*
  * Widgets
  */
@@ -299,15 +298,13 @@ Route::get('test-curl-result', 'Github\GithubApiController@testCurlResult');
  * check version
  */
 
+Route::post('version', 'HomeController@version');
+Route::get('version', 'HomeController@getVersion');
+Route::get('version-test', 'HomeController@versionTest');
+Route::post('version-result', 'HomeController@versionResult');
+Route::post('verification', 'HomeController@faveoVerification');
+Route::post('download-url', 'Github\GithubController@getlatestReleaseForUpdate');
+Route::get('create-keys', 'HomeController@createEncryptionKeys');
+Route::get('encryption', 'HomeController@getEncryptedData');
 
-Route::post('version','HomeController@version');
-Route::get('version','HomeController@getVersion');
-Route::get('version-test','HomeController@versionTest');
-Route::post('version-result','HomeController@versionResult');
-Route::post('verification','HomeController@faveoVerification');
-Route::post('download-url','Github\GithubController@getlatestReleaseForUpdate');
-Route::get('create-keys','HomeController@createEncryptionKeys');
-Route::get('encryption','HomeController@getEncryptedData');
-
-Route::post('faveo-hook','HomeController@hook');
-
+Route::post('faveo-hook', 'HomeController@hook');

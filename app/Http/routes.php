@@ -299,6 +299,7 @@ Route::get('test-curl-result', 'Github\GithubApiController@testCurlResult');
  * check version
  */
 
+
 Route::post('version','HomeController@version');
 Route::get('version','HomeController@getVersion');
 Route::get('version-test','HomeController@versionTest');

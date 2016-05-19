@@ -52,17 +52,19 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         // Return an Eloquent relationship.
         return $this->hasMany('App\Model\Product\Subscription');
     }
-    
-    public function invoiceItem(){
+
+    public function invoiceItem()
+    {
         return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
     }
-    
-    public function orderRelation(){
+
+    public function orderRelation()
+    {
         return $this->hasManyThrough('App\Model\Order\OrderInvoiceRelation', 'App\Model\Order\Invoice');
     }
-    
-    public function invoice(){
 
+    public function invoice()
+    {
         return $this->hasMany('App\Model\Order\Invoice');
     }
 
@@ -89,8 +91,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
         return $image;
     }
-    
-    public function payment(){
+
+    public function payment()
+    {
         return $this->hasMany('App\Model\Order\Payment');
     }
 

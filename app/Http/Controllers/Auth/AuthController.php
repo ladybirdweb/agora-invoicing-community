@@ -71,7 +71,7 @@ use AuthenticatesAndRegistersUsers;
     {
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
-                ],  [
+                ], [
             'email1.required'    => 'Username/Email is required',
             'password1.required' => 'Password is required',
         ]);
@@ -128,7 +128,8 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Http\Response
      */
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate) {
+    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
+    {
         try {
             $pass = $request->input('password');
             $currency = 'INR';
@@ -148,11 +149,11 @@ use AuthenticatesAndRegistersUsers;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();
             $this->sendActivation($user->email, $request->method(), $pass);
+
             return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
 
     public function sendActivationByGet($email, Request $request)
@@ -226,15 +227,15 @@ use AuthenticatesAndRegistersUsers;
 
                     return redirect($url);
                 }
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
 
-                
+                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
             } else {
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+
                 return redirect($url);
             }
 
@@ -279,7 +280,6 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return string
      */
-
     public function redirectPath()
     {
         if (\Session::has('session-url')) {

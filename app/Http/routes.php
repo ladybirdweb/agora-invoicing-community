@@ -121,6 +121,7 @@ Route::resource('products', 'Product\ProductController');
 Route::get('get-products', 'Product\ProductController@GetProducts');
 Route::get('products-delete', 'Product\ProductController@destroy');
 Route::Post('get-price', 'Product\ProductController@getPrice');
+Route::Post('get-product-field', 'Product\ProductController@getProductField');
 
 /*
  * Plan
@@ -221,6 +222,13 @@ Route::get('invoice-delete', 'Order\InvoiceController@destroy');
 Route::get('invoice/generate', 'Order\InvoiceController@generateById');
 Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
 
+/**
+ * Payment
+ */
+
+Route::get('payment/receive','Order\InvoiceController@payment');
+Route::post('payment/receive/{id}','Order\InvoiceController@postPayment');
+
 /*
  * Subscriptions
  */
@@ -256,6 +264,7 @@ Route::get('page/search', 'Front\PageController@Search');
 Route::get('get-pages', 'Front\PageController@GetPages');
 Route::get('pages-delete', 'Front\PageController@destroy');
 Route::get('get-url', 'Front\PageController@Generate');
+
 
 /*
  * Widgets
@@ -298,4 +307,6 @@ Route::post('verification','HomeController@faveoVerification');
 Route::post('download-url','Github\GithubController@getlatestReleaseForUpdate');
 Route::get('create-keys','HomeController@createEncryptionKeys');
 Route::get('encryption','HomeController@getEncryptedData');
+
+Route::post('faveo-hook','HomeController@hook');
 

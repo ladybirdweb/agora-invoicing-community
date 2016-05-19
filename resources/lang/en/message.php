@@ -135,7 +135,7 @@ return [
     'choose-subscription-going-to-end-notification-email-template' => 'Choose Subscription Going To End Notification Email Template',
     'choose-mail-template-to-notify-subscription-has-over'         => 'Choose Mail Template To Notify Subscription Has Over',
     'choose-shoping-cart-template'                                 => 'Choose Shoping Cart Template',
-    'check-your-mail-for-further-datails'                          => 'Order confirmed. Please check your email for further details. You can also download the product ',
+    'check-your-mail-for-further-datails'                          => 'Order confirmed. Please check your email for further details.',
     /*
      * Clients
      */
@@ -413,5 +413,12 @@ return [
      * client panel
      */
     'coupon-code' => 'Coupon Code',
+    
+    /**
+     * Payments
+     */
+    'invoice-status'=>'Invoice Status',
+    'payment-status'=>'Payment Status',
+    'send-mail'=>'Send Mail',
 
 ];

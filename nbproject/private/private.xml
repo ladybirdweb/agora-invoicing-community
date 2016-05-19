@@ -3,10 +3,16 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/invoice/payment.blade.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Order/InvoiceController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/storage/logs/laravel-2016-05-18.log</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/CartController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/CheckoutController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/invoice/generate.blade.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Payment/PromotionController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/lang/en/message.php</file>
             <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/routes.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/HomeController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Github/GithubController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Github/GithubApiController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Requests/Common/SettingRequest.php</file>
         </group>
     </open-files>
 </project-private>

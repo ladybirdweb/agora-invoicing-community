@@ -18,8 +18,8 @@ use App\User;
 use Cart;
 use Illuminate\Http\Request;
 
-class CheckoutController extends Controller
-{
+class CheckoutController extends Controller {
+
     public $subscription;
     public $plan;
     public $templateController;
@@ -34,8 +34,7 @@ class CheckoutController extends Controller
     public $invoiceItem;
     public $mailchimp;
 
-    public function __construct()
-    {
+    public function __construct() {
         $subscription = new Subscription();
         $this->subscription = $subscription;
 
@@ -73,8 +72,7 @@ class CheckoutController extends Controller
         $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm(Request $request)
-    {
+    public function CheckoutForm(Request $request) {
         if (!\Auth::user()) {
             $url = $request->segments();
 
@@ -94,16 +92,16 @@ class CheckoutController extends Controller
         if (count($require) > 0) {
             $this->validate($request, [
                 'domain.*' => 'required|url',
-            ], [
-               'domain.*.required' => 'Please provide Domain name',
-                'domain.*.url'     => 'Domain name is not valid',
+                    ], [
+                'domain.*.required' => 'Please provide Domain name',
+                'domain.*.url' => 'Domain name is not valid',
             ]);
         }
         try {
             $domain = $request->input('domain');
             if (count($domain) > 0) {
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain'.$key, $value);
+                    \Session::put('domain' . $key, $value);
                 }
             }
 
@@ -113,8 +111,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function postCheckout(Request $request)
-    {
+    public function postCheckout(Request $request) {
         if (\Cart::getSubTotal() > 0) {
             $v = $this->validate($request, [
                 'payment_gateway' => 'required',
@@ -150,10 +147,14 @@ class CheckoutController extends Controller
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $this->checkoutAction($invoice);
-                $url = '<a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
+                $check_product_category = $this->product($invoiceid);
+                $url = "";
+                if ($check_product_category->category == 'product') {
+                    $url = 'You can also download the product <a href=' . url('download/' . \Auth::user()->id . "/$invoice->number") . '>here</a>';
+                }
                 \Cart::clear();
 
-                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails') . $url);
             }
         } catch (\Exception $ex) {
             dd($ex);
@@ -162,10 +163,9 @@ class CheckoutController extends Controller
         }
     }
 
-    public function checkoutAction($invoice)
-    {
+    public function checkoutAction($invoice) {
         try {
-           
+
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
@@ -173,20 +173,23 @@ class CheckoutController extends Controller
             $invoice->save();
             //dd($invoice->id);
 
-            $invoice_items = $this->invoiceItem->where('invoice_id',$invoice->id)->first();
+            $invoice_items = $this->invoiceItem->where('invoice_id', $invoice->id)->first();
             $product = $invoice_items->product_name;
 
             $user_id = \Auth::user()->id;
-            $url = url("download/$user_id/$invoice_number");
 
-            //execute the order
-            $order = new \App\Http\Controllers\Order\OrderController();
-            $order->executeOrder($invoice->id, $order_status = 'executed');
-
+            $url = "";
+            $check_product_category = $this->product($invoice_id);
+            if ($check_product_category->category == 'product') {
+                $url = url("download/$user_id/$invoice_number");
+                //execute the order
+                $order = new \App\Http\Controllers\Order\OrderController();
+                $order->executeOrder($invoice->id, $order_status = 'executed');
+            }
             //get system values
             $settings = new Setting();
             $settings = $settings->findOrFail(1);
-            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
+            $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
             $from = $settings->email;
             $to = \Auth::user()->email;
             $data = $this->template->where('type', 7)->first()->data;
@@ -197,9 +200,21 @@ class CheckoutController extends Controller
             $template_controller = new TemplateController();
             $template_controller->Mailing($from, $to, $data, $subject, $replace);
         } catch (\Exception $ex) {
-            dd($ex);
+            //dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function product($invoiceid) {
+        try {
+            $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            $name = $invoice->product_name;
+            $product = $this->product->where('name', $name)->first();
+            return $product;
+        } catch (\Exception $ex) {
+            dd($ex);
+            throw new \Exception($ex->getMessage());
         }
     }
 

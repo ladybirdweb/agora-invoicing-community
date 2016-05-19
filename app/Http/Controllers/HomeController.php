@@ -353,5 +353,13 @@ class HomeController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
+    
+    public function hook(Request $request){
+        try{
+            \Log::info('requests',$request->all());
+        } catch (Exception $ex) {
+            
+        }
+    }
 
 }

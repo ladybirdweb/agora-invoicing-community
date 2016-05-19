@@ -380,23 +380,23 @@ class PromotionController extends Controller
             //dd($end);
             $now = \Carbon\Carbon::now();
             //both not set, always true
-            if ($start == null && $end == null) {
+            if (($start == null || $start=='0000-00-00 00:00:00') && ($end == null||$end=='0000-00-00 00:00:00')) {
                 return 'success';
             }
             //only starting date set, check the date is less or equel to today
-            if ($start != null && $end == null) {
+            if (($start != null||$start !='0000-00-00 00:00:00') && ($end == null||$end == '0000-00-00 00:00:00')) {
                 if ($start <= $now) {
                     return 'success';
                 }
             }
             //only ending date set, check the date is greater or equel to today
-            if ($end != null && $start == null) {
+            if (($end != null||$end != '0000-00-00 00:00:00') && ($start == null||$start == '0000-00-00 00:00:00')) {
                 if ($end >= $now) {
                     return 'success';
                 }
             }
             //both set
-            if ($end != null && $start != null) {
+            if (($end != null||$end != '0000-00-00 00:00:00') && ($start != null||$start != '0000-00-00 00:00:00')) {
                 if ($end >= $now && $start <= $now) {
                     return 'success';
                 }

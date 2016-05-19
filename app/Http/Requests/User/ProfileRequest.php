@@ -31,7 +31,7 @@ class ProfileRequest extends Request
                     'company'    => 'required',
                     //'mobile'     => 'regex:/\(?([0-9]{3})\)?([ .-]?)([0-9]{3})\2([0-9]{4})/',
                     'address'    => 'required',
-                    'zip'        => 'required|min:5|numeric',
+                    'zip'        => 'required',
 
         ];
             }
@@ -52,7 +52,7 @@ class ProfileRequest extends Request
                     'mobile'     => 'required|numeric',
                     'user_name'  =>'required|unique:users',
                     'terms'                 => 'accepted',
-                    'zip'                   => 'required|min:5|numeric',
+                    'zip'                   => 'required',
                     'password'              => 'required|min:6',
                     'password_confirmation' => 'required|same:password',
                     'address'               => 'required|max:300',

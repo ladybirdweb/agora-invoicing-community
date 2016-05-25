@@ -8,5 +8,5 @@ class Ccavanue extends Model
 {
     protected $table = 'ccavanue';
 
-    protected $fillable = ['merchant_id', 'access_code', 'working_key', 'redirect_url', 'cancel_url', 'ccavanue_url'];
+    protected $fillable = ['merchant_id', 'access_code', 'working_key', 'redirect_url', 'cancel_url', 'ccavanue_url','currencies',];
 }

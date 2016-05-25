@@ -199,7 +199,7 @@
                                 <li><a href="{{url('github')}}"><i class="fa fa-github"></i>{{Lang::get('message.github')}}</a></li>
                                 <li><a href="{{url('mailchimp')}}"><i class="fa fa-mail-forward"></i>{{Lang::get('message.mailchimp')}}</a></li>
                                 <li><a href="{{url('social-media')}}"><i class="fa fa-medium"></i>{{Lang::get('message.social-media')}}</a></li>
-                                <li><a href="{{url('payment-gateway/ccavanue')}}"><i class="fa fa-cc-mastercard"></i>{{Lang::get('message.ccavanue')}}</a></li>
+                                <li><a href="{{url('plugin')}}"><i class="fa fa-bank"></i>{{Lang::get('message.plugins')}}</a></li>
 
                             </ul>
                         </li>

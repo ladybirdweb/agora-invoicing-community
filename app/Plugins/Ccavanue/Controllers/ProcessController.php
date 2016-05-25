@@ -24,7 +24,7 @@ class ProcessController extends Controller
             $order = $requests['order'];
             //dd($order);
 
-            if ($request->input('payment_gateway') == 'ccavenue') {
+            if ($request->input('payment_gateway') == 'ccavanue') {
                 if (!\Schema::hasTable('ccavanue')) {
                     throw new \Exception('Ccavanue is not configured');
                 }

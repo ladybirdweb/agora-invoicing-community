@@ -27,6 +27,7 @@ class SettingsController extends Controller
                     $table->string('redirect_url');
                     $table->string('cancel_url');
                     $table->string('ccavanue_url');
+                    $table->string('currencies');
                     $table->timestamps();
                 });
             }
@@ -57,6 +58,7 @@ class SettingsController extends Controller
                 'redirect_url' => 'required|url',
                 'cancel_url'   => 'required|url',
                 'ccavanue_url' => 'required|url',
+                'currencies'=>'required',
             ]);
             $ccavanue1 = new Ccavanue();
             $ccavanue = $ccavanue1->where('id', '1')->first();

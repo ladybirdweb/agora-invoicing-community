@@ -308,3 +308,14 @@ Route::get('create-keys', 'HomeController@createEncryptionKeys');
 Route::get('encryption', 'HomeController@getEncryptedData');
 
 Route::post('faveo-hook', 'HomeController@hook');
+
+/**
+ * plugins
+ */
+Route::get('plugin','Common\SettingsController@plugins');
+Route::get('getplugin','Common\SettingsController@getPlugin');
+Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsController@postPlugins']);
+Route::get('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
+Route::get('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);
+
+   

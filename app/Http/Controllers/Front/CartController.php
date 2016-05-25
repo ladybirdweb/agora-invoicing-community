@@ -650,14 +650,16 @@ class CartController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-    
-    public static function getStateNameById($id){
-        try{
-            $name = "";
+
+    public static function getStateNameById($id)
+    {
+        try {
+            $name = '';
             $subregion = \App\Model\Common\State::where('state_subdivision_id', $id)->first();
-            if($subregion){
+            if ($subregion) {
                 $name = $subregion->state_subdivision_name;
-            }  
+            }
+
             return $name;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

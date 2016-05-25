@@ -413,12 +413,12 @@ return [
      * client panel
      */
     'coupon-code' => 'Coupon Code',
-    
-    /**
+
+    /*
      * Payments
      */
-    'invoice-status'=>'Invoice Status',
-    'payment-status'=>'Payment Status',
-    'send-mail'=>'Send Mail',
+    'invoice-status' => 'Invoice Status',
+    'payment-status' => 'Payment Status',
+    'send-mail'      => 'Send Mail',
 
 ];

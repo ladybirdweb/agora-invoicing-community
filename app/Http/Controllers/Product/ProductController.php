@@ -517,11 +517,12 @@ class ProductController extends Controller
                     ->first()
                     ->price;
             }
-        $field = $this->getProductField($id).$this->getProductQtyCheck($id);
+            $field = $this->getProductField($id).$this->getProductQtyCheck($id);
             $result = ['price'=>$price,'field'=>$field];
             return response()->json($result);
         } catch (\Exception $ex) {
-            $result = ['price'=>$ex->getMessage()];
+            $result = ['price' => $ex->getMessage()];
+
             return response()->json($result);
         }
     }
@@ -542,13 +543,13 @@ class ProductController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-    
-    public function getProductField($productid){
-        try{
-           
+
+    public function getProductField($productid)
+    {
+        try {
             $product = $this->product->find($productid);
-            if($product){
-                if($product->require_domain==1){
+            if ($product) {
+                if ($product->require_domain == 1) {
                     return "<div class='col-md-4 form-group'>
                         <label class='required'>".\Lang::get('message.domain')."</label>
                         <input type='text' name='domain' class='form-control' id='domain' placeholder='http://example.com'>

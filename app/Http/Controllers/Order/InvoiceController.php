@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
@@ -13,15 +14,14 @@ use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Price;
-use App\Model\Product\Product;
 //use Symfony\Component\HttpFoundation\Request as Requests;
+use App\Model\Product\Product;
 use App\User;
 use Illuminate\Http\Request;
 use Input;
-use App\Http\Controllers\Common\TemplateController;
 
-class InvoiceController extends Controller {
-
+class InvoiceController extends Controller
+{
     public $invoice;
     public $invoiceItem;
     public $user;
@@ -35,7 +35,8 @@ class InvoiceController extends Controller {
     public $tax;
     public $tax_option;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
 //        $this->middleware('admin');
 
@@ -76,7 +77,8 @@ class InvoiceController extends Controller {
         $this->tax_option = $tax_option;
     }
 
-    public function index() {
+    public function index()
+    {
         try {
             //dd($this->invoice->get());
             return view('themes.default1.invoice.index');
@@ -85,12 +87,13 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function GetInvoices() {
+    public function GetInvoices()
+    {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
         return \Datatable::query($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at'))
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('user_id', function ($model) {
 
@@ -98,26 +101,27 @@ class InvoiceController extends Controller {
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
                             $id = $this->user->where('id', $model->user_id)->first()->id;
 
-                            return '<a href=' . url('clients/' . $id) . '>' . ucfirst($first) . ' ' . ucfirst($last) . '</a>';
+                            return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                         ->showColumns('number', 'created_at', 'grand_total', 'status')
                         ->addColumn('action', function ($model) {
                             $order = \App\Model\Order\Order::where('invoice_id', $model->id)->first();
                             if (!$order) {
-                                $action = '<a href=' . url('order/execute?invoiceid=' . $model->id) . " class='btn btn-sm btn-primary'>Execute Order</a>";
+                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>Execute Order</a>";
                             } else {
                                 $action = '';
                             }
 
-                            return '<a href=' . url('invoices/show?invoiceid=' . $model->id) . " class='btn btn-sm btn-primary'>View</a>"
-                                    . "   $action";
+                            return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>View</a>"
+                                    ."   $action";
                         })
                         ->searchColumns('created_at', 'user_id', 'number', 'grand_total', 'status')
                         ->orderColumns('created_at', 'user_id', 'number', 'grand_total', 'status')
                         ->make();
     }
 
-    public function show(Request $request) {
+    public function show(Request $request)
+    {
         try {
             $id = $request->input('invoiceid');
             $invoice = $this->invoice->where('id', $id)->first();
@@ -137,7 +141,8 @@ class InvoiceController extends Controller {
      *
      * @return type
      */
-    public function generateById(Request $request) {
+    public function generateById(Request $request)
+    {
         try {
             $clientid = $request->input('clientid');
             //dd($clientid);
@@ -159,12 +164,13 @@ class InvoiceController extends Controller {
         }
     }
 
+
     public function invoiceGenerateByForm(Request $request, $user_id = '') {
         
         $qty = 1;
         if (key_exists('domain', $request->all())) {
             $this->validate($request, [
-                'domain' => 'required|url'
+                'domain' => 'required|url',
             ]);
         }
         if (key_exists('quantity', $request->all())) {
@@ -230,8 +236,8 @@ class InvoiceController extends Controller {
             if (!empty($tax)) {
                 foreach ($tax as $key => $value) {
                     //dd($value);
-                    $tax_name .= $value['name'] . ',';
-                    $tax_rate .= $value['rate'] . ',';
+                    $tax_name .= $value['name'].',';
+                    $tax_rate .= $value['rate'].',';
                 }
             }
             //dd('dsjcgv');
@@ -246,7 +252,6 @@ class InvoiceController extends Controller {
             }
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency,$qty);
             if ($items) {
-
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
                 $result = ['success' => \Lang::get('message.invoice-generated-successfully')];
             } else {
@@ -259,7 +264,8 @@ class InvoiceController extends Controller {
         return response()->json(compact('result'));
     }
 
-    public function sendmailClientAgent($userid, $invoiceid) {
+    public function sendmailClientAgent($userid, $invoiceid)
+    {
         try {
             $agent = \Input::get('agent');
             $client = \Input::get('client');
@@ -280,7 +286,8 @@ class InvoiceController extends Controller {
      *
      * @throws \Exception
      */
-    public function GenerateInvoice() {
+    public function GenerateInvoice()
+    {
         try {
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
@@ -309,7 +316,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function createInvoiceItems($invoiceid, $cart) {
+    public function createInvoiceItems($invoiceid, $cart)
+    {
         try {
             $product_name = $cart->name;
             $regular_price = $cart->price;
@@ -323,21 +331,21 @@ class InvoiceController extends Controller {
 
             foreach ($cart->attributes['tax'] as $tax) {
                 //dd($tax['name']);
-                $tax_name .= $tax['name'] . ',';
-                $tax_percentage .= $tax['rate'] . ',';
+                $tax_name .= $tax['name'].',';
+                $tax_percentage .= $tax['rate'].',';
             }
 
 //            dd($tax_name);
 
             $invoiceItem = $this->invoiceItem->create([
-                'invoice_id' => $invoiceid,
-                'product_name' => $product_name,
-                'regular_price' => $regular_price,
-                'quantity' => $quantity,
-                'tax_name' => $tax_name,
+                'invoice_id'     => $invoiceid,
+                'product_name'   => $product_name,
+                'regular_price'  => $regular_price,
+                'quantity'       => $quantity,
+                'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_percentage,
-                'subtotal' => $subtotal,
-                'domain' => $domain,
+                'subtotal'       => $subtotal,
+                'domain'         => $domain,
             ]);
 
             return $invoiceItem;
@@ -347,7 +355,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function doPayment($payment_method, $invoiceid, $amount, $parent_id = '', $userid = '', $payment_status = 'pending') {
+    public function doPayment($payment_method, $invoiceid, $amount, $parent_id = '', $userid = '', $payment_status = 'pending')
+    {
         try {
             if ($amount > 0) {
                 if ($userid == '') {
@@ -357,10 +366,10 @@ class InvoiceController extends Controller {
                     $payment_status = 'success';
                 }
                 $this->payment->create([
-                    'parent_id' => $parent_id,
-                    'invoice_id' => $invoiceid,
-                    'user_id' => $userid,
-                    'amount' => $amount,
+                    'parent_id'      => $parent_id,
+                    'invoice_id'     => $invoiceid,
+                    'user_id'        => $userid,
+                    'amount'         => $amount,
                     'payment_method' => $payment_method,
                     'payment_status' => $payment_status,
                 ]);
@@ -397,23 +406,23 @@ class InvoiceController extends Controller {
             if (!empty($tax)) {
                 foreach ($tax as $key => $value) {
                     //dd($value);
-                    $tax_name .= $value['name'] . ',';
-                    $tax_rate .= $value['rate'] . ',';
+                    $tax_name .= $value['name'].',';
+                    $tax_rate .= $value['rate'].',';
                 }
             }
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
-                'invoice_id' => $invoiceid,
-                'product_name' => $product->name,
-                'regular_price' => $price,
-                'quantity' => $qty,
-                'discount' => $discount,
-                'discount_mode' => $mode,
-                'subtotal' => \App\Http\Controllers\Front\CartController::rounding($subtotal),
-                'tax_name' => $tax_name,
+                'invoice_id'     => $invoiceid,
+                'product_name'   => $product->name,
+                'regular_price'  => $price,
+                'quantity'       => $qty,
+                'discount'       => $discount,
+                'discount_mode'  => $mode,
+                'subtotal'       => \App\Http\Controllers\Front\CartController::rounding($subtotal),
+                'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_rate,
-                'domain' => $domain,
+                'domain'         => $domain,
             ]);
 
             return $items;
@@ -424,7 +433,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function checkCode($code, $productid) {
+    public function checkCode($code, $productid)
+    {
         try {
             if ($code != '') {
                 $promo = $this->promotion->where('code', $code)->first();
@@ -467,7 +477,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function findCostAfterDiscount($promoid, $productid) {
+    public function findCostAfterDiscount($promoid, $productid)
+    {
         try {
             $promotion = $this->promotion->findOrFail($promoid);
             $product = $this->product->findOrFail($productid);
@@ -485,7 +496,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function findCost($type, $value, $price, $productid) {
+    public function findCost($type, $value, $price, $productid)
+    {
         try {
             switch ($type) {
 
@@ -505,7 +517,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function checkNumberOfUses($code) {
+    public function checkNumberOfUses($code)
+    {
         try {
             $promotion = $this->promotion->where('code', $code)->first();
             $uses = $promotion->uses;
@@ -523,7 +536,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function checkExpiry($code = '') {
+    public function checkExpiry($code = '')
+    {
         try {
             if ($code != '') {
                 $promotion = $this->promotion->where('code', $code)->first();
@@ -554,7 +568,6 @@ class InvoiceController extends Controller {
                     }
                 }
             } else {
-                
             }
         } catch (\Exception $ex) {
             dd($ex);
@@ -562,7 +575,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function checkTax($productid) {
+    public function checkTax($productid)
+    {
         try {
             //dd($productid);
             $taxs[0] = ['name' => 'null', 'rate' => 0];
@@ -598,7 +612,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function pdf(Request $request) {
+    public function pdf(Request $request)
+    {
         try {
             $id = $request->input('invoiceid');
             if (!$id) {
@@ -613,13 +628,14 @@ class InvoiceController extends Controller {
             //return view('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
             $pdf = \PDF::loadView('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
 
-            return $pdf->download($user->first_name . '-invoice.pdf');
+            return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function calculateTotal($rate, $total) {
+    public function calculateTotal($rate, $total)
+    {
         try {
             //dd($total);
             $rates = explode(',', $rate);
@@ -647,7 +663,8 @@ class InvoiceController extends Controller {
      *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -658,64 +675,66 @@ class InvoiceController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.no-record') . '
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.deleted-successfully') . '
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.select-a-row') . '
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . $e->getMessage() . '
+                        '.$e->getMessage().'
                 </div>';
         }
     }
 
-    public function setDomain($productid, $domain) {
+    public function setDomain($productid, $domain)
+    {
         try {
-            if (\Session::has('domain' . $productid)) {
-                \Session::forget('domain' . $productid);
+            if (\Session::has('domain'.$productid)) {
+                \Session::forget('domain'.$productid);
             }
-            \Session::put('domain' . $productid, $domain);
+            \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-    public function domain($id) {
+    public function domain($id)
+    {
         try {
-            if (\Session::has('domain' . $id)) {
-                $domain = \Session::get('domain' . $id);
+            if (\Session::has('domain'.$id)) {
+                $domain = \Session::get('domain'.$id);
             } else {
                 $domain = '';
             }
 
             return $domain;
         } catch (\Exception $ex) {
-            
         }
     }
 
-    public function updateInvoice($invoiceid) {
+    public function updateInvoice($invoiceid)
+    {
         try {
             $invoice = $this->invoice->findOrFail($invoiceid);
             $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
@@ -739,7 +758,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function updateInvoicePayment($invoiceid, $payment_method, $payment_status = 'pending', $invoice_status = 'pending', $domain = '') {
+    public function updateInvoicePayment($invoiceid, $payment_method, $payment_status = 'pending', $invoice_status = 'pending', $domain = '')
+    {
         try {
             $invoice = $this->invoice->find($invoiceid);
             if ($invoice) {
@@ -756,6 +776,7 @@ class InvoiceController extends Controller {
                 $payment->payment_status = $payment_status;
                 $payment->payment_method = $payment_method;
                 $payment->save();
+
                 return $payment;
             }
         } catch (\Exception $ex) {
@@ -763,7 +784,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function payment(Request $request) {
+    public function payment(Request $request)
+    {
         try {
             if ($request->has('invoiceid')) {
                 $invoice_id = $request->input('invoiceid');
@@ -788,13 +810,15 @@ class InvoiceController extends Controller {
 
                 return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain'));
             }
+
             return redirect()->back();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function postPayment($invoiceid, Request $request) {
+    public function postPayment($invoiceid, Request $request)
+    {
         try {
             $payment_method = $request->input('payment_method');
             $payment_status = $request->input('payment_status');
@@ -809,7 +833,8 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function sendMail($userid, $invoiceid, $templatetype = 7) {
+    public function sendMail($userid, $invoiceid, $templatetype = 7)
+    {
         try {
             $settings = new Setting();
             $settings = $settings->findOrFail(1);
@@ -818,7 +843,7 @@ class InvoiceController extends Controller {
             $to = '';
             $product = '';
             if ($user) {
-                $name = $user->first_name . ' ' . $user->last_name;
+                $name = $user->first_name.' '.$user->last_name;
                 $to = $user->email;
             }
             $invoice = $this->invoice->find($invoiceid);
@@ -842,5 +867,4 @@ class InvoiceController extends Controller {
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

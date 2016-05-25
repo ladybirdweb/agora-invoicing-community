@@ -10,7 +10,7 @@ class Product extends Model
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
         'stock_control', 'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden', 'multiple_qty', 'auto_terminate',
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner', 'github_repository',
-        'deny_after_subscription', 'version','parent' ];
+        'deny_after_subscription', 'version', 'parent', ];
 
     public function order()
     {
@@ -56,17 +56,17 @@ class Product extends Model
 
         return $image;
     }
-    
-    public function setParentAttribute($value){
-        
+
+    public function setParentAttribute($value)
+    {
         $value = implode(',', $value);
         $this->attributes['parent'] = $value;
-        
     }
-     public function getParentAttribute($value){
-        
+
+    public function getParentAttribute($value)
+    {
         $value = explode(',', $value);
+
         return $value;
-        
     }
 }

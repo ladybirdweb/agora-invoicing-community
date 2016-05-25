@@ -53,7 +53,7 @@ class ClientController extends Controller
         try {
             $invoices = $this->invoice
                     ->where('user_id', \Auth::user()->id)
-                    ->select('number', 'created_at', 'grand_total', 'id','status');
+                    ->select('number', 'created_at', 'grand_total', 'id', 'status');
 
             return \Datatable::query($invoices)
                         ->addColumn('number', function ($model) {
@@ -65,11 +65,12 @@ class ClientController extends Controller
                         })
                         ->addColumn('action', function ($model) {
                             $status = $model->status;
-                            $payment = "";
-                            if($status=='Pending'){
-                                $payment = "  <a href=".url('paynow/'.$model->id)." class='btn btn-sm btn-primary'>Pay Now</a>";
+                            $payment = '';
+                            if ($status == 'Pending') {
+                                $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-sm btn-primary'>Pay Now</a>";
                             }
-                            return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment."</p>";
+
+                            return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment.'</p>';
                         })
                         ->searchColumns('number', 'created_at', 'total')
                         ->orderColumns('number', 'created_at', 'total')

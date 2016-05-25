@@ -26,27 +26,27 @@ class ClientRequest extends Request
         switch ($this->method()) {
             case 'POST': {
                     return [
-                        'first_name' => 'required',
-                        'last_name'  => 'required',
-                        'email'      => 'required|email|unique:users',
-                        'company'    => 'required',
-                        'mobile'     => 'required|numeric',
+                        'first_name'  => 'required',
+                        'last_name'   => 'required',
+                        'email'       => 'required|email|unique:users',
+                        'company'     => 'required',
+                        'mobile'      => 'required|numeric',
                     'mobile_code'     => 'required|numeric',
-                        'address'    => 'required',
-                        'zip'        => 'required|min:5|numeric',
+                        'address'     => 'required',
+                        'zip'         => 'required|min:5|numeric',
                     ];
                 }
 
             case 'PATCH': {
                     return [
-                        'first_name' => 'required',
-                        'last_name'  => 'required',
-                        'email'      => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
-                        'company'    => 'required',
-                        'mobile'     => 'required|numeric',
+                        'first_name'  => 'required',
+                        'last_name'   => 'required',
+                        'email'       => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
+                        'company'     => 'required',
+                        'mobile'      => 'required|numeric',
                     'mobile_code'     => 'required|numeric',
-                        'address'    => 'required',
-                        'zip'        => 'required|min:5|numeric',
+                        'address'     => 'required',
+                        'zip'         => 'required|min:5|numeric',
                     ];
                 }
             default:break;

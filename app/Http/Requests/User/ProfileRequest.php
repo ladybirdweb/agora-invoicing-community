@@ -26,13 +26,13 @@ class ProfileRequest extends Request
         //dd($this->segment(1));
             if ($this->segment(1) == 'profile' || $this->segment(1) == 'my-profile') {
                 return [
-                    'first_name' => 'required',
-                    'last_name'  => 'required',
-                    'company'    => 'required',
-                    'mobile'     => 'required|numeric',
+                    'first_name'      => 'required',
+                    'last_name'       => 'required',
+                    'company'         => 'required',
+                    'mobile'          => 'required|numeric',
                     'mobile_code'     => 'required|numeric',
-                    'address'    => 'required',
-                    'zip'        => 'required',
+                    'address'         => 'required',
+                    'zip'             => 'required',
 
         ];
             }
@@ -50,8 +50,8 @@ class ProfileRequest extends Request
                     'last_name'  => 'required',
                     'email'      => 'required|email|unique:users',
                     //'company'    => 'required',
-                    'mobile'     => 'required|numeric',
-                    'mobile_code'     => 'required|numeric',
+                    'mobile'                => 'required|numeric',
+                    'mobile_code'           => 'required|numeric',
                     'user_name'             => 'required|unique:users',
                     'terms'                 => 'accepted',
                     'zip'                   => 'required',

@@ -66,7 +66,7 @@
                         {!! Form::text('email',null,['class' => 'form-control']) !!}
 
                     </div>
-                    
+
                     <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('role',Lang::get('message.role')) !!}
@@ -84,10 +84,13 @@
                         {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                     </div>
-
+                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                        <label class="required">Mobile Code</label>
+                        {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
+                    </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('mobile',Lang::get('message.mobile')) !!}
+                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
                         {!! Form::text('mobile',null,['class' => 'form-control']) !!}
 
                     </div>
@@ -117,11 +120,11 @@
 
                     </div>
 
-                     <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
-                        
+
                         {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                     </div>
@@ -129,9 +132,9 @@
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                        
+
                         <select name="state" id="state-list" class="form-control">
-                            
+
                             @if(count($state)>0)
                             <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif

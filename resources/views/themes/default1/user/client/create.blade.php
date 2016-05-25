@@ -84,10 +84,13 @@
                         {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                     </div>
-
+                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                        <label class="required">Mobile Code</label>
+                        {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
+                    </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('mobile',Lang::get('message.mobile')) !!}
+                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
                         {!! Form::text('mobile',null,['class' => 'form-control']) !!}
 
                     </div>

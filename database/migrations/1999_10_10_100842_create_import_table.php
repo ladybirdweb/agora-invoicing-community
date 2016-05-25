@@ -13,6 +13,7 @@ class CreateImportTable extends Migration
     {
         \DB::unprepared(File::get(public_path('dist/sql/countries/countries.sql')));
         \DB::unprepared(File::get(public_path('dist/sql/countries/states.sql')));
+        \DB::unprepared(File::get(public_path('dist/sql/countries/mobile.sql')));
     }
 
     /**

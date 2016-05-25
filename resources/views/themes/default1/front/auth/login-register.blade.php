@@ -20,6 +20,7 @@ $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($locat
 $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
 $state_code = $location['isoCode']."-".$location['state'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+$mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
 
 ?>
 <style>
@@ -139,13 +140,17 @@ $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code)
                             </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-6 {{ $errors->has('mobile') ? 'has-error' : '' }}">
+                                    <div class="col-md-3 {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                        <label class="required">Code</label>
+                                        {!! Form::text('mobile_code',$mobile_code,['class'=>'form-control input-lg']) !!}
+                                    </div>
+                                    <div class="col-md-5 {{ $errors->has('mobile') ? 'has-error' : '' }}">
                                         <label class="required">Mobile No</label>
                                         {!! Form::text('mobile',null,['class'=>'form-control input-lg']) !!}
                                     </div>
 
                                     <div class="form-group">
-                                        <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
+                                        <div class="col-md-4 {{ $errors->has('state') ? 'has-error' : '' }}">
                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                             <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
                                             {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getState(this.value);']) !!}

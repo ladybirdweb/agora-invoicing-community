@@ -1,7 +1,7 @@
 <h3>About Agora Invocing</h3>
 
 
-<a href="https://styleci.io/repos/51429040"><img src="https://styleci.io/repos/51429040/shield" alt="StyleCI"></a>&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg">&nbsp;<img src="https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=master" alt="scrutinizerCI">&nbsp;<img src="https://travis-ci.org/ladybirdweb/agorainvoicing.svg?branch=master">&nbsp;
+<a href="https://styleci.io/repos/51429040"><img src="https://styleci.io/repos/51429040/shield" alt="StyleCI"></a>&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg">&nbsp;<img src="https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=master" alt="scrutinizerCI">&nbsp;<img src="https://travis-ci.org/ladybirdweb/agorainvoicing.svg?branch=master">&nbsp;&nbsp;<img src="http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg">&nbsp;
 
 Billing and subscription management for SaaS & other billing businesses. Handling signups, provisioning, billing and support
 

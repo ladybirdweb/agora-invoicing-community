@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
                         $table->string('name')->unique();
                         $table->string('description');
                         $table->string('category');
-                        $table->integer('parent');
+                        $table->string('parent');
                         $table->integer('type')->unsigned();
                         $table->foreign('type')->references('id')->on('product_types');
                         $table->integer('group')->unsigned();

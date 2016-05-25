@@ -12,12 +12,12 @@
         <h5 class="widget-user-desc">{{ucfirst($client->town)}}</h5>
         <h6 class="widget-user-desc">{{$client->email}}<br>{{$client->mobile}}</h6>
     </div>
-    <div class="col-md-2 col-sm-4 padzero">
+<!--    <div class="col-md-2 col-sm-4 padzero">
         <div class="padleft">
             <h6 class="rupee colorblack margintopzero"><span class="font18">Rs: {{$client->debit}}</span><br>Open</h6> 
             <h6 class="rupee colorred"><span class="font18">Rs: 0</span><br>Overdue</h6> 
         </div>
-    </div>
+    </div>-->
 
     <div class="box-tools pull-right col-md-2 col-sm-4 padfull paddownfive">
 
@@ -36,13 +36,13 @@
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.invoice')}}</a>
                 </li>
-                <li role="presentation">
+<!--                <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('order/execute?clientid='.$client->id)}}">{{Lang::get('message.order_execute')}}</a>
                 </li>
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('payment/receive?clientid='.$client->id)}}">{{Lang::get('message.payment')}}</a>
-                </li>
-                <li role="presentation">
+                </li>-->
+<!--                <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="#">Estimate</a>
                 </li>
                 <li role="presentation" class="divider"></li>
@@ -60,7 +60,7 @@
                 </li>
                 <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="#">Statement</a>
-                </li>
+                </li>-->
             </ul>
         </div>
 

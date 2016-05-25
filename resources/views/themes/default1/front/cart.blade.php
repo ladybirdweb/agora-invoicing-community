@@ -53,79 +53,89 @@ if (count($attributes) > 0) {
         @if(!Cart::isEmpty())
         <div class="featured-boxes">
             <div class="row">
+
                 <div class="col-md-8">
-                    <div class="featured-box featured-box-primary align-left mt-sm">
-                        <div class="box-content">
-                            <form method="post" action="">
-                                <table class="shop_table cart">
-                                    <thead>
-                                        <tr>
-                                            <th class="product-price">
-                                                &nbsp;
-                                            </th>
-                                            <th class="product-price">
-                                                &nbsp;
-                                            </th>
-                                            <th class="product-price">
-                                                Product
-                                            </th>
+                    <ul class="list-unstyled">
+                        <li>
+                            <div class="featured-box featured-box-primary align-left mt-sm">
+                                <div class="box-content">
+                                    <form method="post" action="">
+                                        <table class="shop_table cart">
+                                            <thead>
+                                                <tr>
+                                                    <th class="product-price">
+                                                        &nbsp;
+                                                    </th>
+                                                    <th class="product-price">
+                                                        &nbsp;
+                                                    </th>
+                                                    <th class="product-price">
+                                                        Product
+                                                    </th>
 
-                                            <th class="product-price">
-                                                Price
-                                            </th>
-                                            <th class="product-quantity">
-                                                Quantity
-                                            </th>
-                                            <th class="product-subtotal">
-                                                Subtotal
-                                            </th>
+                                                    <th class="product-subtotal">
+                                                        Price
+                                                    </th>
+                                                    <th class="product-quantity">
+                                                        Quantity
+                                                    </th>
+                                                    <th class="product-subtotal">
+                                                        Subtotal
+                                                    </th>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse($cartCollection as $key=>$item)
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @forelse($cartCollection as $key=>$item)
 
-                                        <tr class="cart_table_item">
-                                            <td class="product-remove">
-                                                <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
-                                                    <i class="fa fa-times"></i>
-                                                </a>
-                                            </td>
-                                            <td class="product-price">
-                                                <?php
-                                                $domain = [];
-                                                $price = 0;
-                                                $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                                $product_price = $product->price()->where('currency',$attributes[0]['currency'][0]['code'])->first();
-                                                if($product_price->sales_price){
-                                                    $value = $product_price->sales_price;
-                                                }else{
-                                                    $value = $product_price->price;
-                                                }
-                                                $price += $value;
-                                                if ($product->require_domain == 1) {
-                                                    $domain[$key] = $product->id;
-                                                }
-                                                ?>
+                                                <tr class="cart_table_item">
+                                                    <td class="product-remove">
+                                                        <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
+                                                    </td>
+                                                    <td class="product-price">
+                                                        <?php
+                                                        $domain = [];
+                                                        $price = 0;
+                                                        $product = App\Model\Product\Product::where('id', $item->id)->first();
+                                                        $product_price = $product->price()->where('currency', $attributes[0]['currency'][0]['code'])->first();
+                                                        if ($product_price->sales_price) {
+                                                            $value = $product_price->sales_price;
+                                                        } else {
+                                                            $value = $product_price->price;
+                                                        }
+                                                        $price += $value;
+                                                        if ($product->require_domain == 1) {
+                                                            $domain[$key] = $product->id;
+                                                        }
+                                                        $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
+                                                        ?>
 
-                                                <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
+                                                        <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
 
-                                            </td>
-                                            <td class="product-price">
-                                                {{$item->name}}
-                                            </td>
-                                           
-                                            <td class="product-price">
-                                                <span class="amount"><small>{!! $symbol !!} </small>{{\App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
-                                            </td>
-                                            <td class="product-quantity">
-                                                {{$item->quantity}}
-                                            </td>
-                                            <td class="product-subtotal">
-                                                <span class="amount"><small>{!! $symbol !!} </small>{{App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
-                                            </td>
-                                            
-                                        </tr>
+                                                    </td>
+                                                    <td class="product-subtotal">
+                                                        {{$item->name}}
+                                                    </td>
+
+                                                    <td class="product-price">
+                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
+                                                    </td>
+                                                    <td class="product-quantity">
+                                                        @if($multi_product==true)
+                                                        
+                                                        <input type="number"  title="Qty" value="{{$item->quantity}}" name="quantity" id="quantity" min="1"  step="1" style="width: 50%" onchange="changeQty(this.value,'{{$item->id}}')">
+                                                        
+                                                        @else 
+                                                            {{$item->quantity}}
+                                                        @endif
+                                                    </td>
+                                                    <td class="product-subtotal">
+                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
+                                                    </td>
+
+                                                </tr>
 
 <!--                                        <tr>
                                             <td class="actions" colspan="6">
@@ -134,21 +144,45 @@ if (count($attributes) > 0) {
                                                 </div>
                                             </td>
                                         </tr>-->
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </form>
-                        </div>
-                    </div>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </form>
+                                </div>
+                            </div>
+                        </li>
+                        <?php $addons = \App\Http\Controllers\Front\CartController::addons();
+                        //dd($addons);
+                        ?>
+                        @if(count($addons)>0)
+                        <li>
+
+
+                            @foreach($addons as $addon)
+                            <div class="col-md-3">
+                                <div class="featured-box featured-box-primary">
+                                    <div class="box-content">
+                                        <span><img width="50" height="50" alt="" class="img-responsive" src="{{$addon->image}}"></span>
+                                        <span>{{ucfirst($addon->name)}}</span>
+                                        <span><a href="{{$addon->shoping_cart_link}}" class="btn btn-small btn-primary">Buy</a></span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+
+                        </li>
+                        @endif
+                    </ul>
                 </div>
-                <div class="col-sm-4">
+
+                <div class="col-md-4">
                     <div class="featured-box featured-box-primary align-left mt-sm">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
                             <table class="cart-totals">
                                 <tbody>
 
-                                    
+
                                     @foreach($item->attributes['tax'] as $attribute)
                                     @if($attribute['name']!='null')
                                     <tr>
@@ -162,25 +196,25 @@ if (count($attributes) > 0) {
                                     </tr>
                                     @endif
                                     @endforeach
-                                    
+
                                     <tr class="total">
                                         <th>
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
-                                           <strong><span class="amount"><small>{!! $symbol !!}  </small>{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span></strong>
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <th>
-                                           
+
                                         </th>
                                         <td>
 
                                         </td>
                                     </tr>
-                                    
+
 
 
                                 </tbody>
@@ -215,6 +249,7 @@ if (count($attributes) > 0) {
                     </div>
                 </div>
 
+
             </div>
         </div>
         @else 
@@ -241,26 +276,14 @@ if (count($attributes) > 0) {
     </div>
 </div>
 <script>
-
-
-
-            function reduceQty(id){
-            $.ajax({
-            type: "GET",
-                    data:"id=" + id,
-                    url: "{{url('cart/reduseqty/')}}",
-                    success: function (data) {
-                    location.reload();
-                    }
-            });
-            }
-    function increaseQty(id){
+    function changeQty(qty,productid){
+        //alert(productid);
     $.ajax({
     type: "GET",
-            data:"id=" + id,
-            url: "{{url('cart/increaseqty/')}}",
-            success: function (data) {
-            location.reload();
+            data:{'qty':qty,'productid':productid},
+            url: "{{url('update-qty')}}",
+            success: function () {
+                location.reload();
             }
     });
     }

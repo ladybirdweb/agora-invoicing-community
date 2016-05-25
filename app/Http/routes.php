@@ -20,8 +20,7 @@ Route::get('/', 'HomeController@index');
 Route::match(['get', 'post'], 'home', 'Front\CartController@ProductList');
 Route::get('pricing', 'Front\CartController@Cart');
 Route::get('cart/remove', 'Front\CartController@CartRemove');
-Route::get('cart/reduseqty', 'Front\CartController@ReduseQty');
-Route::get('cart/increaseqty', 'Front\CartController@IncreaseQty');
+Route::get('update-qty', 'Front\CartController@updateQty');
 Route::get('cart/addon/{id}', 'Front\CartController@AddAddons');
 Route::get('cart/clear', 'Front\CartController@ClearCart');
 Route::get('show/cart', 'Front\CartController@showCart');
@@ -66,6 +65,8 @@ Route::get('my-subscription/{id}', 'Front\ClientController@getSubscription');
 Route::get('my-profile', 'Front\ClientController@profile');
 Route::patch('my-profile', 'Front\ClientController@postProfile');
 Route::patch('my-password', 'Front\ClientController@postPassword');
+Route::get('paynow/{id}','Front\CheckoutController@paynow');
+
 
 /*
  * Social Media

@@ -100,8 +100,7 @@ return [
          */
 
         'App\Plugins\Ccavanue\ServiceProvider',
-        'App\Plugins\Ping\ServiceProvider',
-        'App\Plugins\Twilio\ServiceProvider',
+        
 
         /*
          * Laravel Framework Service Providers...

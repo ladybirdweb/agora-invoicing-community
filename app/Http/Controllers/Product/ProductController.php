@@ -165,7 +165,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
-
+        //dd($input);
         $v = \Validator::make($input, [
                     'name'         => 'required',
                     'type'         => 'required',
@@ -324,7 +324,6 @@ class ProductController extends Controller
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
-
             $product->fill($request->except('image', 'file'))->save();
             $this->updateVersionFromGithub($product->id);
             $product_id = $product->id;
@@ -518,7 +517,7 @@ class ProductController extends Controller
                     ->first()
                     ->price;
             }
-            $field = $this->getProductField($id);
+        $field = $this->getProductField($id).$this->getProductQtyCheck($id);
             $result = ['price'=>$price,'field'=>$field];
             return response()->json($result);
         } catch (\Exception $ex) {
@@ -558,6 +557,35 @@ class ProductController extends Controller
             }
         } catch (\Exception $ex) {
             return $ex->getMessage();
+        }
+    }
+    
+    public function getProductQtyCheck($productid){
+        try{
+            $check = self::checkMultiProduct($productid);
+            if($check==true){
+                return "<div class='col-md-4 form-group'>
+                        <label class='required'>".\Lang::get('message.quantity')."</label>
+                        <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
+                </div>";
+            }
+        } catch (\Exception $ex) {
+            return $ex->getMessage();
+        }
+    }
+    
+    public static function checkMultiProduct($productid){
+        try{
+            $product = new Product();
+            $product = $product->find($productid);
+            if($product){
+                if($product->multiple_qty==1){
+                    return true;
+                }
+            }
+            return false;
+        } catch (Exception $ex) {
+
         }
     }
 }

@@ -160,11 +160,18 @@ class InvoiceController extends Controller {
     }
 
     public function invoiceGenerateByForm(Request $request, $user_id = '') {
-
+        
+        $qty = 1;
         if (key_exists('domain', $request->all())) {
             $this->validate($request, [
                 'domain' => 'required|url'
             ]);
+        }
+        if (key_exists('quantity', $request->all())) {
+            $this->validate($request, [
+                'quantity' => 'required|integer'
+            ]);
+            $qty = $request->input('quantity');
         }
 
         $this->validate($request, [
@@ -214,7 +221,7 @@ class InvoiceController extends Controller {
                     $grand_total = $total;
                 }
             }
-            $grand_total = $grand_total;
+            $grand_total = $qty * $grand_total;
             //dd($grand_total);
             $tax = $this->checkTax($product->id);
             //dd($tax);
@@ -237,7 +244,7 @@ class InvoiceController extends Controller {
             if ($grand_total > 0) {
                 $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             }
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency,$qty);
             if ($items) {
 
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
@@ -364,7 +371,7 @@ class InvoiceController extends Controller {
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code = '', $price = '', $currency = 'USD') {
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code = '', $price = '', $currency = 'USD',$qty) {
         try {
             $discount = '';
             $mode = '';
@@ -376,7 +383,7 @@ class InvoiceController extends Controller {
                     $price = $price_model->price;
                 }
             }
-            $subtotal = $price;
+            $subtotal = $qty * $price;
             //dd($subtotal);
             if ($code) {
                 $subtotal = $this->checkCode($code, $productid);
@@ -400,7 +407,7 @@ class InvoiceController extends Controller {
                 'invoice_id' => $invoiceid,
                 'product_name' => $product->name,
                 'regular_price' => $price,
-                'quantity' => 1,
+                'quantity' => $qty,
                 'discount' => $discount,
                 'discount_mode' => $mode,
                 'subtotal' => \App\Http\Controllers\Front\CartController::rounding($subtotal),

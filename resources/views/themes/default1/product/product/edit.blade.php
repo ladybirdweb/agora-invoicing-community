@@ -75,7 +75,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['product'=>'Product','addon'=>'Addon'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['product'=>'Product','addon'=>'Addon','service'=>'Service'],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -107,7 +107,7 @@
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent',['Products'=>$products],null,['class' => 'form-control']) !!}
+                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control','multiple'=>'multiple']) !!}
 
                                             </div>
                                         </li>

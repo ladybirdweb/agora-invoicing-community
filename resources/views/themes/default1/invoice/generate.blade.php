@@ -13,7 +13,7 @@
         @endif
         {!! Form::submit(Lang::get('message.generate'),['class'=>'btn btn-primary pull-right'])!!}
     </div>
-    
+
     @if (count($errors) > 0)
     <div class="alert alert-danger">
         <strong>Whoops!</strong> There were some problems with your input.<br><br>
@@ -83,7 +83,7 @@
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
                 </div>
-               
+
 
 
 
@@ -131,8 +131,19 @@
         if ($('#domain').length > 0) {
             var domain = document.getElementsByName('domain')[0].value;
             var data = $("#formoid").serialize() + '&domain=' + domain;
+            if ($('#quantity').length > 0) {
+                var quantity = document.getElementsByName('quantity')[0].value;
+                var data = $("#formoid").serialize() + '&domain=' + domain + '&quantity=' + quantity;
+            }else{
+                var data = $("#formoid").serialize() + '&domain=' + domain;
+            }
         } else {
-            var data = $("#formoid").serialize();
+            if ($('#quantity').length > 0) {
+                var quantity = document.getElementsByName('quantity')[0].value;
+                var data = $("#formoid").serialize() + '&quantity=' + quantity;
+            } else {
+                var data = $("#formoid").serialize();
+            }
         }
 
         $.ajax({
@@ -142,24 +153,24 @@
             success: function (data) {
                 //var response = JSON.stringify(data.result);
                 for (key in data.result) {
-                    if(key=='success'){
-                        
-                        $('#success').append('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+data.result[key]+'</div>');
+                    if (key == 'success') {
+
+                        $('#success').append('<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + data.result[key] + '</div>');
                         //$('#success').remove();
                     }
-                    if(key=='fails'){
-                       // $('#fails').remove();
-                        $('#fails').append('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+data.result[key]+'</div>');
+                    if (key == 'fails') {
+                        // $('#fails').remove();
+                        $('#fails').append('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' + data.result[key] + '</div>');
                     }
-                    
+
                 }
             },
             error: function (data) {
                 var response = JSON.parse(data.responseText);
                 $.each(response, function (k, v) {
-                    
+
                     $('#error').append('<div class="alert alert-danger"><strong>Whoops!</strong> There were some problems with your input.<br><br><ul><li>' + v + '</li></ul></div>');
-                   // $('#error').remove();
+                    // $('#error').remove();
                 });
             }
         });

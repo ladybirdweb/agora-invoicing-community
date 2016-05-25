@@ -47,11 +47,11 @@ main
                 </div>
                 @endif
     
-    <div class="col-md-12 col-md-offset-3">
+    <!--<div class="col-md-12 col-md-offset-3">-->
         <div class="pricing-table princig-table-flat">
         {!! html_entity_decode($template) !!}
         </div>
-    </div>
+    <!--</div>-->
 
 </div>
 

@@ -35,6 +35,12 @@ $mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso(
     <div class="col-md-12">
 
         <div class="featured-boxes">
+            <div id="error">
+    </div>
+    <div id="success">
+    </div>
+    <div id="fails">
+    </div>
             @if(Session::has('success'))
             <div class="alert alert-success alert-dismissable">
                 <i class="fa fa-ban"></i>
@@ -66,7 +72,7 @@ $mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso(
                     <div class="featured-box featured-box-primary align-left mt-xlg">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">I'm a Returning Customer</h4>
-                            {!!  Form::open(['action'=>'Auth\AuthController@postLogin', 'method'=>'post']) !!}
+                            {!!  Form::open(['action'=>'Auth\AuthController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
                             <div class="row">
                                 <div class="form-group  {{ $errors->has('email1') ? 'has-error' : '' }}">
                                     <div class="col-md-12">
@@ -150,7 +156,7 @@ $mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso(
                                     </div>
 
                                     <div class="form-group">
-                                        <div class="col-md-4 {{ $errors->has('state') ? 'has-error' : '' }}">
+                                        <div class="col-md-4 {{ $errors->has('country') ? 'has-error' : '' }}">
                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                             <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
                                             {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getState(this.value);']) !!}
@@ -176,11 +182,17 @@ $mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso(
                                     </div>
 
                                     <div class="form-group">
-                                        <div class="col-md-6 {{ $errors->has('country') ? 'has-error' : '' }}">
+                                        <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
                                             {!! Form::label('state',Lang::get('message.state')) !!}
                                             
                                             <!--{!! Form::select('state',[$states],$state,['class' => 'form-control','id'=>'state-list']) !!}-->
                                             <select class="form-control input-lg" id="state-list" name="state">
+                                                @if(old('state'))
+                                                <?php 
+                                                    $state_name = \App\Http\Controllers\Front\CartController::getStateNameById(old('state'));
+                                                ?>
+                                                <option value="{{old('state')}}">{{$state_name}}</option>
+                                                @endif
                                                 @if(key_exists('id',$state)&& key_exists('name',$state))
                                                 <option value="{{$state['id']}}">{{$state['name']}}</option>
                                                 @endif

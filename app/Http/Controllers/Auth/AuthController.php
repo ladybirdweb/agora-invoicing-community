@@ -155,6 +155,7 @@ use AuthenticatesAndRegistersUsers;
             //return redirect()->back()->with('fails', $ex->getMessage());
             $result = ['fails' => $ex->getMessage()];
         }
+
         return response()->json(compact('result'));
     }
 

@@ -164,18 +164,17 @@ class InvoiceController extends Controller
         }
     }
 
-
-    public function invoiceGenerateByForm(Request $request, $user_id = '') {
-        
+    public function invoiceGenerateByForm(Request $request, $user_id = '')
+    {
         $qty = 1;
-        if (key_exists('domain', $request->all())) {
+        if (array_key_exists('domain', $request->all())) {
             $this->validate($request, [
                 'domain' => 'required|url',
             ]);
         }
-        if (key_exists('quantity', $request->all())) {
+        if (array_key_exists('quantity', $request->all())) {
             $this->validate($request, [
-                'quantity' => 'required|integer'
+                'quantity' => 'required|integer',
             ]);
             $qty = $request->input('quantity');
         }
@@ -250,7 +249,7 @@ class InvoiceController extends Controller
             if ($grand_total > 0) {
                 $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             }
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency,$qty);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty);
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
                 $result = ['success' => \Lang::get('message.invoice-generated-successfully')];
@@ -380,7 +379,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code = '', $price = '', $currency = 'USD',$qty) {
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty)
+    {
         try {
             $discount = '';
             $mode = '';

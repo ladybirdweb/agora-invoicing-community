@@ -65,8 +65,7 @@ Route::get('my-subscription/{id}', 'Front\ClientController@getSubscription');
 Route::get('my-profile', 'Front\ClientController@profile');
 Route::patch('my-profile', 'Front\ClientController@postProfile');
 Route::patch('my-password', 'Front\ClientController@postPassword');
-Route::get('paynow/{id}','Front\CheckoutController@paynow');
-
+Route::get('paynow/{id}', 'Front\CheckoutController@paynow');
 
 /*
  * Social Media

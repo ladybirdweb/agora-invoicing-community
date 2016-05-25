@@ -518,7 +518,8 @@ class ProductController extends Controller
                     ->price;
             }
             $field = $this->getProductField($id).$this->getProductQtyCheck($id);
-            $result = ['price'=>$price,'field'=>$field];
+            $result = ['price' => $price, 'field' => $field];
+
             return response()->json($result);
         } catch (\Exception $ex) {
             $result = ['price' => $ex->getMessage()];
@@ -560,11 +561,12 @@ class ProductController extends Controller
             return $ex->getMessage();
         }
     }
-    
-    public function getProductQtyCheck($productid){
-        try{
+
+    public function getProductQtyCheck($productid)
+    {
+        try {
             $check = self::checkMultiProduct($productid);
-            if($check==true){
+            if ($check == true) {
                 return "<div class='col-md-4 form-group'>
                         <label class='required'>".\Lang::get('message.quantity')."</label>
                         <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
@@ -574,19 +576,20 @@ class ProductController extends Controller
             return $ex->getMessage();
         }
     }
-    
-    public static function checkMultiProduct($productid){
-        try{
+
+    public static function checkMultiProduct($productid)
+    {
+        try {
             $product = new Product();
             $product = $product->find($productid);
-            if($product){
-                if($product->multiple_qty==1){
+            if ($product) {
+                if ($product->multiple_qty == 1) {
                     return true;
                 }
             }
+
             return false;
         } catch (Exception $ex) {
-
         }
     }
 }

@@ -1,16 +1,17 @@
-<?php return array (
-  'providers' => 
-  array (
-    0 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-    1 => 'Illuminate\\Auth\\AuthServiceProvider',
-    2 => 'Illuminate\\Bus\\BusServiceProvider',
-    3 => 'Illuminate\\Cache\\CacheServiceProvider',
-    4 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    5 => 'Illuminate\\Cookie\\CookieServiceProvider',
-    6 => 'Illuminate\\Database\\DatabaseServiceProvider',
-    7 => 'Illuminate\\Encryption\\EncryptionServiceProvider',
-    8 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
-    9 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+<?php
+
+return  [
+  'providers' =>  [
+    0  => 'App\\Plugins\\Ccavanue\\ServiceProvider',
+    1  => 'Illuminate\\Auth\\AuthServiceProvider',
+    2  => 'Illuminate\\Bus\\BusServiceProvider',
+    3  => 'Illuminate\\Cache\\CacheServiceProvider',
+    4  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    5  => 'Illuminate\\Cookie\\CookieServiceProvider',
+    6  => 'Illuminate\\Database\\DatabaseServiceProvider',
+    7  => 'Illuminate\\Encryption\\EncryptionServiceProvider',
+    8  => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
+    9  => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
     10 => 'Illuminate\\Hashing\\HashServiceProvider',
     11 => 'Illuminate\\Mail\\MailServiceProvider',
     12 => 'Illuminate\\Pagination\\PaginationServiceProvider',
@@ -34,19 +35,18 @@
     30 => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     31 => 'Mailchimp\\MailchimpServiceProvider',
     32 => 'Torann\\GeoIP\\GeoIPServiceProvider',
-  ),
-  'eager' => 
-  array (
-    0 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-    1 => 'Illuminate\\Auth\\AuthServiceProvider',
-    2 => 'Illuminate\\Cookie\\CookieServiceProvider',
-    3 => 'Illuminate\\Database\\DatabaseServiceProvider',
-    4 => 'Illuminate\\Encryption\\EncryptionServiceProvider',
-    5 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
-    6 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
-    7 => 'Illuminate\\Pagination\\PaginationServiceProvider',
-    8 => 'Illuminate\\Session\\SessionServiceProvider',
-    9 => 'Illuminate\\View\\ViewServiceProvider',
+  ],
+  'eager' =>  [
+    0  => 'App\\Plugins\\Ccavanue\\ServiceProvider',
+    1  => 'Illuminate\\Auth\\AuthServiceProvider',
+    2  => 'Illuminate\\Cookie\\CookieServiceProvider',
+    3  => 'Illuminate\\Database\\DatabaseServiceProvider',
+    4  => 'Illuminate\\Encryption\\EncryptionServiceProvider',
+    5  => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
+    6  => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+    7  => 'Illuminate\\Pagination\\PaginationServiceProvider',
+    8  => 'Illuminate\\Session\\SessionServiceProvider',
+    9  => 'Illuminate\\View\\ViewServiceProvider',
     10 => 'Thomaswelton\\LaravelGravatar\\LaravelGravatarServiceProvider',
     11 => 'Chumper\\Datatable\\DatatableServiceProvider',
     12 => 'Darryldecode\\Cart\\CartServiceProvider',
@@ -56,119 +56,103 @@
     16 => 'App\\Providers\\RouteServiceProvider',
     17 => 'Mailchimp\\MailchimpServiceProvider',
     18 => 'Torann\\GeoIP\\GeoIPServiceProvider',
-  ),
-  'deferred' => 
-  array (
-    'Illuminate\\Bus\\Dispatcher' => 'Illuminate\\Bus\\BusServiceProvider',
-    'Illuminate\\Contracts\\Bus\\Dispatcher' => 'Illuminate\\Bus\\BusServiceProvider',
-    'Illuminate\\Contracts\\Bus\\QueueingDispatcher' => 'Illuminate\\Bus\\BusServiceProvider',
-    'cache' => 'Illuminate\\Cache\\CacheServiceProvider',
-    'cache.store' => 'Illuminate\\Cache\\CacheServiceProvider',
-    'memcached.connector' => 'Illuminate\\Cache\\CacheServiceProvider',
-    'command.cache.clear' => 'Illuminate\\Cache\\CacheServiceProvider',
-    'command.clear-compiled' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.auth.resets.clear' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.config.cache' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.config.clear' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.down' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.environment' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.key.generate' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.optimize' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.route.cache' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.route.clear' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.route.list' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.tinker' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.up' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.view.clear' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+  ],
+  'deferred' =>  [
+    'Illuminate\\Bus\\Dispatcher'                         => 'Illuminate\\Bus\\BusServiceProvider',
+    'Illuminate\\Contracts\\Bus\\Dispatcher'              => 'Illuminate\\Bus\\BusServiceProvider',
+    'Illuminate\\Contracts\\Bus\\QueueingDispatcher'      => 'Illuminate\\Bus\\BusServiceProvider',
+    'cache'                                               => 'Illuminate\\Cache\\CacheServiceProvider',
+    'cache.store'                                         => 'Illuminate\\Cache\\CacheServiceProvider',
+    'memcached.connector'                                 => 'Illuminate\\Cache\\CacheServiceProvider',
+    'command.cache.clear'                                 => 'Illuminate\\Cache\\CacheServiceProvider',
+    'command.clear-compiled'                              => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.auth.resets.clear'                           => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.config.cache'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.config.clear'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.down'                                        => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.environment'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.key.generate'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.optimize'                                    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.route.cache'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.route.clear'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.route.list'                                  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.tinker'                                      => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.up'                                          => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.view.clear'                                  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleRunCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'migrator' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'migration.repository' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.rollback' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.reset' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.refresh' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.install' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.status' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'migration.creator' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.migrate.make' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'seeder' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.seed' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'composer' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.queue.failed' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.queue.retry' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.queue.forget' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.queue.flush' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'hash' => 'Illuminate\\Hashing\\HashServiceProvider',
-    'mailer' => 'Illuminate\\Mail\\MailServiceProvider',
-    'swift.mailer' => 'Illuminate\\Mail\\MailServiceProvider',
-    'swift.transport' => 'Illuminate\\Mail\\MailServiceProvider',
-    'Illuminate\\Contracts\\Pipeline\\Hub' => 'Illuminate\\Pipeline\\PipelineServiceProvider',
-    'queue' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'queue.worker' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'queue.listener' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'queue.failer' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'command.queue.work' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'command.queue.listen' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'command.queue.restart' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'queue.connection' => 'Illuminate\\Queue\\QueueServiceProvider',
-    'redis' => 'Illuminate\\Redis\\RedisServiceProvider',
-    'auth.password' => 'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider',
-    'auth.password.broker' => 'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider',
-    'translator' => 'Illuminate\\Translation\\TranslationServiceProvider',
-    'translation.loader' => 'Illuminate\\Translation\\TranslationServiceProvider',
-    'validator' => 'Illuminate\\Validation\\ValidationServiceProvider',
-    'validation.presence' => 'Illuminate\\Validation\\ValidationServiceProvider',
-    'html' => 'Collective\\Html\\HtmlServiceProvider',
-    'form' => 'Collective\\Html\\HtmlServiceProvider',
-    'Collective\\Html\\HtmlBuilder' => 'Collective\\Html\\HtmlServiceProvider',
-    'Collective\\Html\\FormBuilder' => 'Collective\\Html\\HtmlServiceProvider',
-    'Illuminate\\Broadcasting\\BroadcastManager' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
-    'Illuminate\\Contracts\\Broadcasting\\Factory' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
-    'Illuminate\\Contracts\\Broadcasting\\Broadcaster' => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
-  ),
-  'when' => 
-  array (
-    'Illuminate\\Bus\\BusServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Cache\\CacheServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Hashing\\HashServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Mail\\MailServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Pipeline\\PipelineServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Queue\\QueueServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Redis\\RedisServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Translation\\TranslationServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Validation\\ValidationServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Html\\HtmlServiceProvider' => 
-    array (
-    ),
-    'Collective\\Html\\HtmlServiceProvider' => 
-    array (
-    ),
-    'Illuminate\\Broadcasting\\BroadcastServiceProvider' => 
-    array (
-    ),
-  ),
-);
+    'migrator'                                            => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'migration.repository'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.rollback'                            => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.reset'                               => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.refresh'                             => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.install'                             => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.status'                              => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'migration.creator'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.migrate.make'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'seeder'                                              => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.seed'                                        => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'composer'                                            => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.queue.failed'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.queue.retry'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.queue.forget'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.queue.flush'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'hash'                                                => 'Illuminate\\Hashing\\HashServiceProvider',
+    'mailer'                                              => 'Illuminate\\Mail\\MailServiceProvider',
+    'swift.mailer'                                        => 'Illuminate\\Mail\\MailServiceProvider',
+    'swift.transport'                                     => 'Illuminate\\Mail\\MailServiceProvider',
+    'Illuminate\\Contracts\\Pipeline\\Hub'                => 'Illuminate\\Pipeline\\PipelineServiceProvider',
+    'queue'                                               => 'Illuminate\\Queue\\QueueServiceProvider',
+    'queue.worker'                                        => 'Illuminate\\Queue\\QueueServiceProvider',
+    'queue.listener'                                      => 'Illuminate\\Queue\\QueueServiceProvider',
+    'queue.failer'                                        => 'Illuminate\\Queue\\QueueServiceProvider',
+    'command.queue.work'                                  => 'Illuminate\\Queue\\QueueServiceProvider',
+    'command.queue.listen'                                => 'Illuminate\\Queue\\QueueServiceProvider',
+    'command.queue.restart'                               => 'Illuminate\\Queue\\QueueServiceProvider',
+    'queue.connection'                                    => 'Illuminate\\Queue\\QueueServiceProvider',
+    'redis'                                               => 'Illuminate\\Redis\\RedisServiceProvider',
+    'auth.password'                                       => 'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider',
+    'auth.password.broker'                                => 'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider',
+    'translator'                                          => 'Illuminate\\Translation\\TranslationServiceProvider',
+    'translation.loader'                                  => 'Illuminate\\Translation\\TranslationServiceProvider',
+    'validator'                                           => 'Illuminate\\Validation\\ValidationServiceProvider',
+    'validation.presence'                                 => 'Illuminate\\Validation\\ValidationServiceProvider',
+    'html'                                                => 'Collective\\Html\\HtmlServiceProvider',
+    'form'                                                => 'Collective\\Html\\HtmlServiceProvider',
+    'Collective\\Html\\HtmlBuilder'                       => 'Collective\\Html\\HtmlServiceProvider',
+    'Collective\\Html\\FormBuilder'                       => 'Collective\\Html\\HtmlServiceProvider',
+    'Illuminate\\Broadcasting\\BroadcastManager'          => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
+    'Illuminate\\Contracts\\Broadcasting\\Factory'        => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
+    'Illuminate\\Contracts\\Broadcasting\\Broadcaster'    => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
+  ],
+  'when' =>  [
+    'Illuminate\\Bus\\BusServiceProvider' =>  [
+    ],
+    'Illuminate\\Cache\\CacheServiceProvider' =>  [
+    ],
+    'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider' =>  [
+    ],
+    'Illuminate\\Hashing\\HashServiceProvider' =>  [
+    ],
+    'Illuminate\\Mail\\MailServiceProvider' =>  [
+    ],
+    'Illuminate\\Pipeline\\PipelineServiceProvider' =>  [
+    ],
+    'Illuminate\\Queue\\QueueServiceProvider' =>  [
+    ],
+    'Illuminate\\Redis\\RedisServiceProvider' =>  [
+    ],
+    'Illuminate\\Auth\\Passwords\\PasswordResetServiceProvider' =>  [
+    ],
+    'Illuminate\\Translation\\TranslationServiceProvider' =>  [
+    ],
+    'Illuminate\\Validation\\ValidationServiceProvider' =>  [
+    ],
+    'Illuminate\\Html\\HtmlServiceProvider' =>  [
+    ],
+    'Collective\\Html\\HtmlServiceProvider' =>  [
+    ],
+    'Illuminate\\Broadcasting\\BroadcastServiceProvider' =>  [
+    ],
+  ],
+];

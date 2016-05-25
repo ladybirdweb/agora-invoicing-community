@@ -112,25 +112,27 @@ class CheckoutController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
-    public function payNow($invoiceid){
-        try{
+
+    public function payNow($invoiceid)
+    {
+        try {
             $invoice = $this->invoice->find($invoiceid);
             $items = new \Illuminate\Support\Collection();
-            if($invoice){
+            if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoiceid);
             }
-            return view('themes.default1.front.paynow', compact('invoice', 'items','product'));
+
+            return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-
-    public function postCheckout(Request $request) {
-        $cost = $request->input('cost'); 
-        if (\Cart::getSubTotal() > 0 || $cost>0) {
+    public function postCheckout(Request $request)
+    {
+        $cost = $request->input('cost');
+        if (\Cart::getSubTotal() > 0 || $cost > 0) {
             $v = $this->validate($request, [
                 'payment_gateway' => 'required',
                     ], [
@@ -160,8 +162,7 @@ class CheckoutController extends Controller
             $url = '';
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0) {
-
-                $invoice_controller->doPayment($payment_method, $invoiceid, $amount,'','',$status);
+                $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $this->checkoutAction($invoice);

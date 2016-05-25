@@ -100,7 +100,6 @@ return [
          */
 
         'App\Plugins\Ccavanue\ServiceProvider',
-        
 
         /*
          * Laravel Framework Service Providers...

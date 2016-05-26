@@ -149,14 +149,14 @@ use AuthenticatesAndRegistersUsers;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();
             $this->sendActivation($user->email, $request->method(), $pass);
-            $result = ['success' => \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email')];
-            //return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
+            //$result = ['success' => \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email')];
+            return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
         } catch (\Exception $ex) {
-            //return redirect()->back()->with('fails', $ex->getMessage());
-            $result = ['fails' => $ex->getMessage()];
+            return redirect()->back()->with('fails', $ex->getMessage());
+            //$result = ['fails' => $ex->getMessage()];
         }
 
-        return response()->json(compact('result'));
+        //return response()->json(compact('result'));
     }
 
     public function sendActivationByGet($email, Request $request)

@@ -287,6 +287,7 @@ Route::patch('github', 'Github\GithubController@postSettings');
  * download
  */
 Route::get('download/{userid}/{invoice_number}', 'Product\ProductController@userDownload');
+Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
 
 /*
  * testings

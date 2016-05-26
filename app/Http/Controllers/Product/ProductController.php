@@ -15,8 +15,8 @@ use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
-{
+class ProductController extends Controller {
+
     public $product;
     public $price;
     public $type;
@@ -28,8 +28,7 @@ class ProductController extends Controller
     public $tax_relation;
     public $tax_class;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
         $this->middleware('admin', ['except' => ['userDownload']]);
 
@@ -69,8 +68,7 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function index()
-    {
+    public function index() {
         try {
             return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
@@ -78,13 +76,12 @@ class ProductController extends Controller
         }
     }
 
-    public function GetProducts()
-    {
+    public function GetProducts() {
 
         // try {
         return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -120,7 +117,11 @@ class ProductController extends Controller
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            $url = "";
+                            if ($model->type==2) {
+                                $url = '<a href=' . url('product/download/' . $model->id) . " class='btn btn-sm btn-primary'>Download</a>";
+                            }
+                            return '<p><a href=' . url('products/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
                         ->searchColumns('name', 'email')
                         ->orderColumns('name', 'email')
@@ -135,15 +136,14 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function create()
-    {
+    public function create() {
         try {
             /*
              * server url
              */
             $url = $this->GetMyUrl();
             $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
-            $cartUrl = $url.'/pricing?id='.$i;
+            $cartUrl = $url . '/pricing?id=' . $i;
             $type = $this->type->lists('name', 'id')->toArray();
             $subscription = $this->plan->lists('name', 'id')->toArray();
             $currency = $this->currency->lists('name', 'code')->toArray();
@@ -162,17 +162,16 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $input = $request->all();
         //dd($input);
         $v = \Validator::make($input, [
-                    'name'         => 'required',
-                    'type'         => 'required',
-                    'group'        => 'required',
+                    'name' => 'required',
+                    'type' => 'required',
+                    'group' => 'required',
                     'subscription' => 'required',
-                    'currency.*'   => 'required',
-                    'price.*'      => 'required',
+                    'currency.*' => 'required',
+                    'price.*' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
             return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
@@ -194,7 +193,7 @@ class ProductController extends Controller
             }
             if ($request->hasFile('file')) {
                 $file = $request->file('file')->getClientOriginalName();
-                $filedestinationPath = storage_path().'/products';
+                $filedestinationPath = storage_path() . '/products';
                 $request->file('file')->move($filedestinationPath, $file);
                 $this->product->file = $file;
             }
@@ -235,8 +234,7 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -247,8 +245,7 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         try {
             $type = $this->type->lists('name', 'id')->toArray();
             $subscription = $this->plan->lists('name', 'id')->toArray();
@@ -256,7 +253,7 @@ class ProductController extends Controller
             $group = $this->group->lists('name', 'id')->toArray();
             $products = $this->product->lists('name', 'id')->toArray();
             $url = $this->GetMyUrl();
-            $cartUrl = $url.'/cart?id='.$id;
+            $cartUrl = $url . '/cart?id=' . $id;
             $product = $this->product->where('id', $id)->first();
             $price = $this->price->where('product_id', $product->id);
             foreach ($currency as $key => $value) {
@@ -287,17 +284,16 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function update($id, Request $request)
-    {
+    public function update($id, Request $request) {
         $input = $request->all();
         //dd($input);
         $v = \Validator::make($input, [
-                    'name'         => 'required',
-                    'type'         => 'required',
-                    'group'        => 'required',
+                    'name' => 'required',
+                    'type' => 'required',
+                    'group' => 'required',
                     'subscription' => 'required',
-                    'currency.*'   => 'required',
-                    'price.*'      => 'required',
+                    'currency.*' => 'required',
+                    'price.*' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
             return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
@@ -320,7 +316,7 @@ class ProductController extends Controller
             }
             if ($request->hasFile('file')) {
                 $file = $request->file('file')->getClientOriginalName();
-                $filedestinationPath = storage_path().'/products';
+                $filedestinationPath = storage_path() . '/products';
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
@@ -368,8 +364,7 @@ class ProductController extends Controller
      *
      * @return Response
      */
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request) {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -381,48 +376,47 @@ class ProductController extends Controller
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        ' . \Lang::get('message.no-record') . '
                 </div>';
                             //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                         }
                         echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        ' . \Lang::get('message.deleted-successfully') . '
                 </div>';
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.can-not-delete-default').'
+                        ' . \Lang::get('message.can-not-delete-default') . '
                 </div>';
                     }
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        ' . \Lang::get('message.select-a-row') . '
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
+                        ' . $e->getMessage() . '
                 </div>';
         }
     }
 
-    public function GetMyUrl()
-    {
+    public function GetMyUrl() {
         $server = new Request();
         $url = $_SERVER['REQUEST_URI'];
         $server = parse_url($url);
@@ -430,13 +424,12 @@ class ProductController extends Controller
         $server = parse_url($server['path']);
         $server['path'] = dirname($server['path']);
 
-        $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
+        $server = 'http://' . $_SERVER['HTTP_HOST'] . $server['path'];
 
         return $server;
     }
 
-    public function downloadProduct($id)
-    {
+    public function downloadProduct($id) {
         try {
             $product = $this->product->findOrFail($id);
             //dd($product);
@@ -453,19 +446,33 @@ class ProductController extends Controller
 
                     return $relese;
                 } elseif ($file) {
-                    $file = storage_path().'/products/'.$file;
+                    $relese = storage_path() . '/products/' . $file;
 
-                    return \Response::download($file);
+                    return $relese;
                 }
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+    
+    public function adminDownload($id){
+        try{
+            $release = $this->downloadProduct($id);
+            header("Location: $release"); 
+            exit;
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
 
-    public function userDownload($userid, $invoice_number)
-    {
+    public function userDownload($userid, $invoice_number) {
         try {
+            if (\Auth::user()->role != 'admin') {
+                if (\Auth::user()->id != $userid) {
+                    throw new \Exception('This user has no permission for this action');
+                }
+            }
             $user = new \App\User();
             $user = $user->findOrFail($userid);
             $invoice = new \App\Model\Order\Invoice();
@@ -476,12 +483,6 @@ class ProductController extends Controller
                     $item = $invoice_item->where('invoice_id', $invoice->id)->first();
                     $product_id = $this->product->where('name', $item->product_name)->first()->id;
                     $release = $this->downloadProduct($product_id);
-
-//                    $form = '';
-//                    $form .= "<form action=$release method=get name=redirect>";
-//                    $form .= '</form>';
-//                    $form .= "<script language='javascript'>document.redirect.submit();</script>";
-
                     return view('themes.default1.front.download', compact('release', 'form'));
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
@@ -489,12 +490,12 @@ class ProductController extends Controller
             } else {
                 return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
+            return redirect('auth/login')->with('fails',$ex->getMessage());
         }
     }
 
-    public function getPrice(Request $request)
-    {
+    public function getPrice(Request $request) {
         try {
             $id = $request->input('product');
             $userid = $request->input('user');
@@ -504,20 +505,20 @@ class ProductController extends Controller
             //dd($currency);
             $product = $this->product->findOrFail($id);
             $price = $product
-                    ->price()
-                    ->where('product_id', $id)
-                    ->where('currency', $currency)
-                    ->first()
+                            ->price()
+                            ->where('product_id', $id)
+                            ->where('currency', $currency)
+                            ->first()
                     ->sales_price;
             if (!$price) {
                 $price = $product
-                    ->price()
-                    ->where('product_id', $id)
-                    ->where('currency', $currency)
-                    ->first()
-                    ->price;
+                                ->price()
+                                ->where('product_id', $id)
+                                ->where('currency', $currency)
+                                ->first()
+                        ->price;
             }
-            $field = $this->getProductField($id).$this->getProductQtyCheck($id);
+            $field = $this->getProductField($id) . $this->getProductQtyCheck($id);
             $result = ['price' => $price, 'field' => $field];
 
             return response()->json($result);
@@ -528,8 +529,7 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid)
-    {
+    public function updateVersionFromGithub($productid) {
         try {
             if (\Input::has('github_owner') && \Input::has('github_repository')) {
                 $owner = \Input::get('github_owner');
@@ -545,14 +545,13 @@ class ProductController extends Controller
         }
     }
 
-    public function getProductField($productid)
-    {
+    public function getProductField($productid) {
         try {
             $product = $this->product->find($productid);
             if ($product) {
                 if ($product->require_domain == 1) {
                     return "<div class='col-md-4 form-group'>
-                        <label class='required'>".\Lang::get('message.domain')."</label>
+                        <label class='required'>" . \Lang::get('message.domain') . "</label>
                         <input type='text' name='domain' class='form-control' id='domain' placeholder='http://example.com'>
                 </div>";
                 }
@@ -562,13 +561,12 @@ class ProductController extends Controller
         }
     }
 
-    public function getProductQtyCheck($productid)
-    {
+    public function getProductQtyCheck($productid) {
         try {
             $check = self::checkMultiProduct($productid);
             if ($check == true) {
                 return "<div class='col-md-4 form-group'>
-                        <label class='required'>".\Lang::get('message.quantity')."</label>
+                        <label class='required'>" . \Lang::get('message.quantity') . "</label>
                         <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
                 </div>";
             }
@@ -577,8 +575,7 @@ class ProductController extends Controller
         }
     }
 
-    public static function checkMultiProduct($productid)
-    {
+    public static function checkMultiProduct($productid) {
         try {
             $product = new Product();
             $product = $product->find($productid);
@@ -590,6 +587,8 @@ class ProductController extends Controller
 
             return false;
         } catch (Exception $ex) {
+            
         }
     }
+
 }

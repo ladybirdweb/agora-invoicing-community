@@ -201,7 +201,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($client->payment()->get() as $payment)
+                                @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
                                     <td>{{$payment->created_at}}</td>
                                     <td>
@@ -340,7 +340,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($client->order()->get() as $order)
+                                @forelse($client->order()->orderBy('created_at','desc')->get() as $order)
                                 <tr>
                                     <td>{{$order->created_at}}</td>
                                     <td>{{$order->number}}</td>

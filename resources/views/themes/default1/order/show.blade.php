@@ -49,10 +49,10 @@
                                 <tbody><tr><td><b>Serial Key:</b></td><td>{{$order->serial_key}}</td></tr>
                                     <tr><td><b>Domain Name:</b></td><td>{{$order->domain}}</td></tr>
                                     <?php
-                                    if ($subscription->end_at == '' || $subscription->end_at == '0000-00-00 00:00:00') {
+                                    if ($subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
                                         $sub = "--";
                                     } else {
-                                        $sub = $subscription->end_at;
+                                        $sub = $subscription->ends_at;
                                     }
                                     ?>
                                     <tr><td><b>Subscription End:</b></td><td>{{$sub}}</td></tr>

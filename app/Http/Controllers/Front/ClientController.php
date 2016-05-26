@@ -265,7 +265,8 @@ class ClientController extends Controller
                             return $model->number;
                         })
                         ->addColumn('invoice_item', function ($model) {
-                            $products = $model->invoiceItem()->lists('product_name')->toArray();
+                            $invoice = $this->invoice->find($model->id);
+                            $products = $invoice->invoiceItem()->lists('product_name')->toArray();
 
                             return ucfirst(implode(',', $products));
                         })

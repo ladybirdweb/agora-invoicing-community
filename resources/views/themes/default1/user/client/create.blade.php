@@ -101,6 +101,13 @@
                         {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','id')],null,['class' => 'form-control']) !!}
 
                     </div>
+                    
+                    <div class="col-md-4 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
+
+                    </div>
 
                 </div>
 

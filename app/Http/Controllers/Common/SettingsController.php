@@ -8,16 +8,15 @@ use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
 use Illuminate\Support\Collection;
-class SettingsController extends Controller
-{
-    public function __construct()
-    {
-        $this->middleware('auth',['except'=>'checkPaymentGateway']);
-        $this->middleware('admin',['except'=>'checkPaymentGateway']);
+
+class SettingsController extends Controller {
+
+    public function __construct() {
+        $this->middleware('auth', ['except' => 'checkPaymentGateway']);
+        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
     }
 
-    public function Settings(Setting $settings)
-    {
+    public function Settings(Setting $settings) {
         if (!$settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
@@ -27,8 +26,7 @@ class SettingsController extends Controller
         return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 
-    public function UpdateSettings(Setting $settings, SettingRequest $request)
-    {
+    public function UpdateSettings(Setting $settings, SettingRequest $request) {
         //dd($request);
         $setting = $settings->where('id', '1')->first();
         if ($request->has('password')) {
@@ -46,7 +44,7 @@ class SettingsController extends Controller
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
-    
+
     public function plugins() {
         return view('themes.default1.common.plugins');
     }
@@ -297,7 +295,6 @@ class SettingsController extends Controller
                 $attributes[$key]['version'] = $field['version'];
                 $attributes[$key]['author'] = $field['author'];
             }
-            
         }
         //dd($attributes);
         return $attributes;
@@ -364,26 +361,31 @@ class SettingsController extends Controller
 
         return redirect()->back()->with('success', 'Status has changed');
     }
-    
-    public static function checkPaymentGateway($currency){
-        try{
-           
-           $plugins = new Plugin();
-           $models =[];
-           $gateways = [];
-           $active_plugins = $plugins->where('status',1)->get();
-           foreach($active_plugins as $key=>$plugin){
-               array_push($models, \DB::table(strtolower($plugin->name)));
-           }
-           foreach($models as $model){
-               $currencies = explode(',',$model->first()->currencies);
-               if(in_array($currency,$currencies)){
-                   array_push($gateways,$model);
-               }
-           }
-           return $gateways;
+
+    public static function checkPaymentGateway($currency) {
+        try {
+
+            $plugins = new Plugin();
+            $models = [];
+            $gateways = [];
+            $active_plugins = $plugins->where('status', 1)->get();
+            if ($active_plugins->count() > 0) {
+                foreach ($active_plugins as $plugin) {
+                    array_push($models, \DB::table(strtolower($plugin->name)));
+                }
+                if (count($models) > 0) {
+                    foreach ($models as $model) {
+                        $currencies = explode(',', $model->first()->currencies);
+                        if (in_array($currency, $currencies)) {
+                            array_push($gateways, $model);
+                        }
+                    }
+                }
+            }
+            return $gateways;
         } catch (\Exception $ex) {
             dd($ex);
-        }   
+        }
     }
+
 }

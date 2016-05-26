@@ -3,19 +3,21 @@
 namespace App\Plugins\Paypal\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Plugins\Paypal\Model\Paypal;
+use Illuminate\Http\Request;
 
-class ProcessController extends Controller {
-
+class ProcessController extends Controller
+{
     protected $paypal;
 
-    public function __construct() {
+    public function __construct()
+    {
         $paypal = new Paypal();
         $this->paypal = $paypal;
     }
 
-    public function PassToPayment($requests) {
+    public function PassToPayment($requests)
+    {
         try {
             //dd($requests);
             $request = $requests['request'];
@@ -40,7 +42,8 @@ class ProcessController extends Controller {
         }
     }
 
-    public function getFields($invoice) {
+    public function getFields($invoice)
+    {
         try {
             //dd($invoice);
             $item = [];
@@ -68,21 +71,21 @@ class ProcessController extends Controller {
                 $email = $user->email;
 
                 $data = [
-                    'business' => $business,
-                    'cmd' => $cmd,
-                    'return' => $return,
+                    'business'      => $business,
+                    'cmd'           => $cmd,
+                    'return'        => $return,
                     'cancel_return' => $cancel_return,
-                    'notify_url' => $notify_url,
-                    'image_url' => $image_url,
-                    'rm' => $rm,
+                    'notify_url'    => $notify_url,
+                    'image_url'     => $image_url,
+                    'rm'            => $rm,
                     'currency_code' => $currency_code,
-                    'invoice' => $invoice_id,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'address1' => $address1,
-                    'city' => $city,
-                    'zip' => $zip,
-                    'email' => $email,
+                    'invoice'       => $invoice_id,
+                    'first_name'    => $first_name,
+                    'last_name'     => $last_name,
+                    'address1'      => $address1,
+                    'city'          => $city,
+                    'zip'           => $zip,
+                    'email'         => $email,
                 ];
 
                 $items = $invoice->invoiceItem()->get()->toArray();
@@ -92,7 +95,7 @@ class ProcessController extends Controller {
                         $n = $i + 1;
                         $item = [
                             "item_name_$n" => $items[$i]['product_name'],
-                            "quantity_$n" => $items[$i]['quantity']
+                            "quantity_$n"  => $items[$i]['quantity'],
                         ];
                     }
                     $data = array_merge($data, $item);
@@ -100,6 +103,7 @@ class ProcessController extends Controller {
                     $data = array_merge($data, $total);
                 }
             }
+
             return $data;
         } catch (\Exception $ex) {
             dd($ex);
@@ -107,10 +111,11 @@ class ProcessController extends Controller {
         }
     }
 
-    public function postCurl($data) {
+    public function postCurl($data)
+    {
         try {
             $config = $this->paypal->where('id', 1)->first();
-            if(!$config){
+            if (!$config) {
                 throw new \Exception('Paypal Fields not given');
             }
             $url = $config->paypal_url;
@@ -118,9 +123,9 @@ class ProcessController extends Controller {
             echo $url;
             dd($post_data);
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL,$url);
+            curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, 1);
-            curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $post_data);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $output = curl_exec($ch);
             curl_close($ch);
@@ -130,26 +135,26 @@ class ProcessController extends Controller {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
-    
-    public function postForm($data){
-        try{
+
+    public function postForm($data)
+    {
+        try {
             $config = $this->paypal->where('id', 1)->first();
-            if(!$config){
+            if (!$config) {
                 throw new \Exception('Paypal Fields not given');
             }
             $url = $config->paypal_url;
             $gif_path = asset('dist/gif/gifloader.gif');
             echo "<img src=$gif_path>";
             echo "<form action=$url id=form name=redirect method=post>";
-            foreach($data as $key=>$value){
+            foreach ($data as $key => $value) {
                 echo "<input type=hidden name=$key value=$value>";
             }
-            echo "</form>";
+            echo '</form>';
             echo"<script language='javascript'>document.redirect.submit();</script>";
         } catch (\Exception $ex) {
             dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
-
 }

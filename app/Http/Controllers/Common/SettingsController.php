@@ -9,14 +9,16 @@ use App\Model\Common\Template;
 use App\Model\Plugin;
 use Illuminate\Support\Collection;
 
-class SettingsController extends Controller {
-
-    public function __construct() {
+class SettingsController extends Controller
+{
+    public function __construct()
+    {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
         $this->middleware('admin', ['except' => 'checkPaymentGateway']);
     }
 
-    public function Settings(Setting $settings) {
+    public function Settings(Setting $settings)
+    {
         if (!$settings->where('id', '1')->first()) {
             $settings->create(['company' => '']);
         }
@@ -26,7 +28,8 @@ class SettingsController extends Controller {
         return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 
-    public function UpdateSettings(Setting $settings, SettingRequest $request) {
+    public function UpdateSettings(Setting $settings, SettingRequest $request)
+    {
         //dd($request);
         $setting = $settings->where('id', '1')->first();
         if ($request->has('password')) {
@@ -45,11 +48,13 @@ class SettingsController extends Controller {
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
-    public function plugins() {
+    public function plugins()
+    {
         return view('themes.default1.common.plugins');
     }
 
-    public function getPlugin() {
+    public function getPlugin()
+    {
         $plugins = $this->fetchConfig();
 
         return \Datatable::collection(new Collection($plugins))
@@ -57,15 +62,15 @@ class SettingsController extends Controller {
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
-                                    $activate = '<a href=' . url('plugin/status/' . $model['path']) . '>Activate</a>';
+                                    $activate = '<a href='.url('plugin/status/'.$model['path']).'>Activate</a>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href=' . url($model['settings']) . '>Settings</a> | ';
-                                    $activate = '<a href=' . url('plugin/status/' . $model['path']) . '>Deactivate</a>';
+                                    $settings = '<a href='.url($model['settings']).'>Settings</a> | ';
+                                    $activate = '<a href='.url('plugin/status/'.$model['path']).'>Deactivate</a>';
                                 }
 
-                                $delete = '<a href=  id=delete' . $model['path'] . ' data-toggle=modal data-target=#del' . $model['path'] . "><span style='color:red'>Delete</span></a>"
-                                        . "<div class='modal fade' id=del" . $model['path'] . ">
+                                $delete = '<a href=  id=delete'.$model['path'].' data-toggle=modal data-target=#del'.$model['path']."><span style='color:red'>Delete</span></a>"
+                                        ."<div class='modal fade' id=del".$model['path'].">
                                             <div class='modal-dialog'>
                                                 <div class=modal-content>  
                                                     <div class=modal-header>
@@ -74,8 +79,8 @@ class SettingsController extends Controller {
                                                     <div class=modal-body>
                                                        <p>Are you Sure ?</p>
                                                         <div class=modal-footer>
-                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>" . \Lang::get('lang.close') . '</button>
-                                                            <a href=' . url('plugin/delete/' . $model['path']) . "><button class='btn btn-danger'>Delete</button></a>
+                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
+                                                            <a href='.url('plugin/delete/'.$model['path'])."><button class='btn btn-danger'>Delete</button></a>
                                                         </div>
 
 
@@ -83,12 +88,12 @@ class SettingsController extends Controller {
                                                 </div>
                                             </div>
                                         </div>";
-                                $action = '<br><br>' . $delete . ' | ' . $settings . $activate;
+                                $action = '<br><br>'.$delete.' | '.$settings.$activate;
                             } else {
                                 $action = '';
                             }
 
-                            return ucfirst($model['name']) . $action;
+                            return ucfirst($model['name']).$action;
                         })
                         ->addColumn('description', function ($model) {
                             return ucfirst($model['description']);
@@ -97,7 +102,7 @@ class SettingsController extends Controller {
                             return ucfirst($model['author']);
                         })
                         ->addColumn('website', function ($model) {
-                            return '<a href=' . $model['website'] . ' target=_blank>' . $model['website'] . '</a>';
+                            return '<a href='.$model['website'].' target=_blank>'.$model['website'].'</a>';
                         })
                         ->addColumn('version', function ($model) {
                             return $model['version'];
@@ -110,8 +115,9 @@ class SettingsController extends Controller {
      *
      * @return type
      */
-    public function ReadPlugins() {
-        $dir = app_path() . DIRECTORY_SEPARATOR . 'Plugins';
+    public function ReadPlugins()
+    {
+        $dir = app_path().DIRECTORY_SEPARATOR.'Plugins';
         $plugins = array_diff(scandir($dir), ['.', '..']);
 
         return $plugins;
@@ -124,12 +130,13 @@ class SettingsController extends Controller {
      *
      * @return type
      */
-    public function postPlugins(Request $request) {
+    public function postPlugins(Request $request)
+    {
         $v = $this->validate($request, ['plugin' => 'required|mimes:application/zip,zip,Zip']);
         $plug = new Plugin();
         $file = $request->file('plugin');
         //dd($file);
-        $destination = app_path() . DIRECTORY_SEPARATOR . 'Plugins';
+        $destination = app_path().DIRECTORY_SEPARATOR.'Plugins';
         $zipfile = $file->getRealPath();
         /*
          * get the file name and remove .zip
@@ -138,30 +145,30 @@ class SettingsController extends Controller {
         $filename2 = str_replace('.zip', '', $filename2);
         $filename1 = ucfirst($file->getClientOriginalName());
         $filename = str_replace('.zip', '', $filename1);
-        mkdir($destination . DIRECTORY_SEPARATOR . $filename);
+        mkdir($destination.DIRECTORY_SEPARATOR.$filename);
         /*
          * extract the zip file using zipper
          */
-        \Zipper::make($zipfile)->folder($filename2)->extractTo($destination . DIRECTORY_SEPARATOR . $filename);
+        \Zipper::make($zipfile)->folder($filename2)->extractTo($destination.DIRECTORY_SEPARATOR.$filename);
 
-        $file = app_path() . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR . $filename; // Plugin file path
+        $file = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR.$filename; // Plugin file path
 
         if (file_exists($file)) {
-            $seviceporvider = $file . DIRECTORY_SEPARATOR . 'ServiceProvider.php';
-            $config = $file . DIRECTORY_SEPARATOR . 'config.php';
+            $seviceporvider = $file.DIRECTORY_SEPARATOR.'ServiceProvider.php';
+            $config = $file.DIRECTORY_SEPARATOR.'config.php';
             if (file_exists($seviceporvider) && file_exists($config)) {
                 /*
                  * move to faveo config
                  */
-                $faveoconfig = config_path() . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR . $filename . '.php';
+                $faveoconfig = config_path().DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$filename.'.php';
                 if ($faveoconfig) {
 
                     //copy($config, $faveoconfig);
                     /*
                      * write provider list in app.php line 128
                      */
-                    $app = base_path() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
-                    $str = "\n\n\t\t\t'App\\Plugins\\$filename" . "\\ServiceProvider',";
+                    $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
+                    $str = "\n\n\t\t\t'App\\Plugins\\$filename"."\\ServiceProvider',";
                     $line_i_am_looking_for = 102;
                     $lines = file($app, FILE_IGNORE_NEW_LINES);
                     $lines[$line_i_am_looking_for] = $str;
@@ -175,7 +182,7 @@ class SettingsController extends Controller {
                      */
                     $this->deleteDirectory($file);
 
-                    return redirect()->back()->with('fails', 'Their is no ' . $file);
+                    return redirect()->back()->with('fails', 'Their is no '.$file);
                 }
             } else {
                 /*
@@ -183,7 +190,7 @@ class SettingsController extends Controller {
                  */
                 $this->deleteDirectory($file);
 
-                return redirect()->back()->with('fails', 'Their is no <b>config.php or ServiceProvider.php</b>  ' . $file);
+                return redirect()->back()->with('fails', 'Their is no <b>config.php or ServiceProvider.php</b>  '.$file);
             }
         } else {
             /*
@@ -191,7 +198,7 @@ class SettingsController extends Controller {
              */
             $this->deleteDirectory($file);
 
-            return redirect()->back()->with('fails', '<b>Plugin File Path is not exist</b>  ' . $file);
+            return redirect()->back()->with('fails', '<b>Plugin File Path is not exist</b>  '.$file);
         }
     }
 
@@ -202,7 +209,8 @@ class SettingsController extends Controller {
      *
      * @return bool
      */
-    public function deleteDirectory($dir) {
+    public function deleteDirectory($dir)
+    {
         if (!file_exists($dir)) {
             return true;
         }
@@ -213,8 +221,8 @@ class SettingsController extends Controller {
             if ($item == '.' || $item == '..') {
                 continue;
             }
-            chmod($dir . DIRECTORY_SEPARATOR . $item, 0777);
-            if (!$this->deleteDirectory($dir . DIRECTORY_SEPARATOR . $item)) {
+            chmod($dir.DIRECTORY_SEPARATOR.$item, 0777);
+            if (!$this->deleteDirectory($dir.DIRECTORY_SEPARATOR.$item)) {
                 return false;
             }
         }
@@ -223,8 +231,9 @@ class SettingsController extends Controller {
         return rmdir($dir);
     }
 
-    public function ReadConfigs() {
-        $dir = app_path() . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR;
+    public function ReadConfigs()
+    {
+        $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
         $files = [];
         foreach ($directories as $key => $file) {
@@ -232,7 +241,7 @@ class SettingsController extends Controller {
                 continue;
             }
 
-            if (is_dir($dir . DIRECTORY_SEPARATOR . $file)) {
+            if (is_dir($dir.DIRECTORY_SEPARATOR.$file)) {
                 $files[$key] = $file;
             }
         }
@@ -241,7 +250,7 @@ class SettingsController extends Controller {
         $plugins = [];
         if (count($files) > 0) {
             foreach ($files as $key => $file) {
-                $plugin = $dir . $file;
+                $plugin = $dir.$file;
                 $plugins[$key] = array_diff(scandir($plugin), ['.', '..', 'ServiceProvider.php']);
                 $plugins[$key]['file'] = $plugin;
             }
@@ -251,7 +260,7 @@ class SettingsController extends Controller {
                 if ($dh = opendir($dir)) {
                     while (($file = readdir($dh)) !== false) {
                         if ($file == 'config.php') {
-                            $config[] = $dir . DIRECTORY_SEPARATOR . $file;
+                            $config[] = $dir.DIRECTORY_SEPARATOR.$file;
                         }
                     }
                     closedir($dh);
@@ -264,7 +273,8 @@ class SettingsController extends Controller {
         }
     }
 
-    public function fetchConfig() {
+    public function fetchConfig()
+    {
         $configs = $this->ReadConfigs();
         //dd($configs);
         $plugs = new Plugin();
@@ -300,14 +310,15 @@ class SettingsController extends Controller {
         return $attributes;
     }
 
-    public function deletePlugin($slug) {
-        $dir = app_path() . DIRECTORY_SEPARATOR . 'Plugins' . DIRECTORY_SEPARATOR . $slug;
+    public function deletePlugin($slug)
+    {
+        $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR.$slug;
         $this->deleteDirectory($dir);
         /*
          * remove service provider from app.php
          */
-        $str = "'App\\Plugins\\$slug" . "\\ServiceProvider',";
-        $path_to_file = base_path() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
+        $str = "'App\\Plugins\\$slug"."\\ServiceProvider',";
+        $path_to_file = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
         $file_contents = file_get_contents($path_to_file);
         $file_contents = str_replace($str, '//', $file_contents);
         file_put_contents($path_to_file, $file_contents);
@@ -320,12 +331,13 @@ class SettingsController extends Controller {
         return redirect()->back()->with('success', 'Deleted Successfully');
     }
 
-    public function statusPlugin($slug) {
+    public function statusPlugin($slug)
+    {
         $plugs = new Plugin();
         $plug = $plugs->where('name', $slug)->first();
         if (!$plug) {
-            $app = base_path() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
-            $str = "\n'App\\Plugins\\$slug" . "\\ServiceProvider',";
+            $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
+            $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
             $line_i_am_looking_for = 102;
             $lines = file($app, FILE_IGNORE_NEW_LINES);
             $lines[$line_i_am_looking_for] = $str;
@@ -338,8 +350,8 @@ class SettingsController extends Controller {
         if ($status == 0) {
             $plug->status = 1;
 
-            $app = base_path() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
-            $str = "\n'App\\Plugins\\$slug" . "\\ServiceProvider',";
+            $app = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
+            $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
             $line_i_am_looking_for = 102;
             $lines = file($app, FILE_IGNORE_NEW_LINES);
             $lines[$line_i_am_looking_for] = $str;
@@ -350,8 +362,8 @@ class SettingsController extends Controller {
             /*
              * remove service provider from app.php
              */
-            $str = "\n'App\\Plugins\\$slug" . "\\ServiceProvider',";
-            $path_to_file = base_path() . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'app.php';
+            $str = "\n'App\\Plugins\\$slug"."\\ServiceProvider',";
+            $path_to_file = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
 
             $file_contents = file_get_contents($path_to_file);
             $file_contents = str_replace($str, '//', $file_contents);
@@ -362,9 +374,9 @@ class SettingsController extends Controller {
         return redirect()->back()->with('success', 'Status has changed');
     }
 
-    public static function checkPaymentGateway($currency) {
+    public static function checkPaymentGateway($currency)
+    {
         try {
-
             $plugins = new Plugin();
             $models = [];
             $gateways = [];
@@ -382,10 +394,10 @@ class SettingsController extends Controller {
                     }
                 }
             }
+
             return $gateways;
         } catch (\Exception $ex) {
             dd($ex);
         }
     }
-
 }

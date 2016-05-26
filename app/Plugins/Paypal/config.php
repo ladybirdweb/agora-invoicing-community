@@ -12,7 +12,7 @@ return [
     'version'           => '1.0.0',
 
     'settings'  => 'payment-gateway/paypal',
-    
-    'website' =>'http://www.faveohelpdesk.com/',
+
+    'website' => 'http://www.faveohelpdesk.com/',
 
 ];

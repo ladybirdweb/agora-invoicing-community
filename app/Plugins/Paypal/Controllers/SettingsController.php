@@ -3,18 +3,20 @@
 namespace App\Plugins\Paypal\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Plugins\Paypal\Model\Paypal;
 use Illuminate\Http\Request;
 use Schema;
-use App\Plugins\Paypal\Model\Paypal;
 
-class SettingsController extends Controller {
-
-    public function __construct() {
+class SettingsController extends Controller
+{
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
     }
 
-    public function Settings() {
+    public function Settings()
+    {
         try {
             if (!Schema::hasTable('paypal')) {
                 Schema::create('paypal', function ($table) {
@@ -38,7 +40,7 @@ class SettingsController extends Controller {
             if (!$paypal) {
                 $paypal1->create(['id' => '1']);
             }
-            $path = app_path() . '/Plugins/Paypal/views';
+            $path = app_path().'/Plugins/Paypal/views';
             \View::addNamespace('plugins', $path);
 
             return view('plugins::settings', compact('paypal'));
@@ -47,17 +49,17 @@ class SettingsController extends Controller {
         }
     }
 
-    public function postSettings(Request $request) {
-
+    public function postSettings(Request $request)
+    {
         $this->validate($request, [
-            'business' => 'required',
-            'cmd' => 'required',
-            'paypal_url' => 'required|url',
-            'image_url' => 'required',
+            'business'    => 'required',
+            'cmd'         => 'required',
+            'paypal_url'  => 'required|url',
+            'image_url'   => 'required',
             'success_url' => 'url',
-            'cancel_url' => 'url',
-            'notify_url' => 'url',
-            'currencies'=>'required',
+            'cancel_url'  => 'url',
+            'notify_url'  => 'url',
+            'currencies'  => 'required',
         ]);
         try {
             $ccavanue1 = new Paypal();
@@ -69,5 +71,4 @@ class SettingsController extends Controller {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 }

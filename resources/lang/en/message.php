@@ -420,6 +420,6 @@ return [
     'invoice-status' => 'Invoice Status',
     'payment-status' => 'Payment Status',
     'send-mail'      => 'Send Mail',
-    'plugins'=>'Plugins',
+    'plugins'        => 'Plugins',
 
 ];

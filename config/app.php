@@ -99,10 +99,8 @@ return [
          * Payment Gateways
          */
 
-        
-
 'App\Plugins\Ccavanue\ServiceProvider',
-'App\Plugins\Paypal\ServiceProvider',////
+'App\Plugins\Paypal\ServiceProvider', ////
         /*
          * Laravel Framework Service Providers...
          */

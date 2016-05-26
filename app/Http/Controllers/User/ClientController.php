@@ -118,7 +118,7 @@ class ClientController extends Controller
         try {
             $invoice = new Invoice();
             $order = new Order();
-            $invoices = $invoice->where('user_id', $id)->orderBy('created_at','desc')->get();
+            $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
             $client = $this->user->where('id', $id)->first();
             $orders = $order->where('client', $id)->get();
             //dd($client);

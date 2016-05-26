@@ -8,5 +8,5 @@ class Paypal extends Model
 {
     protected $table = 'paypal';
 
-    protected $fillable = ['business', 'cmd', 'image_url', 'success_url', 'cancel_url', 'notify_url','paypal_url','currencies',];
+    protected $fillable = ['business', 'cmd', 'image_url', 'success_url', 'cancel_url', 'notify_url', 'paypal_url', 'currencies'];
 }

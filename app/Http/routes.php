@@ -191,7 +191,7 @@ Route::resource('orders', 'Order\OrderController');
 Route::get('get-orders', 'Order\OrderController@GetOrders');
 Route::get('orders-delete', 'Order\OrderController@destroy');
 Route::get('order/execute', 'Order\OrderController@orderExecute');
-Route::get('change-domain','Order\OrderController@domainChange');
+Route::get('change-domain', 'Order\OrderController@domainChange');
 
 /*
  * Groups

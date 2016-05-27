@@ -2,8 +2,8 @@
 
 namespace App\Model\Payment;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class Promotion extends BaseModel
 {
     protected $table = 'promotions';

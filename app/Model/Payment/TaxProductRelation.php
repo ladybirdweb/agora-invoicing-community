@@ -2,8 +2,8 @@
 
 namespace App\Model\Payment;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class TaxProductRelation extends BaseModel
 {
     protected $table = 'tax_product_relations';

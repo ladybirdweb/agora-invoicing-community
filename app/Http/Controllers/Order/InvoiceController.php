@@ -765,24 +765,25 @@ class InvoiceController extends Controller
             //$user  = $this->user->find($invoice->user_id);
             //dd($payment_date);
             $invoice_status = 'pending';
-            
+
             $payment = $this->payment->create([
-                'invoice_id'=>$invoiceid,
-                'user_id'=>$invoice->user_id,
-                'amount'=>$amount,
-                'payment_method'=>$payment_method,
-                'payment_status'=>$payment_status,
-                'created_at'=>$payment_date,
+                'invoice_id'     => $invoiceid,
+                'user_id'        => $invoice->user_id,
+                'amount'         => $amount,
+                'payment_method' => $payment_method,
+                'payment_status' => $payment_status,
+                'created_at'     => $payment_date,
             ]);
-            $all_payments = $this->payment->where('invoice_id',$invoiceid)->where('payment_status','success')->lists('amount')->toArray();
+            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
             $total_paid = array_sum($all_payments);
-            if($total_paid >= $invoice->grand_total){
+            if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';
             }
             if ($invoice) {
                 $invoice->status = $invoice_status;
                 $invoice->save();
             }
+
             return $payment;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -813,7 +814,7 @@ class InvoiceController extends Controller
                     $payment_method = $payment->payment_method;
                 }
 
-                return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain','invoice'));
+                return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain', 'invoice'));
             }
 
             return redirect()->back();
@@ -825,9 +826,9 @@ class InvoiceController extends Controller
     public function postPayment($invoiceid, Request $request)
     {
         $this->validate($request, [
-            'payment_method'=>'required',
-            'payment_date'=>'required|date_format:Y-m-d',
-            'amount'=>'required|numeric',
+            'payment_method' => 'required',
+            'payment_date'   => 'required|date_format:Y-m-d',
+            'amount'         => 'required|numeric',
         ]);
         try {
             $payment_method = $request->input('payment_method');

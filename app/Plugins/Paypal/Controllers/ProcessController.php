@@ -24,9 +24,9 @@ class ProcessController extends Controller
             $order = $requests['order'];
             $cart = $requests['cart'];
             //dd($order);
-            if($cart->count()>0){
+            if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
-            }else{
+            } else {
                 $total = $request->input('cost');
             }
 
@@ -83,7 +83,7 @@ class ProcessController extends Controller
                     'notify_url'    => $notify_url,
                     'image_url'     => $image_url,
                     'rm'            => $rm,
-                    'currency_code' => 'USD',//$currency_code,
+                    'currency_code' => 'USD', //$currency_code,
                     'invoice'       => $invoice_id,
                     'first_name'    => $first_name,
                     'last_name'     => $last_name,
@@ -162,16 +162,19 @@ class ProcessController extends Controller
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
-    
-    public function response(Request $request){
+
+    public function response(Request $request)
+    {
         dd($request);
     }
-    
-    public function cancel(Request $request){
-        return redirect('home')->with('fails','Your transaction cancelled');
+
+    public function cancel(Request $request)
+    {
+        return redirect('home')->with('fails', 'Your transaction cancelled');
     }
-    
-    public function notify(Request $request){
+
+    public function notify(Request $request)
+    {
         dd($request);
     }
 }

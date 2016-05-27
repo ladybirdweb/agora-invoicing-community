@@ -7,12 +7,9 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
-
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
 //use App\Model\Common\Website;
-
-use App\BaseModel;
 
 class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
@@ -88,7 +85,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
         if (!$value) {
             $image = \Gravatar::src($this->attributes['email']);
         } else {
-            $image = asset("dist/app/users/".$value);
+            $image = asset('dist/app/users/'.$value);
         }
 
         return $image;

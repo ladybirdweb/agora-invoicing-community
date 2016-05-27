@@ -2,8 +2,6 @@
 
 namespace App\Model\Common\Mailchimp;
 
-use Illuminate\Database\Eloquent\Model;
-
 use App\BaseModel;
 
 class MailchimpField extends BaseModel

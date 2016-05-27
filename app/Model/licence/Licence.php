@@ -2,8 +2,8 @@
 
 namespace App\Model\licence;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class Licence extends BaseModel
 {
     protected $table = 'licences';

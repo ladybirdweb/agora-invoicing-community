@@ -2,8 +2,8 @@
 
 namespace App\Model\Product;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class Product extends BaseModel
 {
     protected $table = 'products';

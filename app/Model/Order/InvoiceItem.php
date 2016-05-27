@@ -2,8 +2,8 @@
 
 namespace App\Model\Order;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class InvoiceItem extends BaseModel
 {
     protected $table = 'invoice_items';

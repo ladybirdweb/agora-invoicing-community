@@ -24,9 +24,9 @@ class ProcessController extends Controller
             $order = $requests['order'];
             $cart = $requests['cart'];
             //dd($order);
-            if($cart->count()>0){
+            if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
-            }else{
+            } else {
                 $total = $request->input('cost');
             }
 
@@ -41,7 +41,7 @@ class ProcessController extends Controller
                 }
 
                 $orderid = $order->id;
-                
+
                 //dd($orderid);
                 $merchant_id = $ccavanue->merchant_id;
                 $redirect_url = $ccavanue->redirect_url;

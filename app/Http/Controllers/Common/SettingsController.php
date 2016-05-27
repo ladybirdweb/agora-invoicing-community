@@ -56,8 +56,7 @@ class SettingsController extends Controller
     public function getPlugin()
     {
         $plugins = $this->fetchConfig();
-        
-        
+
         //dd($result);
         return \Datatable::collection(new Collection($plugins))
                         ->searchColumns('name')
@@ -98,7 +97,7 @@ class SettingsController extends Controller
                             return ucfirst($model['name']).$action;
                         })
                         ->addColumn('description', function ($model) {
-                            
+
                             return $model['description'];
                         })
                         ->addColumn('author', function ($model) {

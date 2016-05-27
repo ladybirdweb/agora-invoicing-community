@@ -2,8 +2,8 @@
 
 namespace App\Model\Payment;
 
-use Illuminate\Database\Eloquent\Model;
 use App\BaseModel;
+
 class Tax extends BaseModel
 {
     protected $table = 'taxes';

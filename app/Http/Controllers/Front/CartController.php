@@ -636,9 +636,10 @@ class CartController extends Controller
             $result = [];
             if ($code) {
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
-                $result  = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
+                $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
             }
+
             return $result;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

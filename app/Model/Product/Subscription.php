@@ -3,7 +3,7 @@
 namespace App\Model\Product;
 
 use Illuminate\Database\Eloquent\Model;
-use App\BaseModel;
+
 class Subscription extends Model
 {
     protected $table = 'subscriptions';

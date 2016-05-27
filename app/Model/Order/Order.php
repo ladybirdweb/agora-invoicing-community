@@ -2,10 +2,10 @@
 
 namespace App\Model\Order;
 
+use App\BaseModel;
 use App\Model\Product\Subscription;
 use Illuminate\Contracts\Encryption\DecryptException;
-use Illuminate\Database\Eloquent\Model;
-use App\BaseModel;
+
 class Order extends BaseModel
 {
     protected $table = 'orders';

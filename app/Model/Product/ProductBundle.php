@@ -3,8 +3,8 @@
 namespace App\Model\Product;
 
 use Illuminate\Database\Eloquent\Model;
-
-class ProductBundle extends Model
+use App\BaseModel;
+class ProductBundle extends BaseModel
 {
     protected $table = 'product_bundles';
     protected $fillable = ['name', 'valid_from', 'valid_till', 'uses', 'maximum_uses', 'allow-promotion', 'show'];

@@ -4,7 +4,7 @@
 
     <div class="content-header">
         {!! Form::open(['url'=>'payment/receive/'.$invoice_id,'method'=>'post']) !!}
-        <h4>{{Lang::get('message.payment')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.payment')}}  (Invoice Number: {{$invoice->number}})	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
     </div>
 
@@ -47,8 +47,8 @@
 
                     <div class="col-md-4 form-group {{ $errors->has('invoice_status') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('invoice_status',Lang::get('message.invoice-status'),['class'=>'required']) !!}
-                        {!! Form::select('invoice_status',[''=>'Select','pending'=>'Pending','success'=>'Success'],strtolower($invoice_status),['class' => 'form-control']) !!}
+                        {!! Form::label('payment_date',Lang::get('message.date-of-payment'),['class'=>'required']) !!}
+                        {!! Form::text('payment_date',null,['class' => 'form-control']) !!}
 
                     </div>
 
@@ -59,16 +59,11 @@
 
                     </div>
 
-                    <div class="col-md-4 form-group {{ $errors->has('payment_status') ? 'has-error' : '' }}">
+                    
+                    <div class="col-md-4 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('payment_status',Lang::get('message.payment-status')) !!}
-                        {!! Form::select('payment_status',[''=>'Select','pending'=>'Pending','success'=>'Success'],$payment_status,['class' => 'form-control']) !!}
-
-                    </div>
-                    <div class="col-md-4 form-group {{ $errors->has('domain') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('domain',Lang::get('message.domain')) !!}
-                        {!! Form::text('domain',$domain,['class' => 'form-control']) !!}
+                        {!! Form::label('amount',Lang::get('message.amount')) !!}
+                        {!! Form::text('amount',null,['class' => 'form-control']) !!}
 
                     </div>
 
@@ -88,4 +83,13 @@
 
 
 {!! Form::close() !!}
+@stop
+@section('datepicker')
+<script type="text/javascript">
+$(function () {
+    $('#payment_date').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+</script>
 @stop

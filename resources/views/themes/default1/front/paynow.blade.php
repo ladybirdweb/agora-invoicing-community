@@ -143,11 +143,19 @@ Checkout
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 
                 <h4 class="heading-primary">Payment</h4>
+<?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
 
                 <div class="form-group">
-
+                    @forelse($gateways as $gateway)
                     <div class="col-md-6">
-                        CC avanue {!! Form::radio('payment_gateway','ccavenue') !!}<br><br>
+                        {{$gateway->from}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
+                    </div>
+                    @empty
+                    @endforelse
+                    <div class="col-md-6">
+                        
+                        {!! Form::hidden('invoice_id',$invoice->id) !!}
+                        {!! Form::hidden('cost',$invoice->grand_total) !!}
                     </div>
                 </div>
                 

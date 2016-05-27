@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Plan extends Model
+use App\BaseModel;
+class Plan extends BaseModel
 {
     protected $table = 'plans';
     protected $fillable = ['name', 'description', 'days'];

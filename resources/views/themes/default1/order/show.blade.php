@@ -31,7 +31,7 @@
                             <table class="table table-hover">
                                 <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
                                     <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
-                                    <tr><td><b>Mobile:</b></td><td>{{$user->mobile}}</td></tr>
+                                    <tr><td><b>Mobile:</b></td><td>@if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}</td></tr>
                                     <tr><td><b>Address:</b></td><td>{{$user->address}}, 
                                             {{ucfirst($user->town)}}, 
                                             @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
@@ -47,7 +47,7 @@
 
                             <table class="table table-hover">
                                 <tbody><tr><td><b>Serial Key:</b></td><td>{{$order->serial_key}}</td></tr>
-                                    <tr><td><b>Domain Name:</b></td><td>{{$order->domain}}</td></tr>
+                                    <tr><td><b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
                                     <?php
                                     if ($subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
                                         $sub = "--";
@@ -109,4 +109,27 @@
         </div>
     </div>
 </div>
+@stop
+@section('datepicker')
+<script>
+
+    $("#domain").blur(function(){
+        var value = $(this).text() ;
+        var id = {{$order->id}};
+        $.ajax({
+            type: "GET",
+            url: "{{url('change-domain')}}",
+            data: {'domain':value,'id':id},
+            success: function () {
+                alert('Updated');
+            },
+            error: function(){
+                alert('Invalid URL');
+            }
+            
+        });
+    });
+
+
+</script>
 @stop

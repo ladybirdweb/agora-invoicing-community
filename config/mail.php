@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'driver' => 'log',
+    'driver' => 'mail',
 
     /*
     |--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'vijaysebastian23@gmail.com', 'name' => 'vijay'],
+    'from' => ['address' => 'info@faveohelpdesk.com', 'name' => 'Faveo Helpdesk'],
 
     /*
     |--------------------------------------------------------------------------
@@ -119,6 +119,6 @@ return [
     |
     */
 
-    'pretend' => true,
+    //'pretend' => false,
 
 ];

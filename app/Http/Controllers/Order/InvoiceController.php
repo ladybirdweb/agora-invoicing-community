@@ -758,27 +758,32 @@ class InvoiceController extends Controller
         }
     }
 
-    public function updateInvoicePayment($invoiceid, $payment_method, $payment_status = 'pending', $invoice_status = 'pending', $domain = '')
+    public function updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount)
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
+            //$user  = $this->user->find($invoice->user_id);
+            //dd($payment_date);
+            $invoice_status = 'pending';
+            
+            $payment = $this->payment->create([
+                'invoice_id'=>$invoiceid,
+                'user_id'=>$invoice->user_id,
+                'amount'=>$amount,
+                'payment_method'=>$payment_method,
+                'payment_status'=>$payment_status,
+                'created_at'=>$payment_date,
+            ]);
+            $all_payments = $this->payment->where('invoice_id',$invoiceid)->where('payment_status','success')->lists('amount')->toArray();
+            $total_paid = array_sum($all_payments);
+            if($total_paid >= $invoice->grand_total){
+                $invoice_status = 'success';
+            }
             if ($invoice) {
                 $invoice->status = $invoice_status;
                 $invoice->save();
-                $item = $invoice->invoiceItem()->first();
-                if ($item) {
-                    $item->domain = $domain;
-                    $item->save();
-                }
             }
-            $payment = $this->payment->where('invoice_id', $invoiceid)->first();
-            if ($payment) {
-                $payment->payment_status = $payment_status;
-                $payment->payment_method = $payment_method;
-                $payment->save();
-
-                return $payment;
-            }
+            return $payment;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -808,7 +813,7 @@ class InvoiceController extends Controller
                     $payment_method = $payment->payment_method;
                 }
 
-                return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain'));
+                return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain','invoice'));
             }
 
             return redirect()->back();
@@ -819,12 +824,17 @@ class InvoiceController extends Controller
 
     public function postPayment($invoiceid, Request $request)
     {
+        $this->validate($request, [
+            'payment_method'=>'required',
+            'payment_date'=>'required|date_format:Y-m-d',
+            'amount'=>'required|numeric',
+        ]);
         try {
             $payment_method = $request->input('payment_method');
-            $payment_status = $request->input('payment_status');
-            $invoice_status = $request->input('invoice_status');
-            $domain = $request->input('domain');
-            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $invoice_status, $domain);
+            $payment_status = 'success';
+            $payment_date = $request->input('payment_date');
+            $amount = $request->input('amount');
+            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
             if ($payment) {
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');
             }

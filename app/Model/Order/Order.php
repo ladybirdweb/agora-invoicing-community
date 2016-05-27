@@ -5,8 +5,8 @@ namespace App\Model\Order;
 use App\Model\Product\Subscription;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
-
-class Order extends Model
+use App\BaseModel;
+class Order extends BaseModel
 {
     protected $table = 'orders';
     protected $fillable = ['client', 'order_status',

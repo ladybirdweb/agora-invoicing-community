@@ -3,8 +3,8 @@
 namespace App\Model\Product;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Addon extends Model
+use App\BaseModel;
+class Addon extends BaseModel
 {
     protected $table = 'addons';
     protected $fillable = ['product', 'subscription', 'name', 'description', 'regular_price', 'selling_price', 'tax_addon',

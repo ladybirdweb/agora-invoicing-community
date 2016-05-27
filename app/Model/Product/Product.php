@@ -3,8 +3,8 @@
 namespace App\Model\Product;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Product extends Model
+use App\BaseModel;
+class Product extends BaseModel
 {
     protected $table = 'products';
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',

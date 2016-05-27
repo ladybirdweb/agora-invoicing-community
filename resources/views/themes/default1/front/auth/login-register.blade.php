@@ -14,15 +14,12 @@ main
 @stop
 @section('content')
 <?php $location = \GeoIP::getLocation(); 
-//dd($location);
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
-
-$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+//$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+$states = \App\Model\Common\State::lists('state_subdivision_name', 'state_subdivision_code')->toArray();
 $state_code = $location['isoCode']."-".$location['state'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-$mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
-
-?>
+$mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);?>
 <style>
     .required:after{ 
         content:'*'; 
@@ -184,23 +181,18 @@ $mobile_code  =  \App\Http\Controllers\Front\CartController::getMobileCodeByIso(
                                     <div class="form-group">
                                         <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
                                             {!! Form::label('state',Lang::get('message.state')) !!}
+                                            <?php
+                                            $value = "";
+                                            if(count($state)>0){
+                                                $value = $state;
+                                            }
+                                            if(old('state')){
+                                                 $value = old('state');
+                                            }
+                                           //dd($value);
+                                            ?>
+                                            {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
                                             
-                                            <!--{!! Form::select('state',[$states],$state,['class' => 'form-control','id'=>'state-list']) !!}-->
-                                            <select class="form-control input-lg" id="state-list" name="state">
-                                                @if(old('state'))
-                                                <?php 
-                                                    $state_name = \App\Http\Controllers\Front\CartController::getStateNameById(old('state'));
-                                                ?>
-                                                <option value="{{old('state')}}">{{$state_name}}</option>
-                                                @endif
-                                                @if(key_exists('id',$state)&& key_exists('name',$state))
-                                                <option value="{{$state['id']}}">{{$state['name']}}</option>
-                                                @endif
-                                                @foreach($states as $key=>$value)
-                                                
-                                                <option value="{{$key}}">{{$value}}</option>
-                                                @endforeach
-                                            </select>
                                         </div>
                                     </div>
                                 </div>

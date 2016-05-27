@@ -50,7 +50,7 @@ active
                                     @endif
                                     {{$user->zip}}<br/>
                                     Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
-                                    Mobile: {{$user->mobile}}<br/>
+                                    Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                     Email : {{$user->email}}
                                 </address>
                             </div><!-- /.col -->
@@ -119,7 +119,37 @@ active
                                 <p class="lead">Amount</p>
                                 <div class="table-responsive">
                                     <table class="table">
+                                         <?php 
+                                         $tax_name = [];
+                                    $tax_percentage = [];
+                                        foreach($items as $key=>$item){
+                                            if(str_finish(',', $item->tax_name)){
+                                                $name = substr_replace($item->tax_name,'',-1);
+                     
+                                            }
+                                            if(str_finish(',', $item->tax_percentage)){
+                                                $rate = substr_replace($item->tax_percentage,'',-1);
+                                                
+                                            }
+                                            $tax_name = explode(',',$name);
+                                            $tax_percentage = explode(',',$rate);
+                                        }
+                                        
+                                    ?>
+                                    @for($i=0;$i < count($tax_name);$i++)
+                                    
+                                    @if($tax_name[$i]!='null')
+                                    <tr>
+                                        <th>
+                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
+                                        </th>
+                                        <td>
+                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
+                                        </td>
 
+                                    </tr>
+                                    @endif
+                                    @endfor
                                         <tr>
                                             <th style="width:50%">Total:</th>
                                             <td><small>{!! $invoice->currency !!}</small> {{$invoice->grand_total}}</td>

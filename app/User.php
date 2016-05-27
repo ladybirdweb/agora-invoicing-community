@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 //use LinkThrow\Billing\CustomerBillableTrait;
 //use App\Model\Common\Website;
 
-class User extends Model implements AuthenticatableContract, CanResetPasswordContract
+use App\BaseModel;
+
+class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable,
         CanResetPassword;
@@ -86,7 +88,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         if (!$value) {
             $image = \Gravatar::src($this->attributes['email']);
         } else {
-            $image = asset("dist/app/users/$value");
+            $image = asset("dist/app/users/".$value);
         }
 
         return $image;

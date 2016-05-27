@@ -3,8 +3,8 @@
 namespace App\Model\Common;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Setting extends Model
+use App\BaseModel;
+class Setting extends BaseModel
 {
     protected $table = 'settings';
     protected $fillable = ['company', 'website', 'phone', 'logo', 'address', 'host', 'port', 'encryption', 'email', 'password', 'error_log', 'error_email',

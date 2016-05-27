@@ -7,7 +7,7 @@ return [
 
     'author'            => 'Ladybird Web Solution',
 
-    'description'       => 'This is the paypal paymeny gateway plugin for the Agore. It will give you Payment payment gateway',
+    'description'       => 'This is the paypal paymeny gateway plugin for the Agora. It will give you Payment payment gateway',
 
     'version'           => '1.0.0',
 

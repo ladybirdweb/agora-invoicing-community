@@ -235,7 +235,7 @@ class TaxController extends Controller
             //return $states;
             echo '<option value=>Select State</option>';
             foreach ($states as $state) {
-                echo '<option value='.$state->state_subdivision_id.'>'.$state->state_subdivision_name.'</option>';
+                echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";

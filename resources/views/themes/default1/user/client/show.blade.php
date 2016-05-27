@@ -122,7 +122,7 @@
                                         <th>{{Lang::get('message.date')}}</th>
                                         <th>{{Lang::get('message.invoice_number')}}</th>
                                         <th>{{Lang::get('message.total')}}</th>
-                                        
+                                        <th>{{Lang::get('message.status')}}</th>
                                         <th>{{Lang::get('message.action')}}</th>
                                     </tr>
                                 </thead>
@@ -137,6 +137,9 @@
                                         </td>
                                         <td>
                                             {{$invoice->grand_total}}
+                                        </td>
+                                        <td>
+                                            {{ucfirst($invoice->status)}}
                                         </td>
                                         
                                         <td>
@@ -193,6 +196,7 @@
                         <table id="example4" class="table table-bordered table-hover">
                             <thead>
                                 <tr>
+                                    <th>Invoice Number</th>
                                     <th>Date</th>
                                     <th>Payment Method</th>
                                     <th>Total</th>
@@ -203,6 +207,11 @@
                             <tbody>
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
+                                    <td>
+                                        @if($payment->invoice()->first())
+                                        {{($payment->invoice()->first()->number)}}
+                                        @endif
+                                    </td>
                                     <td>{{$payment->created_at}}</td>
                                     <td>
                                         {{ucfirst($payment->payment_method)}}
@@ -256,8 +265,8 @@
                                 <!-- /.col -->
                                 <div class="col-sm-4">
                                     <div class="description-block">
-                                        <h5 class="description-header">{{$client->mobile}}</h5>
-                                        <span class="description-text">{{Lang::get('message.mobile')}}</span>
+                                        <h5 class="description-header">{{$client->user_name}}</h5>
+                                        <span class="description-text">User Name</span>
                                     </div>
                                     <!-- /.description-block -->
 
@@ -271,7 +280,7 @@
 
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.mobile')}} :</strong> <span class="pull-right">{{$client->mobile}}</span>
+                                            <strong>{{Lang::get('message.mobile')}} :</strong> <span class="pull-right">@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</span>
                                         </a>
                                     </li>
                                     <li>
@@ -312,6 +321,11 @@
                                             <strong>{{Lang::get('message.role')}} :</strong> <span class="pull-right">{{ucfirst($client->role)}}</span>
                                         </a>
                                     </li>
+                                     <li>
+                                        <a href="#">
+                                            <strong>{{Lang::get('message.currency')}} :</strong> <span class="pull-right">{{$client->currency}}</span>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -336,6 +350,7 @@
                                     <th>Number</th>
                                     <th>Total</th>
                                     <th>Status</th>
+                                    <th>Action</th>
                                     
                                 </tr>
                             </thead>
@@ -346,6 +361,7 @@
                                     <td>{{$order->number}}</td>
                                     <td>{{$order->price_override}}</td>
                                     <td>{{$order->order_status}}</td>
+                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary">View</a></td>
                                 </tr>
                                 @empty 
                                 <tr>

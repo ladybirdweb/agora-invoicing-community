@@ -3,8 +3,8 @@
 namespace App\Model\licence;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Sla extends Model
+use App\BaseModel;
+class Sla extends BaseModel
 {
     protected $table = 'slas';
     protected $fillable = ['licence_id', 'name', 'description', 'organization_id', 'service_provider_id', 'shortnote',

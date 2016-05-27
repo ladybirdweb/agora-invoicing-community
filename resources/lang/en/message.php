@@ -421,5 +421,7 @@ return [
     'payment-status' => 'Payment Status',
     'send-mail'      => 'Send Mail',
     'plugins'        => 'Plugins',
+    'date-of-payment'=>'Date of Payment',
+    'amount'=>'Amount',
 
 ];

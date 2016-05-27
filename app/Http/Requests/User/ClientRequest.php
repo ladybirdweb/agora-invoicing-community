@@ -33,7 +33,7 @@ class ClientRequest extends Request
                         'mobile'      => 'required|numeric',
                     'mobile_code'     => 'required|numeric',
                         'address'     => 'required',
-                        'zip'         => 'required|min:5|numeric',
+                        'zip'         => 'required',
                     ];
                 }
 
@@ -46,7 +46,7 @@ class ClientRequest extends Request
                         'mobile'      => 'required|numeric',
                     'mobile_code'     => 'required|numeric',
                         'address'     => 'required',
-                        'zip'         => 'required|min:5|numeric',
+                        'zip'         => 'required',
                     ];
                 }
             default:break;

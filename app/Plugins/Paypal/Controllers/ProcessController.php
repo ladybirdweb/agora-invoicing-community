@@ -22,8 +22,13 @@ class ProcessController extends Controller
             //dd($requests);
             $request = $requests['request'];
             $order = $requests['order'];
-            $data = [];
+            $cart = $requests['cart'];
             //dd($order);
+            if($cart->count()>0){
+                $total = \Cart::getSubTotal();
+            }else{
+                $total = $request->input('cost');
+            }
 
             if ($request->input('payment_gateway') == 'paypal') {
                 if (!\Schema::hasTable('paypal')) {
@@ -78,7 +83,7 @@ class ProcessController extends Controller
                     'notify_url'    => $notify_url,
                     'image_url'     => $image_url,
                     'rm'            => $rm,
-                    'currency_code' => $currency_code,
+                    'currency_code' => 'USD',//$currency_code,
                     'invoice'       => $invoice_id,
                     'first_name'    => $first_name,
                     'last_name'     => $last_name,
@@ -156,5 +161,17 @@ class ProcessController extends Controller
             dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
+    }
+    
+    public function response(Request $request){
+        dd($request);
+    }
+    
+    public function cancel(Request $request){
+        return redirect('home')->with('fails','Your transaction cancelled');
+    }
+    
+    public function notify(Request $request){
+        dd($request);
     }
 }

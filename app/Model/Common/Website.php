@@ -5,8 +5,8 @@ namespace App\Model\Common;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use LinkThrow\Billing\SubscriptionBillableTrait;
-
-class Website extends Model
+use App\BaseModel;
+class Website extends BaseModel
 {
     use SubscriptionBillableTrait;
 

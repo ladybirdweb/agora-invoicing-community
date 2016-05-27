@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
-
-class TaxProductRelation extends Model
+use App\BaseModel;
+class TaxProductRelation extends BaseModel
 {
     protected $table = 'tax_product_relations';
     protected $fillable = ['product_id', 'tax_class_id'];

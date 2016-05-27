@@ -633,19 +633,13 @@ class CartController extends Controller
     public static function getStateByCode($code)
     {
         try {
-            if (is_int($code)) {
-                return [];
-            }
+            $result = [];
             if ($code) {
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
-                if (!$subregion) {
-                    return [];
-                }
-
-                return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-            } else {
-                return [];
+                $result  = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
+                //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
             }
+            return $result;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

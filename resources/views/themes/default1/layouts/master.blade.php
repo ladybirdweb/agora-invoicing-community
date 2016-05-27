@@ -263,8 +263,8 @@
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->
         <script src="{{asset('dist/js/demo.js')}}" type="text/javascript"></script>
-        <!--<script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>-->
+        <script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
         <script src="{{asset("plugins/datepicker/bootstrap-datetimepicker4.7.14.min.js")}}" type="text/javascript"></script>
-
+        @yield('datepicker')
     </body>
 </html>

@@ -3,8 +3,8 @@
 namespace App\Model\Order;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Invoice extends Model
+use App\BaseModel;
+class Invoice extends BaseModel
 {
     protected $table = 'invoices';
     protected $fillable = ['user_id', 'number', 'date', 'discount', 'discount_mode', 'coupon_code', 'grand_total', 'currency', 'status'];

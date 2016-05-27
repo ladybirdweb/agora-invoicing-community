@@ -3,8 +3,8 @@
 namespace App\Model\Payment;
 
 use Illuminate\Database\Eloquent\Model;
-
-class Promotion extends Model
+use App\BaseModel;
+class Promotion extends BaseModel
 {
     protected $table = 'promotions';
     protected $fillable = ['code', 'type', 'uses', 'value', 'start', 'expiry'];

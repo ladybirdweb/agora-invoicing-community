@@ -476,4 +476,17 @@ class OrderController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
+    
+    public function domainChange(Request $request){
+        $this->validate($request, [
+            'domain'=>'url',
+        ]);
+        $domain = $request->input('domain');
+        $id = $request->input('id');
+        $order = $this->order->find($id);
+        $order->domain = $domain;
+        $order->save();
+        
+        
+    }
 }

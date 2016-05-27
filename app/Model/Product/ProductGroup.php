@@ -3,8 +3,8 @@
 namespace App\Model\Product;
 
 use Illuminate\Database\Eloquent\Model;
-
-class ProductGroup extends Model
+use App\BaseModel;
+class ProductGroup extends BaseModel
 {
     protected $table = 'product_groups';
     protected $fillable = ['name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link'];

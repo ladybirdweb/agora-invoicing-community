@@ -22,9 +22,15 @@ class ProcessController extends Controller
             //dd($requests);
             $request = $requests['request'];
             $order = $requests['order'];
+            $cart = $requests['cart'];
             //dd($order);
+            if($cart->count()>0){
+                $total = \Cart::getSubTotal();
+            }else{
+                $total = $request->input('cost');
+            }
 
-            if ($request->input('payment_gateway') == 'ccavanue') {
+            if ($request->input('payment_gateway') == 'ccavenue') {
                 if (!\Schema::hasTable('ccavanue')) {
                     throw new \Exception('Ccavanue is not configured');
                 }
@@ -35,7 +41,7 @@ class ProcessController extends Controller
                 }
 
                 $orderid = $order->id;
-                $total = \Cart::getSubTotal();
+                
                 //dd($orderid);
                 $merchant_id = $ccavanue->merchant_id;
                 $redirect_url = $ccavanue->redirect_url;

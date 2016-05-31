@@ -282,7 +282,6 @@ class ClientController extends Controller
                             }
 
                             return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
-
                         })
                         ->searchColumns('number', 'created_at', 'grand_total')
                         ->orderColumns('number', 'created_at', 'grand_total')
@@ -304,7 +303,7 @@ class ClientController extends Controller
                         ->addColumn('number', function ($model) {
                             return $model->invoice()->first()->number;
                         })
-                        ->showColumns('amount', 'payment_method', 'payment_status','created_at')
+                        ->showColumns('amount', 'payment_method', 'payment_status', 'created_at')
                         ->addColumn('total', function ($model) {
                             return $model->grand_total;
                         })

@@ -97,7 +97,6 @@ class SettingsController extends Controller
                             return ucfirst($model['name']).$action;
                         })
                         ->addColumn('description', function ($model) {
-
                             return $model['description'];
                         })
                         ->addColumn('author', function ($model) {

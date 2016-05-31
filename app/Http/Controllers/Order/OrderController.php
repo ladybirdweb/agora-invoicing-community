@@ -89,13 +89,13 @@ class OrderController extends Controller
                         })
                         ->showColumns('number', 'price_override', 'order_status')
                          ->addColumn('ends_at', function ($model) {
-                            $end = $model->subscription()->first()->ends_at;
-                            if ($end == '0000-00-00 00:00:00' || $end == null) {
-                                $end = '--';
-                            }
+                             $end = $model->subscription()->first()->ends_at;
+                             if ($end == '0000-00-00 00:00:00' || $end == null) {
+                                 $end = '--';
+                             }
 
-                            return $end;
-                        })
+                             return $end;
+                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                         })

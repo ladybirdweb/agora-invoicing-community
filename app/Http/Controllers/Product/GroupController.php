@@ -52,7 +52,6 @@ class GroupController extends Controller
                         })
                         ->showColumns('name')
                         ->addColumn('features', function ($model) {
-
                             $features = $this->feature->select('features')->where('group_id', $model->id)->get();
                             //dd($features);
                             $result = [];

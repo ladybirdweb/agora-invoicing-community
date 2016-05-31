@@ -304,7 +304,7 @@ class ClientController extends Controller
                         ->addColumn('number', function ($model) {
                             return $model->invoice()->first()->number;
                         })
-                        ->showColumns('amount', 'payment_method', 'payment_status')
+                        ->showColumns('amount', 'payment_method', 'payment_status','created_at')
                         ->addColumn('total', function ($model) {
                             return $model->grand_total;
                         })

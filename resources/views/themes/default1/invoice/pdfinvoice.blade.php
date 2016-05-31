@@ -151,6 +151,8 @@
                                                         <td></td>
                                                     </tr>
                                                     <?php
+                                                    $tax_name = [];
+                                                    $tax_percentage = [];
                                                     foreach ($invoiceItems as $key => $item) {
                                                         if (str_finish(',', $item->tax_name)) {
                                                             $name = substr_replace($item->tax_name, '', -1);

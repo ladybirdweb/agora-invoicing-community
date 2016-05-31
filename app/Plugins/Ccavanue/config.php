@@ -3,7 +3,7 @@
 
 return [
 
-    'name'              => 'Ccavanue',
+    'name'              => 'Ccavenue',
 
     'author'            => 'Ladybird Web Solution',
 

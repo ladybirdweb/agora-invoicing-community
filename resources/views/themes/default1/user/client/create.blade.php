@@ -85,7 +85,7 @@
 
                     </div>
                      <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Mobile Code</label>
+                        <label class="required">Country code</label>
                         {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">

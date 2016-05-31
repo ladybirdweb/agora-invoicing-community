@@ -97,7 +97,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         {!! Datatable::table()
-                        ->addColumn('Invoice Number','Total','Method','Status')
+                        ->addColumn('Invoice Number','Total','Method','Status','Payment Date')
                         ->setUrl('../get-my-payment/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],

@@ -125,8 +125,8 @@ class OrderController extends Controller {
                                 }
                             }
 
-                            return $end;
-                        })
+                             return $end;
+                         })
                         ->addColumn('action', function ($model) {
                             $controller = new CronController();
                             $sub = $controller->getExpiredInfoByOrderId($model->id);

@@ -70,7 +70,6 @@ class TaxController extends Controller
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('tax_classes_id', function ($model) {
-
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                         })
                         ->showColumns('name', 'level')

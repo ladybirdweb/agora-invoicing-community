@@ -74,13 +74,14 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     }
 
     public function getCreatedAtAttribute($value)
-    {   
-        if(\Auth::user()){
+    {
+        if (\Auth::user()) {
             $tz = \Auth::user()->timezone()->first()->name;
             $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
 
             return $date->setTimezone($tz);
         }
+
         return $value;
     }
 

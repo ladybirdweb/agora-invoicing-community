@@ -19,10 +19,10 @@ class Subscription extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function order() {
+    public function order()
+    {
         return $this->belongsTo('App\Model\Order\Order');
     }
-   
 
 //    public function delete() {
 //

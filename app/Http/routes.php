@@ -113,7 +113,7 @@ Route::patch('settings', 'Common\SettingsController@UpdateSettings');
 Route::resource('clients', 'User\ClientController');
 Route::get('get-clients', 'User\ClientController@GetClients');
 Route::get('clients-delete', 'User\ClientController@destroy');
-Route::get('get-users','User\ClientController@getUsers');
+Route::get('get-users', 'User\ClientController@getUsers');
 
 /*
  * Product
@@ -327,16 +327,16 @@ Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsCon
 Route::get('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
 Route::get('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);
 
-/**
+/*
  * Cron Jobs
  */
-Route::get('expired-subscriptions','Common\CronController@eachSubscription');
+Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 
-/**
- * Renew 
+/*
+ * Renew
  */
 
-Route::get('renew/{id}','Order\RenewController@renewForm');
-Route::post('renew/{id}','Order\RenewController@renew');
-Route::post('get-renew-cost','Order\RenewController@getCost');
-Route::post('client/renew/{id}','Order\RenewController@renewByClient');
+Route::get('renew/{id}', 'Order\RenewController@renewForm');
+Route::post('renew/{id}', 'Order\RenewController@renew');
+Route::post('get-renew-cost', 'Order\RenewController@getCost');
+Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');

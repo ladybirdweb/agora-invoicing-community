@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -10,17 +11,17 @@ use App\Model\Order\Payment;
 use App\Model\Product\Subscription;
 use App\User;
 use Exception;
-use App\Http\Controllers\Common\CronController;
 
-class ClientController extends Controller {
-
+class ClientController extends Controller
+{
     public $user;
     public $invoice;
     public $order;
     public $subscription;
     public $payment;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
 
         $user = new User();
@@ -39,7 +40,8 @@ class ClientController extends Controller {
         $this->payment = $payment;
     }
 
-    public function invoices() {
+    public function invoices()
+    {
         try {
             return view('themes.default1.front.clients.invoice');
         } catch (Exception $ex) {
@@ -47,7 +49,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getInvoices() {
+    public function getInvoices()
+    {
         try {
             $invoices = $this->invoice
                     ->where('user_id', \Auth::user()->id)
@@ -69,10 +72,10 @@ class ClientController extends Controller {
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href=' . url('paynow/' . $model->id) . " class='btn btn-sm btn-primary'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-sm btn-primary'>Pay Now</a>";
                                 }
 
-                                return '<p><a href=' . url('my-invoice/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>" . $payment . '</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment.'</p>';
                             })
                             ->searchColumns('number', 'created_at', 'total')
                             ->orderColumns('number', 'created_at', 'total')
@@ -82,7 +85,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function orders() {
+    public function orders()
+    {
         try {
             return view('themes.default1.front.clients.order1');
         } catch (Exception $ex) {
@@ -90,7 +94,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getOrders() {
+    public function getOrders()
+    {
         //        try{
         $orders = $this->order
                 ->where('client', \Auth::user()->id);
@@ -125,13 +130,14 @@ class ClientController extends Controller {
                             $controller = new CronController();
                             $sub = $controller->getExpiredInfoByOrderId($model->id);
 
-                            $url = "";
+                            $url = '';
                             if ($sub) {
                                 $url = $this->renewPopup($sub->id);
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
-                            return '<p><a href=' . url('my-order/' . $model->id) . " class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Deatails of order'></i></a>"
-                                    . '&nbsp;<a href=' . url('download/' . $model->client . '/' . $model->invoice()->first()->number) . " class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>$url</p>";
+
+                            return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Deatails of order'></i></a>"
+                                    .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>$url</p>";
                         })
                         ->searchColumns('id', 'created_at', 'ends_at', 'product')
                         ->orderColumns('id', 'created_at', 'ends_at', 'product')
@@ -141,7 +147,8 @@ class ClientController extends Controller {
 //        }
     }
 
-    public function subscriptions() {
+    public function subscriptions()
+    {
         try {
             return view('themes.default1.front.clients.subscription');
         } catch (Exception $ex) {
@@ -149,7 +156,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getSubscriptions() {
+    public function getSubscriptions()
+    {
         try {
             $subscriptions = $this->subscription->where('user_id', \Auth::user()->id)->get();
 
@@ -169,7 +177,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function profile() {
+    public function profile()
+    {
         try {
             $user = $this->user->where('id', \Auth::user()->id)->first();
             //dd($user);
@@ -184,13 +193,14 @@ class ClientController extends Controller {
         }
     }
 
-    public function postProfile(ProfileRequest $request) {
+    public function postProfile(ProfileRequest $request)
+    {
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
                 $name = \Input::file('profile_pic')->getClientOriginalName();
                 $destinationPath = 'dist/app/users';
-                $fileName = rand(0000, 9999) . '.' . $name;
+                $fileName = rand(0000, 9999).'.'.$name;
                 \Input::file('profile_pic')->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
             }
@@ -202,7 +212,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function postPassword(ProfileRequest $request) {
+    public function postPassword(ProfileRequest $request)
+    {
         try {
             $user = \Auth::user();
             $oldpassword = $request->input('old_password');
@@ -221,7 +232,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getInvoice($id) {
+    public function getInvoice($id)
+    {
         try {
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
@@ -233,7 +245,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getOrder($id) {
+    public function getOrder($id)
+    {
         try {
             $order = $this->order->findOrFail($id);
             $invoice = $order->invoice()->first();
@@ -251,15 +264,16 @@ class ClientController extends Controller {
         }
     }
 
-    public function getSubscription($id) {
+    public function getSubscription($id)
+    {
         try {
-            
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function getInvoicesByOrderId($orderid, $userid) {
+    public function getInvoicesByOrderId($orderid, $userid)
+    {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             $relation = $order->invoiceRelation()->lists('invoice_id')->toArray();
@@ -283,6 +297,7 @@ class ClientController extends Controller {
                             })
                             ->addColumn('created_at', function ($model) {
                                 $date = date_create($model->created_at);
+
                                 return date_format($date, 'l, F j, Y H:m A');
                             })
                             ->addColumn('total', function ($model) {
@@ -293,12 +308,12 @@ class ClientController extends Controller {
                             })
                             ->addColumn('action', function ($model) {
                                 if (\Auth::user()->role == 'admin') {
-                                    $url = '/invoices/show?invoiceid=' . $model->id;
+                                    $url = '/invoices/show?invoiceid='.$model->id;
                                 } else {
                                     $url = 'my-invoice';
                                 }
 
-                                return '<a href=' . url($url . '/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
+                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
                             ->searchColumns('number', 'created_at', 'grand_total')
                             ->orderColumns('number', 'created_at', 'grand_total')
@@ -308,7 +323,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getPaymentByOrderId($orderid, $userid) {
+    public function getPaymentByOrderId($orderid, $userid)
+    {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             $relation = $order->invoiceRelation()->lists('invoice_id')->toArray();
@@ -323,7 +339,7 @@ class ClientController extends Controller {
             return \Datatable::query($payments)
                             ->addColumn('#', function ($model) {
                                 if (\Input::get('client') != 'true') {
-                                    return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
+                                    return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                                 }
                             })
                             ->addColumn('number', function ($model) {
@@ -341,7 +357,8 @@ class ClientController extends Controller {
         }
     }
 
-    public function getPaymentByOrderIdClient($orderid, $userid) {
+    public function getPaymentByOrderIdClient($orderid, $userid)
+    {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
             $relation = $order->invoiceRelation()->lists('invoice_id')->toArray();
@@ -368,9 +385,9 @@ class ClientController extends Controller {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
-    public function renewPopup($id){
-        return view('themes.default1.renew.popup',compact('id'));
-    }
 
+    public function renewPopup($id)
+    {
+        return view('themes.default1.renew.popup', compact('id'));
+    }
 }

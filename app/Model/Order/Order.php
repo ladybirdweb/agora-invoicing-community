@@ -9,7 +9,7 @@ use Illuminate\Contracts\Encryption\DecryptException;
 class Order extends BaseModel
 {
     protected $table = 'orders';
-    protected $fillable = ['client', 'order_status','invoice_item_id',
+    protected $fillable = ['client', 'order_status', 'invoice_item_id',
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
 
     public function invoice()
@@ -36,15 +36,14 @@ class Order extends BaseModel
     {
         return $this->hasMany('App\Model\Order\OrderInvoiceRelation');
     }
-    
-    
 
     public function invoiceItem()
     {
         return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
     }
-    
-    public function item(){
+
+    public function item()
+    {
         return $this->belongsTo('App\Model\Order\InvoiceItem');
     }
 
@@ -79,21 +78,24 @@ class Order extends BaseModel
             return $value;
         }
     }
+
     public function getDomainAttribute($value)
     {
         try {
-            if(str_finish($value, '/')){
+            if (str_finish($value, '/')) {
                 $value = substr_replace($value, '', -1, 0);
             }
+
             return $value;
         } catch (DecryptException $ex) {
             return $value;
         }
     }
+
     public function setDomainAttribute($value)
     {
         try {
-            if(str_finish($value, '/')){
+            if (str_finish($value, '/')) {
                 $value = substr_replace($value, '', -1, 0);
             }
             $this->attributes['domain'] = $value;

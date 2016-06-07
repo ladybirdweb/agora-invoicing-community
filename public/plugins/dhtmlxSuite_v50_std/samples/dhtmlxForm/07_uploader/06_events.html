@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Events</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../../../codebase/ext/swfobject.js"></script>
+	<style>
+		div#simpleLog {
+			width: 800px;
+			height: 200px;
+			font-family: Tahoma;
+			font-size: 11px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myForm, formData, logObj;
+		var beforeFileAdd = false;
+		var beforeFileRemove = false;
+		var beforeClear = false;
+		function doOnLoad() {
+			formData = [
+				{type: "fieldset", label: "Uploader", list:[
+					{type: "upload", name: "myFiles", inputWidth: 330, url: "php/dhtmlxform_item_upload.php", swfPath: "uploader.swf", swfUrl: "php/dhtmlxform_item_upload.php"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.attachEvent("onUploadFile",function(realName, serverName){
+				logEvent("<b>onUploadFile</b>, real name: "+realName+", server name: "+serverName);
+			});
+			myForm.attachEvent("onUploadComplete",function(count){
+				logEvent("<b>onUploadComplete</b> "+count+" file"+(count>1?"s were":" was")+" uploaded");
+			});
+			myForm.attachEvent("onUploadCancel",function(realName){
+				logEvent("<b>onUploadCancel</b>, file: "+realName);
+			});
+			myForm.attachEvent("onUploadFail",function(realName){
+				logEvent("<b>onUploadFail</b>, file: "+realName);
+			});
+			myForm.attachEvent("onBeforeFileAdd",function(realName, size){
+				logEvent("<b>onBeforeFileAdd</b>, real name: "+realName+", size: "+size+", "+(beforeFileAdd?"<span style='color:green;'>allowed<span>":"<span style='color:red;'>not allowed<span>"));
+				return beforeFileAdd;
+			});
+			myForm.attachEvent("onFileAdd",function(realName){
+				logEvent("<b>onFileAdd</b>, real name: "+realName);
+			});
+			myForm.attachEvent("onBeforeFileRemove",function(realName,serverName){
+				logEvent("<b>onBeforeFileRemove</b>, real name: "+realName+", server name: "+(serverName==null?"wasn't uploaded":serverName)+", "+(beforeFileRemove?"<span style='color:green;'>allowed<span>":"<span style='color:red;'>not allowed<span>"));
+				return beforeFileRemove;
+			});
+			myForm.attachEvent("onFileRemove",function(realName,serverName){
+				logEvent("<b>onFileRemove</b>, real name: "+realName+", server name: "+(serverName==null?"wasn't uploaded":serverName));
+			});
+			myForm.attachEvent("onBeforeClear",function(){
+				logEvent("<b>onBeforeClear</b>, "+(beforeClear?"<span style='color:green;'>allowed<span>":"<span style='color:red;'>not allowed<span>"));
+				return beforeClear;
+			});
+			myForm.attachEvent("onClear",function(){
+				logEvent("<b>onClear</b>");
+			});
+			changeOnBeforeEvent("beforeFileAdd");
+			changeOnBeforeEvent("beforeFileRemove");
+			changeOnBeforeEvent("beforeClear");
+		}
+		function logEvent(t) {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML += t+"<br>";
+		}
+		function clearLog() {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML = "";
+		}
+		function changeOnBeforeEvent(name) {
+			window[name] = !window[name];
+			document.getElementById(name+"Info").innerHTML = window[name]?"<span style='color:green;'>allowed<span>":"<span style='color:red;'>not allowed<span>";
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table>
+		<tr><td><div id="myForm"></div></td></tr>
+		<tr><td><br><br><table>
+				<tr>
+					<td width="160">before file add:</td>
+					<td width="110"><span id="beforeFileAddInfo"></span></td>
+					<td><input type="button" onclick="changeOnBeforeEvent('beforeFileAdd');" value="change"></td>
+				</tr><tr>
+					<td>before file remove:</td>
+					<td><span id="beforeFileRemoveInfo"></span></td>
+					<td><input type="button" onclick="changeOnBeforeEvent('beforeFileRemove');" value="change"></td>
+				</tr><tr>
+					<td>before clear:</td>
+					<td><span id="beforeClearInfo"></span></td>
+					<td><input type="button" onclick="changeOnBeforeEvent('beforeClear');" value="change"></td>
+				</tr>
+			</table></td>
+		</tr>
+		<tr><td><br><br><b>Log (<a href="javascript:void(0);" onclick="clearLog();">clear</a>)</b></td></tr>
+		<tr><td><div id="simpleLog"></div></td></tr>
+	</table>
+</body>
+</html>

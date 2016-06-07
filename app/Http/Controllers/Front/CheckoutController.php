@@ -17,9 +17,10 @@ use App\Model\Product\Subscription;
 use App\User;
 use Cart;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Front\CartController;
 
-class CheckoutController extends Controller
-{
+class CheckoutController extends Controller {
+
     public $subscription;
     public $plan;
     public $templateController;
@@ -34,8 +35,7 @@ class CheckoutController extends Controller
     public $invoiceItem;
     public $mailchimp;
 
-    public function __construct()
-    {
+    public function __construct() {
         $subscription = new Subscription();
         $this->subscription = $subscription;
 
@@ -73,8 +73,9 @@ class CheckoutController extends Controller
         $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm(Request $request)
-    {
+    public function CheckoutForm(Request $request) {
+        $currency = 'INR';
+        $cart_currency = 'INR';
         if (!\Auth::user()) {
             $url = $request->segments();
 
@@ -83,29 +84,54 @@ class CheckoutController extends Controller
             return redirect('auth/login')->with('fails', 'Please login');
         }
         $content = Cart::getContent();
+        //dd($content[10]);
         $require = [];
         foreach ($content as $key => $item) {
             $attributes[] = $item->attributes;
+            $cart_currency = $attributes[0]['currency'][0]['code'];
+            $user_currency = \Auth::user()->currency;
+            $currency = 'INR';
+            if ($user_currency == 1 || $user_currency == 'USD') {
+                $currency = 'USD';
+            }
+            if ($cart_currency != $currency) {
+                $id = $item->id;
+                Cart::remove($id);
+                $controller = new CartController();
+                $items = $controller->addProduct($id);
+                //dd($items);
+                Cart::add($items);
+                //
+            }
             $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
             }
+            //$attributes[] = $item->attributes;
+        }
+        if($content->count()==0){
+            return redirect('home');
+        }
+        if ($cart_currency != $currency) {
+            return redirect('checkout');
         }
         if (count($require) > 0) {
             $this->validate($request, [
                 'domain.*' => 'required|url',
                     ], [
                 'domain.*.required' => 'Please provide Domain name',
-                'domain.*.url'      => 'Domain name is not valid',
+                'domain.*.url' => 'Domain name is not valid',
             ]);
         }
         try {
             $domain = $request->input('domain');
             if (count($domain) > 0) {
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain'.$key, $value);
+                    \Session::put('domain' . $key, $value);
                 }
             }
+            //$content = Cart::getContent();
+            //dd($content);
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
@@ -113,8 +139,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function payNow($invoiceid)
-    {
+    public function payNow($invoiceid) {
         try {
             $invoice = $this->invoice->find($invoiceid);
             $items = new \Illuminate\Support\Collection();
@@ -129,8 +154,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function postCheckout(Request $request)
-    {
+    public function postCheckout(Request $request) {
         //dd($request->all());
         $paynow = false;
         if ($request->input('invoice_id')) {
@@ -184,11 +208,11 @@ class CheckoutController extends Controller
                 $check_product_category = $this->product($invoiceid);
                 $url = '';
                 if ($check_product_category->category == 'product') {
-                    $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
+                    $url = 'You can also download the product <a href=' . url('download/' . \Auth::user()->id . "/$invoice->number") . '>here</a>';
                 }
                 \Cart::clear();
 
-                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails') . $url);
             }
         } catch (\Exception $ex) {
             dd($ex);
@@ -197,8 +221,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function checkoutAction($invoice)
-    {
+    public function checkoutAction($invoice) {
         try {
 
             //get elements from invoice
@@ -224,7 +247,7 @@ class CheckoutController extends Controller
             //get system values
             $settings = new Setting();
             $settings = $settings->findOrFail(1);
-            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
+            $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
             $from = $settings->email;
             $to = \Auth::user()->email;
             $data = $this->template->where('type', 7)->first()->data;
@@ -241,8 +264,7 @@ class CheckoutController extends Controller
         }
     }
 
-    public function product($invoiceid)
-    {
+    public function product($invoiceid) {
         try {
             $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
             $name = $invoice->product_name;

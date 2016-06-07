@@ -19,9 +19,10 @@ class Subscription extends Model
         return $this->belongsTo('App\User');
     }
 
-//    public function order() {
-//        return $this->hasMany('App\Model\Product\Order');
-//    }
+    public function order() {
+        return $this->belongsTo('App\Model\Order\Order');
+    }
+   
 
 //    public function delete() {
 //

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Creating custom item</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* green */
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_radio_green_1 {
+			background-image: url("../common/flags2/flag_green.png");
+			background-position: center center;
+		}
+		/* red */
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_radio_red_1 {
+			background-image: url("../common/flags2/flag_red.png");
+			background-position: center center;
+		}
+		/* unchecked - common */
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_radio_green_0,
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_radio_red_0 {
+			background-image: url("../common/flags2/flag_gray.png");
+			background-position: center center;
+		}
+		/* log */
+		#log_here {
+			font-size: 8pt;
+			font-family: Tahoma;
+			width: 500px;
+			height: 120px;
+			border: 1px solid #cecece;
+			padding: 2px 5px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myCombo, myCombo2;
+		var eventIndex = 1;
+		function doOnLoad() {
+			// green
+			myCombo = new dhtmlXCombo("combo_zone", "combo", 230, "my_radio_green");
+			myCombo.load("../common/data2_short.json");
+			myCombo.enableFilteringMode(true);
+			// onRadioCheck is a custom event used in custom item type, just as an example
+			myCombo.attachEvent("onRadioCheck", function(value, state){
+				log("onRadioCheck event for green, value: "+value+", new state: "+state.toString());
+				return true;
+			});
+			// red
+			myCombo2 = new dhtmlXCombo("combo_zone2", "combo2", 230, "my_radio_red");
+			myCombo2.load("../common/data2_short.json");
+			myCombo2.enableFilteringMode(true);
+			myCombo2.attachEvent("onRadioCheck", function(value, state){
+				log("onRadioCheck event for red, value: "+value+", new state: "+state.toString());
+				return true;
+			});
+		}
+		function log(text) {
+			var t = document.getElementById("log_here");
+			t.innerHTML += (eventIndex++)+") "+text+"<br>";
+			t.scrollTop = t.scrollHeight;
+		}
+		
+		// green checkbox
+		dhtmlXCombo.prototype.modes.my_radio_green = {
+			
+			// define if top image will present (at least you can use it for margin to justify text)
+			image: true,
+			
+			// defile css for image, for better inheritance (see my_radio_red)
+			image_css: "dhxcombo_checkbox dhxcombo_radio_green_#state#",
+			option_css: "dhxcombo_option_text dhxcombo_option_text_chbx",
+			
+			// items pull, here we will keep all items to be able to uncheck them
+			items: {},
+			
+			// last checked item within group, will used on loading stage,
+			// only first item will checked if more than one have "checked" set to true
+			last_checked: {},
+			
+			// this is basic render function, called by combo instance
+			render: function(item, data) {
+				
+				// item - div created by combo, placed in popup list
+				// data - item data, json from init/server
+				
+				// all items from simple combo belong to common parent,
+				// we will set custom attr to it and collect items from common parent to group,
+				// this will allow to separate items from several combos on page
+				if (typeof(item.parentNode._optRbGroup) == "undefined") {
+					// 1st creation, assign uniq id to parent
+					item.parentNode._optRbGroup = window.dhx4.newId();
+					this.items[item.parentNode._optRbGroup] = {}; // storage for items from single combo
+				}
+				this.items[item.parentNode._optRbGroup][item._optId] = item;
+				
+				// check only first item from group
+				var checked = window.dhx4.s2b(data.checked);
+				if (checked) {
+					if (typeof(this.last_checked[item.parentNode._optRbGroup]) == "undefined") {
+						// first matched item, mark group
+						this.last_checked[item.parentNode._optRbGroup] = true;
+					} else {
+						// group already have checked item, clear flag
+						checked = false;
+					}
+				}
+				
+				// here you can save some item's params
+				// value - mandatory, no matter how to save it, you just will need to return it several times
+				item._conf = {
+					value: data.value,
+					css: "",
+					checked: checked
+				};
+				
+				// main item class, make sure if you will change it - you need to add corresponding css
+				item.className = "dhxcombo_option";
+				
+				// item text/image if any
+				// dhxcombo_checkbox - default css for checkbox/image, postfix can be easily modified, see css above
+				// dhxcombo_option_text dhxcombo_option_text_chbx - also default option text css
+				// if you plan to use different css rules - make sure you not forgot to add them
+				// text will saved later
+				item.innerHTML = "<div class='"+String(this.image_css).replace("#state#",(item._conf.checked?"1":"0"))+"'></div>"+
+						"<div class='"+this.option_css+"'>&nbsp;</div>";
+				
+				// add custom attr to radio-button image, to separate what element was clicked
+				// item._optId - inner option uniq id (different than value), assigned by combo
+				// can help you to identify your option
+				item.firstChild._optRbId = item._optId;
+				
+				// apply css (default code, just for def-code compat)
+				if (data.css != null) {
+					item.lastChild.style.cssText += data.css;
+					item._conf.css = data.css;
+				}
+				
+				// apply item text if any, also default code, will copied for "option" mode functionality
+				// you also can use your own
+				this.setText(item, data.text);
+				
+				// return object instance
+				return this;
+			},
+			
+			destruct: function(item) {
+				// nothing special, just clear storage
+				this.items[item.parentNode._optRbGroup][item._optId] = null;
+				item._conf = null;
+			},
+			
+			setChecked: function(item, state) {
+				// check/uncheck item code
+				item._conf.checked = window.dhx4.s2b(state);
+				item.firstChild.className = String(this.image_css).replace("#state#",(item._conf.checked?"1":"0"));
+				
+				// is state==true - we need to turn "off" all other items from the same list
+				if (state == true) {
+					for (var a in this.items[item.parentNode._optRbGroup]) {
+						if (a != item._optId) { // skip current item
+							this.setChecked(this.items[item.parentNode._optRbGroup][a], false);
+						}
+					}
+				}
+			},
+			
+			isChecked: function(item) {
+				// true if checked
+				return (item._conf.checked==true);
+			},
+			
+			getExtraData: function(item) {
+				// extra data will added to data returned by getOption()
+				return {type: "my_radio_green", checked: item._conf.checked, extra_param: "value"};
+			},
+			
+			optionClick: function(item, ev, combo) {
+				// called when option clicked, return true allows selection+confirm, return false - not
+				// for exaple - return false to prevent list hiding if image was clicked
+				var r = true;
+				var t = (ev.target||ev.srcElement);
+				while (r == true && t != null && t != item) {
+					// check if node have "custom attr" (was set in render())
+					if (t._optRbId != null) {
+						// call custom event, if handler will return true - allow state-change
+						// do not allow uncheck item by click
+						if (item._conf.checked == false && combo.callEvent("onRadioCheck", [item._conf.value,!item._conf.checked]) === true) {
+							this.setChecked(item, !this.isChecked(item));
+							// also here we need to uncheck any checked button
+						};
+						r = false; // return value, false if image was clicked
+					} else {
+						t = t.parentNode;
+					}
+				}
+				t = combo = item = null;
+				return r;
+			},
+			
+			getTopImage: function(item, enabled) {
+				// returns html for top image
+				// if item not specified - default image
+				// enabled specify if combo enabled
+				return "";
+			},
+			
+			topImageClick: function(item, combo) {
+				// called when user clicked on top-image,
+				// return true/false to allow defailt action (open/close list) ot not
+				// for checkbox - perform default action
+				return true;
+			}
+			
+		};
+		
+		// copy some basic functionality like setText/getText, setValue, setSelected/isSelected (in-list highlight) from default item "option"
+		dhtmlXComboExtend("my_radio_green", "option");
+		
+		// red checkbox, this item actually the same as green but css changed a bit
+		dhtmlXCombo.prototype.modes.my_radio_red = {
+			image_css: "dhxcombo_checkbox dhxcombo_radio_red_#state#"
+		};
+		dhtmlXComboExtend("my_radio_red", "my_radio_green");
+		
+	</script>
+
+</head>
+<body onload="doOnLoad();">
+	<h3>Custom item (green radio-flag)</h3>
+	<div id="combo_zone"></div>
+	<br>
+	<h3>Custom item from custom item (red radio-flag)</h3>
+	<div id="combo_zone2"></div>
+	<br><br><br><br><br><br><br><br><br><br>
+	<div id="log_here"></div>
+</body>
+</html>

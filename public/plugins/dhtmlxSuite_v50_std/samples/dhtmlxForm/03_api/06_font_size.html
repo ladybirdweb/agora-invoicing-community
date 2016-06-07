@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Font size</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 120},
+				{type: "fieldset", label: "Welcome", inputWidth: "auto", list:[
+					{type: "radio", name: "type", label: "Already have account", labelWidth: "auto", position: "label-right", checked: true, list:[
+						{type: "input", name:"login", label: "Login", value: "p_rossi"},
+						{type: "password", label: "Password", value: "123"},
+						{type: "checkbox", label: "Remember me", checked: true}
+					]},
+					{type: "radio", name: "type", label: "Not registered yet", labelWidth: "auto", position: "label-right", list:[
+						{type: "input", label: "Full Name", value: "Patricia D. Rossi"},
+						{type: "input", label: "E-mail Address", value: "p_rossi@example.com"},
+						{type: "input", label: "Login", value: "p_rossi"},
+						{type: "password", label: "Password", value: "123"},
+						{type: "password", label: "Confirm Password", value: "123"},
+						{type: "checkbox", label: "Subscribe on news"}
+					]},
+					{type: "radio", name: "type", label: "Guest login", labelWidth: "auto", position: "label-right", list:[
+						{type: "select", label: "Account type", options:[
+							{text: "Admin", value: "admin"},
+							{text: "Organiser", value: "org"},
+							{text: "Power User", value: "poweruser"},
+							{text: "User", value: "user"}
+						]},
+						{type: "checkbox", label: "Show logs window"}
+					]},
+					{type: "button", value: "Proceed"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+		function f(t) {
+			myForm.setFontSize(t+"px");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>
+		<input type="button" value="10px" onclick="f(10);">
+		<input type="button" value="11px" onclick="f(11);">
+		<input type="button" value="12px" onclick="f(12);">
+		<input type="button" value="13px" onclick="f(13);">
+		<input type="button" value="14px" onclick="f(14);">
+		<input type="button" value="15px" onclick="f(15);">
+		<input type="button" value="16px" onclick="f(16);">
+	</div>
+	<div id="myForm" style="height:650px;"></div>
+</body>
+</html>

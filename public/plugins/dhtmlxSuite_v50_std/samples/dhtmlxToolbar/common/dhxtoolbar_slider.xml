@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<toolbar>
+	<item id="net_limit" type="slider" length="70" valueMin="10" valueMax="100" valueNow="70" textMin="10 MBit" textMax="100 MBit" toolTip="%v MBit"/>
+</toolbar>

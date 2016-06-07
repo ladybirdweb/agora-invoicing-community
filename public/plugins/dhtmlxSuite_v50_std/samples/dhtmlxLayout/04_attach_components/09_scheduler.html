@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxScheduler</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 800px;
+			height: 600px;
+		}
+	</style>
+	<script>
+		var myLayout;
+		function doOnLoad() {
+			myLayout = new dhtmlXLayoutObject({
+				parent: "layoutObj",
+				pattern: "2E",
+				cells: [{id: "a", text: "dhtmlxScheduler", height: 450}]
+			});
+			if (typeof(window.scheduler) == "undefined") {
+				if (window.dhtmlx != null && window.dhtmlx.message != null) {
+					window.setTimeout(function(){
+						dhtmlx.message({type: "error", text: "dhtmlxScheduler required for this demo"});
+					},1);
+				} else {
+					alert("dhtmlxScheduler required for this demo");
+				}
+			} else {
+				scheduler.config.xml_date = "%Y-%m-%d %H:%i";
+				scheduler.config.first_hour = 10;
+				scheduler.config.last_hour = 20;
+				myLayout.cells("a").attachScheduler(new Date(2009,7,1,0,0,0,0), "week");
+				scheduler.load("../common/scheduler.xml");
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+</body>
+</html>

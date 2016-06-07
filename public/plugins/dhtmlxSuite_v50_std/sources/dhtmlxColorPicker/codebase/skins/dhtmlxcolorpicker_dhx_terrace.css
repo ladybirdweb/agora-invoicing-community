@@ -1,0 +1,271 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+.dhxcolorpicker_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 30px;
+	height: 10px;
+	overflow: hidden;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_g_area {
+	position: absolute;
+	width: 254px;
+	height: 272px;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	background-color: #f5f5f5;
+	box-shadow: 0px 0px 5px 2px #cfcfcf;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_add_memory {
+	height: 317px !important;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_sub_area {
+	margin: 1px;
+	width: 252px;
+	height: 270px;
+	border-radius: 2px;
+	background-color: #f5f5f5;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_add_memory .dhxcp_sub_area {
+	height: 315px !important;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_g_color_area {
+	padding: 10px;
+	width: 232px;
+	height: 122px;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_color_selector {
+	position: absolute;
+	width: 210px;
+	height: 120px;
+	background-image: url("../imgs/dhxcp_terrace/dhxcp_colors.png");
+	background-repeat: no-repeat;
+	border: 1px solid #cccccc;
+	cursor: pointer;
+	float: left;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_contrast_area {
+	border: 1px solid #cccccc;
+	position: relative;
+	height: 120px;
+	width: 10px;
+	cursor: pointer;
+	float: right;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_ie_gradient {
+	height: 120px;
+	width: 10px;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_color_selector .dhxcp_v_line {
+	position: absolute;
+	width: 0px;
+	height: 120px;
+	border-left: 1px solid #ffffff;
+	cursor: pointer;
+	overflow: hidden;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_color_selector .dhxcp_h_line,
+.dhtmlxcp_dhx_terrace .dhxcp_contrast_area .dhxcp_h_line {
+	position: absolute;
+	height: 0px;
+	border-top: 1px solid #ffffff;
+	cursor: pointer;
+	overflow: hidden;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_color_selector .dhxcp_h_line {
+	width: 210px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_contrast_area .dhxcp_h_line {
+	width: 10px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_g_input_area {
+	padding: 0px 10px;
+	width: 232px;
+	height: 78px;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_value_cont {
+	width: 60px;
+	height: 78px;
+	float: left;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_value_color {
+	width: 58px;
+	height: 30px;
+	border: 1px solid #cccccc;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_value {
+	width: 54px;
+	height: 21px;
+	line-height: 20px;
+	border: 1px solid #cccccc;
+	border-radius: 0px;
+	background-color: #ffffff;
+	margin: 5px 0px 0px 0px;
+	padding: 0px 2px;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+	text-align: left;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_inputs_cont {
+	border: none;
+	border-spacing: 0px;
+	width: 160px;
+	height: 78px;
+	float: right;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_label_hsl,
+.dhtmlxcp_dhx_terrace .dhxcp_label_rgb {
+	text-align: right;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	padding: 0px 3px 0px 0px;
+}
+.dhtmlxcp_dhx_terrace td.dhxcp_input_hsl,
+.dhtmlxcp_dhx_terrace td.dhxcp_input_rgb {
+	width: 27px;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace input.dhxcp_input_hsl,
+.dhtmlxcp_dhx_terrace input.dhxcp_input_rgb {
+	width: 24px;
+	height: 19px;
+	border: 1px solid #cccccc;
+	border-radius: 0px;
+	background-color: #ffffff;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+	text-align: right;
+	padding: 1px 3px;
+	margin: 2px 0px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_g_memory_area {
+	width: 232px;
+	height: 0px;
+	overflow: hidden;
+	border: 1px solid #cccccc;
+	border-bottom: none;
+	border-left: none;
+	border-right: none;
+	margin: 10px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_memory_button_cont {
+	width: 232px;
+	margin: 0px;
+	height: 24px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_buttons_area button,
+.dhtmlxcp_dhx_terrace .dhxcp_memory_button_cont button {
+	outline: none;
+	border-radius: 0px;
+	padding: 0px;
+	background-color: #f0f0f0;
+	border: 1px solid #cccccc;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	border-radius: 3px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_buttons_area button:hover,
+.dhtmlxcp_dhx_terrace .dhxcp_memory_button_cont button:hover {
+	background-color: #ebebeb;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_buttons_area button:active,
+.dhtmlxcp_dhx_terrace .dhxcp_memory_button_cont button:active {
+	background-color: #e6e6e6;
+	box-shadow: 0 0 3px #d6d6d6 inset;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_save_to_memory {
+	width: 232px;
+	height: 24px;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_save_to_memory .dhxcp_label_bm {
+	display: inherit;
+	width: 90px;
+	margin: 0 auto;
+	height: 16px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_memory_els_cont {
+	width: 232px;
+	height: 25px;
+	margin-top: 3px;
+	text-align: center;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_memory_el {
+	width: 24px;
+	height: 24px;
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+	display: inline-block;
+	margin: 0px 1px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_memory_el_select {
+	border: 1px dashed black !important;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_memory_el_next {
+	border: 1px dashed red !important;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_add_memory .dhxcp_g_memory_area {
+	height: 55px !important;
+	border-top: none !important;
+	margin: 5px 10px 5px 10px;
+}
+.dhtmlxcp_dhx_terrace .dhxcp_buttons_area {
+	padding: 0px 10px;
+	width: 232px;
+	height: 28px;
+	text-align: right;
+	margin: 0px;
+}
+.dhtmlxcp_dhx_terrace .dhx_button_save,
+.dhtmlxcp_dhx_terrace .dhx_button_cancel {
+	height: 26px;
+	line-height: 22px;
+	width: 75px;
+	margin: 0 2px;
+	overflow: hidden;
+	text-align: center;
+}
+.dhxcp_colorBox {
+	float: right;
+}
+.dhxcp_colorInput {
+	float: left;
+}
+.dhxcp_frm {
+	position: absolute;
+	background-color: white;
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	width: 256px;
+	height: 274px;
+}

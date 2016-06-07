@@ -3,6 +3,32 @@
 <div class="box box-primary">
 
     <div class="content-header">
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(Session::has('success'))
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('success')}}
+        </div>
+        @endif
+        <!-- fail message -->
+        @if(Session::has('fails'))
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-ban"></i>
+            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('fails')}}
+        </div>
+        @endif
         {!! Form::open(['url'=>'orders','method'=>'post']) !!}
         <h4>{{Lang::get('message.orders')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
@@ -14,34 +40,7 @@
 
             <div class="col-md-12">
 
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
 
                 <div class="row">
 
@@ -79,22 +78,22 @@
                 <div class="row">
 
                     <div class="col-md-4 form-group">
-                        
+
                         <p>{!! Form::checkbox('confirmation',1) !!}  {{Lang::get('message.order-confirmation')}}</p>
                     </div>
-                    
+
                     <div class="col-md-4 form-group {{ $errors->has('invoice') ? 'has-error' : '' }}">
-                        
+
                         <p>{!! Form::checkbox('invoice',1) !!}  {{Lang::get('message.generate-invoice')}}</p>
                     </div>
-                    
+
                     <div class="col-md-4 form-group {{ $errors->has('email') ? 'has-error' : '' }}">
-                       
+
                         <p>{!! Form::checkbox('email',1) !!}  {{Lang::get('message.send-email')}}</p>
                     </div>
 
                 </div>
-                
+
                 <div class="row">
 
                     <div class="col-md-6 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
@@ -110,9 +109,9 @@
                         {!! Form::text('domain',null,['class' => 'form-control']) !!}
 
                     </div>
-                    
+
                 </div>
-                
+
                 <div class="row">
 
                     <div class="col-md-4 form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
@@ -128,7 +127,7 @@
                         {!! Form::text('price_override',null,['class' => 'form-control']) !!}
 
                     </div>
-                    
+
                     <div class="col-md-4 form-group {{ $errors->has('qty') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('qty',Lang::get('message.quantity')) !!}

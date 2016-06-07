@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Material skin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<script>
+		function doOnLoad(){
+			var tree1 = new dhtmlXTreeObject("treeboxbox_tree1","100%","100%",0);
+			tree1.setImagePath("../../../codebase/imgs/dhxtree_material/");
+			tree1.enableTreeImages(false);
+			tree1.enableDragAndDrop(true);
+			tree1.load("../common/tree.xml");
+
+			var tree2 = new dhtmlXTreeObject("treeboxbox_tree2","100%","100%",0);
+			tree2.setImagePath("../../../codebase/imgs/dhxtree_material/");
+			tree2.enableDragAndDrop(true);
+			tree2.load("../common/tree.xml");
+
+			var tree3 = new dhtmlXTreeObject("treeboxbox_tree3","100%","100%",0);
+			tree3.setImagePath("../../../codebase/imgs/dhxtree_material/");
+			tree3.enableTreeImages(false);
+			tree3.enableCheckBoxes(true);
+			tree3.enableThreeStateCheckboxes(true);
+			tree3.enableDragAndDrop(true);
+			tree3.setDragBehavior("sibling");
+			tree3.load("../common/tree.xml");
+
+			var tree4 = new dhtmlXTreeObject("treeboxbox_tree4","100%","100%",0);
+			tree4.setImagePath("../../../codebase/imgs/dhxtree_material/");
+			tree4.enableCheckBoxes(true)
+			tree4.enableDragAndDrop(true);
+			tree4.setDragBehavior("sibling");
+			tree4.load("../common/tree.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Material skin</h1>
+	<div id="treeboxbox_tree1" class="tree_demo_samples" style="float:left;"></div>
+	<div id="treeboxbox_tree2" class="tree_demo_samples" style="float:left;"></div>
+	<div id="treeboxbox_tree3" class="tree_demo_samples" style="float:left;"></div>
+	<div id="treeboxbox_tree4" class="tree_demo_samples" style="float:left;"></div>
+</body>
+</html>

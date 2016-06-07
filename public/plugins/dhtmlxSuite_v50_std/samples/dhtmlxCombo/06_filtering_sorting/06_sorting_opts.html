@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sorting opts</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo, myCombo2;
+		function doOnLoad() {
+			// common
+			myCombo = new dhtmlXCombo("combo_zone", "combo", 230, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.load("../common/data_countries.json");
+			myCombo.enableFilteringMode(true);
+			// custom sorting
+			myCombo2 = new dhtmlXCombo("combo_zone2", "combo2", 230, "image");
+			myCombo2.setImagePath("../common/flags2/");
+			myCombo2.setDefaultImage("flag_green.png");
+			myCombo2.load("../common/data_consoles.json");
+			myCombo2.enableFilteringMode(true);
+		}
+		function doSort(combo, mode) {
+			if (combo == 1) {
+				myCombo.sort(mode);
+			} else {
+				myCombo2.sort(function(a,b){
+					var r = (mode=="asc"?1:-1);
+					return (Number(a.text.year)>Number(b.text.year)?r:-1*r);
+				});
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Common</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<a href="javascript:void(0);" onclick="doSort(1, 'asc');">asc</a>
+	&nbsp;
+	<a href="javascript:void(0);" onclick="doSort(1, 'desc');">desc</a>
+	<br>
+	<h3>Custom sorting</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<a href="javascript:void(0);" onclick="doSort(2, 'asc');">by year asc</a>
+	&nbsp;
+	<a href="javascript:void(0);" onclick="doSort(2, 'desc');">by year desc</a>
+</body>
+</html>

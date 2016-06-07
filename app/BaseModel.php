@@ -25,9 +25,10 @@ class BaseModel extends Model {
         }
         $config = \HTMLPurifier_Config::createDefault();
         $purifier = new \HTMLPurifier($config);
-
-        if ($value != strip_tags($value)) {
-            $value = $purifier->purify($value);
+        if(!is_array($value)){
+            if ($value != strip_tags($value)) {
+                $value = $purifier->purify($value);
+            }
         }
         parent::setAttribute($property, $value);
     }

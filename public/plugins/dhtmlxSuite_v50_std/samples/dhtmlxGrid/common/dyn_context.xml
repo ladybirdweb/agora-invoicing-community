@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu id="0">
+		<item text="Add row"  id="add"/>	
+		<item text="Delete row"   id="delete"/>
+		<item text="Increase value on 100"   id="inc"/>	
+		<item text="Decrease value on 200"   id="dec"/>
+		<item text="Author page" id="link"/>	
+		<item text="Edit price"  id="edit"/>
+		<item text="Set available" id="set_avail"/>	
+		<item text="Set unavailable" id="set_unavail"/>
+		<item text="Delete from bestsellers"   id="del_best"/>	
+		<item text="Add to bestsellers"  id="add_best"/>
+</menu>

@@ -1,0 +1,439 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: material
+	include extra file: skins/material.less
+*/
+
+@keyframes dhx_loader_rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes dhx_loader_dash {
+	0% {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px;
+	}
+	100% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -124px;
+	}
+}
+.dhtmlxribbon_material {
+	overflow: hidden;
+	width: 100%;
+}
+.dhtmlxribbon_material.dhxrb_without_tabbar {
+	background-color: #fafafa;
+	border: 1px solid #dfdfdf;
+}
+.dhtmlxribbon_material .dhxrb_background_area {
+	height: 126px;
+	background-color: #fafafa;
+	margin: 1px;
+}
+.dhtmlxribbon_material .dhxrb_with_tabbar {
+	height: 171px;
+}
+.dhtmlxribbon_material div.dhx_cell_tabbar {
+	background-color: #fafafa;
+}
+.dhtmlxribbon_material .dhxrb_g_area {
+	height: 124px;
+	float: left;
+	clear: left;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_block_base {
+	margin: 3px 0px 3px 3px;
+	float: left;
+	border: 1px solid #dfdfdf;
+	background-color: #fafafa;
+	height: 118px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_block_base .dhxrb_block_items {
+	height: 95px;
+	float: left;
+	padding: 2px 0px;
+	overflow: hidden;
+}
+.dhtmlxribbon_material .dhxrb_block_base>.dhxrb_block_label {
+	height: 19px;
+	line-height: 18px;
+	*height: auto;
+	*line-height: 1em;
+}
+.dhtmlxribbon_material .dhxrb_block_base .dhxrb_block_label {
+	text-align: center;
+	clear: left;
+	background-color: #ebebeb;
+	*font-size: 12px;
+	*padding: 1px 3px 3px;
+	*font-family: Arial;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_big_button {
+	margin: 1px 3px;
+	float: left;
+	text-align: center;
+	padding: 4px 10px;
+	height: 82px;
+	border: 1px solid #fafafa;
+	background-color: #fafafa;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_big_button .dhxrb_image {
+	width: 48px;
+	height: 48px;
+	border: none;
+}
+.dhtmlxribbon_material .dhxrb_big_button i {
+	position: relative;
+	display: block;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	width: 48px;
+	height: 48px;
+	line-height: 47px;
+	font-size: 30px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_material .dhxrb_big_button .dhxrb_label_button {
+	margin: 0px auto;
+	cursor: default;
+	line-height: 14px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_big_button .dhxrb_invisible {
+	visibility: hidden;
+}
+.dhtmlxribbon_material .dhxrb_3rows_block {
+	float: left;
+	margin: 0px 3px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_3rows_block .dhxrb_invisible {
+	display: none;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button {
+	height: 25px;
+	margin: 1px 0px;
+	float: left;
+	clear: left;
+	padding: 1px 8px;
+	border: 1px solid #fafafa;
+	background-color: #fafafa;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_in_row {
+	height: 22px;
+	margin: 1px 0px;
+	float: left;
+	padding: 1px 8px;
+	white-space: nowrap;
+	border: 1px solid #fafafa;
+	background-color: #fafafa;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_group .dhxrb_buttoncombo_cont {
+	height: 20px;
+}
+.dhtmlxribbon_material .dhxrb_buttoncombo_cont {
+	height: 24px;
+	padding: 0px 2px !important;
+}
+.dhtmlxribbon_material .dhxrb_buttoncombo {
+	float: left;
+}
+.dhtmlxribbon_material .dhxrb_in_row .dhxrb_slider,
+.dhtmlxribbon_material .dhxrb_3rows_button .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_material .dhxrb_in_row center,
+.dhtmlxribbon_material .dhxrb_in_group center,
+.dhtmlxribbon_material .dhxrb_3rows_button center {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_material .dhxrb_big_button .dhxrb_slider {
+	width: 16px;
+	margin: 2px 0px;
+	height: 50px;
+}
+.dhtmlxribbon_material .dhxrb_in_group {
+	height: 23px;
+	float: left;
+	padding: 1px 4px;
+	border: 1px solid #ebebeb;
+}
+.dhtmlxribbon_material .dhxrb_input {
+	float: left;
+	border: 1px solid #dfdfdf;
+	background-color: #ffffff;
+	height: 18px;
+	width: 80px;
+	padding: 1px 2px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_input:disabled {
+	color: #a6a6a6;
+}
+.dhtmlxribbon_material div.dhxcombo_material {
+	height: 24px;
+	line-height: 24px;
+}
+.dhtmlxribbon_material div.dhxcombo_material input.dhxcombo_input {
+	float: left;
+	height: 24px;
+	width: 80px;
+	padding: 0px 2px;
+	line-height: 24px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_input {
+	height: 16px;
+	padding: 1px 1px;
+	line-height: 16px;
+}
+.dhtmlxribbon_material .dhxrb_in_group div.dhxcombo_material {
+	height: 20px;
+	line-height: 20px;
+}
+.dhtmlxribbon_material .dhxrb_in_group div.dhxcombo_material input.dhxcombo_input {
+	height: 20px;
+	line-height: 20px;
+}
+.dhtmlxribbon_material .dhxrb_in_group div.dhxcombo_material div.dhxcombo_select_button {
+	top: 0px;
+}
+.dhtmlxribbon_material div.dhxcombo_material div.dhxcombo_select_button {
+	top: 2px;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button .dhxrb_image,
+.dhtmlxribbon_material .dhxrb_in_row .dhxrb_image,
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_image {
+	margin: 3px 0px;
+	width: 18px;
+	height: 18px;
+	float: left;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button i,
+.dhtmlxribbon_material .dhxrb_in_row i,
+.dhtmlxribbon_material .dhxrb_in_group i {
+	position: relative;
+	float: left;
+	width: 18px;
+	height: 18px;
+	line-height: 17px;
+	font-size: 15px;
+	margin-top: 3px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_material .dhxrb_item_disable i {
+	color: #a6a6a6;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button .dhxrb_label_button,
+.dhtmlxribbon_material .dhxrb_in_row .dhxrb_label_button,
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_label_button {
+	float: left;
+	cursor: default;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button .dhxrb_label_button,
+.dhtmlxribbon_material .dhxrb_in_row .dhxrb_label_button {
+	margin: 1px 0px 1px 6px;
+	line-height: 22px;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_label_button {
+	margin: 1px;
+	line-height: 22px;
+}
+.dhtmlxribbon_material .dhxrb_label_checkbox {
+	float: left;
+	margin: 0px 4px;
+	cursor: default;
+	line-height: 21px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_group .dhxrb_label_checkbox {
+	line-height: 19px;
+}
+.dhtmlxribbon_material .dhxrb_disable_text_style,
+.dhtmlxribbon_material .dhxrb_item_disable .dhxrb_label_checkbox {
+	color: #a6a6a6 !important;
+}
+.dhtmlxribbon_material .dhxrb_highlight0 {
+	background-color: #ebebeb;
+	border-color: #ebebeb;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_material .dhxrb_highlight1 {
+	background-color: #dcdcdc;
+	border-color: #d2d2d2;
+	box-shadow: 0 0 4px rgba(127,127,127,0.2) inset;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_material .dhxrb_item_hide {
+	display: none !important;
+}
+.dhtmlxribbon_material .dhxrb_block_rows {
+	float: left;
+	margin: 0px 3px;
+}
+.dhtmlxribbon_material .dhxrb_block_row {
+	float: left;
+	clear: left;
+	height: 28px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_arrow {
+	padding: 0px 5px;
+	margin-left: 2px;
+	background: url("../imgs/dhxribbon_material/dhxribbon_arrow.gif") no-repeat 50%;
+}
+.dhtmlxribbon_material .dhxrb_item_disable .dhxrb_arrow {
+	opacity: 0.4;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+}
+.dhtmlxribbon_material .dhxrb_3rows_block .dhxrb_group {
+	border: 1px solid #dcdcdc;
+	background-color: #ebebeb;
+	height: 26px;
+	float: left;
+	clear: left;
+	margin: 1px 0px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_block_row .dhxrb_group {
+	border: 1px solid #dfdfdf;
+	background-color: #fafafa;
+	height: 24px;
+	float: left;
+	margin: 1px 0px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_label_hide {
+	display: none;
+}
+.dhtmlxribbon_material .dhxrb_separator_groupp {
+	height: 27px;
+	width: 0;
+	border-left: 1px solid #dcdcdc;
+	overflow: hidden;
+	float: left;
+}
+.dhtmlxribbon_material .dhxrb_checkbox {
+	border: 1px solid #dfdfdf;
+	background-color: white;
+	float: left;
+	width: 12px;
+	height: 12px;
+	margin-top: 4px;
+	overflow: hidden;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_checkbox {
+	margin-top: 3px;
+}
+.dhtmlxribbon_material .dhxrb_checked .dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_material/dhxribbon_checked.gif");
+	background-repeat: no-repeat;
+}
+.dhtmlxribbon_material .dhxrb_checked.dhxrb_item_disable>.dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_material/dhxribbon_checked_dis.gif");
+}
+.dhtmlxribbon_material .dhxrb_item_disable .dhxrb_checkbox {
+	background-color: #fafafa;
+}
+.dhtmlxribbon_material .dhxrb_item_text {
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_in_group .dhxrb_item_text {
+	height: 20px;
+	line-height: 19px;
+	*float: left;
+	*clear: left;
+}
+.dhtmlxribbon_material .dhxrb_3rows_button .dhxrb_item_text,
+.dhtmlxribbon_material .dhxrb_in_row .dhxrb_item_text {
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_material .dhxrb_big_button .dhxrb_item_text {
+	line-height: 82px;
+	height: 82px;
+	float: left;
+	clear: left;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxribbon_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 40px;
+	height: 10px;
+	overflow: hidden;
+}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag data from List to HTML container</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<style>
+		body {
+			-webkit-user-select: none;
+			-moz-user-select: none;
+			user-select: none;
+		}
+	</style>
+	<script>
+		var myList;
+		function doOnLoad() {
+			dhtmlx.DragControl.addDrop("data_container2",{
+				onDrop:function(source, target, d, e){
+					var context = dhtmlx.DragControl.getContext();
+					var item = context.from.get(context.source[0]);
+					var d = document.createElement("DIV");
+					d.innerHTML = item.name+" - "+item.city;
+					target.appendChild(d);
+				}
+			});
+			myList = new dhtmlXList({
+				container:"data_container1",
+				type:{
+					template:"<span class='dhx_strong'>#name#</span>#address# <br/><span class='dhx_light'>#city#</span>",
+					padding:5,
+					height:80
+				},
+				drag:true
+			});
+			myList.load("../common/list.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Drag data from  List to HTML container</h1>
+	<div id="data_container1" class="list_demo_samples" style="overflow:auto; float:left;"></div>
+	<div style="width:50px; float:left">&nbsp;</div>
+	<div id="data_container2" class="list_demo_samples" style="overflow:auto; float:left;"></div>
+	<div style="clear:both"></div>
+</body>
+</html>
+
+

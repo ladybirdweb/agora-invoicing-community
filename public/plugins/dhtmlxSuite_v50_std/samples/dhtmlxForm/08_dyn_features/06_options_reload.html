@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Reload options for select/combo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#simpleLog {
+			width: 500px;
+			height: 300px;
+			font-family: Tahoma;
+			font-size: 11px;
+			overflow: auto;
+			margin-top: 10px;
+		}
+	</style>
+	<script>
+		var myForm, formData, logObj;
+		var localOpts = [
+			{value: "1", text: "Columnar Cacti"},
+			{value: "2", text: "Barrel Cacti"},
+			{value: "3", text: "Hedgehog Cacti", selected: true},
+			{value: "4", text: "Pincushion Cacti"},
+			{value: "5", text: "Cholla Cacti"},
+			{value: "6", text: "Prickly Pear Cacti"}
+		];
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 100, inputWidth: 160},
+				{type: "select", name: "sel", label: "Select", connector: "php/opts_select.php"},
+				{type: "combo", name: "combo", label: "Combo", connector: "php/opts_select.php?mode=combo", offsetTop: 5},
+				{type: "multiselect", name: "msel", label: "Multiselect", connector: "php/opts_select.php", size: 6, offsetTop: 5},
+				// buttons
+				{type: "button", value: "Cars", name: "cars", offsetTop: 20},
+				{type: "button", value: "Colors", name: "colors"},
+				{type: "button", value: "Cactus", name: "cactus"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.attachEvent("onButtonClick", function(name){
+				for (var a in {sel:1,combo:1,msel:1}) {
+					if (name == "cars" || name == "colors") {
+						myForm.reloadOptions(a, "php/opts_select.php?mode="+a+"&type="+name);
+					} else {
+						myForm.reloadOptions(a, localOpts);
+					}
+				}
+			});
+			myForm.attachEvent("onOptionsLoaded", function(name){
+				logEvent("onOptionsLoaded, item name '"+name+"'<br>");
+			});
+			myForm.attachEvent("onChange", function(name, value){
+				logEvent("onChange, item name '"+name+"', value '"+value.toString()+"'<br>");
+			});
+		}
+		function logEvent(t) {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML += t;
+		}
+		function clearLog() {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML = "";
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:350px;"></div>
+	<div style="clear: both;">
+		* ext/dhtmlxform_dyn.js required<br>
+		cars and colors loaded from url, cactus loaded from local array<br><br>
+	</div>
+	<div><b>Log (<a href="javascript:void(0);" onclick="clearLog();">clear</a>)</b></div>
+	<div id="simpleLog"></div>
+</body>
+</html>

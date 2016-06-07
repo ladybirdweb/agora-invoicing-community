@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+	<item id="new" text="New document" img="new.gif"/>
+	<item id="sep1" type="separator"/>
+	<item id="open" text="Open" img="open.gif"/>
+	<item id="save" text="Save" img="save.gif"/>
+	<item id="sep2" type="separator"/>
+	<item id="print" text="Print content" img="print.gif"/>
+</menu>

@@ -1,0 +1,92 @@
+<?xml version="1.0"?>
+<menu>
+	<item id="file" text="File" img="open.gif">
+		<item id="new" text="New" img="new.gif" imgdis="new_dis.gif">
+			<hotkey>Ctrl+N</hotkey>
+		</item>
+		<item id="file_sep_1" type="separator"/>
+		<item id="open" text="Open" img="open.gif" imgdis="open_dis.gif">
+			<hotkey>Ctrl+O</hotkey>
+		</item>
+		<item id="save" text="Save" img="save.gif" imgdis="save_dis.gif">
+			<hotkey>Ctrl+S</hotkey>
+		</item>
+		<item id="saveAs" text="Save As..." img="save_as.gif" imgdis="save_as_dis.gif" enabled="false">
+			<hotkey>Ctrl+S A</hotkey>
+		</item>
+		<item id="file_sep_2" type="separator"/>
+		<item id="print" text="Print" img="print.gif" imgdis="print_dis.gif">
+			<hotkey>Ctrl+P</hotkey>
+		</item>
+		<item id="pageSetup" text="Page Setup" img="page_setup.gif" imgdis="page_setup_dis.gif" enabled="false">
+			<hotkey>Ctrl+P</hotkey>
+		</item>
+		<item id="file_sep_3" type="separator"/>
+		<item id="close" text="Close" img="close.gif" imgdis="close_dis.gif">
+			<hotkey>Ctrl+W</hotkey>
+		</item>
+		<item id="sep_top_1" type="separator"/>
+		<item id="lineNumbering" text="Line Numbering" type="checkbox" checked="true">
+			<hotkey>Ctrl+X L</hotkey>
+		</item>
+		<item id="Ignore Case" text="Ignore Case" type="checkbox"/>
+		<item type="separator"/>
+		<item id="syntax111" text="Other" enabled="false">
+			<item id="syntax222" text="Other" enabled="false"/>
+		</item>
+		<item id="textSeparator" type="separator"/>
+		<item id="endOfLine" text="End Of Line">
+			<item id="endOfLineAuto" text="Auto" type="radio" group="eol" checked="true"/>
+			<item id="endOfLineSeparator" type="separator"/>
+			<item id="endOfLineUnix" text="Unix (\n)" type="radio" group="eol"/>
+			<item id="endOfLineDos" text="DOS/Windows (\r\n)" type="radio" group="eol"/>
+			<item id="endOfLineMac" text="MacOS (\r)" type="radio" group="eol"/>
+		</item>
+		<item id="syntax" text="Syntax">
+			<item id="syntaxAuto" text="Auto" type="radio" group="hlm" checked="true"/>
+			<item id="syntaxSeparator" type="separator"/>
+			<item id="syntaxHTML" text="HTML/JS" type="radio" group="hlm"/>
+			<item id="syntaxPHP" text="PHP/ASP/JSP" type="radio" group="hlm"/>
+			<item id="syntaxJava" text="Java" type="radio" group="hlm"/>
+		</item>
+	</item>
+	<item id="color" text="Color">
+		<item id="colorizeText" text="Colorize Text" type="checkbox" checked="true"/>
+		<item id="colosSeparator1" type="separator"/>
+		<item id="fontColor" text="Font Color">
+			<item id="fontColorBlack" text="Black" type="radio" group="fontcolor" checked="true"/>
+			<item id="fontColorBrown" text="Brown" type="radio" group="fontcolor"/>
+			<item id="fontColorRed" text="Red" type="radio" group="fontcolor"/>
+			<item id="fontColorBlue" text="Blue" type="radio" group="fontcolor"/>
+		</item>
+		<item id="p14" text="Background Color">
+			<item id="p41" text="Transparent" type="radio" group="bgcolor" checked="true"/>
+			<item id="ps3" type="separator"/>
+			<item id="p42" text="White" type="radio" group="bgcolor"/>
+			<item id="p43" text="Yellow" type="radio" group="bgcolor"/>
+			<item id="p44" text="Cyan" type="radio" group="bgcolor"/>
+			<item id="p45" text="Magenta" type="radio" group="bgcolor"/>
+			<item id="p46" text="Black" type="radio" group="bgcolor"/>
+		</item>
+	</item>
+	
+	<item id="sep_top_2" type="separator"/>
+	<item id="edit" text="Edit">
+		<item id="aaa" text="Choose">
+			<item id="undo" text="Undo" img="undo.gif" imgdis="undo_dis.gif"/>
+			<item id="redo" text="Redo" img="redo.gif" imgdis="redo_dis.gif"/>
+		</item>
+		
+		<item id="edit_sep_1" type="separator"/>
+		<item id="selectAll" text="Select All" img="select_all.gif" imgdis="select_all_dis.gif"/>
+		<item id="edit_sep_2" type="separator"/>
+		<item id="cut" text="Cut" img="cut.gif" imgdis="cut_dis.gif"/>
+		<item id="copy" text="Copy" img="copy.gif" imgdis="copy_dis.gif"/>
+		<item id="paste" text="Paste" img="paste.gif" imgdis="paste_dis.gif"/>
+	</item>
+	<item id="help" text="Help" img="help.gif">
+		<item id="about" text="About..." img="about.gif" imgdis="about_dis.gif"/>
+		<item id="needhelp" text="Help" img="help.gif" imgdis="help_dis.gif"/>
+		<item id="bugReporting" text="Bug Reporting" img="bug_reporting.gif" imgdis="bug_reporting_dis.gif"/>
+	</item>
+</menu>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onMouseOver / onMouseOut events</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#logsHere {
+			width: 700px;
+			height: 150px;
+			overflow: auto;
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+		}
+
+	</style>
+	<script>
+		var myCalendar;
+		var logObj;
+		var logInd = 0;
+		var logData = [];
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.show();
+			myCalendar.attachEvent("onMouseOver", function(d, ev){
+				logData.push((++logInd)+") onMouseOver event, date "+myCalendar.getFormatedDate("%d.%m.%Y",d));
+				writeLog();
+			});
+			myCalendar.attachEvent("onMouseOut", function(d, ev){
+				logData.push((++logInd)+") onMouseOut event, date "+myCalendar.getFormatedDate("%d.%m.%Y",d));
+				writeLog();
+			});
+		}
+		function writeLog() {
+			if (!logObj) logObj = document.getElementById("logsHere");
+			var t = "";
+			for (var q=logData.length-1; q>=Math.max(logData.length-6,0); q--) t += logData[q]+"<br>";
+			logObj.innerHTML = t;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+	<div id="logsHere"></div>
+</body>
+</html>

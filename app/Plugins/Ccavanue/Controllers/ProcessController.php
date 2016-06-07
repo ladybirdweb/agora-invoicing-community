@@ -6,18 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Plugins\Ccavanue\Model\Ccavanue;
 use Illuminate\Http\Request;
 
-class ProcessController extends Controller
-{
+class ProcessController extends Controller {
+
     public $ccavanue;
 
-    public function __construct()
-    {
+    public function __construct() {
         $ccavanue = new Ccavanue();
         $this->ccavanue = $ccavanue;
     }
 
-    public function PassToPayment($requests)
-    {
+    public function PassToPayment($requests) {
         try {
             //dd($requests);
             $request = $requests['request'];
@@ -28,6 +26,8 @@ class ProcessController extends Controller
                 $total = \Cart::getSubTotal();
             } else {
                 $total = $request->input('cost');
+                \Cart::clear();
+                \Session::set('invoiceid', $order->id);
             }
 
             if ($request->input('payment_gateway') == 'ccavanue') {
@@ -46,7 +46,7 @@ class ProcessController extends Controller
                 $merchant_id = $ccavanue->merchant_id;
                 $redirect_url = $ccavanue->redirect_url;
                 $cancel_url = $ccavanue->cancel_url;
-                $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
+                $name = \Auth::user()->first_name . ' ' . \Auth::user()->last_name;
                 $address = \Auth::user()->address;
                 $city = \Auth::user()->town;
                 $state = \Auth::user()->state;
@@ -65,31 +65,41 @@ class ProcessController extends Controller
                 $working_key = $ccavanue->working_key;
                 $access_code = $ccavanue->access_code;
 
-                $merchant_data = 'order_id'.'='.$orderid.
-                        '&amount'.'='.$total.
-                        '&merchant_id'.'='.$merchant_id.
-                        '&redirect_url'.'='.$redirect_url.
-                        '&cancel_url'.'='.$cancel_url.
-                        '&language'.'='.'EN'.
-                        '&billing_name'.'='.$name.
-                        '&billing_address'.'='.$address.
-                        '&billing_city'.'='.$city.
-                        '&billing_state'.'='.$state.
-                        '&billing_zip'.'='.$zip.
-                        '&billing_email'.'='.$email.
-                        '&billing_tel'.'='.$mobile.
-                        '&billing_country'.'='.$country.
-                        '&currency'.'='.$currency.'&';
+                $merchant_data = 'order_id' . '=' . $orderid .
+                        '&amount' . '=' . $total .
+                        '&merchant_id' . '=' . $merchant_id .
+                        '&redirect_url' . '=' . $redirect_url .
+                        '&cancel_url' . '=' . $cancel_url .
+                        '&language' . '=' . 'EN' .
+                        '&billing_name' . '=' . $name .
+                        '&billing_address' . '=' . $address .
+                        '&billing_city' . '=' . $city .
+                        '&billing_state' . '=' . $state .
+                        '&billing_zip' . '=' . $zip .
+                        '&billing_email' . '=' . $email .
+                        '&billing_tel' . '=' . $mobile .
+                        '&billing_country' . '=' . $country .
+                        '&currency' . '=' . $currency . '&';
                 $merchant_data = str_replace(' ', '%20', $merchant_data);
-                $this->submitData($merchant_data, $ccavanue_url, $access_code, $working_key);
+                $this->middlePage($merchant_data, $ccavanue_url, $access_code, $working_key);
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
 
-    public function submitData($data, $url, $access_code, $working_key)
-    {
+    public function middlePage($data, $url, $access_code, $working_key) {
+        try {
+
+            $path = app_path() . '/Plugins/Ccavanue/views';
+            \View::addNamespace('plugins', $path);
+            echo view('plugins::middle-page', compact('data', 'url', 'access_code', 'working_key'));
+        } catch (\Exception $ex) {
+            dd($ex);
+        }
+    }
+
+    public function submitData($data, $url, $access_code, $working_key) {
         try {
             //dd($url);
             $crypto = new Crypto();
@@ -106,9 +116,9 @@ class ProcessController extends Controller
         }
     }
 
-    public function response(Request $request)
-    {
+    public function response(Request $request) {
         try {
+            $url = "";
             $crypto = new Crypto();
             $ccavanue = $this->ccavanue->findOrFail(1);
             $workingKey = $ccavanue->working_key;  //Working Key should be provided here.
@@ -127,27 +137,33 @@ class ProcessController extends Controller
                     $order_id = $information[1];
                 }
             }
+            $invoiceid = $request->input('orderNo');
+            $message = "Thank you for your order. However,the transaction has been declined. Try again.";
+            $status = "fails";
+            $url = "paynow/" . $invoiceid;
+            if (\Cart::getContent()->count() > 0) {
+                $url = 'checkout';
+            }
+            \Session::forget('invoiceid');
             if ($order_status == 'Success') {
-                $invoiceid = $request->input('orderNo');
-                $invoice = new \App\Model\Order\Invoice();
-                $invoice = $invoice->findOrFail($invoiceid);
-                $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
-                $checkout_controller->checkoutAction($invoice);
+                $control = new \App\Http\Controllers\Order\RenewController();
+                if ($control->checkRenew() == false) {
+                    $invoice = new \App\Model\Order\Invoice();
+                    $invoice = $invoice->findOrFail($invoiceid);
+                    $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+                    $checkout_controller->checkoutAction($invoice);
+                }else{
+                    $control->successRenew();
+                }
                 \Cart::clear();
+                $status = 'success';
+                $message = "Thank you for your order. Your transaction is successful. We will be processing your order soon.";
             }
-
-            echo '<br><br>';
-
-            echo '<table cellspacing=4 cellpadding=4>';
-            for ($i = 0; $i < $dataSize; $i++) {
-                $information = explode('=', $decryptValues[$i]);
-
-                echo '<tr><td>'.$information[0].'</td><td>'.$information[1].'</td></tr>';
-            }
-
-            echo '</table><br>';
+            return redirect($url)->with($status, $message);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
+    
+
 }

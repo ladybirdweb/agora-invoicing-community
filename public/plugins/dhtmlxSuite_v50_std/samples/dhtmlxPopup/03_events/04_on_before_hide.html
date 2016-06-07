@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onBeforeHide</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#myToolbar {
+			margin: 10px;
+		}
+		#eLog {
+			position: relative;
+			height: 200px;
+			width: auto;
+			overflow: auto;
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin: 100px 10px 10px 10px;
+			padding: 2px;
+		}
+	</style>
+	<script>
+		
+		var myToolbar;
+		var myPop;
+		var eLog;
+		var eCount = 0;
+		
+		function doOnLoad() {
+			
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "myToolbar",
+				icons_path: "../common/imgs/",
+				xml: "../common/toolbar.xml",
+				onload: function() {
+					
+					myToolbar.setItemText("workbut", "List");
+					
+					myPop = new dhtmlXPopup({ toolbar: myToolbar, id: "workbut" });
+					
+					myPop.attachList("name,price", [
+						{id: 1, name: "Audi A5 Coupe", price: "&euro; 31,550"},
+						{id: 2, name: "Audi A5 Sportback", price: "&euro; 30,990"},
+						myPop.separator,
+						{id: 3, name: "Audi A6", price: "&euro; 30,990"},
+						{id: 4, name: "Audi A6 Avant", price: "&euro; 37,450"},
+						{id: 5, name: "Audi A6 Quattro", price: "&euro; 55,360"},
+						myPop.separator,
+						{id: 6, name: "Audi TT Coupe", price: "&euro; 29,830"},
+						{id: 7, name: "Audi TT RS Coupe", price: "&euro; 59,800"}
+					]);
+					
+					myPop.attachEvent("onBeforeHide", function(type){
+						logEvent("onBeforeHide", type);
+						if (type == "esc") return false;
+						return true;
+					});
+					
+				}
+			});
+			
+			eLog = document.getElementById("eLog");
+		}
+		
+		function logEvent(name, type) {
+			eLog.innerHTML = (++eCount)+": event fired: "+name+", type="+type+"<br>"+eLog.innerHTML;
+			eLog.scrollTop = 0;
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myToolbar"></div>
+	<div id="eLog">
+		<br>To hide popup - click outside, select any item or press esc key<br>
+		click/select will allow closing, esc - not
+	</div>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<data>
+	<item id="01">
+		<title>An Inconvenient Book: Real Solutions to the World's Biggest Problems</title>
+		<author>Glenn Beck</author>
+		<desc><![CDATA[
+			The world is a mess. It seems that every time you turn around, there's another problem: 
+			Iran is developing nuclear capabilities. Public schools actually seem to be making our kids dumber. Charlie Sheen has a hit sitcom. Obesity is a national epidemic. 
+			The divorce rates is rising faster than gas prices. Did you hear me--Charlie Sheen has a hit sitcom! 
+		]]></desc>
+		<lprice>26.00</lprice>
+		<cprice>15.60</cprice>
+	</item>
+	<item id="02">
+		<title>Duma Key: A Novel</title>
+		<author>Stephen King</author>
+		<desc><![CDATA[
+			A terrible construction site accident takes Edgar Freemantle's right arm and scrambles his memory and his mind, leaving him with little but rage as he begins the ordeal of rehabilitation. A marriage that produced two lovely daughters suddenly ends, and Edgar begins to wish he hadn't survived the injuries that could have killed him. He wants out. His psychologist, Dr. Kamen, suggests a "geographic cure," a new life distant from the Twin Cities and the building business Edgar grew from scratch. And Kamen suggests something else. 
+		]]></desc>
+		<lprice>28.00</lprice>
+		<cprice>16.80</cprice>
+	</item>
+	<item id="03">
+		<title>T is for Trespass</title>
+		<author>Sue Grafton</author>
+		<desc><![CDATA[
+			In what may be her most unsettling novel to date, Sue Grafton's T is for Trespass is also her most direct confrontation with the forces of evil. Beginning slowly with the day-to-day life of a private eye, Grafton suddenly shifts from the voice of Kinsey Millhone to that of Solana Rojas, introducing readers to a chilling sociopath. Rojas is not her birth name. It is an identity she cunningly stole, an identity that gives her access to private caregiving jobs. The true horror of the novel builds with excruciating tension as the reader foresees the awfulness that lies ahead. The suspense lies in whether Millhone will realize what is happening in time to intervene.
+		]]></desc>
+		<lprice>26.95</lprice>
+		<cprice>17.79</cprice>
+	</item>
+	<item id="04">
+		<title>PS, I LOVE YOU</title>
+		<author>Cecelia Ahern</author>
+		<desc><![CDATA[
+			Ahern, the mediagenic 22-year-old daughter of Ireland's prime minister, debuts with a sweet, sentimental tale of a young widow's trials and triumphs in the year after her husband's death. Soul mates Holly and Gerry married in their early 20s; when Gerry dies of brain cancer at 30, Holly is utterly bereft. But Gerry has a final gift: a series of letters, which Holly is to open on the first of each month from March to New Year's, and which will guide her on her journey from grief. Gerry correctly predicts that Holly will not have gone through his belongings by June, found a new job by September or considered falling in love again by December, but with his posthumous epistolary encouragement she does all those things. 
+		]]></desc>
+		<lprice>13.95</lprice>
+		<cprice>11.16</cprice>
+	</item>
+	<item id="06">
+		<title>Plum Lucky</title>
+		<author>Janet Evanovich</author>
+		<desc><![CDATA[
+			Looking to get lucky? Stephanie Plum is back between-the-numbers and she's looking to get lucky in an Atlantic City hotel room, in a Winnebago, and with a brown-eyed stud who has stolen her heart.Stephanie Plum has a way of attracting danger, lunatics, oddballs, bad luck . . . and mystery men. And no one is more mysterious than the unmentionable Diesel. He's back and hot on the trail of a little man in green pants who's lost a giant bag of money. Problem is, the money isn't exactly lost. Stephanie's Grandma Mazur has found it, and like any good Jersey senior citizen, she's hightailed it in a Winnebago to Atlantic City and hit the slots. With Lula and Connie in tow, Stephanie attempts to bring Grandma home, but the luck of the Irish is rubbing off on everyone: Lula's found a job modeling plus-size lingerie.
+		]]></desc>
+		<lprice>17.95</lprice>
+		<cprice>10.77</cprice>
+	</item>
+	<item id="08">
+		<title>The Geography of Bliss: One Grump's Search for the Happiest Places in the World</title>
+		<author>Eric Weiner</author>
+		<desc><![CDATA[
+			The author isn't a grump as much as he is an AARP aged skeptic as he sets out to travel the world to see and study people and what makes them happy or unhappy with where they live. Its interesting that Denmark and Singapore are the happiest, and one would assume its because they are small countries, or at least one nationality or race countries. 
+		]]></desc>
+		<lprice>25.99</lprice>
+		<cprice>17.15</cprice>
+	</item>
+	<item id="07">
+		<title>Taming Natasha &amp; Luring A Lady</title>
+		<author>Nora Roberts</author>
+		<desc><![CDATA[
+			The first time single-father Spence Kimball set eyes on Natasha Stanislaski, he was floored by her exotic beauty. But the former ballet dancer turned toy shop owner had a fiery temperament that kept men safely at bay. Sensing a hidden wound, Spence and his little girl joined forces to find a way into her closely guarded heart. For Spence realized he'd do anything to tame Natasha's fears ... and show her how to love.
+		]]></desc>
+		<lprice>14.95</lprice>
+		<cprice>10.17</cprice>
+	</item>
+	<item id="11">
+		<title>I Hope They Serve Beer In Hell</title>
+		<author>Tucker Max</author>
+		<desc><![CDATA[
+			My name is Tucker Max, and I am an asshole. I get excessively drunk at inappropriate times, disregard social norms, indulge every whim, ignore the consequences of my actions, mock idiots and posers, sleep with more women than is safe or reasonable, and just generally act like a raging dickhead. But, I do contribute to humanity in one very important way: I share my adventures with the world.
+		]]></desc>
+		<lprice>12.95</lprice>
+		<cprice>10.36</cprice>
+	</item>
+	<item id="10">
+		<title>The Portable Atheist: Essential Readings for the Nonbeliever</title>
+		<author>Christopher Hitchens</author>
+		<desc><![CDATA[
+			From the #1 New York Times best-selling author of God Is Not Great, a provocative and entertaining guided tour of atheist and agnostic thought through the ages--with never-before-published pieces by Salman Rushdie, Ian McEwan, and Ayaan Hirsi Ali. 
+			Christopher Hitchens continues to make the case for a splendidly godless universe in this first-ever gathering of the influential voices--past and present--that have shaped his side of the current (and raging) God/no-god debate. 
+		]]></desc>
+		<lprice>17.50</lprice>
+		<cprice>11.90</cprice>
+	</item>
+	<item id="09">
+		<title>The Innocent Man</title>
+		<author>John Grisham</author>
+		<desc><![CDATA[
+			In the town of Ada, Oklahoma, Ron Williamson was going to be the next Mickey Mantle. But on his way to the Big Leagues, Ron stumbled, his dreams broken by drinking, drugs, and women. Then, on a winter night in 1982, not far from Ron's home, a young cocktail waitress named Debra Sue Carter was savagely murdered. The investigation led nowhere. Until, on the flimsiest evidence, it led to Ron Williamson. The washed-up small-town hero was charged, tried, and sentenced to death-in a trial littered with lying witnesses and tainted evidence that would shatter a man's already broken
+  life and let a true killer go free.
+		]]></desc>
+		<lprice>7.99</lprice>
+		<cprice>7.99</cprice>
+	</item>
+	
+</data>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom Axis Units</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<style>
+		.title {
+			font-weight: bold;
+		}
+	</style>
+	<script>
+		var data = [
+			{ id:1, sales:20, date:"05.01.2012", color: "#ee4339"},
+			{ id:2, sales:55, date:"10.01.2012", color: "#ee9336"},
+			{ id:3, sales:40, date:"15.01.2012", color: "#eed236"},
+			{ id:4, sales:78, date:"18.01.2012", color: "#d3ee36"},
+			{ id:5, sales:61, date:"25.01.2012", color: "#a7ee70"},
+			{ id:6, sales:35, date:"02.02.2012", color: "#58dccd"},
+			{ id:7, sales:80, date:"06.02.2012", color: "#36abee"},
+			{ id:8, sales:50, date:"19.02.2012", color: "#476cee"},
+			{ id:9, sales:65, date:"22.02.2012", color: "#a244ea"},
+			{ id:10, sales:59, date:"27.02.2012", color: "#e33fc7"},
+			{ id:11, sales:86, date:"11.01.2013", color: "#e33fc7"}
+		];
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart =  new dhtmlXChart({
+				view:"bar",
+				container:"chart1",
+				value:"#sales#",
+				color: "#color#",
+				gradient:"rising",
+				tooltip:{
+					template:"Date <span class='title'>#date#</span><br/>Value <span class='title'>#sales#</span>"
+				},
+				width:60,
+				xAxis:{
+					template:function(obj){
+						return obj.$unit.getDate()==15?dhtmlx.Date.date_to_str("%F")(obj.$unit):""
+					},
+					lineColor:function(obj){
+						return obj.$unit.valueOf() == (new Date(2012,1,1)).valueOf()?"#737373":"#cfcfcf"
+					},
+					value:function(obj){
+						return dhtmlx.Date.str_to_date("%d.%m.%Y")(obj.date);
+					},
+					units:{
+						start:new Date(2012,0,1),
+						end:new Date(2012,1,29),
+						next:function(d){
+							return  dhtmlx.Date.add(d, 1, "day");
+						}
+					}
+				},
+				yAxis:{
+					start:0,
+					step:10,
+					end:100
+				}
+			});
+			myBarChart.parse(data,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chart1" style="width:800px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

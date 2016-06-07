@@ -99,12 +99,8 @@ if (count($attributes) > 0) {
                                                         $domain = [];
                                                         $price = 0;
                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                                        $product_price = $product->price()->where('currency', $attributes[0]['currency'][0]['code'])->first();
-                                                        if ($product_price->sales_price) {
-                                                            $value = $product_price->sales_price;
-                                                        } else {
-                                                            $value = $product_price->price;
-                                                        }
+                                                        $cart_controller = new App\Http\Controllers\Front\CartController();
+                                                        $value = $cart_controller->cost($product->id);
                                                         $price += $value;
                                                         if ($product->require_domain == 1) {
                                                             $domain[$key] = $product->id;

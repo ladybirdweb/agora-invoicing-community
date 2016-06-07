@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Iterator</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml"
+			});
+		}
+		function disable() {
+			myMenu.forEachItem(function(id){
+				if (myMenu.getItemType(id) != "separator" && myMenu._getItemLevelType(id) != "TopLevel") myMenu.setItemDisabled(id);
+			});
+		}
+		function enable() {
+			myMenu.forEachItem(function(id){
+				if (myMenu.getItemType(id) != "separator" && myMenu._getItemLevelType(id) != "TopLevel") myMenu.setItemEnabled(id);
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div style="height: 250px;"><div id="menuObj"></div></div>
+	<input type="button" value="Disable All Nested" onclick="disable();">
+	<input type="button" value="Enable All Nested" onclick="enable();">
+</body>
+</html>

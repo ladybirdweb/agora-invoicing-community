@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<rows>
+	<row id="1" class='alesa'><userdata name="ud2">Some+</userdata>
+		<cell><![CDATA[
+			<strong>A Time to Kill</strong> is the name of a legal suspense thriller authored by John Grisham in 1989. Grisham's first novel, it was rejected by many publishers before Wynwood Press eventually gave it a modest 5,000-copy printing. After The Firm, The Pelican Brief, and The Client became bestsellers, interest in A Time to Kill grew, the book was republished by Doubleday in hardcover and then by Dell Publishing in paperback, and became a bestseller as well.
+			]]></cell>
+		<cell>Time to Kill</cell>
+		<cell>John Grisham</cell>
+		<cell>12.99</cell>
+		<cell>1</cell>
+		<cell>24</cell>
+		<cell>0</cell>
+		<cell>05/01/1998</cell>
+	</row>
+	<row id="2">
+		<cell><![CDATA[
+<strong>Stephen King</strong> had such fun recording the epic, unabridged audio version of his haunting novel Bag of Bones, he decided to publish the three-story collection <strong>Blood and Smoke</strong> exclusively on audio. They're horror stories, good and dark, loosely linked by the theme of cigarettes and a macabre humor. The flip-top cigarette-box package is amusingly cool, too. <br/><br/>
+
+In the first tale, "Lunch at the Gotham Café," Steve Davis quits smoking two days after his wife dumps him. King cleverly compares the two kinds of withdrawal: obsession blends with emotional flatness, and you're left "with a feeling the world has taken on a decidedly dreamy cast." Driven, Steve meets with his wife and her lawyer at a midtown Manhattan restaurant, where the nightmare begins. "I was pretty sure something was wrong with the maitre d' almost as soon as I saw him," says Steve, and gothic café events soon prove him right.			
+			]]></cell>
+		<cell>Some text there</cell>
+		<cell>Blood and Smoke</cell>
+		<cell>Stephen King</cell>
+		<cell>0</cell>
+		<cell>1</cell>
+		<cell>24</cell>
+		<cell>0</cell>
+		<cell>01/01/2000</cell>
+	</row>
+	<row id="3" >
+		<cell></cell>
+		<cell>The Rainmaker</cell>
+		<cell>John Grisham</cell>
+		<cell>7.99</cell>
+		<cell>0</cell>
+		<cell>48</cell>
+		<cell>0</cell>
+		<cell>12/01/2001</cell>
+	</row>
+	<row id="4">
+		<cell></cell>
+		<cell>The Green Mile</cell>
+		<cell>Stephen King</cell>
+		<cell>11.10</cell>
+		<cell>1</cell>
+		<cell>24</cell>
+		<cell>0</cell>
+		<cell>01/01/1992</cell>
+	</row>
+	<row id="5">
+		<cell></cell>
+		<cell>Misery</cell>
+		<cell>Stephen King</cell>
+		<cell>7.70</cell>
+		<cell>0</cell>
+		<cell>na</cell>
+		<cell>0</cell>
+		<cell>01/01/2003</cell>
+	</row>
+	<row id="6">
+		<cell>-1200</cell>
+		<cell>The Dark Half</cell>
+		<cell>Stephen King</cell>
+		<cell>0</cell>
+		<cell>0</cell>
+		<cell>48</cell>
+		<cell>0</cell>
+		<cell>10/30/1999</cell>
+	</row>
+	<row id="7">
+		<cell>1500</cell>
+		<cell>The Partner</cell>
+		<cell>John Grisham</cell>
+		<cell>12.99</cell>
+		<cell>1</cell>
+		<cell>48</cell>
+		<cell>1</cell>
+		<cell>01/01/2005</cell>
+	</row>
+	<row id="8">
+		<cell>500</cell>
+		<cell>It</cell>
+		<cell>Stephen King</cell>
+		<cell>9.70</cell>
+		<cell>0</cell>
+		<cell>na</cell>
+		<cell>0</cell>
+		<cell>10/15/2001</cell>
+	</row>
+	<row id="9">
+		<cell>400</cell>
+		<cell>Cousin Bette</cell>
+		<cell>Honore de Balzac</cell>
+		<cell>0</cell>
+		<cell>1</cell>
+		<cell>1</cell>
+		<cell>0</cell>
+		<cell>12/01/1991</cell>
+	</row>
+	<row id="10">
+		<cell>-100</cell>
+		<cell>Boris Godunov</cell>
+		<cell>Alexandr Pushkin</cell>
+		<cell>7.15</cell>
+		<cell>1</cell>
+		<cell>1</cell>
+		<cell>0</cell>
+		<cell>01/01/1999</cell>
+	</row>
+	<row id="11">
+		<cell>-150</cell>
+		<cell>Alice in Wonderland</cell>
+		<cell>Lewis Carroll</cell>
+		<cell>4.15</cell>
+		<cell>1</cell>
+		<cell>1</cell>
+		<cell>0</cell>
+		<cell>01/01/1999</cell>
+	</row>
+</rows>

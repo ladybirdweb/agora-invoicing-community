@@ -5,37 +5,38 @@
 
     <div class="col-md-12">
         <div class="box">
+            <div class="box-header">
+                @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
-            @if (count($errors) > 0)
-            <div class="alert alert-danger">
-                <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+                @if(Session::has('success'))
+                <div class="alert alert-success alert-dismissable">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{Session::get('success')}}
+                </div>
+                @endif
+                <!-- fail message -->
+                @if(Session::has('fails'))
+                <div class="alert alert-danger alert-dismissable">
+                    <i class="fa fa-ban"></i>
+                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{Session::get('fails')}}
+                </div>
+                @endif
             </div>
-            @endif
 
-            @if(Session::has('success'))
-            <div class="alert alert-success alert-dismissable">
-                <i class="fa fa-ban"></i>
-                <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{Session::get('success')}}
-            </div>
-            @endif
-            <!-- fail message -->
-            @if(Session::has('fails'))
-            <div class="alert alert-danger alert-dismissable">
-                <i class="fa fa-ban"></i>
-                <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                {{Session::get('fails')}}
-            </div>
-            @endif
 
-            <div class="box-body no-padding">
+
+            <div class="box-body">
                 {!! Form::open(['url'=>'social-media','method'=>'post']) !!}
 
                 <table class="table table-condensed">
@@ -65,7 +66,7 @@
 
                         <td><b>{!! Form::label('class',Lang::get('message.class'),['class'=>'required']) !!}</b></td>
                         <td>
-                            
+
                             <div class="form-group {{ $errors->has('class') ? 'has-error' : '' }}">
 
 
@@ -73,9 +74,9 @@
                                 <p><i> {{Lang::get('message.enter-the-css-class-of-the-social-media')}}</i> </p>
 
 
-                            
+
                         </td>
-                        
+
 
                     </tr>
                     <tr>
@@ -92,7 +93,7 @@
 
                         </td>
                     </tr>
-                    
+
                     <tr>
 
                         <td><b>{!! Form::label('link',Lang::get('message.link'),['class'=>'required']) !!}</b></td>
@@ -106,13 +107,13 @@
 
                             </div>
                         </td>
-                        
+
                     </tr>
 
-                    
-                    
+
+
                     {!! Form::close() !!}
-                    
+
                 </table>
 
 

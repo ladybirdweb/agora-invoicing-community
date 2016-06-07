@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="*" type="ro" align="left" sort="str">Filename</column>
+		<column width="60" type="ro" align="left" sort="int">Done</column>
+		<column width="90" type="ro" align="left" sort="int">Started</column>
+	</head>
+	<row id="1">
+		<cell>The_Walking_Dead_4x03.avi</cell>
+		<cell>0%</cell>
+		<cell>2 days ago</cell>
+	</row>
+</rows>

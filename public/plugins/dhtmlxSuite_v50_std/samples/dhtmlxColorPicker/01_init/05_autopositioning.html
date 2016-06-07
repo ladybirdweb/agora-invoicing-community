@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+	<title>Autopositioning</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCP;
+		function doOnLoad() {
+			myCP = dhtmlXColorPicker(["input1","input2"]);
+			myCP.setPosition("bottom");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 300px;">
+		<table cellspacing="2" cellpadding="2" border="0" width="100%">
+			<tr>
+				<td colspan="2" align="left">
+					Set open direction:
+					<input type="button" value="right" onclick="myCP.setPosition('right');">
+					<input type="button" value="bottom" onclick="myCP.setPosition('bottom');">
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2" align="left">
+					Use inputs below to test colorpicker's appearance
+				</td>
+			</tr>
+			<tr>
+				<td width="50%" align="left" style='background-color:#e7dbfb;padding: 6px 5px;'><input type="text" id="input1"></td>
+				<td width="50%" align="right" style='background-color:#e7dbfb;padding: 6px 5px;'><input type="text" id="input2"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

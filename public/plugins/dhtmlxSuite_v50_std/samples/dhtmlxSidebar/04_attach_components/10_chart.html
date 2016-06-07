@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxChart</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var mySidebar;
+		var myChart;
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/icons_material/",
+				width: 160,
+				json: "../common/sidebar.json",
+				onload: function() {
+					myChart = mySidebar.cells("recent").attachChart({
+						view: "pie",
+						value: "#sales#",
+						color: "#color#",
+						pieInnerText: "#sales#",
+						legend: {
+							width: 75,
+							align: "right",
+							valign: "middle",
+							template: "#month#"
+						}
+					});
+					myChart.parse([
+						{sales: "20", month: "Jan", color: "#ee3639"},
+						{sales: "30", month: "Feb", color: "#ee9e36"},
+						{sales: "50", month: "Mar", color: "#eeea36"},
+						{sales: "40", month: "Apr", color: "#a9ee36"},
+						{sales: "70", month: "May", color: "#36d3ee"},
+						{sales: "80", month: "Jun", color: "#367fee"},
+						{sales: "60", month: "Jul", color: "#9b36ee"}
+					], "json");
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+</body>
+</html>

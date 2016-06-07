@@ -61,7 +61,76 @@
     </div>
     <!-- /.col -->
 </div>
+<div class="box box-success">
+    <div class="box-header with-border">
+        <h3 class="box-title">Search</h3>
 
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        {!! Form::open(['method'=>'get']) !!}
+
+        <div class="row">
+
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('name','Name') !!}
+                {!! Form::text('name',null,['class' => 'form-control']) !!}
+
+            </div>
+            
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('username','Username') !!}
+                {!! Form::text('username',null,['class' => 'form-control']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('company','Company Name') !!}
+                {!! Form::text('company',null,['class' => 'form-control']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('mobile','Mobile') !!}
+                {!! Form::text('mobile',null,['class' => 'form-control']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('email','Email') !!}
+                {!! Form::text('email',null,['class' => 'form-control']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('country','Country') !!}
+                {!! Form::text('country',null,['class' => 'form-control']) !!}
+
+            </div>
+
+            <div class="col-md-4 col-md-offset-4">
+                <div class="col-md-6">
+                    {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
+                </div>
+                <div class="col-md-6">
+                    {!! Form::submit('Reset',['class'=>'btn btn-danger']) !!}
+                </div>
+            </div>
+
+        </div>
+
+
+
+        {!! Form::close() !!}
+    </div>
+</div>
 
 
 <div class="box box-primary">
@@ -108,7 +177,7 @@
             <div class="col-md-12">
                 {!! Datatable::table()
                 ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Email','Registered On','Status','Action')
-                ->setUrl('get-clients')
+                ->setUrl("get-clients?name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country")
                 ->setOptions([
                 "order"=> [ 3, "desc" ],
                 "dom" => "Bfrtip",

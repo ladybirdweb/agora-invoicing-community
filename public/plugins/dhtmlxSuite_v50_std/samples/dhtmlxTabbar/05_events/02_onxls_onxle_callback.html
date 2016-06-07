@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onXLS / onXLE / callback</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#log_here {
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+			font-size: 14px;
+			border: 1px solid #dfdfdf;
+			width: auto;
+			height: 100px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myTabbar;
+		var eventIndex = 1;
+		
+		function doOnLoad() {
+			
+			log("used when config loaded via xml");
+			
+			myTabbar = new dhtmlXTabBar("my_tabbar");
+			
+			myTabbar.attachEvent("onXLS", function(id){
+				log("<b>onXLS</b> event");
+			});
+			myTabbar.attachEvent("onXLE", function(id){
+				log("<b>onXLS</b> event");
+			});
+			
+			myTabbar.loadStruct("../common/tabbar.xml", function(){
+				log("<b>callback</b>");
+			});
+			
+			
+		}
+		
+		function log(data){
+			var t = document.getElementById("log_here");
+			t.innerHTML = ""+(eventIndex++)+") "+data+"<br>"+t.innerHTML;
+			t.scrollTop = 0;
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:395px; height:390px;"></div><br>
+	<div id="log_here"></div>
+</body>
+</html>

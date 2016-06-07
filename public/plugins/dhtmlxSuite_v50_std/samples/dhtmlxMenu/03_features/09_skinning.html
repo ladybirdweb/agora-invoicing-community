@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		var loadData = {};
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj"
+			});
+			setSkin("material");
+		}
+		function setSkin(skin) {
+			if (!checkLoadState()) return;
+			loadData = {menu: false};
+			myMenu.clearAll();
+			myMenu.setSkin(skin);
+			myMenu.setIconsPath(skin=="dhx_terrace"?"../common/imgs_terrace/":"../common/imgs/");
+			myMenu.loadStruct("../common/dhxmenu_all_items.json");
+			myMenu.attachEvent("onXLE", function(){
+				loadData.menu = true;
+			});
+		}
+		function checkLoadState() {
+			var s = true;
+			for (var a in loadData) s = s&&loadData[a];
+			return s;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 250px;">
+		<div id="menuObj"></div>
+	</div>
+	<div>
+		<button onclick="setSkin('dhx_skyblue')">dhx_skyblue</button>
+		<button onclick="setSkin('dhx_web')">dhx_web</button>
+		<button onclick="setSkin('dhx_terrace')">dhx_terrace</button>
+		<button onclick="setSkin('material')">material</button>
+	</div>
+</body>
+</html>

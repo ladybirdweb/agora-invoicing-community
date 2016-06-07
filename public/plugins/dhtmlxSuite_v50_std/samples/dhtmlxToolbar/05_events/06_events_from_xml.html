@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Events from xml</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#logBar {
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin-top: 20px;
+			width: auto;
+			height: 200px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myToolbar;
+		var i = 1;
+		function doOnLoad() {
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar.xml"
+			});
+			writeLog('try to "cut/copy/pase" or "new document"');
+		}
+		
+		function doEdit(id) {
+			writeLog("<b>doEdit</b> with param <b>"+id+"</b> called.");
+		}
+		function showNewDocumentSelect() {
+			writeLog("<b>showNewDocumentSelect</b> called.");
+		}
+		function doOnNewDocument(id) {
+			writeLog("<b>doOnNewDocument</b> with param <b>"+id+"</b> called.");
+		}
+		
+		function writeLog(data) {
+			document.getElementById("logBar").innerHTML = String(i++)+". "+data+"<br>"+document.getElementById("logBar").innerHTML;
+			document.getElementById("logBar").innerHTML+="";
+		}
+	
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 150px;"><div id="toolbarObj"></div></div>
+	<div id="logBar"></div>
+</body>
+</html>

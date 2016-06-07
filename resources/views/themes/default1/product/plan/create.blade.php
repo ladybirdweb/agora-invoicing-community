@@ -51,49 +51,81 @@
                         {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                     </div>
-
-                    <div class="col-md-4 form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('subscription',Lang::get('message.subscription'),['class'=>'required']) !!}
-                        {!! Form::select('subscription',[''=>'Select','Subcriptions'=>$subscription],null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-4 form-group {{ $errors->has('price') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}
-                        {!! Form::text('price',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                </div>
-
-                <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                    <!-- last name -->
-                    {!! Form::label('description',Lang::get('message.description')) !!}
-                    {!! Form::textarea('description',null,['class' => 'form-control']) !!}
-
-                </div>
-                
-                <div class="row">
-
-                    <div class="col-md-6 form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
+                     <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('expiry',Lang::get('message.expiry')) !!}
-                        {!! Form::select('expiry',[],null,['class' => 'form-control']) !!}
+                        {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
+                        {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control']) !!}
 
                     </div>
 
-                    <div class="col-md-6 form-group {{ $errors->has('updates') ? 'has-error' : '' }}">
+                   <div class="col-md-4 form-group {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('updates',Lang::get('message.updates')) !!}
-                        {!! Form::select('updates',[],null,['class' => 'form-control']) !!}
+                        {!! Form::label('days','Periods',['class'=>'required']) !!}
+                        {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control']) !!}
 
                     </div>
+
+                    <div class="col-md-12">
+                        <table class="table table-responsive">
+                            <tr>
+                                <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
+                                <td>
+
+                                    <table class="table table-responsive">
+                                        <tr>
+                                            <th></th>
+                                            <th>Add/Month</th>
+                                            <th>Renew/Month</th>
+
+                                        </tr>
+
+                                        @foreach($currency as $key=>$value)
+                                        <tr class="form-group {{ $errors->has('add_price.'.$key) ? 'has-error' : '' }}">
+                                            <td>
+
+                                                <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
+                                                {!! Form::label('days',$value,['class'=>'required']) !!}
+
+                                            </td>
+
+                                            <td>
+                                                
+                                                {!! Form::text("add_price[$key]",null,['class' => 'form-control']) !!}
+                                               
+
+                                            </td>
+                                            
+                                            <td>
+                                                
+                                                {!! Form::text("renew_price[$key]",null,['class' => 'form-control']) !!}
+                                               
+
+                                            </td>
+
+                                        </tr>
+                                        @endforeach
+
+
+                                    </table>
+
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="col-md-6 form-group {{ $errors->has('allow_tax') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('allow_tax','Allow Tax') !!}
+                        {!! Form::checkbox('allow_tax',1) !!}
+
+                    </div>
+
 
                 </div>
 
-                
+
+
+
 
             </div>
 

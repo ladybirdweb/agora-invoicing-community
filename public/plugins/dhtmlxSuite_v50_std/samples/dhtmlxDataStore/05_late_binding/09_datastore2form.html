@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+</head>
+
+<body>
+	<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div>
+	<div id="gridbox2" style="width:600px; height:70px; background-color:white;"></div>
+	<input type="button" value="save" onclick="myform.save()">
+
+<script>
+	var formData = [
+		{type: "label", label: "Selected record"},
+		{type: "input", name: "Maintainer", value: "", 	labelWidth:100, label:"Maintainer"},
+		{type: "input", name: "Version", value: "", 	labelWidth:100, label: "Version"},
+		{type: "input", name: "Package", value: "", 	labelWidth:100, label: "Package"},
+	];
+	myform = new dhtmlXForm("gridbox2", formData);
+
+	var data = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		datatype:"json",
+		ready:function(){
+			this.setCursor(this.first());
+			myform.bind(data);
+		}
+	});
+
+
+
+	
+	
+
+</script>
+
+
+</body>
+</html>

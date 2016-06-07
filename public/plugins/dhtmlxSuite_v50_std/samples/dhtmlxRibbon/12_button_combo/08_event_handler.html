@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onClick from init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+
+	<style>
+		div#logs_here {
+			font-family: Tahoma;
+			font-size: 11px;
+			height: 150px;
+			border: 1px solid #cecece;
+			overflow: auto;
+			margin-top: 20px;
+		}
+	</style>
+
+	<script>
+		var myRibbon, i=0, data = {
+			parent: "ribbonObj",
+			icons_path: "../samples_common/ribbon/",
+			items: [
+				{type:'block', text:'Block 1', mode:'cols', list:[
+					{type:'buttonCombo', text:'buttonCombo 1', items: [
+						{value: "1", text: "The Adventures of Tom Sawyer"},
+						{value: "2", text: "The Dead Zone", selected: true},
+						{value: "3", text: "The First Men in the Moon"},
+						{value: "4", text: "The Girl Who Loved Tom Gordon"},
+						{value: "5", text: "The Green Mile"},
+						{value: "6", text: "The Invisible Man"},
+						{value: "7", text: "The Island of Doctor Moreau"},
+						{value: "8", text: "The Prince and the Pauper"}
+					],
+					onclick: function(value,text) {
+						setNoteToLog({
+							eventNme: "buttonCombo 1",
+							arg: [value, text]
+						});
+					}
+				},
+
+					{type: "group", list: [
+						{type:'buttonCombo', text:'buttonCombo 2', items: [
+							{value: "1", text: "The Adventures of Tom Sawyer"},
+							{value: "2", text: "The Dead Zone", selected: true},
+							{value: "3", text: "The First Men in the Moon"},
+							{value: "4", text: "The Girl Who Loved Tom Gordon"},
+							{value: "5", text: "The Green Mile"},
+							{value: "6", text: "The Invisible Man"},
+							{value: "7", text: "The Island of Doctor Moreau"},
+							{value: "8", text: "The Prince and the Pauper"}
+						],
+							onclick: function(value,text) {
+								setNoteToLog({
+									eventNme: "buttonCombo 2",
+									arg: [value, text]
+								});
+							}
+						}
+					]},
+
+					{type:'buttonCombo', width: 200, items: [
+						{value: "1", text: "The Adventures of Tom Sawyer"},
+						{value: "2", text: "The Dead Zone", selected: true},
+						{value: "3", text: "The First Men in the Moon"},
+						{value: "4", text: "The Girl Who Loved Tom Gordon"},
+						{value: "5", text: "The Green Mile"},
+						{value: "6", text: "The Invisible Man"},
+						{value: "7", text: "The Island of Doctor Moreau"},
+						{value: "8", text: "The Prince and the Pauper"}
+					],
+						onclick: function(value,text) {
+							setNoteToLog({
+								eventNme: "buttonCombo 3",
+								arg: [value, text]
+							});
+						}
+					}
+				]}
+			]
+		};
+
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon(data);
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+
+		function setNoteToLog(data) {
+			var cont = document.getElementById("logs_here");
+			cont.innerHTML = "<div>"+ (++i)+") "+data.eventNme+" -- arguments: ["+data.arg.join(", ")+"]"+"</div>"+cont.innerHTML;
+		};
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div id="logs_here"></div>
+</body>
+</html>

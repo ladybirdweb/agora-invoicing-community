@@ -1,0 +1,12 @@
+[
+	{ sales:"20", year:"02" },
+	{ sales:"40", year:"03" },
+	{ sales:"44", year:"04" },
+	{ sales:"23", year:"05" },
+	{ sales:"21", year:"06" },
+	{ sales:"50", year:"07" },
+	{ sales:"30", year:"08" },
+	{ sales:"90", year:"09" },
+	{ sales:"55", year:"10" },
+	{ sales:"72", year:"11" }
+]

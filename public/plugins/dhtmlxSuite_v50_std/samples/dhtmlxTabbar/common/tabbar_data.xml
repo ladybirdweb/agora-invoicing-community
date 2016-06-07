@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<tabbar>
+    <row>
+        <tab id="b1" active="1">Tab 1-1
+			<content>
+                <![CDATA[<img src='../common/page_a.gif'>]]>
+            </content>
+        </tab>
+        <tab id="b2">Tab 1-2
+        	<content>
+                <![CDATA[<img src='../common/page_b.gif'>]]>
+            </content>
+        </tab>
+        <tab id="b3">Tab 1-3</tab>
+    </row>
+</tabbar>
+

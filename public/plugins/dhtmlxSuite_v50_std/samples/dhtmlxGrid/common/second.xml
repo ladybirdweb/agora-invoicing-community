@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<rows>
+	<head>
+		<afterInit>
+			<call command="clearAll"></call>
+		</afterInit>
+	</head>
+	<row id="1">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>
+	<row id="2">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="3">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="4">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="5">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="6">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="7">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>	<row id="8">
+		<cell></cell>
+		<cell>reload</cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+		<cell></cell>
+	</row>
+</rows>

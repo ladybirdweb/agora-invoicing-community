@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<title>Grid filtering and sorting through datastore</title>
+</head>
+
+<body>
+	<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div>
+
+	<div id="gridbox2" style="width:600px; height:270px; background-color:white;"></div>
+
+<script>
+	var data = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		datatype:"json"
+	});
+
+    mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.setImagePath("../../../codebase/imgs/");
+	
+	mygrid.setHeader("Count,Name");
+	mygrid.attachHeader("#text_filter,#select_filter");
+	mygrid.setColSorting("str,str")
+	mygrid.setColumnIds("Maintainer,Version")
+	mygrid.init();
+	mygrid.sync(data,{
+		sort:true,
+		filter:true
+	});
+
+
+
+	
+	
+
+    mygrid2 = new dhtmlXGridObject('gridbox2');
+	mygrid2.setImagePath("../../../codebase/imgs/");
+	
+	mygrid2.setHeader("Count,Name");
+	mygrid2.init();
+	mygrid2.setColumnIds("Maintainer,Package")
+	mygrid2.sync(data);
+	
+</script>
+
+
+</body>
+</html>

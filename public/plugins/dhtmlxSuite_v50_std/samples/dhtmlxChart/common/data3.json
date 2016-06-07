@@ -1,0 +1,7 @@
+[
+	{ sales:35, year:"07" },
+	{ sales:50, year:"08" },
+	{ sales:65, year:"09" },
+	{ sales:30, year:"10" },
+	{ sales:45, year:"11" }
+]

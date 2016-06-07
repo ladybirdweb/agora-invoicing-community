@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Images mode</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCombo, myCombo2, myCombo3;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone", "combo", null, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.setDefaultImage(null, true);
+			myCombo.load("../common/data_countries.json");
+			myCombo.enableFilteringMode(true);
+			//
+			myCombo2 = new dhtmlXCombo("combo_zone2", "combo2", null, "image");
+			myCombo2.setImagePath("../common/flags2/");
+			myCombo2.setDefaultImage("flag_green.png", "flag_gray.png");
+			myCombo2.load("../common/data_airports.json");
+			myCombo2.enableFilteringMode(true);
+			//
+			myCombo3 = dhtmlXComboFromSelect("mySelect");
+		}
+		function enableCombo(combo, mode) {
+			combo.enable(mode);
+		}
+	</script>
+
+</head>
+<body onload="doOnLoad();">
+	<h3>Images mode</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo,true);">enable</a>
+	&nbsp;
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo,false);">disable</a>
+	<br><br>
+	<h3>Setting default image</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo2,true);">enable</a>
+	&nbsp;
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo2,false);">disable</a>
+	<br><br>
+	<h3>From select</h3>
+	<select id="mySelect" style="width:230px;" mode="image" imagePath="../common/flags2/" defaultImage="flag_green.png" defaultImageDis="flag_gray.png">
+		<option value="finland" img_src="../flags/finland.png" img_src_dis="../flags/dis/finland.png">Finland</option>
+		<option value="germany" img_src="../flags/germany.png" img_src_dis="../flags/dis/germany.png">Germany</option>
+		<option value="britain">Great Britain</option>
+		<option value="hungary">Hungary</option>
+	</select>
+	<br>
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo3,true);">enable</a>
+	&nbsp;
+	<a href="javascript:void(0);" onclick="enableCombo(myCombo3,false);">disable</a>
+</body>
+</html>

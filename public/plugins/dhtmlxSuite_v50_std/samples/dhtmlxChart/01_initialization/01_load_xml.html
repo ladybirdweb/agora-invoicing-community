@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>XML data</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myBarCHart;
+		function doOnLoad() {
+			myBarCHart = new dhtmlXChart({
+				view:"bar",
+				container:"chartDiv",
+				value:"#sales#",
+				gradient:"falling",
+				color:"#b9a8f9",
+				radius:0,
+				alpha:0.5,
+				border:true,
+				width:70,
+				xAxis:{
+					template:"#year#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(obj){
+						return (obj%20?"":obj)
+					}
+				}
+			});
+			myBarCHart.load("../common/data.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartDiv" style="width:600px;height:250px;margin:20px;border:1px solid #c0c0c0"></div>
+</body>
+</html>

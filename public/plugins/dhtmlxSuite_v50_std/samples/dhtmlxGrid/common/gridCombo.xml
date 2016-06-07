@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<row id="1">
+		<cell xmlcontent="1"><value>a</value><url>combo/php/complete.php</url></cell>
+		<cell>dynamic loading in filtering mode</cell>
+	</row>
+	<row id="2">
+		<cell xmlcontent="0"><value>one</value><url>combo/xml/data.xml</url></cell>
+		<cell>loading from special xml</cell>
+	</row>
+	<row id="3" selected="1">
+		<cell xmlcontent="2">
+			<complete>
+				<option value="1">one</option>
+				<option value="2">two</option>
+				<option value="3">three</option>
+				<option value="4">four</option>
+				<option value="5">five</option>
+				<option value="6">six</option>
+				<option value="7">seven</option>
+				<option value="8">eight</option>
+				<option value="9">nine</option>
+				<option value="10">ten</option>
+			</complete>
+		</cell>
+		<cell>loading from grid xml</cell>
+	</row>	
+</rows>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tooltips with Popup</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#calendarHere {
+			position: relative;
+			height: 350px;
+		}
+	</style>
+	<script>
+		var myCalendar;
+		
+		function doOnLoad() {
+			
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.hideTime();
+			myCalendar.show();
+			myCalendar.setDate("2013-03-01");
+			myCalendar.setHolidays("2013-03-08");
+			myCalendar.setHolidays("2013-03-19,2013-03-20,2013-03-21,2013-03-22");
+			
+			myCalendar.setTooltip("2013-03-08", "International Women's Day", true, true);
+			myCalendar.setTooltip("2013-03-19,2013-03-20,2013-03-21,2013-03-22", "Going fishing to Vindafjord :)<br>Tremble trout!", true, true);
+			myCalendar.setTooltip("2013-03-10", "Just a usual date, "+myCalendar.getFormatedDate("%l, %F %d", new Date(2013,2,10)), true, true);
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="margin-bottom: 20px;">Tooltips set for March 8, 10, 19-22</div>
+	<div id="calendarHere"></div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag-n-Drop</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+		}
+		#log_here {
+			font-size: 8pt;
+			font-family: Tahoma;
+			width: 500px;
+			height: 120px;
+			border: 1px solid #cecece;
+			padding: 2px 5px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myAcc;
+		var eventIndex = 1;
+		function doOnLoad() {
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				multi_mode: true,
+				dnd: true, // enable dnd
+				items: [
+					{id: "a1", text: "Cell a1"},
+					{id: "a2", text: "Cell a2"},
+					{id: "a3", text: "Cell a3"},
+					{id: "a4", text: "Cell a4"}
+				]
+			});
+			
+			// or
+			// myAcc.enableDND();
+			
+			// attach events
+			myAcc.attachEvent("onDrop", function(id, indexOld, indexNew){
+				log("onDrop event, id: '"+id+"', from index "+indexOld+" to index "+indexNew);
+			});
+			myAcc.attachEvent("onBeforeDrag", function(id, indexOld){
+				log("onBeforeDrag event, id: '"+id+"', from index "+indexOld);
+				return true;
+			});
+			
+		}
+		function log(text) {
+			var t = document.getElementById("log_here");
+			t.innerHTML += (eventIndex++)+") "+text+"<br>";
+			t.scrollTop = t.scrollHeight;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>Drag cell by its header</div>
+	<br><br>
+	<div id="accObj"></div>
+	<br>
+	<div id="log_here"></div>
+</body>
+</html>

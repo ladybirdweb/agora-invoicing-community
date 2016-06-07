@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach menu to icon</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: 1px solid #dfdfdf;
+			border-radius: 2px;
+		}
+		.dhxwins_vp_material div.dhxwin_hdr div.dhxwin_icon {
+			display: block;
+		}
+	</style>
+	<script>
+		var dhxWins, w1, myMenu, myMenu2;
+		
+		function doOnLoad() {
+			
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			
+			w1 = dhxWins.createWindow("w1", 20, 30, 320, 200);
+			w1.setText("dhtmlxWindow #1");
+			w1.attachHTMLString("<span style='font-family: Tahoma; font-size: 11px; padding: 0px 5px;'>global context menu attached to icon</span>");
+			
+			w2 = dhxWins.createWindow("w2", 50, 70, 320, 200);
+			w2.setText("dhtmlxWindow #2");
+			w2.attachHTMLString("<span style='font-family: Tahoma; font-size: 11px; padding: 0px 5px;'>custom context menu attached to icon</span>");
+			
+			w3 = dhxWins.createWindow("w3", 80, 110, 320, 200);
+			w3.setText("dhtmlxWindow #3");
+			w3.attachHTMLString("<span style='font-family: Tahoma; font-size: 11px; padding: 0px 5px;'>global context menu attached to icon</span>");
+			
+			// global menu
+			myMenu = dhxWins.attachContextMenu({
+				icons_path: "../common/menu/",
+				xml: "../common/menu/menu.xml"
+			});
+			
+			// custom menu for window #2
+			myMenu2 = w2.attachContextMenu({
+				icons_path: "../common/menu/",
+				xml: "../common/menu/menu2.xml"
+			});
+		}
+		
+		function doOnUnload() {
+			if (dhxWins != null) {
+				dhxWins.unload();
+				dhxWins = w1 = myMenu = null;
+			}
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+</body>

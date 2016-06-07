@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sidebar>
+	<item id="recent" text="Recent" icon="recent.png" selected="true"/>
+	<item id="desktop" text="Desktop" icon="desktop.png"/>
+	<item id="downloads" text="Downloads" icon="downloads.png"/>
+	<item type="separator"/>
+	<item id="documents" text="Documents" icon="documents.png"/>
+	<item id="music" text="Music" icon="music.png"/>
+	<item id="pictures" text="Pictures" icon="pictures.png"/>
+	<item id="video" text="Video" icon="video.png"/>
+	<item type="separator"/>
+	<item id="disk_c" text="Windows (C:)" icon="disk_c.png"/>
+	<item id="disk_d" text="Data (D:)" icon="disk_d.png"/>
+	<item id="disk_e" text="DVD RW (E:)" icon="disk_e.png"/>
+</sidebar>

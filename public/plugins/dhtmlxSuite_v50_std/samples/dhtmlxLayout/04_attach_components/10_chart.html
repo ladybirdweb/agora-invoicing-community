@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxChart</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 600px;
+			height: 400px;
+		}
+	</style>
+	<script>
+		var myLayout, myChart;
+		function doOnLoad() {
+			myLayout = new dhtmlXLayoutObject({
+				parent: "layoutObj",
+				pattern: "3L",
+				cells: [{id: "a", text: "dhtmlxChart"}]
+			});
+			
+			myChart = myLayout.cells("a").attachChart({
+				view: "pie",
+				value: "#sales#",
+				color: "#color#",
+				pieInnerText: "#sales#",
+				legend: {
+					width: 75,
+					align: "right",
+					valign: "middle",
+					template: "#month#"
+				}
+			});
+			myChart.parse([
+				{sales: "20", month: "Jan", color: "#ee3639"},
+				{sales: "30", month: "Feb", color: "#ee9e36"},
+				{sales: "50", month: "Mar", color: "#eeea36"},
+				{sales: "40", month: "Apr", color: "#a9ee36"},
+				{sales: "70", month: "May", color: "#36d3ee"},
+				{sales: "80", month: "Jun", color: "#367fee"},
+				{sales: "60", month: "Jul", color: "#9b36ee"}
+			], "json");
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+</body>
+</html>

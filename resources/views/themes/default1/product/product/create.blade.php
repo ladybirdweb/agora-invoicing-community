@@ -2,7 +2,33 @@
 @section('content')
 <div class="box box-primary">
 
-    <div class="content-header">
+    <div class="box-header">
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(Session::has('success'))
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('success')}}
+        </div>
+        @endif
+        <!-- fail message -->
+        @if(Session::has('fails'))
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-ban"></i>
+            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('fails')}}
+        </div>
+        @endif
         {!! Form::open(['url'=>'products','method'=>'post','files' => true]) !!}
         <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
@@ -14,39 +40,13 @@
 
             <div class="col-md-12">
 
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
 
-                @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
-                @endif
-                <!-- fail message -->
-                @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('fails')}}
-                </div>
-                @endif
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
+                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -87,13 +87,13 @@
                                     <!-- last name -->
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                                     <script>
-    tinymce.init({
+tinymce.init({
     selector: 'textarea',
     plugins: "code",
     toolbar: "code",
     menubar: "tools"
 });
-</script>
+                                    </script>
 
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
@@ -244,7 +244,7 @@
 
                                             </div>  
                                         </li>
-                                        
+
 
                                     </ul>
                                 </div>
@@ -261,9 +261,11 @@
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
                                             <div class="row">
                                                 <div class="col-md-6">
-                                                    {!! Form::select('subscription',[''=>'Select','Subscription'=>$subscription],null,['class'=>'form-control']) !!}
+                                                    {!! Form::hidden('subscription',0) !!}
+                                                    {!! Form::checkbox('subscription',1,true) !!}
+                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
                                                 </div>
-                                                
+
                                                 <div class="col-md-6">
                                                     {!! Form::hidden('deny_after_subscription',0) !!}
                                                     {!! Form::checkbox('deny_after_subscription',1,true) !!}
@@ -274,7 +276,7 @@
                                     </td>
                                 </tr>
 
-                                 <tr>
+                                <tr>
                                     <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
                                     <td>
 
@@ -284,7 +286,7 @@
                                                 <th>{{Lang::get('message.regular-price')}}</th>
                                                 <th>{{Lang::get('message.sales-price')}}</th>
                                             </tr>
-                                            
+
                                             @foreach($currency as $key=>$value)
                                             <tr>
                                                 <td>
@@ -293,7 +295,7 @@
                                                     <p>{{$value}}</p>
 
                                                 </td>
-          
+
                                                 <td>
 
                                                     {!! Form::text('price['.$key.']',null) !!}
@@ -306,7 +308,7 @@
                                                 </td>
                                             </tr>
                                             @endforeach
-                                           
+
 
                                         </table>
 
@@ -391,6 +393,37 @@
                         </div>
 
                         <!-- /.tab-pane -->
+
+                        <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_3">
+                            <h3>
+                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
+                            </h3>
+                            <table class="table table-responsive">
+                                <?php
+                                $plans = App\Model\Payment\Plan::select('days', 'name', 'id')->get();
+                                ?>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Months</th>
+                                    <th>Action</th>
+                                </tr>
+                                @forelse($plans as $plan)
+                                <tr>
+                                    <td>{{$plan->name}}</td> 
+                                    <?php
+                                    $months = $plan->days / 30;
+                                    ?>
+                                    <td>{{round($months)}}</td> 
+                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
+                                </tr>
+                                @empty 
+                                <tr><td>No plans</td></tr>
+                                @endforelse
+
+
+                            </table>
+                        </div>
                     </div>
                     <!-- /.tab-content -->
                 </div>

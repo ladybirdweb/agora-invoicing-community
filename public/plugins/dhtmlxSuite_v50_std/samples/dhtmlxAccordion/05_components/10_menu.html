@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxMenu</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var myAcc, myMenu, myGrid;
+		function doOnLoad(){
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				items: [
+					{id: "a1", text: "dhtmlxMenu"},
+					{id: "a2", text: "b"},
+					{id: "a3", text: "c"}
+				]
+			});
+			//
+			myMenu = myAcc.cells("a1").attachMenu({
+				icons_path: "../../dhtmlxMenu/common/imgs/",
+				xml: "../../dhtmlxMenu/common/dhxmenu.xml"
+			});
+			//
+			myGrid = myAcc.cells("a1").attachGrid();
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.load("../common/grid.xml");
+
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="accObj" style="position: relative; width: 320px; height: 400px;"></div>
+</body>
+</html>

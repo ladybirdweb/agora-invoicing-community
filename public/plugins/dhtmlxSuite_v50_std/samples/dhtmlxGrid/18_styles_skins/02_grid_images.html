@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Icons in header</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad() {
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales,img:[../common/images/books.gif]Book Title,Author,img:[../common/images/book.gif]");
+			myGrid.setInitWidths("80,150,120,80");
+			myGrid.setColAlign("right,left,left,right");
+			myGrid.setColTypes("dyn,ed,ed,price,ch,co,ra,ro");
+			var combobox = myGrid.getCombo(5);
+			combobox.put("1","1 Hour");
+			combobox.put("12","12 Hours");
+			combobox.put("24","24 Hours");
+			combobox.put("48","2 days");
+			combobox.put("168","1 week");
+			combobox.put("pick","pick up");
+			combobox.put("na","na");
+			myGrid.setColSorting("int,str,str,int");
+			myGrid.enableAutoWidth(true);
+			myGrid.init();
+			myGrid.load("../common/grid.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Icons in header</h1>
+	<p>You have possibility to set icon for any header cell in your grid by inserting setHeader method in the code. </p>
+	<table width="600px">
+		<tr>
+			<td>
+				<div id="gridbox" style="width:600px;height:350px;background-color:white;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="javascript:void(0)" onClick="myGrid.addRow((new Date()).valueOf(),[0,'','','',false,'na',false,''],myGrid.getRowIndex(myGrid.getSelectedId()))">Add row</a><br>
+				<a href="javascript:void(0)" onClick="myGrid.deleteSelectedItem()">Remove Selected Row</a>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

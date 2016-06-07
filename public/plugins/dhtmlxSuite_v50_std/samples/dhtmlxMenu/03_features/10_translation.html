@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Multilanguage menu example</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+<script>
+	var myMenu;
+	function doOnLoad() {
+		myMenu = new dhtmlXMenuObject({
+			parent: "menuObj",
+			icons_path: "../common/imgs/",
+			json: "../common/dhxmenu_lang.json",
+			onload: function(){myMenu.setLanguage("en");}
+		});
+	};
+	dhtmlXMenuObject.prototype.setLanguage = function(lang){
+		if (lang == null || this.strings[lang] == null) lang = "en";
+		var menu = this;
+		this.forEachItem(function(id){menu.setItemText(id,menu.strings[lang][id]||id);});
+		menu = null;
+	};
+	dhtmlXMenuObject.prototype.strings = {
+		en: {
+			"file":		"File", // top item
+			"new":		"New",
+			"open":		"Open",
+			"save":		"Save",
+			"saveAs":	"Save As...",
+			"print":	"Print",
+			"pageSetup":	"Page Setup",
+			"close":	"Close",
+			//
+			"edit":		"Edit", // top item
+			"undo":		"Undo",
+			"redo":		"Redo",
+			"selectAll":	"Select All",
+			"cut":		"Cut",
+			"copy":		"Copy",
+			"paste":	"Paste",
+			//
+			"help":		"Help", // top item
+			"about":	"About...",
+			"needhelp":	"Help",
+			"bugReporting":	"Bug Reporting"
+		},
+		ru: {
+			"file":		"Файл", // top item
+			"new":		"Создать",
+			"open":		"Открыть",
+			"save":		"Сохранить",
+			"saveAs":	"Сохранить как...",
+			"print":	"Распечатать",
+			"pageSetup":	"Параметры страницы",
+			"close":	"Закрыть",
+			//
+			"edit":		"Правка", // top item
+			"undo":		"Отменить",
+			"redo":		"Повторить",
+			"selectAll":	"Выделить всё",
+			"cut":		"Вырезать",
+			"copy":		"Копировать",
+			"paste":	"Вставить",
+			//
+			"help":		"Справка", // top item
+			"about":	"О программе...",
+			"needhelp":	"Помощь",
+			"bugReporting":	"Сообщить об ошибке"
+		},
+		de: {
+			"file":		"Datei", // top item
+			"new":		"Neu",
+			"open":		"Öffnen",
+			"save":		"Speichern",
+			"saveAs":	"Speichern als...",
+			"print":	"Drucken",
+			"pageSetup":	"Seiteneinrichtung",
+			"close":	"Schließen",
+			//
+			"edit":		"Redaktieren", // top item
+			"undo":		"Rückgängig machen",
+			"redo":		"Wiederholen",
+			"selectAll":	"Alle auswählen",
+			"cut":		"Ausschneiden",
+			"copy":		"Kopieren",
+			"paste":	"Einfügen",
+			//
+			"help":		"Hilfe", // top item
+			"about":	"Über...",
+			"needhelp":	"Hilfe",
+			"bugReporting":	"Fehlerberichte"
+		}
+
+	};
+</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 250px;">
+		<div id="menuObj"></div>
+	</div>
+	<input type="button" value="en" onclick="myMenu.setLanguage('en');">
+	<input type="button" value="ru" onclick="myMenu.setLanguage('ru');">
+	<input type="button" value="de" onclick="myMenu.setLanguage('de');">
+</body>
+</html>

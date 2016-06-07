@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	
+	<title>Grid filtered by datastor selection</title>
+</head>
+
+<body>
+	<div id="gridbox2" style="width:600px; height:270px; background-color:white;"></div>
+	<input type="button" value='next' onclick='show_next()'>
+
+<script>
+	var data = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		ready:function(){
+			data.setCursor(data.first());
+		},
+		datatype:"json"
+	});
+	function show_next(){
+		data.setCursor(data.next(data.getCursor()));
+	}
+
+    mygrid2 = new dhtmlXGridObject('gridbox2');
+    mygrid2.setImagePath("../../../codebase/imgs/");
+	
+	mygrid2.setHeader("Count,Name");
+	mygrid2.init();
+
+	mygrid2.dataFeed("../common/data/grid.php");
+	mygrid2.bind(data, function(data, filter){
+		filter.name = data.Maintainer;
+	});
+	
+</script>
+
+
+</body>
+</html>

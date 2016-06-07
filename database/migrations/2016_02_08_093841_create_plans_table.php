@@ -15,8 +15,8 @@ class CreatePlansTable extends Migration
         Schema::create('plans', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('description');
             $table->string('days');
+            $table->integer('allow_tax');
             $table->timestamps();
         });
     }

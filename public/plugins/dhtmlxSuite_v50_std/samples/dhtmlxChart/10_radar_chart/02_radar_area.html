@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Radar area</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myRadarChart;
+		function doOnLoad() {
+			myRadarChart =  new dhtmlXChart({
+				container:"chartDiv",
+				view:"radar",
+				value:"#companyA#",
+				tooltip:{
+					template:"#companyA#"
+				},
+				color:"#3399ff",
+				line:{
+					color:"#3399ff",
+					width:1
+				},
+				fill:"#3399ff",
+				xAxis:{
+					template:"#month#"
+				},
+				disableItems:true,
+				alpha: 0.2,
+				legend:{
+					layout:"y",
+					width: 110,
+					align:"right",
+					valign:"middle",
+					marker:{
+						width:15,
+						radius:3
+					},
+					values:[
+						{text:"company A",color:"#3399ff"},
+						{text:"company B",color:"#66cc00"}
+					]
+				}
+			});
+			myRadarChart.addSeries({
+				value:"#companyB#",
+				tooltip:{
+					template:"#companyB#"
+				},
+				fill:"#66cc00",
+				line:{
+					color:"#66cc00",
+					width:1
+				}
+			});
+			myRadarChart.parse(companies,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartDiv" style="width:400px;height:250px;margin:20px;"></div>
+</body>
+</html>

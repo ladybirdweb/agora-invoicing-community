@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onTabClose event</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#log_here {
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+			font-size: 14px;
+			border: 1px solid #dfdfdf;
+			width: auto;
+			height: 100px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myTabbar;
+		var eventIndex = 1;
+		
+		function doOnLoad() {
+			
+			myTabbar = new dhtmlXTabBar("my_tabbar");
+			myTabbar.enableTabCloseButton(true);
+			
+			myTabbar.addTab("a1", "Tab a1", null, null, true);
+			myTabbar.addTab("a2", "Tab a2");
+			myTabbar.addTab("a3", "Tab a3");
+			
+			myTabbar.attachEvent("onTabClose", function(id){
+				log("<b>onTabClose</b> event, id="+id);
+				if (id == "a1") return false; // do not allow for a1
+				return true; // allow closing
+			});
+			
+			log("closing by button not allowed for tab a1");
+		}
+		
+		function log(data){
+			var t = document.getElementById("log_here");
+			t.innerHTML = ""+(eventIndex++)+") "+data+"<br>"+t.innerHTML;
+			t.scrollTop = 0;
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:395px; height:390px;"></div><br>
+	<div id="log_here"></div>
+</body>
+</html>

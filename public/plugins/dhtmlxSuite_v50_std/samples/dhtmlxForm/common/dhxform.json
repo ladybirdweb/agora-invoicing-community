@@ -1,0 +1,28 @@
+[
+	{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 120},
+	{type: "fieldset", label: "Welcome", inputWidth: 340, list:[
+		{type: "radio", name: "type", label: "Already have account", labelWidth: "auto", position: "label-right", checked: true, list:[
+			{type: "input", label: "Login", value: "p_rossi"},
+			{type: "password", label: "Password", value: "123"},
+			{type: "checkbox", label: "Remember me", checked: true}
+		]},
+		{type: "radio", name: "type", label: "Not registered yet", labelWidth: "auto", position: "label-right", list:[
+			{type: "input", label: "Full Name", value: "Patricia D. Rossi"},
+			{type: "input", label: "E-mail Address", value: "p_rossi@example.com"},
+			{type: "input", label: "Login", value: "p_rossi"},
+			{type: "password", label: "Password", value: "123"},
+			{type: "password", label: "Confirm Password", value: "123"},
+			{type: "checkbox", label: "Subscribe on news"}
+		]},
+		{type: "radio", name: "type", label: "Guest login", labelWidth: "auto", position: "label-right", list:[
+			{type: "select", label: "Account type", options:[
+				{text: "Admin", value: "admin"},
+				{text: "Organiser", value: "org"},
+				{text: "Power User", value: "poweruser"},
+				{text: "User", value: "user"}
+			]},
+			{type: "checkbox", label: "Show logs window"}
+		]},
+		{type: "button", value: "Proceed"}
+	]}
+]

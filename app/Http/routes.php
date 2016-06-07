@@ -54,6 +54,7 @@ Route::get('my-invoices', 'Front\ClientController@invoices');
 Route::get('get-my-invoices', 'Front\ClientController@getInvoices');
 Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
 Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
+Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient');
 
 Route::get('my-orders', 'Front\ClientController@orders');
 Route::get('get-my-orders', 'Front\ClientController@getOrders');
@@ -112,6 +113,7 @@ Route::patch('settings', 'Common\SettingsController@UpdateSettings');
 Route::resource('clients', 'User\ClientController');
 Route::get('get-clients', 'User\ClientController@GetClients');
 Route::get('clients-delete', 'User\ClientController@destroy');
+Route::get('get-users','User\ClientController@getUsers');
 
 /*
  * Product
@@ -122,7 +124,7 @@ Route::get('get-products', 'Product\ProductController@GetProducts');
 Route::get('products-delete', 'Product\ProductController@destroy');
 Route::Post('get-price', 'Product\ProductController@getPrice');
 Route::Post('get-product-field', 'Product\ProductController@getProductField');
-
+Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
 /*
  * Plan
  */
@@ -192,6 +194,7 @@ Route::get('get-orders', 'Order\OrderController@GetOrders');
 Route::get('orders-delete', 'Order\OrderController@destroy');
 Route::get('order/execute', 'Order\OrderController@orderExecute');
 Route::get('change-domain', 'Order\OrderController@domainChange');
+Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
 
 /*
  * Groups
@@ -222,6 +225,8 @@ Route::get('pdf', 'Order\InvoiceController@pdf');
 Route::get('invoice-delete', 'Order\InvoiceController@destroy');
 Route::get('invoice/generate', 'Order\InvoiceController@generateById');
 Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
+Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
+
 
 /*
  * Payment
@@ -229,6 +234,8 @@ Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGener
 
 Route::get('payment/receive', 'Order\InvoiceController@payment');
 Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
+Route::get('payment-delete', 'Order\InvoiceController@deletePayment');
+Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
 
 /*
  * Subscriptions
@@ -319,3 +326,17 @@ Route::get('getplugin', 'Common\SettingsController@getPlugin');
 Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsController@postPlugins']);
 Route::get('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
 Route::get('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);
+
+/**
+ * Cron Jobs
+ */
+Route::get('expired-subscriptions','Common\CronController@eachSubscription');
+
+/**
+ * Renew 
+ */
+
+Route::get('renew/{id}','Order\RenewController@renewForm');
+Route::post('renew/{id}','Order\RenewController@renew');
+Route::post('get-renew-cost','Order\RenewController@getCost');
+Route::post('client/renew/{id}','Order\RenewController@renewByClient');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Using with real form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.submit_iframe {
+			position: relative;
+			width: 450px;
+			height: 150px;
+			border: 1px solid #c0c0c0;
+			margin-top: 5px;
+			font-family: monospace;
+			font-size: 12px;
+		}
+	</style>
+	<script>
+		
+		var myForm, formData;
+		
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 140},
+				{type: "block", width: "auto", blockOffset: 0, list: [
+					{type: "label", label: "Please submit the form", labelWidth: "auto", offsetTop: 30},
+					{type: "input", label: "Full Name", name: "user_name", value: "Emmett Kenith"},
+					{type: "input", label: "Email Address", name: "user_email", value: "emmett@mail.com"},
+					{type: "checkbox", label: "I agree with terms and conditions", name: "user_agree", checked: false, position: "label-right", labelWidth: "auto", list: [
+						{type: "button", name: "submit", value: "Submit", offsetLeft: 45}
+					]}
+				]}
+			];
+			
+			myForm = new dhtmlXForm("dhxForm", formData);
+			
+			myForm.attachEvent("onButtonClick", function(name) {
+				// submit real form when user clicks Submit button on a dhtmlx form
+				if (name == "submit") document.getElementById("realForm").submit();
+			});
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>This demo shows how send data to server by using real html form</div>
+	<!-- real form should be around dhtmlx form -->
+	<div style="height: 230px;">
+		<form id="realForm" action="../common/realform.php" method="POST" target="submit_ifr">
+			<div id="dhxForm"></div>
+		</form>
+	</div>
+	<!-- submit results here (just for demo prurposes) -->
+	<div>Check the result</div>
+	<iframe border="0" frameBorder="0" name="submit_ifr" class="submit_iframe"></iframe>
+</body>
+</html>

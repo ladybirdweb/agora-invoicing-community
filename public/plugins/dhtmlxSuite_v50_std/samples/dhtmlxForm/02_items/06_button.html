@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Button</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-right"},
+				{type: "checkbox", label: "Show gutter", checked: true, list:[
+					{type: "checkbox", label: "Line numbers", checked: true},
+					{type: "checkbox", label: "Line selection area"}
+				]},
+				{type: "checkbox", label: "Highlight current line", checked: true},
+				{type: "checkbox", label: "Show structire scope"},
+				{type: "checkbox", label: "Show marker position"},
+				{type: "block", blockOffset: 0, list: [
+					{type: "button", value: "Ok"},
+					{type: "newcolumn"},
+					{type: "button", value: "Cancel"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:270px;"></div>
+</body>
+</html>

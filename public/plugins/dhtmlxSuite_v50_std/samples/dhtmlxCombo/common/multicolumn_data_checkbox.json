@@ -1,0 +1,27 @@
+{
+	template: {
+		input:		"#capital#, #country#",
+		columns: [
+				{header: "&nbsp;",  width:  41, option: "#checkbox#"}, // column for checkboxes
+				{header: "&nbsp;",  width:  40, css: "flag",    option: "<img src='#flag#' border='0' style='margin-top: 8px; margin-left: 2px;'>"},
+				{header: "Capital", width:  80, css: "capital", option: "#capital#"},
+				{header: "Country", width: 110, css: "country", option: "#country#"},
+				{header: "Proverb", width: 250, css: "proverb", option: "#proverb#"}
+		]
+	},
+	options: [
+		{value: "1",	text: { flag: "../common/flags/austria.png",		country: "Austria",		capital: "Vienna",	proverb: "Two wrongs don't make a right" },			checked: true	},
+		{value: "2",	text: { flag: "../common/flags/belarus.png",		country: "Belarus",		capital: "Minsk",	proverb: "The pen is mightier than the sword" },		checked: true	},
+		{value: "3",	text: { flag: "../common/flags/cameroon.png",		country: "Cameroon",		capital: "Yaoundé",	proverb: "Actions speak louder than words" },			checked: true	},
+		{value: "4",	text: { flag: "../common/flags/canada.png",		country: "Canada",		capital: "Ottawa",	proverb: "If it ain't broke, don't fix it" },			checked: true	},
+		{value: "5",	text: { flag: "../common/flags/china.png",		country: "China",		capital: "Beijing",	proverb: "No man is an island" }						},
+		{value: "6",	text: { flag: "../common/flags/czech_republic.png",	country: "Czech Republic",	capital: "Prague",	proverb: "Don't bite the hand that feeds you" }					},
+		{value: "7",	text: { flag: "../common/flags/denmark.png",		country: "Denmark",		capital: "Copenhagen",	proverb: "Fortune favors the bold" },				selected: true	},
+		{value: "8",	text: { flag: "../common/flags/finland.png",		country: "Finland",		capital: "Helsinki",	proverb: "Hope for the best, but prepare for the worst" }			},
+		{value: "9",	text: { flag: "../common/flags/germany.png",		country: "Germany",		capital: "Berlin",	proverb: "Better late than never" }						},
+		{value: "a",	text: { flag: "../common/flags/britain.png",		country: "Great Britain",	capital: "London",	proverb: "One man's trash is another man's treasure" }				},
+		{value: "b",	text: { flag: "../common/flags/hungary.png",		country: "Hungary",		capital: "Budapest",	proverb: "Keep your friends close and your enemies closer" },	checked: true	},
+		{value: "c",	text: { flag: "../common/flags/italy.png",		country: "Italy",		capital: "Rome",	proverb: "When in Rome, do as the Romans" },			checked: true	},
+		{value: "d",	text: { flag: "../common/flags/us.png",			country: "United States",	capital: "Washington",	proverb: "A picture is worth a thousand words" },		checked: true	}
+	]
+}

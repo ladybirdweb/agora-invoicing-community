@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Backups</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	
+	<style>
+		div#tabbar {
+			position: relative;
+			width: 340px;
+			height: 170px;
+			margin-top: 50px;
+			margin-left: 30px;
+			background-color: white;
+		}
+		div#form {
+			position: relative;
+			padding-top: 45px;
+			padding-bottom: 20px;
+			overflow: hidden;
+			background-color: #ffffff;
+			z-index: 2;
+			float: none;
+			border-left: 1px solid #dfdfdf;
+			border-right: 1px solid #dfdfdf;
+			border-bottom: 1px solid #dfdfdf;
+		}
+		.dhx_tabbar_zone_top .dhx_tab_element {
+			-moz-user-select: none;
+		}
+	</style>
+	<script>
+		var myForm, formData, dhxTabbar
+		
+		// init values for form, will loaded on demoand and then deleted
+		var initValues = {
+			"a1": { name: "Patrik O'Brain", addr: "22 Acacia Avenue", mail:"patrik@mailme.com"},
+			"a2": { name: "Michael Staminsky", addr: "19 Elm Street", mail:"michael@mailme.com"},
+			"a3": { name: "Lisa Walsh", addr: "13 Jan Street", mail:"lisa@mailme.com"},
+		};
+		
+		// here backup ids will stored
+		var backupIds = {};
+		
+		function doOnLoad() {
+			formData = [
+				{type: "block", offsetLeft: 12, list: [
+					{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 150},
+					{type: "input", name: "name", label: "Full Name", value: ""},
+					{type: "input", name: "addr", label: "Address", value: ""},
+					{type: "input", name: "mail", label: "Email", value: ""}
+				]}
+			];
+			dhxTabbar = new dhtmlXTabBar({
+				parent: "tabbar",
+				tabs: [
+					{id: "a1", text: "Tab 1"},
+					{id: "a2", text: "Tab 2"},
+					{id: "a3", text: "Tab 3"}
+				]
+			});
+			
+			dhxTabbar.enableContentZone(0);
+			
+			myForm = new dhtmlXForm("form", formData);
+			
+			dhxTabbar.attachEvent("onSelect", function(to, from){
+				
+				// save backup for current active tab
+				if (from != null) {
+					backupIds[from] = myForm.saveBackup();
+				}
+				
+				// check if tab opened first time load init values into form otherwise load backup
+				if (initValues[to] != null) {
+					myForm.setFormData(initValues[to]);
+					initValues[to] = null;
+					delete initValues[to];
+				} else {
+					myForm.restoreBackup(backupIds[to]);
+					myForm.clearBackup(backupIds[to]);
+				}
+				
+				return true;
+			});
+			
+			dhxTabbar.tabs("a1").setActive();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>Single form used to keep several datasets</div>
+	<div id="tabbar">
+		<div id="form"></div>
+	</div>
+</body>
+</html>

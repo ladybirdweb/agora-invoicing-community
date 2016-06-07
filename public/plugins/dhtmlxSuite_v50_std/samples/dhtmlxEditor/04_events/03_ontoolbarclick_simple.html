@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onToolbarClick with simple toolbar</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		 div#editorObj {
+		 	 width: 100%;
+		 	 height: 300px;
+		 	 border: 1px solid #dfdfdf;
+		 }
+		 div#logsHere {
+			position: relative;
+			width: auto;
+			height: 180px;
+			padding: 2px;
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin-top: 10px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myEditor;
+		function doOnLoad() {
+			myEditor = new dhtmlXEditor({
+				parent: "editorObj",
+				toolbar: true,
+				iconsPath: "../../../codebase/imgs/",
+				contentHTML: "../common/cont.html"
+			});
+			myEditor.attachEvent("onToolbarClick", function(name){
+				writeLog("onToolbarClick event fired, name: <b>"+name+"</b>");
+			});
+		}
+		function writeLog(text) {
+			document.getElementById("logsHere").innerHTML += "<br>"+text;
+			document.getElementById("logsHere").scrollTop = document.getElementById("logsHere").scrollHeight;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="editorObj"></div>
+	<div id="logsHere">Logs here:</div>
+</body>
+</html>

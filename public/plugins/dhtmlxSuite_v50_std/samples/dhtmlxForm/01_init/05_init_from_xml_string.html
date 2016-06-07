@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init from xml string</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm;
+		function doOnLoad() {
+			var formXMLString = '<items>'+
+						'<item type="settings" position="label-left" labelWidth="130" inputWidth="120"/>'+
+						'<item type="fieldset" name="data" inputWidth="340" label="Welcome">'+
+							'<item type="radio" name="type" labelWidth="auto" position="label-right" checked="true" label="Already have account">'+
+								'<item type="input" value="p_rossi" label="Login"/>'+
+								'<item type="password" value="123" label="Password"/>'+
+								'<item type="checkbox" checked="true" label="Remember me"/>'+
+							'</item>'+
+							'<item type="radio" name="type" labelWidth="auto" position="label-right" label="Not registered yet">'+
+								'<item type="input" value="Patricia D. Rossi" label="Full Name"/>'+
+								'<item type="input" value="p_rossi@example.com" label="E-mail Address"/>'+
+								'<item type="input" value="p_rossi" label="Login"/>'+
+								'<item type="password" value="123" label="Password"/>'+
+								'<item type="password" value="123" label="Confirm Password"/>'+
+								'<item type="checkbox" label="Subscribe on news"/>'+
+							'</item>'+
+							'<item type="radio" name="type" labelWidth="auto" position="label-right" label="Guest login">'+
+								'<item type="select" label="Account type">'+
+									'<option value="admin" label="Admin"/>'+
+									'<option value="org" label="Organiser"/>'+
+									'<option value="poweruser" label="Power User"/>'+
+									'<option value="user" label="User"/>'+
+								'</item>'+
+								'<item type="checkbox" label="Show logs window"/>'+
+							'</item>'+
+							'<item type="button" value="Proceed"/>'+
+						'</item>'+
+					'</items>';
+			
+			myForm = new dhtmlXForm("myForm");
+			myForm.loadStruct(formXMLString);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:550px;"></div>
+</body>
+</html>

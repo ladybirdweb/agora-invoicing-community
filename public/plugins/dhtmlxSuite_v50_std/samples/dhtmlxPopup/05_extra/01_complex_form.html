@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Complex form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#myForm {
+			position: relative;
+			margin: 10px;
+			padding: 15px 30px 17px;
+			border: 1px solid #cecece;
+		}
+		/* toggle-style checkbox */
+		/* enabled, not checked */
+		.dhxform_obj_material div.dhxform_img.btn2state_0 {
+			background-image: url("../../dhtmlxForm/common/button2state/toggle_off.png");
+			width: 42px;
+			height: 20px;
+		}
+		/* enabled, checked */
+		.dhxform_obj_material div.dhxform_img.btn2state_1 {
+			background-image: url("../../dhtmlxForm/common/button2state/toggle_on.png");
+			width: 42px;
+			height: 20px;
+		}
+		/* disabled, not checked */
+		.dhxform_obj_material div.disabled div.dhxform_img.btn2state_0 {
+			background-image: url("../../dhtmlxForm/common/button2state/toggle_off_dis.png");
+			width: 42px;
+			height: 20px;
+		}
+		/* disabled, checked */
+		.dhxform_obj_material div.disabled div.dhxform_img.btn2state_1 {
+			background-image: url("../../dhtmlxForm/common/button2state/toggle_on_dis.png");
+			width: 42px;
+			height: 20px;
+		}
+	</style>
+	<script>
+		
+		var myPop;
+		var myForm;
+		var itemId;
+		
+		function doOnLoad() {
+			
+			myForm = new dhtmlXForm("myForm", [
+				{type: "settings", position: "label-left", labelWidth: 150, inputWidth: 150, offsetLeft: 10},
+				
+				{type: "label", label: "General Information", offsetLeft: 0},
+				{type: "input", name: "name", label: "Full Name / Nick", value: "Ogiwara Masaaki"},
+				{type: "password", name: "pwd", label: "Password", value: "12345"},
+				{type: "password", name: "pwd2", label: "Confirm password", value: "12345"},
+				{type: "calendar", name: "dob", dateFormat: "%Y-%m-%d", label: "Day Of Birth", value: "1975-08-22", calendarPosition: "bottom"},
+				{type: "colorpicker", name: "color", label: "Interface color", value: "#c0c0c0"},
+				
+				{type: "label", label: "More Options", offsetTop: 10, offsetLeft: 0},
+				{type: "select", name: "region", label: "Please select region", value: "2", options:[
+					{value: "1", text: "Europe"},
+					{value: "2", text: "Asia"},
+					{value: "3", text: "Africa"},
+					{value: "4", text: "S. America"},
+					{value: "5", text: "N. America"}
+					
+				]},
+				{type: "select", name: "lng", label: "Select Language", value: "4", options:[
+					{value: "1", text: "English"},
+					{value: "2", text: "German"},
+					{value: "3", text: "Russian"},
+					{value: "4", text: "Japanese"},
+					{value: "5", text: "Chinese"}
+				]},
+				
+				{type: "label", label: "Messaging", offsetTop: 10, offsetLeft: 0},
+				{type: "checkbox", name: "pmsg", label: "Private messages", checked: 1},
+				{type: "checkbox", name: "emsg", label: "Email notofications", checked: 1},
+				
+				{type: "label", label: "Online Status", offsetTop: 10, offsetLeft: 0},
+				{type: "radio", name: "showme", value: "yes", label: "Show when online", checked: 1},
+				{type: "radio", name: "showme", value: "no", label: "Always hidden"},
+				
+				{type: "label", label: "Advanced Items", offsetTop: 10, offsetLeft: 0},
+				{type: "combo", name: "combo", value: "2", label: "Skill level", options:[
+					{value: "1", text: "Admin"},
+					{value: "2", text: "Power user"},
+					{value: "3", text: "User"}
+				]},
+				{type: "btn2state", name: "toggle", inputWidth: 17, inputHeight: 19, label: "Highlight current line", checked: true},
+				{type: "editor", name: "comment", label: "", position: "label-top", offsetTop: 5, inputWidth: 300, inputHeight: 100, value: "Any ideas what to write here?"},
+				
+				
+				{type: "button", name: "proceed", value: "Proceed", offsetLeft: 209, offsetTop: 20}
+			]);
+			
+			myPop = new dhtmlXPopup({ form: myForm, id: ["name","pwd","pwd2","region","lng","pmsg","emsg",["showme","yes"],["showme","no"],"proceed","combo","toggle","dob","color","comment"] });
+			myPop.attachHTML("Please enter something");
+			
+			myForm.attachEvent("onFocus", function(id,value){
+				itemId = id+value||"";
+				if (typeof(value) != "undefined") id=[id,value]; // for radiobutton
+				myPop.show(id);
+			});
+			myForm.attachEvent("onBlur", function(id,value){
+				window.setTimeout(function(){
+					if ((id+value||"") == itemId) myPop.hide();
+				},1);
+			});
+			
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myForm"></div>
+</body>
+</html>

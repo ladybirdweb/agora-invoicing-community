@@ -199,7 +199,7 @@
                                                                 <div class="dropdown-mega-content">
                                                                     <table class="cart">
                                                                         <tbody>
-                                                                            @forelse(Cart::getContent() as $item)
+                                                                            @forelse(Cart::getContent() as $key=>$item)
                                                                             <?php $product = App\Model\Product\Product::where('id',$item->id)->first(); 
                                                                             if($product->require_domain==1){
                                                                             $domain[$key] = $item->id;
@@ -211,7 +211,7 @@
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{\Session::get('currency')}}</small> {{$item->getPriceWithConditions()}}</strong></span></a>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{\Session::get('currency')}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceWithConditions())}}</strong></span></a>
                                                                                 </td>
                                                                                 
                                                                                  <td class="product-actions">

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tree>
+	<item id="1" text="Stephen King" open="1" checkbox="hidden">
+		<item id="3" text="The Dead Zone" checked="1"/>
+		<item id="4" text="The Running Man" checked="1"/>
+		<item id="5" text="The Talisman"/>
+		<item id="6" text="The Tommyknockers"/>
+		<item id="7" text="The Green Mile"/>
+		<item id="8" text="The Girl Who Loved Tom Gordon" checked="1"/>
+		<item id="9" text="Dreamcatcher"/>
+		<item id="10" text="Blood and Smoke"/>
+	</item>
+	<item id="2" text="Misc" open="1" checkbox="hidden">
+		<item id="11" text="Privacy and Terms.pdf" checked="1" checkbox="disabled"/>
+		<item id="12" text="Licence Agreement.pdf" checked="1" checkbox="disabled"/>
+	</item>
+</tree>

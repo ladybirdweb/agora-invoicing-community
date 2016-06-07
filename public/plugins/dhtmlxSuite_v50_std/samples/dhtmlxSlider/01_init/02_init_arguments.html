@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init with arguments</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#sliderObj {
+			width: 160px;
+			height: 30px;
+		}
+		#sliderObj2 {
+			width: 10px;
+			height: 120px;
+			margin-left: 70px;
+		}
+	</style>
+	<script>
+		var mySlider, mySlider2;
+		
+		function doOnLoad(){
+			mySlider = new dhtmlXSlider("sliderObj", 150, null, false, -10, 150, 5, 1);
+			mySlider2 = new dhtmlXSlider("sliderObj2", 200, null, true, 10, 90, 15, 5);
+		};
+		
+		function doOnUnload(){
+			if (mySlider != null){
+				mySlider.unload();
+				mySlider = null;
+			}
+			if (mySlider2 != null){
+				mySlider2.unload();
+				mySlider2 = null;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<table cellspacing="0" cellpadding="0" border="0" class="demo_table">
+		<tr>
+			<td><div id="sliderObj"></div></td>
+		</tr><tr>
+			<td><div id="sliderObj2"></div></td>
+		</tr><tr>
+	</table>
+</body>
+</html>

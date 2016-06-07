@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Web Skin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid, myGrid2, myGrid3;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../skins/web/imgs/dhxgrid_web/");
+			myGrid.setHeader("SALES, TITLE,DESCRIPTION,PRICE");
+			myGrid.setInitWidths("80,200,*,80");
+			myGrid.setColAlign("left,left,left,left");
+			myGrid.setColTypes("dyn,ed,txt,price");
+			myGrid.setColSorting("int,str,str,int");
+			myGrid.init();
+			myGrid.load("../common/grid_big_18_styles_skins.xml", function(){
+				myGrid.selectRowById(3)
+			});
+
+			myGrid2 = new dhtmlXGridObject('gridbox2');
+			myGrid2.setImagePath("../../../skins/web/imgs/dhxgrid_web/");
+			myGrid2.setHeader("SALES, TITLE,#cspan,PRICE");
+			myGrid2.attachHeader("&nbsp;,#select_filter,#text_filter,#rspan");
+				if(myGrid2.attachFooter!=undefined)//pro edition functionality
+					myGrid2.attachFooter("Total:,#cspan,#cspan,#stat_count");
+			myGrid2.setInitWidths("80,200,*,80");
+			myGrid2.setColAlign("left,left,left,left");
+			myGrid2.setColTypes("dyn,ed,txt,price");
+			myGrid2.setColSorting("int,str,str,int");
+			myGrid2.init();
+			myGrid2.load("../common/grid_big_18_styles_skins.xml", function(){
+				myGrid2.selectRowById(3)
+			});
+
+			myGrid3 = new dhtmlXGridObject('gridbox3');
+			myGrid3.setImagePath("../../../skins/web/imgs/dhxgrid_web/");
+			//		"skins/web/s"
+			myGrid3.setHeader("SALES, TITLE,#cspan,PRICE");
+			myGrid3.setInitWidths("80,200,*,80");
+			myGrid3.setColAlign("center,left,left,center");
+			myGrid3.setColTypes("ch,co,coro,ra");
+			myGrid3.setColSorting("int,str,str,int");
+			myGrid3.init();
+			myGrid3.load("../common/grid_big_18_styles_skins.xml", function(){
+				myGrid3.selectRowById(3)
+			});
+		}
+	</script>
+</head>
+<body onLoad="doOnLoad()">
+	<div id="gridbox" style="width:600px;height:220px; margin:20px; background-color:white;"></div>
+	<div id="gridbox2" style="width:600px;height:270px; margin:20px; background-color:white;"></div>
+	<div id="gridbox3" style="width:600px;height:220px; margin:20px; background-color:white;"></div>
+</body>
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Change items position</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		var mid;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml",
+				onclick: menuClick
+			});
+		}
+		function menuClick(id) {
+			document.getElementById("item").innerHTML = id + " ("+myMenu.getItemText(id)+")";
+			document.getElementById("item_pos").innerHTML = myMenu.getItemPosition(id);
+			mid = id;
+		}
+		function update() {
+			var pos = Number(document.getElementById("item_new_pos").value);
+			if (isNaN(pos)) { return; }
+			myMenu.setItemPosition(mid, pos);
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div style="height: 250px;"><div id="menuObj"></div></div>
+	<div>
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>Select Item</td>
+				<td width="10">&nbsp;</td>
+				<td><div id="item">(Click menu item to select)</div></td>
+			</tr>
+			<tr>
+				<td>Current Item Position</td>
+				<td>&nbsp;</td>
+				<td><div id="item_pos">&nbsp;</div></td>
+			</tr>
+			<tr>
+				<td>New Item Position</td>
+				<td>&nbsp;</td>
+				<td><input id="item_new_pos" type="text" value="1" style="width: 30px;"> <input type="button" value="Update" onclick="update();"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Change items images</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		var mid;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml",
+				onload: function(){
+					myMenu.forEachItem(function(id){
+						var imgs = myMenu.getItemImage(id);
+						if (imgs[0] != null && imgs[0] != "") {
+							var text = '<span><img onclick="changeIcon(this, \''+imgs[0]+'\');" width="18" height="18" border="0" src="../common/imgs/'+imgs[0]+'"></span> ';
+							document.getElementById("imgList").innerHTML += text;
+						}
+					});
+				},
+				onclick: menuClick
+			});
+		}
+		function menuClick(id) {
+			var img = myMenu.getItemImage(id);
+			document.getElementById("item").innerHTML = id+" ("+myMenu.getItemText(id)+")";
+			document.getElementById("imgcur").src = "../common/imgs/"+img[0];//.replace(/^\.\.\//,"");
+			mid = id;
+		}
+		function changeIcon(obj, icon) {
+			if (mid == null) { return; }
+			document.getElementById("imgcur").src = obj.src;
+			myMenu.setItemImage(mid, icon);
+		}
+		function update() {
+			myMenu.clearItemImage(mid);
+			document.getElementById("imgcur").src = "../common/blank.gif";
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div style="height: 250px;"><div id="menuObj"></div></div>
+	<div>
+		<table border="0" cellspacing="0" cellpadding="0">
+			<tr>
+				<td>Select Item</td>
+				<td width="10">&nbsp;</td>
+				<td><div id="item">(Click menu item to select)</div></td>
+			</tr>
+			<tr>
+				<td>Current Image</td>
+				<td>&nbsp;</td>
+				<td><img id="imgcur" src="../common/blank.gif" width="18" height="18" style="border: #909090 1px solid;"></td>
+			</tr>
+			<tr>
+				<td>Select New Image</td>
+				<td>&nbsp;</td>
+				<td id="imgList"></td>
+			</tr>
+			<tr>
+				<td>Remove Item Image</td>
+				<td>&nbsp;</td>
+				<td><input type="button" value="Remove Image" onclick="update();"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>

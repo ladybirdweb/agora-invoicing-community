@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Button 2-State</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* enabled, not checked */
+		.dhxform_obj_material div.dhxform_img.btn2state_0 {
+			background-image: url("../common/button2state/material/toggle_off.png");
+			width: 42px;
+			height: 24px;
+		}
+		/* enabled, checked */
+		.dhxform_obj_material div.dhxform_img.btn2state_1 {
+			background-image: url("../common/button2state/material/toggle_on.png");
+			width: 42px;
+			height: 24px;
+		}
+		/* disabled, not checked */
+		.dhxform_obj_material div.disabled div.dhxform_img.btn2state_0 {
+			background-image: url("../common/button2state/material/toggle_off_dis.png");
+			width: 42px;
+			height: 24px;
+		}
+		/* disabled, checked */
+		.dhxform_obj_material div.disabled div.dhxform_img.btn2state_1 {
+			background-image: url("../common/button2state/material/toggle_on_dis.png");
+			width: 42px;
+			height: 24px;
+		}
+		
+		/* common */
+		/* fix label align a bit */
+		.dhxform_obj_material div.dhxform_item_label_right div.dhxform_label div.dhxform_label_nav_link {
+			padding-top: 2px;
+		}
+	</style>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-right", inputWidth: 42, inputHeight: 20},
+				{type: "label", label: "Common settings"},
+				{type: "btn2state", name: "a", value: "ctrl", label: "Switch to rectangular selection while Ctrl is pressed", checked: true},
+				{type: "btn2state", name: "b", value: "mops", label: "Advanced Mouse Operations", list:[
+					{type: "btn2state", label: "Drag-n-drop in text area"},
+					{type: "btn2state", label: "Double-click drag joins non-alphanumeric characters"},
+					{type: "btn2state", label: "Quick copy using middle mouse button", checked: true}
+				]},
+				{type: "label", label: "Editor settings", offsetTop: 20},
+				{type: "btn2state", label: "Highlight current line", checked: true},
+				{type: "btn2state", label: "Show marker position", checked: true},
+				{type: "btn2state", label: "Show structure scope"},
+				{type: "btn2state", label: "Show gutter", list:[
+					{type: "btn2state", label: "Line numbers", checked: true},
+					{type: "btn2state", label: "Line selection area"},
+					{type: "btn2state", label: "Code Folding"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:530px;"></div>
+</body>
+</html>

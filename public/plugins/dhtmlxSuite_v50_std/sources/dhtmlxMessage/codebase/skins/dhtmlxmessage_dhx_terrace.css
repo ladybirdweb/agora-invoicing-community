@@ -1,0 +1,194 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+.dhtmlx_message_area {
+	position: fixed;
+	right: 5px;
+	width: 250px;
+	z-index: 1000;
+	padding: 0px 0px;
+}
+.dhtmlx-info {
+	color: #333;
+	border-radius: 4px;
+	min-width: 120px;
+	padding: 10px 10px 8px 15px;
+	background: #fffcef;
+	font-size: 12px;
+	font-family: Arial;
+	z-index: 10000;
+	margin: 0px 5px 5px 5px;
+	border: 1px solid #cccccc;
+	-moz-box-shadow: 0px 0px 5px #ccc;
+	-webkit-box-shadow: 0px 0px 5px #ccc;
+	box-shadow: 0px 0px 5px #ccc;
+	-webkit-transition: all .5s ease;
+	-moz-transition: all .5s ease;
+	-o-transition: all .5s ease;
+	transition: all .5s ease;
+}
+.dhtmlx-info.hidden {
+	height: 0px;
+	padding-bottom: 0px;
+	padding-top: 0px;
+	border-width: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	overflow: hidden;
+}
+.dhtmlx-error {
+	border: 1px solid #f17373;
+	box-shadow: inset 0px 0px 1px 1px #f59696;
+	background: #f17373;
+	color: #fff;
+}
+.dhtmlx_modal_box {
+	overflow: hidden;
+	display: inline-block;
+	min-width: 300px;
+	width: 300px;
+	text-align: center;
+	position: fixed;
+	z-index: 20000;
+	background: #fff;
+	-moz-box-shadow: 0px 0px 5px #AAAAAA;
+	-webkit-box-shadow: 0px 0px 0px #AAAAAA;
+	box-shadow: 0px 0px 5px #AAAAAA;
+	border: 1px solid #ddd;
+	border-radius: 6px;
+}
+.dhtmlx_popup_title {
+	padding: 10px 0;
+	font-size: 13px;
+	border-bottom: 1px solid #ddd;
+	line-height: 16px;
+	font-weight: bold;
+	font-family: Arial;
+	border-radius: 0px;
+	text-shadow: none;
+	height: auto;
+}
+.dhtmlx-info,
+.dhtmlx_popup_title,
+.dhtmlx_popup_button {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-moz-user-select: -moz-none;
+	cursor: pointer;
+}
+.dhtmlx_popup_text {
+	font-size: 13px;
+	font-family: Arial;
+	color: #444;
+	min-height: 30px;
+	padding: 20px 10px 10px 10px !important;
+	overflow: hidden;
+	border-width: 0px;
+	margin: 0px;
+}
+.dhtmlx_popup_button div,
+.dhtmlx_popup_button div:active {
+	line-height: 28px;
+	background: inherit;
+	color: inherit;
+	border: none;
+}
+.dhtmlx_popup_controls {
+	font-family: Arial;
+	font-weight: bold;
+	padding: 10px 10px 15px 10px !important;
+}
+.dhtmlx_popup_button {
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: normal;
+	min-width: 120px;
+	width: 120px;
+	height: 28px;
+	line-height: 28px;
+	display: inline-block;
+	margin: 0 5px;
+	border-radius: 4px;
+}
+div.dhx_modal_cover {
+	background: #000;
+	cursor: default;
+	opacity: 0.2;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=20);
+	position: fixed;
+	z-index: 19999;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	border: none;
+	zoom: 1;
+}
+.dhtmlx_popup_button {
+	color: #222;
+	border: 1px solid #cecece;
+	box-shadow: 0px 0px 1px #111;
+}
+.dhtmlx_popup_button:active,
+.dhtmlx_popup_button:focus {
+	background: #eee;
+}
+.dhtmlx_popup_button:first-child {
+	background: #22A1BC;
+	color: white;
+	border: 1px solid #22A1BC;
+	box-shadow: none;
+}
+.dhtmlx-alert-error,
+.dhtmlx-confirm-error {
+	border: 1px solid #f17373;
+}
+.dhtmlx-alert-error .dhtmlx_popup_title,
+.dhtmlx-confirm-error .dhtmlx_popup_title {
+	color: #ffffff;
+	background: #f17373;
+}
+.dhtmlx-alert-warning,
+.dhtmlx-confirm-warning {
+	border: 1px solid #E6951A;
+}
+.dhtmlx-alert-warning .dhtmlx_popup_title,
+.dhtmlx-confirm-warning .dhtmlx_popup_title {
+	color: #ffffff;
+	background: #E6951A;
+}
+.dhtmlx-alert .dhtmlx_popup_title,
+.dhtmlx-confirm .dhtmlx_popup_title {
+	color: #444;
+	background: #f5f5f5;
+}
+.dhtmlx-alert .dhtmlx_popup_controls,
+.dhtmlx-confirm .dhtmlx_popup_controls {
+	border: 1px solid #eee;
+	border-width: 0 1px 1px 1px;
+}
+.dhtmlx-alert .dhtmlx_popup_text,
+.dhtmlx-confirm .dhtmlx_popup_text {
+	border: 1px solid #eee;
+	border-width: 0px;
+}
+.dhtmlx-error div,
+.dhtmlx-info div {
+	padding: 0px;
+	background: inherit;
+	color: inherit;
+	border: none;
+}

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Icons Manipulation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var sel1;
+		var sel2;
+		var myAcc;
+		function doOnLoad(){
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				icons_path: "../common/icons/",
+				items: [
+					{id: "a1", text: "Cell a1", icon: "flag_red.png"},
+					{id: "a2", text: "Cell a2", icon: "flag_green.png"},
+					{id: "a3", text: "Cell a3", icon: "flag_blue.png"}
+				]
+			});
+			sel1 = document.getElementById("sel1");
+			sel2 = document.getElementById("sel2");
+			myAcc.forEachItem(function(cell){
+				sel1.options.add(new Option(cell.getText(), cell.getId()));
+			});
+		}
+		function getId() {
+			var id = sel1.options[sel1.selectedIndex].value;
+			return id;
+		}
+		function getIcon() {
+			var icon = sel2.options[sel2.selectedIndex].value;
+			return icon;
+		}
+		function setIcon() {
+			myAcc.cells(getId()).setIcon(getIcon());
+		}
+		function clearIcon() {
+			myAcc.cells(getId()).clearIcon();
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="accObj"></div>
+	<div style="margin: 50px 0px 20px 0px;">
+		Select Item <select id="sel1"></select>
+		Select Icon <select id="sel2">
+				<option value="flag_red.png">flag red</option>
+				<option value="flag_green.png">flag green</option>
+				<option value="flag_blue.png">flag blue</option>
+				<option value="flag_magenta.png">flag magenta</option>
+			</select>
+		<input type="button" value="Set Icon" onclick="setIcon();">
+		<input type="button" value="Clear Icon" onclick="clearIcon();">
+	</div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+	"items" : [
+		{"type": "block", "text" : "Block 1", "mode" : "rows", "list" : [
+			{"type":"button", "text": "new" , "img" : "18/new.gif"},
+			{"id" : "slider_1", "type" : "slider", "text" : "slider 1", "size" : 90 },
+			{"type" : "newLevel"},
+			{"type" : "group", "list" : [
+				{"type":"button", "text":"open" , "img" : "18/open.gif"},
+				{"id" : "slider_2", "type" : "slider", "text" : "slider 2", "size" : 50 }
+			]}
+		]},
+		{"type" : "block", "text" :"Block 2", "mode" : "cols", "list" : [
+			{"id" : "slider_3", "type" : "slider", "text" : "slider 3", "size" : 150 },
+			{"id" : "slider_4", "type" : "slider", "size" : 70, "isbig" : true, "vertical" : true}
+		]}
+	]
+}

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag-n-drop in Folders</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="STYLESHEET" type="text/css" href="./types/ftypes.css">
+	<script src="./types/ftypes.js" type="text/javascript"></script>
+	<script>
+		dhtmlx.image_path = "../../../codebase/imgs/dhxdataview_material/";
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView("data_container");
+			myDataView.define("drag",true);
+			changeType("ficon");
+			myDataView.load("../common/files_ext.xml");
+		}
+		function changeType(type){
+			myDataView.types[type].icons_src_dir = "../common/images";
+			myDataView.define("type",type);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Drag-n-drop in Folders</h1>
+	<p>Built-in Drag-n-drop in dhtmlxFolders has default actions for "before" and "next" drop types, but no default action for "in" drop type. SO you'll need to define it for your own</p>
+	<div style="position:relative;">
+		<img src="../common/images/samples_frame.gif" width="436" height="513" alt="" border="0">
+		<div id="data_container" style="width:396px;height:398px;overflow:hidden;position:absolute;top:65px;left:20px;border:0px solid red;"></div>
+	</div>
+	<h3>Changing type, Folders adapts drag-n-drop to new items appearence</h3>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ficon" checked> F-icon<br>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ftiles"> F-titles<br>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ftable"> F-table<br>
+</body>
+</html>

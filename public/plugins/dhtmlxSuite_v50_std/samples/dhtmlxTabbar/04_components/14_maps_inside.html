@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with Google Maps</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	
+	<script>
+		var myTabbar;
+		var GMaps;
+		
+		function doOnLoad() {
+			
+			myTabbar = new dhtmlXTabBar("my_tabbar");
+			
+			myTabbar.addTab("a1", "Tab 1-1", null, null, true);
+			myTabbar.addTab("a2", "Tab 1-2");
+			
+			GMaps = myTabbar.tabs("a1").attachMap();
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:395px; height:390px;"></div>
+</body>
+</html>

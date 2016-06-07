@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach URL</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		/* attached */
+		h3.some_header {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+		div.some_text {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-size: 14px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+	</style>
+	<script>
+		var myAcc;
+		function doOnLoad() {
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				items: [
+					{id: "a", text: "Cell a - iframe get"},
+					{id: "b", text: "Cell b - iframe post w/o params"},
+					{id: "c", text: "Cell c - iframe post with params"}
+				]
+			});
+			
+			myAcc.cells("a").attachURL("../common/test_page_1.html");
+			myAcc.cells("b").attachURL("../common/test_page_2.html", null, true);
+			myAcc.cells("c").attachURL("../common/test_page_3.html", null, {"name":"John","age":28});
+		}
+		
+	</script>
+	
+</head>
+<body onload="doOnLoad();">
+	<div id="accObj" style="width:320px; height:400px;"></div>
+</body>
+</html>

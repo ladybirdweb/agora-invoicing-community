@@ -176,20 +176,34 @@ Checkout
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
+                    <?php 
+                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->lists('regular_price')->toArray();
+                    $subtotal = array_sum($subtotals);
+                    ?>
                     <th>
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
                     </td>
                 </tr>
 
                 @foreach($items->toArray() as $attribute)
                 
                 @if($attribute['tax_name']!='null,')
+                <?php 
+                $tax_name = "";
+                $tax_percentage="";
+                if(str_finish($attribute['tax_name'], ',')){
+                    $tax_name = str_replace(',','',$attribute['tax_name']);
+                }
+                if(str_finish($attribute['tax_percentage'], ',')){
+                    $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
+                }
+                ?>
                 <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['tax_name']}}<span>@</span>{{$attribute['tax_percentage']}}%</strong>
+                        <strong>{{ucfirst($tax_name)}}<span>@</span>{{$tax_percentage}}%</strong>
                     </th>
                     <?php
                     $price = $product->price()->where('currency',$symbol)->first();

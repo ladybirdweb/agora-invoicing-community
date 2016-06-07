@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Clear all</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		var myMenuBusy = true;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml"
+			});
+			myMenu.attachEvent("onXLE", function(){
+				myMenuBusy = false;
+			});
+		}
+		function loadXML(v) {
+			if (myMenuBusy) return;
+			myMenuBusy = true;
+			myMenu.clearAll();
+			myMenu.setIconsPath("../common/imgs"+v+"/");
+			myMenu.loadStruct("../common/dhxmenu"+v+".xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 250px;">
+		<div id="menuObj"></div>
+	</div>
+	<input type="button" value="xml 1" onclick="loadXML('');">
+	<input type="button" value="xml 2" onclick="loadXML('2');">
+</body>
+</html>

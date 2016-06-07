@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ribbon>
+	<item type='block' text = 'office document' mode='cols'>
+		<item id="file" type='buttonSelect' text='file' img='menu/new.gif' >
+			<menu>
+				<item id="new" text="New" img='18/new.gif'/>
+				<item id="sep_0" type="separator"/>
+				<item id="open" text="Open" img="18/open.gif"/>
+				<item id="save" text="Save" img="18/save.gif"/>
+			</menu>
+		</item>
+		<item id="print" type='buttonSelect' text='print' img='menu/print.gif' >
+			<menu>
+				<item id="save" text="Save" img='menu/save.gif'/>
+				<item id="save_as" text="Save as" img='menu/save_as.gif'/>
+			</menu>
+		</item>
+		<item id='buffer' type='buttonSelect' text='Buffer' isbig="true" img="48/copy.gif" >
+			<menu>
+				<item id="copy" text="copy" img="18/copy.gif"/>
+				<item id="cut" text="cut" img="18/cut.gif"/>
+				<item id="paste" text="paste" img="18/paste.gif"/>
+			</menu>
+		</item>
+	</item>
+	<item type='block' text = 'office document' mode='cols'>
+		<item id="file" type='buttonSelect' isbig="true" text='file' img='new.gif' icons_path='../common/menu/' >
+			<menu>
+				<item id="file" img="new.gif">
+				<itemtext>File</itemtext>
+				<item id="open" text="Open" img="open.gif">
+					<hotkey>Ctrl+O</hotkey>
+					<userdata name="my_data_name">my_data_value</userdata>
+					<userdata name="more_info">new_value</userdata>
+				</item>
+				<item id="open_recent" text="Recent" img="copy.gif">
+					<item id="recent_1" text="dhtmlxvault 2.0.docx" img="new.gif"/>
+					<item id="recent_2" text="sZ77X-UD3H(Rev1.0).png" img="new.gif"/>
+					<item id="recent_3" text="IMG_14012014_154856.png" img="new.gif"/>
+					<item id="recent_4" text="flac-1.2.1b.exe" img="new.gif"/>
+					<item id="recent_5" text="FileZilla 3.5.3 win32 Setup.exe" img="new.gif"/>
+					<item id="recent_6" text="Learning DHTMLX Suite UI [eBook].pdf" img="new.gif"/>
+					<item id="recent_7" text="apache-httpd-2.2.14-ssh.rar" img="new.gif"/>
+				</item>
+				<item type="separator"/>
+				<item id="save" text="Save" img="save.gif">
+					<hotkey>Ctrl+S</hotkey>
+				</item>
+				<item id="save_as" text="Save as..." imgdis="save_as_dis.gif" enabled="false">
+					<hotkey>Ctrl+E</hotkey>
+				</item>
+				<item type="separator"/>
+				<item id="print" text="Print" img="print.gif">
+					<item id="printall" text="Print all" img="print.gif">
+						<hotkey>Ctrl+P</hotkey>
+					</item>
+					<item id="printrange" text="Print range" img="print.gif"/>
+					<item type="separator"/>
+					<item id="pagesetup" text="Page setup" imgdis="page_setup_dis.gif" enabled="false"/>
+				</item>
+				<item type="separator"/>
+				<item id="close" text="Close disabled" imgdis="close_dis.gif" enabled="false">
+					<item id="closeall" text="Close all"/>
+					<item id="closeother" text="Close other"/>
+				</item>
+			</item>
+			<!-- links -->
+			<item id="links" text="Links" img="about.gif">
+				<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/index.shtml]]></href>
+				<item id="dhtmlxTree" text="dhtmlxTree" img="imgs_links/icon_tree.gif">
+					<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/dhtmlxTree/index.shtml]]></href>
+				</item>
+				<item id="dhtmlxGrid" text="dhtmlxGrid" img="imgs_links/icon_grid.gif">
+					<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/dhtmlxGrid/index.shtml]]></href>
+				</item>
+				<item id="dhtmlxTreeGrid" text="dhtmlxTreeGrid" img="imgs_links/icon_treegrid.gif">
+					<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/dhtmlxTreeGrid/index.shtml]]></href>
+				</item>
+				<item id="dhtmlxWindows" text="dhtmlxWindows" img="imgs_links/icon_wins.gif">
+					<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/dhtmlxWindows/index.shtml]]></href>
+				</item>
+				<item id="dhtmlxLayout" text="dhtmlxLayout" img="imgs_links/icon_layout.gif">
+					<href target="blank"><![CDATA[http://dhtmlx.com/docs/products/dhtmlxLayout/index.shtml]]></href>
+				</item>
+				<item type="separator"/>
+				<item id="moreDHTMLX" text="More..." img="imgs_links/icon_more.gif"><href target="blank"><![CDATA[http://dhtmlx.com/docs/products/index.shtml]]></href></item>
+			</item>
+			<item type="separator"/>
+			<!-- radio buttons -->
+			<item id="p14" text="Radios">
+				<item id="p41" text="Transparent" type="radio" group="bgcolor" checked="true"/>
+				<item type="separator"/>
+				<item id="p42" text="White" type="radio" group="bgcolor">
+					 <hotkey>Ctrl+B W</hotkey>
+				</item>
+				<item id="p43" text="Yellow" type="radio" group="bgcolor">
+					<hotkey>Ctrl+B Y</hotkey>
+				</item>
+				<item id="p44" text="Cyan" type="radio" group="bgcolor">
+					<hotkey>Ctrl+B C</hotkey>
+				</item>
+				<item id="p45" text="Magenta" type="radio" group="bgcolor" disabled="true">
+					<hotkey>Ctrl+B M</hotkey>
+				</item>
+				<item id="p46" text="Black" type="radio" group="bgcolor" enabled="false">
+					<hotkey>Ctrl+B B</hotkey>
+				</item>
+			</item>
+			<!-- checkboxes -->
+			<item id="ch" text="Checkboxes">
+				<item id="line_numbering" type="checkbox" checked="true">
+					<itemText>Line Numbering</itemText>
+					<hotkey>Ctrl+L N</hotkey>
+				</item>
+				<item id="ignore_case" text="Ignore Case" type="checkbox" enabled="false">
+					<hotkey>Ctrl+I C</hotkey>
+				</item>
+				<item type="separator"/>
+				<item id="tip_of_day" text="Tip of the Day" type="checkbox" enabled="false" checked="true"/>
+
+			</item>
+			<item type="separator"/>
+			<!-- top disabled -->
+			<item id="topdis" text="Top disabled" disabled="true" imgdis="bug_reporting_dis.gif"/>
+			</menu>
+		</item>
+	</item>
+</ribbon>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Form and window</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#vp {
+			height: 600px;
+			border: 1px solid #dfdfdf;
+		}
+	</style>
+	<script>
+		var myForm, formData;
+		var dhxWins, w1;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 100, inputWidth: 120},
+				{type: "block", inputWidth: "auto", offsetTop: 12, list: [
+					{type: "input", label: "Login", value: "p_rossi"},
+					{type: "password", label: "Password", value: "123"},
+					{type: "checkbox", label: "Remember me", checked: true},
+					{type: "button", value: "Proceed", offsetLeft: 70, offsetTop: 14}
+				]}
+			];
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("vp");
+			w1 = dhxWins.createWindow("w1", 10, 10, 300, 250);
+			w1.denyResize();
+			myForm = w1.attachForm(formData, true);
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="vp"></div>
+</body>
+</html>

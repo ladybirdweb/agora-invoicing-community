@@ -75,7 +75,7 @@
                 <div class="row">
                     <div class="col-md-12">
                         {!! Datatable::table()
-                        ->addColumn('Number','Products','Date','Total','Action')
+                        ->addColumn('Number','Products','Date','Total','Status','Action')
                         ->setUrl('../get-my-invoices/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],
@@ -97,11 +97,40 @@
                 <div class="row">
                     <div class="col-md-12">
                         {!! Datatable::table()
-                        ->addColumn('Invoice Number','Total','Method','Status','Payment Date')
+                        ->addColumn('<input type="checkbox" class="checkbox-toggle">','Invoice Number','Total','Method','Status','Payment Date')
                         ->setUrl('../get-my-payment/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],
+                        "dom" => "Bfrtip",
+                        "buttons" => [
+                        [
+                        "text" => "Delete",
+                        "action" => "function ( e, dt, node, config ) {
+                        e.preventDefault();
+                        var answer = confirm ('Are you sure you want to delete from the database?');
+                        if(answer){
+                        $.ajax({
+                        url: '../payment-delete',
+                        type: 'GET',
+                        data: $('#check:checked').serialize(),
+
+                        beforeSend: function () {
+                        $('#gif').show();
+                        },
+                        success: function (data) {
+                        $('#gif').hide();
+                        $('#response').html(data);
+                        location.reload();
+                        }
+
+                        });
+                        }
+                        }"
+                        ]
+                        ],
+
                         ])
+
                         ->render() !!}
                     </div>
                 </div>
@@ -110,24 +139,48 @@
     </div>
 </div>
 @stop
+@section('icheck')
+<script>
+    $(function () {
+
+
+        //Enable check and uncheck all functionality
+        $(".checkbox-toggle").click(function () {
+            var clicks = $(this).data('clicks');
+            if (clicks) {
+                //Uncheck all checkboxes
+                $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+            } else {
+                //Check all checkboxes
+                $(".mailbox-messages input[type='checkbox']").iCheck("check");
+                $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+            }
+            $(this).data("clicks", !clicks);
+        });
+
+
+    });
+</script>
+@stop
 @section('datepicker')
 <script>
 
-    $("#domain").blur(function(){
-        var value = $(this).text() ;
-        var id = {{$order->id}};
-        $.ajax({
+    $("#domain").blur(function () {
+        var value = $(this).text();
+                var id = {{$order -> id}};
+            $.ajax({
             type: "GET",
-            url: "{{url('change-domain')}}",
-            data: {'domain':value,'id':id},
-            success: function () {
-                alert('Updated');
-            },
-            error: function(){
-                alert('Invalid URL');
-            }
-            
-        });
+                    url: "{{url('change-domain')}}",
+                    data: {'domain':value, 'id':id},
+                    success: function () {
+                        alert('Updated');
+                    },
+                    error: function () {
+                        alert('Invalid URL');
+                    }
+
+            });
     });
 
 

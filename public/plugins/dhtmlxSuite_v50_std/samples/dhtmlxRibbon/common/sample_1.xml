@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ribbon>
+	<tab text="tab1" active='true'>
+		<item type='block' text = 'Buttons' mode='cols'>
+			<item type='group'>
+				<item type='button' text='cut' img="18/cut.gif" />
+				<item type='button' text='New' img="18/new.gif" />
+				<item type='button' text='paste' img="18/paste.gif" />
+				<item type='buttonSelect' text='print' img="18/print.gif" />
+			</item>
+			<item type='group'>
+				<item type="input" value="some text" />
+			</item>
+			<item type="input" value="some text" text="label" />
+		</item>
+
+		<item type='block' text='ButtonsTwoState' text_pos='top'>
+			
+		</item>
+	</tab>
+	<tab text="tab2">
+		<item type='block' text='mix' mode='rows' text_pos='top' >
+			<item type='group'>
+				<item type='button' text='cut' img="18/cut.gif" />
+				<item type='button' text='New' img="18/new.gif" />
+				<item type='button' text='paste' img="18/paste.gif" />
+				<item type='button' text='print' img="18/print.gif" />
+			</item>
+			<item type='group'>
+				<item type='button' text='cut' img="18/cut.gif" />
+				<item type='button' text='New' img="18/new.gif" />
+				<item type='button' text='paste' img="18/paste.gif" />
+				<item type='button' text='print' img="18/print.gif" />
+			</item>
+		</item>
+	</tab>
+</ribbon>

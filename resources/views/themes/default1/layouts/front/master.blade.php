@@ -215,7 +215,7 @@
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{\Session::get('currency')}}</small> {{$item->getPriceWithConditions()}}</strong></span></a>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{\Session::get('currency')}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceWithConditions())}}</strong></span></a>
                                                                                 </td>
 
                                                                                 <td class="product-actions">

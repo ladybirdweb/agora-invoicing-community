@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Presets</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myScatterChart, myScatterChart2;
+		function doOnLoad() {
+			drawChart("round");
+		}
+		function drawChart(preset){
+			myScatterChart = new dhtmlXChart({
+				view:"scatter",
+				container:"chartContainer",
+				value:"#b#",
+				xValue: "#a#",
+				yAxis:{
+					title:"Value Y"
+				},
+				xAxis:{
+					title:"Value X"
+				},
+				preset:preset
+		});
+			myScatterChart.load("../common/data5.json","json");
+		}
+		function applyPreset(){
+			var preset = document.getElementById("preset").value;
+			myScatterChart.destructor();
+			drawChart(preset);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="padding: 5px;">
+		<b>Preset:</b>
+		<select id="preset" onchange="applyPreset()">
+			<option value="round" selected>round</option>
+			<option value="square">square</option>
+			<option value="diamond">diamond</option>
+		</select>
+	</div>
+	<div id="chartContainer" style="width:550px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

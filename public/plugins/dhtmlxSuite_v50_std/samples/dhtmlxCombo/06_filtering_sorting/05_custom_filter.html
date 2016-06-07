@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom filter</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone", "combo", 230, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.load("../common/data_countries.json");
+		}
+		function doFilter(mask) {
+			myCombo.filter(function(opt){
+				// return false will hide item
+				// return true will show item
+				if (mask == true) return true;
+				return opt.text.match(new RegExp("^"+mask.toLowerCase(),"i"))!=null;
+			});
+			myCombo.setFocus();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Custom filter</h3>
+	<table cellspacing="1" cellpadding="1">
+		<tr>
+			<td width="270" align="left" valign="top"><div id="combo_zone" style="width:230px;"></div></td>
+			<td align="left" valign="top">
+				<a href="javascript:void(0);" onclick="doFilter('c');">start from "c"</a><br>
+				<a href="javascript:void(0);" onclick="doFilter('g');">start from "g"</a><br>
+				<a href="javascript:void(0);" onclick="doFilter(true);">reset</a><br>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

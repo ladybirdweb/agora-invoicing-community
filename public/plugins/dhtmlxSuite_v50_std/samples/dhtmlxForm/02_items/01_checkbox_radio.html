@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Checkbox/Radio button</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-right"},
+				{type: "label", label: "Editor"},
+				{type: "checkbox", label: "Show gutter", checked: true, list:[
+					{type: "checkbox", name: "ch2", value: "r2", label: "Line selection area", checked: true},
+					{type: "checkbox", name: "ch1", value: "r1", label: "Line numbers", checked: true}
+				]},
+				{type: "checkbox", label: "Highlight current line", checked: true},
+				{type: "checkbox", label: "Show structure scope", checked: true},
+				{type: "checkbox", label: "Show marker position", checked: true},
+				{type: "label", label: "Mouse"},
+				{type: "checkbox", label: "Drag-n-drop in text area", checked: true},
+				{type: "checkbox", label: "Double-click drag joins non-alphanumeric characters", checked: true},
+				{type: "checkbox", label: "Quick copy using middle mouse button"},
+				{type: "checkbox", label: "Switch to rectangular selection while Ctrl is pressed", checked: true},
+				{type: "label", label: "Plugins"},
+				{type: "radio", name: "plugins", label: "Install into home directory", checked: true},
+				{type: "radio", name: "plugins", label: "Install into application directory"},
+				{type: "label", label: "Caret"},
+				{type: "radio", name: "caret", value: "t1", label: "Blinking", checked: true},
+				{type: "radio", name: "caret", value: "t2", label: "Block"},
+				{type: "radio", name: "caret", value: "t3", label: "Thick"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm"></div>
+</body>
+</html>

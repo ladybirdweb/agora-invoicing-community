@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Listed option state</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var sel2;
+		var myToolbar;
+		function doOnLoad() {
+			sel2 = document.getElementById("sel2");
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar_buttonselect.xml",
+				onload: updateList
+			});
+		}
+		function getId() {
+			var id = (sel2.options[sel2.selectedIndex].value).split(";");
+			return id;
+		}
+		function enable() {
+			var id = getId();
+			myToolbar.enableListOption(id[0], id[1]);
+		}
+		function disable() {
+			var id = getId();
+			myToolbar.disableListOption(id[0], id[1]);
+		}
+		function isEnabled() {
+			var id = getId();
+			alert(myToolbar.isListOptionEnabled(id[0], id[1]));
+		}
+		function updateList() {
+			sel2.options.length = 0;
+			myToolbar.forEachItem(function(itemId){
+				if (myToolbar.getType(itemId) == "buttonSelect") {
+					myToolbar.forEachListOption(itemId, function(listId){
+						if (myToolbar.getTypeExt(listId) != "separator") {
+							sel2.options.add(new Option(itemId+" - "+listId, itemId+";"+listId));
+						}
+					});
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="toolbarObj"></div>
+	<div style="margin-top: 200px;">
+		<select id="sel2"></select>
+		<input type="button" value="Enable" onclick="enable();">
+		<input type="button" value="Disable" onclick="disable();">
+		<input type="button" value="Is Enabled" onclick="isEnabled();">
+	</div>
+</body>
+</html>

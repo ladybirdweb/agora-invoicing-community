@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init from script</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject("menuObj");
+			myMenu.setIconsPath("../common/imgs/");
+			// initing
+			myMenu.addNewSibling(null, "file", "File", false);
+				myMenu.addNewChild("file", 0, "new", "New", false, "new.gif");
+				myMenu.addNewSeparator("new");
+				myMenu.addNewChild("file", 2, "open", "Open", false, "open.gif");
+				myMenu.addNewChild("file", 3, "save", "Save", false, "save.gif");
+				myMenu.addNewChild("file", 4, "saveAs", "Save As...", true, null, "save_as_dis.gif");
+				myMenu.addNewSeparator("saveAs");
+				myMenu.addNewChild("file", 6, "print", "Print", false, "print.gif");
+				myMenu.addNewChild("file", 7, "pageSetup", "Page Setup", true, null, "page_setup_dis.gif");
+				myMenu.addNewSeparator("pageSetup");
+				myMenu.addNewChild("file", 12, "close", "Close", false, "close.gif");
+			myMenu.addNewSibling("file", "edit", "Edit", false);
+				myMenu.addNewChild("edit", 0, "edit_undo", "Undo", false, "undo.gif");
+				myMenu.addNewSibling("edit_undo", "edit_redo", "Redo", false, "redo.gif");
+				myMenu.addNewSeparator("edit_redo", "sep_1");
+				myMenu.addNewSibling("sep_1", "edit_select_all", "Select All", false, "select_all.gif");
+				myMenu.addNewSeparator("edit_select_all", "sep_2");
+				myMenu.addNewSibling("sep_2", "edit_cut", "Cut", false, "cut.gif");
+				myMenu.addNewSibling("edit_cut", "edit_copy", "Copy", false, "copy.gif");
+				myMenu.addNewSibling("edit_copy", "edit_paste", "Paste", false, "paste.gif");
+			myMenu.addNewSibling("edit", "help", "Help", false);
+				myMenu.addNewChild("help", 0, "about", "About...", false, "about.gif");
+				myMenu.addNewChild("help", 1, "help2", "Help", false, "help.gif");
+				myMenu.addNewChild("help", 2, "bugrep", "Bug Reporting", false, "bug_reporting.gif");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 250px;">
+		<div id="menuObj"></div>
+	</div>
+</body>
+</html>

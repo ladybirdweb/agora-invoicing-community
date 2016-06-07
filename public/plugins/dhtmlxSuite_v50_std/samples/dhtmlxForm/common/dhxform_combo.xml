@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<items>
+	<item type="settings" position="label-left" labelWidth="140" inputWidth="160"/>
+	<item type="label" label="New project"/>
+	<item type="input" label="Project Name" value="New Project"/>
+	<item type="label" label="Audio settings"/>
+	<item type="combo" label="Format" name="format">
+		<option value="AAC" text="AAC"/>
+		<option value="AC3" text="AC3" selected="true"/>
+		<option value="MP3" text="MP3"/>
+		<option value="FLAC" text="FLAC"/>
+	</item>
+	<item type="combo" label="Bitrate" name="a_bitrate">
+		<option text="128 kbps" value="128"/>
+		<option text="160 kbps" value="160"/>
+		<option text="256 kbps" value="256"/>
+		<option text="320 kbps" value="320" selected="true"/>
+		<option text="448 kbps" value="448"/>
+	</item>
+	<item type="combo" label="Channels" comboType="checkbox" name="channels">
+		<option text="2.0 Stereo" value="2_0"/>
+		<option text="5.1 Dolby Digital" value="5_1" selected="true"/>
+	</item>
+	<item type="label" label="Video settings"/>
+	<item type="combo" label="Codec" name="v_codec">
+		<option text="DivX" value="DivX"/>
+		<option text="XviD" value="XviD" selected="true"/>
+	</item>
+	<item type="combo" label="Bitrate" name="v_bitrate">
+		<option text="728 kbps" value="728"/>
+		<option text="1226 kbps" value="1226" selected="true"/>
+		<option text="2412 kbps" value="2412"/>
+	</item>
+	<item type="label" label="Advanced"/>
+	<item type="input" label="Command line options" rows="2" value="-vf crop=618:526:0:14,pp=lb"/>
+</items>

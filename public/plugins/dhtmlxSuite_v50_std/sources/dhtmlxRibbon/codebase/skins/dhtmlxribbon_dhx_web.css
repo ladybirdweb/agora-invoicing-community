@@ -1,0 +1,380 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_web
+	include extra file: skins/dhx_web.less
+*/
+
+.dhtmlxribbon_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 20px;
+	height: 10px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_web.dhxrb_without_tabbar {
+	background-color: #ffffff;
+	border: 1px solid #c7c7c7;
+}
+.dhtmlxribbon_dhx_web {
+	overflow: hidden;
+	width: 100%;
+}
+.dhtmlxribbon_dhx_web .dhxrb_background_area {
+	height: 114px;
+	background-color: #ffffff;
+	margin: 1px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_with_tabbar {
+	height: 162px;
+}
+.dhtmlxribbon_dhx_web div.dhx_cell_tabbar {
+	background-color: #ffffff !important;
+}
+.dhtmlxribbon_dhx_web .dhxrb_g_area {
+	height: 113px;
+	float: left;
+	clear: left;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_base {
+	margin: 3px;
+	float: left;
+	border: 1px solid #e7e7e7;
+	background-color: #f4f4f4;
+	border-radius: 0px;
+	height: 106px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_base .dhxrb_block_items {
+	height: 84px;
+	float: left;
+	padding: 2px 0px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_base>.dhxrb_block_label {
+	height: 18px;
+	line-height: 17px;
+	*height: auto;
+	*line-height: 1em;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_base .dhxrb_block_label {
+	text-align: center;
+	clear: left;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #818181;
+	background-color: #e7e7e7;
+	*padding: 1px 3px 3px;
+	*font-size: 11px;
+	*font-family: Tahoma, FreeSans;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button {
+	margin: 0px 2px 5px;
+	float: left;
+	text-align: center;
+	padding: 4px;
+	border: 1px solid #f4f4f4;
+	background-color: #f4f4f4;
+	height: 72px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button .dhxrb_image {
+	width: 48px;
+	height: 48px;
+	border: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button i {
+	position: relative;
+	display: block;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	width: 48px;
+	height: 48px;
+	line-height: 47px;
+	font-size: 30px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button .dhxrb_label_button {
+	margin: 0px auto;
+	cursor: default;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+	line-height: 11px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button .dhxrb_invisible {
+	visibility: hidden;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_block {
+	float: left;
+	margin: 0px 2px 5px;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_block .dhxrb_invisible {
+	display: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button {
+	height: 20px;
+	margin: 1px 3px;
+	float: left;
+	clear: left;
+	padding: 3px 4px 1px 4px;
+	border: 1px solid #f4f4f4;
+	background-color: #f4f4f4;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_row {
+	height: 20px;
+	margin: 1px 3px;
+	float: left;
+	padding: 3px 4px 1px;
+	border: 1px solid #f4f4f4;
+	background-color: #f4f4f4;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_web .dhxrb_group .dhxrb_buttoncombo_cont {
+	height: 22px;
+	padding: 0px 2px !important;
+}
+.dhtmlxribbon_dhx_web .dhxrb_buttoncombo_cont {
+	height: 24px;
+	padding: 1px 2px !important;
+}
+.dhtmlxribbon_dhx_web .dhxrb_buttoncombo {
+	float: left;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_row .dhxrb_slider,
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_row center,
+.dhtmlxribbon_dhx_web .dhxrb_in_group center,
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button center {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_group .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button .dhxrb_slider {
+	width: 16px;
+	margin: 2px 0px;
+	height: 50px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_group {
+	height: 19px;
+	float: left;
+	padding: 2px 4px 1px;
+	border: 1px solid #efefef;
+}
+.dhtmlxribbon_dhx_web .dhxrb_input {
+	float: left;
+	border: 1px solid #e7e7e7;
+	height: 14px;
+	width: 80px;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: black;
+	padding: 1px 2px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_input:disabled {
+	border: 1px solid #e7e7e7;
+	background-color: #f2f2f2;
+	color: #999999;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button .dhxrb_image,
+.dhtmlxribbon_dhx_web .dhxrb_in_row .dhxrb_image,
+.dhtmlxribbon_dhx_web .dhxrb_in_group .dhxrb_image {
+	width: 18px;
+	height: 18px;
+	float: left;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button i,
+.dhtmlxribbon_dhx_web .dhxrb_in_row i,
+.dhtmlxribbon_dhx_web .dhxrb_in_group i {
+	position: relative;
+	float: left;
+	width: 18px;
+	height: 18px;
+	line-height: 17px;
+	font-size: 15px;
+	margin-top: 1px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_dhx_web .dhxrb_item_disable i {
+	color: #999999;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button .dhxrb_label_button,
+.dhtmlxribbon_dhx_web .dhxrb_in_row .dhxrb_label_button,
+.dhtmlxribbon_dhx_web .dhxrb_in_group .dhxrb_label_button {
+	float: left;
+	margin: 1px;
+	cursor: default;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+	margin: 2px 4px 2px 6px;
+}
+.dhtmlxribbon_dhx_web .dhxrb_buttoncombo_cont .dhxrb_label_button {
+	float: left;
+	margin-left: 3px;
+	height: 18px;
+	line-height: 18px;
+	cursor: default;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+}
+.dhtmlxribbon_dhx_web .dhxrb_label_checkbox {
+	float: left;
+	margin: 2px 4px;
+	cursor: default;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+}
+.dhtmlxribbon_dhx_web .dhxrb_disable_text_style,
+.dhtmlxribbon_dhx_web .dhxrb_item_disable .dhxrb_label_checkbox {
+	color: #999999 !important;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_highlight0 {
+	border: 1px solid #85d3ff;
+	background-color: #85d3ff;
+	color: #000000;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_highlight1 {
+	border: 1px solid #74c1ec;
+	background-color: #74c1ec;
+	color: #000000;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_item_hide {
+	display: none !important;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_rows {
+	float: left;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_row {
+	float: left;
+	clear: left;
+	margin: 0px 2px;
+	height: 28px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_arrow {
+	padding: 0px 5px;
+	margin-left: 2px;
+	background: url("../imgs/dhxribbon_web/dhxribbon_arrow.gif") no-repeat 50%;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_block .dhxrb_group {
+	border: 1px solid #e7e7e7;
+	background-color: #efefef;
+	height: 24px;
+	float: left;
+	clear: left;
+	margin: 1px 3px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_block_row .dhxrb_group {
+	border: 1px solid #e7e7e7;
+	background-color: #efefef;
+	height: 24px;
+	float: left;
+	margin: 1px 3px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_group .dhxrb_label_hide {
+	display: none;
+}
+.dhtmlxribbon_dhx_web .dhxrb_separator_groupp {
+	height: 24px;
+	width: 0;
+	border-left: 1px solid #dddddd;
+	overflow: hidden;
+	float: left;
+}
+.dhtmlxribbon_dhx_web .dhxrb_checkbox {
+	border: 1px solid #e7e7e7;
+	background-color: #ffffff;
+	float: left;
+	width: 12px;
+	height: 12px;
+	margin-top: 2px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_web .dhxrb_checked .dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_web/dhxribbon_checked.gif");
+	background-repeat: no-repeat;
+}
+.dhtmlxribbon_dhx_web .dhxrb_checked.dhxrb_item_disable>.dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_web/dhxribbon_checked_dis.gif");
+}
+.dhtmlxribbon_dhx_web .dhxrb_item_disable .dhxrb_checkbox {
+	background-color: #e6e6e6;
+	border: 1px solid #999999;
+}
+.dhtmlxribbon_dhx_web .dhxrb_item_text {
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+}
+.dhtmlxribbon_dhx_web .dhxrb_in_group .dhxrb_item_text {
+	height: 19px;
+	line-height: 18px;
+	*float: left;
+	*clear: left;
+}
+.dhtmlxribbon_dhx_web .dhxrb_3rows_button .dhxrb_item_text,
+.dhtmlxribbon_dhx_web .dhxrb_in_row .dhxrb_item_text {
+	font-family: Tahoma, Helvetica;
+	font-size: 14px;
+	color: #000000;
+}
+.dhtmlxribbon_dhx_web .dhxrb_big_button .dhxrb_item_text {
+	font-family: Tahoma, Helvetica;
+	font-size: 30px;
+	color: #000000;
+	line-height: 72px;
+	height: 72px;
+	float: left;
+	clear: left;
+}

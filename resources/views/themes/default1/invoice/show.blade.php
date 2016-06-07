@@ -3,47 +3,46 @@
 <div class="box box-primary">
 
     <div class="box-header">
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(Session::has('success'))
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('success')}}
+        </div>
+        @endif
+        <!-- fail message -->
+        @if(Session::has('fails'))
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-ban"></i>
+            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('fails')}}
+        </div>
+        @endif
+        <div id="response"></div>
 
         <h4>{{Lang::get('message.invoice')}}
             <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
     </div>
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
 
-    @if(Session::has('success'))
-    <div class="alert alert-success alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('success')}}
-    </div>
-    @endif
-    <!-- fail message -->
-    @if(Session::has('fails'))
-    <div class="alert alert-danger alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('fails')}}
-    </div>
-    @endif
-    <div id="response"></div>
 
     <div class="box-body">
         <div class="row">
 
             <div class="col-md-12">
 
-                <?php $set = App\Model\Common\Setting::where('id', '1')->first();?>
+                <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
                 <!-- Main content -->
                 <section class="invoice">
                     <!-- title row -->
@@ -74,11 +73,11 @@
                                 {{$user->address}}<br/>
                                 {{$user->town}}<br/>
                                 @if(key_exists('name',App\Http\Controllers\Front\CartController::getStateByCode($user->state)))
-                                    {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
-                                    @endif
-                                    {{$user->zip}}<br/>
-                                    Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
-                                    
+                                {{App\Http\Controllers\Front\CartController::getStateByCode($user->state)['name']}}
+                                @endif
+                                {{$user->zip}}<br/>
+                                Country : {{App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}<br/>
+
                                 Mobile: @if($user->mobile_code)<b>+</b>{{$user->mobile_code}}@endif{{$user->mobile}}<br/>
                                 Email : {{$user->email}}
                             </address>
@@ -149,25 +148,22 @@
                             <p class="lead">Amount</p>
                             <div class="table-responsive">
                                 <table class="table">
-                                    <?php 
+                                    <?php
                                     $tax_name = [];
                                     $tax_percentage = [];
-                                        foreach($invoiceItems as $key=>$item){
-                                            if(str_finish(',', $item->tax_name)){
-                                                $name = substr_replace($item->tax_name,'',-1);
-                     
-                                            }
-                                            if(str_finish(',', $item->tax_percentage)){
-                                                $rate = substr_replace($item->tax_percentage,'',-1);
-                                                
-                                            }
-                                            $tax_name = explode(',',$name);
-                                            $tax_percentage = explode(',',$rate);
+                                    foreach ($invoiceItems as $key => $item) {
+                                        if (str_finish(',', $item->tax_name)) {
+                                            $name = substr_replace($item->tax_name, '', -1);
                                         }
-                                        
+                                        if (str_finish(',', $item->tax_percentage)) {
+                                            $rate = substr_replace($item->tax_percentage, '', -1);
+                                        }
+                                        $tax_name = explode(',', $name);
+                                        $tax_percentage = explode(',', $rate);
+                                    }
                                     ?>
                                     @for($i=0;$i < count($tax_name);$i++)
-                                    
+
                                     @if($tax_name[$i]!='null')
                                     <tr>
                                         <th>
@@ -184,7 +180,7 @@
                                         <th style="width:50%">Total:</th>
                                         <td><small>{!! $invoice->currency !!}</small>&nbsp;{{$invoice->grand_total}}</td>
                                     </tr>
-                                    
+
                                 </table>
                             </div>
                         </div><!-- /.col -->

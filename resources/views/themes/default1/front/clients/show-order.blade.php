@@ -56,7 +56,7 @@ active
                                             <tbody><tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
                                                 <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
                                                 <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
-                                                <tr><td><b>Country:</b></td>   <td>{{$user->country}}</td></tr>
+                                                <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
                                             </tbody></table>
                                     </div>
@@ -65,10 +65,13 @@ active
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Domain Name:</b></td>     <td>{{$order->domain}}</td></tr>
                                                 <?php
-                                                if ($subscription->end_at == '' || $subscription->end_at == '0000-00-00 00:00:00') {
+                                                
+                                                if ($subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
                                                     $sub = "--";
                                                 } else {
-                                                    $sub = $subscription->end_at;
+                                                    $sub1 = $subscription->ends_at;
+                                                     $date = date_create($sub1);
+                                                    $sub = date_format($date,'l, F j, Y H:m A');
                                                 }
                                                 ?>
                                                 <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
@@ -104,7 +107,7 @@ active
                         <!--<a href="#" class="btn btn-desiable pull-left mb-xl" data-loading-text="Loading...">Invoice</a>--> 
 
                         {!! Datatable::table()
-                        ->addColumn('Number','Products','Date','Total','Action')
+                        ->addColumn('Number','Products','Date','Total','Status','Action')
                         ->setUrl('../get-my-invoices/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],
@@ -134,8 +137,8 @@ active
                             <!--<a href="shortcodes-pricing-tables.html"  class="btn btn-primary pull-left mb-xl" data-loading-text="Loading...">Payment</a>--> 
                         </section>
                        {!! Datatable::table()
-                        ->addColumn('Invoice Number','Total','Method','Status')
-                        ->setUrl('../get-my-payment/'.$order->id.'/'.$user->id) 
+                        ->addColumn('Invoice Number','Total','Method','Status','Created At')
+                        ->setUrl('../get-my-payment-client/'.$order->id.'/'.$user->id) 
                         ->setOptions([
                         "order"=> [ 1, "desc" ],
                         ])
@@ -147,7 +150,6 @@ active
 
     </div>
 </div>	
-
 
 
 

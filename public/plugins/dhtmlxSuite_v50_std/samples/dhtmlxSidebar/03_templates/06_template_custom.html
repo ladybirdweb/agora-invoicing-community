@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom template</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item {
+			height: 53px;
+			line-height: 53px;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+			top: 11px;
+			width: 32px;
+			height: 32px;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+			padding-top: 9px;
+			padding-left: 54px;
+			line-height: 17px;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text div.line_two {
+			color: #909090;
+			padding-top: 2px;
+			font-size: 0.92em;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text div.line_progress {
+			border: 1px solid #c0c0c0;
+			background-color: #f2f2f2;
+			height: 5px;
+			overflow: hidden;
+			position: relative;
+			width: 110px;
+			margin-top: 3px;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text div.line_progress div.filled_progress {
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			height: 5px;
+			background-color: #52C1E0;
+			overflow: hidden;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text.enable_progress {
+			padding-top: 3px;
+		}
+		.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_two_lines div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text.disable_progress div.line_progress {
+			display: none;
+		}
+	</style>
+	<script>
+		var mySidebar;
+		var disks = {
+			c: {total: 65.7, free: 31.4},
+			d: {total: 400, free: 153}
+		}
+		function disk_text(a) {
+			return dhx4.template("#free# Gb free of #total# Gb", disks[a]);
+		}
+		function disk_width(a) {
+			return Math.floor(disks[a].free*100/disks[a].total);
+		}
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/icons_material/32/",
+				template: "two_lines",
+				width: 200,
+				items: [
+					{id: "recent", text: "Recent", text2: "11 objects", enable_progress: "disable_progress", icon: "recent.png", selected: true},
+					{id: "desktop", text: "Desktop", text2: "4 objects", enable_progress: "disable_progress", icon: "desktop.png"},
+					{id: "downloads", text: "Downloads", text2: "67 objects", enable_progress: "disable_progress", icon: "downloads.png"},
+					{type: "separator"},
+					{id: "disk_c", text: "Windows (C:)", text2: disk_text("c"), enable_progress: "enable_progress", width: disk_width("c"), icon: "disk_c.png"},
+					{id: "disk_d", text: "Data (D:)", text2: "153 Gb free of 400 Gb", enable_progress: "enable_progress", width: disk_width("d"), icon: "disk_d.png"},
+					{id: "disk_e", text: "DVD RW (E:)", text2: "No media", enable_progress: "disable_progress", icon: "disk_e.png"}
+				]
+			});
+		}
+		dhtmlXSideBar.prototype.templates.two_lines = "<img class='dhxsidebar_item_icon' src='#icons_path##icon#' border='0'>"+
+								"<div class='dhxsidebar_item_text #enable_progress#'>"+
+									"<div>#text#</div>"+
+									"<div class='line_progress'><div class='filled_progress' style='width:#width#px;'></div></div>"+
+									"<div class='line_two'>#text2#</div>"+
+								"</div>";
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+</body>
+</html>

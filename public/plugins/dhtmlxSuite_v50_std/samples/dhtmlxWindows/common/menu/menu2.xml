@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<menu>
+	<item id="about" text="About..." img="about.gif"/>
+	<item id="help" text="Help" img="help.gif"/>
+	<item id="bug_reporting" text="Bug Reporting" img="bug_reporting.gif"/>
+</menu>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with Google Maps</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+	</style>
+	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+	<script>
+		var dhxWins, w1, GMaps;
+		function doOnLoad() {
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			w1 = dhxWins.createWindow("w1", 20, 30, 400, 280);
+			w1.setText("Google Maps");
+			w1.button("close").disable();
+			
+			GMaps = w1.attachMap();
+			
+		}
+		
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = null;
+			}
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+</body>
+</html>

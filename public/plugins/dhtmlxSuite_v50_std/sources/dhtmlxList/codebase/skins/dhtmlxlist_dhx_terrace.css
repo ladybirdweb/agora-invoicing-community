@@ -1,0 +1,58 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+.dhx_list {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	overflow-x: hidden;
+	-moz-user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-select: none;
+}
+.dhx_list_default_item,
+.dhx_list_default_item_selected {
+	cursor: pointer;
+	background-color: #ffffff;
+}
+.dhx_list .dhx_list_default_item,
+.dhx_list .dhx_list_default_item_selected {
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px dotted #cccccc;
+}
+.dhx_list_default_item_selected {
+	background-color: #fff3a1;
+	color: #fff3a1;
+	border-color: #fff3a1;
+	background-repeat: repeat-x;
+}
+.dhx_list_item {
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+	box-sizing: border-box;
+}
+.dhx_list_item textarea {
+	resize: none;
+	margin-top: -8px;
+}
+.dhx_list_item .dhx_strong {
+	font-weight: bold;
+	display: block;
+	padding-bottom: 6px;
+}
+.dhx_list_default_item_selected .dhx_light {
+	color: #C3C3C3;
+}
+.dhx_list_item .dhx_light {
+	color: #919191;
+}

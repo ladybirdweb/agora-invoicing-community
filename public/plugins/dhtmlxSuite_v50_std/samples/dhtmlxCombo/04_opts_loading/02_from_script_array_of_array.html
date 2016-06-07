@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Script - array of arrays</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo, myCombo2, myCombo3;
+		function doOnLoad() {
+			
+			// Array of array
+			myCombo = new dhtmlXCombo("combo_zone");
+			myCombo.addOption([
+				["1", "Walking through the city", "color:red;", null, true],
+				["2", "Looking oh so pretty", "color:green;"],
+				["3", "I've just got to find my way", "color:blue;"],
+				["4", "See the ladies flashing", "color:magenta;"],
+				["5", "All their legs and lashes", "color:darkorange;"],
+				["6", "I've just got to find my way", "color:brown;"]
+			]);
+			
+			// Array of array with image
+			myCombo2 = new dhtmlXCombo("combo_zone2", null, null, "image");
+			myCombo2.setImagePath("../common/flags/");
+			myCombo2.addOption([
+				["1", "Finland", null, "finland.png", true],
+				["2", "Germany", null, "germany.png"],
+				["3", "Great Britain", null, "britain.png"],
+				["4", "Hungary", null, "hungary.png"]
+			]);
+			
+			// Array of array with checkbox
+			myCombo3 = new dhtmlXCombo("combo_zone3", null, null, "checkbox");
+			myCombo3.addOption([
+				["1", "The Adventures of Tom Sawyer"],
+				["2", "The Dead Zone", null, null, true],
+				["3", "The First Men in the Moon"],
+				["4", "The Girl Who Loved Tom Gordon"],
+				["5", "The Green Mile"],
+				["6", "The Invisible Man"],
+				["7", "The Island of Doctor Moreau"],
+				["8", "The Prince and the Pauper"]
+			]);
+			myCombo3.setChecked("2", true); // index
+			myCombo3.setChecked("5", true);
+			myCombo3.setChecked("6", true);
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Array of array</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<h3>Array of array with image</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<h3>Array of array with checkbox</h3>
+	<div id="combo_zone3" style="width:230px;"></div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Show / hide today and time</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCalendar;
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.setDate(new Date(2013,2,1,16,0));
+			myCalendar.show();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="margin-bottom:5px;">
+		<input type="button" value="show time" onclick="myCalendar.showTime();">
+		<input type="button" value="hide time" onclick="myCalendar.hideTime();">
+	</div>
+	<div style="margin-bottom:20px;">
+		<input type="button" value="show today" onclick="myCalendar.showToday();">
+		<input type="button" value="hide today" onclick="myCalendar.hideToday();">
+	</div>
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+</body>
+</html>

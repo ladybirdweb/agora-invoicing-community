@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Change Grid's parent object</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales,Book Title");
+			myGrid.setInitWidths("100,*");
+			myGrid.setColAlign("right,left");
+			myGrid.setColTypes("dyn,ed");
+			myGrid.setColSorting("int,str");
+			myGrid.enableMultiselect(true);
+			myGrid.init();
+			myGrid.load("../common/grid.xml");
+		}
+		// switch parent to new one
+		function moveTo(objId){
+			myGrid.attachToObject(document.getElementById(objId))
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Change Grid's parent object</h1>
+	<p>You can use attachToObject method to move grid from one place to another switching its parent items.</p>
+	<table width="400px">
+		<tr>
+			<td id="parent1" style="border:1px solid red">
+				<div id="gridbox" style="width:400px; height:350px; background-color:white;overflow:hidden"></div>
+			</td>
+			<td><input type="button" onClick="moveTo('parent1')" value="&lt; Move Here" /></td>
+		</tr>
+		<tr><td style='height:10px;'></td></tr>
+		<tr>
+			<td id="parent2" style="border:1px solid blue"></td>
+			<td><input type="button" onClick="moveTo('parent2')" value="&lt; Move Here" /></td>
+		</tr>
+		<tr><td style='height:10px;'></td></tr>
+		<tr>
+			<td id="parent3" style="border:1px solid green"></td>
+			<td><input type="button" onClick="moveTo('parent3')" value="&lt; Move Here" /></td>
+		</tr>
+		<tr><td style='height:10px;'></td></tr>
+	</table>
+	<strong>Parameters passed to the constructor are:</strong>
+	<ul>
+		<li>object to attach grid to (should be loaded before calling constructor)</li>
+	</ul>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Show / Hide</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+
+	<script>
+		var myRibbon;
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon({
+				parent: "ribbonObj",
+				icons_path: "../common/",
+				json: "../common/group.json"
+			});
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+
+		function hide(id) {
+			myRibbon.hide(id);
+		};
+		function show(id) {
+			myRibbon.show(id);
+		};
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div>Group 1 <button onclick="hide('group_1')">hide</button> <button onclick="show('group_1')">show</button></div>
+	<div>Group 2 <button onclick="hide('group_2')">hide</button> <button onclick="show('group_2')">show</button></div>
+	<div>Group 3 <button onclick="hide('group_3')">hide</button> <button onclick="show('group_3')">show</button></div>
+</body>
+</html>

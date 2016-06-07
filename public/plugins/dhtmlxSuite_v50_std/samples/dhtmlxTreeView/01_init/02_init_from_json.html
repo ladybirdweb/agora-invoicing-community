@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init from json</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div.sample_info_here {
+			position: relative;
+			width: auto;
+			margin: 20px;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+		}
+		div.sample_info_here div.sample_info_title {
+			line-height: 18px;
+			font-size: 15px;
+			color: #3b5e7c;
+		}
+		div#tree_here {
+			position: relative;
+			border: 1px solid #dfdfdf;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+			width: 350px;
+			height: 400px;
+			margin-left: 20px;
+			margin-bottom: 20px;
+		}
+	</style>
+	<script>
+		var myTreeView;
+		function doOnLoad() {
+			myTreeView = new dhtmlXTreeView("tree_here");
+			myTreeView.loadStruct("../common/treeview.json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div class="sample_info_here">
+		<div class="sample_info_title">init treeview from json file</div>
+	</div>
+	<div id="tree_here"></div>
+</body>
+</html>

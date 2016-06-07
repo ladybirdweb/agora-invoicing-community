@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Insensitive days</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCalendar;
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.hideTime();
+			myCalendar.show();
+			myCalendar.setDate("2011-07-12");
+			setDays();
+		}
+		function setDays() {
+			myCalendar.setInsensitiveDays(["2011-07-10,2011-07-11",new Date(2011,6,17),"2011-07-18"]);
+		}
+		function clearDays() {
+			myCalendar.clearInsensitiveDays();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="margin-bottom: 20px;">
+		<input type="button" value="set days" onclick="setDays();">
+		<input type="button" value="clear days" onclick="clearDays();">
+	</div>
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+</body>
+</html>

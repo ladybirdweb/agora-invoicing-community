@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Readonly combo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		 td.descr_td {
+		 	 padding-right: 50px;
+		 	 vertical-align: top;
+		 }
+	</style>
+	<script>
+		var myCombo;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone", "combo", null, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.load("../common/data_countries.json");
+			myCombo.readonly(true);
+		}
+	</script>
+
+</head>
+<body onload="doOnLoad();">
+	<h3>Readonly/editable combo</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to window</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 550px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+	</style>
+	<script>
+		var dhxWins, w1;
+		var myCarousel;
+		function doOnLoad(){
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			w1 = dhxWins.createWindow("w1", 20, 30, 320, 450);
+			w1.setText("Carousel");
+			w1.denyResize();
+			w1.setMinDimension(100, 150);
+			w1.button("close").disable();
+			//
+			myCarousel = w1.attachCarousel({offset_item: 20, item_width: 288, item_height: 338});
+			
+			for (var q=0; q<6; q++) {
+				var id = myCarousel.addCell();
+				myCarousel.cells(id).attachHTMLString("<div style='position: relative; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%;'>"+
+									"<img src='../common/imgs/"+(q+1)+".jpg' border='0' style='width: 100%; height: 100%;' ondragstart='return false;'></div>");
+			}
+		}
+	</script>
+<html>
+<body onload="doOnLoad();">
+	<div id="winVP"></div>
+	<div><br><br></div>
+</body>
+</html>

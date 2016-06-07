@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxTabbar</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+	</style>
+	<script>
+		var dhxWins, w1, myTabbar;
+		
+		function doOnLoad(){
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			w1 = dhxWins.createWindow("w1", 20, 30, 400, 280);
+			w1.setText("dhtmlxTabbar");
+			w1.button("close").disable();
+			//
+			myTabbar = w1.attachTabbar({
+				tabs: [
+					{id: "a1", label: "Tab 1", active: true},
+					{id: "a2", label: "Tab 2"}
+				]
+			});
+			
+		}
+		
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = myTabbar = null;
+			}
+		}
+		
+	</script>
+<html>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+</body>
+</html>

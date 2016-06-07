@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Enable/Disable tooltips</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.selMultiRows = true;
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Salse,Book Title,Author,Price,In Store");
+			myGrid.setInitWidths("80,150,120,100,*");
+			myGrid.setColAlign("right,left,left,left,center");
+			myGrid.setColTypes("dyn,ed,ed,price,ch");
+			myGrid.setColSorting("int,str,str,int,intr");
+			myGrid.enableAutoHeight(true);
+			myGrid.init();
+			//disable tooltips for first column
+			myGrid.enableTooltips("false,true,true,true,true");
+			myGrid.load("../common/grid_16_rows_columns_manipulations.xml");
+		}
+		function chTT(){
+			var z="";
+			if (document.getElementById("c1").checked)
+				z+="true,";
+			else
+				z+="false,";
+			if (document.getElementById("c2").checked)
+				z+="true,";
+			else
+				z+="false,";
+			if (document.getElementById("c3").checked)
+				z+="true,";
+			else
+				z+="false,";
+			if (document.getElementById("c4").checked)
+				z+="true,";
+			else
+				z+="false,";
+			if (document.getElementById("c5").checked)
+				z+="true,";
+			else
+				z+="false,";
+			alert(z);
+			myGrid.enableTooltips(z);
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Enable/Disable tooltips</h1>
+	<p>You are allowed to enable/disable tooltip for any column in the grid:</p>
+	<table width="574">
+		<tr>
+			<td>
+				<div id="gridbox" style="width:100%;height:270px;background-color:white;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<br><br>
+				Enable tooltips for the next columns:
+				<input type='checkbox' id='c1' onclick='chTT()'> 1
+				<input type='checkbox' id='c2' checked='true' onclick='chTT()'> 2
+				<input type='checkbox' id='c3' checked='true' onclick='chTT()'> 3
+				<input type='checkbox' id='c4' checked='true' onclick='chTT()'> 4
+				<input type='checkbox' id='c5' checked='true' onclick='chTT()'> 5
+            </td>
+		</tr>
+	</table>
+</body>
+</html>

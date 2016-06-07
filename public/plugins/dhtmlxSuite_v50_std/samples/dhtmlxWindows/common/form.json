@@ -1,0 +1,7 @@
+[
+	{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 120, offsetLeft: 10},
+	{type: "input", label: "Login", value: "adminus", offsetTop: 10},
+	{type: "password", label: "Password", value: "123"},
+	{type: "checkbox", label: "Remember me", checked: true},
+	{type: "button", value: "Proceed"}
+]

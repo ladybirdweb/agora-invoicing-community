@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>XML string</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo, myCombo2, myCombo3;
+		function doOnLoad() {
+			
+			// XML string
+			myCombo = new dhtmlXCombo("combo_zone");
+			myCombo.load('<complete>'+
+						'<option value="1">Copenhagen Airport</option>'+
+						'<option value="2" selected="1">Dublin Airport</option>'+
+						'<option value="3">Frankfurt Airport</option>'+
+					'</complete>');
+			
+			// XML string with image
+			myCombo2 = new dhtmlXCombo("combo_zone2", null, null, "image");
+			myCombo2.setImagePath("../common/flags/");
+			myCombo2.load('<complete>'+
+						'<option value="1" img="austria.png">Austria</option>'+
+						'<option value="2" img="cameroon.png">Cameroon</option>'+
+						'<option value="3" img="canada.png" selected="1">Canada</option>'+
+					'</complete>');
+			
+			// XML string with checkbox
+			myCombo3 = new dhtmlXCombo("combo_zone3", null, null, "checkbox");
+			myCombo3.load('<complete>'+
+						'<option value="1">The Adventures of Tom Sawyer</option>'+
+						'<option value="2" selected="1" checked="1">The Dead Zone</option>'+
+						'<option value="3" checked="1">The First Men in the Moon</option>'+
+					'</complete>');
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>XML string</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<h3>XML string with image</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<h3>XML string with checkbox</h3>
+	<div id="combo_zone3" style="width:230px;"></div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Open mode</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.my_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 20px;
+			padding-bottom: 10px;
+			width: 320px;
+		}
+	</style>
+	<script>
+		var myMenu1, myMenu2;
+		function doOnLoad() {
+			// web mode, default
+			myMenu1 = new dhtmlXMenuObject({
+				parent: "menuWeb",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml"
+			});
+			
+			// win mode
+			myMenu2 = new dhtmlXMenuObject({
+				parent: "menuWin",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml",
+				open_mode: "win"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table border="0" cellspacing="0" cellpadding="0" class="my_table">
+		<tr>
+			<td>web mode (mouseover to open)</td>
+			<td>win mode (click to open)</td>
+		</tr>
+		<tr>
+			<td><div style="height: 250px;"><div id="menuWeb"></div></div></td>
+			<td><div style="height: 250px;"><div id="menuWin"></div></div></td>
+		</tr>
+	</table>
+</body>
+</html>

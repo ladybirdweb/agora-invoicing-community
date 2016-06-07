@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init from object</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myRibbon;
+		var data = {
+			parent: "ribbonObj",
+			icons_path: "../common/",
+			items: [
+				{
+					type:'block', text:'office document', list:[
+						{type: "group", list: [
+							{id: "text_1", type:"text", text:"Text 1"},
+							{id: "text_4", type:"text", text:"Text 4"}
+						]},
+						{id: "text_2", type:"text", text:"Text 2"},
+						{id: "text_3", type:"text", text:"Text 3", isbig: true}
+					]
+				}
+			]
+		};
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon(data);
+		};
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+</body>
+</html>

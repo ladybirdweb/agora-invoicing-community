@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Initialization from HTML table</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+</head>
+<body>
+	<h1>Initialization Grid from HTML table</h1>
+	<p>A table can be converted to the grid by <strong>dhtmlXGridFromTable </strong>command:</p>
+	<div><a href="javascript:void(0)" onClick="new dhtmlXGridFromTable('tblToGrid');this.style.display='none';">Convert table to grid</a></div>
+	<table id="tblToGrid" name="grid1" gridHeight="auto" style="width:400px" imgpath="../../../codebase/imgs/" border="1" lightnavigation="true">
+		<tr>
+			<td type="ro">Column 1</td>
+			<td>Column 2</td>
+		</tr>
+		<tr>
+			<td>value 11</td>
+			<td>value 12</td>
+		</tr>
+		<tr>
+			<td>value 21</td>
+			<td>value 22</td>
+		</tr>
+		<tr>
+			<td>value 31</td>
+			<td>value 32</td>
+		</tr>
+		<tr>
+			<td>value 41</td>
+			<td>value 42</td>
+		</tr>
+		<tr>
+			<td>value 51</td>
+			<td>value 52</td>
+		</tr>
+	</table>
+	<br>
+	<p>Automatic initialization.</p>
+	<p>
+		<div>Initialize automatically  from table the class attribute of which is set to "dhtmlxGrid"</div>
+	</p>
+	<p> The initialization by a CSS class will work only for those tables that were on page at the moment of loading.</p>
+	<table class="dhtmlxGrid" gridHeight="auto" name="grid2" imgpath="../../../codebase/imgs/" style="width:400px" lightnavigation="true">
+		<tr>
+			<td type="ro">Column 1</td>
+			<td>Column 2</td>
+		</tr>
+		<tr>
+			<td>value 11</td>
+			<td>value 12</td>
+		</tr>
+		<tr>
+			<td>value 21</td>
+			<td>value 22</td>
+		</tr>
+		<tr>
+			<td>value 31</td>
+			<td>value 32</td>
+		</tr>
+		<tr>
+			<td>value 41</td>
+			<td>value 42</td>
+		</tr>
+		<tr>
+			<td>value 51</td>
+			<td>value 52</td>
+		</tr>
+	</table>
+</body>
+</html>

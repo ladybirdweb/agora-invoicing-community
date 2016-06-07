@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>JSON from server</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo, myCombo2, myCombo3;
+		function doOnLoad() {
+			
+			// JSON from server
+			myCombo = new dhtmlXCombo("combo_zone");
+			myCombo.load("../common/data_airports.json", function(){
+				// callback
+			});
+			
+			// JSON from server with image
+			// "img" or "img_src" attr-name for image allowed, "img_dis" or "img_src_dis" allowed also
+			myCombo2 = new dhtmlXCombo("combo_zone2", null, null, "image");
+			myCombo2.setImagePath("../common/flags/");
+			myCombo2.load("../common/data_countries.json", function(){
+				// callback
+			});
+			
+			// JSON with checkbox
+			myCombo3 = new dhtmlXCombo("combo_zone3", null, null, "checkbox");
+			myCombo3.load("../common/data2.json", function(){
+				// callback
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>JSON from server</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<h3>JSON from server with image</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<h3>JSON with checkbox</h3>
+	<div id="combo_zone3" style="width:230px;"></div>
+	<br><br>
+	Due ajax call loaded in async mode - to perform operations with options<br>
+	you need to use onXLE event or load callback to make sure options loaded into combo
+</body>
+</html>

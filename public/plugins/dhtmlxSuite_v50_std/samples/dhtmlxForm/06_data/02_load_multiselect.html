@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Load values for multiselect</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 130},
+				{type: "multiselect", name: "color", label: "Available colors", connector: "../common/multiselect_opts.xml", size: 9},
+				{type: "block", blockOffset: 0, offsetTop: 20, inputWidth: "auto", list: [
+					{type: "button", value: "set 1", name: "data1"},
+					{type: "newcolumn"},
+					{type: "button", value: "set 2", name: "data2"},
+					{type: "newcolumn"},
+					{type: "button", value: "set 3", name: "data3"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.attachEvent("onButtonClick", function(name){
+				myForm.load("../common/multiselect_"+name+".xml");
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm"></div>
+</body>
+</html>

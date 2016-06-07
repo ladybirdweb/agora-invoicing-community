@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Option css</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myCombo, myCombo2, myCombo3;
+		function doOnLoad() {
+			
+			// from script
+			myCombo = new dhtmlXCombo("combo_zone");
+			myCombo.addOption("1", "Walking through the city", "color:red;", null, true);
+			myCombo.addOption("2", "Looking oh so pretty", "color:green;");
+			myCombo.addOption("3", "I've just got to find my way", "color:blue;");
+			myCombo.addOption("4", "See the ladies flashing", "color:magenta;");
+			myCombo.addOption("5", "All their legs and lashes", "color:darkorange;");
+			myCombo.addOption("6", "I've just got to find my way", "color:brown;");
+			
+			// from json
+			myCombo2 = new dhtmlXCombo("combo_zone2");
+			myCombo2.load("../common/data_css.json");
+			
+			// from xml
+			myCombo3 = new dhtmlXCombo("combo_zone3");
+			myCombo3.load("../common/data_css.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>from script</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<h3>from json</h3>
+	<div id="combo_zone2" style="width:230px;"></div>
+	<br>
+	<h3>from xml</h3>
+	<div id="combo_zone3" style="width:230px;"></div>
+</body>
+</html>

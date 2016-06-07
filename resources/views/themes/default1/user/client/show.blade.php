@@ -1,6 +1,38 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+@if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+        <div id="error">
+        </div>
+        <div id="success">
+        </div>
+        <div id="fails">
+        </div>
+        @if(Session::has('success'))
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('success')}}
+        </div>
+        @endif
+        <!-- fail message -->
+        @if(Session::has('fails'))
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-ban"></i>
+            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('fails')}}
+        </div>
+        @endif
 <div class="box-header with-border widget-user-2  bg-aqua widget-user-header padfull">
+    
 
     <div class="col-md-8 col-sm-4 padzero">
         <div class="widget-user-image">
@@ -10,7 +42,7 @@
         </div>
         <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}</h3>
         <h5 class="widget-user-desc">{{ucfirst($client->town)}}</h5>
-        <h6 class="widget-user-desc">{{$client->email}}<br>{{$client->mobile}}</h6>
+        <h6 class="widget-user-desc">{{$client->email}}<br>@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</h6>
     </div>
 <!--    <div class="col-md-2 col-sm-4 padzero">
         <div class="padleft">
@@ -20,6 +52,7 @@
     </div>-->
 
     <div class="box-tools pull-right col-md-2 col-sm-4 padfull paddownfive">
+        
 
         <!--                <a data-toggle="modal" data-target="#editdetail" class="btn btn-block btn-default btn-sm btn-flat ">
                             Edit 
@@ -69,34 +102,7 @@
 
 </div>
 
-@if (count($errors) > 0)
-<div class="alert alert-danger">
-    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-    <ul>
-        @foreach ($errors->all() as $error)
-        <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
 
-@if(Session::has('success'))
-<div class="alert alert-success alert-dismissable">
-    <i class="fa fa-ban"></i>
-    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    {{Session::get('success')}}
-</div>
-@endif
-<!-- fail message -->
-@if(Session::has('fails'))
-<div class="alert alert-danger alert-dismissable">
-    <i class="fa fa-ban"></i>
-    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-    {{Session::get('fails')}}
-</div>
-@endif
 
 <div class="margintop20">
     <div class="nav-tabs-custom">
@@ -159,15 +165,16 @@
                                                 $model_popup = $template_controller->popup('Invoice', $body, 897, 'execute order', 'invoice' . $invoice->id);
                                                 ?>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    @if(empty($invoice->order()->get()))
+                                                    @if($invoice->order()->get()->count()==0)
                                                     <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
                                                     @endif
-                                                    @if($invoice->payment()->first())
-                                                    @if($invoice->payment()->first()->payment_status!='success')
+                                                    
+                                                    @if($invoice->status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
                                                     @endif
-                                                    @endif
+                                                   
                                                      <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
+                                                     <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
                                                 </ul>
                                                 {!! $model_popup !!}
 
@@ -201,6 +208,8 @@
                                     <th>Payment Method</th>
                                     <th>Total</th>
                                     <th>Status</th>
+                                    <th>Action</th>
+                                    
                                     
                                 </tr>
                             </thead>
@@ -219,7 +228,7 @@
 
                                     <td>{{$payment->amount}}</td>
                                     <td>{{ucfirst($payment->payment_status)}}</td>
-                                    
+                                    <td><a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger">{{Lang::get('message.delete')}}</a></td>
                                 </tr>
                                 @empty 
                                 <tr>
@@ -361,7 +370,8 @@
                                     <td>{{$order->number}}</td>
                                     <td>{{$order->price_override}}</td>
                                     <td>{{$order->order_status}}</td>
-                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary">View</a></td>
+                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary">View</a>
+                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger">{{Lang::get('message.delete')}}</a></td>
                                 </tr>
                                 @empty 
                                 <tr>

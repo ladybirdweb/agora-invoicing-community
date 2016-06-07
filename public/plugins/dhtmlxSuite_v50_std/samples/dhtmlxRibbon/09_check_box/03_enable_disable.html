@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Enable / Disable</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myRibbon;
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon({
+				parent: "ribbonObj",
+				icons_path: "../common/",
+				json: "../common/check_box.json"
+			});
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+
+		function disable(id) {
+			myRibbon.disable(id);
+		};
+		function enable(id) {
+			myRibbon.enable(id);
+		};
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div>CheckBox 1 <button onclick="disable('check_box_1')">disable</button> <button onclick="enable('check_box_1')">enable</button></div>
+	<div>CheckBox 2 <button onclick="disable('check_box_2')">disable</button> <button onclick="enable('check_box_2')">enable</button></div>
+	<div>CheckBox 3 <button onclick="disable('check_box_3')">disable</button> <button onclick="enable('check_box_3')">enable</button></div>
+</body>
+</html>

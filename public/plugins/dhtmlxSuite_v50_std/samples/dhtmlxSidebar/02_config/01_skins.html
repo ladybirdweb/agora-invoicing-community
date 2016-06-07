@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		div.demo_links {
+			margin: 25px 9px;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+		}
+		div.demo_links button {
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin-left: 5px;
+		}
+	</style>
+	<script>
+		var mySidebar;
+		var usedSkin;
+		var iconsPath = {
+			dhx_skyblue: "win_16x16/",
+			dhx_web: "icons_web/",
+			dhx_terrace: "icons_terrace/",
+			material: "icons_material/"
+		};
+		function doOnLoad(newSkin) {
+			if (newSkin == null) newSkin = "material";
+			if (usedSkin == newSkin) return;
+			usedSkin = newSkin;
+			if (mySidebar != null) mySidebar.unload();
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/"+iconsPath[usedSkin],
+				width: 160,
+				skin: usedSkin,
+				json: "../common/sidebar.json"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+	<div class="demo_links">
+		Select skin you like
+		<button onclick="doOnLoad('dhx_web');">web</button>
+		<button onclick="doOnLoad('dhx_terrace');">terrace</button>
+		<button onclick="doOnLoad('dhx_skyblue');">skyblue</button>
+		<button onclick="doOnLoad('material');">material</button>
+	</div>
+</body>
+</html>

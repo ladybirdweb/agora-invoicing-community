@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Change icons</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.my_table {
+			margin: 20px 0px;
+		}
+		table.my_table td {
+			padding-right: 20px;
+		}
+	</style>
+	<script>
+		var myRibbon;
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon({
+				parent: "ribbonObj",
+				icons_path: "../common/",
+				items: [
+					{type: "block", text: "Project", list: [
+						{id: "create", type: "button", text: "Create", img: "48/new.gif", isbig: true},
+						{id: "open", type: "button", text: "Open Project", img: "18/open.gif", imgdis: "18/open_dis.gif"},
+						{id: "print", type: "button", text: "Print", img: "18/print.gif"},
+						{id: "save", type: "button", text: "Save As...", img: "18/save.gif"}
+					]},
+					{type: "block", text: "Edit", list: [
+						{id: "cut", type: "button", text: "Cut", img: "48/cut.gif", imgdis: "48/cut_dis.gif", isbig: true},
+						{id: "copy", type: "button", text: "Copy", img: "48/copy.gif", isbig: true},
+						{id: "paste", type: "button", text: "Paste", img: "48/paste.gif", isbig: true},
+					]}
+				]
+				
+			});
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+		
+		function setImage(id, img, imgdis) {
+			myRibbon.setItemImage(id, img);
+			myRibbon.setItemImageDis(id, imgdis);
+		};
+		
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<table cellspacing="1" cellpadding="1" class="my_table">
+		<tr>
+			<td>Open</td>
+			<td>
+				<input type="button" onclick="setImage('open', '18/open.gif', '18/open_dis.gif');" value="open.gif">
+				<input type="button" onclick="setImage('open', '18/print.gif', '18/print_dis.gif');" value="print.gif">
+				<input type="button" onclick="setImage('open', '18/save.gif', '18/save_dis.gif');" value="save.gif">
+			</td>
+			<td>
+				<input type="button" onclick="myRibbon.enable('open');" value="enable">
+				<input type="button" onclick="myRibbon.disable('open');" value="disable">
+			</td>
+		</tr>
+		<tr>
+			<td>Cut</td>
+			<td>
+				<input type="button" onclick="setImage('cut', '48/cut.gif', '48/cut_dis.gif');" value="cut.gif">
+				<input type="button" onclick="setImage('cut', '48/copy.gif', '48/copy_dis.gif');" value="copy.gif">
+				<input type="button" onclick="setImage('cut', '48/paste.gif', '48/paste_dis.gif');" value="paste.gif">
+			</td>
+			<td>
+				<input type="button" onclick="myRibbon.enable('cut');" value="enable">
+				<input type="button" onclick="myRibbon.disable('cut');" value="disable">
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

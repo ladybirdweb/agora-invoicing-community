@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>xml/json formats for buttonSelect</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.my_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 20px;
+			padding-bottom: 10px;
+			font-family: Tahoma;
+		}
+		table.my_table td.item_type {
+			height: 20px;
+			font-size: 12px;
+			vertical-align: middle;
+		}
+		pre.my_code {
+			font-size: 11px;
+		}
+	</style>
+	<script>
+		var myToolbarXML;
+		var myToolbarJSON;
+		function doOnLoad() {
+			myToolbarXML = new dhtmlXToolbarObject({
+				parent: "toolbarObjXML",
+				icons_path: "../common/imgs/",
+				xml: "../common/all_items/button_select.xml",
+				onload: function(){logUserData("myToolbarXML", this);}
+			});
+			myToolbarJSON = new dhtmlXToolbarObject({
+				parent: "toolbarObjJSON",
+				icons_path: "../common/imgs/",
+				json: "../common/all_items/button_select.json",
+				onload: function(){logUserData("myToolbarJSON", this);}
+			});
+		}
+		function myFunction(id) {
+			// console.log("myFunction called", arguments);
+		}
+		function logUserData(tbName, tbInst) {
+			var userData = {
+				my_data_name: tbInst.getUserData("new", "my_data_name"),
+				more_info: tbInst.getUserData("new", "more_info")
+			};
+			var listUserData = {
+				list_option_data: tbInst.getListOptionUserData("new", "new_text", "list_option_data"),
+				option_info: tbInst.getListOptionUserData("new", "new_text", "option_info")
+			};
+			// console.log(tbName, userData, listUserData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table border="0" cellspacing="0" cellpadding="0" class="my_table" width="100%">
+		<tr>
+			<td width="50%">from xml</td>
+			<td width="50%">from json</td>
+		</tr>
+		<tr>
+			<td><div style="height: 150px;"><div id="toolbarObjXML"></div></div></td>
+			<td><div style="height: 150px;"><div id="toolbarObjJSON"></div></div></td>
+		</tr>
+		<tr>
+			<td>
+<pre class="my_code">&lt;item
+	id           = "new"		// required, will generated automatically if empty
+	type         = "buttonSelect"	// required, item type
+	img          = "new.gif"	// optional, icon for enabled item
+	imgdis       = "new_dis.gif"	// optional, icon for disabled image
+	text         = "New"		// optional, item text
+	title        = "Tooltip here"	// optional, tooltip for item
+	enabled      = "false"		// optional, disable item
+	hidden       = "true"		// optional, hide item
+	action       = "function_name"	// optional, function name to exec on click
+	openAll      = "true"		// optional, open sublevel by clicking icon also
+	renderSelect = "false"		// optional, do not show selection in sublevel
+	mode         = "select"		// optional, working in select mode
+	width        = "70"		// optional, static button width, useful in select mode
+	maxOpen      = "5"		// optional, count of visible sublevel items
+	selected     = "subitem_id"	// optional, preselect item for "select" mode
+&gt;
+	// optional, userdata
+	&lt;userdata name="p1"&gt;value1&lt;/userdata&gt;
+	&lt;userdata name="p2"&gt;value2&lt;/userdata&gt;
+	
+	// list of subitems
+	&lt;item
+		id       = "new_text"		// required, will generated automatically if empty
+		type     = "button"		// required, item type for button
+		img      = "text_document.gif"	// optional, icon for both enabled/disabled item
+		text     = "Text Document"	// optional, item text
+		enabled  = "false"		// optional, disable item
+		action   = "function_name"	// optional, function name to exec on click
+	&gt;
+		&lt;itemText&gt;
+			Text Document		// optional, alternate text for item
+		&lt;/itemText&gt;
+	&lt;/item&gt;
+	&lt;item
+		id       = "new_text"		// required, will generated automatically if empty
+		type     = "separator"		// required, item type for separator
+	/&gt;
+&lt;/item&gt;
+</pre>
+			</td>
+			<td>
+<pre class="my_code">{
+	id:           "new"		// required, will generated automatically if empty
+	type:         "buttonSelect"	// required, item type
+	img:          "new.gif"		// optional, icon for enabled item
+	imgdis:       "new_dis.gif"	// optional, icon for disabled image
+	text:         "New"		// optional, item text
+	title:        "Tooltip here"	// optional, tooltip for item
+	enabled:      false		// optional, disable item
+	hidden:       true		// optional, hide item
+	action:       "function_name"	// optional, function name to exec on click
+	openAll:      true		// optional, open sublevel by clicking icon also
+	renderSelect: false		// optional, do not show selection in sublevel
+	mode:         "select"		// optional, working in select mode
+	width:        70		// optional, static button width, useful in select mode
+	maxOpen:      5			// optional, count of visible sublevel items
+	selected:     "subitem_id"	// optional, preselect item for "select" mode
+	userdata: {			// optional, userdata
+		p1: "value1"		// userdara, name:value pairs
+		p2: "value2"
+	}
+	options: [{				// list of subitems
+		id:      "new_text"		// required, will generated automatically if empty
+		type:    "button"		// required, item type for button
+		img:     "text_document.gif"	// optional, icon for both enabled/disabled item
+		text:    "Text Document"	// optional, item text
+		enabled: false			// optional, disable item
+		action:  "function_name"	// optional, function name to exec on click
+		userdata: {			// optional, userdata
+			p1: "value1"		// userdara, name:value pairs
+			p2: "value2"
+		}
+	},{
+		id:   "sep_id"		// required, will generated automatically if empty
+		type: "separator"	// required, item type for separator
+	}]
+	
+	// deprecated:
+	
+	img_disabled: "open_dis.gif"	// => imgdis:  "open_dis.gif"
+	disabled:     true		// => enabled: false
+	options: [{
+		type: "obj"		// => type: "button"
+		type: "sep"		// => type: "separator"
+	}]
+	
+}</pre>
+			</td>
+		</tr>
+	</table>
+	</pre>
+	<div>
+		The purpose of this demo is to show you list of available xml and json attributes in action
+	</div>
+</body>
+</html>

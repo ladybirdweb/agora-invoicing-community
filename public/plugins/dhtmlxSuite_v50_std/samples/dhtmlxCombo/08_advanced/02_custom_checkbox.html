@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom checkbox</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* custom cehckbox css */
+		/* copy css from chanekbox, change style name and bg-image */
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.my_css_1 {
+			background-image: url("../common/flags2/flag_blue.png");
+			background-position: center center;
+		}
+		div.dhxcombolist_material div.dhxcombo_option div.dhxcombo_checkbox.my_css_0 {
+			background-image: url("../common/flags2/flag_gray.png");
+			background-position: center center;
+		}
+	</style>
+	<script>
+		var myCombo, myCombo2;
+		function doOnLoad() {
+			// default checkbox
+			myCombo = new dhtmlXCombo("combo_zone", "combo", 230, "checkbox");
+			myCombo.load("../common/data2.json");
+			myCombo.enableFilteringMode(true);
+			// custom checkbox
+			myCombo2 = new dhtmlXCombo("combo_zone2", "combo2", 230, "my_checkbox");
+			myCombo2.load("../common/data2.json");
+			myCombo2.enableFilteringMode(true);
+		}
+		
+		// you can just change images, but here we will show how to create custom item based on checkbox,
+		// then you will able to use both checkboxes and custom checkboxes together on same page
+		// most functionality will inherited from default checkbox item
+		dhtmlXCombo.prototype.modes.my_checkbox = {
+			// just change css pref a bit, all other code will correct
+			// #state# will replaced with "1" for checked and "0" for not checked
+			image_css: "dhxcombo_checkbox my_css_#state#"
+		};
+		
+		// copy other code from default checkbox
+		dhtmlXComboExtend("my_checkbox", "checkbox");
+		
+		// setChecked/getChecked already exist, no more actions
+		
+	</script>
+
+</head>
+<body onload="doOnLoad();">
+	<h3>Default checkbox</h3>
+	<div id="combo_zone"></div>
+	<br>
+	<h3>Custom checkbox</h3>
+	<div id="combo_zone2"></div>
+</body>
+</html>

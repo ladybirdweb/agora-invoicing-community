@@ -1,0 +1,153 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+div.dhx_popup_skin_detect {
+	position: absolute;
+	display: block;
+	visibility: hidden;
+	left: -100px;
+	top: 0px;
+	width: 30px;
+	height: 10px;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	overflow: hidden;
+}
+div.dhx_popup_dhx_terrace {
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	position: absolute;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area {
+	position: relative;
+	margin: 10px;
+	padding: 5px 0px;
+	border: 1px solid #cccccc;
+	box-shadow: 0 0 5px rgba(127,127,127,0.35);
+	border-radius: 3px;
+	background-color: #f5f5f5;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area td.dhx_popup_td {
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	text-align: left;
+	line-height: normal;
+	padding: 7px 10px 6px 10px;
+	white-space: nowrap;
+	cursor: default;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area td.dhx_popup_td div.dhtmlxcalendar_dhx_terrace {
+	position: relative;
+	float: left;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area td.dhx_popup_td * {
+	white-space: normal;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhxnode td.dhx_popup_td {
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	-o-user-select: text;
+	user-select: text;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhxnode td.dhx_popup_td .dhtmlxcalendar_container.dhtmlxcalendar_skin_dhx_terrace {
+	position: relative !important;
+	box-shadow: none;
+	background-image: none;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhxnode td.dhx_popup_td div.dhxeditor_dhx_terrace {
+	border: 1px solid #cccccc;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhxnode td.dhx_popup_td div.dhtmlxcp_dhx_terrace div.dhxcp_g_area {
+	position: relative;
+	box-shadow: none;
+	border: 0px solid white;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhx_popup_sep td.dhx_popup_sep {
+	font-size: 1px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	position: relative;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhx_popup_sep td.dhx_popup_sep div.dhx_popup_sep {
+	position: relative;
+	font-size: 1px;
+	line-height: 1px;
+	height: 0px;
+	width: 100%;
+	border-top: 1px solid #dcdcdc;
+	overflow: hidden;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area td.dhx_popup_td:first-child {
+	padding-left: 23px;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area td.dhx_popup_td:last-child {
+	padding-right: 21px;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr:hover td.dhx_popup_td {
+	background-color: #fff3a1;
+	color: black;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area tr.dhxnode:hover td.dhx_popup_td {
+	background: none;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area.dhx_popup_area_ie td.dhx_popup_td.dhx_popup_td_single {
+	padding-left: 23px;
+	padding-right: 21px;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area.dhx_popup_area_ie td.dhx_popup_td.dhx_popup_td_first {
+	padding-left: 23px;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area.dhx_popup_area_ie td.dhx_popup_td.dhx_popup_td_last {
+	padding-right: 21px;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_area.dhx_popup_area_ie tr.tr_hover td.dhx_popup_td {
+	background-color: #fff3a1;
+	color: black;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_arrow {
+	position: absolute;
+	background-repeat: no-repeat;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_arrow.dhx_popup_arrow_bottom {
+	width: 19px;
+	height: 16px;
+	background-image: url("../imgs/dhxpopup_terrace/dhxpopup_arrow_bottom.gif");
+	background-position: top center;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_arrow.dhx_popup_arrow_top {
+	width: 19px;
+	height: 16px;
+	background-image: url("../imgs/dhxpopup_terrace/dhxpopup_arrow_top.gif");
+	background-position: bottom center;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_arrow.dhx_popup_arrow_right {
+	width: 16px;
+	height: 19px;
+	background-image: url("../imgs/dhxpopup_terrace/dhxpopup_arrow_right.gif");
+	background-position: center left;
+}
+div.dhx_popup_dhx_terrace div.dhx_popup_arrow.dhx_popup_arrow_left {
+	width: 16px;
+	height: 19px;
+	background-image: url("../imgs/dhxpopup_terrace/dhxpopup_arrow_left.gif");
+	background-position: center right;
+}

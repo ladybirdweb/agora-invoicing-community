@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Validation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		var vRules = {
+			NotEmpty: {rule: "NotEmpty", note: "NotEmpty validation is set"},
+			ValidInteger: {rule: "ValidInteger", note: "ValidInteger validation is set"},
+			CustomFunc: {rule: function(v){return (v=="yes"||v=="no");}, note: "custom func, type 'yes' or 'no'"}
+		};
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 155},
+				{type: "input", name: "inp", label: "Enter text here", value: "abc", note: {text: "validation not set"}},
+				{type: "button", value: "Validate", name: "validate"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.attachEvent("onButtonClick", function(id){
+				if (id == "validate") myForm.validate();
+			});
+		}
+		function byId(id) {
+			return document.getElementById(id);
+		}
+		function setValidation(id, rule) {
+			myForm.setValidation(id, vRules[rule].rule);
+			myForm.setNote(id, {text:vRules[rule].note});
+		}
+		function clearValidation(id) {
+			myForm.clearValidation(id);
+			myForm.setNote(id, {text:"validation not set"});
+			myForm.resetValidateCss();
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>
+		<input type="button" onclick="setValidation('inp', 'NotEmpty');" value="NotEmpty">
+		<input type="button" onclick="setValidation('inp', 'ValidInteger');" value="ValidInteger">
+		<input type="button" onclick="setValidation('inp', 'CustomFunc');" value="Custom Func">
+		<input type="button" onclick="clearValidation('inp');" value="Clear">
+	</div>
+	<div id="myForm" style="height:500px;margin-top: 50px;"></div>
+</body>
+</html>

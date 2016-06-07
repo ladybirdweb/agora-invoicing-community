@@ -1,0 +1,14 @@
+[
+	{id: 1, text: "Mark Twen", open: 1, userdata: {type: "folder"}, items: [
+		{id: 3, text: "The Adventures of Tom Sawyer", userdata: {type: "file"}},
+		{id: 4, text: "The Prince and the Pauper", userdata: {type: "file"}},
+		{id: 5, text: "Adventures of Huckleberry Finn", userdata: {type: "file"}},
+		{id: 6, text: "Tom Sawyer Abroad", userdata: {type: "file"}},
+		{id: 7, text: "Tom Sawyer Detective", userdata: {type: "file"}},
+		{id: 8, text: "Personal Recollections of Joan of Arc", userdata: {type: "file"}}
+	]},
+	{id: 2, text: "Misc", open: 1, userdata: {type: "folder"}, items: [
+		{id: 9, text: "Privacy and Terms.pdf", userdata: {type: "file"}},
+		{id: 10, text: "Licence Agreement.pdf", userdata: {type: "file"}}
+	]}
+]

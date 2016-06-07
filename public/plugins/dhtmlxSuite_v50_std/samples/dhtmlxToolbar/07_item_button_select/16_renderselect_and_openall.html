@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>renderSelect and openAll options</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var sel2;
+		var myToolbar;
+		function doOnLoad() {
+			sel2 = document.getElementById("sel2");
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar_buttonselect2.xml"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="toolbarObj"></div>
+	<div style="margin-top: 200px;"></div>
+	<b>renderSelect</b> xml attibute, set to <b>false</b> to prevent list options selecting (see print button)
+	<br>
+	<b>openAll</b> xml attibute, set to <b>true</b> to open list by clicking the whole button (see print button)
+</body>
+</html>

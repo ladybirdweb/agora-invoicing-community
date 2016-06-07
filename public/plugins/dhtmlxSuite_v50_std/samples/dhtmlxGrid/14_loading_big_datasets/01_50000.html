@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>50,000 records in grid</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		var timeoutHnd;
+		var flAuto = false;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Name,Index,Code");
+			myGrid.setInitWidths("150,150,*");
+			myGrid.setColAlign("left,left,right");
+			myGrid.setColSorting("server,na,server");
+			myGrid.setColTypes("ro,ro,ro");
+			//available in pro version only
+			myGrid.attachEvent("onBeforeSorting",customColumnSort);
+			myGrid.init();
+			myGrid.enableSmartRendering(true);
+			//available in Pro Edition only
+			if (myGrid.setColspan) {
+			   	myGrid.attachEvent("onXLE",setCounter);
+			} else {
+				//code below written to support standard edtiton
+				//it written especially for current sample and may not work
+				//in other cases, DON'T USE it if you have pro version
+				myGrid.sortField_old=myGrid.sortField;
+				myGrid.sortField=function(){
+					myGrid.setColSorting("str,str,str");
+					if (customColumnSort(arguments[0])) myGrid.sortField_old.apply(this,arguments);
+				};
+				myGrid.sortRows=function(col,type,order){}
+			}
+			myGrid.load("php/50000_load_grid.php?un="+Date.parse(new Date()));
+			showLoading()
+		}
+		function setCounter(){
+			var span = document.getElementById("recfound");
+			span.style.color = "";
+			span.innerHTML = myGrid.getRowsNum();
+		}
+		function showLoading(){
+			var span = document.getElementById("recfound");
+			if(!!myGrid.setColspan){
+				span.innerHTML = "<i>available in Professional Edition of dhtmlxGrid</i>"
+				return;
+			}
+			span.style.color = "red";
+			span.innerHTML = "loading...";
+		}
+		function doSearch(ev){
+			if(!flAuto) return;
+			var elem = ev.target||ev.srcElement;
+			if(timeoutHnd) clearTimeout(timeoutHnd);
+			timeoutHnd = setTimeout(reloadGrid,500)
+		}
+		function reloadGrid(){
+			var nm_mask = document.getElementById("search_nm").value
+			var cd_mask = document.getElementById("search_cd").value
+			myGrid.clearAll();
+			myGrid.load("php/50000_load_grid.php?nm_mask="+nm_mask+"&cd_mask="+cd_mask+"&orderBy="+window.s_col+"&direction="+window.a_direction);
+			if (window.a_direction) myGrid.setSortImgState(true,window.s_col,window.a_direction);
+			showLoading()
+		}
+		function enableAutosubmit(state){
+			flAuto = state;
+			document.getElementById("submitButton").disabled = state
+		}
+		function customColumnSort(ind){
+			if (ind==1) {
+				alert("Table can't be sorted by this column.");
+				if (window.s_col)
+					myGrid.setSortImgState(true,window.s_col,window.a_direction);
+				return false;
+			}
+			var a_state = myGrid.getSortingState();
+			window.s_col=ind;
+			window.a_direction = ((a_state[1] == "des")?"asc":"des");
+            reloadGrid();
+			return false;
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Working with big datasets</h1>
+	<p style="font-size:14px;">
+		This sample demonstrates how dhtmlxGrid works with rather big amount of data (50,000 records).<br>
+		We have put 50,000 records into a table in a Mysql database filled with random words. dhtmlxGrid using Ajax loads   visible records only.<br>
+		When user is scrolling, dhtmlxGrid automatically loads new records from database and displays them. When user is scrolling back, records that have been already loaded are taken from cache.<br>
+		If user wants to make a search (just enter some word into input fields), grid sends search criteria to server and loads just corresponding to entered criteria data.<br>
+		<div style="color:red;text-decoration:underline;margin-top:5px;">Important: sample is working with real data - <b>50.000</b> records, but this is not the limit! Enjoy its performance and imagine how it could be used in your product.</div>
+	</p>
+	<h3>Search By:</h3>
+	<div>
+		Name<br>
+		<input type="text" id="search_nm" onKeyDown="doSearch(arguments[0]||event)">
+	</div>
+	<div>
+		Code<br>
+		<input type="text" id="search_cd" onKeyDown="doSearch(arguments[0]||event)">
+		<button onClick="reloadGrid()" id="submitButton" style="margin-left:30px;">Search</button>
+		<input type="checkbox" id="autosearch" onClick="enableAutosubmit(this.checked)"> Enable Autosearch
+	</div>
+	<div id="gridbox" style="width:650px;height:375px;margin-top:20px;margin-bottom:10px;"></div>
+	<div>Records found: <span id="recfound"></span></div>
+</body>
+</html>

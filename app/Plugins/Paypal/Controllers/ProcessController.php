@@ -6,28 +6,28 @@ use App\Http\Controllers\Controller;
 use App\Plugins\Paypal\Model\Paypal;
 use Illuminate\Http\Request;
 
-class ProcessController extends Controller
-{
+class ProcessController extends Controller {
+
     protected $paypal;
 
-    public function __construct()
-    {
+    public function __construct() {
         $paypal = new Paypal();
         $this->paypal = $paypal;
     }
 
-    public function PassToPayment($requests)
-    {
+    public function PassToPayment($requests) {
         try {
             //dd($requests);
             $request = $requests['request'];
             $order = $requests['order'];
             $cart = $requests['cart'];
-            //dd($order);
+            //dd($request);
             if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
             } else {
                 $total = $request->input('cost');
+                \Cart::clear();
+                \Session::set('invoiceid', $order->id);
             }
 
             if ($request->input('payment_gateway') == 'paypal') {
@@ -39,7 +39,8 @@ class ProcessController extends Controller
                     throw new \Exception('Paypal Fields not given');
                 }
                 $data = $this->getFields($order);
-                $this->postForm($data);
+                //dd($data);
+                $this->middlePage($data);
             }
         } catch (\Exception $ex) {
             dd($ex);
@@ -47,8 +48,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function getFields($invoice)
-    {
+    public function getFields($invoice) {
         try {
             //dd($invoice);
             $item = [];
@@ -74,23 +74,28 @@ class ProcessController extends Controller
                 $city = $user->town;
                 $zip = $user->zip;
                 $email = $user->email;
+                $product_name = "";
+                if ($invoice->invoiceItem()->first()) {
+                    $product_name = str_replace(' ', '-', $invoice->invoiceItem()->first()->product_name);
+                }
 
                 $data = [
-                    'business'      => $business,
-                    'cmd'           => $cmd,
-                    'return'        => $return,
+                    'business' => $business,
+                    'cmd' => $cmd,
+                    'return' => $return,
                     'cancel_return' => $cancel_return,
-                    'notify_url'    => $notify_url,
-                    'image_url'     => $image_url,
-                    'rm'            => $rm,
+                    'notify_url' => $notify_url,
+                    'image_url' => $image_url,
+                    'rm' => $rm,
                     'currency_code' => 'USD', //$currency_code,
-                    'invoice'       => $invoice_id,
-                    'first_name'    => $first_name,
-                    'last_name'     => $last_name,
-                    'address1'      => $address1,
-                    'city'          => $city,
-                    'zip'           => $zip,
-                    'email'         => $email,
+                    'invoice' => $invoice_id,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'address1' => $address1,
+                    'city' => $city,
+                    'zip' => $zip,
+                    'email' => $email,
+                    'item_name' => $product_name,
                 ];
 
                 $items = $invoice->invoiceItem()->get()->toArray();
@@ -100,7 +105,7 @@ class ProcessController extends Controller
                         $n = $i + 1;
                         $item = [
                             "item_name_$n" => $items[$i]['product_name'],
-                            "quantity_$n"  => $items[$i]['quantity'],
+                            "quantity_$n" => $items[$i]['quantity'],
                         ];
                     }
                     $data = array_merge($data, $item);
@@ -116,8 +121,7 @@ class ProcessController extends Controller
         }
     }
 
-    public function postCurl($data)
-    {
+    public function postCurl($data) {
         try {
             $config = $this->paypal->where('id', 1)->first();
             if (!$config) {
@@ -141,16 +145,13 @@ class ProcessController extends Controller
         }
     }
 
-    public function postForm($data)
-    {
+    public function postForm($data) {
         try {
             $config = $this->paypal->where('id', 1)->first();
             if (!$config) {
                 throw new \Exception('Paypal Fields not given');
             }
             $url = $config->paypal_url;
-            $gif_path = asset('dist/gif/gifloader.gif');
-            echo "<img src=$gif_path>";
             echo "<form action=$url id=form name=redirect method=post>";
             foreach ($data as $key => $value) {
                 echo "<input type=hidden name=$key value=$value>";
@@ -163,18 +164,56 @@ class ProcessController extends Controller
         }
     }
 
-    public function response(Request $request)
-    {
+    public function middlePage($data) {
+        try {
+
+            $path = app_path() . '/Plugins/Paypal/views';
+            \View::addNamespace('plugins', $path);
+            echo view('plugins::middle-page', compact('data'));
+        } catch (\Exception $ex) {
+            dd($ex);
+        }
+    }
+
+    public function response(Request $request) {
+        $url = "checkout";
+        if (\Session::has('invoiceid')) {
+            $id = \Session::get('invoiceid');
+            $url = 'paynow/' . $id;
+        }
+        if (\Cart::getContent()->count() > 0) {
+            \Cart::clear();
+        }
+        $this->success($id);
+        \Session::forget('invoiceid');
+        return redirect($url)->with('success', 'Thank you for your order. Your transaction is successful. We will be processing your order soon.');
+    }
+
+    public function cancel(Request $request) {
+        $url = "checkout";
+        if (\Session::has('invoiceid')) {
+            $id = \Session::get('invoiceid');
+            $url = 'paynow/' . $id;
+        }
+        \Session::forget('invoiceid');
+        return redirect($url)->with('fails', 'Thank you for your order. However,the transaction has been declined. Try again.');
+    }
+
+    public function notify(Request $request) {
         dd($request);
     }
 
-    public function cancel(Request $request)
-    {
-        return redirect('home')->with('fails', 'Your transaction cancelled');
+    public function success($invoiceid) {
+        $control = new \App\Http\Controllers\Order\RenewController();
+        if ($control->checkRenew() == false) {
+            $invoice = new \App\Model\Order\Invoice();
+            $invoice = $invoice->findOrFail($invoiceid);
+            $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
+            $checkout_controller->checkoutAction($invoice);
+        } else {
+            $control->successRenew();
+        }
+        \Cart::clear();
     }
 
-    public function notify(Request $request)
-    {
-        dd($request);
-    }
 }

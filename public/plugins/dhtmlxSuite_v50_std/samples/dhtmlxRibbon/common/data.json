@@ -1,0 +1,50 @@
+{
+	"tabs" : [
+		{
+			"id" : "tab_1",
+			"text" : "tab 1",
+			"active" : true,
+			"items" : [
+				{ 
+					"type":"block", "text":"File", "list":[
+						{"type":"button", "text":"New", "isbig" : true, "img" : "48/new.gif"},
+						{"type":"buttonSelect", "text":"open" , "img" : "18/open.gif"},
+						{"type":"button", "text":"save", "img" : "18/save.gif" }
+					]
+				},
+				{
+					"type":"block", "text":"Clipboard", "list":[
+						{"type":"button", "text":"paste", "img" : "48/paste.gif", "isbig" : true },
+						{"type":"button", "text":"copy" , "img" : "18/copy.gif"},
+						{"type":"button", "text":"paste" , "img" : "18/paste.gif"},
+						{"type":"button", "text":"cut" , "img" : "18/cut.gif"}
+					]
+				},
+				{
+					"type":"block", "list":[
+						{"type":"button", "text":"redo" , "img" : "48/redo.gif", "isbig" : true},
+						{"type":"button", "text":"undo", "img" : "48/undo.gif", "isbig" : true }
+					]
+				}
+			]
+		},
+		{
+			"id" : "tab_2",
+			"text" : "tab 2",
+			"items" : [
+				{
+					"type":"block", "text":"Block 3", "mode":"rows", "list":[
+						{"type":"button", "text":"copy" , "img" : "18/copy.gif"},
+						{"type":"button", "text":"cut", "img" : "18/cut.gif" },
+						{"type":"button", "text":"new" , "img" : "18/new.gif"},
+						{"type" : "newLevel"},
+						{"type":"button", "text":"open" , "img" : "18/open.gif"},
+						{"type":"button", "text":"paste", "img" : "18/paste.gif" },
+						{"type" : "newLevel"},
+						{"type":"button", "text":"print" , "img" : "18/print.gif"}
+					]
+				}
+			]
+		}
+	]
+}

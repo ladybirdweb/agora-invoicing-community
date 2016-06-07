@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="120" type="ro" align="left" sort="str">To</column>
+		<column width="*" type="ro" align="left" sort="str">Subject</column>
+		<column width="90" type="ro" align="left" sort="date">Date</column>
+	</head>
+	<row id="1">
+		<cell>Troy Suarez</cell>
+		<cell>RE: Important travel information</cell>
+		<cell>2015-03-08</cell>
+	</row>
+	<row id="2">
+		<cell>Gregory Foster</cell>
+		<cell>RE: Summer training camp</cell>
+		<cell>2015-02-20</cell>
+	</row>
+</rows>

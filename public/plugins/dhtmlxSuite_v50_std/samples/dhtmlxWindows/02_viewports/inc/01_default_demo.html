@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Default viewport demo</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/dhtmlx.css"/>
+	<script src="../../../../codebase/dhtmlx.js"></script>
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+	<script>
+		var dhxWins, w1;
+		function doOnLoad() {
+			dhxWins = new dhtmlXWindows();
+			w1 = dhxWins.createWindow("w1", 260, 45, 320, 240);
+			w1.setText("dhtmlxWindow");
+			w1.button("close").disable();
+			w1.attachObject("obj");
+			
+			w2 = dhxWins.createWindow("w2", 360, 95, 320, 240);
+			w3 = dhxWins.createWindow("w3", 460, 145, 320, 240);
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div style="margin:12px 20px;">
+		for such init type the following css is required<br>
+<pre style="background-color:#fafafb;">
+<font color="#000000">html<font color="#000000"><strong>,</strong></font> body <font color="#000000"><strong>{</strong></font>
+	<font color="#009966"><strong>width</strong></font><font color="#000000"><strong>:</strong></font> <font color="#ff0000">100%</font><font color="#000000"><strong>;</strong></font>
+	<font color="#009966"><strong>height</strong></font><font color="#000000"><strong>:</strong></font> <font color="#ff0000">100%</font><font color="#000000"><strong>;</strong></font>
+	<font color="#009966"><strong>margin</strong></font><font color="#000000"><strong>:</strong></font> <font color="#ff0000">0px</font><font color="#000000"><strong>;</strong></font>
+	<font color="#009966"><strong>overflow</strong></font><font color="#000000"><strong>:</strong></font> <font color="#0099ff"><strong>hidden</strong></font><font color="#000000"><strong>;</strong></font>
+<font color="#000000"><strong>}</strong></font></font></pre>
+	</div>
+	<div id="obj" style="font-family: Tahoma; font-size: 11px; width: 100%; height:100%; overflow: auto;">
+		<div style="margin: 4px;">
+		The Dead Zone is a 1983 horror film/Thriller film based on the Stephen King novel of the same name. Directed by David Cronenberg, the film stars Christopher Walken, Tom Skerritt, Herbert Lom, Brooke Adams, and Colleen Dewhurst. The plot revolves around a schoolteacher, Johnny Smith (Walken), who awakens from a coma to find he has psychic powers.
+		<br><br>
+		Johnny Smith (Walken) is a young New England schoolteacher in love with his colleague Sarah (Adams) when he is involved in a serious car accident that sends him into a coma. He awakes under the care of neurologist Dr. Weizak (Lom) and counts himself fortunate when he notes no casts, bandages or visible signs of injuries on his body. However, the awakening turns rude when he is told that five years have passed since he last knew consciousness: his girlfriend has long since married and had a child.
+		<br><br>
+		Johnny's transition back to life is made rougher when he discovers that he has the ability to learn a person's secrets (past, present, future) through making physical contact with the person.
+		<br><br>
+		After reluctantly using his ability to help a local sheriff (Skerritt) solve a series of brutal rape-murders, Johnny attempts to resume his profession, as a private tutor. However, his ability continues to haunt him, especially when he foresees that a rising local political star, Greg Stillson (Sheen), will someday be elected President of the United States, with disastrous consequences - in John's vision, Stillson starts a nuclear holocaust, presumably destroying all of civilization.
+		<br><br>
+		Johnny decides to avert this possible future by shooting Stillson at a meeting. He misses and winds up mortally wounded, but he has nonetheless accomplished his mission. During the shooting, the terrified Stillson grabbed a baby to use as a human shield. A photographer covering the meeting got a picture of this cowardly act and ran out before Stillson's security could stop him. Stillson goes to the dying Johnny, demanding to know who sent him. Johnny touches Stillson, and receives one final vision -- that of a haggard Stillson, ruined as a result of the scandal, killing himself. "You're finished," he tells the politician.
+		</div>
+	</div>
+</body>
+</html>

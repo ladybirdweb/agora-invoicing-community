@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxChart</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+	</style>
+	<script>
+		var dhxWins, w1, myChart;
+		
+		function doOnLoad(){
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			w1 = dhxWins.createWindow("w1", 20, 30, 400, 280);
+			w1.setText("dhtmlxChart");
+			w1.button("close").disable();
+			//
+			myChart = w1.attachChart({
+				view: "pie",
+				value: "#sales#",
+				color: "#color#",
+				pieInnerText: "#sales#",
+				legend: {
+					width: 75,
+					align: "right",
+					valign: "middle",
+					template: "#month#"
+				}
+			});
+			myChart.parse([
+				{sales: "20", month: "Jan", color: "#ee3639"},
+				{sales: "30", month: "Feb", color: "#ee9e36"},
+				{sales: "50", month: "Mar", color: "#eeea36"},
+				{sales: "40", month: "Apr", color: "#a9ee36"},
+				{sales: "70", month: "May", color: "#36d3ee"},
+				{sales: "80", month: "Jun", color: "#367fee"},
+				{sales: "60", month: "Jul", color: "#9b36ee"}
+			], "json");
+		}
+		
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = myChart = null;
+			}
+		}
+		
+	</script>
+<html>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+</body>
+</html>

@@ -55,8 +55,12 @@ active
                             {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                         </div>
-
+                        <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                        <label class="required">Country code</label>
+                        {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
+                    </div>
                         <div class="form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
+                            
                             <!-- mobile -->
                             {!! Form::label('mobile',Lang::get('message.mobile')) !!}
                             {!! Form::text('mobile',null,['class' => 'form-control']) !!}

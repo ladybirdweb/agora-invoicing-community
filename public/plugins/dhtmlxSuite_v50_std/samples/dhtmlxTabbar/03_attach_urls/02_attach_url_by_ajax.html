@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Load data in tabbar by ajax</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* attached */
+		h3.some_header {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+		div.some_text {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-size: 14px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+	</style>
+	<script>
+		var myTabbar;
+		function doOnLoad() {
+			
+			myTabbar = new dhtmlXTabBar("my_tabbar");
+			
+			myTabbar.addTab("a1", "Tab 1-1", null, null, true);
+			myTabbar.addTab("a2", "Tab 1-2");
+			myTabbar.addTab("a3", "Tab 1-3");
+			
+			myTabbar.tabs("a1").attachURL("../common/test_page_1.html", true);
+			myTabbar.tabs("a2").attachURL("../common/test_page_2.html", true, true); // post w/o params
+			myTabbar.tabs("a3").attachURL("../common/test_page_3.html", true, {param_a: "value_a", param_b: "value_b"}); // post with params
+			
+		}
+	</script>
+	
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:395px; height:390px;"/>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+ 	<row id="1">
+		<cell>-1500</cell>
+		<cell>12.99</cell>
+		<cell>05/01-1998</cell>
+	</row>
+	<row id="2">
+		<cell>1000</cell>
+		<cell>0</cell>
+		<cell>01/01-2000</cell>
+	</row>
+	<row id="3" selected="1">
+		<cell>-200</cell>
+		<cell>7.99</cell>
+		<cell>12/01-2001</cell>
+	</row>
+	<row id="4">
+		<cell>350</cell>
+		<cell>11.10</cell>
+		<cell>01/01-1992</cell>
+	</row>
+	<row id="5">
+		<cell>700</cell>
+		<cell>7.70</cell>
+		<cell>01/01-2003</cell>
+	</row>
+	<row id="6">
+		<cell>-1200</cell>
+		<cell>0</cell>
+		<cell>30/10-1999</cell>
+	</row>
+	<row id="7">
+		<cell>1500</cell>
+		<cell>12.99</cell>
+		<cell>01/01-2005</cell>
+	</row>
+	<row id="8">
+		<cell>500</cell>
+		<cell>9.70</cell>
+		<cell>15/10-2001</cell>
+	</row>
+	<row id="9">
+		<cell>400</cell>
+		<cell>0</cell>
+		<cell>12/01-1991</cell>
+	</row>
+</rows>

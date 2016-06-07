@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<data>
+	<item id="1" name="Classes" type="dir"/>
+	<item id="2" name="Downloads" type="dir"/>
+	<item id="3" name="Java" type="dir"/>
+	<item id="4" name="My Work" type="dir"/>
+	<item id="5" name="Pictures" type="dir"/>
+	<item id="6" name="PHP" type="dir"/>
+	<item id="7" name="Apple.jpg" type="file"/>
+	<item id="8" name="My working place.jpg" type="file"/>
+	<item id="9" name="Price List 1.xls" type="file"/>
+	<item id="10" name="Price List 2.xls" type="file"/>
+	<item id="11" name="Favorite songs.mpu" type="file"/>
+	<item id="12" name="Letter to grandma.doc" type="file"/>
+	<item id="13" name="tdisk.ddk" type="file"/>
+	<item id="14" name="SkyForce.sis" type="file"/>
+	<item id="15" name="TimeTrack.sis" type="file"/>
+	<item id="16" name="DEPMGR.dll" type="file"/>
+	<item id="17" name="EULA.txt" type="file"/>
+</data>

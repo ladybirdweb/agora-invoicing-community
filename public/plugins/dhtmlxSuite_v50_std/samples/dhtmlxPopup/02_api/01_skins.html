@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myToolbar;
+		var myPop;
+		
+		var iconsPath = {
+			dhx_skyblue: "imgs",
+			dhx_web: "icons_web",
+			dhx_terrace: "icons_terrace",
+			material: "icons_material"
+		};
+		
+		function doOnLoad(skin) {
+			
+			if (myToolbar != null) {
+				myPop.unload();
+				myToolbar.unload();
+			}
+			
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "myToolbar",
+				icons_path: "../../dhtmlxToolbar/common/"+iconsPath[skin]+"/",
+				skin: skin,
+				xml: "../../dhtmlxToolbar/common/dhxtoolbar_button.xml",
+				onload: function() {
+					
+					myToolbar.addSeparator();
+					myToolbar.addButton("workbut", null, "Select your car", "print.gif");
+					
+					myPop = new dhtmlXPopup({ toolbar: myToolbar, id: "workbut"});
+					
+					myPop.attachList("name,price", [
+						{id: 1, name: "Audi A5 Coupe", price: "&euro; 31,550"},
+						{id: 2, name: "Audi A5 Sportback", price: "&euro; 30,990"},
+						myPop.separator,
+						{id: 3, name: "Audi A6", price: "&euro; 30,990"},
+						{id: 4, name: "Audi A6 Avant", price: "&euro; 37,450"},
+						{id: 5, name: "Audi A6 Quattro", price: "&euro; 55,360"},
+						myPop.separator,
+						{id: 6, name: "Audi TT Coupe", price: "&euro; 29,830"},
+						{id: 7, name: "Audi TT RS Coupe", price: "&euro; 59,800"}
+					]);
+					
+					myPop.attachEvent("onClick", function(id){
+						myToolbar.setItemText("workbut",myPop.getItemData(id).name);
+					});
+				}
+			});
+			
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad('material');">
+	<div id="myToolbar"></div>
+	<br><br><Br>
+	<input type="button" value="dhx_skyblue" onclick="doOnLoad('dhx_skyblue');">
+	<input type="button" value="dhx_web" onclick="doOnLoad('dhx_web');">
+	<input type="button" value="dhx_terrace" onclick="doOnLoad('dhx_terrace');">
+	<input type="button" value="material" onclick="doOnLoad('material');">
+</body>
+</html>

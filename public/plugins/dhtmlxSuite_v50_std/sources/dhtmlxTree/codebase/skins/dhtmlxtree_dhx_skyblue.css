@@ -1,0 +1,229 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_skyblue
+	include extra file: skins/dhx_skyblue.less
+*/
+
+.defaultTreeTable {
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+}
+.containerTableStyle {
+	overflow: auto;
+	-webkit-overflow-scrolling: touch;
+	position: relative;
+	top: 0;
+	font-size: 12px;
+	-khtml-user-select: none;
+}
+.containerTableStyleRTL span {
+	direction: rtl;
+	unicode-bidi: bidi-override;
+}
+.containerTableStyleRTL {
+	direction: rtl;
+	overflow: auto;
+	position: relative;
+	top: 0;
+	font-size: 12px;
+}
+.standartTreeRow {
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	-moz-user-select: none;
+}
+.selectedTreeRow {
+	background-color: navy;
+	color: white;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	-moz-user-select: none;
+}
+.dragAndDropRow {
+	background-color: navy;
+	color: white;
+}
+.standartTreeRow_lor {
+	text-decoration: underline;
+	background-color: #ffffff;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	-moz-user-select: none;
+}
+.selectedTreeRow_lor {
+	text-decoration: underline;
+	background-color: navy;
+	color: white;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	-moz-user-select: none;
+}
+.standartTreeImage {
+	height: 24px;
+	overflow: hidden;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	font-size: 1px;
+}
+.standartTreeImage img {
+	width: 18px;
+	height: 24px;
+	background-position: center center;
+	background-repeat: no-repeat;
+	border: 0;
+	padding: 0;
+	margin: 0;
+	font-size: 1px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.hiddenRow {
+	width: 1px;
+	overflow: hidden;
+}
+.dragSpanDiv,
+.dragSpanDiv td {
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	background-color: #ffffff;
+	z-index: 999;
+}
+.a_dhx_hidden_input {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	width: 1px;
+	height: 1px;
+	border: none;
+	background: none;
+}
+.a_dhx_hidden_input {
+	position: absolute;
+	top: -1px;
+	left: -1px;
+	width: 1px;
+	height: 1px;
+	border: none;
+	background: none;
+}
+.selectionBox {
+	background-color: #FFFFCC;
+}
+.selectionBar {
+	top: 0;
+	background-color: black;
+	position: absolute;
+	overflow: hidden;
+	height: 2px;
+	z-index: 11;
+}
+.intreeeditRow {
+	font-size: 8pt;
+	height: 16px;
+	border: 1px solid silver;
+	padding: 0;
+	margin: 0;
+	margin-left: 4px;
+	-moz-user-select: text;
+	-khtml-user-select: text;
+}
+.dhx_tree_textSign {
+	font-size: 8pt;
+	font-family: monospace;
+	width: 21px;
+	color: black;
+	padding: 0px;
+	margin: 0px;
+	cursor: pointer;
+	text-align: center;
+}
+.dhx_tree_opacity {
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhx_bg_img_fix {
+	width: 18px;
+	height: 24px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-position-x: center;
+	background-position-y: center;
+}
+.dhxtree_dhx_skyblue {
+	background-color: #ffffff;
+	color: black;
+}
+*html .dhxtree_dhx_skyblue .standartTreeRow,
+*html .dhxtree_dhx_skyblue .standartTreeRow_lor {
+	border-right: 0px solid red;
+	border-left: 0px solid red;
+}
+*html .dhxtree_dhx_skyblue span.standartTreeRow,
+*html .dhxtree_dhx_skyblue span.standartTreeRow_lor {
+	margin-left: 1px;
+}
+.dhxtree_dhx_skyblue .standartTreeRow,
+.dhxtree_dhx_skyblue .standartTreeRow_lor {
+	border-right: 1px solid transparent;
+	border-left: 1px solid transparent;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	overflow: hidden;
+	padding: 0px 0px 0px 0px;
+}
+.dhxtree_dhx_skyblue .selectedTreeRow_lor,
+.dhxtree_dhx_skyblue .selectedTreeRow {
+	background-color: #b5deff;
+	background-repeat: repeat-x;
+	border: 1px solid #a1ceed;
+	color: black;
+	line-height: 17px;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	overflow: hidden;
+}
+html > body .dhxtree_dhx_skyblue .selectedTreeRow,
+html > body .dhxtree_dhx_skyblue .selectedTreeRow_lor {
+	padding: 1px 0px 1px 0px;
+	line-height: normal;
+	*display: inline-block;
+	height: 13px;
+}
+body:nth-of-type(1) .dhxtree_dhx_skyblue span.selectedTreeRow,
+body:nth-of-type(1) .dhxtree_dhx_skyblue span.selectedTreeRow_lor {
+	padding: 1px 0px 1px 0px;
+	padding-top: 0px;
+	box-sizing: border-box;
+	line-height: 12px;
+	height: 13px;
+}
+.dhxtree_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 10px;
+	height: 10px;
+	overflow: hidden;
+}

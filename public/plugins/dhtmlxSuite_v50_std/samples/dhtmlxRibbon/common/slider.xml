@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ribbon>
+	<item type='block' mode='rows' text='Block 1'>
+		<item type='button' text='new' img="18/new.gif" />
+		<item id="slider_1" type='slider' text='slider 1' size="90" />
+		<item type='newLevel' />
+		<item type='group' >
+			<item type='button' text='open' img="18/open.gif" />
+			<item id="slider_2" type='slider' text='slider 2' size="50" />
+		</item>
+	</item>
+	
+	<item type="block" text='Block 2' >
+		<item id="slider_3" type='slider' text='slider 3' size="150" />
+		<item id="slider_4" type='slider' size="70" isbig="true" vertical="true" />
+	</item>
+</ribbon>

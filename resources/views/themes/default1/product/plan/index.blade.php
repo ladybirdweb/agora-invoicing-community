@@ -49,7 +49,7 @@
             </div><br><br>
             <div class="col-md-12">
                 {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Subscription','Price','Expiry','Action')
+                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Months','Product','Action')
                 ->setUrl('get-plans') 
                 ->render() !!}
                 <script>

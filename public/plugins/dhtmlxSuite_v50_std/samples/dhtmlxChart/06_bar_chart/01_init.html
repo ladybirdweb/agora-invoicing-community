@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Initialization</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart1, myBarChart2;
+		function doOnLoad() {
+			myBarChart1 =  new dhtmlXChart({
+				view:"bar",
+				container:"chart1",
+				value:"#sales#",
+				label:"'#year#",
+				barWidth:35,
+				radius:0,
+				gradient:"rising"
+			});
+			myBarChart1.parse(dataset,"json");
+			myBarChart1.attachEvent("onItemClick",function(id){alert(id)});
+			myBarChart2 =  new dhtmlXChart({
+				view:"bar",
+				container:"chart2",
+				value:"#sales#",
+				label:"'#year#",
+				color:"#66ccff",
+				gradient:"rising",
+				barWidth:25,
+				padding:{
+					top:50,
+					bottom:0,
+					right:50,
+					left:50
+				}
+			});
+			myBarChart2.parse(dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Initialization</h1>
+	<table>
+		<tr>
+			<td></td>
+			<td></td>
+		</tr>
+		<tr>
+			<td><div id="chart1" style="width:450px;height:200px;border:1px solid #c0c0c0;"></div></td>
+			<td><div id="chart2" style="width:450px;height:200px;border:1px solid #c0c0c0;"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

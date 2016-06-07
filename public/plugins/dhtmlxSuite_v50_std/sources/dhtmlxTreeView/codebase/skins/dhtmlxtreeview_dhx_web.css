@@ -1,0 +1,245 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_web
+	include extra file: skins/dhx_web.less
+*/
+
+.dhxtreeview_dhx_web {
+	position: relative;
+	overflow: hidden;
+	background-color: #ffffff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont {
+	position: absolute;
+	overflow: auto;
+	background-color: #ffffff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area {
+	position: relative;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_kids_cont {
+	position: relative;
+	-webkit-transition: opacity 0.1s;
+	-moz-transition: opacity 0.1s;
+	-ms-transition: opacity 0.1s;
+	-o-transition: opacity 0.1s;
+	transition: opacity 0.1s;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item {
+	position: relative;
+	white-space: nowrap;
+	cursor: default;
+	color: #000000;
+	font-size: 12px;
+	font-family: Tahoma, Helvetica;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text {
+	position: relative;
+	padding: 0px;
+	margin: 0px;
+	height: 32px;
+	line-height: 31px;
+	color: inherit;
+	vertical-align: middle;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_label {
+	position: absolute;
+	top: 0px;
+	padding: 0px 10px 0px 4px;
+	height: 32px;
+	line-height: inherit;
+	font: inherit;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected,
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected:hover {
+	background-color: #85d3ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected div.dhxtreeview_item_label,
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected:hover div.dhxtreeview_item_label {
+	background-color: #85d3ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text:hover {
+	background-color: #d5eefc;
+	border-color: #d5eefc;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text:hover div.dhxtreeview_item_label {
+	background-color: #d5eefc;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon {
+	position: absolute;
+	width: 22px;
+	top: 0px;
+	height: 32px;
+	line-height: 30px;
+	text-align: center;
+	font-size: 14px;
+	color: #333333;
+	overflow: hidden;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 22px;
+	height: 32px;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_plus {
+	background-image: url(../imgs/dhxtreeview_web/icon_plus.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_minus {
+	background-image: url(../imgs/dhxtreeview_web/icon_minus.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_file {
+	background-image: url(../imgs/dhxtreeview_web/icon_file.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_folder_closed {
+	background-image: url(../imgs/dhxtreeview_web/icon_folder_closed.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_folder_opened {
+	background-image: url(../imgs/dhxtreeview_web/icon_folder_opened.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_loading {
+	background-image: url(../imgs/dhxtreeview_web/loading.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_chbx_0 {
+	background-image: url(../imgs/dhxtreeview_web/icon_chbx_0.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_chbx_1 {
+	background-image: url(../imgs/dhxtreeview_web/icon_chbx_1.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_chbx_dis_0 {
+	background-image: url(../imgs/dhxtreeview_web/icon_chbx_dis_0.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.dhxtreeview_icon.dhxtreeview_icon_chbx_dis_1 {
+	background-image: url(../imgs/dhxtreeview_web/icon_chbx_dis_1.gif);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-folder-open-o,
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-folder-o {
+	position: absolute;
+	line-height: 32px;
+	left: 4px;
+	width: 10px;
+	text-align: left;
+	overflow: visible;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-square-o,
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-check-square-o {
+	position: absolute;
+	line-height: 32px;
+	left: 4px;
+	width: 10px;
+	text-align: left;
+	overflow: visible;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-square-o.dhx-disabled,
+.dhxtreeview_dhx_web div.dhxtreeview_cont div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text div.dhxtreeview_item_icon i.fa.fa-check-square-o.dhx-disabled {
+	color: #a6a6a6;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_drop_preview {
+	display: none;
+	position: absolute;
+	height: 0px;
+	width: 40px;
+	border-bottom: 2px dotted #1faeff;
+	z-index: 1;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_drop_preview.dhxtreeview_drop_0 {
+	display: block;
+	top: -1px;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_drop_preview.dhxtreeview_drop_2 {
+	display: block;
+	top: 31px;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item.dhxtreeview_item_dragged {
+	opacity: 0.4;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=40);
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_drop_1,
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_drop_1:hover {
+	background-color: #85d3ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_drop_1 div.dhxtreeview_item_label,
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_drop_1:hover div.dhxtreeview_item_label {
+	background-color: #85d3ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected,
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected:hover {
+	background-color: #b8e5ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected div.dhxtreeview_item_label,
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text.dhxtreeview_item_text_selected:hover div.dhxtreeview_item_label {
+	background-color: #b8e5ff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text:hover {
+	background-color: #ffffff;
+}
+.dhxtreeview_dhx_web div.dhxtreeview_cont.dhxtreeview_dnd_mode div.dhxtreeview_area div.dhxtreeview_item div.dhxtreeview_item_text:hover div.dhxtreeview_item_label {
+	background-color: #ffffff;
+}
+.dhxtreeview_dhx_web.dhxtreeview_icon_width {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	width: 22px;
+	height: 1px;
+	font-size: 1px;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+}
+.dhxtreeview_dragged_obj_dhx_web {
+	position: absolute;
+	font-size: 12px;
+	color: #000000;
+	font-family: Tahoma, Helvetica;
+	white-space: nowrap;
+	cursor: default;
+	background-color: #fcfcfc;
+	border-radius: 1px;
+	box-shadow: 0px 0px 10px rgba(90,90,90,0.2);
+	padding: 6px 14px;
+	border: 1px solid #cccccc;
+}
+html.dhxtreeview_dnd_mode,
+html.dhxtreeview_dnd_mode *,
+body.dhxtreeview_dnd_mode,
+body.dhxtreeview_dnd_mode * {
+	cursor: default;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+div.dhx_popup_dhx_web div.dhx_popup_area td.dhx_popup_td div.dhxtreeview_dhx_web div.dhxtreeview_item div.dhxtreeview_item_label {
+	white-space: nowrap;
+}
+.dhxtreeview_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 20px;
+	height: 10px;
+	overflow: hidden;
+}

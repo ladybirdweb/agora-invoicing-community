@@ -4,6 +4,33 @@
 <div class="box box-primary">
 
     <div class="box-header">
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        @if(Session::has('success'))
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('success')}}
+        </div>
+        @endif
+        <!-- fail message -->
+        @if(Session::has('fails'))
+        <div class="alert alert-danger alert-dismissable">
+            <i class="fa fa-ban"></i>
+            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('fails')}}
+        </div>
+        @endif
+
 
         <h4>{{Lang::get('message.tax')}}
             <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
@@ -14,34 +41,6 @@
 
     </div>
 
-    @if (count($errors) > 0)
-    <div class="alert alert-danger">
-        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-        <ul>
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
-    @if(Session::has('success'))
-    <div class="alert alert-success alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('success')}}
-    </div>
-    @endif
-    <!-- fail message -->
-    @if(Session::has('fails'))
-    <div class="alert alert-danger alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-        {{Session::get('fails')}}
-    </div>
-    @endif
 
 
     <div class="box-body">
@@ -121,7 +120,7 @@
                         Classes
                     </div>
                     <div class="box-body">
-                       
+
                         @forelse($classes as $key=>$value)
                         <div class="col-md-2">
                             <a href="#create" data-toggle="modal" data-target="#create{{$key}}">{{ucfirst($value)}}</a>
@@ -131,7 +130,7 @@
                         <div class="col-md-2">
                             <a href="#create" data-toggle="modal" data-target="#create-tax-option">Add Class</a>
                         </div>
-                        
+
                         @endforelse
                     </div>
                 </div>

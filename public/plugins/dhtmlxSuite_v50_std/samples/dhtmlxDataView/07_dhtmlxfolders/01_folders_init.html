@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Initialize object on page</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="./types/ftypes.js" type="text/javascript"></script>
+	<link rel="STYLESHEET" type="text/css" href="./types/ftypes.css">
+	<script>
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView("data_container");
+			myDataView.define("type","ficon");
+			myDataView.customize({
+				icons_src_dir:"../common/images"
+			});
+			myDataView.load("../common/files_ext.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Initialize object on page</h1>
+	<div style="position:relative;">
+		<img src="../common/images/samples_frame.gif" width="436" height="513" alt="" border="0">
+		<div id="data_container" style="width:396px;height:398px;overflow:hidden;position:absolute;top:65px;left:20px;border:0px solid red;"></div>
+	</div>
+</body>
+</html>

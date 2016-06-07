@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxEditor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		dhtmlx.image_path = "codebase/imgs/";
+		var myList, myEditor;
+		function doOnLoad() {
+			myList = new dhtmlXList({
+				container:"data_container",
+				type:{
+					template:"<p class='dhx_strong'>#author#: #title#</p>#desc#<p>Price: <b>#lprice#</b></p>",
+					height:200,
+					template_edit:"<div id='editorObj' style='width: 460px; height: 100%;'></div>",
+					width:"auto"
+				},
+				edit:true
+			});
+			myList.load("../common/books.xml");
+			myList.attachEvent("onAfterEditStart",function(id){
+				myEditor = new dhtmlXEditor("editorObj");
+				myEditor.setContent(myList.get(id).desc);
+			});
+			myList.attachEvent("onBeforeEditStop",function(id){
+				myList.get(id).desc = myEditor.getContent();
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Intergration with dhtmlxEditor</h1>
+	<div id="data_container" style="border:1px solid #c0c0c0; background-color:white;width:500px;height:700px;position:relative"></div>
+</body>
+</html>

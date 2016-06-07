@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<items>
+	<item type="select" label="Account type">
+		<option value="USA" text="USA">
+			<item type="radio" name="city" value="Washington" label="Washington" checked="1" position="label-right"/>
+			<item type="radio" name="city" value="Chicago" label="Chicago" position="label-right"/>
+		</option>
+		<option value="Russia" text="Russia">
+			<item type="radio" name="city" value="Moscow" label="Moscow" position="label-right"/>
+			<item type="radio" name="city" value="Sochi" label="Sochi" position="label-right"/>
+		</option>
+	</item>
+</items>

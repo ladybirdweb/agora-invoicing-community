@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="120" type="ro" align="left" sort="str">From/To</column>
+		<column width="*" type="ro" align="left" sort="str">Subject</column>
+		<column width="90" type="ro" align="left" sort="date">Date</column>
+	</head>
+	<row id="1">
+		<cell>Michael Franco</cell>
+		<cell>You have won</cell>
+		<cell>2015-03-05</cell>
+	</row>
+	<row id="2">
+		<cell>Hugh Faulkner</cell>
+		<cell>Enjoy top quality watches</cell>
+		<cell>2015-02-27</cell>
+	</row>
+	<row id="3">
+		<cell>Lloyd Hurst</cell>
+		<cell>Outdoor men sports gear</cell>
+		<cell>2015-02-12</cell>
+	</row>
+	<row id="4">
+		<cell>Kelly Clarke</cell>
+		<cell>Bestselling closing</cell>
+		<cell>2015-02-11</cell>
+	</row>
+</rows>

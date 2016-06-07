@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Slide animation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#carouselObj {
+			position: relative;
+			top: 20px;
+			left: 20px;
+			width: 350px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+		}
+	</style>
+	<script>
+		var myCarousel;
+		function doOnLoad() {
+			myCarousel = new dhtmlXCarousel({
+				parent: "carouselObj",
+				item_width: "auto",
+				item_height: "auto",
+				offset_item: 45,
+				offset_left: 30,
+				offset_top: 15
+			});
+			for (var q=0; q<6; q++) {
+				var id = myCarousel.addCell();
+				myCarousel.cells(id).attachHTMLString("<div style='position: relative; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%;'>"+
+									"<img src='../common/imgs/"+(q+1)+".jpg' border='0' style='width: 290px; height: 340px;' ondragstart='return false;'></div>");
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="carouselObj"></div>
+	<div><br><br></div>
+</body>
+</html>

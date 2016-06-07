@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Usage memory</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCP;
+		function doOnLoad() {
+			myCP = new dhtmlXColorPicker({
+				parent: "cpObj",
+				closeable: false
+			});
+		};
+		function doOnUnload() {
+			if (myCP != null) {
+				myCP.unload();
+				myCP = null;
+			}
+		};
+		function showMemory() {
+			if (myCP != null) myCP.showMemory();
+		};
+		function hideMemory() {
+			if (myCP != null) myCP.hideMemory();
+		};
+		function setCustomColors() {
+			if (myCP != null) myCP.setCustomColors("#00ff00", "#ff0000");
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<button onclick="showMemory();">Show Memory</button>
+	<button onclick="setCustomColors();">Add green and red colors to Memory</button>
+	<button onclick="hideMemory();">Hide Memory</button>
+	<div id="cpObj" style="position: relative; margin-top: 30px; height: 300px;"></div>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom language</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		dhtmlXCalendarObject.prototype.langData["de"] = {
+			dateformat: '%d.%m.%Y',
+			monthesFNames: ["Januar","Februar","März","April","Mai","Juni","Juli","August","September","Oktober","November","Dezember"],
+			monthesSNames: ["Jan","Feb","Mär","Apr","Mai","Jun","Jul","Aug","Sep","Okt","Nov","Dez"],
+			daysFNames: ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"],
+			daysSNames: ["So","Mo","Di","Mi","Do","Fr","Sa"],
+			weekstart: 1,
+			weekname: "w",
+			today: "Heute",
+			clear: "Reinigen"
+		}
+		dhtmlXCalendarObject.prototype.langData["ru"] = {
+			dateformat: '%d.%m.%Y',
+			monthesFNames: ["Январь","Февраль","Март","Апрель","Май","Июнь","Июль","Август","Сентябрь","Октябрь","Ноябрь","Декабрь"],
+			monthesSNames: ["Янв","Фев","Мар","Апр","Май","Июн","Июл","Авг","Сен","Окт","Ноя","Дек"],
+			daysFNames: ["Воскресенье","Понедельник","Вторник","Среда","Четверг","Пятница","Суббота"],
+			daysSNames: ["Вс","Пн","Вт","Ср","Чт","Пт","Сб"],
+			weekstart: 1,
+			weekname: "н",
+			today: "Сегодня",
+			clear: "Очистить"
+		}
+		
+		var myCalendar;
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.setDate(new Date(2013,2,1,16,0));
+			myCalendar.show();
+			myCalendar.showToday();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="margin-bottom: 20px;">
+		<input type="button" value="en" onclick="myCalendar.loadUserLanguage('en');">
+		<input type="button" value="de" onclick="myCalendar.loadUserLanguage('de');">
+		<input type="button" value="ru" onclick="myCalendar.loadUserLanguage('ru');">
+	</div>
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+</body>
+</html>

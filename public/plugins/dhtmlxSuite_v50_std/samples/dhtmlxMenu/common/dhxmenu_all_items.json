@@ -1,0 +1,109 @@
+[
+	{ id: "file", img: "new.gif", text: "File",
+		items: [
+			{ id: "open", text: "Open", img: "open.gif", hotkey: "Ctrl+O",
+				userdata: {
+					my_data_name: "my_data_value",
+					more_info: "new_value"
+				}
+			},
+			{ id: "open_recent", text: "Recent", img: "copy.gif",
+				items: [
+					{ id: "recent_1", text: "dhtmlxvault 2.0.docx", img: "new.gif"},
+					{ id: "recent_2", text: "sZ77X-UD3H(Rev1.0).png", img: "new.gif"},
+					{ id: "recent_3", text: "IMG_14012014_154856.png", img: "new.gif"},
+					{ id: "recent_4", text: "flac-1.2.1b.exe", img: "new.gif"},
+					{ id: "recent_5", text: "FileZilla 3.5.3 win32 Setup.exe", img: "new.gif"},
+					{ id: "recent_6", text: "Learning DHTMLX Suite UI [eBook].pdf", img: "new.gif"},
+					{ id: "recent_7", text: "apache-httpd-2.2.14-ssh.rar", img: "new.gif"}
+				]
+			},
+			{ type: "separator" },
+			{ id: "save", text: "Save", img: "save.gif", hotkey: "Ctrl+S" },
+			{ id: "save_as", text: "Save as...", imgdis: "save_as_dis.gif", enabled: false, hotkey: "Ctrl+E" },
+			{ type: "separator" },
+			{ id: "print", text: "Print", img: "print.gif",
+				items: [
+					{ id: "printall", text: "Print all", img: "print.gif", hotkey: "Ctrl+P" },
+					{ id: "printrange", text: "Print range", img: "print.gif" },
+					{ type: "separator" },
+					{ id: "pagesetup", text: "Page setup", imgdis: "page_setup_dis.gif", enabled: false }
+				]
+			},
+			{ type: "separator" },
+			{ id: "close", text: "Close disabled", imgdis: "close_dis.gif", enabled: "false",
+				items: [
+					{ id: "closeall", text: "Close all" },
+					{ id: "closeother", text: "Close other" }
+				]
+			}
+		]
+	},
+	{ id: "links", text: "Links", img: "about.gif", 
+		href: {
+			target: "blank",
+			link: "http://dhtmlx.com/docs/products/index.shtml"
+		},
+		items: [
+			{ id: "dhtmlxTree", text: "dhtmlxTree", img: "../imgs_links/icon_tree.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/dhtmlxTree/index.shtml"
+				}
+			},
+			{ id: "dhtmlxGrid", text: "dhtmlxGrid", img: "../imgs_links/icon_grid.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/dhtmlxGrid/index.shtml"
+				}
+			},
+			{ id: "dhtmlxTreeGrid", text: "dhtmlxTreeGrid", img: "../imgs_links/icon_treegrid.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/dhtmlxTreeGrid/index.shtml"
+				}
+			},
+			{ id: "dhtmlxWindows", text: "dhtmlxWindows", img: "../imgs_links/icon_wins.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/dhtmlxWindows/index.shtml"
+				}
+			},
+			{ id: "dhtmlxLayout", text: "dhtmlxLayout", img: "../imgs_links/icon_layout.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/dhtmlxLayout/index.shtml"
+				}
+			},
+			{ type: "separator"},
+			{ id: "moreDHTMLX", text: "More...", img: "../imgs_links/icon_more.gif",
+				href: {
+					target: "blank",
+					link: "http://dhtmlx.com/docs/products/index.shtml"
+				}
+			}
+		]
+	},
+	{ type: "separator" },
+	{ id: "p14", text: "Radios",
+		items: [
+			{ id: "p41", text: "Transparent", type: "radio", group: "bgcolor", checked: true },
+			{ type: "separator" },
+			{ id: "p42", text: "White", type: "radio", group: "bgcolor", hotkey: "Ctrl+B W" },
+			{ id: "p43", text: "Yellow", type: "radio", group: "bgcolor", hotkey: "Ctrl+B Y" },
+			{ id: "p44", text: "Cyan", type: "radio", group: "bgcolor", hotkey: "Ctrl+B C" },
+			{ id: "p45", text: "Magenta", type: "radio", group: "bgcolor", disabled: true, hotkey: "Ctrl+B M" },
+			{ id: "p46", text: "Black", type: "radio", group: "bgcolor", enabled: false, hotkey: "Ctrl+B B" }
+		]
+	},
+	{ id: "ch", text: "Checkboxes",
+		items: [
+			{ id: "line_numbering", text: "Line Numbering", type: "checkbox", checked: true, hotkey: "Ctrl+L N" },
+			{ id: "ignore_case", text: "Ignore Case", type: "checkbox", enabled: false, hotkey: "Ctrl+I C" },
+			{ type: "separator" },
+			{ id: "tip_of_day", text: "Tip of the Day", type: "checkbox", enabled: false, checked: true }
+		]
+	},
+	{ type: "separator" },
+	{ id: "topdis", text: "Top disabled", disabled: true, imgdis: "bug_reporting_dis.gif" }
+]

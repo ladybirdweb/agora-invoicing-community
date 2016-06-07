@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Origin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart = new dhtmlXChart({
+				view:"bar",
+				container:"chartDiv",
+				value:"#sales#",
+				color:"#color#",
+				barWidth:30,
+				radius:0,
+				tooltip:{
+					template:"#sales#"
+				},
+				xAxis:{
+					template:"'#year#",
+					title:"Year"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					title:"Profit"
+				},
+				origin:30
+			});
+			myBarChart.parse(dataset_colors,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartDiv" style="width:400px;height:250px;border:1px solid #c0c0c0;margin:20px"></div>
+</body>
+</html>

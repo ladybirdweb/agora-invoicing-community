@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Initialize from HTML</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+</head>
+<body>
+	<h1>Initialize Tree from HTML</h1>
+	<p>To do automatic conversion:
+		<ul>
+			<li>Add <strong>dhtmlXTree_start.js</strong> file into the page</li>
+			<li>Set <strong>class</strong> attribute of the top div element to <em>dhtmlxTree</em></li>
+			<li>Set some attributes defining tree-specific properties of the top div element
+				<ul>
+					<li><strong>setImagePath</strong> - sets path to tree's image files</li>
+					<li><strong>id</strong> - name of javascript variable referred to the tree object</li>
+				</ul>
+			</li>
+		</ul>
+	</p>
+	<div class="h3">Initilize from list</div>
+	<table>
+		<tr>
+			<td>
+				<div id="treeboxbox_tree" setImagePath="../../../skins/web/imgs/dhxtree_web/" xclass="dhtmlxTree" style="width:250px; height:175px;">
+					<ul>
+						<li>Root
+							<ul>
+								<li>Child1
+								<ul>
+									<li>Child 1-1</li>
+								</ul>
+								</li>
+								<li>Child2</li>
+								<li><b>Bold</b> <i>Italic</i></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</td>
+			<td>
+				<div id="treeboxbox_tree" setImagePath="../../../skins/web/imgs/dhxtree_web/" class="dhtmlxTree" style="width:250px; height:175px;">
+					<ul>
+						<li>Root
+						<ul>
+							<li>Child1
+								<ul>
+									<li>Child 1-1</li>
+								</ul>
+								</li>
+								<li>Child2</li>
+								<li><b>Bold</b> <i>Italic</i></li>
+							</ul>
+						</li>
+					</ul>
+				</div>
+			</td>
+		</tr>
+	</table>
+
+	<!--- Start --->
+	<div class="h3"><strong>Initialize from inline XML structure</strong></div>
+	<div class="txt">It is possible to use standard dhtmlxTree XML structure enclosed in <strong>XMP</strong> tag inside div element which is a tree container.<br></div>
+	<div id="treeboxbox_tree2" setImagePath="../../../skins/web/imgs/dhxtree_web/" class="dhtmlxTree" style="width:250px; height:175px;">
+		<xmp container="true">
+		<item text="Root" open="1" id="11">
+			<item text="Child1" select="1" open="1" id="12">
+				<item text="Child1-1" id="13"/>
+			</item>
+			<item text="Child2" id="14"/>
+			<item id="15" text="Text"/>
+		</item>
+		</xmp>
+	</div>
+
+	<!--- Start --->
+	<div class="h3"><strong>Initialize from HTML using script command</strong></div>
+	<div class="txt">It is possible to convert existing html structure calling an appropriate script command. To test it press the Confirm button.</div>
+	<div id="listBox" setImagePath="../../../skins/web/imgs/dhxtree_web/" style="width:250px; height:175px;">
+		<ul>
+			<li>Root
+				<ul>
+					<li>Child1
+						<ul>
+							<li>Child 1-1</li>
+						</ul>
+					</li>
+					<li>Child2</li>
+					<li><b>Bold</b> <i>Italic</i></li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<button onClick="var myTree = dhtmlXTreeFromHTML('listBox');">Convert</button>
+</body>
+</html>

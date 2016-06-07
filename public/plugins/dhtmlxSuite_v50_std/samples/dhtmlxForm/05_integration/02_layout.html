@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Form and layout</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			width: 620px;
+			height: 430px;
+		}
+	</style>
+	<script>
+		var myForm, formData;
+		var dhxLayout;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 100, inputWidth: 120},
+				{type: "block", inputWidth: "auto", offsetTop: 12, list: [
+					{type: "input", label: "Login", value: "p_rossi"},
+					{type: "password", label: "Password", value: "123"},
+					{type: "checkbox", label: "Remember me", checked: true},
+					{type: "button", value: "Proceed", offsetLeft: 70, offsetTop: 14}
+				]}
+			];
+			dhxLayout = new dhtmlXLayoutObject("layoutObj", "2U");
+			myForm = dhxLayout.cells("a").attachForm(formData);
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+</body>
+</html>

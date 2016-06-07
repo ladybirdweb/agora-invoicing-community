@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Show / hide</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#logs_here {
+			font-family: Tahoma;
+			font-size: 11px;
+			height: 150px;
+			border: 1px solid #cecece;
+			overflow: auto;
+			margin-top: 20px;
+		}
+	</style>
+	<script>
+		var myCP, i=0;
+		function doOnLoad() {
+			myCP = new dhtmlXColorPicker({
+				parent: "cpObj",
+				closeable: false
+			});
+		};
+		function doOnUnload() {
+			if (myCP != null) {
+				myCP.unload();
+				myCP = null;
+			}
+		};
+		function show() {
+			if (myCP != null) myCP.show();
+		};
+		function hide() {
+			if (myCP != null) myCP.hide();
+		};
+		function isVisible() {
+			if (myCP != null) {
+				setNoteToLog(myCP.isVisible()?"visible":"hidden");
+			}
+		};
+		function setNoteToLog(data) {
+			var cont = document.getElementById("logs_here");
+			cont.innerHTML = "<div>"+ (++i)+") "+data+"</div>"+cont.innerHTML;
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<button onclick="show();">Show</button>
+	<button onclick="hide();">Hide</button>
+	<button onclick="isVisible();">Log visible state</button>
+	<div id="cpObj" style="position: relative; margin-top: 30px; height: 300px;"></div>
+	<div id="logs_here"></div>
+</body>
+</html>

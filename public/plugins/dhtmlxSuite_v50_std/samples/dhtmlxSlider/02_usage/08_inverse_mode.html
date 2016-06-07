@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Inverse mode</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#sliderObj, #sliderObj2 {
+			width: 160px;
+			height: 30px;
+			margin-top: 2px;
+		}
+		#sliderLink, #sliderLink2 {
+			font-size: 12px;
+			font-family: Tahoma;
+			margin: 3px 0px;
+		}
+		table.demo_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 10px;
+		}
+		
+	</style>
+	<script>
+		var mySlider, mySlider2;
+		
+		function doOnLoad(){
+			mySlider = new dhtmlXSlider({
+				parent: "sliderObj",
+				linkTo: "sliderLink",
+				step: 1,
+				min: 10,
+				max: 30,
+				value: 15
+			});
+			mySlider2 = new dhtmlXSlider({
+				parent: "sliderObj2",
+				linkTo: "sliderLink2",
+				inverse: true,
+				step: 1,
+				min: 10,
+				max: 30,
+				value: 25
+			});
+		};
+		
+		function doOnUnload(){
+			if (mySlider != null){
+				mySlider.unload();
+				mySlider = null;
+			}
+			if (mySlider2 != null){
+				mySlider2.unload();
+				mySlider2 = null;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<table cellspacing="0" cellpadding="0" border="0" class="demo_table">
+		<tr>
+			<td><div id="sliderObj"></div></td>
+			<td><div id="sliderLink" type="text"></div></td>
+		</tr><tr>
+			<td><div id="sliderObj2"></div></td>
+			<td><div id="sliderLink2" type="text"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{items: [
+	{id: "block_file", type: "block", text: "File", list: [
+		{id: "file_open", type: "buttonSelect", text: "Open", isbig: true, img: "48/open.gif", items:[
+			{id: "open_file", text: "File...", img: "18/open.gif", hotkey: "Ctrl+O"},
+			{id: "open_recent", text: "Recent", img: "18/copy.gif", items: [
+				{ id: "recent_1", text: "dhtmlxvault 2.0.docx", img: "18/new.gif"},
+				{ id: "recent_2", text: "sZ77X-UD3H(Rev1.0).png", img: "18/new.gif"},
+				{ id: "recent_3", text: "IMG_14012014_154856.png", img: "18/new.gif"},
+				{ id: "recent_4", text: "flac-1.2.1b.exe", img: "18/new.gif"},
+				{ id: "recent_5", text: "FileZilla 3.5.3 win32 Setup.exe", img: "18/new.gif"},
+				{ id: "recent_6", text: "Learning DHTMLX Suite UI [eBook].pdf", img: "18/new.gif"},
+				{ id: "recent_7", text: "apache-httpd-2.2.14-ssh.rar", img: "18/new.gif"}
+			]}
+		]},
+		{id: "file_save", type: "button", text: "Save", img: "18/save.gif"},
+		{id: "file_close", type: "button", text: "Close", img: "18/close.gif"}
+	]},
+	{id: "block_print", type: "block", text: "Print", list: [
+		{id: "print_page", type: "button", text: "Print", img: "18/print.gif"},
+		{id: "print_page_setup", type: "button", text: "Page setup", img: "18/page_setup.gif"}
+	]}
+]}

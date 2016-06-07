@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Disabling in year mode</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCalendar;
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.hideTime();
+			myCalendar.show();
+			myCalendar.setDate("2011-01-17");
+		}
+		function enableDays() {
+			myCalendar.enableDays("year");
+		}
+		function disableDays(d) {
+			myCalendar.disableDays("year",d);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="margin-bottom: 20px;">
+		<table>
+			<tr>
+				<td><input type="button" value="apply" onclick="disableDays('2011-01-01');"></td>
+				<td>disable each January 1st</td>
+			</tr>
+			<tr>
+				<td><input type="button" value="apply" onclick="disableDays(['2011-01-01','2011-01-02']);"></td>
+				<td>disable each January 1st and 2nd</td>
+			</tr>
+			<tr>
+				<td><input type="button" value="apply" onclick="disableDays(['2011-01-01','2011-01-02','2011-01-03','2011-01-14','2011-01-15']);"></td>
+				<td>disable each January 1st, 2nd, 3rd, 14th and 15th</td>
+			</tr>
+			<tr>
+				<td><input type="button" value="apply" onclick="disableDays(['2011-12-30','2011-12-31','2011-01-01','2011-01-02']);"></td>
+				<td>disable each December 30th, 31st, January 1st, 2nd</td>
+			</tr>
+			<tr>
+				<td><input type="button" value="apply" onclick="enableDays();"></td>
+				<td>clear disabled days</td>
+			</tr>
+		</table>
+	</div>
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+</body>
+</html>

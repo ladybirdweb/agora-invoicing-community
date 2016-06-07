@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="*" type="tree" valign="bottom" align="left" sort="str">Model</column>
+		<column width="50" type="ed" align="left" sort="int">Qty</column>
+		<column width="50" type="price" align="right" sort="int">Price</column>
+	</head>
+	<row id="t1">
+		<cell>Mobile Phones</cell>
+		<cell type="ro"></cell>
+		<cell type="ro"></cell>
+		<row id="nokia">
+			<cell>Nokia</cell>
+			<cell type="ro"></cell>
+			<cell type="ro"></cell>
+			<row id="1">
+				<cell>Nokia Lumia 925 (16Gb)</cell>
+				<cell>1</cell>
+				<cell>390</cell>
+			</row>
+			<row id="3">
+				<cell>Nokia Lumia 520</cell>
+				<cell>1</cell>
+				<cell>150</cell>
+			</row>
+			<row id="5">
+				<cell>Nokia X</cell>
+				<cell>1</cell>
+				<cell>210</cell>
+			</row>
+			<row id="6">
+				<cell>Nokia Lumia 920</cell>
+				<cell>1</cell>
+				<cell>360</cell>
+			</row>
+			<row id="7">
+				<cell>Nokia Lumia 1320</cell>
+				<cell>1</cell>
+				<cell>370</cell>
+			</row>
+			<row id="10">
+				<cell>Nokia Lumia 1520</cell>
+				<cell>1</cell>
+				<cell>600</cell>
+			</row>
+			<row id="13">
+				<cell>Nokia Lumia 1020</cell>
+				<cell>1</cell>
+				<cell>490</cell>
+			</row>
+			<row id="14">
+				<cell>Nokia Lumia 820</cell>
+				<cell>1</cell>
+				<cell>260</cell>
+			</row>
+			<row id="15">
+				<cell>Nokia 515 Dual SIM</cell>
+				<cell>1</cell>
+				<cell>150</cell>
+			</row>
+			<row id="16">
+				<cell>Nokia Lumia 800</cell>
+				<cell>1</cell>
+				<cell>200</cell>
+			</row>
+			<row id="22">
+				<cell>Nokia Lumia 925 (32Gb)</cell>
+				<cell>1</cell>
+				<cell>430</cell>
+			</row>
+			<row id="25">
+				<cell>Nokia 301 Dual</cell>
+				<cell>1</cell>
+				<cell>86</cell>
+			</row>
+		</row>
+		<row id="sony">
+			<cell>Sony</cell>
+			<cell type="ro"></cell>
+			<cell type="ro"></cell>
+			<row id="2">
+				<cell>Sony Xperia Z1 Compact</cell>
+				<cell>1</cell>
+				<cell>577</cell>
+			</row>
+			<row id="9">
+				<cell>Sony Xperia SP</cell>
+				<cell>1</cell>
+				<cell>330</cell>
+			</row>
+			<row id="12">
+				<cell>Sony Xperia Z1</cell>
+				<cell>1</cell>
+				<cell>540</cell>
+			</row>
+			<row id="18">
+				<cell>Sony Xperia L</cell>
+				<cell>1</cell>
+				<cell>250</cell>
+			</row>
+			<row id="21">
+				<cell>Sony Xperia Z</cell>
+				<cell>1</cell>
+				<cell>458</cell>
+			</row>
+			<row id="23">
+				<cell>Sony Xperia S LT26i</cell>
+				<cell>1</cell>
+				<cell>430</cell>
+			</row>
+			<row id="24">
+				<cell>Sony Xperia J ST26i</cell>
+				<cell>1</cell>
+				<cell>190</cell>
+			</row>
+			<row id="26">
+				<cell>Sony Xperia M Dual</cell>
+				<cell>1</cell>
+				<cell>229</cell>
+			</row>
+		</row>
+		<row id="lg">
+			<cell>LG</cell>
+			<cell type="ro"></cell>
+			<cell type="ro"></cell>
+			<row id="17">
+				<cell>LG Optimus L90 (D410)</cell>
+				<cell>1</cell>
+				<cell>239</cell>
+			</row>
+			<row id="19">
+				<cell>LG G2 (32Gb)</cell>
+				<cell>1</cell>
+				<cell>501</cell>
+			</row>
+			<row id="27">
+				<cell>LG Nexus 5 (16Gb)</cell>
+				<cell>1</cell>
+				<cell>428</cell>
+			</row>
+		</row>
+		<row id="apple">
+			<cell>Apple</cell>
+			<cell type="ro"></cell>
+			<cell type="ro"></cell>
+			<row id="4">
+				<cell>Apple iPhone 5s (16GB)</cell>
+				<cell>1</cell>
+				<cell>720</cell>
+			</row>
+			<row id="30">
+				<cell>Apple iPhone 4S (16Gb)</cell>
+				<cell>1</cell>
+				<cell>400</cell>
+			</row>
+		</row>
+		<row id="samsung">
+			<cell>Samsung</cell>
+			<cell type="ro"></cell>
+			<cell type="ro"></cell>
+			<row id="8">
+				<cell>Samsung Galaxy S5 (16Gb) (G900F)</cell>
+				<cell>1</cell>
+				<cell>800</cell>
+			</row>
+			<row id="11">
+				<cell>Samsung Galaxy S4 (16Gb) (I9500)</cell>
+				<cell>1</cell>
+				<cell>450</cell>
+			</row>
+			<row id="20">
+				<cell>Samsung Galaxy S4 mini (I9190)</cell>
+				<cell>1</cell>
+				<cell>320</cell>
+			</row>
+			<row id="28">
+				<cell>Samsung Galaxy Grand 2 (G7102)</cell>
+				<cell>1</cell>
+				<cell>370</cell>
+			</row>
+			<row id="29">
+				<cell>Samsung N9005 Galaxy Note 3 (32GB)</cell>
+				<cell>1</cell>
+				<cell>650</cell>
+			</row>
+		</row>
+	</row>
+</rows>

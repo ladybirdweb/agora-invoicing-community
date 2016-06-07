@@ -1,0 +1,326 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_web
+	include extra file: skins/dhx_web.less
+*/
+
+div.dhxcombo_dhx_web {
+	position: relative;
+	border: 1px solid #d6d6d6;
+	overflow: hidden;
+	vertical-align: middle;
+	background-color: white;
+	font-size: 1px;
+	height: 22px;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+div.dhxcombo_dhx_web input.dhxcombo_input {
+	position: absolute;
+	left: 1px;
+	top: 0px;
+	height: 22px;
+	line-height: 21px;
+	*height: 20px;
+	*line-height: 19px;
+	border: 0px solid white;
+	outline: 0px solid white;
+	padding: 0px;
+	margin: 0px 0px 0px 4px;
+	background-color: white;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: black;
+	vertical-align: top;
+}
+div.dhxcombo_dhx_web input.dhxcombo_input::-ms-clear {
+	display: none;
+}
+div.dhxcombo_dhx_web div.dhxcombo_select_button {
+	position: absolute;
+	width: 18px;
+	height: 18px;
+	top: 2px;
+	right: 2px;
+	font-size: 1px;
+	background-color: #3da0e3;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+}
+div.dhxcombo_dhx_web div.dhxcombo_select_button div.dhxcombo_select_img {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-image: url("../imgs/dhxcombo_web/dhxcombo_arrow_down.gif");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+div.dhxcombo_dhx_web div.dhxcombo_top_image {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 26px;
+	height: 22px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombo_dhx_web div.dhxcombo_top_image div.dhxcombo_image {
+	*top: 0px;
+}
+div.dhxcombolist_dhx_web {
+	position: absolute;
+	border: 1px solid #ffffff;
+	*border: 1px solid #ccc;
+	box-shadow: 0px 3px 6px rgba(0,0,0,0.35);
+	background-color: #f4f4f4;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow-x: none;
+	overflow-y: auto;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option {
+	position: relative;
+	font-size: inherit;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	color: #000000;
+	height: 24px;
+	line-height: 23px;
+	vertical-align: middle;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option.dhxcombo_option_selected {
+	background-color: #85d3ff;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option.dhxcombo_option_selected .dhxcombo_option_text {
+	color: #000000;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_option_text {
+	position: relative;
+	padding: 0px 4px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_option_text.dhxcombo_option_text_chbx {
+	position: relative;
+	padding: 0px 4px 0px 4px;
+	margin-left: 20px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_checkbox {
+	position: absolute;
+	left: 2px;
+	top: 3px;
+	width: 18px;
+	height: 18px;
+	background-image: url("../imgs/dhxcombo_web/dhxcombo_chbx.gif");
+	background-repeat: no-repeat;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_chbx_0 {
+	background-position: 0px 0px;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_chbx_1 {
+	background-position: -18px 0px;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_option_text.dhxcombo_option_text_image {
+	position: relative;
+	padding: 0px 4px 0px 4px;
+	margin-left: 20px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_image {
+	top: 3px;
+}
+div.dhxcombo_dhx_web div.dhxcombo_top_image div.dhxcombo_image,
+div.dhxcombolist_dhx_web div.dhxcombo_option div.dhxcombo_image {
+	position: absolute;
+	left: 3px;
+	top: 2px;
+	width: 18px;
+	height: 18px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-moz-user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombo_dhx_web.dhxcombo_disabled {
+	background-color: #fafafa;
+}
+div.dhxcombo_dhx_web.dhxcombo_disabled input.dhxcombo_input {
+	color: #999999;
+	background-color: #fafafa;
+}
+div.dhxcombo_dhx_web.dhxcombo_disabled div.dhxcombo_select_button {
+	background-color: #a6a6a6;
+	cursor: default;
+}
+div.dhxcombo_dhx_web.dhxcombo_disabled div.dhxcombo_select_button div.dhxcombo_select_img {
+	background-image: url("../imgs/dhxcombo_web/dhxcombo_arrow_down_dis.gif");
+}
+div.dhxcombolist_dhx_web.dhxcombolist_hdr {
+	height: 27px;
+	line-height: 27px;
+	border-color: #eaeaea;
+	border-bottom: 2px solid #53abe6;
+	box-shadow: none;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext {
+	position: relative;
+	padding: 0px;
+	white-space: nowrap;
+	cursor: default;
+	font-family: Tahoma, Helvetica;
+	font-size: 12px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell,
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_first {
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	z-index: 2;
+	border-left: 1px solid #eaeaea;
+	padding: 0px;
+	margin: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_first,
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell:first-child {
+	border-left-width: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn {
+	border-top-width: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option {
+	height: 24px;
+	line-height: 24px;
+	margin-top: -1px;
+	z-index: 0;
+	border-top: 1px solid #ededed;
+	border-bottom: 1px solid #ededed;
+	background-color: white;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_option_text {
+	padding: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell,
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_first {
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	border-left: 1px solid #ededed;
+	padding: 0px;
+	margin: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_first,
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell:first-child {
+	border-left-width: 0px;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option.dhxcombo_option_selected {
+	z-index: 1;
+	background-color: #85d3ff;
+	border-top-color: #85d3ff;
+	border-bottom-color: #85d3ff;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option.dhxcombo_option_selected div.dhxcombo_cell {
+	border-left-color: #85d3ff;
+	color: #000000;
+}
+div.dhxcombolist_dhx_web.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_text,
+div.dhxcombolist_dhx_web.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_text {
+	position: relative;
+	margin: 0px 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: auto;
+}
+div.dhxcombo_in_grid_parent {
+	position: relative;
+	height: 100%;
+	top: 0px;
+}
+div.dhxcombo_in_grid_parent div.dhxcombo_dhx_web {
+	position: absolute;
+	top: 3px;
+	left: 0px;
+	border-color: #85d3ff;
+}
+div.dhxcombo_in_grid_parent input.dhxcombo_input {
+	border-left: 2px solid white;
+	font-family: Arial;
+	font-size: 12px;
+}
+.dhxgrid_combo_icon {
+	position: absolute;
+	z-index: 1;
+	top: 0px;
+	right: 0px;
+}
+.dhxcombo_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 20px;
+	height: 10px;
+	overflow: hidden;
+}

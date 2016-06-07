@@ -2,19 +2,8 @@
 @section('content')
 <div class="box box-primary">
 
-    <div class="content-header">
-        {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
-        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
-
-    </div>
-
-    <div class="box-body">
-
-        <div class="row">
-
-            <div class="col-md-12">
-
-                @if (count($errors) > 0)
+    <div class="box-header">
+        @if (count($errors) > 0)
                 <div class="alert alert-danger">
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
@@ -27,8 +16,6 @@
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -42,11 +29,24 @@
                     {{Session::get('fails')}}
                 </div>
                 @endif
+        {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
+        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+
+    </div>
+
+    <div class="box-body">
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+                
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
+                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -236,7 +236,13 @@
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
                                                 {!! Form::hidden('hidden', 0) !!}
-                                                <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
+                                                <?php 
+                                                $value=  "";
+                                                if($product->hidden==1){
+                                                 $value = 'true';   
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
                                         </li>
@@ -265,12 +271,10 @@
                                     <td>
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    @if($price->first())
-                                                    {!! Form::select('subscription',[''=>'Select','Subscription'=>$subscription],$price->first()->subscription,['class'=>'form-control']) !!}
-                                                    @else 
-                                                    {!! Form::select('subscription',[''=>'Select','Subscription'=>$subscription],null,['class'=>'form-control']) !!}
-                                                    @endif
+                                                 <div class="col-md-6">
+                                                    
+                                                    {!! Form::checkbox('subscription',1,true) !!}
+                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
                                                 </div>
                                                 <div class="col-md-6">
                                                     {!! Form::hidden('deny_after_subscription',0) !!}
@@ -392,6 +396,16 @@
                                         </div>
                                     </td>
                                 </tr>
+
+                            </table>
+                        </div>
+                        
+                           <!-- /.tab-pane -->
+                        <div class="tab-pane" id="tab_3">
+                            <table class="table table-responsive">
+
+                               
+                               
 
                             </table>
                         </div>

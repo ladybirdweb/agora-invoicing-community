@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Image</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 130},
+				{type: "input", name: "name", label: "Full Name", value: "Patricia D. Rossi"},
+				{type: "input", name: "email", label: "E-mail Address", value: "rossi@mail.com"},
+				{type: "input", name: "login", label: "Login", value: "rossi"},
+				{type: "password", name: "pwd", label: "Password", value: "12345"},
+				{type: "password", name: "pwd2", label: "Confirm Password", value: "12345"},
+				{type: "image", name: "photo", label: "Photo", imageWidth: 126, imageHeight: 126, url: "../common/type_image/dhxform_image.php"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:320px;"></div>
+</body>
+</html>

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -130,8 +129,8 @@ class ClientController extends Controller
                             $sub = $model->subscription()->first();
                             $order_cont = new \App\Http\Controllers\Order\OrderController();
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
-                            $url = "";
-                            if ($status=='success') {
+                            $url = '';
+                            if ($status == 'success') {
                                 $url = $this->renewPopup($sub->id);
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }

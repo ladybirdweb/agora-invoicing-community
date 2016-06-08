@@ -101,7 +101,8 @@ class TemplateController extends Controller
         $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name) {
+    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
+    {
         Config::set('mail.driver', $driver);
         Config::set('mail.password', $password);
         Config::set('mail.username', $email);
@@ -286,7 +287,7 @@ class TemplateController extends Controller
                 $replace['order'] = '';
             }
             $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}', '{{product}}', '{{order}}'];
-            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product'], $replace['order'],];
+            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product'], $replace['order']];
 
             $data = str_replace($array1, $array2, $data);
             $settings = \App\Model\Common\Setting::find(1);
@@ -667,21 +668,24 @@ class TemplateController extends Controller
         }
     }
 
-    public function plans($url, $id) {
+    public function plans($url, $id)
+    {
         $plan = new Plan();
-        $plan_form = "No subscription";
+        $plan_form = 'No subscription';
         //$plans = $plan->where('product',$id)->lists('name','id')->toArray();
         $plans = $this->prices($id);
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
-        $form = \Form::open(['method' => 'get', 'url' => $url]) .
-                $plan_form .
+        $form = \Form::open(['method' => 'get', 'url' => $url]).
+                $plan_form.
                 \Form::hidden('id', $id);
+
         return $form;
     }
 
-    public function prices($id) {
+    public function prices($id)
+    {
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
         $price = [];
@@ -691,14 +695,16 @@ class TemplateController extends Controller
         foreach ($plans as $value) {
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
             $months = round($value->days / 30);
-            $price[$value->id] = $months . ' Month at ' . $currency . ' ' . $cost . '/month';
+            $price[$value->id] = $months.' Month at '.$currency.' '.$cost.'/month';
         }
         $this->leastAmount($id);
+
         return $price;
     }
 
-    public function leastAmount($id) {
-        $cost = "";
+    public function leastAmount($id)
+    {
+        $cost = '';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
         $cart_controller = new \App\Http\Controllers\Front\CartController();
@@ -713,10 +719,10 @@ class TemplateController extends Controller
         } else {
             $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $currency, 1, 0, 1);
             if ($product_cost != 0) {
-                $cost = $currency . ' ' . $product_cost;
+                $cost = $currency.' '.$product_cost;
             }
         }
+
         return $cost;
     }
-
 }

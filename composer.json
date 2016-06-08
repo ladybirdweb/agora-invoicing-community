@@ -22,7 +22,9 @@
 		"phpunit/phpunit": "~4.0",
 		"phpspec/phpspec": "~2.1",
                 "symfony/dom-crawler": "~3.0",
-                "symfony/css-selector": "~3.0"
+                "symfony/css-selector": "~3.0",
+		"xethron/migrations-generator": "dev-l5",
+		"way/generators": "dev-feature/laravel-five-stable"
 	},
 	"autoload": {
 		"classmap": [
@@ -53,5 +55,11 @@
 	},
 	"config": {
 		"preferred-install": "dist"
+	},
+	"repositories": {
+		"repo-name": {
+			"type": "git",
+			"url": "git@github.com:jamisonvalenta/Laravel-4-Generators.git"
+		}
 	}
 }

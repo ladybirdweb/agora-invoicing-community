@@ -73,6 +73,8 @@
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
                     {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class'=>'form-control','onchange'=>'getSubscription(this.value)','id'=>'product']) !!}
                 </div>
+                <div id="fields1">
+                </div>
                 <div id="fields">
                 </div>
 
@@ -123,11 +125,12 @@
             data: {'product': product, 'user': user, 'plan': val},
             //data: 'product=' + val+'user='+user,
             success: function (data) {
+
                 var price = data['price'];
                 var field = data['field'];
                 //console.log(field);
                 $("#price").val(price);
-                $("#fields").append(field);
+                $("#fields").replaceWith(field);
             }
         });
     }
@@ -137,11 +140,12 @@
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
+
                 var price = data['price'];
                 var field = data['field'];
-                //console.log(field);
+                
                 $("#price").val(price);
-                $("#fields").append(field);
+                $("#fields1").replaceWith(field);
 
             }
         });

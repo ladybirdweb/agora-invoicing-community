@@ -161,7 +161,7 @@
 
                     <tr>
 
-                        <td><b>{!! Form::label('hidden',Lang::get('message.title')) !!}</b></td>
+                        <td><b>{!! Form::label('hidden',Lang::get('message.title'),['class'=>'required']) !!}</b></td>
 
                         <td>
                             <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
@@ -180,7 +180,7 @@
 
                     <tr>
 
-                        <td><b>{!! Form::label('hidden',Lang::get('message.type')) !!}</b></td>
+                        <td><b>{!! Form::label('hidden',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
 
                         <td>
                             <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
@@ -208,12 +208,12 @@
                                     
                                         <div class='row form-group'>
                                             
-                                            <div class="col-md-4 ">
-                                                <b>{!! Form::label('hidden',Lang::get('message.value')) !!}</b>
+                                            <div class="col-md-4 {{ $errors->has('value.0.name') ? 'has-error' : '' }}">
+                                                <b>{!! Form::label('hidden',Lang::get('message.value'),['class'=>'required']) !!}</b>
                                                 <input type="text" name="value[][name]" class="form-control" value="{{ old('value.0.name') }}">
                                             </div>
-                                            <div class="col-md-4 ">
-                                                <b>{!! Form::label('hidden',Lang::get('message.price')) !!}</b>
+                                            <div class="col-md-4 {{ $errors->has('price.0.name') ? 'has-error' : '' }}">
+                                                <b>{!! Form::label('hidden',Lang::get('message.price'),['class'=>'required']) !!}</b>
                                                 <input type="text" name="price[][name]" class="form-control" value="{{ old('price.0.name') }}">
                                             </div>
                                             <div class="col-md-4">

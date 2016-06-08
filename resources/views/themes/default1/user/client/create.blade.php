@@ -20,6 +20,13 @@
             {{Session::get('success')}}
         </div>
         @endif
+        
+        @if(Session::has('warning'))
+        <div class="alert alert-warning alert-dismissable">
+           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            {{Session::get('warning')}}
+        </div>
+        @endif
         <!-- fail message -->
         @if(Session::has('fails'))
         <div class="alert alert-danger alert-dismissable">

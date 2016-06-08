@@ -3,27 +3,8 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Order/InvoiceController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/front/cart.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/layouts/front/myaccount_master.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/product/product/create.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Plugins/Ccavanue/config.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Plugins/Ccavanue/Model/Ccavanue.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Order/RenewController.php</file>
             <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Order/OrderController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Common/TemplateController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Common/SettingsController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/front/checkout.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/CartController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/CheckoutController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Model/Payment/Plan.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Plugins/Ccavanue/ServiceProvider.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Plugins/Ccavanue/Controllers/SettingsController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/product/product/edit.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/layouts/front/master.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/composer.json</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/config/app.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Plugins/Ccavanue/Controllers/ProcessController.php</file>
+            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/ClientController.php</file>
         </group>
     </open-files>
 </project-private>

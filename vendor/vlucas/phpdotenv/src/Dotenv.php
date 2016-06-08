@@ -24,10 +24,18 @@ class Dotenv
      */
     protected $loader;
 
+    /**
+     * Create a new dotenv instance.
+     *
+     * @param string $path
+     * @param string $file
+     *
+     * @return void
+     */
     public function __construct($path, $file = '.env')
     {
         $this->filePath = $this->getFilePath($path, $file);
-        $this->loader = new Loader($this->filePath, $immutable = true);
+        $this->loader = new Loader($this->filePath, true);
     }
 
     /**
@@ -37,7 +45,7 @@ class Dotenv
      */
     public function load()
     {
-        $this->loader = new Loader($this->filePath, $immutable = true);
+        $this->loader = new Loader($this->filePath, true);
 
         return $this->loader->load();
     }
@@ -49,7 +57,7 @@ class Dotenv
      */
     public function overload()
     {
-        $this->loader = new Loader($this->filePath, $immutable = false);
+        $this->loader = new Loader($this->filePath, false);
 
         return $this->loader->load();
     }

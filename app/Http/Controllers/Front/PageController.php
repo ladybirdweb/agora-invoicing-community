@@ -71,6 +71,14 @@ class PageController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'publish'=>'required',
+            'slug'=>'required',
+            'url'=>'required',
+            'content'=>'required',
+        ]);
+        
         try {
             $this->page->fill($request->input())->save();
 
@@ -82,6 +90,13 @@ class PageController extends Controller
 
     public function update($id, Request $request)
     {
+         $this->validate($request, [
+            'name'=>'required',
+            'publish'=>'required',
+            'slug'=>'required',
+            'url'=>'required',
+            'content'=>'required',
+        ]);
         try {
             $page = $this->page->where('id', $id)->first();
             $page->fill($request->input())->save();
@@ -96,7 +111,7 @@ class PageController extends Controller
     {
         $productController = new \App\Http\Controllers\Product\ProductController();
         $url = $productController->GetMyUrl();
-        $segment = $this->Addsegment(['public']);
+        $segment = $this->Addsegment(['public/pages']);
         $url = $url.$segment;
 
         $slug = str_slug($slug, '-');
@@ -138,7 +153,6 @@ class PageController extends Controller
     {
         try {
             $page = $this->page->where('slug', $slug)->where('publish', 1)->first();
-
             return view('themes.default1.front.page.show', compact('page'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

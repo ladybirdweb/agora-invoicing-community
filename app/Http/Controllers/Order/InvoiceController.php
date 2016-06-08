@@ -96,7 +96,7 @@ class InvoiceController extends Controller
     {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
-        return \Datatable::query($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at'))
+        return \Datatable::Collection($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })

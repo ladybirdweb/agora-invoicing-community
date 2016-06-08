@@ -178,7 +178,7 @@
 
                     <tr>
 
-                        <td><b>{!! Form::label('hidden',Lang::get('message.title')) !!}</b></td>
+                        <td><b>{!! Form::label('title',Lang::get('message.title'),['class'=>'required']) !!}</b></td>
 
                         <td>
                             <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
@@ -197,7 +197,7 @@
 
                     <tr>
 
-                        <td><b>{!! Form::label('hidden',Lang::get('message.type')) !!}</b></td>
+                        <td><b>{!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
 
                         <td>
                             <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
@@ -216,16 +216,16 @@
 
                     <tr>
 
-                        <td><b>{!! Form::label('hidden',Lang::get('message.options')) !!}</b></td>
+                        <td><b>{!! Form::label('options',Lang::get('message.options')) !!}</b></td>
 
                         <td>
                             <div class='row form-group'>
                                 <div class="col-md-4">
-                                    <b>{!! Form::label('hidden',Lang::get('message.value')) !!}</b>
+                                    <b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}</b>
 
                                 </div>
                                 <div class="col-md-4">
-                                    <b>{!! Form::label('hidden',Lang::get('message.price')) !!}</b>
+                                    <b>{!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}</b>
 
                                 </div>
                             </div>

@@ -6,7 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'phpDocumentor\\Reflection\\' => array($vendorDir . '/phpdocumentor/reflection-common/src', $vendorDir . '/phpdocumentor/type-resolver/src', $vendorDir . '/phpdocumentor/reflection-docblock/src'),
     'XdgBaseDir\\' => array($vendorDir . '/dnoegel/php-xdg-base-dir/src'),
+    'Webmozart\\Assert\\' => array($vendorDir . '/webmozart/assert/src'),
     'Torann\\GeoIP\\' => array($vendorDir . '/torann/geoip/src/Torann/GeoIP'),
     'Thomaswelton\\Tests\\LaravelGravatar\\' => array($vendorDir . '/thomaswelton/laravel-gravatar/tests'),
     'Thomaswelton\\LaravelGravatar\\' => array($vendorDir . '/thomaswelton/laravel-gravatar/src'),
@@ -43,6 +45,8 @@ return array(
     'GeoIp2\\' => array($vendorDir . '/geoip2/geoip2/src'),
     'Dotenv\\' => array($vendorDir . '/vlucas/phpdotenv/src'),
     'Doctrine\\Instantiator\\' => array($vendorDir . '/doctrine/instantiator/src/Doctrine/Instantiator'),
+    'Doctrine\\Common\\Cache\\' => array($vendorDir . '/doctrine/cache/lib/Doctrine/Common/Cache'),
+    'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib/Doctrine/Common'),
     'Darryldecode\\' => array($vendorDir . '/darryldecode/cart/src/Darryldecode'),
     'Collective\\Html\\' => array($vendorDir . '/laravelcollective/html/src'),
     'ClassPreloader\\' => array($vendorDir . '/classpreloader/classpreloader/src'),

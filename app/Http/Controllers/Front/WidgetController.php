@@ -68,6 +68,12 @@ class WidgetController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'publish'=>'required',
+            
+            'content'=>'required',
+        ]);
         try {
             $this->widget->fill($request->input())->save();
 
@@ -79,6 +85,12 @@ class WidgetController extends Controller
 
     public function update($id, Request $request)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'publish'=>'required',
+            
+            'content'=>'required',
+        ]);
         try {
             $widget = $this->widget->where('id', $id)->first();
             $widget->fill($request->input())->save();

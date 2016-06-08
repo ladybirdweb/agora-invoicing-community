@@ -140,7 +140,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('orders')}}"><i class="fa fa-paper-plane"></i>{{Lang::get('message.all-orders')}}</a></li>
-                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
                             </ul>
                         </li>
                         <li class="treeview">
@@ -150,7 +150,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('invoices')}}"><i class="fa fa-paperclip"></i>{{Lang::get('message.all-invoices')}}</a></li>
-                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
                             </ul>
                         </li>
                         

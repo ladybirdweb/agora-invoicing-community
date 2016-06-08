@@ -34,6 +34,7 @@ class ClientRequest extends Request
                     'mobile_code'     => 'required|numeric',
                         'address'     => 'required',
                         'zip'         => 'required',
+                        'timezone_id' => 'required',
                     ];
                 }
 
@@ -47,6 +48,7 @@ class ClientRequest extends Request
                     'mobile_code'     => 'required|numeric',
                         'address'     => 'required',
                         'zip'         => 'required',
+                        'timezone_id' => 'required',
                     ];
                 }
             default:break;

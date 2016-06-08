@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Common\CronController;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderRequest;
 use App\Model\Order\Invoice;
@@ -134,11 +133,12 @@ class OrderController extends Controller
                         ->addColumn('action', function ($model) {
                             $sub = $model->subscription()->first();
                             $status = $this->checkInvoiceStatusByOrderId($model->id);
-                            $url = "";
-                            if ($status=='success') {
-                                $url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary'>Renew</a>";
+                            $url = '';
+                            if ($status == 'success') {
+                                $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary'>Renew</a>";
                             }
-                            return '<p><a href=' . url('orders/' . $model->id) . " class='btn btn-sm btn-primary'>View</a> $url</p>";
+
+                            return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
                         ->searchColumns('order_status', 'number', 'price_override')
                         ->orderColumns('client', 'created_at', 'number', 'price_override')
@@ -614,7 +614,8 @@ class OrderController extends Controller
         }
     }
 
-    public function checkInvoiceStatusByOrderId($orderid) {
+    public function checkInvoiceStatusByOrderId($orderid)
+    {
         try {
             $status = 'pending';
             $order = $this->order->find($orderid);
@@ -623,14 +624,14 @@ class OrderController extends Controller
                 $invoice = $this->invoice->find($invoiceid);
                 if ($invoice) {
                     if ($invoice->status == 'Success') {
-                        $status = "success";
+                        $status = 'success';
                     }
                 }
             }
+
             return $status;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

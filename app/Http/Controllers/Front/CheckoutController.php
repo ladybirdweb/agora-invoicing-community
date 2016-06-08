@@ -200,7 +200,7 @@ class CheckoutController extends Controller {
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 if ($paynow == false) {
-                    $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
+                   // $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 }
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {

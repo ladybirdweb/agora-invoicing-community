@@ -122,11 +122,11 @@ class ClientController extends Controller {
                             //return $end;
                         })
                         ->addColumn('action', function ($model) {
-                            $controller = new CronController();
-                            $sub = $controller->getExpiredInfoByOrderId($model->id);
-
+                            $sub = $model->subscription()->first();
+                            $order_cont = new \App\Http\Controllers\Order\OrderController();
+                            $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = "";
-                            if ($sub) {
+                            if ($status=='success') {
                                 $url = $this->renewPopup($sub->id);
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }

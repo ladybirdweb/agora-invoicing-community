@@ -116,7 +116,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                                 </td>
                                 <td class="product-name">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
+                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -151,7 +151,9 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                 @if(Cart::getTotal()>0)
                 <h4 class="heading-primary">Payment</h4>
                 <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
-                //  dd($gateways);
+                $total = Cart::getSubTotal();
+                                                        $sum = $item->getPriceSum();
+                                                        $tax = $total-$sum;
                 ?>
                 <div class="form-group">
                     @forelse($gateways as $gateway)
@@ -183,7 +185,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{array_sum($subtotals)}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
                     </td>
                 </tr>
 
@@ -194,7 +196,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$price)}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::rounding($tax)}}
                     </td>
 
                 </tr>
@@ -205,7 +207,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span></strong>
                     </td>
                 </tr>
             </tbody>

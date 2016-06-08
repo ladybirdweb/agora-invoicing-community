@@ -96,10 +96,10 @@ class TemplateController extends Controller {
             $password = $fields->password;
             $name = $fields->company;
         }
-        $this->smtpConfig($driver, $port, $host, $enc, $email, $password,$name);
+        $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password,$name) {
+    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name) {
         Config::set('mail.driver', $driver);
         Config::set('mail.password', $password);
         Config::set('mail.username', $email);
@@ -275,8 +275,8 @@ class TemplateController extends Controller {
             if (!array_key_exists('order', $replace)) {
                 $replace['order'] = '';
             }
-            $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}', '{{product}}','{{order}}'];
-            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product'],$replace['order'],];
+            $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}', '{{product}}', '{{order}}'];
+            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product'], $replace['order'],];
 
             $data = str_replace($array1, $array2, $data);
             $settings = \App\Model\Common\Setting::find(1);
@@ -384,9 +384,9 @@ class TemplateController extends Controller {
                             }
                             //dd('yes');
                             //$plans = $this->plans();
-                            $price = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $product_currency->currency, 1, 0, 1);
-                            
-                            $subscription=  $this->plans($product->shoping_cart_link,$product->id);
+                            // $price = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $product_currency->currency, 1, 0, 1);
+                            $price = $this->leastAmount($product->id);
+                            $subscription = $this->plans($product->shoping_cart_link, $product->id);
                             //$subscription = $this->plan->where('id', $product_currency->subscription)->first()->name;
                         } else {
                             return redirect('/')->with('fails', \Lang::get('message.no-such-currency-in-system'));
@@ -396,7 +396,7 @@ class TemplateController extends Controller {
                         $array2 = [$title, $currency, $price, $subscription, $description, $url];
                         $template .= str_replace($array1, $array2, $data);
                     }
-                    
+
                     //dd($template);
                     return view('themes.default1.common.template.shoppingcart', compact('template'));
                 } else {
@@ -472,13 +472,13 @@ class TemplateController extends Controller {
     public function checkTax($productid, $currency, $cart = 0, $cart1 = 0, $shop = 0) {
         try {
             $product = $this->product->findOrFail($productid);
-            $controller  = new \App\Http\Controllers\Front\CartController();
+            $controller = new \App\Http\Controllers\Front\CartController();
             $price = $controller->cost($productid);
 //            $price = $product->price()->where('currency', $currency)->first()->sales_price;
 //            if (!$price) {
 //                $price = $product->price()->where('currency', $currency)->first()->price;
 //            }
-            
+
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
@@ -501,7 +501,7 @@ class TemplateController extends Controller {
                     $tax_amount = $this->calculateTotal($rate, $price);
                 }
             }
-            
+
 
             return $tax_amount;
         } catch (\Exception $ex) {
@@ -596,7 +596,7 @@ class TemplateController extends Controller {
     public function withoutTaxRelation($productid, $currency) {
         try {
             $product = $this->product->findOrFail($productid);
-            $controller  = new \App\Http\Controllers\Front\CartController();
+            $controller = new \App\Http\Controllers\Front\CartController();
             $price = $controller->cost($productid);
             return $price;
         } catch (\Exception $ex) {
@@ -644,18 +644,57 @@ class TemplateController extends Controller {
             throw new \Exception($ex->getMessage());
         }
     }
-    
-    public function plans($url,$id){
+
+    public function plans($url, $id) {
         $plan = new Plan();
         $plan_form = "No subscription";
-        $plans = $plan->where('product',$id)->lists('name','id')->toArray();
-        if(count($plans)>0){
-            $plan_form = \Form::select('subscription',[$plans],null);
+        //$plans = $plan->where('product',$id)->lists('name','id')->toArray();
+        $plans = $this->prices($id);
+        if (count($plans) > 0) {
+            $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
-        $form = \Form::open(['method'=>'get','url'=>$url]).
-                $plan_form.
-                \Form::hidden('id',$id);
+        $form = \Form::open(['method' => 'get', 'url' => $url]) .
+                $plan_form .
+                \Form::hidden('id', $id);
         return $form;
+    }
+
+    public function prices($id) {
+        $plan = new Plan();
+        $plans = $plan->where('product', $id)->get();
+        $price = [];
+        $cart_controller = new \App\Http\Controllers\Front\CartController();
+        $currency = $cart_controller->currency();
+
+        foreach ($plans as $value) {
+            $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
+            $months = round($value->days / 30);
+            $price[$value->id] = $months . ' Month at ' . $currency . ' ' . $cost . '/month';
+        }
+        $this->leastAmount($id);
+        return $price;
+    }
+
+    public function leastAmount($id) {
+        $cost = "";
+        $plan = new Plan();
+        $plans = $plan->where('product', $id)->get();
+        $cart_controller = new \App\Http\Controllers\Front\CartController();
+        $currency = $cart_controller->currency();
+        if ($plans->count() > 0) {
+            foreach ($plans as $value) {
+                $days = $value->min('days');
+                $month = round($days / 30);
+                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
+            }
+            $cost = "$currency $price /mo";
+        } else {
+            $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $currency, 1, 0, 1);
+            if ($product_cost != 0) {
+                $cost = $currency . ' ' . $product_cost;
+            }
+        }
+        return $cost;
     }
 
 }

@@ -402,9 +402,31 @@
                         
                            <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_3">
+                            <h3>
+                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
+                            </h3>
                             <table class="table table-responsive">
-
-                               
+                                <?php
+                                $plans = App\Model\Payment\Plan::select('days', 'name', 'id')->get();
+                                ?>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Months</th>
+                                    <th>Action</th>
+                                </tr>
+                                @forelse($plans as $plan)
+                                <tr>
+                                    <td>{{$plan->name}}</td> 
+                                    <?php
+                                    $months = $plan->days / 30;
+                                    ?>
+                                    <td>{{round($months)}}</td> 
+                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
+                                </tr>
+                                @empty 
+                                <tr><td>No plans</td></tr>
+                                @endforelse
+   
                                
 
                             </table>

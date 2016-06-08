@@ -99,7 +99,7 @@ class OrderController extends Controller {
         $till = $request->input('till');
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
-       // dd($query->get());
+        // dd($query->get());
         //return \Datatable::query($this->order->select('id', 'created_at', 'client',
         //'price_override', 'order_status', 'number', 'serial_key'))
         return \Datatable::query($query)
@@ -119,23 +119,22 @@ class OrderController extends Controller {
                         ->addColumn('ends_at', function ($model) {
                             $end = '--';
                             $ends = $model->subscription()->first();
-                            if($ends){
+                            if ($ends) {
                                 if ($ends->ends_at != '0000-00-00 00:00:00' || $ends->ends_at != null) {
                                     $end = $ends->ends_at;
                                 }
                             }
 
-                             return $end;
-                         })
+                            return $end;
+                        })
                         ->addColumn('action', function ($model) {
-                            $controller = new CronController();
-                            $sub = $controller->getExpiredInfoByOrderId($model->id);
-
+                            $sub = $model->subscription()->first();
+                            $status = $this->checkInvoiceStatusByOrderId($model->id);
                             $url = "";
-                            if ($sub) {
+                            if ($status=='success') {
                                 $url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary'>Renew</a>";
                             }
-                            return '<p><a href=' . url('orders/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>$url</p>";
+                            return '<p><a href=' . url('orders/' . $model->id) . " class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
                         ->searchColumns('order_status', 'number', 'price_override')
                         ->orderColumns('client', 'created_at', 'number', 'price_override')
@@ -310,6 +309,7 @@ class OrderController extends Controller {
      */
     public function orderExecute(Request $request) {
         try {
+            //dd($request);
             $invoiceid = $request->input('invoiceid');
 
             $execute = $this->executeOrder($invoiceid);
@@ -584,6 +584,25 @@ class OrderController extends Controller {
                 $planid = $item->plan_id;
             }
             return $planid;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function checkInvoiceStatusByOrderId($orderid) {
+        try {
+            $status = 'pending';
+            $order = $this->order->find($orderid);
+            if ($order) {
+                $invoiceid = $order->invoice_id;
+                $invoice = $this->invoice->find($invoiceid);
+                if ($invoice) {
+                    if ($invoice->status == 'Success') {
+                        $status = "success";
+                    }
+                }
+            }
+            return $status;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

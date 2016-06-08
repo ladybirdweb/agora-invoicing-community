@@ -207,6 +207,8 @@
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
+                                                                            $cart_controller = new \App\Http\Controllers\Front\CartController();
+                                                                            $currency = $cart_controller->currency();
                                                                             ?>
                                                                             <tr>
 
@@ -215,7 +217,8 @@
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{\Session::get('currency')}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceWithConditions())}}</strong></span></a>
+                                                                                        
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}}</strong></span></a>
                                                                                 </td>
 
                                                                                 <td class="product-actions">

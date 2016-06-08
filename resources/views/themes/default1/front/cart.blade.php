@@ -106,6 +106,10 @@ if (count($attributes) > 0) {
                                                             $domain[$key] = $product->id;
                                                         }
                                                         $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
+                                                        $total = Cart::getSubTotal();
+                                                        $sum = $item->getPriceSum();
+                                                        $tax = $total-$sum;
+                                                        
                                                         ?>
 
                                                         <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
@@ -128,7 +132,7 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
+                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
                                                     </td>
 
                                                 </tr>
@@ -186,7 +190,7 @@ if (count($attributes) > 0) {
                                             <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
                                         </th>
                                         <td>
-                                            {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$price)}}
+                                            {{App\Http\Controllers\Front\CartController::rounding($tax)}}
                                         </td>
 
                                     </tr>

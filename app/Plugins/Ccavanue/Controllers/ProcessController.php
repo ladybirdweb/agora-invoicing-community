@@ -30,8 +30,8 @@ class ProcessController extends Controller {
                 \Session::set('invoiceid', $order->id);
             }
 
-            if ($request->input('payment_gateway') == 'ccavanue') {
-                if (!\Schema::hasTable('ccavanue')) {
+            if ($request->input('payment_gateway') == 'ccavenue') {
+                if (!\Schema::hasTable('ccavenue')) {
                     throw new \Exception('Ccavanue is not configured');
                 }
 
@@ -84,6 +84,7 @@ class ProcessController extends Controller {
                 $this->middlePage($merchant_data, $ccavanue_url, $access_code, $working_key);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

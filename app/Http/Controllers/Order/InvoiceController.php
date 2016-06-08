@@ -8,18 +8,18 @@ use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
+use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
-use App\Model\Product\Price;
 //use Symfony\Component\HttpFoundation\Request as Requests;
+use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Illuminate\Http\Request;
 use Input;
-use App\Model\Order\Order;
 
 class InvoiceController extends Controller
 {
@@ -77,7 +77,7 @@ class InvoiceController extends Controller
 
         $tax_option = new TaxOption();
         $this->tax_option = $tax_option;
-        
+
         $order = new Order();
         $this->order = $order;
     }
@@ -113,13 +113,12 @@ class InvoiceController extends Controller
 
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
-                                $action = '<a href=' . url('order/execute?invoiceid=' . $model->id) . " class='btn btn-sm btn-primary'>Execute Order</a>";
+                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>Execute Order</a>";
                             }
 
 
-                            return '<a href=' . url('invoices/show?invoiceid=' . $model->id) . " class='btn btn-sm btn-primary'>View</a>"
-                                    . "   $action";
-
+                            return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>View</a>"
+                                    ."   $action";
                         })
                         ->searchColumns('created_at', 'user_id', 'number', 'grand_total', 'status')
                         ->orderColumns('created_at', 'user_id', 'number', 'grand_total', 'status')
@@ -170,7 +169,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function invoiceGenerateByForm(Request $request, $user_id = '') {
+    public function invoiceGenerateByForm(Request $request, $user_id = '')
+    {
         //dd($request->all());
         $qty = 1;
         if (array_key_exists('domain', $request->all())) {
@@ -187,9 +187,9 @@ class InvoiceController extends Controller
 
         $this->validate($request, [
             'product' => 'required',
-            'plan'=>'required_if:subscription,true',
-        ],[
-            'plan.required_if'=>'Subscription field is required',
+            'plan'    => 'required_if:subscription,true',
+        ], [
+            'plan.required_if' => 'Subscription field is required',
         ]);
         try {
             if ($user_id == '') {
@@ -247,7 +247,7 @@ class InvoiceController extends Controller
 //            if ($grand_total > 0) {
 //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
 //            }
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty,$plan);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan);
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
                 $result = ['success' => \Lang::get('message.invoice-generated-successfully')];
@@ -329,7 +329,7 @@ class InvoiceController extends Controller
             $quantity = $cart->quantity;
             $domain = $this->domain($cart->id);
             $cart_cont = new \App\Http\Controllers\Front\CartController();
-            if($cart_cont->checkPlanSession()==true){
+            if ($cart_cont->checkPlanSession() == true) {
                 $planid = \Session::get('plan');
             }
             //dd($quantity);
@@ -353,9 +353,9 @@ class InvoiceController extends Controller
                 'quantity'       => $quantity,
                 'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_percentage,
-                'subtotal' => $subtotal,
-                'domain' => $domain,
-                'plan_id'=>$planid,
+                'subtotal'       => $subtotal,
+                'domain'         => $domain,
+                'plan_id'        => $planid,
             ]);
 
             return $invoiceItem;
@@ -390,7 +390,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty,$planid='') {
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '')
+    {
         try {
             $discount = '';
             $mode = '';
@@ -432,8 +433,8 @@ class InvoiceController extends Controller
                 'subtotal'       => \App\Http\Controllers\Front\CartController::rounding($subtotal),
                 'tax_name'       => $tax_name,
                 'tax_percentage' => $tax_rate,
-                'domain' => $domain,
-                'plan_id'=>$planid,
+                'domain'         => $domain,
+                'plan_id'        => $planid,
             ]);
 
             return $items;
@@ -778,12 +779,12 @@ class InvoiceController extends Controller
             $invoice_status = 'pending';
 
             $payment = $this->payment->create([
-                'invoice_id' => $invoiceid,
-                'user_id' => $invoice->user_id,
-                'amount' => $amount,
+                'invoice_id'     => $invoiceid,
+                'user_id'        => $invoice->user_id,
+                'amount'         => $amount,
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
-                'created_at' => $payment_date,
+                'created_at'     => $payment_date,
             ]);
             $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
             $total_paid = array_sum($all_payments);
@@ -838,8 +839,8 @@ class InvoiceController extends Controller
     {
         $this->validate($request, [
             'payment_method' => 'required',
-            'amount' => 'required|numeric',
-            'payment_date' => 'required|date_format:Y-m-d',
+            'amount'         => 'required|numeric',
+            'payment_date'   => 'required|date_format:Y-m-d',
         ]);
         try {
             $payment_method = $request->input('payment_method');
@@ -890,8 +891,8 @@ class InvoiceController extends Controller
         }
     }
 
-    public function deletePayment(Request $request) {
-
+    public function deletePayment(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -907,25 +908,25 @@ class InvoiceController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.no-record') . '
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.deleted-successfully') . '
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.select-a-row') . '
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
@@ -933,14 +934,15 @@ class InvoiceController extends Controller
             dd($e);
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . $e->getMessage() . '
+                        '.$e->getMessage().'
                 </div>';
         }
     }
 
-    public function deleleById($id) {
+    public function deleleById($id)
+    {
         try {
             $invoice = $this->invoice->find($id);
             if ($invoice) {
@@ -948,13 +950,15 @@ class InvoiceController extends Controller
             } else {
                 return redirect()->back()->with('fails', 'Can not delete');
             }
+
             return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function paymentDeleleById($id) {
+    public function paymentDeleleById($id)
+    {
         try {
             $invoice_no = '';
             $payment = $this->payment->find($id);
@@ -968,13 +972,15 @@ class InvoiceController extends Controller
             } else {
                 return redirect()->back()->with('fails', 'Can not delete');
             }
+
             return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function checkExecution($invoiceid) {
+    public function checkExecution($invoiceid)
+    {
         try {
             $response = false;
             $invoice = $this->invoice->find($invoiceid);
@@ -982,13 +988,13 @@ class InvoiceController extends Controller
             $order_invoice_relation = $invoice->orderRelation()->first();
             if ($order_invoice_relation) {
                 $response = true;
-            } elseif ($order->get()->count()>0) {
+            } elseif ($order->get()->count() > 0) {
                 $response = true;
             }
+
             return $response;
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
 }

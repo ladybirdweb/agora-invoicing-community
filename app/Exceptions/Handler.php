@@ -53,12 +53,13 @@ class Handler extends ExceptionHandler
 
                 return $this->renderException($e);
                 break;
-            
+
             case $e instanceof HttpException:
                 dd($e);
+
                 return $this->render404();
                 break;
-            
+
             default:
                 return $this->render500($request, $e);
                 break;
@@ -78,12 +79,14 @@ class Handler extends ExceptionHandler
                                 ->createResponse($e);
         }
     }
-    
-    protected function render404(){
+
+    protected function render404()
+    {
         return response()->view('errors.404');
     }
-    
-    protected function render500($request, $e){
+
+    protected function render500($request, $e)
+    {
         //\Config::get('app.debug')
         //dd($e);
         //if(\Config::get('app.debug')==true){

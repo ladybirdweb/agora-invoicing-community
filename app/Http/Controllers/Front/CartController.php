@@ -509,6 +509,7 @@ class CartController extends Controller
             if ($result == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             }
+            return redirect()->back();
         } catch (\Exception $ex) {
             dd($ex);
 

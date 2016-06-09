@@ -156,6 +156,11 @@ class TemplateController extends Controller
 
     public function store(Request $request)
     {
+        $this->validate($request, [
+            'name'=>'required',
+            'data'=>'required',
+            'type'=>'required',
+        ]);
         try {
             //dd($request);
             $this->template->fill($request->input())->save();
@@ -186,6 +191,11 @@ class TemplateController extends Controller
 
     public function update($id, Request $request)
     {
+         $this->validate($request, [
+            'name'=>'required',
+            'data'=>'required',
+            'type'=>'required',
+        ]);
         try {
             //dd($request);
             $template = $this->template->where('id', $id)->first();

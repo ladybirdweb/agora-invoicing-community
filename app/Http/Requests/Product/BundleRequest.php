@@ -25,7 +25,7 @@ class BundleRequest extends Request
     {
         return [
             'name'  => 'required',
-            'items' => 'required',
+            'items.*' => 'required',
         ];
     }
 }

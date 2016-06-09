@@ -24,7 +24,7 @@ class PromotionRequest extends Request
     public function rules()
     {
         return [
-            'code'    => 'required|min:6|max:6',
+            'code'    => 'required',
             'type'    => 'required',
             'applied' => 'required',
 

@@ -71,9 +71,9 @@
 
                 <div class="row">
 
-                    <div class="col-md-6 form-group {{ $errors->has('items') ? 'has-error' : '' }}">
+                    <div class="col-md-6 form-group {{ $errors->has('items.0') ? 'has-error' : '' }}">
 
-                        {!! Form::label('items',Lang::get('message.bundle-items')) !!}
+                        {!! Form::label('items',Lang::get('message.bundle-items'),['class'=>'required']) !!}
                         {!! Form::select('items[]',[''=>'Select','Products'=>$products],null,['class'=>'form-control','multiple'=>true]) !!}
 
                     </div>

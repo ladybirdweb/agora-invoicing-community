@@ -89,6 +89,12 @@ class SocialMediaController extends Controller
 
     public function update($id, Request $request)
     {
+        $this->validate($request, [
+            'name'     => 'required',
+            'link'     => 'required|url',
+            'class'    => 'required',
+            'fa_class' => 'required',
+        ]);
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();

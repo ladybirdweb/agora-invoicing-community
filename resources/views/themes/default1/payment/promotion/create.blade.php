@@ -69,7 +69,7 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('type',Lang::get('message.type')) !!}</b></td>
+                        <td><b>{!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
 
@@ -111,7 +111,7 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('applied',Lang::get('message.applied')) !!}</b></td>
+                        <td><b>{!! Form::label('applied',Lang::get('message.applied'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
 

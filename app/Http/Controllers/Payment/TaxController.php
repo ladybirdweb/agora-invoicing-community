@@ -47,6 +47,7 @@ class TaxController extends Controller
      */
     public function index()
     {
+        
         try {
             $options = $this->tax_option->find(1);
             if (!$options) {
@@ -243,6 +244,7 @@ class TaxController extends Controller
 
     public function options(Request $request)
     {
+        
         try {
             //dd($request->all());
             $method = $request->method();

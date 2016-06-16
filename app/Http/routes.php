@@ -109,6 +109,8 @@ Route::get('settings/email', 'Common\SettingsController@settingsEmail');
 Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
 Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
 Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
+Route::get('settings/error', 'Common\SettingsController@settingsError');
+Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
 
 /*
  * Client
@@ -345,10 +347,7 @@ Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
 Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
-/**
- * tesyting
- */
-Route::get('test-trans', 'Front\PageController@cart');
+
 
 Route::post('serial', 'HomeController@serial');
 

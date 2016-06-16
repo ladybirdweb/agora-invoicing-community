@@ -98,7 +98,7 @@ class TemplateController extends Controller
             $password = $fields->password;
             $name = $fields->company;
         }
-        $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
+        return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
     public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
@@ -110,6 +110,7 @@ class TemplateController extends Controller
         Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
+        return "success";
     }
 
     public function index()
@@ -288,7 +289,7 @@ class TemplateController extends Controller
       
             return "success";
         } catch (\Exception $ex) {
-            //dd($ex);
+            dd($ex);
             if($ex instanceof \Swift_TransportException){
                 throw new \Exception('We can not reach to this email address');
             }

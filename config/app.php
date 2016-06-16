@@ -68,7 +68,7 @@ return [
       | will not be safe. Please do this before deploying an application!
       |
      */
-    'key'    => env('APP_KEY', 'AEVQf2ecD6Czpw6r2jairFxbXohG72fH'),
+    'key'    => env('APP_KEY', 'SomeRandomString'),
     'cipher' => MCRYPT_RIJNDAEL_128,
     /*
       |--------------------------------------------------------------------------
@@ -99,8 +99,9 @@ return [
          * Payment Gateways
          */
 
+'App\Plugins\Paypal\ServiceProvider',
+
 'App\Plugins\Ccavanue\ServiceProvider',
-'App\Plugins\Paypal\ServiceProvider', ////
         /*
          * Laravel Framework Service Providers...
          */

@@ -122,46 +122,10 @@
 
                             </div>
                         </td>
-
-                    </tr>
-
-                    <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.error-log')}}</h3></td>
-                        <td></td>
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('error_log',Lang::get('message.error-log')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('error_log') ? 'has-error' : '' }}">
-
-
-                                {!! Form::radio('error_log','1',true) !!}<span>   {{Lang::get('message.yes')}}</span>
-                                {!! Form::radio('error_log','0') !!}<span>   {{Lang::get('message.no')}}</span>
-                                <p><i> {{Lang::get('message.enable-error-logging')}}</i> </p>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('error_email',Lang::get('message.error-email')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('error_email') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('error_email',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.provide-error-reporting-email')}}</i> </p>
-
-
-                            </div>
-                        </td>
                         {!! Form::close() !!}
                     </tr>
+
+                    
 
                 </table>
             </div>

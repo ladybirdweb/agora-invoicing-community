@@ -3,21 +3,9 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/user/client/create.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Requests/User/ClientRequest.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/User/ClientController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/user/client/index.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/user/client/edit.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/layouts/master.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/invoice/index.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/invoice/generate.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Order/InvoiceController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/PageController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/front/page/show.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Model/Front/FrontendPage.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/app/Http/Controllers/Front/WidgetController.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/product/group/create.blade.php</file>
-            <file>file:/Applications/AMPPS/www/billings/agorainvoicing/agorainvoicing/resources/views/themes/default1/product/group/edit.blade.php</file>
+            <file>file:/Applications/AMPPS/www/billings/billing/resources/views/themes/default1/product/product/create.blade.php</file>
+            <file>file:/Applications/AMPPS/www/billings/billing/resources/views/themes/default1/product/product/edit.blade.php</file>
+            <file>file:/Applications/AMPPS/www/billings/billing/app/Http/routes.php</file>
         </group>
     </open-files>
 </project-private>

@@ -24,25 +24,6 @@ class SettingsController extends Controller {
         //return view('themes.default1.common.settings', compact('setting', 'template'));
     }
 
-//    public function UpdateSettings(Setting $settings, SettingRequest $request) {
-//        //dd($request);
-//        $setting = $settings->where('id', '1')->first();
-//        if ($request->has('password')) {
-//            $encrypt = $request->input('password');
-//            $doencrypt = \Crypt::encrypt($encrypt);
-//            $setting->password = $doencrypt;
-//        }
-//        if ($request->hasFile('logo')) {
-//            $name = $request->file('logo')->getClientOriginalName();
-//            $destinationPath = public_path('cart/img/logo');
-//            $request->file('logo')->move($destinationPath, $name);
-//            $setting->logo = $name;
-//        }
-//        $setting->fill($request->except('password', 'logo'))->save();
-//
-//        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-//    }
-
     public function plugins() {
         return view('themes.default1.common.plugins');
     }
@@ -392,11 +373,17 @@ class SettingsController extends Controller {
             $set = $settings->find(1);
             return view('themes.default1.common.setting.system', compact('set'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function postSettingsSystem(Setting $settings, Request $request) {
+        $this->validate($request, [
+            'company' => 'required',
+            'website' => 'url',
+            'address' => 'required|max:300',
+            'logo' => 'mimes:png',
+        ]);
         try {
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
@@ -409,26 +396,33 @@ class SettingsController extends Controller {
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function settingsEmail(Setting $settings) {
+        
         try {
             $set = $settings->find(1);
             return view('themes.default1.common.setting.email', compact('set'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function postSettingsEmail(Setting $settings, Request $request) {
+        $this->validate($request, [
+            'driver' => 'required',
+            'port' => 'integer',
+            'email' => 'required|email',
+            'password' => 'required_if:driver,smtp',
+        ]);
         try {
             $setting = $settings->find(1);
             $setting->fill($request->input())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -439,7 +433,7 @@ class SettingsController extends Controller {
             //$templates = $template->lists('name', 'id')->toArray();
             return view('themes.default1.common.setting.template', compact('set', 'template'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -449,7 +443,29 @@ class SettingsController extends Controller {
             $setting->fill($request->input())->save();
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsError(Setting $settings) {
+        try {
+            $set = $settings->find(1);
+            return view('themes.default1.common.setting.error-log', compact('set'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postSettingsError(Setting $settings, Request $request) {
+        $this->validate($request, [
+            'error_email' => 'email',
+        ]);
+        try {
+            $setting = $settings->find(1);
+            $setting->fill($request->input())->save();
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

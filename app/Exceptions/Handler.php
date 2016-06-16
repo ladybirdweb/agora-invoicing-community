@@ -76,9 +76,9 @@ class Handler extends ExceptionHandler {
      */
     public function render500($request, $e) {
         
-        //$this->mail($request, $e);
+        $this->mail($request, $e);
         
-        if (config('app.debug') == true) {
+        if (Config('app.debug') == true) {
             return parent::render($request, $e);
         }
         return view('errors.500');
@@ -95,6 +95,8 @@ class Handler extends ExceptionHandler {
         if (config('app.debug') == false) {
             return parent::render($request, $e);
         }
+        //dd('yes');
+        return view('errors.404');
     }
 
     /**
@@ -109,32 +111,31 @@ class Handler extends ExceptionHandler {
                 return $this->render404($request, $e);
             case $e instanceof NotFoundHttpException :
                 return $this->render404($request, $e);
-            default :
-                return $this->render500($request, $e);
+           
         }
-        return parent::render($request, $e);
+        return $this->render500($request, $e);
+        
     }
 
     public function mail($request, $e) {
         
-        $setting_controller = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $setting_controller->smtp();
         return $this->mailReport($request, $e);
     }
 
     public function mailReport($request, $e) {
-        
+        $setting_controller = new \App\Http\Controllers\Common\TemplateController();
+        $mail = $setting_controller->smtp();
         $set = new \App\Model\Common\Setting();
         $setting = $set->find(1);
-        //$subject = 'Agora Invoicing Error';
         
         if ($setting->error_log == 1 && $setting->error_email!='') {
             
-            \Mail::send('errors.report', ['e' => $e], function($m) use ($setting) {
+            $s = \Mail::send('errors.report', ['e' => $e], function($m) use ($setting) {
                 $m->from($setting->email, $setting->company);
 
                 $m->to($setting->error_email, 'Agora Error')->subject('Agora Invoicing Error');
             });
+            //dd($s);
         }
         return 'success';
     }

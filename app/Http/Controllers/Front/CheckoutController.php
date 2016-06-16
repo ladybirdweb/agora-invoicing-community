@@ -184,7 +184,7 @@ class CheckoutController extends Controller
                  * Do order, invoicing etc
                  */
                
-                $invoice = $invoice_controller->GenerateInvoice();
+                $invoice = $invoice_controller->generateInvoice();
                 
                 $status = 'pending';
                 if (!$payment_method) {
@@ -254,19 +254,8 @@ class CheckoutController extends Controller
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
             }
-            //get system values
-            $settings = new Setting();
-            $settings = $settings->findOrFail(1);
-            $name = \Auth::user()->first_name.' '.\Auth::user()->last_name;
-            $from = $settings->email;
-            $to = \Auth::user()->email;
-            $data = $this->template->where('type', 7)->first()->data;
-            $subject = $this->template->where('type', 7)->first()->name;
-            $replace = ['url' => $url, 'name' => $name, 'product' => $product];
-
-            //send mail
-            $template_controller = new TemplateController();
-            $template_controller->Mailing($from, $to, $data, $subject, $replace);
+            
+            
             return "success";
         } catch (\Exception $ex) {
             dd($ex);

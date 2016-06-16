@@ -142,7 +142,7 @@ class PageController extends Controller {
         try {
             $page = $this->page->where('slug', $slug)->where('publish', 1)->first();
             if ($page->type == 'cart') {
-                
+
                 return $this->cart();
             }
             return view('themes.default1.front.page.show', compact('page'));
@@ -268,15 +268,18 @@ class PageController extends Controller {
         }
 
 
-        
+
         return view('themes.default1.common.template.shoppingcart', compact('template'));
     }
 
     public function checkConfigKey($config, $transform) {
         $result = [];
-        foreach ($config as $key => $value) {
-            if (array_key_exists($key, $transform)) {
-                $result[$value] = $transform[$key];
+//        dd($config);
+        if (count($config) > 0) {
+            foreach ($config as $key => $value) {
+                if (array_key_exists($key, $transform)) {
+                    $result[$value] = $transform[$key];
+                }
             }
         }
         return $result;

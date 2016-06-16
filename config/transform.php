@@ -41,6 +41,8 @@ return[
         "address"=>"{{address}}",
         "invoiceurl"=>"{{invoiceurl}}",
         "total"=>'{{total}}',
+        "content"=>'{{content}}',
+        "currency"=>'{{currency}}',
     ],
     
     /**
@@ -50,5 +52,21 @@ return[
         "name"=>'{{name}}',
         "url"=>"{{url}}",
         
+    ],
+    
+    "subscription_going_to_end_mail"=>[
+        "name"=>"{{name}}",
+        "number"=>"{{number}}",
+        "product"=>"{{product}}",
+        "expiry"=>"{{expiry}}",
+        "url"=>"{{url}}",
+    ],
+    
+    "subscription_over_mail"=>[
+         "name"=>"{{name}}",
+        "number"=>"{{number}}",
+        "product"=>"{{product}}",
+        "expiry"=>"{{expiry}}",
+        "url"=>"{{url}}",
     ],
 ];

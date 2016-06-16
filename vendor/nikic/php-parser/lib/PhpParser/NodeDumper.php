@@ -4,18 +4,6 @@ namespace PhpParser;
 
 class NodeDumper
 {
-    private $dumpComments;
-
-    /**
-     * Constructs a NodeDumper.
-     *
-     * @param array $options Boolean option 'dumpComments' controls whether comments should be
-     *                       dumped
-     */
-    public function __construct(array $options = []) {
-        $this->dumpComments = !empty($options['dumpComments']);
-    }
-
     /**
      * Dumps a node or array.
      *
@@ -43,10 +31,6 @@ class NodeDumper
                     $r .= str_replace("\n", "\n    ", $this->dump($value));
                 }
             }
-
-            if ($this->dumpComments && $comments = $node->getAttribute('comments')) {
-                $r .= "\n    comments: " . str_replace("\n", "\n    ", $this->dump($comments));
-            }
         } elseif (is_array($node)) {
             $r = 'array(';
 
@@ -65,8 +49,6 @@ class NodeDumper
                     $r .= str_replace("\n", "\n    ", $this->dump($value));
                 }
             }
-        } elseif ($node instanceof Comment) {
-            return $node->getReformattedText();
         } else {
             throw new \InvalidArgumentException('Can only dump nodes and arrays.');
         }

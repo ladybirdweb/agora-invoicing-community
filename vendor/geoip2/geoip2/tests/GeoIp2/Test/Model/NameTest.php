@@ -33,13 +33,13 @@ class NameTest extends \PHPUnit_Framework_TestCase
     {
         $model = new Country($this->raw, array('ru', 'zh-CN', 'en'));
 
-        $this->assertSame(
+        $this->assertEquals(
             '北美洲',
             $model->continent->name,
             'continent name is in Chinese (no Russian available)'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             'объединяет государства',
             $model->country->name,
             'country name is in Russian'
@@ -50,13 +50,13 @@ class NameTest extends \PHPUnit_Framework_TestCase
     {
         $model = new Country($this->raw, array('ru', 'ja'));
 
-        $this->assertSame(
+        $this->assertEquals(
             null,
             $model->continent->name,
             'continent name is undef (no Russian or Japanese available)'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             'объединяет государства',
             $model->country->name,
             'country name is in Russian'
@@ -67,13 +67,13 @@ class NameTest extends \PHPUnit_Framework_TestCase
     {
         $model = new Country($this->raw, array('ja'));
 
-        $this->assertSame(
+        $this->assertEquals(
             null,
             $model->continent->name,
             'continent name is undef (no Japanese available) '
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             null,
             $model->country->name,
             'country name is undef (no Japanese available) '

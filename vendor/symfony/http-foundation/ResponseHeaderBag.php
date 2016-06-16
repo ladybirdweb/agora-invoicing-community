@@ -181,9 +181,9 @@ class ResponseHeaderBag extends HeaderBag
      *
      * @param string $format
      *
-     * @return array
-     *
      * @throws \InvalidArgumentException When the $format is invalid
+     *
+     * @return array
      */
     public function getCookies($format = self::COOKIES_FLAT)
     {

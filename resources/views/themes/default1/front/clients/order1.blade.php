@@ -41,7 +41,7 @@ active
                 @endif
     
 {!! Datatable::table()
-    ->addColumn('Id','Product Name','Transaction Date','Expiry','Action')
+    ->addColumn('Id','Product Name','Expiry','Action')
     ->setUrl('get-my-orders') 
     ->setOptions([
                 "order"=> [ 2, "desc" ],

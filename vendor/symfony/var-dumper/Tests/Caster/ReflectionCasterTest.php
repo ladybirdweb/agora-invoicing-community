@@ -13,7 +13,6 @@ namespace Symfony\Component\VarDumper\Tests\Caster;
 
 use Symfony\Component\VarDumper\Test\VarDumperTestTrait;
 use Symfony\Component\VarDumper\Tests\Fixtures\GeneratorDemo;
-use Symfony\Component\VarDumper\Tests\Fixtures\NotLoadableClass;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
@@ -50,7 +49,7 @@ ReflectionClass {
     "export" => ReflectionMethod {
       +name: "export"
       +class: "ReflectionClass"
-%A    parameters: {
+      parameters: {
         $%s: ReflectionParameter {
 %A         position: 0
 %A
@@ -76,7 +75,7 @@ Closure {
     \$b: & 123
   }
   file: "%sReflectionCasterTest.php"
-  line: "66 to 66"
+  line: "65 to 65"
 }
 EOTXT
             , $var
@@ -92,7 +91,7 @@ EOTXT
 ReflectionParameter {
   +name: "arg1"
   position: 0
-  typeHint: "Symfony\Component\VarDumper\Tests\Fixtures\NotLoadableClass"
+  typeHint: "Symfony\Component\VarDumper\Tests\Caster\NotExistingClass"
   default: null
 }
 EOTXT
@@ -224,6 +223,6 @@ EODUMP;
     }
 }
 
-function reflectionParameterFixture(NotLoadableClass $arg1 = null, $arg2)
+function reflectionParameterFixture(NotExistingClass $arg1 = null, $arg2)
 {
 }

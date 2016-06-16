@@ -161,7 +161,10 @@ class Swift_CharacterReader_Utf8Reader implements Swift_CharacterReader
         }
         $needed = self::$length_map[$bytes[0]] - $size;
 
-        return $needed > -1 ? $needed : -1;
+        return ($needed > -1)
+            ? $needed
+            : -1
+            ;
     }
 
     /**

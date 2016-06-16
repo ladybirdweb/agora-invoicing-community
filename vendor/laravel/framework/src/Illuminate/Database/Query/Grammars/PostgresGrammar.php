@@ -16,7 +16,6 @@ class PostgresGrammar extends Grammar
         '=', '<', '>', '<=', '>=', '<>', '!=',
         'like', 'not like', 'between', 'ilike',
         '&', '|', '#', '<<', '>>',
-        '@>', '<@', '?', '?|', '?&', '||', '-', '-', '#-',
     ];
 
     /**

@@ -95,8 +95,6 @@ class Promise implements PromiseInterface
             $this->cancelFn = null;
             try {
                 $fn();
-            } catch (\Throwable $e) {
-                $this->reject($e);
             } catch (\Exception $e) {
                 $this->reject($e);
             }
@@ -208,8 +206,6 @@ class Promise implements PromiseInterface
                 // Forward rejections down the chain.
                 $promise->reject($value);
             }
-        } catch (\Throwable $reason) {
-            $promise->reject($reason);
         } catch (\Exception $reason) {
             $promise->reject($reason);
         }

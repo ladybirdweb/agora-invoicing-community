@@ -6,11 +6,11 @@
 <div class="row">
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
-            <span class="info-box-icon bg-aqua"><i class="fa fa-fw fa-folder-open-o"></i></span>
+            <span class="info-box-icon bg-aqua"><i class="fa fa-users"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Open</span>
-                <span class="info-box-number">0<small>%</small></span>
+                <span class="info-box-text">Total users</span>
+                <span class="info-box-number">{{$count_users}}</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -19,11 +19,11 @@
     <!-- /.col -->
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
-            <span class="info-box-icon bg-red"><i class="fa fa-fw fa-calendar-times-o"></i></span>
+            <span class="info-box-icon bg-red"><i class="fa fa-trophy"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Over due</span>
-                <span class="info-box-number">0</span>
+                <span class="info-box-text">Pro Edition</span>
+                <span class="info-box-number">{{$pro_editions}}</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -36,11 +36,11 @@
 
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
-            <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+            <span class="info-box-icon bg-green"><i class="fa fa-briefcase"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Paid</span>
-                <span class="info-box-number">0</span>
+                <span class="info-box-text">Community Edition</span>
+                <span class="info-box-number">{{$community}}</span>
             </div>
             <!-- /.info-box-content -->
         </div>
@@ -49,11 +49,11 @@
     <!-- /.col -->
     <div class="col-md-3 col-sm-6 col-xs-12">
         <div class="info-box">
-            <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+            <span class="info-box-icon bg-yellow"><i class="fa fa-tags"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">unpaid members</span>
-                <span class="info-box-number">0</span>
+                <span class="info-box-text">Productc/Services Registered</span>
+                <span class="info-box-number">{{$product_count}}</span>
             </div>
             <!-- /.info-box-content -->
         </div>

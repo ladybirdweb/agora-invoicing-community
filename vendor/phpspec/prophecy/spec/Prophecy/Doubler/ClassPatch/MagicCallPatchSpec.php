@@ -49,18 +49,6 @@ class MagicCallPatchSpec extends ObjectBehavior
     /**
      * @param \Prophecy\Doubler\Generator\Node\ClassNode $node
      */
-    function it_ignores_empty_methods_from_phpdoc($node)
-    {
-        $node->getParentClass()->willReturn('spec\Prophecy\Doubler\ClassPatch\MagicalApiInvalidMethodDefinition');
-
-        $node->addMethod(new MethodNode(''))->shouldNotBeCalled();
-
-        $this->apply($node);
-    }
-
-    /**
-     * @param \Prophecy\Doubler\Generator\Node\ClassNode $node
-     */
     function it_discovers_api_using_phpdoc_from_interface($node)
     {
         $node->getParentClass()->willReturn('spec\Prophecy\Doubler\ClassPatch\MagicalApiImplemented');
@@ -89,15 +77,6 @@ class MagicalApi
     {
 
     }
-}
-
-/**
- * @method void invalidMethodDefinition
- * @method void
- * @method
- */
-class MagicalApiInvalidMethodDefinition
-{
 }
 
 /**

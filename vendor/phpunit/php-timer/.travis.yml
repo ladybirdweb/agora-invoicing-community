@@ -6,18 +6,10 @@ php:
   - 5.4
   - 5.5
   - 5.6
-  - 7.0
-  - nightly
   - hhvm
 
-before_install:
-  - composer self-update
-
-install:
-  - travis_retry composer install --no-interaction --prefer-source
-
 script:
-  - ./vendor/bin/phpunit --bootstrap src/Timer.php tests
+  - phpunit --bootstrap src/Timer.php tests
 
 notifications:
   email: false

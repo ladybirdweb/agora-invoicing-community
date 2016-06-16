@@ -130,20 +130,24 @@ use ResetsPasswords;
         }
         //check in the settings
         $settings = new \App\Model\Common\Setting();
-        $settings = $settings->where('id', 1)->first();
+        $setting = $settings->where('id', 1)->first();
         //template
-        $template = new \App\Model\Common\Template();
-
-        $from = $settings->email;
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->forgot_password;
+        $template = $templates->where('id', $temp_id)->first();
+        $from = $setting->email;
         $to = $user->email;
-
-        $subject = $template->where('id', $settings->where('id', 1)->first()->forgot_password)->first()->name;
-        $data = $template->where('id', $settings->where('id', 1)->first()->forgot_password)->first()->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'url' => $url];
-
+        $subject = $template->name;
+        $data = $template->data;
+        $replace = ['name' => $user->first_name.' '.$user->last_name,'url' => $url];
+        $type = "";
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
         $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $templateController->Mailing($from, $to, $data, $subject, $replace);
-
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace,$type);
         return redirect()->back()->with('success', "Reset instructions have been mailed to $to
 Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
     }

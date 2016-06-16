@@ -257,7 +257,7 @@ if (! function_exists('csrf_field')) {
     /**
      * Generate a CSRF token form field.
      *
-     * @return \Illuminate\Support\HtmlString
+     * @return string
      */
     function csrf_field()
     {
@@ -346,7 +346,7 @@ if (! function_exists('elixir')) {
         }
 
         if (isset($manifest[$file])) {
-            return '/'.trim($buildDirectory.'/'.$manifest[$file], '/');
+            return '/'.$buildDirectory.'/'.$manifest[$file];
         }
 
         throw new InvalidArgumentException("File {$file} not defined in asset manifest.");
@@ -386,12 +386,15 @@ if (! function_exists('env')) {
             case 'true':
             case '(true)':
                 return true;
+
             case 'false':
             case '(false)':
                 return false;
+
             case 'empty':
             case '(empty)':
                 return '';
+
             case 'null':
             case '(null)':
                 return;
@@ -480,7 +483,7 @@ if (! function_exists('method_field')) {
      * Generate a form field to spoof the HTTP verb used by forms.
      *
      * @param  string  $method
-     * @return \Illuminate\Support\HtmlString
+     * @return string
      */
     function method_field($method)
     {
@@ -609,11 +612,12 @@ if (! function_exists('route')) {
      * @param  string  $name
      * @param  array   $parameters
      * @param  bool    $absolute
+     * @param  \Illuminate\Routing\Route  $route
      * @return string
      */
-    function route($name, $parameters = [], $absolute = true)
+    function route($name, $parameters = [], $absolute = true, $route = null)
     {
-        return app('url')->route($name, $parameters, $absolute);
+        return app('url')->route($name, $parameters, $absolute, $route);
     }
 }
 

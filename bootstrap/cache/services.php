@@ -1,8 +1,8 @@
 <?php return array (
   'providers' => 
   array (
-    0 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-    1 => 'App\\Plugins\\Paypal\\ServiceProvider',
+    0 => 'App\\Plugins\\Paypal\\ServiceProvider',
+    1 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
     2 => 'Illuminate\\Auth\\AuthServiceProvider',
     3 => 'Illuminate\\Bus\\BusServiceProvider',
     4 => 'Illuminate\\Cache\\CacheServiceProvider',
@@ -38,8 +38,8 @@
   ),
   'eager' => 
   array (
-    0 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-    1 => 'App\\Plugins\\Paypal\\ServiceProvider',
+    0 => 'App\\Plugins\\Paypal\\ServiceProvider',
+    1 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
     2 => 'Illuminate\\Auth\\AuthServiceProvider',
     3 => 'Illuminate\\Cookie\\CookieServiceProvider',
     4 => 'Illuminate\\Database\\DatabaseServiceProvider',

@@ -8,9 +8,10 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Foundation\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Swift_TransportException;
 
-class Handler extends ExceptionHandler
-{
+class Handler extends ExceptionHandler {
+
     /**
      * A list of the exception types that should not be reported.
      *
@@ -32,8 +33,7 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function report(Exception $e)
-    {
+    public function report(Exception $e) {
         return parent::report($e);
     }
 
@@ -45,33 +45,21 @@ class Handler extends ExceptionHandler
      *
      * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
-    {
+    public function render($request, Exception $e) {
         switch ($e) {
 
             case $e instanceof ModelNotFoundException:
-
                 return $this->renderException($e);
-                break;
-
-            case $e instanceof HttpException:
-                dd($e);
-
-                return $this->render404();
-                break;
-
             default:
-                return $this->render500($request, $e);
-                break;
+                return $this->common($request, $e);
         }
     }
 
-    protected function renderException($e)
-    {
+    protected function renderException($e) {
         switch ($e) {
 
             case $e instanceof ModelNotFoundException:
-                return redirect('/')->with('fails', 'Please configure '.$e->getMessage());
+                return redirect('/')->with('fails', 'Please configure ' . $e->getMessage());
                 break;
 
             default:
@@ -80,18 +68,75 @@ class Handler extends ExceptionHandler
         }
     }
 
-    protected function render404()
-    {
-        return response()->view('errors.404');
+    /**
+     * Function to render 500 error page
+     * @param type $request
+     * @param type $e
+     * @return type mixed
+     */
+    public function render500($request, $e) {
+        
+        //$this->mail($request, $e);
+        
+        if (config('app.debug') == true) {
+            return parent::render($request, $e);
+        }
+        return view('errors.500');
     }
 
-    protected function render500($request, $e)
-    {
-        //\Config::get('app.debug')
-        //dd($e);
-        //if(\Config::get('app.debug')==true){
+    /**
+     * Function to render 404 error page
+     * @param type $request
+     * @param type $e
+     * @return type mixed
+     */
+    public function render404($request, $e) {
+
+        if (config('app.debug') == false) {
             return parent::render($request, $e);
-        //}
-        //return response()->view('errors.500');
+        }
     }
+
+    /**
+     * Common finction to render both types of codes
+     * @param type $request
+     * @param type $e
+     * @return type mixed
+     */
+    public function common($request, $e) {
+        switch ($e) {
+            case $e instanceof HttpException :
+                return $this->render404($request, $e);
+            case $e instanceof NotFoundHttpException :
+                return $this->render404($request, $e);
+            default :
+                return $this->render500($request, $e);
+        }
+        return parent::render($request, $e);
+    }
+
+    public function mail($request, $e) {
+        
+        $setting_controller = new \App\Http\Controllers\Common\TemplateController();
+        $mail = $setting_controller->smtp();
+        return $this->mailReport($request, $e);
+    }
+
+    public function mailReport($request, $e) {
+        
+        $set = new \App\Model\Common\Setting();
+        $setting = $set->find(1);
+        //$subject = 'Agora Invoicing Error';
+        
+        if ($setting->error_log == 1 && $setting->error_email!='') {
+            
+            \Mail::send('errors.report', ['e' => $e], function($m) use ($setting) {
+                $m->from($setting->email, $setting->company);
+
+                $m->to($setting->error_email, 'Agora Error')->subject('Agora Invoicing Error');
+            });
+        }
+        return 'success';
+    }
+
 }

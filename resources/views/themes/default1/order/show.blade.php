@@ -49,10 +49,11 @@
                                 <tbody><tr><td><b>Serial Key:</b></td><td>{{$order->serial_key}}</td></tr>
                                     <tr><td><b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
                                     <?php
-                                    if ($subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
-                                        $sub = "--";
-                                    } else {
-                                        $sub = $subscription->ends_at;
+                                    $sub = "--";
+                                    if ($subscription) {
+                                        if ($subscription->ends_at != '' || $subscription->ends_at != '0000-00-00 00:00:00') {
+                                            $sub = $subscription->ends_at;
+                                        }
                                     }
                                     ?>
                                     <tr><td><b>Subscription End:</b></td><td>{{$sub}}</td></tr>
@@ -168,7 +169,7 @@
 
     $("#domain").blur(function () {
         var value = $(this).text();
-                var id = {{$order -> id}};
+                var id = {{$order-> id}};
             $.ajax({
             type: "GET",
                     url: "{{url('change-domain')}}",

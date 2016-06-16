@@ -64,13 +64,6 @@ class Event
     public $withoutOverlapping = false;
 
     /**
-     * Indicates if the command should run in background.
-     *
-     * @var bool
-     */
-    public $runInBackground = false;
-
-    /**
      * The array of filter callbacks.
      *
      * @var array
@@ -149,11 +142,7 @@ class Event
      */
     public function run(Container $container)
     {
-        if (! $this->runInBackground) {
-            $this->runCommandInForeground($container);
-        } else {
-            $this->runCommandInBackground();
-        }
+        $this->runCommandInForeground($container);
     }
 
     /**
@@ -171,18 +160,6 @@ class Event
         ))->run();
 
         $this->callAfterCallbacks($container);
-    }
-
-    /**
-     * Run the command in the background.
-     *
-     * @return void
-     */
-    protected function runCommandInBackground()
-    {
-        (new Process(
-            $this->buildCommand(), base_path(), null, null, null
-        ))->run();
     }
 
     /**
@@ -232,7 +209,7 @@ class Event
             $command = $this->command.$redirect.$output.' 2>&1 &';
         }
 
-        return $this->user && ! windows_os() ? 'sudo -u '.$this->user.' -- sh -c \''.$command.'\'' : $command;
+        return $this->user ? 'sudo -u '.$this->user.' '.$command : $command;
     }
 
     /**
@@ -593,18 +570,6 @@ class Event
         $days = is_array($days) ? $days : func_get_args();
 
         return $this->spliceIntoPosition(5, implode(',', $days));
-    }
-
-    /**
-     * State that the command should run in background.
-     *
-     * @return $this
-     */
-    public function runInBackground()
-    {
-        $this->runInBackground = true;
-
-        return $this;
     }
 
     /**

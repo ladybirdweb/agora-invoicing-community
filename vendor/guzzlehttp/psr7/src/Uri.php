@@ -174,7 +174,7 @@ class Uri implements UriInterface
             $parts['fragment'] = $relParts['fragment'];
         }
 
-        return new self(self::createUriString(
+        return new self(static::createUriString(
             $parts['scheme'],
             $parts['authority'],
             $parts['path'],
@@ -528,7 +528,7 @@ class Uri implements UriInterface
             return false;
         }
 
-        return !isset(self::$schemes[$scheme]) || $port !== self::$schemes[$scheme];
+        return !isset(static::$schemes[$scheme]) || $port !== static::$schemes[$scheme];
     }
 
     /**

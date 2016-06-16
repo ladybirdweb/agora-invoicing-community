@@ -5,16 +5,12 @@ namespace PhpParser;
 require __DIR__ . '/../vendor/autoload.php';
 
 function canonicalize($str) {
-    // normalize EOL style
-    $str = str_replace("\r\n", "\n", $str);
+    // trim from both sides
+    $str = trim($str);
 
-    // trim newlines at end
-    $str = rtrim($str, "\n");
+    // normalize EOL to \n
+    $str = str_replace(array("\r\n", "\r"), "\n", $str);
 
-    // remove trailing whitespace on all lines
-    $lines = explode("\n", $str);
-    $lines = array_map(function($line) {
-        return rtrim($line, " \t");
-    }, $lines);
-    return implode("\n", $lines);
+    // trim right side of all lines
+    return implode("\n", array_map('rtrim', explode("\n", $str)));
 }

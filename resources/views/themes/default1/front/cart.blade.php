@@ -86,6 +86,7 @@ if (count($attributes) > 0) {
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                
                                                 @forelse($cartCollection as $key=>$item)
 
                                                 <tr class="cart_table_item">
@@ -120,7 +121,7 @@ if (count($attributes) > 0) {
                                                     </td>
 
                                                     <td class="product-price">
-                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'],1,1,0)}}</span>
+                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->price,1,1,0)}}</span>
                                                     </td>
                                                     <td class="product-quantity">
                                                         @if($multi_product==true)
@@ -132,7 +133,7 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
                                                     </td>
 
                                                 </tr>
@@ -190,7 +191,8 @@ if (count($attributes) > 0) {
                                             <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
                                         </th>
                                         <td>
-                                            {{App\Http\Controllers\Front\CartController::rounding($tax)}}
+                                            
+                                            {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotal())}}
                                         </td>
 
                                     </tr>

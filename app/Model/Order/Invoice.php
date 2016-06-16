@@ -7,7 +7,7 @@ use App\BaseModel;
 class Invoice extends BaseModel
 {
     protected $table = 'invoices';
-    protected $fillable = ['user_id', 'number', 'date', 'discount', 'discount_mode', 'coupon_code', 'grand_total', 'currency', 'status'];
+    protected $fillable = ['user_id', 'number', 'date', 'discount', 'discount_mode', 'coupon_code', 'grand_total', 'currency', 'status','description'];
     protected $dates = ['date'];
 
     public function invoiceItem()

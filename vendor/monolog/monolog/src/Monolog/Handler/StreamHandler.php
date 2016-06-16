@@ -59,20 +59,10 @@ class StreamHandler extends AbstractProcessingHandler
      */
     public function close()
     {
-        if ($this->url && is_resource($this->stream)) {
+        if (is_resource($this->stream)) {
             fclose($this->stream);
         }
         $this->stream = null;
-    }
-
-    /**
-     * Return the currently active stream if it is open
-     *
-     * @return resource|null
-     */
-    public function getStream()
-    {
-        return $this->stream;
     }
 
     /**

@@ -132,7 +132,7 @@ abstract class AbstractPaginator implements Htmlable
 
         return $this->path
                         .(Str::contains($this->path, '?') ? '&' : '?')
-                        .http_build_query($parameters, '', '&')
+                        .http_build_query($parameters, null, '&')
                         .$this->buildFragment();
     }
 

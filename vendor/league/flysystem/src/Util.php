@@ -18,7 +18,8 @@ class Util
     {
         $pathinfo = pathinfo($path) + compact('path');
         $pathinfo['dirname'] = array_key_exists('dirname', $pathinfo)
-            ? static::normalizeDirname($pathinfo['dirname']) : '';
+            ? static::normalizeDirname($pathinfo['dirname'])
+            : '';
 
         return $pathinfo;
     }

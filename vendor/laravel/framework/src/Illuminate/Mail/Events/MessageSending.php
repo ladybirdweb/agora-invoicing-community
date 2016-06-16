@@ -14,7 +14,7 @@ class MessageSending
     /**
      * Create a new event instance.
      *
-     * @param  \Swift_Message  $message
+     * @param  \Swift_Message  $messagse
      * @return void
      */
     public function __construct($message)

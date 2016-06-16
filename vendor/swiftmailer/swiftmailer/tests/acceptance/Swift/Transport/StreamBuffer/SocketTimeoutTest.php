@@ -4,8 +4,6 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
 {
     protected $_buffer;
 
-    protected $_randomHighPort;
-
     protected $_server;
 
     public function setUp()
@@ -43,7 +41,7 @@ class Swift_Transport_StreamBuffer_SocketTimeoutTest extends \PHPUnit_Framework_
             'protocol' => 'tcp',
             'blocking' => 1,
             'timeout' => 1,
-        ));
+            ));
     }
 
     public function testTimeoutException()

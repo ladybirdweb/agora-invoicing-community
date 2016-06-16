@@ -93,7 +93,9 @@ class RedisStore extends TaggableStore implements Store
     {
         $value = is_numeric($value) ? $value : serialize($value);
 
-        $this->connection()->setex($this->prefix.$key, (int) max(1, $minutes * 60), $value);
+        $minutes = max(1, $minutes);
+
+        $this->connection()->setex($this->prefix.$key, $minutes * 60, $value);
     }
 
     /**

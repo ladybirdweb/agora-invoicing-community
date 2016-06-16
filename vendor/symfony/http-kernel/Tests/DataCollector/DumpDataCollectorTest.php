@@ -113,7 +113,7 @@ EOTXT;
         $line = __LINE__ - 1;
 
         ob_start();
-        $collector->__destruct();
+        $collector = null;
         $this->assertSame("DumpDataCollectorTest.php on line {$line}:\n456\n", ob_get_clean());
     }
 }

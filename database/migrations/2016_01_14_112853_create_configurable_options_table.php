@@ -14,12 +14,12 @@ class CreateConfigurableOptionsTable extends Migration
     {
         Schema::create('configurable_options', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('group_id')->unsigned();
-            $table->foreign('group_id')->references('id')->on('product_groups');
-            $table->integer('type');
-            $table->string('title');
-            $table->string('options');
-            $table->integer('price');
+                        $table->integer('group_id')->unsigned();
+                        $table->foreign('group_id')->references('id')->on('product_groups');
+                        $table->integer('type');
+                        $table->string('title');
+                        $table->string('options');
+                        $table->integer('price');
             $table->timestamps();
         });
     }

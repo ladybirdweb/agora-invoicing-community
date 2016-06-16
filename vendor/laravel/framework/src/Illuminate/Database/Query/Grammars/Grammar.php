@@ -8,13 +8,6 @@ use Illuminate\Database\Grammar as BaseGrammar;
 class Grammar extends BaseGrammar
 {
     /**
-     * The grammar specific operators.
-     *
-     * @var array
-     */
-    protected $operators = [];
-
-    /**
      * The components that make up a select clause.
      *
      * @var array
@@ -149,10 +142,10 @@ class Grammar extends BaseGrammar
 
             $type = $join->type;
 
-            // Cross joins generate a cartesian product between this first table and a joined
-            // table. In case the user didn't specify any "on" clauses on the join we will
-            // append this SQL and jump right back into the next iteration of this loop.
-            if ($type === 'cross' &&  ! $join->clauses) {
+            // Cross joins generate a cartesian product between the first table and the joined
+            // table. Since they don't expect any "on" clauses to perform the join, we just
+            // just append the SQL statement and jump to the next iteration of this loop.
+            if ($type === 'cross') {
                 $sql[] = "cross join $table";
 
                 continue;
@@ -306,20 +299,6 @@ class Grammar extends BaseGrammar
         $value = $this->parameter($where['value']);
 
         return $this->wrap($where['column']).' '.$where['operator'].' '.$value;
-    }
-
-    /**
-     * Compile a where clause comparing two columns..
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $where
-     * @return string
-     */
-    protected function whereColumn(Builder $query, $where)
-    {
-        $second = $this->wrap($where['second']);
-
-        return $this->wrap($where['first']).' '.$where['operator'].' '.$second;
     }
 
     /**
@@ -601,17 +580,6 @@ class Grammar extends BaseGrammar
     }
 
     /**
-     * Compile the random statement into SQL.
-     *
-     * @param  string  $seed
-     * @return string
-     */
-    public function compileRandom($seed)
-    {
-        return 'RANDOM()';
-    }
-
-    /**
      * Compile the "limit" portions of the query.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -777,18 +745,6 @@ class Grammar extends BaseGrammar
     }
 
     /**
-     * Prepare the bindings for an update statement.
-     *
-     * @param  array  $bindings
-     * @param  array  $values
-     * @return array
-     */
-    public function prepareBindingsForUpdate(array $bindings, array $values)
-    {
-        return $bindings;
-    }
-
-    /**
      * Compile a delete statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -880,15 +836,5 @@ class Grammar extends BaseGrammar
     protected function removeLeadingBoolean($value)
     {
         return preg_replace('/and |or /i', '', $value, 1);
-    }
-
-    /**
-     * Get the gramar specific operators.
-     *
-     * @return array
-     */
-    public function getOperators()
-    {
-        return $this->operators;
     }
 }

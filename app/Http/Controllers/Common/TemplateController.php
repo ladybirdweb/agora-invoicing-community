@@ -257,49 +257,13 @@ class TemplateController extends Controller
         }
     }
 
-    public function Mailing($from, $to, $data, $subject, $replace = [], $fromname = '', $toname = '', $cc = [], $attach = [])
+    public function mailing($from, $to, $data, $subject, $replace = [],$type='', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
-            if (!array_key_exists('title', $replace)) {
-                $replace['title'] = '';
-            }
-            if (!array_key_exists('currency', $replace)) {
-                $replace['currency'] = '';
-            }
-            if (!array_key_exists('price', $replace)) {
-                $replace['price'] = '';
-            }
-            if (!array_key_exists('subscription', $replace)) {
-                $replace['subscription'] = '';
-            }
-            if (!array_key_exists('name', $replace)) {
-                $replace['name'] = '';
-            }
-            if (!array_key_exists('url', $replace)) {
-                $replace['url'] = '';
-            }
-            if (!array_key_exists('password', $replace)) {
-                $replace['password'] = '';
-            }
-            if (!array_key_exists('address', $replace)) {
-                $replace['address'] = '';
-            }
-            if (!array_key_exists('username', $replace)) {
-                $replace['username'] = '';
-            }
-            if (!array_key_exists('email', $replace)) {
-                $replace['email'] = '';
-            }
-            if (!array_key_exists('product', $replace)) {
-                $replace['product'] = '';
-            }
-            if (!array_key_exists('order', $replace)) {
-                $replace['order'] = '';
-            }
-            $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '{{name}}', '{{url}}', '{{password}}', '{{address}}', '{{username}}', '{{email}}', '{{product}}', '{{order}}'];
-            $array2 = [$replace['title'], $replace['currency'], $replace['price'], $replace['subscription'], $replace['name'], $replace['url'], $replace['password'], $replace['address'], $replace['username'], $replace['email'], $replace['product'], $replace['order']];
-
-            $data = str_replace($array1, $array2, $data);
+            
+            $page_controller = new \App\Http\Controllers\Front\PageController();
+            $transform[0] = $replace;
+            $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
@@ -321,8 +285,13 @@ class TemplateController extends Controller
                     }
                 }
             });
+      
+            return "success";
         } catch (\Exception $ex) {
-            dd($ex);
+            //dd($ex);
+            if($ex instanceof \Swift_TransportException){
+                throw new \Exception('We can not reach to this email address');
+            }
             throw new \Exception('mailing problem');
         }
     }
@@ -361,82 +330,6 @@ class TemplateController extends Controller
         ];
         $this->Mailing($from, $to, $data, $subject, $replace, 'from', 'to', $cc, $attachments);
     }
-
-    public function show($id)
-    {
-
-        //dd($currency);
-        try {
-            if ($this->template->where('type', 3)->where('id', $id)->first()) {
-                $data = $this->template->where('type', 3)->where('id', $id)->first()->data;
-                //dd($data);
-
-                $products = $this->product->where('id', '!=', 1)->where('hidden', 0)->take(4)->get();
-
-                //dd($products);
-                if (count($products) > 0) {
-                    $template = '';
-                    foreach ($products as $product) {
-                        //dd($this->checkPriceWithTaxClass($product->id, $currency));
-                        //$url = "<a href=$product->shoping_cart_link class='btn btn-primary'>Buy</a>";
-                        $url = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
-                        $title = $product->name;
-                        if ($product->description) {
-                            $description = str_replace('</ul>', '', str_replace('<ul>', '', $product->description));
-                        } else {
-                            $description = '';
-                        }
-                        $currency = \Session::get('currency');
-                        if ($this->price->where('product_id', $product->id)->where('currency', $currency)->first()) {
-
-//                            $rule = $this->tax_rule->findOrFail(1);
-//                            if ($rule->shop_inclusive == 0 && $rule->tax_enable == 1 && $rule->inclusive == 0) {
-//                                $price = $this->checkPriceWithTaxClass($product->id, $currency);
-//                            } else {
-//                                $price = $this->withoutTaxRelation($product->id, $currency);
-//                            }
-
-                            $product_currency = $this->price->where('product_id', $product->id)->where('currency', $currency)->first();
-                            $code = $product_currency->currency;
-                            $currency = $this->currency->where('code', $code)->first();
-
-                            if ($currency->symbol) {
-                                $currency = $currency->symbol;
-                            } else {
-                                $currency = $currency->code;
-                            }
-                            //dd('yes');
-                            //$plans = $this->plans();
-                            // $price = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $product_currency->currency, 1, 0, 1);
-                            $price = $this->leastAmount($product->id);
-                            $subscription = $this->plans($product->shoping_cart_link, $product->id);
-                            //$subscription = $this->plan->where('id', $product_currency->subscription)->first()->name;
-                        } else {
-                            return redirect('/')->with('fails', \Lang::get('message.no-such-currency-in-system'));
-                        }
-
-                        $array1 = ['{{title}}', '{{currency}}', '{{price}}', '{{subscription}}', '<li>{{feature}}</li>', '{{url}}'];
-                        $array2 = [$title, $currency, $price, $subscription, $description, $url];
-                        $template .= str_replace($array1, $array2, $data);
-                    }
-
-                    //dd($template);
-                    return view('themes.default1.common.template.shoppingcart', compact('template'));
-                } else {
-                    $template = '<p>No Products</p>';
-
-                    return view('themes.default1.common.template.shoppingcart', compact('template'));
-                }
-            } else {
-                return redirect('/')->with('fails', 'no such record');
-            }
-        } catch (\Exception $e) {
-            dd($e);
-
-            return redirect('/')->with('fails', $e->getMessage());
-        }
-    }
-
     public function popup($title, $body, $width = '897', $name = '', $modelid = '', $class = 'null', $trigger = false)
     {
         try {
@@ -494,17 +387,20 @@ class TemplateController extends Controller
         }
     }
 
-    public function checkTax($productid, $currency, $cart = 0, $cart1 = 0, $shop = 0)
+    public function checkTax($productid,$price, $cart = 0, $cart1 = 0, $shop = 0)
     {
         try {
             $product = $this->product->findOrFail($productid);
+            //dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
-            $price = $controller->cost($productid);
-//            $price = $product->price()->where('currency', $currency)->first()->sales_price;
-//            if (!$price) {
-//                $price = $product->price()->where('currency', $currency)->first()->price;
-//            }
-
+//            $price = $controller->cost($productid);
+////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
+////            if (!$price) {
+////                $price = $product->price()->where('currency', $currency)->first()->price;
+////            }
+//
+            $currency = $controller->currency();
+//          
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
@@ -704,6 +600,7 @@ class TemplateController extends Controller
 
         foreach ($plans as $value) {
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
+            $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30);
             $price[$value->id] = $months.' Month at '.$currency.' '.$cost.'/month';
         }
@@ -714,7 +611,7 @@ class TemplateController extends Controller
 
     public function leastAmount($id)
     {
-        $cost = '';
+        $cost = 'Free';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
         $cart_controller = new \App\Http\Controllers\Front\CartController();
@@ -724,10 +621,14 @@ class TemplateController extends Controller
                 $days = $value->min('days');
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
+                $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+                //$price = \App\Http\Controllers\Front\CartController::rounding($price);
             }
             $cost = "$currency $price /mo";
         } else {
-            $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $currency, 1, 0, 1);
+            $price = $cart_controller->productCost($id);
+            $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+            $product_cost = \App\Http\Controllers\Front\CartController::rounding($product_cost);
             if ($product_cost != 0) {
                 $cost = $currency.' '.$product_cost;
             }

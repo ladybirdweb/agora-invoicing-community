@@ -160,7 +160,7 @@ class InvoiceController extends Controller
             } else {
                 $user = '';
             }
-            $products = $this->product->lists('name', 'id')->toArray();
+            $products = $this->product->where('id','!=',1)->lists('name', 'id')->toArray();
             $currency = $this->currency->lists('name', 'code')->toArray();
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
@@ -200,6 +200,7 @@ class InvoiceController extends Controller
             $code = Input::get('code');
             $total = Input::get('price');
             $plan = Input::get('plan');
+            $description = Input::get('description');
             if ($request->has('domain')) {
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
@@ -243,7 +244,7 @@ class InvoiceController extends Controller
             //dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending']);
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending','description'=>$description]);
 //            if ($grand_total > 0) {
 //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
 //            }
@@ -636,12 +637,19 @@ class InvoiceController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
             }
             $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
+            if($invoiceItems->count()==0){
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
             $user = $this->user->find($invoice->user_id);
+            if(!$user){
+                return redirect()->back()->with('fails', 'No User');
+            }
             //return view('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
             $pdf = \PDF::loadView('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -856,36 +864,15 @@ class InvoiceController extends Controller
         }
     }
 
-    public function sendMail($userid, $invoiceid, $templatetype = 7)
+    public function sendMail($userid, $invoiceid)
     {
         try {
-            $settings = new Setting();
-            $settings = $settings->findOrFail(1);
-            $user = $this->user->find($userid);
-            $name = '';
-            $to = '';
-            $product = '';
-            if ($user) {
-                $name = $user->first_name.' '.$user->last_name;
-                $to = $user->email;
-            }
+            
             $invoice = $this->invoice->find($invoiceid);
-            $invoice_number = $invoice->number;
-            $item = $invoice->invoiceItem()->first();
-            if ($item) {
-                $product = $item->product_name;
-            }
-
-            $url = url("download/$userid/$invoice_number");
-            $from = $settings->email;
-
-            $data = $this->template->where('type', $templatetype)->first()->data;
-            $subject = $this->template->where('type', $templatetype)->first()->name;
-            $replace = ['url' => $url, 'name' => $name, 'product' => $product];
-
-            //send mail
-            $template_controller = new TemplateController();
-            $template_controller->Mailing($from, $to, $data, $subject, $replace);
+            $number = $invoice->number;
+            $total = $invoice->grand_total;
+            return $this->sendInvoiceMail($userid, $number, $total,$invoiceid);
+            
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -996,5 +983,47 @@ class InvoiceController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+    
+    public function sendInvoiceMail($userid, $number, $total,$invoiceid) {
+        
+        //user
+        $users = new User();
+        $user = $users->find($userid);
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        $invoiceurl = $this->invoiceUrl($invoiceid);
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->invoice;
+        $template = $templates->where('id', $temp_id)->first();
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $replace = [
+            'name' => $user->first_name . ' ' . $user->last_name,
+            'number'=>$number,
+            'address'=>$user->address,
+            'invoiceurl' => $invoiceurl,
+            'total'=>$total,
+            ];
+        $type = "";
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        //dd($type);
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+        return $mail;
+    }
+    
+    public function invoiceUrl($invoiceid){
+        
+        $url = url('my-invoice/'.$invoiceid);
+        return $url;
     }
 }

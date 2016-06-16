@@ -24,17 +24,15 @@ trait SoftDeletes
     /**
      * Force a hard delete on a soft deleted model.
      *
-     * @return bool|null
+     * @return void
      */
     public function forceDelete()
     {
         $this->forceDeleting = true;
 
-        $deleted = $this->delete();
+        $this->delete();
 
         $this->forceDeleting = false;
-
-        return $deleted;
     }
 
     /**
@@ -101,6 +99,30 @@ trait SoftDeletes
     public function trashed()
     {
         return ! is_null($this->{$this->getDeletedAtColumn()});
+    }
+
+    /**
+     * Get a new query builder that includes soft deletes.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public static function withTrashed()
+    {
+        return (new static)->newQueryWithoutScope(new SoftDeletingScope);
+    }
+
+    /**
+     * Get a new query builder that only includes soft deletes.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder|static
+     */
+    public static function onlyTrashed()
+    {
+        $instance = new static;
+
+        $column = $instance->getQualifiedDeletedAtColumn();
+
+        return $instance->newQueryWithoutScope(new SoftDeletingScope)->whereNotNull($column);
     }
 
     /**

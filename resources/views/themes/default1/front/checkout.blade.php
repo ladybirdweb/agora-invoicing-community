@@ -18,6 +18,8 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
 } else {
     $symbol = $attributes[0]['currency'][0]['symbol'];
 }
+$tax=  0;
+                $sum = 0;
 ?>
 <div class="row">
 
@@ -116,7 +118,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                                 </td>
                                 <td class="product-name">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -150,7 +152,9 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 @if(Cart::getTotal()>0)
                 <h4 class="heading-primary">Payment</h4>
-                <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
+                <?php 
+                
+                $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
                 $total = Cart::getSubTotal();
                                                         $sum = $item->getPriceSum();
                                                         $tax = $total-$sum;
@@ -158,7 +162,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                 <div class="form-group">
                     @forelse($gateways as $gateway)
                     <div class="col-md-6">
-                        {{$gateway->from}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
+                        {{ucfirst($gateway->from)}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
                     </div>
                     @empty
                     @endforelse
@@ -196,7 +200,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::rounding($tax)}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotal())}}
                     </td>
 
                 </tr>

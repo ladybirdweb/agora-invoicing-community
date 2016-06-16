@@ -374,8 +374,8 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
 
         $results = [];
 
-        foreach ($this->items as $key => $item) {
-            $results[$keyBy($item, $key)] = $item;
+        foreach ($this->items as $item) {
+            $results[$keyBy($item)] = $item;
         }
 
         return new static($results);
@@ -557,7 +557,7 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
      * Union the collection with the given items.
      *
      * @param  mixed  $items
-     * @return static
+     * @return void
      */
     public function union($items)
     {
@@ -817,6 +817,7 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
         $items = $this->items;
 
         $callback ? uasort($items, $callback) : uasort($items, function ($a, $b) {
+
             if ($a == $b) {
                 return 0;
             }
@@ -1020,6 +1021,7 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
     {
         return array_map(function ($value) {
             return $value instanceof Arrayable ? $value->toArray() : $value;
+
         }, $this->items);
     }
 

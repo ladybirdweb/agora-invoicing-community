@@ -14,12 +14,12 @@ class CreatePromotionsTable extends Migration
     {
         Schema::create('promotions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code')->unique();
-            $table->integer('type')->unsigned();
-            $table->foreign('type')->references('id')->on('promotion_types');
-            $table->integer('uses'); //number for how many use
+                        $table->string('code')->unique();
+                        $table->integer('type')->unsigned();
+                        $table->foreign('type')->references('id')->on('promotion_types');
+                        $table->integer('uses'); //number for how many use
                         $table->string('value');
-            $table->timestamp('start'); //start date
+                        $table->timestamp('start'); //start date
                         $table->timestamp('expiry'); //expiry date
 
             $table->timestamps();

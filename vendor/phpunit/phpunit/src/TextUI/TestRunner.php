@@ -597,7 +597,7 @@ class PHPUnit_TextUI_TestRunner extends PHPUnit_Runner_BaseTestRunner
      */
     protected function write($buffer)
     {
-        if (PHP_SAPI != 'cli' && PHP_SAPI != 'phpdbg') {
+        if (PHP_SAPI != 'cli') {
             $buffer = htmlspecialchars($buffer);
         }
 

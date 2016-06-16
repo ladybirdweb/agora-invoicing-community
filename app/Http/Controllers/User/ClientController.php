@@ -14,6 +14,7 @@ class ClientController extends Controller {
 
     public $user;
     public $activate;
+    public $product;
 
     public function __construct() {
         $this->middleware('auth');
@@ -22,6 +23,8 @@ class ClientController extends Controller {
         $this->user = $user;
         $activate = new AccountActivate();
         $this->activate = $activate;
+        $product = new \App\Model\Product\Product();
+        $this->product = $product;
     }
 
     /**
@@ -37,7 +40,12 @@ class ClientController extends Controller {
         $email = $request->input('email');
         $country = $request->input('country');
 
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country'));
+        $count_users = $this->user->get()->count();
+        $pro_editions = $this->soldEdition('Faveo Helpdesk Pro');
+        $community = $this->soldEdition('faveo helpdesk community');
+        $product_count = $this->productCount();
+
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count'));
     }
 
     /**
@@ -104,13 +112,7 @@ class ClientController extends Controller {
             $password = \Hash::make($str);
             $user->password = $password;
             $user->fill($request->input())->save();
-            $token = str_random(40);
-            $this->activate->create(['email' => $user->email, 'token' => $token]);
-
-            \Mail::send('emails.welcome', ['token' => $token, 'email' => $user->email, 'pass' => $str], function ($message) use ($user) {
-                $message->to($user->email, $user->first_name)->subject('Welcome!');
-            });
-
+            $this->sendWelcomeMail($user);
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has created successfully But email configuration has some problem!');
@@ -256,6 +258,50 @@ class ClientController extends Controller {
 
 
         return $join;
+    }
+
+    public function soldEdition($name) {
+
+        $invoice = new \App\Model\Order\InvoiceItem();
+        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->lists('invoice_id');
+        $order = new Order();
+        $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
+        return $orders;
+    }
+
+    public function productCount() {
+        $products = $this->product->get()->count();
+        return $products;
+    }
+
+    public function sendWelcomeMail($user) {
+        $activate_model = new AccountActivate();
+        $str = str_random(40);
+        $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
+        $token = $activate->token;
+        $url = url("activate/$token");
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->welcome_mail;
+        $template = $templates->where('id', $temp_id)->first();
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+        $type = "";
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        //dd($type);
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+        return $mail;
     }
 
 }

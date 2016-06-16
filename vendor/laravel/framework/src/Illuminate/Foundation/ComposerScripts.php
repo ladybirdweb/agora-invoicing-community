@@ -37,7 +37,7 @@ class ComposerScripts
      *
      * @return void
      */
-    protected static function clearCompiled()
+    private static function clearCompiled()
     {
         $laravel = new Application(getcwd());
 

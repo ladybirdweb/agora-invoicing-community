@@ -29,6 +29,6 @@ Starting test 'DataProviderDebugTest::testProvider with data set #5 (Binary Stri
 Starting test 'DataProviderDebugTest::testProvider with data set #6 (Binary String: 0x0009)'.
 .
 
-Time: %s, Memory: %s
+Time: %s, Memory: %sMb
 
 OK (7 tests, 7 assertions)

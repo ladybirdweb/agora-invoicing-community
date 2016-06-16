@@ -15,7 +15,7 @@ PHPUnit %s by Sebastian Bergmann and contributors.
 
 ..F
 
-Time: %s, Memory: %s
+Time: %s, Memory: %sMb
 
 There was 1 failure:
 

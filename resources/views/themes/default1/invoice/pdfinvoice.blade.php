@@ -5,24 +5,24 @@
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.4 -->
-        <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+        <!--<link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />-->
         <!-- Font Awesome Icons -->
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <!-- Ionicons -->
         <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
-        <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
+        <!--<link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />-->
 
         <!-- Custom style -->
-        <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+        <!--<link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">-->
 
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
-        <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
+        <!--<link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />-->
 
-        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+        <!--<link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />-->
 
-        <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
+        <!--<link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />-->
 
     </head>
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
@@ -39,7 +39,7 @@
 
                     <div class="box-header">
 
-                        <h4>{{Lang::get('message.invoice')}}
+                        <h4>{{Lang::get("message.invoice")}}
                             <!--<a href="{{url('orders/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>-->
                     </div>
                     <div id="response"></div>
@@ -49,7 +49,7 @@
 
                             <div class="col-md-12">
 
-                                <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
+                                <?php $set = App\Model\Common\Setting::where("id", "1")->first(); ?>
                                 <!-- Main content -->
                                 <section class="invoice">
                                     <!-- title row -->
@@ -107,13 +107,13 @@
                                                     <td>Subtotal</td>
                                                 </tr>
 
-                                                @foreach($invoiceItems as $item)
+                                                @forelse($invoiceItems as $item)
                                                 <tr>
                                                     <td>{{$item->product_name}}</td>
                                                     <td>{{$item->quantity}}</td>
                                                     <td>{{$item->regular_price}}</td>
                                                     <td>
-                                                        <?php $taxes = explode(',', $item->tax_name); ?>
+                                                        <?php $taxes = explode(",", $item->tax_name); ?>
                                                         <ul class="list-unstyled">
                                                             @forelse($taxes as $tax)
                                                             <li>{{$tax}}</li>
@@ -123,7 +123,7 @@
                                                         </ul>
                                                     </td>
                                                     <td>
-                                                        <?php $taxes = explode(',', $item->tax_percentage); ?>
+                                                        <?php $taxes = explode(",", $item->tax_percentage); ?>
                                                         <ul class="list-unstyled">
                                                             @forelse($taxes as $tax)
                                                             <li>{{$tax}}</li>
@@ -134,14 +134,16 @@
                                                     </td>
                                                     <td>{{$item->subtotal}}</td>
                                                 </tr>
-                                                @endforeach
+                                                @empty 
+                                                <tr><td>Null</td></tr>
+                                                @endforelse
 
                                             </table>
                                         </div><!-- /.col -->
                                     </div><!-- /.row -->
 
                                     <div class="row">
-                                        
+
                                         <div class="col-xs-12">
                                             <p class="lead">Amount</p>
                                             <div class="table-responsive">
@@ -153,19 +155,22 @@
                                                     <?php
                                                     $tax_name = [];
                                                     $tax_percentage = [];
-                                                    foreach ($invoiceItems as $key => $item) {
-                                                        if (str_finish(',', $item->tax_name)) {
-                                                            $name = substr_replace($item->tax_name, '', -1);
+                                                    if ($invoiceItems->count() > 0) {
+                                                        foreach ($invoiceItems as $key => $item) {
+                                                            if (str_finish(",", $item->tax_name)) {
+                                                                $name = substr_replace($item->tax_name, "", -1);
+                                                            }
+                                                            if (str_finish(",", $item->tax_percentage)) {
+                                                                $rate = substr_replace($item->tax_percentage, "", -1);
+                                                            }
+                                                            $tax_name = explode(",", $name);
+                                                            $tax_percentage = explode(",", $rate);
                                                         }
-                                                        if (str_finish(',', $item->tax_percentage)) {
-                                                            $rate = substr_replace($item->tax_percentage, '', -1);
-                                                        }
-                                                        $tax_name = explode(',', $name);
-                                                        $tax_percentage = explode(',', $rate);
                                                     }
                                                     ?>
+                                                    @if(count($tax_name)>0)
                                                     @for($i=0;$i < count($tax_name);$i++)
-
+                                                    @if(key_exists($i,$tax_name))
                                                     @if($tax_name[$i]!='null')
                                                     <tr>
                                                         <th style="width:50%">
@@ -177,7 +182,9 @@
 
                                                     </tr>
                                                     @endif
+                                                    @endif
                                                     @endfor
+                                                    @endif
                                                     <tr>
                                                         <th style="width:50%">Total:</th>
                                                         <td><small>{!! $invoice->currency !!}</small>&nbsp;{{$invoice->grand_total}}</td>

@@ -1,17 +1,19 @@
 <?php
 /*
-    @author dhtmlx.com
-    @license GPL, see license.txt
+	@author dhtmlx.com
+	@license GPL, see license.txt
 */
 
-class FileTreeDataItem extends TreeDataItem
-{
-    public function has_kids()
-    {
-        if ($this->data['is_folder'] == '1') {
-            return true;
-        } else {
-            return false;
-        }
-    }
+class FileTreeDataItem extends TreeDataItem {
+
+	function has_kids(){
+		if ($this->data['is_folder'] == '1') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 }
+
+?>

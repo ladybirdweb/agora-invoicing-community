@@ -102,9 +102,13 @@ Route::patch('password', 'User\ProfileController@UpdatePassword');
 /*
  * Settings
  */
-
-Route::get('settings', 'Common\SettingsController@Settings');
-Route::patch('settings', 'Common\SettingsController@UpdateSettings');
+Route::get('settings', 'Common\SettingsController@settings');
+Route::get('settings/system', 'Common\SettingsController@settingsSystem');
+Route::patch('settings/system', 'Common\SettingsController@postSettingsSystem');
+Route::get('settings/email', 'Common\SettingsController@settingsEmail');
+Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
+Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
+Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
 
 /*
  * Client
@@ -340,3 +344,12 @@ Route::get('renew/{id}', 'Order\RenewController@renewForm');
 Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
 Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
+
+/**
+ * tesyting
+ */
+Route::get('test-trans', 'Front\PageController@cart');
+
+Route::post('serial', 'HomeController@serial');
+
+

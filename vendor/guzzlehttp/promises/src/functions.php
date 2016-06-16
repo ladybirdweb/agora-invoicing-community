@@ -42,8 +42,6 @@ function task(callable $task)
     $queue->add(function () use ($task, $promise) {
         try {
             $promise->resolve($task());
-        } catch (\Throwable $e) {
-            $promise->reject($e);
         } catch (\Exception $e) {
             $promise->reject($e);
         }
@@ -99,11 +97,11 @@ function rejection_for($reason)
  *
  * @param mixed $reason
  *
- * @return \Exception|\Throwable
+ * @return \Exception
  */
 function exception_for($reason)
 {
-    return $reason instanceof \Exception || $reason instanceof \Throwable
+    return $reason instanceof \Exception
         ? $reason
         : new RejectionException($reason);
 }
@@ -149,8 +147,6 @@ function inspect(PromiseInterface $promise)
         ];
     } catch (RejectionException $e) {
         return ['state' => PromiseInterface::REJECTED, 'reason' => $e->getReason()];
-    } catch (\Throwable $e) {
-        return ['state' => PromiseInterface::REJECTED, 'reason' => $e];
     } catch (\Exception $e) {
         return ['state' => PromiseInterface::REJECTED, 'reason' => $e];
     }
@@ -188,7 +184,6 @@ function inspect_all($promises)
  *
  * @return array
  * @throws \Exception on error
- * @throws \Throwable on error in PHP >=7
  */
 function unwrap($promises)
 {

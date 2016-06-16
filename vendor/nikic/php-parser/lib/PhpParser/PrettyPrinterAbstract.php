@@ -75,7 +75,6 @@ abstract class PrettyPrinterAbstract
     );
 
     protected $noIndentToken;
-    protected $docStringEndToken;
     protected $canUseSemicolonNamespaces;
     protected $options;
 
@@ -83,14 +82,12 @@ abstract class PrettyPrinterAbstract
      * Creates a pretty printer instance using the given options.
      *
      * Supported options:
-     *  * bool $shortArraySyntax = false: Whether to use [] instead of array() as the default array
-     *                                    syntax, if the node does not specify a format.
+     *  * bool $shortArraySyntax = false: Whether to use [] instead of array()
      *
      * @param array $options Dictionary of formatting options
      */
     public function __construct(array $options = []) {
         $this->noIndentToken = '_NO_INDENT_' . mt_rand();
-        $this->docStringEndToken = '_DOC_STRING_END_' . mt_rand();
 
         $defaultOptions = ['shortArraySyntax' => false];
         $this->options = $options + $defaultOptions;
@@ -106,7 +103,7 @@ abstract class PrettyPrinterAbstract
     public function prettyPrint(array $stmts) {
         $this->preprocessNodes($stmts);
 
-        return ltrim($this->handleMagicTokens($this->pStmts($stmts, false)));
+        return ltrim(str_replace("\n" . $this->noIndentToken, "\n", $this->pStmts($stmts, false)));
     }
 
     /**
@@ -117,7 +114,7 @@ abstract class PrettyPrinterAbstract
      * @return string Pretty printed node
      */
     public function prettyPrintExpr(Expr $node) {
-        return $this->handleMagicTokens($this->p($node));
+        return str_replace("\n" . $this->noIndentToken, "\n", $this->p($node));
     }
 
     /**
@@ -159,17 +156,6 @@ abstract class PrettyPrinterAbstract
         }
     }
 
-    protected function handleMagicTokens($str) {
-        // Drop no-indent tokens
-        $str = str_replace($this->noIndentToken, '', $str);
-
-        // Replace doc-string-end tokens with nothing or a newline
-        $str = str_replace($this->docStringEndToken . ";\n", ";\n", $str);
-        $str = str_replace($this->docStringEndToken, "\n", $str);
-
-        return $str;
-    }
-
     /**
      * Pretty prints an array of nodes (statements) and indents them optionally.
      *
@@ -181,15 +167,10 @@ abstract class PrettyPrinterAbstract
     protected function pStmts(array $nodes, $indent = true) {
         $result = '';
         foreach ($nodes as $node) {
-            $comments = $node->getAttribute('comments', array());
-            if ($comments) {
-                $result .= "\n" . $this->pComments($comments);
-                if ($node instanceof Stmt\Nop) {
-                    continue;
-                }
-            }
-
-            $result .= "\n" . $this->p($node) . ($node instanceof Expr ? ';' : '');
+            $result .= "\n"
+                    . $this->pComments($node->getAttribute('comments', array()))
+                    . $this->p($node)
+                    . ($node instanceof Expr ? ';' : '');
         }
 
         if ($indent) {
@@ -301,12 +282,12 @@ abstract class PrettyPrinterAbstract
      * @return string Reformatted text of comments
      */
     protected function pComments(array $comments) {
-        $formattedComments = [];
+        $result = '';
 
         foreach ($comments as $comment) {
-            $formattedComments[] = $comment->getReformattedText();
+            $result .= $comment->getReformattedText() . "\n";
         }
 
-        return implode("\n", $formattedComments);
+        return $result;
     }
 }

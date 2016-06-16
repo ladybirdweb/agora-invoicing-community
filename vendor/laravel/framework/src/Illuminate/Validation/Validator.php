@@ -8,7 +8,6 @@ use Countable;
 use Exception;
 use DateTimeZone;
 use RuntimeException;
-use DateTimeInterface;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use BadMethodCallException;
@@ -122,7 +121,7 @@ class Validator implements ValidatorContract
     protected $customAttributes = [];
 
     /**
-     * The array of custom displayable values.
+     * The array of custom displayabled values.
      *
      * @var array
      */
@@ -175,7 +174,6 @@ class Validator implements ValidatorContract
     protected $dependentRules = [
         'RequiredWith', 'RequiredWithAll', 'RequiredWithout', 'RequiredWithoutAll',
         'RequiredIf', 'RequiredUnless', 'Confirmed', 'Same', 'Different', 'Unique',
-        'Before', 'After',
     ];
 
     /**
@@ -280,11 +278,7 @@ class Validator implements ValidatorContract
 
         if (call_user_func($callback, $payload)) {
             foreach ((array) $attribute as $key) {
-                if (Str::contains($key, '*')) {
-                    $this->explodeRules([$key => $rules]);
-                } else {
-                    $this->mergeRules($key, $rules);
-                }
+                $this->mergeRules($key, $rules);
             }
         }
     }
@@ -337,7 +331,7 @@ class Validator implements ValidatorContract
             return $data;
         }
 
-        return data_set($data, $attribute, null, true);
+        return data_fill($data, $attribute, null);
     }
 
     /**
@@ -437,7 +431,7 @@ class Validator implements ValidatorContract
             call_user_func($after);
         }
 
-        return $this->messages->isEmpty();
+        return count($this->messages->all()) === 0;
     }
 
     /**
@@ -465,10 +459,10 @@ class Validator implements ValidatorContract
             return;
         }
 
-        // First we will get the correct keys for the given attribute in case the field is nested in
+        // First we will get the numeric keys for the given attribute in case the field is nested in
         // an array. Then we determine if the given rule accepts other field names as parameters.
-        // If so, we will replace any asterisks found in the parameters with the correct keys.
-        if (($keys = $this->getExplicitKeys($attribute)) &&
+        // If so, we will replace any asterisks found in the parameters with the numeric keys.
+        if (($keys = $this->getNumericKeys($attribute)) &&
             $this->dependsOnOtherFields($rule)) {
             $parameters = $this->replaceAsterisksInParameters($parameters, $keys);
         }
@@ -839,16 +833,6 @@ class Validator implements ValidatorContract
         $data = Arr::get($this->data, $parameters[0]);
 
         $values = array_slice($parameters, 1);
-
-        if (is_bool($data)) {
-            array_walk($values, function (&$value) {
-                if ($value === 'true') {
-                    $value = true;
-                } elseif ($value === 'false') {
-                    $value = false;
-                }
-            });
-        }
 
         if (in_array($data, $values)) {
             return $this->validateRequired($attribute, $value);
@@ -1308,6 +1292,7 @@ class Validator implements ValidatorContract
         $extra = $this->getUniqueExtra($parameters);
 
         return $verifier->getCount(
+
             $table, $column, $value, $id, $idColumn, $extra
 
         ) == 0;
@@ -1501,7 +1486,7 @@ class Validator implements ValidatorContract
                 \]  # a IPv6 address
             )
             (:[0-9]+)?                              # a port (optional)
-            (/?|/\S+|\?\S*|\#\S*)                   # a /, nothing, a / with something, a query or a fragment
+            (/?|/\S+)                               # a /, nothing or a / with something
         $~ixu';
 
         return preg_match($pattern, $value) === 1;
@@ -1528,18 +1513,6 @@ class Validator implements ValidatorContract
     }
 
     /**
-     * Validate the given value is a valid file.
-     *
-     * @param  string  $attribute
-     * @param  mixed   $value
-     * @return bool
-     */
-    protected function validateFile($attribute, $value)
-    {
-        return $this->isAValidFileInstance($value);
-    }
-
-    /**
      * Validate the MIME type of a file is an image MIME type.
      *
      * @param  string  $attribute
@@ -1549,46 +1522,6 @@ class Validator implements ValidatorContract
     protected function validateImage($attribute, $value)
     {
         return $this->validateMimes($attribute, $value, ['jpeg', 'png', 'gif', 'bmp', 'svg']);
-    }
-
-    /**
-     * Validate the dimensions of an image matches the given values.
-     *
-     * @param  string $attribute
-     * @param  mixed $value
-     * @param  array $parameters
-     * @return bool
-     */
-    protected function validateDimensions($attribute, $value, $parameters)
-    {
-        if (! $sizeDetails = getimagesize($value->getRealPath())) {
-            return false;
-        }
-
-        $this->requireParameterCount(1, $parameters, 'dimensions');
-
-        list($width, $height) = $sizeDetails;
-
-        $parameters = $this->parseNamedParameters($parameters);
-
-        if (
-            isset($parameters['width']) && $parameters['width'] != $width ||
-            isset($parameters['min_width']) && $parameters['min_width'] > $width ||
-            isset($parameters['max_width']) && $parameters['max_width'] < $width ||
-            isset($parameters['height']) && $parameters['height'] != $height ||
-            isset($parameters['min_height']) && $parameters['min_height'] > $height ||
-            isset($parameters['max_height']) && $parameters['max_height'] < $height
-        ) {
-            return false;
-        }
-
-        if (isset($parameters['ratio'])) {
-            list($numerator, $denominator) = array_pad(sscanf($parameters['ratio'], '%d/%d'), 2, 1);
-
-            return $numerator / $denominator == $width / $height;
-        }
-
-        return true;
     }
 
     /**
@@ -1716,7 +1649,7 @@ class Validator implements ValidatorContract
             return true;
         }
 
-        if ((! is_string($value) && ! is_numeric($value)) || strtotime($value) === false) {
+        if (! is_string($value) || strtotime($value) === false) {
             return false;
         }
 
@@ -1737,7 +1670,7 @@ class Validator implements ValidatorContract
     {
         $this->requireParameterCount(1, $parameters, 'date_format');
 
-        if (! is_string($value) && ! is_numeric($value)) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -1758,7 +1691,7 @@ class Validator implements ValidatorContract
     {
         $this->requireParameterCount(1, $parameters, 'before');
 
-        if (! is_string($value) && ! is_numeric($value) && ! $value instanceof DateTimeInterface) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -1766,11 +1699,11 @@ class Validator implements ValidatorContract
             return $this->validateBeforeWithFormat($format, $value, $parameters);
         }
 
-        if (! $date = $this->getDateTimestamp($parameters[0])) {
-            $date = $this->getDateTimestamp($this->getValue($parameters[0]));
+        if (! ($date = strtotime($parameters[0]))) {
+            return strtotime($value) < strtotime($this->getValue($parameters[0]));
         }
 
-        return $this->getDateTimestamp($value) < $date;
+        return strtotime($value) < $date;
     }
 
     /**
@@ -1800,7 +1733,7 @@ class Validator implements ValidatorContract
     {
         $this->requireParameterCount(1, $parameters, 'after');
 
-        if (! is_string($value) && ! is_numeric($value) && ! $value instanceof DateTimeInterface) {
+        if (! is_string($value)) {
             return false;
         }
 
@@ -1808,11 +1741,11 @@ class Validator implements ValidatorContract
             return $this->validateAfterWithFormat($format, $value, $parameters);
         }
 
-        if (! $date = $this->getDateTimestamp($parameters[0])) {
-            $date = $this->getDateTimestamp($this->getValue($parameters[0]));
+        if (! ($date = strtotime($parameters[0]))) {
+            return strtotime($value) > strtotime($this->getValue($parameters[0]));
         }
 
-        return $this->getDateTimestamp($value) > $date;
+        return strtotime($value) > $date;
     }
 
     /**
@@ -1898,17 +1831,6 @@ class Validator implements ValidatorContract
         if ($result = $this->getRule($attribute, 'DateFormat')) {
             return $result[1][0];
         }
-    }
-
-    /**
-     * Get the date timestamp.
-     *
-     * @param  mixed  $value
-     * @return int
-     */
-    protected function getDateTimestamp($value)
-    {
-        return $value instanceof DateTimeInterface ? $value->getTimestamp() : strtotime($value);
     }
 
     /**
@@ -2624,23 +2546,6 @@ class Validator implements ValidatorContract
     }
 
     /**
-     * Parse named parameters to $key => $value items.
-     *
-     * @param  array  $parameters
-     * @return array
-     */
-    protected function parseNamedParameters($parameters)
-    {
-        return array_reduce($parameters, function ($result, $item) {
-            list($key, $value) = array_pad(explode('=', $item, 2), 2, null);
-
-            $result[$key] = $value;
-
-            return $result;
-        });
-    }
-
-    /**
      * Normalizes a rule so that we can accept short types.
      *
      * @param  string  $rule
@@ -2670,21 +2575,17 @@ class Validator implements ValidatorContract
     }
 
     /**
-     * Get the explicit keys from an attribute flattened with dot notation.
+     * Get the numeric keys from an attribute flattened with dot notation.
      *
-     * E.g. 'foo.1.bar.spark.baz' -> [1, 'spark'] for 'foo.*.bar.*.baz'
+     * E.g. 'foo.1.bar.2.baz' -> [1, 2]
      *
      * @param  string  $attribute
      * @return array
      */
-    protected function getExplicitKeys($attribute)
+    protected function getNumericKeys($attribute)
     {
-        $pattern = str_replace('\*', '([^\.]+)', preg_quote($this->getPrimaryAttribute($attribute)));
-
-        if (preg_match('/^'.$pattern.'/', $attribute, $keys)) {
-            array_shift($keys);
-
-            return $keys;
+        if (preg_match_all('/\.(\d+)\./', $attribute, $keys)) {
+            return $keys[1];
         }
 
         return [];
@@ -2727,7 +2628,7 @@ class Validator implements ValidatorContract
     }
 
     /**
-     * Replace each field parameter which has asterisks with the given keys.
+     * Replace each field parameter which has asterisks with the given numeric keys.
      *
      * @param  array  $parameters
      * @param  array  $keys
@@ -2741,9 +2642,9 @@ class Validator implements ValidatorContract
     }
 
     /**
-     * Replace asterisks with explicit keys.
+     * Replace asterisks with numeric keys.
      *
-     * E.g. 'foo.*.bar.*.baz', [1, 'spark'] -> foo.1.bar.spark.baz
+     * E.g. 'foo.*.bar.*.baz', [1, 2] -> foo.1.bar.2.baz
      *
      * @param  string  $field
      * @param  array  $keys
@@ -2751,7 +2652,7 @@ class Validator implements ValidatorContract
      */
     protected function replaceAsterisksWithKeys($field, array $keys)
     {
-        return vsprintf(str_replace('*', '%s', $field), $keys);
+        return vsprintf(str_replace('*', '%d', $field), $keys);
     }
 
     /**
@@ -3182,11 +3083,7 @@ class Validator implements ValidatorContract
      */
     protected function callClassBasedExtension($callback, $parameters)
     {
-        if (Str::contains($callback, '@')) {
-            list($class, $method) = explode('@', $callback);
-        } else {
-            list($class, $method) = [$callback, 'validate'];
-        }
+        list($class, $method) = explode('@', $callback);
 
         return call_user_func_array([$this->container->make($class), $method], $parameters);
     }

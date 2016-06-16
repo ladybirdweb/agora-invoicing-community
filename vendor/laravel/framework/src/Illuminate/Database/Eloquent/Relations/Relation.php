@@ -200,6 +200,7 @@ abstract class Relation
     {
         return array_unique(array_values(array_map(function ($value) use ($key) {
             return $key ? $value->getAttribute($key) : $value->getKey();
+
         }, $models)));
     }
 

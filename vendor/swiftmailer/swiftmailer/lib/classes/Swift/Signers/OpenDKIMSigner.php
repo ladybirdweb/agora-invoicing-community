@@ -29,12 +29,11 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
 
     public function __construct($privateKey, $domainName, $selector)
     {
-        if (!extension_loaded('opendkim')) {
+        if (extension_loaded('opendkim')) {
+            $this->_peclLoaded = true;
+        } else {
             throw new Swift_SwiftException('php-opendkim extension not found');
         }
-
-        $this->_peclLoaded = true;
-
         parent::__construct($privateKey, $domainName, $selector);
     }
 
@@ -62,9 +61,9 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
         if (is_bool($bodyLen)) {
             $bodyLen = -1;
         }
-        $hash = $this->_hashAlgorithm == 'rsa-sha1' ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
-        $bodyCanon = $this->_bodyCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
-        $headerCanon = $this->_headerCanon == 'simple' ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $hash = ($this->_hashAlgorithm == 'rsa-sha1') ? OpenDKIMSign::ALG_RSASHA1 : OpenDKIMSign::ALG_RSASHA256;
+        $bodyCanon = ($this->_bodyCanon == 'simple') ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
+        $headerCanon = ($this->_headerCanon == 'simple') ? OpenDKIMSign::CANON_SIMPLE : OpenDKIMSign::CANON_RELAXED;
         $this->_dkimHandler = new OpenDKIMSign($this->_privateKey, $this->_selector, $this->_domainName, $headerCanon, $bodyCanon, $hash, $bodyLen);
         // Hardcode signature Margin for now
         $this->_dkimHandler->setMargin(78);
@@ -131,7 +130,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     /**
      * Set the signature timestamp.
      *
-     * @param int $time
+     * @param timestamp $time
      *
      * @return Swift_Signers_DKIMSigner
      */
@@ -145,7 +144,7 @@ class Swift_Signers_OpenDKIMSigner extends Swift_Signers_DKIMSigner
     /**
      * Set the signature expiration timestamp.
      *
-     * @param int $time
+     * @param timestamp $time
      *
      * @return Swift_Signers_DKIMSigner
      */

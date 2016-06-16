@@ -102,9 +102,6 @@ array(
             )
         )
         finallyStmts: null
-        comments: array(
-            0: // no finally
-        )
     )
     2: Stmt_TryCatch(
         stmts: array(
@@ -112,9 +109,6 @@ array(
         catches: array(
         )
         finallyStmts: array(
-        )
-        comments: array(
-            0: // no catch
         )
     )
 )

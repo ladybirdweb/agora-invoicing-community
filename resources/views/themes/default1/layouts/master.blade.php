@@ -165,11 +165,11 @@
                             </ul>
                         </li>
                         
-                        <li>
+<!--                        <li>
                             <a href="{{url('widgets')}}">
                                 <i class="fa fa-circle-o text-orange"></i> <span>{{Lang::get('message.widgets')}}</span>
                             </a>
-                        </li>
+                        </li>-->
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-folder"></i> <span>{{Lang::get('message.products')}}</span>
@@ -185,9 +185,13 @@
                                 <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
                             </ul>
                         </li>
-
+                        <li>
+                            <a href="{{url('settings')}}">
+                                <i class="fa fa-gears"></i> <span>{{Lang::get('message.settings')}}</span>
+                            </a>
+                        </li>
                         
-                        <li class="treeview">
+<!--                        <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-gears"></i> <span>{{Lang::get('message.settings')}}</span>
                                 <i class="fa fa-angle-left pull-right"></i>
@@ -203,7 +207,7 @@
                                 <li><a href="{{url('plugin')}}"><i class="fa fa-bank"></i>{{Lang::get('message.plugins')}}</a></li>
 
                             </ul>
-                        </li>
+                        </li>-->
 
 
 

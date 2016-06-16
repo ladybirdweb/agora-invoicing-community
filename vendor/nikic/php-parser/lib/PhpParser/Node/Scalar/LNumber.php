@@ -2,17 +2,10 @@
 
 namespace PhpParser\Node\Scalar;
 
-use PhpParser\Error;
 use PhpParser\Node\Scalar;
 
 class LNumber extends Scalar
 {
-    /* For use in "kind" attribute */
-    const KIND_BIN = 2;
-    const KIND_OCT = 8;
-    const KIND_DEC = 10;
-    const KIND_HEX = 16;
-
     /** @var int Number value */
     public $value;
 
@@ -32,36 +25,37 @@ class LNumber extends Scalar
     }
 
     /**
-     * Constructs an LNumber node from a string number literal.
+     * @internal
      *
-     * @param string $str               String number literal (decimal, octal, hex or binary)
-     * @param array  $attributes        Additional attributes
-     * @param bool   $allowInvalidOctal Whether to allow invalid octal numbers (PHP 5)
+     * Parses an LNUMBER token (dec, hex, oct and bin notations) like PHP would.
      *
-     * @return LNumber The constructed LNumber, including kind attribute
+     * @param string $str A string number
+     *
+     * @return int The parsed number
      */
-    public static function fromString($str, array $attributes = array(), $allowInvalidOctal = false) {
-        if ('0' !== $str[0] || '0' === $str) {
-            $attributes['kind'] = LNumber::KIND_DEC;
-            return new LNumber((int) $str, $attributes);
+    public static function parse($str) {
+        // handle plain 0 specially
+        if ('0' === $str) {
+            return 0;
         }
 
-        if ('x' === $str[1] || 'X' === $str[1]) {
-            $attributes['kind'] = LNumber::KIND_HEX;
-            return new LNumber(hexdec($str), $attributes);
+        // if first char is 0 (and number isn't 0) it's a special syntax
+        if ('0' === $str[0]) {
+            // hex
+            if ('x' === $str[1] || 'X' === $str[1]) {
+                return hexdec($str);
+            }
+
+            // bin
+            if ('b' === $str[1] || 'B' === $str[1]) {
+                return bindec($str);
+            }
+
+            // oct (intval instead of octdec to get proper cutting behavior with malformed numbers)
+            return intval($str, 8);
         }
 
-        if ('b' === $str[1] || 'B' === $str[1]) {
-            $attributes['kind'] = LNumber::KIND_BIN;
-            return new LNumber(bindec($str), $attributes);
-        }
-
-        if (!$allowInvalidOctal && strpbrk($str, '89')) {
-            throw new Error('Invalid numeric literal', $attributes);
-        }
-
-        // use intval instead of octdec to get proper cutting behavior with malformed numbers
-        $attributes['kind'] = LNumber::KIND_OCT;
-        return new LNumber(intval($str, 8), $attributes);
+        // dec
+        return (int) $str;
     }
 }

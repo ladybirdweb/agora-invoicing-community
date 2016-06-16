@@ -92,11 +92,11 @@ class ApcStore extends TaggableStore implements Store
      *
      * @param  string  $key
      * @param  mixed   $value
-     * @return void
+     * @return array|bool
      */
     public function forever($key, $value)
     {
-        $this->put($key, $value, 0);
+        return $this->put($key, $value, 0);
     }
 
     /**

@@ -161,7 +161,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
             return;
         }
 
-        $id = $this->session->get($this->getName());
+        $id = $this->session->get($this->getName(), $this->getRecallerId());
 
         if (is_null($id) && $this->user()) {
             $id = $this->user()->getAuthIdentifier();
@@ -363,13 +363,6 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
             return true;
         }
 
-        // If the authentication attempt fails we will fire an event so that the user
-        // may be notified of any suspicious attempts to access their account from
-        // an unrecognized user. A developer may listen to this event as needed.
-        if ($login) {
-            $this->fireFailedEvent($user, $credentials);
-        }
-
         return false;
     }
 
@@ -399,20 +392,6 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
             $this->events->fire(new Events\Attempting(
                 $credentials, $remember, $login
             ));
-        }
-    }
-
-    /**
-     * Fire the failed authentication attempt event with the given arguments.
-     *
-     * @param  \Illuminate\Contracts\Auth\Authenticatable|null  $user
-     * @param  array  $credentials
-     * @return void
-     */
-    protected function fireFailedEvent($user, array $credentials)
-    {
-        if (isset($this->events)) {
-            $this->events->fire(new Events\Failed($user, $credentials));
         }
     }
 
@@ -493,15 +472,11 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function loginUsingId($id, $remember = false)
     {
-        $user = $this->provider->retrieveById($id);
+        $this->session->set($this->getName(), $id);
 
-        if (! is_null($user)) {
-            $this->login($user, $remember);
+        $this->login($user = $this->provider->retrieveById($id), $remember);
 
-            return $user;
-        }
-
-        return false;
+        return $user;
     }
 
     /**
@@ -512,9 +487,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      */
     public function onceUsingId($id)
     {
-        $user = $this->provider->retrieveById($id);
-
-        if (! is_null($user)) {
+        if (! is_null($user = $this->provider->retrieveById($id))) {
             $this->setUser($user);
 
             return true;
@@ -712,15 +685,13 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      * Set the current user.
      *
      * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
-     * @return $this
+     * @return void
      */
     public function setUser(AuthenticatableContract $user)
     {
         $this->user = $user;
 
         $this->loggedOut = false;
-
-        return $this;
     }
 
     /**

@@ -16,7 +16,6 @@
 class Swift_MemorySpool implements Swift_Spool
 {
     protected $messages = array();
-    private $flushRetries = 3;
 
     /**
      * Tests if this Transport mechanism has started.
@@ -40,14 +39,6 @@ class Swift_MemorySpool implements Swift_Spool
      */
     public function stop()
     {
-    }
-
-    /**
-     * @param int $retries
-     */
-    public function setFlushRetries($retries)
-    {
-        $this->flushRetries = $retries;
     }
 
     /**
@@ -84,25 +75,8 @@ class Swift_MemorySpool implements Swift_Spool
         }
 
         $count = 0;
-        $retries = $this->flushRetries;
-        while ($retries--) {
-            try {
-                while ($message = array_pop($this->messages)) {
-                    $count += $transport->send($message, $failedRecipients);
-                }
-            } catch (Swift_TransportException $exception) {
-                if ($retries) {
-                    // re-queue the message at the end of the queue to give a chance
-                    // to the other messages to be sent, in case the failure was due to
-                    // this message and not just the transport failing
-                    array_unshift($this->messages, $message);
-
-                    // wait half a second before we try again
-                    usleep(500000);
-                } else {
-                    throw $exception;
-                }
-            }
+        while ($message = array_pop($this->messages)) {
+            $count += $transport->send($message, $failedRecipients);
         }
 
         return $count;

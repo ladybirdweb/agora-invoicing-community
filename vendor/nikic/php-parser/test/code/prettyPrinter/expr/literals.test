@@ -40,17 +40,21 @@ FALSE;
 378282246310005.0;
 10000000000000002.0;
 
-// strings (single quoted)
+// strings (normalized to single quoted)
 'a';
 'a
 b';
 "a";
 "a\nb";
 'a\'b';
-
-// strings (double quoted)
 "a'b";
 "a\b";
+<<<'STR'
+a\nb$a
+{$b}
+STR;
+
+// strings (normalized to double quoted)
 "$a";
 "a$b";
 "$a$b";
@@ -64,6 +68,9 @@ b';
 "\\{ $A }";
 "{$$A}[B]";
 "$$A[B]";
+<<<STR
+a\nb$a\n{$b}
+STR;
 
 // make sure indentation doesn't mess anything up
 function foo()
@@ -100,9 +107,9 @@ FALSE;
 // integers (normalized to decimal)
 0;
 11;
-011;
-0x11;
-0b11;
+9;
+17;
+3;
 // floats (normalized to ... something)
 0.0;
 0.0;
@@ -115,16 +122,19 @@ INF;
 1.0E+84;
 378282246310005.0;
 10000000000000002.0;
-// strings (single quoted)
+// strings (normalized to single quoted)
 'a';
 'a
 b';
-"a";
-"a\nb";
+'a';
+'a
+b';
 'a\'b';
-// strings (double quoted)
-"a'b";
-"a\\b";
+'a\'b';
+'a\\b';
+'a\\nb$a
+{$b}';
+// strings (normalized to double quoted)
 "{$a}";
 "a{$b}";
 "{$a}{$b}";
@@ -138,10 +148,12 @@ b';
 "\\{ {$A} }";
 "{${$A}}[B]";
 "\${$A['B']}";
+"a\nb{$a}\n{$b}";
 // make sure indentation doesn't mess anything up
 function foo()
 {
-    "a\nb";
+    'a
+b';
     'a
 b';
     'a

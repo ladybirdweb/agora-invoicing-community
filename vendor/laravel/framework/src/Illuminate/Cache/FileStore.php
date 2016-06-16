@@ -219,7 +219,7 @@ class FileStore implements Store
             return 9999999999;
         }
 
-        return (int) $time;
+        return $time;
     }
 
     /**

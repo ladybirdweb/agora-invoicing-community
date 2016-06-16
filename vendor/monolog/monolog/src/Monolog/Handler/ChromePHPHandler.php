@@ -32,11 +32,6 @@ class ChromePHPHandler extends AbstractProcessingHandler
      * Header name
      */
     const HEADER_NAME = 'X-ChromeLogger-Data';
-    
-    /**
-     * Regular expression to detect supported browsers (matches any Chrome, or Firefox 43+)
-     */
-    const USER_AGENT_REGEX = '{\b(?:Chrome/\d+(?:\.\d+)*|Firefox/(?:4[3-9]|[5-9]\d|\d{3,})(?:\.\d)*)\b}';
 
     protected static $initialized = false;
 
@@ -182,7 +177,8 @@ class ChromePHPHandler extends AbstractProcessingHandler
             return false;
         }
 
-        return preg_match(self::USER_AGENT_REGEX, $_SERVER['HTTP_USER_AGENT']);
+        // matches any Chrome, or Firefox 43+
+        return preg_match('{\b(?:Chrome/\d+(?:\.\d+)*|Firefox/(?:4[3-9]|[5-9]\d|\d{3,})(?:\.\d)*)\b}', $_SERVER['HTTP_USER_AGENT']);
     }
 
     /**

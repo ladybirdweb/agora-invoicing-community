@@ -193,11 +193,7 @@ class AuthManager implements FactoryContract
      */
     public function shouldUse($name)
     {
-        $this->setDefaultDriver($name);
-
-        $this->userResolver = function ($name = null) {
-            return $this->guard($name)->user();
-        };
+        return $this->setDefaultDriver($name);
     }
 
     /**

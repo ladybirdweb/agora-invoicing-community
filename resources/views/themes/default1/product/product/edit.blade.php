@@ -249,9 +249,9 @@
                                         <li>
                                             <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
                                                 <!-- first name -->
-                                                {!! Form::label('retired',Lang::get('message.retired')) !!}
+                                                {!! Form::label('retired','Description') !!}
                                                 {!! Form::hidden('retired', 0) !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  {{Lang::get('message.tick-to-hide-from-admin-area-product-dropdown-menus')}}</p>
+                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
                                             </div>  
                                         </li>
@@ -272,8 +272,8 @@
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
                                             <div class="row">
                                                  <div class="col-md-6">
-                                                    
-                                                    {!! Form::checkbox('subscription',1,true) !!}
+                                                    {!! Form::hidden('subscription',0) !!}
+                                                    {!! Form::checkbox('subscription',1) !!}
                                                     {!! Form::label('subscription',Lang::get('message.subscription')) !!}
                                                 </div>
                                                 <div class="col-md-6">

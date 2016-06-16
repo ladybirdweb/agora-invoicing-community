@@ -199,6 +199,7 @@ class RouteCollection implements Countable, IteratorAggregate
         if ($request->method() == 'OPTIONS') {
             return (new Route('OPTIONS', $request->path(), function () use ($methods) {
                 return new Response('', 200, ['Allow' => implode(',', $methods)]);
+
             }))->bind($request);
         }
 
@@ -239,7 +240,7 @@ class RouteCollection implements Countable, IteratorAggregate
      * @param  string|null  $method
      * @return array
      */
-    public function get($method = null)
+    protected function get($method = null)
     {
         if (is_null($method)) {
             return $this->getRoutes();
@@ -289,16 +290,6 @@ class RouteCollection implements Countable, IteratorAggregate
     public function getRoutes()
     {
         return array_values($this->allRoutes);
-    }
-
-    /**
-     * Get all of the routes keyed by their HTTP verb / method.
-     *
-     * @return array
-     */
-    public function getRoutesByMethod()
-    {
-        return $this->routes;
     }
 
     /**

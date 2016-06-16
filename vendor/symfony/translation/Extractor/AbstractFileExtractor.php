@@ -54,9 +54,9 @@ abstract class AbstractFileExtractor
     /**
      * @param string $file
      *
-     * @return bool
-     *
      * @throws \InvalidArgumentException
+     *
+     * @return bool
      */
     protected function isFile($file)
     {

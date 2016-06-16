@@ -162,7 +162,7 @@ class Table
         } elseif (isset(self::$styles[$name])) {
             $this->columnStyles[$columnIndex] = self::$styles[$name];
         } else {
-            throw new InvalidArgumentException(sprintf('Style "%s" is not defined.', $name));
+            throw new \InvalidArgumentException(sprintf('Style "%s" is not defined.', $name));
         }
 
         return $this;
@@ -307,7 +307,7 @@ class Table
      */
     private function renderColumnSeparator()
     {
-        return sprintf($this->style->getBorderFormat(), $this->style->getVerticalBorderChar());
+        $this->output->write(sprintf($this->style->getBorderFormat(), $this->style->getVerticalBorderChar()));
     }
 
     /**
@@ -324,12 +324,12 @@ class Table
             return;
         }
 
-        $rowContent = $this->renderColumnSeparator();
+        $this->renderColumnSeparator();
         foreach ($this->getRowColumns($row) as $column) {
-            $rowContent .= $this->renderCell($row, $column, $cellFormat);
-            $rowContent .= $this->renderColumnSeparator();
+            $this->renderCell($row, $column, $cellFormat);
+            $this->renderColumnSeparator();
         }
-        $this->output->writeln($rowContent);
+        $this->output->writeln('');
     }
 
     /**
@@ -358,13 +358,12 @@ class Table
         $style = $this->getColumnStyle($column);
 
         if ($cell instanceof TableSeparator) {
-            return sprintf($style->getBorderFormat(), str_repeat($style->getHorizontalBorderChar(), $width));
+            $this->output->write(sprintf($style->getBorderFormat(), str_repeat($style->getHorizontalBorderChar(), $width)));
+        } else {
+            $width += Helper::strlen($cell) - Helper::strlenWithoutDecoration($this->output->getFormatter(), $cell);
+            $content = sprintf($style->getCellRowContentFormat(), $cell);
+            $this->output->write(sprintf($cellFormat, str_pad($content, $width, $style->getPaddingChar(), $style->getPadType())));
         }
-
-        $width += Helper::strlen($cell) - Helper::strlenWithoutDecoration($this->output->getFormatter(), $cell);
-        $content = sprintf($style->getCellRowContentFormat(), $cell);
-
-        return sprintf($cellFormat, str_pad($content, $width, $style->getPaddingChar(), $style->getPadType()));
     }
 
     /**
@@ -570,18 +569,6 @@ class Table
                     continue;
                 }
 
-                foreach ($row as $i => $cell) {
-                    if ($cell instanceof TableCell) {
-                        $textLength = strlen($cell);
-                        if ($textLength > 0) {
-                            $contentColumns = str_split($cell, ceil($textLength / $cell->getColspan()));
-                            foreach ($contentColumns as $position => $content) {
-                                $row[$i + $position] = $content;
-                            }
-                        }
-                    }
-                }
-
                 $lengths[] = $this->getCellWidth($row, $column);
             }
 
@@ -612,6 +599,10 @@ class Table
         if (isset($row[$column])) {
             $cell = $row[$column];
             $cellWidth = Helper::strlenWithoutDecoration($this->output->getFormatter(), $cell);
+            if ($cell instanceof TableCell && $cell->getColspan() > 1) {
+                // we assume that cell value will be across more than one column.
+                $cellWidth = $cellWidth / $cell->getColspan();
+            }
 
             return $cellWidth;
         }

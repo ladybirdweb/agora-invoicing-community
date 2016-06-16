@@ -14,7 +14,7 @@ class JobExceptionOccurred
     /**
      * The job instance.
      *
-     * @var \Illuminate\Contracts\Queue\Job
+     * @var \Illuminate\Contracts\Jobs\Job
      */
     public $job;
 
@@ -36,7 +36,7 @@ class JobExceptionOccurred
      * Create a new event instance.
      *
      * @param  string  $connectionName
-     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  \Illuminate\Contracts\Jobs\Job  $job
      * @param  array  $data
      * @param  \Throwable  $exception
      * @return void

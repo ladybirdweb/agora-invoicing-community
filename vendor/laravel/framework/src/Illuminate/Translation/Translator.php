@@ -303,7 +303,11 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
      */
     protected function parseLocale($locale)
     {
-        return array_filter([$locale ?: $this->locale, $this->fallback]);
+        if (! is_null($locale)) {
+            return array_filter([$locale, $this->fallback]);
+        }
+
+        return array_filter([$this->locale, $this->fallback]);
     }
 
     /**

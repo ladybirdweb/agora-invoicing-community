@@ -1,5 +1,6 @@
 <?php
-    require './config.php';
+	require("./config.php");
 
-    $tree = new TreeConnector($conn, $dbType);
-    $tree->render_table('tasks', 'taskId', 'taskName', '', 'parentId');
+	$tree = new TreeConnector($conn, $dbType);
+	$tree->render_table("tasks","taskId","taskName","","parentId");
+?>

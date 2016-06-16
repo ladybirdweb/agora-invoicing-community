@@ -156,13 +156,13 @@ class InsightsTest extends \PHPUnit_Framework_TestCase
             '$model->traits->isAnonymousProxy is false'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             22,
             $model->maxmind->queriesRemaining,
             'queriesRemaining is correct'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $raw,
             $model->raw,
             'raw method returns raw input'
@@ -235,7 +235,7 @@ class InsightsTest extends \PHPUnit_Framework_TestCase
             '$model->traits'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $raw,
             $model->raw,
             'raw method returns raw input with no added empty values'
@@ -265,7 +265,7 @@ class InsightsTest extends \PHPUnit_Framework_TestCase
             'no exception when Insights model gets raw data with unknown keys'
         );
 
-        $this->assertSame(
+        $this->assertEquals(
             $raw,
             $model->raw,
             'raw method returns raw input'

@@ -14,16 +14,16 @@ class CreateInvoicesTable extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->string('number');
-            $table->timestamp('date');
-            $table->string('discount');
-            $table->string('discount_mode');
-            $table->string('coupon_code');
-            $table->string('grand_price');
-            $table->string('status');
-            $table->string('currency')->default('USD');
+                        $table->integer('user_id')->unsigned();
+                        $table->foreign('user_id')->references('id')->on('users');
+                        $table->string('number');
+                        $table->timestamp('date');
+                        $table->string('discount');
+                        $table->string('discount_mode');
+                        $table->string('coupon_code');
+                        $table->string('grand_price');
+                        $table->string('status');
+                        $table->string('currency')->default('USD');
             $table->timestamps();
         });
     }

@@ -164,9 +164,13 @@
         var user = document.getElementsByName('user')[0].value;
         var plan = "";
         var subscription = "";
+        var description = "";
         if ($('#plan').length > 0) {
             var plan = document.getElementsByName('plan')[0].value;
             subscription = 'true';
+        }
+        if ($('#description').length > 0) {
+            var description = document.getElementsByName('description')[0].value;
         }
         if ($('#domain').length > 0) {
             var domain = document.getElementsByName('domain')[0].value;
@@ -185,7 +189,7 @@
                 var data = $("#formoid").serialize() + '&user=' + user;
             }
         }
-        data = data + '&plan=' + plan + '&subscription=' + subscription;
+        data = data + '&plan=' + plan + '&subscription=' + subscription+'&description='+description;
         $.ajax({
             type: "POST",
             url: url,

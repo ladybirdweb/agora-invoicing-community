@@ -75,12 +75,10 @@ class ThrottleRequests
     {
         $response = new Response('Too Many Attempts.', 429);
 
-        $retryAfter = $this->limiter->availableIn($key);
-
         return $this->addHeaders(
             $response, $maxAttempts,
-            $this->calculateRemainingAttempts($key, $maxAttempts, $retryAfter),
-            $retryAfter
+            $this->calculateRemainingAttempts($key, $maxAttempts),
+            $this->limiter->availableIn($key)
         );
     }
 
@@ -114,15 +112,10 @@ class ThrottleRequests
      *
      * @param  string  $key
      * @param  int  $maxAttempts
-     * @param  int|null  $retryAfter
      * @return int
      */
-    protected function calculateRemainingAttempts($key, $maxAttempts, $retryAfter = null)
+    protected function calculateRemainingAttempts($key, $maxAttempts)
     {
-        if (! is_null($retryAfter)) {
-            return 0;
-        }
-
-        return $this->limiter->retriesLeft($key, $maxAttempts);
+        return $maxAttempts - $this->limiter->attempts($key) + 1;
     }
 }

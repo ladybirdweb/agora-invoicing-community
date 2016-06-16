@@ -14,7 +14,7 @@ PHPUnit %s by Sebastian Bergmann and contributors.
 
 EE
 
-Time: %s, Memory: %s
+Time: %s, Memory: %sMb
 
 There were 2 errors:
 

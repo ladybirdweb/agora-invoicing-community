@@ -77,9 +77,9 @@
                           selector: 'textarea',
                           height: 500,
                           theme: 'modern',
-                          relative_urls: false,
+                          relative_urls: true,
                           remove_script_host: false,
-                          convert_urls: true,
+                          convert_urls: false,
                           plugins: [
                               'advlist autolink lists link image charmap print preview hr anchor pagebreak',
                               'searchreplace wordcount visualblocks visualchars code fullscreen',

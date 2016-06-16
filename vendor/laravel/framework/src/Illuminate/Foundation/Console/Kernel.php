@@ -146,17 +146,6 @@ class Kernel implements KernelContract
     }
 
     /**
-     * Register the given command with the console application.
-     *
-     * @param  \Symfony\Component\Console\Command\Command  $command
-     * @return void
-     */
-    public function registerCommand($command)
-    {
-        $this->getArtisan()->add($command);
-    }
-
-    /**
      * Run an Artisan console command by name.
      *
      * @param  string  $command

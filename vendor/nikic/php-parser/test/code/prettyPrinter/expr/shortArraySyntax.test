@@ -6,6 +6,7 @@ Short array syntax
 array(1, 2, 3);
 ['a' => 'b', 'c' => 'd'];
 -----
+!!both {"shortArraySyntax": true}
 [];
-array(1, 2, 3);
+[1, 2, 3];
 ['a' => 'b', 'c' => 'd'];

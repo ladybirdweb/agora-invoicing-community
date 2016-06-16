@@ -126,7 +126,7 @@
 
                                                     </li>
 
-                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->get(); ?>
+                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
                                                     @foreach($pages as $page)
                                                     <li class="dropdown">
 

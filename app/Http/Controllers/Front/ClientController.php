@@ -111,8 +111,8 @@ class ClientController extends Controller
 //                            $date = date_create($model->created_at);
 //                            return date_format($date,'l, F j, Y H:m A');
 //                        })
-                        ->showColumns('created_at')
-                        ->addColumn('ends_at', function ($model) {
+                        //->showColumns('created_at')
+                        ->addColumn('created_at', function ($model) {
                             $end = '--';
                             if ($model->subscription()->first()) {
                                 if ($end != '0000-00-00 00:00:00' || $end != null) {
@@ -131,12 +131,14 @@ class ClientController extends Controller
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = '';
                             if ($status == 'success') {
-                                $url = $this->renewPopup($sub->id);
+                                if($sub){
+                                    $url = $this->renewPopup($sub->id);
+                                }
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
 
                             return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Deatails of order'></i></a>"
-                                    .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>$url</p>";
+                                    .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
                         })
                         ->searchColumns('id', 'created_at', 'ends_at', 'product')
                         ->orderColumns('id', 'created_at', 'ends_at', 'product')

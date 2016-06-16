@@ -12,8 +12,7 @@ use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Validator;
 
-class AuthController extends Controller
-{
+class AuthController extends Controller {
     /*
       |--------------------------------------------------------------------------
       | Registration & Login Controller
@@ -45,13 +44,11 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return void
      */
-    public function __construct(Guard $auth, Registrar $registrar)
-    {
+    public function __construct(Guard $auth, Registrar $registrar) {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
-    public function getLogin()
-    {
+    public function getLogin() {
         try {
             return view('themes.default1.front.auth.login-register');
         } catch (\Exception $ex) {
@@ -67,12 +64,11 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Http\Response
      */
-    public function postLogin(Request $request)
-    {
+    public function postLogin(Request $request) {
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
-            'email1.required'    => 'Username/Email is required',
+            'email1.required' => 'Username/Email is required',
             'password1.required' => 'Password is required',
         ]);
         $usernameinput = $request->input('email1');
@@ -116,8 +112,7 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Http\Response
      */
-    public function getRegister()
-    {
+    public function getRegister() {
         return view('auth.new_register');
     }
 
@@ -128,8 +123,7 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Http\Response
      */
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
-    {
+    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate) {
         try {
             $pass = $request->input('password');
             $currency = 'INR';
@@ -159,19 +153,18 @@ use AuthenticatesAndRegistersUsers;
         //return response()->json(compact('result'));
     }
 
-    public function sendActivationByGet($email, Request $request)
-    {
+    public function sendActivationByGet($email, Request $request) {
         try {
-            $this->sendActivation($email, $request->method());
-
-            return redirect('auth/login')->with('success', 'Activation link has sent to your email address');
+            $mail = $this->sendActivation($email, $request->method());
+            if ($mail=="success") {
+                return redirect('auth/login')->with('success', 'Activation link has sent to your email address');
+            }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function sendActivation($email, $method, $str = '')
-    {
+    public function sendActivation($email, $method, $str = '') {
         try {
             $user = new User();
             $activate_model = new AccountActivate();
@@ -194,22 +187,29 @@ use AuthenticatesAndRegistersUsers;
             $settings = $settings->where('id', 1)->first();
             //template
             $template = new \App\Model\Common\Template();
-
+            $temp_id = $settings->where('id', 1)->first()->welcome_mail;
+            $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
             $to = $user->email;
-            $subject = $template->where('id', $settings->where('id', 1)->first()->welcome_mail)->first()->name;
-            $data = $template->where('id', $settings->where('id', 1)->first()->welcome_mail)->first()->data;
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
-
+            $subject = $template->name;
+            $data = $template->data;
+            $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+            $type = "";
+            if ($template) {
+                $type_id = $template->type;
+                $temp_type = new \App\Model\Common\TemplateType();
+                $type = $temp_type->where('id', $type_id)->first()->name;
+            }
+            //dd($type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
-            $templateController->Mailing($from, $to, $data, $subject, $replace);
+            $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+            return $mail;
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
-    public function Activate($token, AccountActivate $activate, Request $request, User $user)
-    {
+    public function Activate($token, AccountActivate $activate, Request $request, User $user) {
         try {
             if ($activate->where('token', $token)->first()) {
                 $email = $activate->where('token', $token)->first()->email;
@@ -253,11 +253,10 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator(array $data)
-    {
+    public function validator(array $data) {
         return Validator::make($data, [
-                    'name'     => 'required|max:255',
-                    'email'    => 'required|email|max:255|unique:users',
+                    'name' => 'required|max:255',
+                    'email' => 'required|email|max:255|unique:users',
                     'password' => 'required|confirmed|min:6',
         ]);
     }
@@ -269,11 +268,10 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return User
      */
-    public function create(array $data)
-    {
+    public function create(array $data) {
         return User::create([
-                    'name'     => $data['name'],
-                    'email'    => $data['email'],
+                    'name' => $data['name'],
+                    'email' => $data['email'],
                     'password' => bcrypt($data['password']),
         ]);
     }
@@ -283,14 +281,14 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return string
      */
-    public function redirectPath()
-    {
+    public function redirectPath() {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
 
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/' . $url;
         } else {
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
         }
     }
+
 }

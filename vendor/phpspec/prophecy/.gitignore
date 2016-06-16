@@ -1,4 +1,4 @@
 *.tgz
 *.phar
-/composer.lock
-/vendor
+bin
+vendor

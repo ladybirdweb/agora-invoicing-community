@@ -351,14 +351,6 @@ class ChoiceFormFieldTest extends FormFieldTestCase
         $this->assertEquals(array('foobar'), $field->getValue(), '->disableValidation() allows to set a value which is not in the selected options.');
     }
 
-    public function testSelectWithEmptyValue()
-    {
-        $node = $this->createSelectNodeWithEmptyOption(array('' => true, 'Female' => false, 'Male' => false));
-        $field = new ChoiceFormField($node);
-
-        $this->assertSame('', $field->getValue());
-    }
-
     protected function createSelectNode($options, $attributes = array(), $selectedAttrText = 'selected')
     {
         $document = new \DOMDocument();

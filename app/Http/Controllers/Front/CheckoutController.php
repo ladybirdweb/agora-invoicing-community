@@ -110,9 +110,9 @@ class CheckoutController extends Controller
             }
             //$attributes[] = $item->attributes;
         }
-        if ($content->count() == 0) {
-            return redirect('home');
-        }
+//        if ($content->count() == 0) {
+//            return redirect('home');
+//        }
         if ($cart_currency != $currency) {
             return redirect('checkout');
         }
@@ -158,10 +158,13 @@ class CheckoutController extends Controller
 
     public function postCheckout(Request $request)
     {
+         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+         $payment_method = $request->input('payment_gateway');
         //dd($request->all());
         $paynow = false;
         if ($request->input('invoice_id')) {
             $paynow = true;
+            //$invoiceid = $request->input('invoice_id');
         }
         $cost = $request->input('cost');
         if (\Cart::getSubTotal() > 0 || $cost > 0) {
@@ -180,9 +183,9 @@ class CheckoutController extends Controller
                 /*
                  * Do order, invoicing etc
                  */
-                $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+               
                 $invoice = $invoice_controller->GenerateInvoice();
-                $payment_method = $request->input('payment_gateway');
+                
                 $status = 'pending';
                 if (!$payment_method) {
                     $payment_method = 'free';
@@ -198,17 +201,20 @@ class CheckoutController extends Controller
                 $cart = [];
                 $invoice_id = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoice_id);
+                $amount = $invoice->grand_total;
             }
 
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                if ($paynow == false) {
-                    // $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
-                }
+//                if ($paynow == true) {
+//                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
+//                }
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
-                $this->checkoutAction($invoice);
+                $action = $this->checkoutAction($invoice);
+                
                 $check_product_category = $this->product($invoiceid);
+                
                 $url = '';
                 if ($check_product_category->category == 'product') {
                     $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
@@ -261,8 +267,9 @@ class CheckoutController extends Controller
             //send mail
             $template_controller = new TemplateController();
             $template_controller->Mailing($from, $to, $data, $subject, $replace);
+            return "success";
         } catch (\Exception $ex) {
-            //dd($ex);
+            dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

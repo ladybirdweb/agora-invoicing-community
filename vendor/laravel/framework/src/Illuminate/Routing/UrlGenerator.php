@@ -383,6 +383,7 @@ class UrlGenerator implements UrlGeneratorContract
     {
         return preg_replace_callback('/\{(.*?)\??\}/', function ($m) use (&$parameters) {
             return isset($parameters[$m[1]]) ? Arr::pull($parameters, $m[1]) : $m[0];
+
         }, $path);
     }
 

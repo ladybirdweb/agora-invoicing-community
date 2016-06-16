@@ -239,8 +239,8 @@ tinymce.init({
                                         <li>
                                             <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
                                                 <!-- first name -->
-                                                {!! Form::label('retired',Lang::get('message.retired')) !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  {{Lang::get('message.tick-to-hide-from-admin-area-product-dropdown-menus')}}</p>
+                                                {!! Form::label('retired','Allow Description') !!}
+                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
                                             </div>  
                                         </li>

@@ -14,10 +14,10 @@ class CreateCurrenciesTable extends Migration
     {
         Schema::create('currencies', function (Blueprint $table) {
             $table->increments('id');
-                        $table->string('code')->unique();
-                        $table->string('symbol');
-                        $table->string('name');
-                        $table->string('base_conversion');
+            $table->string('code')->unique();
+            $table->string('symbol');
+            $table->string('name');
+            $table->string('base_conversion');
             $table->timestamps();
         });
     }

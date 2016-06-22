@@ -14,13 +14,13 @@ class CreateProductBundlesTable extends Migration
     {
         Schema::create('product_bundles', function (Blueprint $table) {
             $table->increments('id');
-                        $table->string('name');
-                        $table->timestamp('valid_from');
-                        $table->timestamp('valid_till');
-                        $table->integer('uses');
-                        $table->integer('maximum_uses');
-                        $table->integer('allow-promotion');
-                        $table->integer('show');
+            $table->string('name');
+            $table->timestamp('valid_from');
+            $table->timestamp('valid_till');
+            $table->integer('uses');
+            $table->integer('maximum_uses');
+            $table->integer('allow-promotion');
+            $table->integer('show');
             $table->timestamps();
         });
     }

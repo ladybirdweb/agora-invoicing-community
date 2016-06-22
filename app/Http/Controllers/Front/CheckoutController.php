@@ -158,8 +158,8 @@ class CheckoutController extends Controller
 
     public function postCheckout(Request $request)
     {
-         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-         $payment_method = $request->input('payment_gateway');
+        $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
+        $payment_method = $request->input('payment_gateway');
         //dd($request->all());
         $paynow = false;
         if ($request->input('invoice_id')) {
@@ -183,9 +183,9 @@ class CheckoutController extends Controller
                 /*
                  * Do order, invoicing etc
                  */
-               
+
                 $invoice = $invoice_controller->generateInvoice();
-                
+
                 $status = 'pending';
                 if (!$payment_method) {
                     $payment_method = 'free';
@@ -206,15 +206,15 @@ class CheckoutController extends Controller
 
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-//                if ($paynow == true) {
+                //                if ($paynow == true) {
 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
 //                }
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $action = $this->checkoutAction($invoice);
-                
+
                 $check_product_category = $this->product($invoiceid);
-                
+
                 $url = '';
                 if ($check_product_category->category == 'product') {
                     $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
@@ -254,9 +254,9 @@ class CheckoutController extends Controller
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
             }
-            
-            
-            return "success";
+
+
+            return 'success';
         } catch (\Exception $ex) {
             dd($ex);
 

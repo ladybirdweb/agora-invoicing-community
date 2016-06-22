@@ -350,5 +350,3 @@ Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
 
 Route::post('serial', 'HomeController@serial');
-
-

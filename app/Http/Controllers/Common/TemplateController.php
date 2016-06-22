@@ -98,6 +98,7 @@ class TemplateController extends Controller
             $password = $fields->password;
             $name = $fields->company;
         }
+
         return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
@@ -110,7 +111,8 @@ class TemplateController extends Controller
         Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
-        return "success";
+
+        return 'success';
     }
 
     public function index()
@@ -158,9 +160,9 @@ class TemplateController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=>'required',
-            'data'=>'required',
-            'type'=>'required',
+            'name' => 'required',
+            'data' => 'required',
+            'type' => 'required',
         ]);
         try {
             //dd($request);
@@ -192,10 +194,10 @@ class TemplateController extends Controller
 
     public function update($id, Request $request)
     {
-         $this->validate($request, [
-            'name'=>'required',
-            'data'=>'required',
-            'type'=>'required',
+        $this->validate($request, [
+            'name' => 'required',
+            'data' => 'required',
+            'type' => 'required',
         ]);
         try {
             //dd($request);
@@ -258,10 +260,9 @@ class TemplateController extends Controller
         }
     }
 
-    public function mailing($from, $to, $data, $subject, $replace = [],$type='', $fromname = '', $toname = '', $cc = [], $attach = [])
+    public function mailing($from, $to, $data, $subject, $replace = [], $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
-            
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);
@@ -286,11 +287,11 @@ class TemplateController extends Controller
                     }
                 }
             });
-      
-            return "success";
+
+            return 'success';
         } catch (\Exception $ex) {
             dd($ex);
-            if($ex instanceof \Swift_TransportException){
+            if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
             throw new \Exception('mailing problem');
@@ -331,6 +332,7 @@ class TemplateController extends Controller
         ];
         $this->Mailing($from, $to, $data, $subject, $replace, 'from', 'to', $cc, $attachments);
     }
+
     public function popup($title, $body, $width = '897', $name = '', $modelid = '', $class = 'null', $trigger = false)
     {
         try {
@@ -388,7 +390,7 @@ class TemplateController extends Controller
         }
     }
 
-    public function checkTax($productid,$price, $cart = 0, $cart1 = 0, $shop = 0)
+    public function checkTax($productid, $price, $cart = 0, $cart1 = 0, $shop = 0)
     {
         try {
             $product = $this->product->findOrFail($productid);
@@ -401,7 +403,7 @@ class TemplateController extends Controller
 ////            }
 //
             $currency = $controller->currency();
-//          
+//
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);

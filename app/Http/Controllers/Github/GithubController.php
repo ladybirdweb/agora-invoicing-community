@@ -292,8 +292,10 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
-
-            return $release['tag_name'];
+            if(key_exists('tag_name', $release)){
+                return $release['tag_name'];
+            }
+            return NULL;
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

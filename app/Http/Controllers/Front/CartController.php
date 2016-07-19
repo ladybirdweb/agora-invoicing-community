@@ -891,9 +891,10 @@ class CartController extends Controller {
                                     ->where('currency', $currency)
                                     ->first()
                             ->add_price;
+                    //dd($price*12);
                     $days = $plan->days;
                     $months = $days / 30;
-                    $cost = $months * $price;
+                    $cost = round($months) * $price;
                 }
             }
 

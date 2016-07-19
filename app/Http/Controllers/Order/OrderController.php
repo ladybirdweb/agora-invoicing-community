@@ -85,8 +85,7 @@ class OrderController extends Controller {
 
             return view('themes.default1.order.index', compact('products', 'order_no', 'product_id', 'expiry', 'from', 'till', 'domain'));
         } catch (\Exception $e) {
-            dd($e);
-
+           
             return redirect('orders')->with('fails', $e->getMessage());
         }
     }
@@ -381,7 +380,7 @@ class OrderController extends Controller {
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
+           
             throw new \Exception($ex->getMessage());
         }
     }
@@ -658,7 +657,15 @@ class OrderController extends Controller {
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'downloadurl' => $downloadurl, 'invoiceurl' => $invoiceurl,'product'=>$product,'number'=>$order->number,];
+        $replace = [
+            'name' => $user->first_name . ' ' . $user->last_name, 
+            'downloadurl' => $downloadurl, 
+            'invoiceurl' => $invoiceurl,
+            'product'=>$product,
+            'number'=>$order->number,
+            "expiry"=>$this->expiry($orderid),
+            "url"=>$this->renew($orderid),
+            ];
         $type = "";
         if ($template) {
             $type_id = $template->type;
@@ -692,6 +699,24 @@ class OrderController extends Controller {
         $invoice_item = $invoice_items->find($itemid);
         $product = $invoice_item->product_name;
         return $product;
+    }
+    
+    public function subscription($orderid){
+        $sub = $this->subscription->where('order_id',$orderid)->first();
+        return $sub;
+    }
+    
+    public function expiry($orderid){
+        $sub = $this->subscription($orderid);
+        if($sub){
+            return $sub->ends_at;
+        }
+        return "";
+    }
+    
+    public function renew($orderid){
+        //$sub = $this->subscription($orderid);
+        return url('my-orders');
     }
 
 }

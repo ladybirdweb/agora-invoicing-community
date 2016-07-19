@@ -401,35 +401,30 @@
                         </div>
                         
                            <!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_3">
+                         <div class="tab-pane" id="tab_3">
                             <h3>
                                 Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
                             </h3>
+                            @if($product->plan())
                             <table class="table table-responsive">
-                                <?php
-                                $plans = App\Model\Payment\Plan::select('days', 'name', 'id')->get();
-                                ?>
+                                
                                 <tr>
                                     <th>Name</th>
                                     <th>Months</th>
                                     <th>Action</th>
                                 </tr>
-                                @forelse($plans as $plan)
+                                
                                 <tr>
-                                    <td>{{$plan->name}}</td> 
+                                    <td>{{$product->plan()->name}}</td> 
                                     <?php
-                                    $months = $plan->days / 30;
+                                    $months = $product->plan()->days / 30;
                                     ?>
                                     <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
+                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
                                 </tr>
-                                @empty 
-                                <tr><td>No plans</td></tr>
-                                @endforelse
-   
                                
-
                             </table>
+                            @endif
                         </div>
 
                         <!-- /.tab-pane -->

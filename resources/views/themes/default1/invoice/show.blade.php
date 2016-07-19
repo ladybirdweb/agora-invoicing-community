@@ -192,6 +192,8 @@
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>
+                    
+                    
                 </section><!-- /.content -->
 
 

@@ -82,7 +82,7 @@ class Order extends BaseModel
     public function getDomainAttribute($value)
     {
         try {
-            if (str_finish($value, '/')) {
+            if (ends_with($value, '/')) {
                 $value = substr_replace($value, '', -1, 0);
             }
 
@@ -95,8 +95,8 @@ class Order extends BaseModel
     public function setDomainAttribute($value)
     {
         try {
-            if (str_finish($value, '/')) {
-                $value = substr_replace($value, '', -1, 0);
+            if (ends_with($value, '/')) {
+                $value = substr_replace($value, '', -1, 1);
             }
             $this->attributes['domain'] = $value;
         } catch (DecryptException $ex) {

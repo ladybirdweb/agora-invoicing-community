@@ -30,6 +30,8 @@ return[
         "invoiceurl"=>"{{invoiceurl}}",
         "product"=>'{{product}}',
         'number'=>'{{number}}',
+        "expiry"=>"{{expiry}}",
+        "url"=>"{{url}}"
     ],
     
     /**

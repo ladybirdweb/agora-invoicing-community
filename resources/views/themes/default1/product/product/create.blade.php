@@ -4,6 +4,7 @@
 
     <div class="box-header">
         @if (count($errors) > 0)
+        
         <div class="alert alert-danger">
             <strong>Whoops!</strong> There were some problems with your input.<br><br>
             <ul>
@@ -286,8 +287,9 @@ tinymce.init({
                                                 <th>{{Lang::get('message.regular-price')}}</th>
                                                 <th>{{Lang::get('message.sales-price')}}</th>
                                             </tr>
-
+                                            
                                             @foreach($currency as $key=>$value)
+                                            
                                             <tr>
                                                 <td>
 
@@ -298,12 +300,12 @@ tinymce.init({
 
                                                 <td>
 
-                                                    {!! Form::text('price['.$key.']',null) !!}
+                                                    {!! Form::text('price[$key]',null) !!}
 
                                                 </td>
                                                 <td>
 
-                                                    {!! Form::text('sales_price['.$key.']',null) !!}
+                                                    {!! Form::text('sales_price[$key]',null) !!}
 
                                                 </td>
                                             </tr>
@@ -314,40 +316,6 @@ tinymce.init({
 
                                     </td>
                                 </tr>
-<!--                                <tr>
-                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    {!! Form::select('currency[]',[''=>'Select','Currency'=>$currency],null,['class'=>'form-control','multiple'=>true]) !!}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>-->
-
-<!--                                <tr>
-                                    <td><b>{!! Form::label('price',Lang::get('message.regular-price')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('price') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::text('price',null) !!} </p>
-
-                                        </div>
-                                    </td>
-                                </tr>-->
-
-<!--                                <tr>
-                                    <td><b>{!! Form::label('sales_price',Lang::get('message.sales-price')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('sales_price') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::text('sales_price',null) !!} </p>
-
-                                        </div>
-                                    </td>
-                                </tr>-->
 
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
@@ -399,30 +367,7 @@ tinymce.init({
                             <h3>
                                 Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
                             </h3>
-                            <table class="table table-responsive">
-                                <?php
-                                $plans = App\Model\Payment\Plan::select('days', 'name', 'id')->get();
-                                ?>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Months</th>
-                                    <th>Action</th>
-                                </tr>
-                                @forelse($plans as $plan)
-                                <tr>
-                                    <td>{{$plan->name}}</td> 
-                                    <?php
-                                    $months = $plan->days / 30;
-                                    ?>
-                                    <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$plan->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
-                                </tr>
-                                @empty 
-                                <tr><td>No plans</td></tr>
-                                @endforelse
-
-
-                            </table>
+                            
                         </div>
                     </div>
                     <!-- /.tab-content -->
@@ -435,8 +380,6 @@ tinymce.init({
         </div>
 
     </div>
-
-</div>
 
 </div>
 

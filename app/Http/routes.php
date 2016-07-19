@@ -350,5 +350,19 @@ Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
 
 Route::post('serial', 'HomeController@serial');
+Route::get('generate-keys', 'HomeController@createEncryptionKeys');
+
+/**
+ * Api
+ */
+
+Route::group(['prefix'=>'api'],function(){
+    /**
+     * Unautherised requests
+     */
+    
+    Route::get('check-url','Api\ApiController@checkDomain');
+    
+});
 
 

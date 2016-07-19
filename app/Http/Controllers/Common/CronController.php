@@ -39,10 +39,12 @@ class CronController extends Controller {
     public function get30DaysExpiryInfo() {
         $plus29days = new Carbon('+29 days');
         $plus31days = new Carbon('+31 days');
+        
         $sub = $this->sub
                 ->where('ends_at', '!=', '0000-00-00 00:00:00')
                 ->whereNotNull('ends_at')
-                ->whereBetween('ends_at', [$plus29days, $plus31days]);
+                ->whereBetween('ends_at', [$plus29days,$plus31days]);
+        //dd($sub->get());
 
         return $sub;
     }
@@ -105,15 +107,17 @@ class CronController extends Controller {
 
     public function get30DaysExpiryUsers() {
         $sub = $this->get30DaysExpiryInfo();
+        //dd($sub->get());
         $users = [];
         if ($sub->get()->count() > 0) {
             foreach ($sub->get() as $key => $value) {
+                
                 $users[$key]['users'] = $this->sub->find($value->id)->user()->get();
                 $users[$key]['orders'] = $this->sub->find($value->id)->order()->get();
-                $users[$key]['subscription'] = $this->sub->find($value->id)->first();
+                $users[$key]['subscription'] = $value;
             }
         }
-
+        
         return $users;
     }
 
@@ -138,7 +142,7 @@ class CronController extends Controller {
             foreach ($sub->get() as $key => $value) {
                 $users[$key]['users'] = $this->sub->find($value->id)->user()->get();
                 $users[$key]['orders'] = $this->sub->find($value->id)->order()->get();
-                $users[$key]['subscription'] = $this->sub->find($value->id)->first();
+                $users[$key]['subscription'] = $value;
             }
         }
 
@@ -152,7 +156,7 @@ class CronController extends Controller {
             foreach ($sub->get() as $key => $value) {
                 $users[$key]['users'] = $this->sub->find($value->id)->user()->get();
                 $users[$key]['orders'] = $this->sub->find($value->id)->order()->get();
-                $users[$key]['subscription'] = $this->sub->find($value->id)->first();
+                $users[$key]['subscription'] = $value;
             }
         }
 
@@ -166,7 +170,7 @@ class CronController extends Controller {
             foreach ($sub->get() as $key => $value) {
                 $users[$key]['users'] = $this->sub->find($value->id)->user()->get();
                 $users[$key]['orders'] = $this->sub->find($value->id)->order()->get();
-                $users[$key]['subscription'] = $this->sub->find($value->id)->first();
+                $users[$key]['subscription'] = $value;
             }
         }
 
@@ -174,8 +178,9 @@ class CronController extends Controller {
     }
 
     public function get30DaysUsers() {
-        $users = [];
+        //$users = [];
         $users = $this->get30DaysExpiryUsers();
+        //dd($users);
         if (count($users) > 0) {
             return $users[0]['users'];
         }
@@ -349,7 +354,7 @@ class CronController extends Controller {
         if (count($this->get30DaysSubscription())) {
             array_push($sub, $this->get30DaysSubscription());
         }
-
+        
         if (count($this->get15DaysUsers())) {
             array_push($sub, $this->get15DaysSubscription());
         }
@@ -364,7 +369,7 @@ class CronController extends Controller {
         if (count($this->getPlus1Users())) {
             array_push($sub, $this->getPlus1Subscription());
         }
-
+        
         return $sub;
     }
 
@@ -396,6 +401,7 @@ class CronController extends Controller {
 
     public function eachSubscription() {
         $sub = $this->getSubscriptions();
+        //dd($sub);
         foreach ($sub as $value) {
             $userid = $value->user_id;
             $user = $this->getUserById($userid);
@@ -412,13 +418,15 @@ class CronController extends Controller {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
-        $url = url('renew/' . $sub);
+        $url = url('my-orders');
         //template
         $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->subscription_going_to_end_mail;
+        $temp_id = $setting->subscription_going_to_end;
+        //dd($setting);
         if($end<date('Y-m-d H:m:i')){
-            $temp_id = $setting->subscription_over_mail;
+            $temp_id = $setting->subscription_over;
         }
+        //dd($temp_id);
         $template = $templates->where('id', $temp_id)->first();
         $from = $setting->email;
         $to = $user->email;
@@ -438,6 +446,7 @@ class CronController extends Controller {
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
+        //dd([$from, $to, $data, $subject, $replace,$type]);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace,$type);
         return $mail;

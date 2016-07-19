@@ -165,14 +165,10 @@ class ProductController extends Controller {
      */
     public function store(Request $request) {
         $input = $request->all();
-        //dd($input);
         $v = \Validator::make($input, [
-                    'name' => 'required',
+                    'name' => 'required|unique:products,name',
                     'type' => 'required',
                     'group' => 'required',
-                        //'subscription' => 'required',
-                        //'currency.*'   => 'required',
-                        //'price.*'      => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
             return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
@@ -185,8 +181,12 @@ class ProductController extends Controller {
             return $input->subscription != 1;
         });
         if ($v->fails()) {
-            return redirect()->back()->with('errors', $v->errors());
-            //dd();
+            
+            $currency = $input['currency'];
+            return redirect()->back()
+                    ->withErrors($v)
+                    ->withInput()
+                    ->with('currency');
         }
         try {
             if ($request->hasFile('image')) {

@@ -10,13 +10,14 @@ use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
 
-class ClientController extends Controller {
-
+class ClientController extends Controller
+{
     public $user;
     public $activate;
     public $product;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth');
         $this->middleware('admin');
         $user = new User();
@@ -32,7 +33,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $name = $request->input('name');
         $username = $request->input('username');
         $company = $request->input('company');
@@ -51,7 +53,8 @@ class ClientController extends Controller {
     /**
      * Get Clients for chumper datatable.
      */
-    public function GetClients(Request $request) {
+    public function GetClients(Request $request)
+    {
         $name = $request->input('name');
         $username = $request->input('username');
         $company = $request->input('company');
@@ -66,10 +69,10 @@ class ClientController extends Controller {
 
         return \Datatable::query($user)
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('first_name', function ($model) {
-                            return '<a href=' . url('clients/' . $model->id) . '>' . ucfirst($model->first_name) . ' ' . ucfirst($model->last_name) . '</a>';
+                            return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
                         ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
@@ -80,8 +83,8 @@ class ClientController extends Controller {
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href=' . url('clients/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>"
-                                    . '  <a href=' . url('clients/' . $model->id) . " class='btn btn-sm btn-primary'>View</a>";
+                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
+                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                         })
                         ->searchColumns('email', 'first_name')
                         ->orderColumns('email', 'first_name', 'created_at')
@@ -93,7 +96,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         $timezones = new \App\Model\Common\Timezone();
         $timezones = $timezones->lists('name', 'id')->toArray();
 
@@ -105,7 +109,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function store(ClientRequest $request) {
+    public function store(ClientRequest $request)
+    {
         try {
             $user = $this->user;
             $str = str_random(6);
@@ -113,6 +118,7 @@ class ClientController extends Controller {
             $user->password = $password;
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has created successfully But email configuration has some problem!');
@@ -128,7 +134,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         try {
             $invoice = new Invoice();
             $order = new Order();
@@ -150,7 +157,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $user = $this->user->where('id', $id)->first();
             $timezones = new \App\Model\Common\Timezone();
@@ -173,7 +181,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function update($id, ClientRequest $request) {
+    public function update($id, ClientRequest $request)
+    {
         $user = $this->user->where('id', $id)->first();
         $user->fill($request->input())->save();
 
@@ -187,7 +196,8 @@ class ClientController extends Controller {
      *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         $ids = $request->input('select');
         if (!empty($ids)) {
             foreach ($ids as $id) {
@@ -197,32 +207,33 @@ class ClientController extends Controller {
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.no-record') . '
+                        '.\Lang::get('message.no-record').'
                 </div>';
 //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.deleted-successfully') . '
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.select-a-row') . '
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
 //echo \Lang::get('message.select-a-row');
         }
     }
 
-    public function getUsers(Request $request) {
-//dd($request->all());
+    public function getUsers(Request $request)
+    {
+        //dd($request->all());
 //$s = $request->input('mask');
         $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
@@ -232,23 +243,24 @@ class ClientController extends Controller {
         return response()->json(compact('options'));
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '') {
+    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '')
+    {
         $join = $this->user;
         if ($name) {
-            $join = $join->where('first_name', 'LIKE', '%' . $name . '%')
-                    ->orWhere('last_name', 'LIKE', '%' . $name . '%');
+            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
+                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
         }
         if ($username) {
-            $join = $join->where('user_name', 'LIKE', '%' . $username . '%');
+            $join = $join->where('user_name', 'LIKE', '%'.$username.'%');
         }
         if ($company) {
-            $join = $join->where('company', 'LIKE', '%' . $company . '%');
+            $join = $join->where('company', 'LIKE', '%'.$company.'%');
         }
         if ($mobile) {
             $join = $join->where('mobile', $mobile);
         }
         if ($email) {
-            $join = $join->where('email', 'LIKE', '%' . $email . '%');
+            $join = $join->where('email', 'LIKE', '%'.$email.'%');
         }
         if ($country) {
             $join = $join->where('country', $country);
@@ -260,21 +272,25 @@ class ClientController extends Controller {
         return $join;
     }
 
-    public function soldEdition($name) {
-
+    public function soldEdition($name)
+    {
         $invoice = new \App\Model\Order\InvoiceItem();
         $product_in_invoice = $invoice->where('product_name', $name)->distinct()->lists('invoice_id');
         $order = new Order();
         $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
+
         return $orders;
     }
 
-    public function productCount() {
+    public function productCount()
+    {
         $products = $this->product->get()->count();
+
         return $products;
     }
 
-    public function sendWelcomeMail($user) {
+    public function sendWelcomeMail($user)
+    {
         $activate_model = new AccountActivate();
         $str = str_random(40);
         $activate = $activate_model->create(['email' => $user->email, 'token' => $str]);
@@ -291,8 +307,8 @@ class ClientController extends Controller {
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
-        $type = "";
+        $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
@@ -301,7 +317,7 @@ class ClientController extends Controller {
         //dd($type);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+
         return $mail;
     }
-
 }

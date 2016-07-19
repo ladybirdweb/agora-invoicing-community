@@ -118,9 +118,9 @@ class CurrencyController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'code'=>'required',
-            'name'=>'required',
-            'base_conversion'=>'required',
+            'code'            => 'required',
+            'name'            => 'required',
+            'base_conversion' => 'required',
         ]);
         try {
             $this->currency->fill($request->input())->save();
@@ -165,9 +165,9 @@ class CurrencyController extends Controller
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'code'=>'required',
-            'name'=>'required',
-            'base_conversion'=>'required',
+            'code'            => 'required',
+            'name'            => 'required',
+            'base_conversion' => 'required',
         ]);
         try {
             $currency = $this->currency->where('id', $id)->first();

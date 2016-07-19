@@ -131,7 +131,7 @@ class ClientController extends Controller
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = '';
                             if ($status == 'success') {
-                                if($sub){
+                                if ($sub) {
                                     $url = $this->renewPopup($sub->id);
                                 }
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";

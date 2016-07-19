@@ -56,7 +56,7 @@ class RenewController extends Controller
             $days = $plan->days;
             $sub = $this->sub->find($id);
             $current = $sub->ends_at;
-            $ends = $this->getExpiryDate($current,$days);
+            $ends = $this->getExpiryDate($current, $days);
             $sub->ends_at = $ends;
             $sub->save();
             $this->invoiceBySubscriptionId($id, $planid, $cost);
@@ -77,7 +77,7 @@ class RenewController extends Controller
             $days = $plan->days;
             $sub = $this->sub->find($id);
             $current = $sub->ends_at;
-            $ends = $this->getExpiryDate($current,$days);
+            $ends = $this->getExpiryDate($current, $days);
             $sub->ends_at = $ends;
             $sub->save();
             $this->removeSession();
@@ -85,6 +85,7 @@ class RenewController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
+
     //Tuesday, June 13, 2017 08:06 AM
 
     public function invoiceBySubscriptionId($id, $planid, $cost)
@@ -376,11 +377,12 @@ class RenewController extends Controller
 
         return $res;
     }
-    
-    public function getExpiryDate($end,$days){
-        
-       $date =  Carbon::parse($end);
-       $expiry_date = $date->addDay($days);
-       return $expiry_date;
+
+    public function getExpiryDate($end, $days)
+    {
+        $date = Carbon::parse($end);
+        $expiry_date = $date->addDay($days);
+
+        return $expiry_date;
     }
 }

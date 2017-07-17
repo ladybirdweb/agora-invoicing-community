@@ -1,1 +1,0 @@
-[10-Jun-2016 05:50:41 UTC] PHP Fatal error:  Class 'App\Http\Controllers\Auth\NotFoundHttpException' not found in /home/faveohelpdesk/public_html/billing/app/Http/Controllers/Auth/PasswordController.php on line 58

@@ -182,6 +182,7 @@ class ProcessController extends Controller
 
     public function response(Request $request)
     {
+        $id = "";
         $url = 'checkout';
         if (\Session::has('invoiceid')) {
             $id = \Session::get('invoiceid');
@@ -190,9 +191,10 @@ class ProcessController extends Controller
         if (\Cart::getContent()->count() > 0) {
             \Cart::clear();
         }
-        $this->success($id);
-        \Session::forget('invoiceid');
-
+        if($id){
+            $this->success($id);
+            \Session::forget('invoiceid');
+        }
         return redirect($url)->with('success', 'Thank you for your order. Your transaction is successful. We will be processing your order soon.');
     }
 

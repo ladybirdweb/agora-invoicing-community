@@ -4,15 +4,14 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
-class AppServiceProvider extends ServiceProvider
-{
+class AppServiceProvider extends ServiceProvider {
+
     /**
      * Bootstrap any application services.
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         //
     }
 
@@ -25,11 +24,15 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
+    public function register() {
+//        if ($this->app->environment() !== 'production') {
+//            $this->app->register(\Way\Generators\GeneratorsServiceProvider::class);
+//            $this->app->register(\Xethron\MigrationsGenerator\MigrationsGeneratorServiceProvider::class);
+//        }
         $this->app->bind(
-            'Illuminate\Contracts\Auth\Registrar',
-            'App\Services\Registrar'
+                'Illuminate\Contracts\Auth\Registrar', 'App\Services\Registrar'
         );
+        require_once __DIR__ . '/../Http/helpers.php';
     }
+
 }

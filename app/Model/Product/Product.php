@@ -17,7 +17,7 @@ class Product extends BaseModel {
     }
 
     public function type() {
-        return $this->hasMany('App\Model\Product\Type');
+        return $this->belongsTo('App\Model\Product\Type','type');
     }
 
     public function price() {

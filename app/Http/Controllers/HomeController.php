@@ -97,8 +97,8 @@ class HomeController extends Controller {
         try {
             $url = $request->input('url');
             $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
-            $domain = $request->input('domain');
-            
+            $domain = $this->getDomain($request->input('domain'));
+            return $domain;
             $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             $request_type = $request->input('request_type');
             $faveo_name = $request->input('name');
@@ -107,7 +107,7 @@ class HomeController extends Controller {
 
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
-             //dd($serial_key);
+            //dd($serial_key);
             //return $serial_key;
             $result = [];
             if ($request_type == 'install') {
@@ -265,7 +265,7 @@ class HomeController extends Controller {
                     //->where('serial_key', $serial_key)
                     ->where('domain', $domain)
                     ->first();
-            
+
             return $this_order;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
@@ -308,7 +308,7 @@ class HomeController extends Controller {
                 $result = $this->checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version);
             }
             $result = self::encryptByPublicKey(json_encode($result));
-            
+
             return $result;
         } catch (Exception $ex) {
             $result = ['status' => 'error', 'message' => $ex->getMessage()];
@@ -405,6 +405,15 @@ class HomeController extends Controller {
 
         $result = ['seal' => $sealed_data, 'envelope' => $envelope];
         return json_encode($result);
+    }
+
+    public function getDomain($url) {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
+        }
+        return false;
     }
 
 }

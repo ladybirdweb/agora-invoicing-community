@@ -174,7 +174,7 @@ class InvoiceController extends Controller {
         $qty = 1;
         if (array_key_exists('domain', $request->all())) {
             $this->validate($request, [
-                'domain' => 'required|url',
+                'domain' => 'required',
             ]);
         }
         if (array_key_exists('quantity', $request->all())) {
@@ -303,14 +303,15 @@ class InvoiceController extends Controller {
             foreach ($content as $key => $item) {
                 $attributes[] = $item->attributes;
             }
+            
             $symbol = $attributes[0]['currency'][0]['code'];
             //dd($symbol);
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending', 'currency' => $symbol]);
-
+            
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
-            $this->sendMail($user_id, $invoice->id);
+            //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
             dd($ex);

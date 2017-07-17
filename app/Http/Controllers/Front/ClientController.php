@@ -187,8 +187,8 @@ class ClientController extends Controller
             $timezones = $timezones->lists('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-
-            return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states'));
+            $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
+            return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states','bussinesses'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

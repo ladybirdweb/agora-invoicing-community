@@ -12,7 +12,9 @@ class Setting extends BaseModel
 
     public function getPasswordAttribute($value)
     {
-        $value = \Crypt::decrypt($value);
+        if($value){
+            $value = \Crypt::decrypt($value);
+        }
         return $value;
     }
     

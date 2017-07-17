@@ -246,6 +246,23 @@ class PageController extends Controller {
     }
 
     public function cart() {
+        $location = \GeoIP::getLocation();
+        if ($location['country'] == 'India') {
+            $currency = 'INR';
+        } else {
+            $currency = 'USD';
+        }
+        if (\Auth::user()) {
+            $currency = 'INR';
+            $user_currency = \Auth::user()->currency;
+            if ($user_currency == 1 || $user_currency == 'USD') {
+                $currency = 'USD';
+            }
+        }
+        \Session::put('currency', $currency);
+        if (!\Session::has('currency')) {
+            \Session::put('currency', 'INR');
+        }
         $pages = $this->page->find(1);
         $data = $pages->content;
         $product = new \App\Model\Product\Product();
@@ -257,19 +274,18 @@ class PageController extends Controller {
         $template = "";
         if (count($products) > 0) {
             foreach ($products as $key => $value) {
-                $trasform[$key]['price'] = $temp_controller->leastAmount($value['id']);
-                $trasform[$key]['name'] = $value['name'];
-                $trasform[$key]['feature'] = $value['description'];
-                $trasform[$key]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform[$value['id']]['name'] = $value['name'];
+                $trasform[$value['id']]['feature'] = $value['description'];
+                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-                $trasform[$key]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
         }
 
 
-
-        return view('themes.default1.common.template.shoppingcart', compact('template'));
+        return view('themes.default1.common.template.shoppingcart', compact('template','trasform'));
     }
 
     public function checkConfigKey($config, $transform) {

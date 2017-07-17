@@ -23,7 +23,7 @@ class ServiceProviderController extends Controller
         $this->middleware('service.provider');
 
         $cart = new \App\Http\Controllers\Front\CheckoutController();
-        $auth = $cart->GetXdeskAuthOrganization();
+        $auth = "";//$cart->GetXdeskAuthOrganization();
         $this->org = $auth;
 
         $sla = new Sla();

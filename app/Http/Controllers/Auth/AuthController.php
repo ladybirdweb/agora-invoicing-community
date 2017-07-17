@@ -44,17 +44,18 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return void
      */
-    public function __construct(Guard $auth, Registrar $registrar) {
+    public function __construct() {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
     public function getLogin() {
+        
         try {
-            $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
-            return view('themes.default1.front.auth.login-register',compact('bussinesses'));
+            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+            return view('themes.default1.front.auth.login-register', compact('bussinesses'));
         } catch (\Exception $ex) {
             //dd($ex);
-            return redirect('home')->with('fails',$ex->getMessage());
+            return redirect('home')->with('fails', $ex->getMessage());
         }
     }
 
@@ -76,7 +77,7 @@ use AuthenticatesAndRegistersUsers;
         //$email = $request->input('email');
         $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $password = $request->input('password1');
-        $credentials = [$field => $usernameinput, 'password' => $password, 'active' => 1];
+        $credentials = [$field => $usernameinput, 'password' => $password, 'active' => 1, 'mobile_verified' => 1];
 
         //$credentials = $request->only('email', 'password');
         $auth = \Auth::attempt($credentials, $request->has('remember'));
@@ -85,26 +86,14 @@ use AuthenticatesAndRegistersUsers;
             return redirect()->intended($this->redirectPath());
         }
 
-        $user = new User();
-        $user = $user->where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-        if ($user) {
-            if ($user->active != 1) {
-                $url = url("resend/activation/$user->email");
-                $error = "Before you can login, you must active your account with the code sent to your email address.
-                If you did not receive this email, please check your junk/spam folder.
-<a href=$url>Click here</a> to resend the activation email.";
-                //$error = "Please activate your account, or <a href=$url>resent the activation link</a>";
-            } else {
-                $error = 'Email and/or password invalid.';
-            }
-        } else {
-            $error = 'Email and/or password invalid.';
+        $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+        if ($user && ($user->active !== '1' || $user->mobile_verified !== '1')) {
+            return redirect('verify')->with('user', $user);
         }
-
         return redirect()->back()
                         ->withInput($request->only('email1', 'remember'))
                         ->withErrors([
-                            'email1' => $error,
+                            'email1' => 'Invalid Email and/or Password',
         ]);
     }
 
@@ -114,6 +103,7 @@ use AuthenticatesAndRegistersUsers;
      * @return \Illuminate\Http\Response
      */
     public function getRegister() {
+        
         return view('auth.new_register');
     }
 
@@ -127,9 +117,11 @@ use AuthenticatesAndRegistersUsers;
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate) {
         try {
             $pass = $request->input('password');
+            $country = $request->input('country');
             $currency = 'INR';
-            $location = \GeoIP::getLocation();
-            if ($location['country'] == 'India') {
+            $ip = $request->ip();
+            $location = \GeoIP::getLocation($ip);
+            if ($country == 'IN') {
                 $currency = 'INR';
             } else {
                 $currency = 'USD';
@@ -137,28 +129,30 @@ use AuthenticatesAndRegistersUsers;
             if (\Session::has('currency')) {
                 $currency = \Session::get('currency');
             }
+            $account_manager = $this->accountManager();
             $password = \Hash::make($pass);
             $user->password = $password;
             $user->role = 'user';
+            $user->ip = $location['ip'];
+            $user->manager = $account_manager;
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();
             $this->sendActivation($user->email, $request->method(), $pass);
-            //$result = ['success' => \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email')];
-            return redirect()->back()->with('success', \Lang::get('message.to-activate-your-account-please-click-on-the-link-that-has-been-send-to-your-email'));
+            $this->accountManagerMail($user);
+            if ($user) {
+                return redirect('verify')->with('user', $user);
+            }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
-            //$result = ['fails' => $ex->getMessage()];
         }
-
-        //return response()->json(compact('result'));
     }
 
     public function sendActivationByGet($email, Request $request) {
         try {
             $mail = $this->sendActivation($email, $request->method());
-            if ($mail=="success") {
-                return redirect('auth/login')->with('success', 'Activation link has sent to your email address');
+            if ($mail == "success") {
+                return redirect()->back()->with('success', 'Activation link has sent to your email address');
             }
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -289,6 +283,153 @@ use AuthenticatesAndRegistersUsers;
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/' . $url;
         } else {
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+        }
+    }
+
+    public function sendOtp($mobile, $code) {
+        $client = new \GuzzleHttp\Client();
+        $number = $code . $mobile;
+        $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number]
+        ]);
+        $send = $response->getBody()->getContents();
+        $array = json_decode($send, true);
+        if ($array['type'] == 'error') {
+            throw new \Exception($array['message']);
+        }
+        return $array['type'];
+    }
+
+    public function requestOtp(Request $request) {
+        $this->validate($request, [
+            'code' => 'required|numeric',
+            'mobile' => 'required|numeric',
+        ]);
+        try {
+            $code = $request->input('code');
+            $mobile = $request->input('mobile');
+            $userid = $request->input('id');
+            $number = $code . $mobile;
+            $result = $this->sendOtp($mobile, $code);
+            $response = ['type' => $result, 'user_id' => $userid, 'message' => 'OTP has been sent to ' . $number];
+            return response()->json($response);
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+            return response()->json(compact('result'), 500);
+        }
+    }
+
+    public function verifyOtp($mobile, $code, $otp) {
+        $client = new \GuzzleHttp\Client();
+        $number = $code . $mobile;
+        $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp]
+        ]);
+        return $response->getBody()->getContents();
+    }
+
+    public function postOtp(Request $request) {
+        $this->validate($request, [
+            'otp' => 'required|numeric',
+        ]);
+        try {
+            $code = $request->input('code');
+            $mobile = $request->input('mobile');
+            $otp = $request->input('otp');
+            $userid = $request->input('id');
+            $verify = $this->verifyOtp($mobile, $code, $otp);
+            $array = json_decode($verify, true);
+            if ($array['type'] == 'error') {
+                throw new \Exception($array['message']);
+            }
+
+            $user = User::find($userid);
+            if ($user) {
+                $user->mobile = $mobile;
+                $user->mobile_code = $code;
+                $user->mobile_verified = 1;
+                $user->save();
+            }
+            $check = $this->checkVerify($user);
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'mobile verified'];
+            return response()->json($response);
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+            return response()->json(compact('result'), 500);
+        }
+    }
+
+    public function verifyEmail(Request $request) {
+        $this->validate($request, [
+            'email' => 'required|email'
+        ]);
+        try {
+            $email = $request->input('email');
+            $userid = $request->input('id');
+            $user = User::find($userid);
+            $check = $this->checkVerify($user);
+            $this->sendActivation($email, $request->method());
+            $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to ' . $email];
+            return response()->json($response);
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+            return response()->json(compact('result'), 500);
+        }
+    }
+
+    public function checkVerify($user) {
+        $check = false;
+        if ($user->active == '1' && $user->mobile_verified == '1') {
+            \Auth::login($user);
+            $check = true;
+        }
+        return $check;
+    }
+
+    public function accountManager() {
+        $manager = "";
+        $users = new User();
+        $account_count = $users->select(\DB::raw("count('manager') as count"),'manager')
+                ->whereNotNull('manager')
+                ->groupBy('manager')
+                ->pluck('count','manager')
+                ->toArray()
+                ;
+        if($account_count){
+            $manager = array_keys($account_count, min($account_count))[0]; 
+        }
+        return $manager;
+    }
+
+    public function accountManagerMail($user) {
+        $manager = $user->manager()
+                ->select('first_name','last_name','email','mobile_code','mobile','skype')
+                ->first();
+        if ($user && $user->role == 'user' && $manager) {
+            $settings = new \App\Model\Common\Setting();
+            $setting = $settings->first();
+            $from = $setting->email;
+            $to = $user->email;
+            $templates = new \App\Model\Common\Template();
+            $template = $templates
+                    ->join('template_types', 'templates.type', '=', 'template_types.id')
+                    ->where('template_types.name', '=', 'manager_email')
+                    ->select('templates.data', 'templates.name')
+                    ->first();
+            $template_data = $template->data;
+            $template_name = $template->name;
+            $template_controller = new \App\Http\Controllers\Common\TemplateController();
+            $replace = [
+                'name' => $user->first_name . " " . $user->last_name,
+                'manager_first_name' => $manager->first_name,
+                'manager_last_name' => $manager->last_name,
+                'manager_email' => $manager->email,
+                'manager_code' => $manager->mobile_code,
+                'manager_mobile' => $manager->mobile,
+                'manager_skype' => $manager->skype,
+            ];
+            //dd($from, $to, $template_data, $template_name, $replace);
+            $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
     }
 

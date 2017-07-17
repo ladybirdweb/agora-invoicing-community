@@ -41,7 +41,7 @@ class CartController extends Controller {
 
     public function ProductList(Request $request) {
         $location = \GeoIP::getLocation();
-        //dd($location);
+        
 
         if ($location['country'] == 'India') {
             $currency = 'INR';
@@ -825,7 +825,6 @@ class CartController extends Controller {
                     $currency = 'INR';
                 }
             }
-
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -928,13 +927,7 @@ class CartController extends Controller {
 
     public function checkCurrencySession() {
         try {
-            $location = \GeoIP::getLocation();
-            if ($location['country'] == 'India') {
-                $currency = 'INR';
-            } else {
-                $currency = 'USD';
-            }
-            \Session::put('currency', $currency);
+
             if (Session::has('currency')) {
                 return true;
             }

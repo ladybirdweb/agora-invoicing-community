@@ -267,6 +267,7 @@ class TemplateController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
+            
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
                 $m->from($from, $fromname);
 

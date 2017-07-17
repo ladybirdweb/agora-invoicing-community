@@ -46,6 +46,7 @@ class Handler extends ExceptionHandler {
      * @return \Illuminate\Http\Response
      */
     public function render($request, Exception $e) {
+        //dd($e);
         switch ($e) {
 
             case $e instanceof ModelNotFoundException:
@@ -76,8 +77,7 @@ class Handler extends ExceptionHandler {
      */
     public function render500($request, $e) {
         
-        $this->mail($request, $e);
-        
+        //$this->mail($request, $e);
         if (Config('app.debug') == true) {
             return parent::render($request, $e);
         }
@@ -111,6 +111,11 @@ class Handler extends ExceptionHandler {
                 return $this->render404($request, $e);
             case $e instanceof NotFoundHttpException :
                 return $this->render404($request, $e);
+            case $e instanceof \Illuminate\Session\TokenMismatchException:
+                if ($request->ajax()) {
+                    return response()->json(['error'=>'Session timeout, refresh the page'],500);
+                }
+                return redirect()->back()->with('fails','Session time out');
            
         }
         return $this->render500($request, $e);

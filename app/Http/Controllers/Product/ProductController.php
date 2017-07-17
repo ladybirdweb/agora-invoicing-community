@@ -301,13 +301,13 @@ class ProductController extends Controller {
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-        });
-
-        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-            return $input->type == 2 && $input->file == '' && $input->image == '';
-        });
+//        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+//            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+//        });
+//
+//        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+//            return $input->type == 2 && $input->file == '' && $input->image == '';
+//        });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -455,15 +455,13 @@ class ProductController extends Controller {
                     
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $relese = $github_controller->listRepositories($owner, $repository);
-                    return $relese;
+                    return ['release'=>$relese,'type'=>'github'];
                 } elseif ($file) {
-                    $relese = storage_path() . '/products/' . $file;
-
+                    $relese = '/home/faveohelpdesk/products/' . $file;
                     return $relese;
                 }
             }
         } catch (\Exception $e) {
-            dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -471,8 +469,11 @@ class ProductController extends Controller {
     public function adminDownload($id) {
         try {
             $release = $this->downloadProduct($id);
-            header("Location: $release");
-            exit;
+            if(is_array($release) && key_exists('type', $release)){
+                header("Location: ".$release['release']);
+                exit;
+            }
+            return response()->download($release);
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -492,11 +493,9 @@ class ProductController extends Controller {
             
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    
-                    $invoice_item = new \App\Model\Order\InvoiceItem();
-                    $item = $invoice_item->where('invoice_id', $invoice->id)->first();
-                    $product_id = $this->product->where('name', $item->product_name)->first()->id;
-                    $release = $this->downloadProduct($product_id);
+                    $order = $invoice->order()->orderBy('id','desc')->select('product')->first();
+                    $product_id = $order->product;
+                    $release = $this->downloadProduct($product_id)['release'];
 
                     return view('themes.default1.front.download', compact('release', 'form'));
                 } else {

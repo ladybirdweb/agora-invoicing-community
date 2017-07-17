@@ -65,15 +65,15 @@ class OrderController extends Controller {
      * @return Response
      */
     public function index(Request $request) {
-        $validator = \Validator::make($request->all(), [
-                    'domain' => 'url',
-        ]);
+//        $validator = \Validator::make($request->all(), [
+//                    'domain' => 'url',
+//        ]);
 
-        if ($validator->fails()) {
-            return redirect('orders')
-                            ->withErrors($validator)
-                            ->withInput();
-        }
+//        if ($validator->fails()) {
+//            return redirect('orders')
+//                            ->withErrors($validator)
+//                            ->withInput();
+//        }
         try {
             $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
             $order_no = $request->input('order_no');
@@ -352,6 +352,7 @@ class OrderController extends Controller {
                 foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
+                        $version = $this->getProductByName($item->product_name)->version;
                         $price = $item->subtotal;
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
@@ -373,7 +374,7 @@ class OrderController extends Controller {
                         ]);
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
                         if ($this->checkOrderCreateSubscription($order->id) == true) {
-                            $this->addSubscription($order->id, $plan_id);
+                            $this->addSubscription($order->id, $plan_id,$version);
                         }
                         $this->sendOrderMail($user_id, $order->id,$item->id);
                     }
@@ -404,7 +405,7 @@ class OrderController extends Controller {
      *
      * @throws \Exception
      */
-    public function addSubscription($orderid, $planid) {
+    public function addSubscription($orderid, $planid,$version="") {
         try {
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
@@ -418,7 +419,7 @@ class OrderController extends Controller {
                     $ends_at = '';
                 }
                 $user_id = $this->order->find($orderid)->client;
-                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
+                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at,'version'=>$version]);
             }
         } catch (\Exception $ex) {
             //dd($ex);
@@ -513,9 +514,9 @@ class OrderController extends Controller {
     }
 
     public function domainChange(Request $request) {
-        $this->validate($request, [
-            'domain' => 'url',
-        ]);
+//        $this->validate($request, [
+//            'domain' => 'url',
+//        ]);
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = $this->order->find($id);
@@ -576,7 +577,7 @@ class OrderController extends Controller {
             if (str_finish($domain, '/')) {
                 $domain = substr_replace($domain, '', -1, 0);
             }
-            $join = $join->where('domain', $domain);
+            $join = $join->where('domain','LIKE' ,'%'.$domain.'%');
         }
 
         $join = $join->select('orders.id', 'orders.created_at', 'client', 'price_override', 'order_status', 'number', 'serial_key');

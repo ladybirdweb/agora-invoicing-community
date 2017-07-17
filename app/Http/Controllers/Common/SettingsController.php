@@ -354,9 +354,11 @@ class SettingsController extends Controller {
                 }
                 if (count($models) > 0) {
                     foreach ($models as $model) {
+                        if($model->first()){
                         $currencies = explode(',', $model->first()->currencies);
-                        if (in_array($currency, $currencies)) {
-                            array_push($gateways, $model);
+                            if (in_array($currency, $currencies)) {
+                                array_push($gateways, $model);
+                            }
                         }
                     }
                 }

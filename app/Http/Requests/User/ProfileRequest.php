@@ -35,6 +35,9 @@ class ProfileRequest extends Request
                     'address'         => 'required',
                     'zip'             => 'required',
                     'user_name'       => 'required|unique:users,user_name,'.$userid,
+                    'bussiness'   => 'required',
+                    'company_type'=> 'required',
+                    'company_size'     => 'required',
                     
 
         ];
@@ -62,7 +65,9 @@ class ProfileRequest extends Request
                     'password_confirmation' => 'required|same:password',
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                    'bussiness'   => 'required',
+                'bussiness'   => 'required',
+                        'company_type'=> 'required',
+                        'company_size'     => 'required',
 
         ];
         }
@@ -72,6 +77,7 @@ public function messages()
     {
         return[
             'bussiness.required' => 'Choose one Industry',
+            'mobile_code.required' => 'Enter Country code (mobile)',
         ];
     }
 }

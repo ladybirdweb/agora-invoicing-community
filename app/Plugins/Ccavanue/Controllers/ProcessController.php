@@ -19,11 +19,9 @@ class ProcessController extends Controller
     public function PassToPayment($requests)
     {
         try {
-            //dd($requests);
             $request = $requests['request'];
             $order = $requests['order'];
             $cart = $requests['cart'];
-            //dd($order);
             if ($cart->count() > 0) {
                 $total = \Cart::getSubTotal();
             } else {
@@ -57,12 +55,9 @@ class ProcessController extends Controller
                 $mobile = \Auth::user()->mobile;
                 $country = \Auth::user()->country;
                 $currency = \Auth::user()->currency;
-                if ($currency == 1) {
-                    $currency = 'USD';
-                } else {
-                    $currency = 'INR';
+                if (!$currency) {
+                    throw new \Exception("Your currency is unknown, Please update your Profile with currency");
                 }
-
                 $ccavanue_url = $ccavanue->ccavanue_url;
                 $working_key = $ccavanue->working_key;
                 $access_code = $ccavanue->access_code;

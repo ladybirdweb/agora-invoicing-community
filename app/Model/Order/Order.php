@@ -92,15 +92,19 @@ class Order extends BaseModel
         }
     }
 
-    public function setDomainAttribute($value)
-    {
-        try {
-            if (ends_with($value, '/')) {
-                $value = substr_replace($value, '', -1, 1);
-            }
-            $this->attributes['domain'] = $value;
-        } catch (DecryptException $ex) {
-            return $value;
+    public function setDomainAttribute($value) {
+       $this->attributes['domain'] = $this->get_domain($value);
+    }
+
+    public function get_domain($url) {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
         }
+        if(!$domain){
+            $domain = $pieces['path'];
+        }
+        return strtolower($domain);
     }
 }

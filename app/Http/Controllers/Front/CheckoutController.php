@@ -118,10 +118,10 @@ class CheckoutController extends Controller
         }
         if (count($require) > 0) {
             $this->validate($request, [
-                'domain.*' => 'required|url',
+                'domain.*' => 'required',
                     ], [
                 'domain.*.required' => 'Please provide Domain name',
-                'domain.*.url'      => 'Domain name is not valid',
+                //'domain.*.url'      => 'Domain name is not valid',
             ]);
         }
         try {
@@ -176,16 +176,17 @@ class CheckoutController extends Controller
             ]);
         }
         try {
+            
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
             if ($paynow == false) {
+                
                 /*
                  * Do order, invoicing etc
                  */
                
                 $invoice = $invoice_controller->generateInvoice();
-                
                 $status = 'pending';
                 if (!$payment_method) {
                     $payment_method = 'free';
@@ -203,7 +204,6 @@ class CheckoutController extends Controller
                 $invoice = $this->invoice->find($invoice_id);
                 $amount = $invoice->grand_total;
             }
-
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
 //                if ($paynow == true) {

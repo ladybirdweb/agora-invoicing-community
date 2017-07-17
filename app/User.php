@@ -12,13 +12,13 @@ use Illuminate\Database\Eloquent\Model;
 //use LinkThrow\Billing\CustomerBillableTrait;
 //use App\Model\Common\Website;
 
-class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
-{
+class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract {
+
     use Authenticatable,
         CanResetPassword;
 
 // use Billable;
-   // use CustomerBillableTrait;
+    // use CustomerBillableTrait;
 
     /**
      * The database table used by the model.
@@ -32,8 +32,11 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
      *
      * @var array
      */
-    protected $fillable = ['first_name', 'last_name', 'user_name', 'company', 'zip', 'state', 'town', 'mobile',
-        'email', 'password', 'role', 'active', 'profile_pic', 'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness'];
+    protected $fillable = ['first_name', 'last_name', 'user_name', 'company', 'zip',
+        'state', 'town', 'mobile',
+        'email', 'password', 'role', 'active', 'profile_pic',
+        'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
+        'company_type', 'company_size', 'ip', 'mobile_verified','position','skype','manager'];
 
     /**
      * The attributes excluded from the model's JSON form.
@@ -42,39 +45,32 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
      */
     protected $hidden = ['password', 'remember_token'];
 
-    public function order()
-    {
+    public function order() {
         return $this->hasMany('App\Model\Order\Order', 'client');
     }
 
-    public function subscription()
-    {
+    public function subscription() {
         // Return an Eloquent relationship.
         return $this->hasMany('App\Model\Product\Subscription');
     }
 
-    public function invoiceItem()
-    {
+    public function invoiceItem() {
         return $this->hasManyThrough('App\Model\Order\InvoiceItem', 'App\Model\Order\Invoice');
     }
 
-    public function orderRelation()
-    {
+    public function orderRelation() {
         return $this->hasManyThrough('App\Model\Order\OrderInvoiceRelation', 'App\Model\Order\Invoice');
     }
 
-    public function invoice()
-    {
+    public function invoice() {
         return $this->hasMany('App\Model\Order\Invoice');
     }
 
-    public function timezone()
-    {
+    public function timezone() {
         return $this->belongsTo('App\Model\Common\Timezone');
     }
 
-    public function getCreatedAtAttribute($value)
-    {
+    public function getCreatedAtAttribute($value) {
         if (\Auth::user()) {
             $tz = \Auth::user()->timezone()->first()->name;
             $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
@@ -85,34 +81,39 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
         return $value;
     }
 
-    public function getProfilePicAttribute($value)
-    {
-        if (!$value) {
-            $image = \Gravatar::src($this->attributes['email']);
-        } else {
-            $image = asset('dist/app/users/'.$value);
+    public function getProfilePicAttribute($value) {
+        $image = \Gravatar::src($this->attributes['email']);
+        if ($value) {
+            $file = public_path('dist/app/users/' . $value);
+            if (is_file($file)) {
+                $mime = \File::mimeType($file);
+                $extension = \File::extension($file);
+                if (mime($mime) == 'image' && mime($extension) == 'image') {
+                    $image = asset('dist/app/users/' . $value);
+                } else {
+                    unlink($file);
+                }
+            }
         }
 
         return $image;
     }
 
-    public function payment()
-    {
+    public function payment() {
         return $this->hasMany('App\Model\Order\Payment');
     }
-    
-    public function bussiness(){
+
+    public function bussiness() {
         $short = $this->attributes['bussiness'];
         $name = "--";
-        $bussiness = \App\Model\Common\Bussiness::where('short',$short)->first();
-        if($bussiness){
+        $bussiness = \App\Model\Common\Bussiness::where('short', $short)->first();
+        if ($bussiness) {
             $name = $bussiness->name;
         }
         return $name;
     }
 
-    public function delete()
-    {
+    public function delete() {
         $this->invoiceItem()->delete();
         $this->orderRelation()->delete();
         $this->invoice()->delete();
@@ -121,4 +122,20 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
 
         return parent::delete();
     }
+    
+    public function manager(){
+        return $this->belongsTo('App\User','manager');
+    }
+    
+    public function save(array $options = array()) {
+
+        $changed = $this->isDirty() ? $this->getDirty() : false;
+        parent::save($options);
+        $role = $this->role;
+        if($changed && checkArray('manager', $changed) && $role=='user'){
+            $auth = new Http\Controllers\Auth\AuthController();
+            $auth->accountManagerMail($this);
+        }
+    }
+
 }

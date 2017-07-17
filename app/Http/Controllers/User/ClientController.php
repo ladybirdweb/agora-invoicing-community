@@ -40,13 +40,15 @@ class ClientController extends Controller {
         $email = $request->input('email');
         $country = $request->input('country');
         $industry = $request->input('industry');
+        $company_type = $request->input('company_type');
+        $company_size = $request->input('company_size');
 
         $count_users = $this->user->get()->count();
         $pro_editions = $this->soldEdition('Faveo Helpdesk Pro');
         $community = $this->soldEdition('faveo helpdesk community');
         $product_count = $this->productCount();
 
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count','industry'));
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count','industry','company_type','company_size'));
     }
 
     /**
@@ -60,11 +62,12 @@ class ClientController extends Controller {
         $email = $request->input('email');
         $country = $request->input('country');
         $industry = $request->input('industry');
-
+        $company_type = $request->input('company_type');
+        $company_size = $request->input('company_size');
 //$user = new User;
 // $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
 //dd($user);
-        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country,$industry);
+        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country,$industry,$company_type,$company_size);
 
         return \Datatable::query($user)
                         ->addColumn('#', function ($model) {
@@ -76,10 +79,16 @@ class ClientController extends Controller {
                         ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
-                                return "<span style='color:green'>Activated</span>";
+                                $email = "<span class='glyphicon glyphicon-envelope' style='color:green' title='verified email'></span>";
                             } else {
-                                return "<span style='color:red'>Not activated</span>";
+                                $email = "<span class='glyphicon glyphicon-envelope' style='color:red' title='unverified email'></span>";
                             }
+                            if ($model->mobile_verified == 1) {
+                                $mobile = "<span class='glyphicon glyphicon-phone' style='color:green' title='verified mobile'></span>";
+                            } else {
+                                $mobile = "<span class='glyphicon glyphicon-phone' style='color:red' title='unverified mobile'></span>";
+                            }
+                            return $email."&nbsp;&nbsp;".$mobile;
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href=' . url('clients/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>"
@@ -99,7 +108,8 @@ class ClientController extends Controller {
         $timezones = new \App\Model\Common\Timezone();
         $timezones = $timezones->lists('name', 'id')->toArray();
         $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
-        return view('themes.default1.user.client.create', compact('timezones','bussinesses'));
+        $managers = User::where('role','admin')->where('position','manager')->pluck('first_name','id')->toArray();
+        return view('themes.default1.user.client.create', compact('timezones','bussinesses','managers'));
     }
 
     /**
@@ -159,10 +169,11 @@ class ClientController extends Controller {
             $timezones = $timezones->lists('name', 'id')->toArray();
 
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
+                    $managers = User::where('role','admin')->where('position','manager')->pluck('first_name','id')->toArray();
 
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
-            return view('themes.default1.user.client.edit', compact('bussinesses','user', 'timezones', 'state', 'states'));
+            return view('themes.default1.user.client.edit', compact('bussinesses','user', 'timezones', 'state', 'states','managers'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -234,7 +245,7 @@ class ClientController extends Controller {
         return response()->json(compact('options'));
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '',$industry="") {
+    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '',$industry="",$company_type="",$company_size="") {
         $join = $this->user;
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%' . $name . '%')
@@ -258,8 +269,14 @@ class ClientController extends Controller {
         if ($industry) {
             $join = $join->where('bussiness', $industry);
         }
+        if ($company_type) {
+            $join = $join->where('company_type', $company_type);
+        }
+        if ($company_size) {
+            $join = $join->where('company_size', $company_size);
+        }
 
-        $join = $join->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active');
+        $join = $join->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active','mobile_verified');
 
 
         return $join;

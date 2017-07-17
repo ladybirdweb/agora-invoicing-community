@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Checkboxes</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<script>
+		var myTree, myTree2;
+		function doOnLoad(){
+			myTree = new dhtmlXTreeObject("treeboxbox_tree","100%","100%",0);
+			myTree.setImagePath("../../../skins/web/imgs/dhxtree_web/");
+			myTree.enableCheckBoxes(1);
+			myTree.load("../common/tree.xml");
+			myTree2 = new dhtmlXTreeObject("treeboxbox_tree2","100%","100%",0);
+			myTree2.setImagePath("../../../skins/web/imgs/dhxtree_web/");
+			myTree2.enableCheckBoxes(1);
+			myTree2.enableThreeStateCheckboxes(true);
+			myTree2.load("../common/tree.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Checkboxes</h1>
+	<p>This JavaScript tree has checkbox system in order to use this component as a navigation bar
+		with selection lists. Besides usual two-state checkboxes (checked item, unchecked item),
+		there is a possibility to use three state checkboxes with "partly-checked" value (some sub-items are checked). To test any of these functionalities you should select an item in a tree and then click on an appropriate action link.</p>
+	<table>
+		<tr>
+			<td valign="top">
+				<div id="treeboxbox_tree" class="tree_demo_samples"></div>
+			</td>
+			<td  style="padding-left:25px" valign="top">
+				Two state checkboxes<br><br>
+				<a href="javascript:void(0);" onClick="myTree.setCheck(myTree.getSelectedItemId(),true);">Check item</a><br><br>
+				<a href="javascript:void(0);" onClick="myTree.setCheck(myTree.getSelectedItemId(),false);">UnCheck item</a><br><br>
+				<a href="javascript:void(0);" onClick="myTree.setSubChecked(myTree.getSelectedItemId(),true);">Check branch</a><br><br>
+				<a href="javascript:void(0);" onClick="myTree.setSubChecked(myTree.getSelectedItemId(),false);">UnCheck branch</a><br><br>
+				<a href="javascript:void(0);" onClick="alert(myTree.getAllChecked());">Get list of checked</a><br><br>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<br/>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				<div id="treeboxbox_tree2" class="tree_demo_samples"></div>
+			</td>
+			<td  style="padding-left:25px" valign="top">
+				Three state checkboxes<br>
+				<br>
+				<a href="javascript:void(0);" onClick="myTree2.setCheck(myTree2.getSelectedItemId(),true);">Check item</a><br><br>
+				<a href="javascript:void(0);" onClick="myTree2.setCheck(myTree2.getSelectedItemId(),false);">UnCheck item</a><br><br>
+				<a href="javascript:void(0);" onClick="alert(myTree2.getAllChecked());">Get list of checked</a><br><br>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

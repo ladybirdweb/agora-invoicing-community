@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Connecting to database</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<script>
+		var myList;
+		function doOnLoad() {
+			myList = new dhtmlXList({
+				container:"data_container",
+				edit:true,
+				type:{
+					template:"<span class='dhx_strong'>#Package#</span>#Version# <br/><span class='dhx_light'>#Maintainer#</span>",
+					template_edit:"<input class='dhx_item_editor' bind='obj.Package'>",
+					height:80
+				}
+			});
+			myList.load("../common/php/data.php");
+			var myDataProcessor = new dataProcessor("../common/php/data.php");
+			myDataProcessor.init(myList);
+		}
+		function add_data(argument) {
+			myList.add({
+				Package: document.getElementById("p_name").value,
+				Version: document.getElementById("v_name").value,
+				Maintainer: document.getElementById("m_name").value
+			},0)
+		}
+		function remove_data(){
+			myList.remove(myList.getSelected());
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Connecting to database</h1>
+	<div id="data_container" class="list_demo_samples" style="float:left"></div>
+	<br><br>
+	<form>
+		Product <input type="text" id="p_name" value="dhtmlxList"/><br>
+		Version <input type="text" id="v_name" value="3.0"/><br>
+		Maintainer <input type="text" id="m_name" value="Ivan"><br>
+		<input type="button" value="Add &rarr;" onclick='add_data()'/>
+		<br><br>
+		<input type="button" value="Remove selected &rarr;" onclick='remove_data()'/>
+	</form>
+</body>
+</html>

@@ -1,0 +1,422 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+.dhtmlxribbon_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 30px;
+	height: 10px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_terrace.dhxrb_without_tabbar {
+	background-color: #ffffff;
+	border: 1px solid #cccccc;
+}
+.dhtmlxribbon_dhx_terrace {
+	overflow: hidden;
+	width: 100%;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_background_area {
+	height: 116px;
+	background-color: #ffffff;
+	margin: 1px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_with_tabbar {
+	height: 151px;
+}
+.dhtmlxribbon_dhx_terrace div.dhx_cell_tabbar {
+	background-color: #ffffff;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_g_area {
+	height: 114px;
+	float: left;
+	clear: left;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_base {
+	margin: 3px 0px 3px 3px;
+	float: left;
+	border: 1px solid #cccccc;
+	background-color: #f5f5f5;
+	border-radius: 3px;
+	height: 108px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_base .dhxrb_block_items {
+	height: 85px;
+	float: left;
+	padding: 2px 0px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_base>.dhxrb_block_label {
+	height: 19px;
+	line-height: 18px;
+	*height: auto;
+	*line-height: 1em;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_base .dhxrb_block_label {
+	text-align: center;
+	clear: left;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #b5b5b5;
+	background-color: #e8e8e8;
+	*font-size: 12px;
+	*padding: 1px 3px 3px;
+	*font-family: Arial;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button {
+	margin: 1px 3px;
+	float: left;
+	text-align: center;
+	padding: 4px 10px;
+	height: 72px;
+	border-radius: 3px;
+	border: 1px solid #f5f5f5;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	background-color: #f5f5f5;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button .dhxrb_image {
+	width: 48px;
+	height: 48px;
+	border: none;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button i {
+	position: relative;
+	display: block;
+	margin-top: 2px;
+	margin-bottom: 2px;
+	width: 48px;
+	height: 48px;
+	line-height: 47px;
+	font-size: 30px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button .dhxrb_label_button {
+	margin: 0px auto;
+	cursor: default;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	line-height: 11px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button .dhxrb_invisible {
+	visibility: hidden;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_block {
+	float: left;
+	margin: 0px 3px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_block .dhxrb_invisible {
+	display: none;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button {
+	height: 22px;
+	margin: 1px 0px;
+	float: left;
+	clear: left;
+	padding: 1px 8px;
+	border-radius: 3px;
+	border: 1px solid #f5f5f5;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	background-color: #f5f5f5;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row {
+	height: 22px;
+	margin: 1px 0px;
+	float: left;
+	padding: 1px 8px;
+	white-space: nowrap;
+	border-radius: 3px;
+	border: 1px solid #f5f5f5;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	background-color: #f5f5f5;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_group .dhxrb_buttoncombo_cont {
+	height: 20px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_buttoncombo_cont {
+	height: 24px;
+	padding: 1px 2px !important;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_buttoncombo {
+	float: left;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row .dhxrb_slider,
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row center,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group center,
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button center {
+	float: left;
+	margin: 0px;
+	padding: 0px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_slider {
+	float: left;
+	margin-right: 5px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button .dhxrb_slider {
+	width: 16px;
+	margin: 2px 0px;
+	height: 50px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group {
+	height: 20px;
+	float: left;
+	padding: 1px 4px;
+	border: 1px solid #f0f0f0;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_input {
+	float: left;
+	border: 1px solid #cccccc;
+	height: 18px;
+	width: 80px;
+	padding: 1px 2px;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_input:disabled {
+	border: 1px solid #d4d4d4;
+	background-color: #fafafa;
+	color: #bbbbbb;
+}
+.dhtmlxribbon_dhx_terrace div.dhxcombo_dhx_terrace input.dhxcombo_input {
+	float: left;
+	height: 18px;
+	width: 80px;
+	padding: 1px 2px;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+	line-height: 18px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_input,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group div.dhxcombo_dhx_terrace input.dhxcombo_input {
+	height: 16px;
+	padding: 1px 1px;
+	line-height: 16px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group div.dhxcombo_dhx_terrace div.dhxcombo_select_button {
+	top: 0px;
+}
+.dhtmlxribbon_dhx_terrace div.dhxcombo_dhx_terrace div.dhxcombo_select_button {
+	top: 2px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button .dhxrb_image,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row .dhxrb_image,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_image {
+	margin: 2px 0px;
+	width: 18px;
+	height: 18px;
+	float: left;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button i,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row i,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group i {
+	position: relative;
+	float: left;
+	width: 18px;
+	height: 18px;
+	line-height: 17px;
+	font-size: 15px;
+	margin-top: 1px;
+	color: inherit;
+	cursor: default;
+	text-align: center;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_item_disable i {
+	color: #bbbbbb;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button .dhxrb_label_button,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row .dhxrb_label_button,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_label_button {
+	float: left;
+	cursor: default;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button .dhxrb_label_button,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row .dhxrb_label_button {
+	margin: 1px 0px 1px 6px;
+	line-height: 19px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_label_button {
+	margin: 1px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_label_checkbox {
+	float: left;
+	margin: 0px 4px;
+	cursor: default;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	line-height: 21px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_group .dhxrb_label_checkbox {
+	line-height: 19px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_disable_text_style,
+.dhtmlxribbon_dhx_terrace .dhxrb_item_disable .dhxrb_label_checkbox {
+	color: #bbbbbb !important;
+	-webkit-user-select: text;
+	-khtml-user-select: text;
+	-moz-user-select: text;
+	-ms-user-select: text;
+	-o-user-select: text;
+	user-select: text;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_highlight0 {
+	border-color: #ebebeb;
+	background-color: #ebebeb;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_highlight1 {
+	border-color: #e6e6e6;
+	background-color: #e6e6e6;
+	box-shadow: 0 0 3px #d9d9d9 inset;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group.dhxrb_highlight1,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group.dhxrb_highlight0 {
+	border-radius: 1px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_item_hide {
+	display: none !important;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_rows {
+	float: left;
+	margin: 0px 3px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_row {
+	float: left;
+	clear: left;
+	height: 28px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_arrow {
+	padding: 0px 5px;
+	margin-left: 2px;
+	background: url("../imgs/dhxribbon_terrace/dhxribbon_arrow.gif") no-repeat 50%;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_block .dhxrb_group {
+	border: 1px solid #cccccc;
+	background-color: #f0f0f0;
+	height: 24px;
+	border-radius: 3px;
+	float: left;
+	clear: left;
+	margin: 1px 0px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_block_row .dhxrb_group {
+	border: 1px solid #cccccc;
+	background-color: #f0f0f0;
+	height: 24px;
+	border-radius: 3px;
+	float: left;
+	margin: 1px 0px;
+	overflow: hidden;
+	position: relative;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_label_hide {
+	display: none;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_separator_groupp {
+	height: 24px;
+	width: 0;
+	border-left: 1px solid #cacaca;
+	overflow: hidden;
+	float: left;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_checkbox {
+	border: 1px solid #cccccc;
+	background-color: white;
+	float: left;
+	width: 12px;
+	height: 12px;
+	margin-top: 4px;
+	overflow: hidden;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_checkbox {
+	margin-top: 3px;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_checked .dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_terrace/dhxribbon_checked.gif");
+	background-repeat: no-repeat;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_checked.dhxrb_item_disable>.dhxrb_checkbox {
+	background-image: url("../imgs/dhxribbon_terrace/dhxribbon_checked_dis.gif");
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_item_disable .dhxrb_checkbox {
+	border: 1px solid #d4d4d4;
+	background-color: #fafafa;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_item_text {
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_in_group .dhxrb_item_text {
+	height: 20px;
+	line-height: 19px;
+	*float: left;
+	*clear: left;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_3rows_button .dhxrb_item_text,
+.dhtmlxribbon_dhx_terrace .dhxrb_in_row .dhxrb_item_text {
+	font-family: Arial, Helvetica;
+	font-size: 14px;
+	color: #333333;
+}
+.dhtmlxribbon_dhx_terrace .dhxrb_big_button .dhxrb_item_text {
+	font-family: Arial, Helvetica;
+	font-size: 30px;
+	color: #333333;
+	line-height: 72px;
+	height: 72px;
+	float: left;
+	clear: left;
+}

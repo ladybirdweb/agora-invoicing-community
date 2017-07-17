@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom styles</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* reports */
+		span.tab_reports {
+			color: black;
+			font-weight: bold;
+		}
+		.myTabbar_tab_actv span.tab_reports {
+			color: red;
+		}
+		/* timeline */
+		span.tab_timeline {
+			color: green;
+			font-style: italic;
+		}
+		.myTabbar_tab_actv span.tab_timeline {
+			color: red;
+		}
+		/* groups */
+		span.tab_groups {
+			color: blue;
+			text-decoration: underline;
+		}
+		.myTabbar_tab_actv span.tab_groups {
+			color: red;
+		}
+	</style>
+	<script>
+		var myTabbar;
+		function doOnLoad() {
+			myTabbar = new dhtmlXTabBar({
+				parent: "my_tabbar",
+				tabs: [
+					{id: "a1", text: "<span class='tab_reports'>Reports</span>", active: true},
+					{id: "a2", text: "<span class='tab_timeline'>Timeline</span>"},
+					{id: "a3", text: "<span class='tab_groups'>Groups</span>"}
+				]
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:400px; height:250px;"></div>
+</body>
+</html>

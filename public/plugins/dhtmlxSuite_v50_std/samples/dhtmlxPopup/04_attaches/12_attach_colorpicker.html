@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach color picker</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#myToolbar {
+			margin: 10px;
+		}
+	</style>
+	<script>
+		
+		var myToolbar;
+		var myPop;
+		var myCP;
+		
+		function doOnLoad() {
+			
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "myToolbar",
+				icons_path: "../common/imgs/",
+				xml: "../common/toolbar.xml",
+				onload: function() {
+					myToolbar.setItemText("workbut", "Color Picker");
+					// init popup
+					myPop = new dhtmlXPopup({ toolbar: myToolbar, id: "workbut" });
+					myPop.attachEvent("onShow", function(){
+						if (!myCP) {
+							myCP = myPop.attachColorPicker({
+								color: "#2a87eb",
+								custom_colors: ["#ff9f29","#a3ff2b","#57cdff","#fb26ff","#9f96ff"]
+							});
+							myCP.attachEvent("onCancel",function(color){
+								// do not allow to hide colorpicker, hide popup instead
+								myPop.hide();
+								return false;
+							});
+							myCP.attachEvent("onSelect",function(color){
+								myPop.hide();
+							});
+						}
+					});
+				}
+			});
+			
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myToolbar"></div>
+</body>
+</html>

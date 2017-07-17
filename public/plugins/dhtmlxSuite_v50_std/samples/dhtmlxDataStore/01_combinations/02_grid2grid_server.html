@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+
+	<title>Grid linked to grid through server</title>
+
+</head>
+
+<body>
+	<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div>
+
+	<div id="gridbox2" style="width:600px; height:270px; background-color:white;"></div>
+	
+<script>
+    mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.setImagePath("../../../codebase/imgs/");
+	mygrid.setHeader("Count,Name");
+	mygrid.init();
+	mygrid.load("../common/data/grid.xml");
+	
+	
+
+    mygrid2 = new dhtmlXGridObject('gridbox2');
+	mygrid2.setImagePath("../../../codebase/imgs/");
+	mygrid2.setHeader("Count,Name");
+	mygrid2.init();
+
+	mygrid2.dataFeed("../common/data/grid.php");
+	mygrid2.bind(mygrid, function(data, filter){
+		filter.name = data.cell1[0]; //first letter of selected author
+	});
+</script>
+
+
+</body>
+</html>

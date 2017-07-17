@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<items>
+	<item type="fieldset" label="Uploader">
+		<item type="upload" name="myFiles" inputWidth="330" url="php/dhtmlxform_item_upload.php" _swfLogs="enabled" swfPath="uploader.swf" swfUrl="php/dhtmlxform_item_upload.php"/>
+	</item>
+</items>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Object API init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		 div#editorObj {
+		 	 width: 100%;
+		 	 height: 300px;
+		 	 border: 1px solid #dfdfdf;
+		 }
+	</style>
+	<script>
+		var myEditor;
+		function doOnLoad() {
+			myEditor = new dhtmlXEditor({
+				parent: "editorObj",
+				content: "<b>Lorem ipsum </b>dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud <u>exercitation ullamco laboris nisi ut aliquip ex ea commodo </u>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <i>Excepteur sint occaecat cupidatat non proident</i>, sunt in culpa qui officia deserunt mollit anim id est laborum."
+				
+				/*
+				more settings:
+				contentHTML	string, link to external content, will loaded by ajax, if "content" attr not set
+				toolbar		true to use dhtmlxToolbar, make sure toolbar.js attached, editor_ext.js attached
+				iconsPath	path for toolbar icons (icons located in editor/codebase/imgs/, skin will set automatically)
+				skin		skin to set on init
+				onFocusChanged	callback for onFocusChanged event
+				onAccess	callback for onAccess event
+				*/
+			});
+
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="editorObj"></div>
+</body>
+</html>

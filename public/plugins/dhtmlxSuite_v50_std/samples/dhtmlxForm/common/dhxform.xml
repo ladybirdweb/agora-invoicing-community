@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<items>
+	<item type="settings" position="label-left" labelWidth="130" inputWidth="150" noteWidth="150"/>
+	<item type="fieldset" name="data" inputWidth="370" label="Welcome">
+		<item type="radio" name="type" labelWidth="auto" position="label-right" checked="true" label="Already have account">
+			<item type="input" value="p_rossi" label="Login" info="true">
+				<note>Please type your login here</note>
+			</item>
+			<item type="password" value="123" label="Password" info="1">
+				<note width="150">Please type your password here</note>
+			</item>
+			<item type="checkbox" checked="true" label="Remember me"/>
+		</item>
+		<item type="radio" name="type" labelWidth="auto" position="label-right" label="Not registered yet">
+			<item type="input" value="Patricia D. Rossi" label="Full Name"/>
+			<item type="input" value="p_rossi@example.com" label="E-mail Address"/>
+			<item type="input" value="p_rossi" label="Login"/>
+			<item type="password" value="123" label="Password"/>
+			<item type="password" value="123" label="Confirm Password"/>
+			<item type="checkbox" label="Subscribe on news"/>
+		</item>
+		<item type="radio" name="type" labelWidth="auto" position="label-right" label="Guest login">
+			<item type="select" label="Account type">
+				<option value="admin" label="Admin"/>
+				<option value="org" label="Organiser"/>
+				<option value="poweruser" label="Power User"/>
+				<option value="user" label="User"/>
+			</item>
+			<item type="checkbox" label="Show logs window"/>
+		</item>
+		<item type="button" value="Proceed"/>
+	</item>
+</items>

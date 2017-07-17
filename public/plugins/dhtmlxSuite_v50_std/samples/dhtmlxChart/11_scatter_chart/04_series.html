@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Legend</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var colors = {"a":"#69ba00", "b": "#4aa397", "c": "#de619c"};
+		var borders = {"a":"#447900", "b": "#0a796a", "c": "#b7286c"};
+		var legendValues = [];
+		for(var t in colors)
+			legendValues.push({text:"Type "+t.toUpperCase(),color:colors[t]});
+		var myScatterChart;
+		function doOnLoad() {
+			myScatterChart = new dhtmlXChart({
+			view:"scatter",
+			container:"chartDiv",
+			value:"#b1#",
+			xValue: "#a#",
+			yAxis:{
+				title:"Value B"
+			},
+			xAxis:{
+				title:"Value A"
+			},
+			item:{
+				radius:3,
+				type:"s",
+				borderColor:function(obj){
+				   return borders["a"]
+				},
+				borderWidth:2,
+				color:function(obj){
+				   return colors["a"]
+				}
+			},
+			legend:{
+				layout:"y",
+				width: 75,
+				margin:5,
+				align:"right",
+				valign:"middle",
+				marker:{
+					type:"item"
+				},
+				values:legendValues
+			}
+		});
+			myScatterChart.addSeries({
+			value:"#b2#",
+			item:{
+				radius:3,
+				type:"s",
+				borderColor:function(obj){
+					return borders["b"]
+				},
+				borderWidth:2,
+				color:function(obj){
+					return colors["b"]
+				}
+			}
+		});
+			myScatterChart.addSeries({
+			value:"#b3#",
+			item:{
+				radius:3,
+				type:"s",
+				borderColor:function(obj){
+					return borders["c"]
+				},
+				borderWidth:2,
+				color:function(obj){
+					return colors["c"]
+				}
+			}
+		})
+			myScatterChart.parse(scatter_dataset2,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartDiv" style="width:600px;height:250px;margin:20px;border:1px solid #ededed;"></div>
+</body>
+</html>

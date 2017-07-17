@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Filtering</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales,Book Title,Author");
+			myGrid.setInitWidths("100,250,*");
+			myGrid.setColAlign("left,left,left");
+			myGrid.setColTypes("dyn,ed,ed");
+			myGrid.setColSorting("str,str,str");
+			myGrid.init();
+			myGrid.load("../common/100.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Filtering</h1>
+	<p>You can set filter for different columns - occurrence of mask symbols will be searched.</p>
+	<div id="gridbox" style="width:544px; height: 266px; background-color:white;overflow:hidden"></div>
+	<br>
+	<fieldset style="width:520px">
+		<legend>Filter</legend>
+		Column
+		<select id='a10'>
+			<option value='0'>0</option>
+			<option value='1'>1</option>
+			<option value='2'>2</option>
+		</select>
+		Mask
+		<input type="text" name="a12" value="" id="a12">
+		<input type="button" name="a11" value="Filter" id="a11" onclick='myGrid.filterBy(document.getElementById("a10").value,document.getElementById("a12").value);'><br/><br/>
+		<input type="button" name="a11" value="Filter column[0] < 500" id="a11" onclick='myGrid.filterBy(0,function(a){ return (a<500);});'>
+	</fieldset>
+</body>
+</html>

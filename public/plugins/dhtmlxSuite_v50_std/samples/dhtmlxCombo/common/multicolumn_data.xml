@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<complete>
+	<template>
+		<input><![CDATA[#capital#, #country#]]></input>
+		<columns>
+			<column width="40" css="flag" header="&amp;nbsp;">
+				<option><![CDATA[<img src='#flag#' border='0' style='margin-top: 4px; margin-left: 2px;'>]]></option>
+			</column>
+			<column width="80"  css="capital" header="Capital" option="#capital#"/>
+			<column width="110" css="country" header="Country" option="#country#"/>
+			<column width="250" css="proverb" header="Proverb" option="#proverb#"/>
+		</columns>
+	</template>
+	<option value="1">
+		<text>
+			<flag><![CDATA[../common/flags/austria.png]]></flag>
+			<country>Austria</country>
+			<capital>Vienna</capital>
+			<proverb>Two wrongs don't make a right</proverb>
+		</text>
+	</option>
+	<option value="2">
+		<text>
+			<flag><![CDATA[../common/flags/belarus.png]]></flag>
+			<country>Belarus</country>
+			<capital>Minsk</capital>
+			<proverb>The pen is mightier than the sword</proverb>
+		</text>
+	</option>
+	<option value="3">
+		<text>
+			<flag><![CDATA[../common/flags/cameroon.png]]></flag>
+			<country>Cameroon</country>
+			<capital>Yaoundé</capital>
+			<proverb>Actions speak louder than words</proverb>
+		</text>
+	</option>
+	<option value="4" selected="true">
+		<text>
+			<flag><![CDATA[../common/flags/canada.png]]></flag>
+			<country>Canada</country>
+			<capital>Ottawa</capital>
+			<proverb>If it ain't broke, don't fix it</proverb>
+		</text>
+	</option>
+	<option value="5">
+		<text>
+			<flag><![CDATA[../common/flags/china.png]]></flag>
+			<country>China</country>
+			<capital>Beijing</capital>
+			<proverb>No man is an island</proverb>
+		</text>
+	</option>
+	<option value="6">
+		<text>
+			<flag><![CDATA[../common/flags/czech_republic.png]]></flag>
+			<country>Czech Republic</country>
+			<capital>Prague</capital>
+			<proverb>Don't bite the hand that feeds you</proverb>
+		</text>
+	</option>
+	<option value="7">
+		<text>
+			<flag><![CDATA[../common/flags/denmark.png]]></flag>
+			<country>Denmark</country>
+			<capital>Copenhagen</capital>
+			<proverb>Fortune favors the bold</proverb>
+		</text>
+	</option>
+	<option value="8">
+		<text>
+			<flag><![CDATA[../common/flags/finland.png]]></flag>
+			<country>Finland</country>
+			<capital>Helsinki</capital>
+			<proverb>Hope for the best, but prepare for the worst</proverb>
+		</text>
+	</option>
+	<option value="9">
+		<text>
+			<flag><![CDATA[../common/flags/germany.png]]></flag>
+			<country>Germany</country>
+			<capital>Berlin</capital>
+			<proverb>Better late than never</proverb>
+		</text>
+	</option>
+	<option value="a">
+		<text>
+			<flag><![CDATA[../common/flags/britain.png]]></flag>
+			<country>Great Britain</country>
+			<capital>London</capital>
+			<proverb>One man's trash is another man's treasure</proverb>
+		</text>
+	</option>
+	<option value="b">
+		<text>
+			<flag><![CDATA[../common/flags/hungary.png]]></flag>
+			<country>Hungary</country>
+			<capital>Budapest</capital>
+			<proverb>Keep your friends close and your enemies closer</proverb>
+		</text>
+	</option>
+	<option value="c">
+		<text>
+			<flag><![CDATA[../common/flags/italy.png]]></flag>
+			<country>Italy</country>
+			<capital>Rome</capital>
+			<proverb>When in Rome, do as the Romans</proverb>
+		</text>
+	</option>
+	<option value="d">
+		<text>
+			<flag><![CDATA[../common/flags/us.png]]></flag>
+			<country>United States</country>
+			<capital>Washington</capital>
+			<proverb>A picture is worth a thousand words</proverb>
+		</text>
+	</option>
+</complete>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Object API extended init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				onload: function(){
+					// console.log("menu loaded");
+				},
+				onclick: function(id){
+					// console.log("menu clicked, id="+id);
+				},
+				items: [
+					{id: "file", text: "File", items:[
+						{id: "new", text: "New", img: "new.gif"},
+						{id: "sep0", type: "separator"},
+						{id: "open", text: "Open", img: "open.gif"},
+						{id: "save", text: "Save", img: "save.gif"},
+						{id: "saveAs", text: "Save As...", enabled: false, img_disabled: "save_as_dis.gif"},
+						{id: "sep1", type: "separator"},
+						{id: "print", text: "Print", img: "print.gif"},
+						{id: "pageSetup", text: "Page Setup", enabled: false, img_disabled: "page_setup_dis.gif"},
+						{id: "sep2", type: "separator"},
+						{id: "close", text: "Close", img: "close.gif"}
+					]},
+					{id: "edit", text: "Edit", items:[
+						{id: "edit_undo", text: "Undo", img: "undo.gif"},
+						{id: "edit_redo", text: "Redo", img: "redo.gif"},
+						{id: "sep3", type: "separator"},
+						{id: "edit_select_all", text: "Select All", img: "select_all.gif"},
+						{id: "sep4", type: "separator"},
+						{id: "edit_cut", text: "Cut", img: "cut.gif"},
+						{id: "edit_copy", text: "Copy",img: "copy.gif"},
+						{id: "edit_paste", text: "Paste", img: "paste.gif"}
+					]},
+					{id: "help", text: "Help", items:[
+						{id: "about", text: "About...", img: "about.gif"},
+						{id: "help2", text: "Help", img: "help.gif"},
+						{id: "bugrep", text: "Bug Reporting", img: "bug_reporting.gif"}
+					]}
+				]
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 250px;">
+		<div id="menuObj"></div>
+	</div>
+</body>
+</html>

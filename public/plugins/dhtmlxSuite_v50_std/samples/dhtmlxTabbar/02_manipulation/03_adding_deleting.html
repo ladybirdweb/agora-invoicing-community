@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Adding / deleting tabs</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myTabbar;
+		
+		function doOnLoad() {
+			myTabbar = new dhtmlXTabBar("my_tabbar");
+			myTabbar.addTab("a1", "Tab 1-1", null, null, true);
+			myTabbar.addTab("a2", "Tab 1-2");
+			myTabbar.addTab("a3", "Tab 1-3");
+			myTabbar.addTab("a4", "Tab 1-4");
+			myTabbar.addTab("a5", "Tab 1-5");
+		}
+		var tabId = 1;
+		function add(pos) {
+			myTabbar.addTab(new Date().getTime(), "New Tab "+tabId++, null, pos);
+		}
+	</script>
+	
+
+</head>
+<body onload="doOnLoad();">
+	<div id="my_tabbar" style="width:495px; height:190px;"></div>
+	<br>
+	<input type="button" value="Delete active tab" onclick="var id=myTabbar.getActiveTab();if(id!=null)myTabbar.tabs(id).close(true);">
+	<br><br>
+	<input type="button" value="Add new tab at first position" onclick="add(0);">
+	<input type="button" value="Add new tab at last position" onclick="add(-1);">
+</body>
+</html>

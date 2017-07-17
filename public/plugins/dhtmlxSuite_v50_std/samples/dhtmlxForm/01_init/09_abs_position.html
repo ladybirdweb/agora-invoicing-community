@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Absolute position</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		var pos = 10; // start pos
+		var step = 25; // one item step
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "absolute", labelWidth: 500, inputWidth: 120},
+				{type: "label", label: "Automaticaly check for updates to:", labelTop: pos+2, labelLeft: 0},
+				{type: "checkbox", label: "Firefox", checked: true, labelTop: (pos+step+3), inputTop: (pos+step), labelLeft: 28, list:[
+					{type: "label", label: "When updates to Firefox are found:", labelTop: (pos+step*4+2), labelLeft: -22},
+					{type: "radio", name: "todo", label: "Ask me what I want to do", checked: true, labelTop: (pos+step*5+4), inputTop: (pos+step*5), labelLeft: 7, inputLeft: -20},
+					{type: "radio", name: "todo", label: "Automatically download and install the update", labelTop: (pos+step*6+4), inputTop: (pos+step*6), labelLeft: 7, inputLeft: -20, list:[
+						{type: "checkbox", label: "Warn me if this will disable any of my add-ons", checked: true, labelTop: (pos+step*7+4), inputTop: (pos+step*7), labelLeft: 7, inputLeft: -20}
+					]}
+				]},
+				{type: "checkbox", label: "Installed Add-ons", checked: true, labelTop: (pos+step*2+3), inputTop: (pos+step*2), labelLeft: 28},
+				{type: "checkbox", label: "Search Engines", labelTop: (pos+step*3+4), inputTop: (pos+step*3), labelLeft: 28}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:220px;"></div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to layout</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			top: 20px;
+			left: 20px;
+			width: 600px;
+			height: 400px;
+		}
+	</style>
+	<script>
+		var myLayout, myEditor;
+		function doOnLoad() {
+			myLayout = new dhtmlXLayoutObject("layoutObj", "3L");
+			myLayout.cells("a").setText("dhtmlxEditor");
+			
+			myEditor = myLayout.cells("a").attachEditor({contentHTML: "../common/cont.html"});
+			
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+</body>
+</html>

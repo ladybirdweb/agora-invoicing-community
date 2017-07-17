@@ -1,0 +1,4 @@
+<?xml version="1.0"?>
+<toolbar>
+	<item id="filter_text" type="buttonInput" value="Filter Text" width="60" title="input text here"/>
+</toolbar>

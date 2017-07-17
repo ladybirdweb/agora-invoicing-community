@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to popup</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#myToolbar {
+			margin: 10px;
+		}
+	</style>
+	<script>
+		var myToolbar;
+		var myPop;
+		var mySidebar;
+		function doOnLoad() {
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "myToolbar",
+				icons_path: "../../dhtmlxPopup/common/imgs/",
+				xml: "../../dhtmlxPopup/common/toolbar.xml",
+				onload: function() {
+					myToolbar.setItemText("workbut", "Sidebar");
+					myPop = new dhtmlXPopup({toolbar: myToolbar, id: "workbut"});
+					myPop.attachEvent("onShow", function(){
+						if (mySidebar == null) {
+							mySidebar = myPop.attachSidebar(400, 300, {
+								icons_path: "../common/icons_material/",
+								width: 130,
+								items: [
+									{id: "documents", text: "Documents", icon: "documents.png", selected: 1},
+									{id: "music", text: "Music", icon: "music.png"},
+									{id: "pictures", text: "Pictures", icon: "pictures.png"},
+									{id: "video", text: "Video", icon: "video.png"}
+								]
+							});
+						}
+					});
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myToolbar"></div>
+</body>
+</html>

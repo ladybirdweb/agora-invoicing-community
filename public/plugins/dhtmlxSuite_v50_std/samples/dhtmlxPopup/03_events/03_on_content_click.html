@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onContentClick</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#myToolbar {
+			margin: 10px;
+		}
+		#eLog {
+			position: relative;
+			height: 200px;
+			width: auto;
+			overflow: auto;
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin: 100px 10px 10px 10px;
+			padding: 2px;
+		}
+	</style>
+	<script>
+		
+		var myToolbar;
+		var myPop;
+		var eLog;
+		var eCount = 0;
+		
+		function doOnLoad() {
+			
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "myToolbar",
+				icons_path: "../common/imgs/",
+				xml: "../common/toolbar.xml",
+				onload: function() {
+					
+					myToolbar.setItemText("workbut", "List");
+					
+					myPop = new dhtmlXPopup({ toolbar: myToolbar, id: "workbut" });
+					
+					myPop.attachHTML("Click popup to trigger onContentClick event");
+					
+					myPop.attachEvent("onContentClick", function(){
+						logEvent("onContentClick");
+						myPop.hide();
+					});
+					
+				}
+			});
+			
+			eLog = document.getElementById("eLog");
+		}
+		
+		function logEvent(name, itemId, itemModel) {
+			eLog.innerHTML = (++eCount)+": event fired: "+name+"<br>"+eLog.innerHTML;
+			eLog.scrollTop = 0;
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myToolbar"></div>
+	<div id="eLog">
+		<br>Click on popup<br>
+	</div>
+</body>
+</html>

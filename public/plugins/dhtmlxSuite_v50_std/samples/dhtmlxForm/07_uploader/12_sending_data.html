@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Sending data</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../../../codebase/ext/swfobject.js"></script>
+	<style>
+		div#simpleLog {
+			width: 800px;
+			height: 200px;
+			font-family: Tahoma;
+			font-size: 11px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myForm, formData, logObj;
+		function doOnLoad() {
+			formData = [
+				{type: "fieldset", label: "Uploader", list:[
+					{type: "upload", name: "myFiles", inputWidth: 330, url: "php/dhtmlxform_item_upload.php", swfPath: "uploader.swf", swfUrl: "php/dhtmlxform_item_upload.php"}
+				]},
+				{type: "button", name: "send", value: "Send"}
+				
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			
+			myForm.attachEvent("onButtonClick", function(name){
+				if (name == "send") {
+					myForm.send("php/sending_data_script.php", function(loader, response){
+						logEvent("<pre>"+response+"</pre>");
+					});
+				}
+			});
+		}
+		function logEvent(t) {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML = t;
+		}
+		function clearLog() {
+			if (!logObj) logObj = document.getElementById("simpleLog");
+			logObj.innerHTML = "";
+		}		
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table>
+		<tr><td><div id="myForm"></div></td></tr>
+		<tr><td><br><input type="button" value="Clear List" onclick="myForm.setItemValue('myFiles',null);"></td></tr>
+		<tr><td><br><b>How to use</b><br>1) Upload some files<br>2) Click "Send" to send form data on server, you will see that files that were uploaded will passed on server<br>3) To clear files list - click "Clear List" button</td></tr>
+		<tr><td><br><b>Info</b><br>[name]_[r/s]_[ind] where "name" - form item name, r/s - real/server file name, ind - file index<br>myFiles_r_* - real file name<br>myFiles_s_* - server file name<br>myFiles_count - count of uploaded files</td></tr>
+		<tr><td><br><b>Log (<a href="javascript:void(0);" onclick="clearLog();">clear</a>)</b></td></tr>
+		<tr><td><div id="simpleLog"></div></td></tr>
+	</table>
+</body>
+</html>

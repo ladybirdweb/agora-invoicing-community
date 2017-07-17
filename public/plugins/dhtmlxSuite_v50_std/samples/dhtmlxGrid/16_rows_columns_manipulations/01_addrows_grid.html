@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add/Delete Rows in Grid</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Column A, Column B");
+			myGrid.setInitWidths("100,250");
+			myGrid.setColAlign("right,left");
+			myGrid.setColTypes("ro,ed");
+			myGrid.setColSorting("str,str");
+			myGrid.enableAutoWidth(true);
+			myGrid.init();
+			myGrid.load("../common/grid_16_rows_columns_manipulations.xml");
+		}
+		function add_r(){
+			var ind1=window.prompt('Value for the first cell','');
+			if (ind1 === null || typeof ind1 == "undefined") return;
+			var ind2=window.prompt('Value for the second cell','');
+			if (ind2 === null || typeof ind2 == "undefined") return;
+			//
+			myGrid.addRow(myGrid.uid(),[ind1,ind2],1);
+		}
+		function delete_r() {
+			var ind1=window.prompt('Row[index] to delete','0');
+			if (ind1 === null) return;
+			//
+			myGrid.deleteRow(myGrid.getRowId(ind1))
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Add/Delete Rows in Grid</h1>
+	<p>You are allowed to add rows to your grid any time you need by using API methods. You should  specify the position where the row should appear.<br>
+		Deleting row is easy as well:</p>
+	<table width="360px">
+		<tr>
+			<td>
+				<div id="gridbox" style="width:100%;height:400px;background-color:white;overflow:hidden"></div>
+			</td>
+		</tr>
+	</table>
+	<table width="375">
+		<tr>
+			<td>
+				<li><a href="#" onclick="add_r()">Add Row to the second position</a></li>
+				<li><a href="#" onclick="delete_r()">Delete Row by index</a></li>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

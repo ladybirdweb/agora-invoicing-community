@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to accordion</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			margin-top: 20px;
+			margin-left: 20px;
+			width: 360px;
+			height: 470px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var myAcc;
+		var mySidebar;
+		function doOnLoad() {
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				items: [
+					{id: "a1", text: "a"},
+					{id: "a2", text: "b"},
+					{id: "a3", text: "c"}
+				]
+			});
+			mySidebar = myAcc.cells("a1").attachSidebar({
+				width: 160,
+				icons_path: "../common/icons_material/",
+				json: "../common/sidebar.json"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="accObj"></div>
+</body>
+</html>

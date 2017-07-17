@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<toolbar>
+	<!-- regular item -->
+	<item id="info" type="text" text="dhtmlxToolbar Demo" title="Tooltip here">
+		<!-- userdata for item -->
+		<userdata name="my_data_name">my_data_value</userdata>
+		<userdata name="more_info">new_value</userdata>
+	</item>
+	<!-- hidden -->
+	<item id="info_hidden" type="text" text="dhtmlxToolbar Demo hidden" hidden="true"/>
+</toolbar>

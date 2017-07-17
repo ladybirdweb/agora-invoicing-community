@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myForm;
+		var myCombo;
+		function doOnLoad() {
+			var formData = [
+				{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 200},
+				{type: "label", label: "Simple init"},
+				{type: "combo", label: "From script", name: "audio", options:[
+					{text: "AAC", value: "AAC"},
+					{text: "AC3", value: "AC3", selected: true},
+					{text: "MP3", value: "MP3"},
+					{text: "FLAC", value: "FLAC"}
+				]},
+				{type: "combo", label: "From server", name: "consoles", connector: "../common/data_consoles.json"},
+				{type: "combo", label: "After init", name: "b2"},
+				//
+				{type: "label", label: "Filtering", offsetTop: 20},
+				{type: "combo", label: "On client", name: "country", connector: "../common/data_countries.json", filtering: true},
+				{type: "combo", label: "On server", name: "city", serverFiltering: "../common/complete_city.php", filterCache: true},
+				{type: "combo", label: "With sub-load", name: "random", serverFiltering: "../common/random_words.php", filterCache: true, filterSubLoad: true},
+				//
+				{type: "label", label: "Combo types", offsetTop: 20},
+				{type: "combo", label: "Image", name: "c2", connector: "../common/data_countries.json", filtering: true, comboType: "image", comboImagePath: "../common/flags/"},
+				{type: "combo", label: "Default Image", name: "airport", connector: "../common/data_airports.json", filtering: true, comboType: "image", comboImagePath: "../common/flags2/", comboDefaultImage: "flag_green.png", comboDefaultImageDis: "flag_gray.png"},
+				{type: "combo", label: "Checkbox", name: "book", connector: "../common/data2.json", filtering: true, comboType: "checkbox"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.getCombo("b2").load("../common/data2.json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Integration with Form</h3>
+	<div id="myForm" style="height:400px;"></div>
+</body>
+</html>

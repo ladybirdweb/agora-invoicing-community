@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onClick from init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#logs_here {
+			font-family: Tahoma;
+			font-size: 11px;
+			height: 150px;
+			border: 1px solid #cecece;
+			overflow: auto;
+			margin-top: 20px;
+		}
+	</style>
+	<script>
+		var myRibbon, i=0;
+		var data = {
+			parent: "ribbonObj",
+			icons_path: "../common/",
+			items: [
+				{type:'block', text:'Block 1', mode:'rows', list:[
+					{type:'button', text:'new' , img: "18/new.gif"},
+					{ type: 'slider', text: "slider 1", size: 50, 
+					  onclick: function(value) {
+						  setNoteToLog({
+								eventNme: "slider 1",
+								arg: [value]
+						  });
+					  }
+					},
+					{type: "newLevel"},
+					{type: "group", list: [
+							{type:'button', text:'open' , img: "18/open.gif"},
+							{ type: 'slider', text: "slider 1", size: 50,
+								onclick: function(value) {
+									setNoteToLog({
+										  eventNme: "slider 2",
+										  arg: [value]
+									});
+								}
+							}
+					]}
+				]},
+				{type:'block', text:'Block 2', mode:'cols', list:[
+					{ type: 'slider', text: "slider 1", size: 50,
+						onclick: function(value) {
+						  setNoteToLog({
+								eventNme: "slider 3",
+								arg: [value]
+						  });
+					  }
+					},
+					{ type: 'slider', size: 70, isbig: true, vertical: true,
+						onclick: function(value) {
+						  setNoteToLog({
+								eventNme: "slider 4",
+								arg: [value]
+						  });
+					  }
+					}
+				]}
+			]
+		};
+
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon(data);
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+
+		function setNoteToLog(data) {
+			var cont = document.getElementById("logs_here");
+			cont.innerHTML = "<div>"+ (++i)+") "+data.eventNme+" -- arguments: ["+data.arg.join(", ")+"]"+"</div>"+cont.innerHTML;
+		};
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div id="logs_here"></div>
+</body>
+</html>

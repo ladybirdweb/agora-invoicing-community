@@ -1,0 +1,14 @@
+{
+	"items" : [
+		{
+			"type":"block", "text":"office document", "list":[
+				{"type" : "group", "list" : [
+					{"id" : "check_box_1", "type":"checkbox", "text":"CheckBox 1"},
+					{"id":"check_box_4","type":"checkbox"}
+				]},
+				{"id" : "check_box_2", "type":"checkbox", "text":"CheckBox 2", "disable" : true },
+				{"id" : "check_box_3", "type":"checkbox", "text":"CheckBox 3", "checked" : true}
+			]
+		}
+	]
+}

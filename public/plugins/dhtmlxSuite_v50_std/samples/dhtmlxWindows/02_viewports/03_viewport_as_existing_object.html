@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Viewport as an existing object</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#vp_container {
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+		}
+		div#objId {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var dhxWins, w1;
+		function doOnLoad() {
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("vp_container");
+			
+			dhxWins.vp.style.border = "#dfdfdf 1px solid";
+			
+			w1 = dhxWins.createWindow("w1", 420, 50, 320, 200);
+			w1.button("close").disable();
+			w1.attachObject("objId");
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="vp_container" style="height: 400px;">
+		<div style="margin:10px;">
+			In this case dhtmlxWindows will use the existing object
+			<br>
+			on page as a viewport. This type of a viewport is used
+			<br>
+			to make elements in it selectable.
+			<br>
+			<br>
+			By default the viewport has no border. In our samples
+			<br>
+			we showed the border to specify the boundaries
+			<br>
+			in which the window is displayed on page,
+			<br>
+			i.e. we visualised the viewport.
+			<br>
+			<br>
+			<br>
+			<input type="text" value="check input">
+			<input type="button" value="click me">
+			<select><option>select</option></select>
+		</div>
+	</div>
+	<div id="objId" style="display: none;">
+		<div style="margin: 5px 8px;">
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</div>
+	</div>
+</body>
+</html>

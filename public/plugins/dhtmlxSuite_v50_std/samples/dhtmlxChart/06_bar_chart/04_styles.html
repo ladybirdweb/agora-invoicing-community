@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Styles</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart1, myBarChart2;
+		function doOnLoad() {
+			myBarChart1 =  new dhtmlXChart({
+				view:"bar",
+				container:"chart1",
+				value:"#sales#",
+				width:30,
+				color:"#7ed500",
+				gradient:"rising",
+				alpha:function(data){
+					return data.sales/90;
+				},
+				tooltip:{
+					template:"#sales#"
+				},
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(obj){
+						return (obj%20?"":obj)
+					}
+				},
+				padding:{
+					left: 30
+				},
+				border:0
+			});
+			myBarChart1.parse(dataset,"json");
+			myBarChart2 =  new dhtmlXChart({
+				view:"bar",
+				container:"chart2",
+				value:"#sales#",
+				label:"#sales#",
+				width:45,
+				color:"#color#",
+				tooltip:{
+					template:"#sales#"
+				},
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(obj){
+						return (obj%20?"":obj)
+					}
+				},
+				padding:{
+					left: 30
+				},
+				radius:0
+			});
+			myBarChart2.parse(dataset_colors,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Styles</h1>
+	<div id="chart1" style="width:600px;height:250px;border:1px solid #c0c0c0;"></div>
+	<div id="chart2" style="width:600px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

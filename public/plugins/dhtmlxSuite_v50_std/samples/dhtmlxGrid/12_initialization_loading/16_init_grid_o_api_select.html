@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Initialize object on page, through object based API - select box collections</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad() {
+			myGrid = new dhtmlXGridObject({
+				parent: 'gridbox',
+				columns: [{
+					label: "Column A",
+					width: 100,
+					type: "co",
+					options: {key_1:"first",key_2:"second",key_3:"third"}
+				},{
+					label: "Column B",
+					width: "*",
+					type: "co",
+					options: ["first","second","third"]
+				}],
+				multiselect: true,
+				xml: "../common/grid.xml"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Initialize object on page, through object based API - select box collections </h1>
+	<div id="gridbox" style="width:350px;height:300px;background-color:white;overflow:hidden"></div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<title>Grid linked to Combo</title>
+</head>
+
+<body>
+	<div id="combo_here1" style="width:600px; height:270px; background-color:white;"></div>
+	<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div>
+
+<script>
+	var list1 = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		datatype:"json"
+	});
+	list1.data.scheme({
+		$init:function(obj){
+			obj.value = obj.id;
+			obj.text = obj.Package;
+		}
+	});
+
+	dhtmlx.image_path = "../../..//dhtmlxCombo/codebase/imgs/";
+    combo1 = new dhtmlXCombo("combo_here1","combo1","100%");
+	combo1.sync(list1);
+
+	
+    mygrid = new dhtmlXGridObject('gridbox');
+	mygrid.setImagePath("../../../codebase/imgs/");
+	
+	mygrid.setHeader("Package,Maintainer");
+	mygrid.setColumnIds("Package,Maintainer");
+	mygrid.init();
+	mygrid.sync(list1);
+	mygrid.bind(combo1, function(data, filter){
+		return mygrid.cells(data, 0).getValue() == filter.text;
+	});
+	
+	
+
+</script>
+
+
+
+
+</body>
+</html>

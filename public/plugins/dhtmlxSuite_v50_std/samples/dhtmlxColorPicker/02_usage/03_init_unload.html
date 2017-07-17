@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Init / unload</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCP;
+		function doOnLoad() {
+			if (myCP != null) return;
+			myCP = new dhtmlXColorPicker({
+				parent: "cpObj",
+				closeable: false
+			});
+		};
+		
+		function doOnUnload() {
+			if (myCP != null) {
+				myCP.unload();
+				myCP = null;
+			}
+		};
+		
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<button onclick="doOnLoad();">init</button>
+	<button onclick="doOnUnload();">unload</button>
+	<div id="cpObj" style="position: relative; margin-top: 30px; height: 300px;"></div>
+</body>
+</html>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to layout</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 20px;
+			margin-left: 20px;
+			width: 600px;
+			height: 420px;
+		}
+	</style>
+	
+	<script>
+		var myCarousel, myLayout;
+		
+		function init() {
+			
+			myLayout = new dhtmlXLayoutObject("layoutObj", "2U");
+			myLayout.cells("a").setMinWidth(200);
+			
+			myCarousel = myLayout.cells("a").attachCarousel({
+				item_width: 240,
+				item_height: 280,
+				offset_item: 30,
+				offset_left: 30,
+				offset_top: 15
+			});
+			
+			for (var q=0; q<6; q++) {
+				var id = myCarousel.addCell();
+				myCarousel.cells(id).attachHTMLString("<div style='position: relative; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%;'>"+
+									"<img src='../common/imgs/"+(q+1)+".jpg' border='0' style='width: 100%; height: 100%;' ondragstart='return false;'></div>");
+			}
+		}
+		
+	</script>
+</head>
+<body onload="init();">
+	<div id="layoutObj"></div>
+	<div><br><br></div>
+</body>
+</html>

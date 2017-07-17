@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag-and-drop between DataView and Tree</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style type="text/css">
+		body{ -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;}
+	</style>
+	<script>
+		dhtmlx.compat("dnd");
+		var myDataView, myTree;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView({
+				container:"data_container1",
+				type:{
+					template:"#Package# : #Version#<br/>#Maintainer#",
+					padding:5,
+					height:50
+				},
+				drag:true,
+				select:true
+			});
+			myDataView.load("../common/data.xml");
+			myTree = new dhtmlXTreeObject("data_container2","100%","100%",0);
+			myTree.enableDragAndDrop(true);
+			myTree.setImagePath("../../../skins/web/imgs/dhxtree_web/");
+			myTree.load("../../dhtmlxTree/common/tree.xml");
+			//drag from tree into the dataview
+			myDataView.attachEvent("onBeforeDrop",function(context){
+				if (context.from == myTree){
+					this.add({
+						Package:context.from.getItemText(context.source),
+						Version:"1.0",
+						Maintainer:"not defined"
+					}, this.indexById(context.target||this.first()));
+					context.from.deleteItem(context.source);
+					return false;
+				}
+				return true;
+			});
+			//drag from dataview into the tree
+			myTree.attachEvent("onDrag",function(sid,tid,tindex, sobj,tobj){
+				if (sobj.object && sobj.object == myDataView){
+					if (tid != 0)
+						myTree.insertNewNext(tid, sid, myDataView.get(sid).Package );
+					else
+						myTree.insertNewChild(tid, sid, myDataView.get(sid).Package );
+					myDataView.remove(sid);
+					return false;
+				}
+				return true;
+			})
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Drag-and-drop between DataView and Tree</h1>
+	<table border="0" cellspacing="5" cellpadding="5">
+		<tr>
+			<td>
+				<div id="data_container1" style="border:1px solid #c0c0c0; background-color:white;width:240px;height:396px;"></div>
+			</td>
+			<td>
+			</td>
+			<td>
+				<div id="data_container2" style="border:1px solid #c0c0c0; background-color:white;width:350px;height:396px;"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

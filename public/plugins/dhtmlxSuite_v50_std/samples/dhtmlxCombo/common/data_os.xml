@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<complete>
+	<template>
+		<input><![CDATA[#name#]]></input>
+		<option><![CDATA[#name#, #vendor#]]></option>
+	</template>
+	<option value="1">
+		<text>
+			<name>MS-DOS</name>
+			<vendor>Microsoft</vendor>
+		</text>
+	</option>
+	<option value="2">
+		<text>
+			<name>Windows XP</name>
+			<vendor>Microsoft</vendor>
+		</text>
+	</option>
+	<option value="3" selected="true">
+		<text>
+			<name>Windows 8</name>
+			<vendor>Microsoft</vendor>
+		</text>
+	</option>
+	<option value="4">
+		<text>
+			<name>Mac OS</name>
+			<vendor>Apple</vendor>
+		</text>
+	</option>
+	<option value="5">
+		<text>
+			<name>OS X</name>
+			<vendor>Apple</vendor>
+		</text>
+	</option>
+</complete>

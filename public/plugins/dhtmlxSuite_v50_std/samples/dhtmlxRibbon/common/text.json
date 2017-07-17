@@ -1,0 +1,14 @@
+{
+	"items" : [
+		{
+			"type":"block", "text":"office document", "list":[
+				{"type" : "group", "list" : [
+					{"id" : "text_1", "type":"text", "text":"Text 1"},
+					{"id" : "text_4", "type":"text", "text":"Text 4"}
+				]},
+				{"id" : "text_2", "type":"text", "text":"Text 2"},
+				{"id" : "text_3", "type":"text", "text":"Text 3", "isbig" : true}
+			]
+		}
+	]
+}

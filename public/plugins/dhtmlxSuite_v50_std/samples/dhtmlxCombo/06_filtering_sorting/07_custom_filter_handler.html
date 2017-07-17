@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Filter on client</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCombo;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone", "combo", 230, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.load("../common/data_countries.json");
+			myCombo.setFilterHandler(function(mask, option){
+				var r = false;
+				if (mask.length == 0) {
+					r = true;
+				} else if (option.text.match(new RegExp("^"+mask,"i")) != null) {
+					r = true;
+				}
+				return r;
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Custom filter handler</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+</body>
+</html>

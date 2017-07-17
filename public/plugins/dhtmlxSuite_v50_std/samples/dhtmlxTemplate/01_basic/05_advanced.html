@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Advanced usage</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* main container */
+		#main_container {
+			width: 600px;
+			position: relative;
+			padding: 10px 0px;
+		}
+		#my_books_here {
+			position: relative;
+			width: 560px;
+			margin-top: 1px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		#my_mode_switchers {
+			position: relative;
+			width: 560px;
+			margin-bottom: 20px;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		#my_mode_switchers table td {
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+			font-size: 14px;
+		}
+		
+		/* templates */
+		div.tpl_grid {
+			display: inline-block;
+			position: relative;
+			background-color: white;
+			width: 185px;
+			border: 1px solid #dfdfdf;
+			margin-left: -1px;
+			margin-top: -1px;
+			padding-bottom: 14px;
+			opacity: 0.9;
+			z-index: 0;
+			transition: all 0.1s;
+			color: #666;
+		}
+		div.tpl_grid:hover,
+		div.tpl_details:hover {
+			border-color: #dfdfdf;
+			box-shadow: 0 0 12px rgba(0,0,0,0.1);
+			z-index: 1;
+			opacity: 1;
+			color: #444;
+		}
+		div.tpl_details {
+			position: relative;
+			width: 560px;
+			border: 1px solid #dfdfdf;
+			margin-left: -1px;
+			margin-top: -1px;
+			opacity: 0.9;
+			z-index: 0;
+			transition: all 0.1s;
+			color: #666;
+		}
+		div.tpl_details td {
+			text-align: left;
+			vertical-align: top;
+		}
+		div.tpl_details td.tpl_img {
+			width: 130px;
+			text-align: center;
+		}
+		div.tpl_details img.book_cover {
+			height: 120px;
+		}
+		div.tpl_details td.tpl_descr {
+			padding-top: 24px;
+		}
+		img.book_cover {
+			height: 150px;
+			margin: 10px;
+			padding: 2px;
+			border: 1px solid #f1f1f1;
+		}
+		div.tpl_str {
+			text-align: center;
+			font-family: Tahoma;
+			font-size: 12px;
+			line-height: 19px;
+		}
+		div.tpl_str span.tpl_value {
+			font-weight: bold;
+		}
+		div.tpl_details div.tpl_str {
+			text-align: left;
+		}
+	</style>
+	<script>
+		var lang = "en";
+		var labels = {
+			en: {author: "Author", title: "Title", cover: "Type of cover", pnum: "Number of pages", publr: "Publisher"},
+			ru: {author: "Автор", title: "Название", cover: "Переплет", pnum: "Количество страниц", publr: "Издательство"},
+			fr: {author: "Auteur", title: "Nom", cover: "Couverture", pnum: "Quantité des pages", publr: "Editeur"},
+			de: {author: "Autor", title: "Titel", cover: "Einband", pnum: "Seitenzahl", publr: "Verlag"},
+			es: {author: "Autor", title: "Tìtulo", cover: "Formatos", pnum: "Longitud", publr: "Editor"}
+		};
+		var icons = [
+			"../common/template-catch-22.jpg",
+			"../common/template-animal-farm.jpg",
+			"../common/template-cats-cradle.jpg"
+		];
+		var books = {
+			en: [
+				{author: "Joseph Heller", title: "Catch-22", cover: "Paperback", pnum: "544", publr: "Simon & Schuster", icon: icons[0]},
+				{author: "George Orwell", title: "Animal Farm", cover: "Hardcover", pnum: "144", publr: "Houghton Mifflin Harcourt", icon: icons[1]},
+				{author: "Kurt Vonnegut", title: "Cat’s Cradle", cover: "Paperback", pnum: "304", publr: "Dell Publishing", icon: icons[2]}
+			],
+			ru: [
+				{author: "Джозеф Хеллер", title: "Уловка-22", cover: "Мягкий", pnum: "544", publr: "Simon & Schuster", icon: icons[0]},
+				{author: "Джордж Оруэлл", title: "Скотный двор", cover: "Твердый", pnum: "144", publr: "Houghton Mifflin Harcourt", icon: icons[1]},
+				{author: "Курт Воннегут", title: "Колыбель для кошки", cover: "Мягкий", pnum: "304", publr: "Dell Publishing", icon: icons[2]}
+			],
+			fr: [
+				{author: "Joseph Heller", title: "Catch-22", cover: "Broché", pnum: "544", publr: "Simon & Schuster", icon: icons[0]},
+				{author: "George Orwell", title: "La Ferme des animaux", cover: "Poche", pnum: "144", publr: "Houghton Mifflin Harcourt", icon: icons[1]},
+				{author: "Kurt Vonnegut", title: "Le Berceau du chat", cover: "Broché", pnum: "304", publr: "Dell Publishing", icon: icons[2]}
+			],
+			de: [
+				{author: "Joseph Heller", title: "Falle 22", cover: "Taschenbuch", pnum: "544", publr: "Simon & Schuster", icon: icons[0]},
+				{author: "George Orwell", title: "Farm der Tiere", cover: "Gebundene Ausgabe", pnum: "144", publr: "Houghton Mifflin Harcourt", icon: icons[1]},
+				{author: "Kurt Vonnegut", title: "Katzenwiege", cover: "Taschenbuch", pnum: "304", publr: "Dell Publishing", icon: icons[2]}
+			],
+			es: [
+				{author: "Joseph Heller", title: "Trampa-22", cover: "Tapa blanda", pnum: "544", publr: "Simon & Schuster", icon: icons[0]},
+				{author: "George Orwell", title: "Rebelión en la granja", cover: "Tapa dura", pnum: "144", publr: "Houghton Mifflin Harcourt", icon: icons[1]},
+				{author: "Kurt Vonnegut", title: "Cuna de gato", cover: "Tapa blanda", pnum: "304", publr: "Dell Publishing", icon: icons[2]}
+			]
+		};
+		
+		window.dhx4.template.pair = function(text, key) {
+			var r = "";
+			if (key != null) r += "<span class='tpl_param'>"+labels[lang][key]+":</span> ";
+			return r+"<span class='tpl_value'>"+text+"</span>";
+		};
+		
+		var tpl_loaded = null;
+		var tpl_grid = '<div class="tpl_grid">'+
+					'<div class="tpl_str"><img src="#icon#" border="0" class="book_cover"></div>'+
+					'<div class="tpl_str">#author|pair#</div>'+
+					'<div class="tpl_str">#title|pair#</div>'+
+				'</div>';
+		
+		var tpl_details = '<div class="tpl_details">'+
+					'<table cellspacing="0" cellpadding="0" border="0"><tr>'+
+						'<td class="tpl_img"><img src="#icon#" border="0" class="book_cover"></td>'+
+						'<td class="tpl_descr">'+
+							'<div class="tpl_str">#author|pair:author#</div>'+
+							'<div class="tpl_str">#title|pair:title#</div>'+
+							'<div class="tpl_str">#cover|pair:cover#</div>'+
+							'<div class="tpl_str">#pnum|pair:pnum#</div>'+
+							'<div class="tpl_str">#publr|pair:publr#</div>'+
+						'</td>'+
+					'</tr></table>'+
+				'</div>';
+		
+		function doOnLoad() {
+			showBooks(tpl_grid);
+		}
+		
+		function showBooks(tpl) {
+			if (tpl == null) tpl = tpl_loaded; else tpl_loaded = tpl;
+			var html = "";
+			for (var q=0; q<books[lang].length; q++) html += window.dhx4.template(tpl, books[lang][q]);
+			document.getElementById("my_books_here").innerHTML = html;
+		}
+		
+		function setLang(newLang) {
+			lang = newLang;
+			showBooks();
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="main_container">
+		<div id="my_mode_switchers">
+			<table cellspacing="0" cellpadding="0" border="0" width="560px">
+				<tr><td align="left">
+					<input type="button" onclick="showBooks(tpl_grid);" value="grid">
+					<input type="button" onclick="showBooks(tpl_details);" value="details">
+				</td><td align="right">
+					<input type="button" onclick="setLang('en');" value="en">
+					<input type="button" onclick="setLang('ru');" value="ru">
+					<input type="button" onclick="setLang('fr');" value="fr">
+					<input type="button" onclick="setLang('de');" value="de">
+					<input type="button" onclick="setLang('es');" value="es">
+				</td><tr>
+			</table>
+		</div>
+		<div id="my_books_here"></div>
+	</div>
+</body>
+</html>

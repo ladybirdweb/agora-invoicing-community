@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ButtonSelect text</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myToolbar;
+		var sel;
+		function doOnLoad() {
+			sel = document.getElementById("sel");
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar_buttonselect.xml",
+				onload: updateList
+			});
+		}
+		function getId() {
+			var id = sel.options[sel.selectedIndex].value;
+			return id;
+		}
+		function setText(text) {
+			myToolbar.setItemText(getId(), document.getElementById("txt").value);
+		}
+		function getText() {
+			var text = myToolbar.getItemText(getId());
+			if (text == "") text = "This item has no text";
+			alert(text);
+		}
+		function updateList() {
+			sel.options.length = 0;
+			myToolbar.forEachItem(function(itemId){
+				if (myToolbar.getType(itemId) == "buttonSelect") {
+					sel.options.add(new Option(itemId, itemId));
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="toolbarObj"></div>
+	<div style="margin-top: 200px;">
+		<select id="sel">
+			<option value="history">History</option>
+			<option value="page_setup">Page</option>
+			<option value="print">Print</option>
+		</select>
+		<input type="button" value="Get Text" onclick="getText();">
+		<input type="button" value="Set Text" onclick="setText();">
+		<input id="txt" type="text" value="New Text">
+	</div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<title>Combos linked through DataStores</title>
+</head>
+
+<body>
+	<div id="combo_here1" style="width:600px; height:270px; background-color:white;"></div>
+	<div id="combo_here2" style="width:600px; height:270px; background-color:white;"></div>
+
+<script>
+	var list1 = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		datatype:"json"
+	});
+	list1.data.scheme({
+		$init:function(obj){
+			obj.value = obj.id;
+			obj.text = obj.Package;
+		}
+	});
+
+	var list2 = new dhtmlXDataStore({
+		url:"../common/data/data.json",
+		datatype:"json"
+	});
+	list2.data.scheme({
+		$init:function(obj){
+			obj.value = obj.id;
+			obj.text = obj.Package;
+		}
+	});
+	list2.bind(list1, function(data, filter){
+		return data.value == filter.value;
+	});
+	
+	dhtmlx.image_path = "../../../codebase/imgs/";
+    combo1 = new dhtmlXCombo("combo_here1","combo1","100%");
+    combo1.attachEvent("onSelectChange", function(id){
+    	list1.setCursor(id);
+    });
+	combo1.sync(list1);
+
+	combo2 = new dhtmlXCombo("combo_here2","combo1","100%");
+	combo2.sync(list2);
+
+</script>
+
+
+</body>
+</html>

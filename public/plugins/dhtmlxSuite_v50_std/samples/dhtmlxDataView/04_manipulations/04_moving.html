@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Moving items between DataViews</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myDataView1, myDataView2;
+		function doOnLoad() {
+			myDataView1 = new dhtmlXDataView({
+				container:"data_container1",
+				type:{
+					template:"#Package# : #Version#<br/>#Maintainer#",
+					height:50
+				},
+				select:true
+			});
+			myDataView1.load("../common/data.xml");
+			myDataView2 = new dhtmlXDataView({
+				container:"data_container2",
+				type:{
+					template:"#Package# : #Version#<br/>#Maintainer#",
+					height:50
+				},
+				select:true
+			});
+			//myDataView2.load("../common/myDataView2.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Moving items between DataViews</h1>
+	<table border="0" cellspacing="5" cellpadding="5">
+		<tr>
+			<td>
+				<div id="data_container1" style="border:1px solid #c0c0c0; background-color:white;width:400px;height:396px;"></div>
+			</td>
+			<td>
+				<input type="button" name="" value="move ->" onclick="myDataView1.move(myDataView1.getSelected(), 0, myDataView2)"><br>
+				<input type="button" name="" value="<- move" onclick="myDataView2.move(myDataView2.getSelected(), 0, myDataView1)">
+			</td>
+			<td>
+				<div id="data_container2" style="border:1px solid #c0c0c0; background-color:white;width:400px;height:396px;"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

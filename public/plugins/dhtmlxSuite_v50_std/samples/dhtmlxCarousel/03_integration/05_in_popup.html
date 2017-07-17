@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to popup</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#toolbarObj {
+			position: relative;
+		}
+	</style>
+	
+	<script>
+		var myCarousel, myPopup, myToolbar;
+		
+		function init() {
+			
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				items: [{type: "button", id: "test", text: "Carousel"}]
+			});
+			
+			myPopup = new dhtmlXPopup({toolbar: myToolbar, id: "test"});
+			myPopup.attachEvent("onShow", function(){
+				if (myCarousel == null) {
+					myCarousel = myPopup.attachCarousel(280, 370, {offset_item: 1, item_width: 278, item_height: 326});
+					for (var q=0; q<6; q++) {
+						var id = myCarousel.addCell();
+						myCarousel.cells(id).attachHTMLString("<div style='position: relative; left: 0px; top: 0px; overflow: hidden; width: 100%; height: 100%;'>"+
+											"<img src='../common/imgs/"+(q+1)+".jpg' border='0' style='width: 100%; height: 100%;' ondragstart='return false;'></div>");
+					}
+				}
+			});
+		}
+		
+	</script>
+</head>
+<body onload="init();">
+	<div style="position: relative; height: 500px;">
+		<div id="toolbarObj"></div>
+	</div>
+	<div><br><br></div>
+</body>
+</html>

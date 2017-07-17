@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to tabbar</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#tabbarObj {
+			position: relative;
+			margin-top: 20px;
+			margin-left: 20px;
+			width: 600px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var myTabbar;
+		var mySidebar;
+		function doOnLoad() {
+			myTabbar = new dhtmlXTabBar({
+				parent: "tabbarObj",
+				tabs: [
+					{id: "a1", text: "Tab 1", active: 1},
+					{id: "a2", text: "Tab 2"},
+					{id: "a3", text: "Tab 3"},
+				]
+			});
+			mySidebar = myTabbar.tabs("a1").attachSidebar({
+				width: 160,
+				icons_path: "../common/icons_material/",
+				json: "../common/sidebar.json"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="tabbarObj"></div>
+</body>
+</html>

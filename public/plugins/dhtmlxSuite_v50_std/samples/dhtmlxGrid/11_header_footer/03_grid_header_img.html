@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Using images in header</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.enableHeaderImages(true);
+			myGrid.setHeader("../common/column_a.gif,../common/column_b.gif");
+			myGrid.setInitWidths("*,*");
+			myGrid.setColAlign("right,left");
+			myGrid.setColTypes("ro,ed");
+			myGrid.setColSorting("int,str");
+			myGrid.init();
+			myGrid.load("../common/grid.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Using images in header</h1>
+	<p>dhtmlxGrid allows using images for column headers formating. In this case you can specify different images for column header, sorted in ascending and descending way.</p>
+	<div id="gridbox" style="width:350px;height:350px;background-color:white;overflow:hidden"></div>
+	<br>
+	<strong>Some notes about using images as column headers:</strong>
+	<li>create two additional images for sorting (asc,desc) using original image name as follows:</li>
+	<ul type="square">
+		<li>original: column_a.gif</li>
+		<li>asc: column_a.asc.gif</li>
+		<li>desc: column_a.des.gif</li>
+	</ul>
+	<li>Take into account that IE and Mozilla count the width of cell differently (ie: with border, mozilla: without)</li>
+	<li>Put all (three per column) images in grid images folder.</li>
+</body>
+</html>

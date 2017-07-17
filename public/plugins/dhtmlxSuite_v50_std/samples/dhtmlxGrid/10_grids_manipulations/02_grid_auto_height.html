@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Auto height</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Column A, Column B");
+			myGrid.setInitWidths("150,250");
+			myGrid.setColAlign("right,left");
+			myGrid.setColTypes("ro,ed");
+			myGrid.setColSorting("int,str");
+			myGrid.enableAutoHeight(true,400);
+			myGrid.enableAutoWidth(true);
+			myGrid.init();
+			myGrid.load("../common/grid.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Auto height</h1>
+	<p>If auto height mode is swicthed on grid expands  to prevent vertical scrolling, and shrinks not to occupy external place.</p>
+	<table width="700px">
+		<tr>
+			<td>
+				<div id="gridbox" style="width:350px; height:270px; background-color:white;overflow:hidden"></div>
+			</td>
+			<td valign='top'>
+				<a href="javascript:void(0)" onClick="myGrid.addRow((new Date()).valueOf(),[0,'','','',false,'na',false,''],myGrid.getRowIndex(myGrid.getSelectedId()))">Add row</a><br>
+				<a href="javascript:void(0)" onClick="myGrid.deleteSelectedItem()">Remove Selected Row</a><br>
+				Turn AutoHeight <a href="javascript:void(0)" onClick="myGrid.enableAutoHeight(true)">On</a>/
+				<a href="javascript:void(0)" onClick="myGrid.enableAutoHeight(false)">Off</a>
+			</td>
+		</tr>
+		<tr>
+		</tr>
+	</table>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Series</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart =  new dhtmlXChart({
+				view:"bar",
+				container:"chart1",
+				value:"#sales#",
+				color: "#58dccd",
+				gradient:"rising",
+				width:20,
+				tooltip:{
+					template:"#sales#"
+				},
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					step:10,
+					end:100
+				},
+				legend:{
+					values:[{text:"A",color:"#58dccd"},{text:"B",color:"#a7ee70"},{text:"Expected",color:"#36abee",markerType: "item"}],
+					valign:"middle",
+					align:"right",
+					width:90,
+					layout:"y"
+				}
+			});
+			myBarChart.addSeries({
+				value:"#sales2#",
+				color:"#a7ee70",
+				tooltip:{
+					template:"#sales2#"
+				}
+			});
+			myBarChart.addSeries({
+				//offset:0,
+				view: "line",
+				item:{
+					radius:0
+				},
+				line:{
+				  color:"#36abee"
+				},
+				value:"#sales3#",
+				tooltip:{
+					template:"#sales3#"
+				}
+			});
+			myBarChart.parse(multiple_dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chart1" style="width:900px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

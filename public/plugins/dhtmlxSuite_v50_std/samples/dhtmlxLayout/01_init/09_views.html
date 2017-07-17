@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Views</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 600px;
+			height: 400px;
+		}
+		/* attached */
+		h3.some_header {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+		div.some_text {
+			padding-left: 10px;
+			padding-right: 10px;
+			font-size: 14px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+	</style>
+	<script>
+		
+		var myLayout;
+		var myGrid;
+		var myTree;
+		var myMenu;
+		var myToolbar;
+		
+		function doOnLoad() {
+			
+			myLayout = new dhtmlXLayoutObject({parent: "layoutObj", pattern: "3L"});
+			
+			// by the default "def" view used, when layout is loaded
+			// this view also loaded, so just init
+			
+			myGrid = myLayout.cells("a").attachGrid();
+			myGrid.load("../common/grid.xml");
+			
+			myMenu = myLayout.cells("a").attachMenu({
+				icons_path: "../../dhtmlxMenu/common/imgs/",
+				xml: "../../dhtmlxMenu/common/dhxmenu.xml"
+			});
+		}
+		
+		function showView(view) {
+			
+			var firstShow = myLayout.cells("a").showView(view);
+			
+			// view became visible first time, loading content
+			if (firstShow) {
+			
+				if (view == "tree") {
+					
+					myTree = myLayout.cells("a").attachTree();
+					myTree.setImagePath("../../../skins/web/imgs/dhxtree_web/");
+					myTree.load("../common/tree.xml");
+					
+					myToolbar = myLayout.cells("a").attachToolbar({
+						icons_path: "../../dhtmlxToolbar/common/imgs/",
+						xml: "../../dhtmlxToolbar/common/dhxtoolbar_button.xml"
+					});
+				}
+				
+				if (view == "url") {
+					myLayout.cells("a").attachURL("../../dhtmlxWindows/common/test_page_1.html", true);
+				}
+			}
+		}
+		
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+	<div style="margin-top: 100px;">
+		<input type="button" value="Grid" onclick='showView("def");'>
+		<input type="button" value="Tree" onclick='showView("tree");'>
+		<input type="button" value="URL" onclick='showView("url");'>
+		
+	</div>
+</body>
+</html>

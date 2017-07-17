@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxAccordion</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var myAcc, myAccInside, myAccInside2;
+		function doOnLoad() {
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				icons_path: "../common/icons/",
+				items: [
+					{ id: "a1", text: "Main Page", icon: "flag_red.png" },
+					{ id: "a2", text: "Navigation", icon: "flag_green.png" },
+					{ id: "a3", text: "Feedback", icon: "flag_blue.png"}
+				]
+			});
+			myAccInside = myAcc.cells("a1").attachAccordion({
+				items: [
+					{id: "a1", text: "a-1 (inside)"},
+					{id: "a2", text: "a-2 (inside)"}
+				]
+			});
+			myAccInside2 = myAcc.cells("a2").attachAccordion({
+				multi_mode: 1,
+				items: [
+					{id: "b1", text: "b-1 (inside)"},
+					{id: "b2", text: "b-2 (inside)"}
+				]
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="accObj"></div>
+</body>
+</html>

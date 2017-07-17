@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Tooltips</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.tooltip_here label {
+			border-bottom: 1px dashed #c0c0c0;
+		}
+	</style>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 130, inputWidth: 160},
+				{type: "label", label: "New project"},
+				{type: "input", label: "Project Name", value: "My Project", className: "tooltip_here", tooltip: "Enter your Project Name here"},
+				{type: "input", label: "Project Description", value: ""},
+				{type: "input", label: "E-mail", name: "email", value: "", className: "tooltip_here", tooltip: "Please enter your valid e-mail address"},
+				{type: "input", label: "Confirm e-mail", value: ""},
+				{type: "checkbox", label: "<label>Permanent E-mail</label>", className: "tooltip_here", tooltip: "Use this email as permanent e-mail address to contact me"},
+				{type: "button", value: "Submit"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.enableLiveValidation(true);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>Tooltips are set to: Project Name, E-mail, Permanent E-mail, just move mouse over label and wait a moment.</div>
+	<div id="myForm" style="height:510px;"></div>
+</body>
+</html>

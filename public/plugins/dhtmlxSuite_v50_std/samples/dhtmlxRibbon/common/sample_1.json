@@ -1,0 +1,49 @@
+{
+	"tabs" : [
+		{
+			"id" : "tab_1",
+			"text" : "main",
+			"active" : true,
+			"items" : [
+				{ 
+					"type":"block", "text":"office document", "list":[
+						{"id" : "open", "type":"button", "text":"Open", "isbig" : true, "img" : "48/open.gif"},
+						{"id" : "print","type":"button", "text":"Quick<br />print" , "img" : "48/printer.png", "isbig" : true},
+						{"id" : "preview","type":"button", "text":"Print<br />preview", "img" : "48/zoom_selection.png", "isbig" : true}
+					]
+				},
+				{
+					"type":"block", "text":"edit", "list":[
+						{"id" : "copy", "type":"button", "text":"copy", "img" : "48/copy.gif", "isbig" : true },
+						{"id" : "find", "type":"button", "text":"find" , "img" : "48/page_find.png", "isbig" : true },
+						{"id" : "go_to", "type":"button", "text":"go to" , "img" : "48/tab_go.png", "isbig" : true }
+					]
+				},
+				{
+					"type":"block", "text":"page setup", "list":[
+						{"id" : "page_setup", "type":"button", "text":"page<br />setup", "img" : "48/pencil_ruler.png", "isbig" : true },
+						{"id" : "printing_area", "type":"button", "text":"printing<br />area" , "img" : "48/printer_add.png", "isbig" : true }
+					]
+				},
+				{
+					"type":"block", "text":"window", "list":[
+						{"id" : "change_window", "type":"button", "text":"change<br />window", "img" : "48/application_cascade.png", "isbig" : true }
+					]
+				}
+			]
+		},
+		{
+			"id" : "tab_2",
+			"text" : "text",
+			"items" : [
+				{ 
+					"type":"block", "list":[
+						{"id" : "bold", "type":"buttonTwoState", "text":"bold", "img" : "18/text_bold.png"},
+						{"id" : "italis","type":"buttonTwoState", "text":"italic" , "img" : "18/text_italic.png" },
+						{"id" : "strikethrough","type":"buttonTwoState", "text":"strikethrough", "img" : "18/text_strikethroungh.png" }
+					]
+				}
+			]
+		}
+	]
+}

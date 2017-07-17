@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onClick from init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#logs_here {
+			font-family: Tahoma;
+			font-size: 11px;
+			height: 150px;
+			border: 1px solid #cecece;
+			overflow: auto;
+			margin-top: 20px;
+		}
+	</style>
+	<script>
+		var myRibbon, i=0;
+		var data = {
+			parent: "ribbonObj",
+			icons_path: "../common/",
+			items: [
+				{type:'block', text:'Buttons', mode:'cols', list:[
+					{id: "new", type:'button', text:'New', isbig: true, img: "48/new.gif",
+						onclick: function(id) {
+							setNoteToLog({
+								eventNme: "onClick",
+								arg: [id]
+							});
+						}
+					},
+					{id: "copy", type:'button', text:'copy' , img: "18/copy.gif",
+						onclick: function(id) {
+							setNoteToLog({
+								eventNme: "onClick",
+								arg: [id]
+							});
+						}
+					},
+					{id: "cut", type:'buttonTwoState', text:'cut', img: "18/cut.gif",
+						onclick: function(id, state) {
+							setNoteToLog({
+								eventNme: "onClick",
+								arg: [id,state]
+							});
+						}
+					}
+				]}
+			]
+		};
+
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon(data);
+		};
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+
+		function setNoteToLog(data) {
+			var cont = document.getElementById("logs_here");
+			cont.innerHTML = "<div>"+ (++i)+") "+data.eventNme+" -- arguments: ["+data.arg.join(", ")+"]"+"</div>"+cont.innerHTML;
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div id="logs_here"></div>
+</body>
+</html>

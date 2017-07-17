@@ -1,0 +1,115 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+.dhx_tooltip {
+	display: none;
+	position: absolute;
+	font-family: Arial, Helvetica;
+	color: #626262;
+	font-size: 13px;
+	z-index: 10000;
+	padding: 4px 10px 4px 10px;
+	border: 1px solid #fff;
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	-moz-box-shadow: 0 0 3px #d9d9d9;
+	-webkit-box-shadow: 0 0 3px #d9d9d9;
+	text-shadow: 0px 1px 1px #fff;
+	box-shadow: 0 0 5px #d9d9d9;
+	background: -webkit-gradient(linear,left top,left bottom,color-stop(0,#efefef),color-stop(0.5,#f6f6f6),color-stop(1,#efefef));
+	background: -o-linear-gradient(#efefef 0%,#f6f6f6 50%,#efefef 100%);
+	background: -ms-linear-gradient(#efefef 0%,#f6f6f6 50%,#efefef 100%);
+	background: -moz-linear-gradient(#efefef 0%,#f6f6f6 50%,#efefef 100%);
+	background: #efefef;
+}
+.dhx_noselect {
+	-moz-user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+}
+.dhx_allow_selection {
+	-moz-user-select: text;
+	-user-select: text;
+}
+.dhx_dataview {
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	overflow-x: hidden;
+	-moz-user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-select: none;
+}
+.dhx_drag_zone {
+	position: absolute;
+	border: 1px solid #A4BED4;
+	z-index: 8000;
+	-moz-box-shadow: 5px 5px 5px #888;
+	-khtml-box-shadow: 5px 5px 5px #888;
+}
+.dhx_dataview_default_item,
+.dhx_dataview_default_item_selected {
+	cursor: pointer;
+	background-color: #ffffff;
+}
+.dhx_dataview .dhx_dataview_default_item,
+.dhx_dataview .dhx_dataview_default_item_selected {
+	border-right: 1px solid #cccccc;
+	border-bottom: 1px dotted #cccccc;
+}
+.dhx_dataview_default_item_selected {
+	background-color: #fff3a1;
+	color: #fff3a1;
+	border-color: #fff3a1;
+	background-repeat: repeat-x;
+}
+.dhx_dataview_item {
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+}
+.dhx_dataview_item .dhx_strong {
+	font-weight: bold;
+	display: block;
+	padding-bottom: 6px;
+}
+.dhx_dataview_default_item_selected .dhx_light {
+	color: #C3C3C3;
+}
+.dhx_dataview_item .dhx_light {
+	color: #919191;
+}
+.dhx_drag_over {
+	background-color: #faf768;
+	background-image: url("../imgs/dhxdataview_terrace/marker.png");
+	background-repeat: repeat-x;
+}
+.dhx_pager_item,
+.dhx_pager_item_selected {
+	float: left;
+	text-align: center;
+	height: 16px;
+	font-family: Arial, Helvetica;
+	font-size: 10pt;
+	border: 1px solid gray;
+	padding: 2px 4px;
+	margin-left: 5px;
+	cursor: pointer;
+	background-color: white;
+}
+.dhx_pager_item_selected {
+	background-color: lightgrey;
+	color: white;
+	cursor: default;
+	font-weight: bold;
+}

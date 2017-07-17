@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Icons size</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myToolbar;
+		var tbIconSize = null;
+		var tbSkin = "material";
+		var tbXML = "dhxtoolbar_button.xml";
+		var loadData = {};
+		function doOnLoad() {
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				skin: tbSkin
+			});
+			myToolbar.attachEvent("onXLE", function(){
+				loadData.toolbar = true;
+			});
+			loadToolbar(18);
+		}
+		function setSkin(skin) {
+			if (tbSkin == skin) return;
+			if (!checkLoadState()) return;
+			myToolbar.clearAll();
+			myToolbar.setSkin(skin);
+			tbSkin = skin;
+			loadToolbar(tbIconSize);
+		}
+		function loadToolbar(size) {
+			if (!checkLoadState()) return;
+			loadData.toolbar = false;
+			myToolbar.clearAll();
+			myToolbar.setIconSize(size);
+			myToolbar.setIconsPath("../common/icon_size/"+tbSkin+"/"+size+"/");
+			myToolbar.loadStruct("../common/"+tbXML);
+			tbIconSize = size;
+		}
+		function setXML(xml) {
+			if (!checkLoadState()) return;
+			loadData.toolbar = false;
+			tbXML = xml;
+			myToolbar.clearAll();
+			myToolbar.loadStruct("../common/"+tbXML);
+		}
+		function checkLoadState() {
+			var s = true;
+			for (var a in loadData) s = s&&loadData[a];
+			return s;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="padding-bottom: 10px;">
+		<input type="button" value="18" onclick="loadToolbar(18);">
+		<input type="button" value="24" onclick="loadToolbar(24);">
+		<input type="button" value="32" onclick="loadToolbar(32);">
+		<input type="button" value="48" onclick="loadToolbar(48);">
+		&nbsp;&nbsp;&nbsp;
+		<input type="button" value="skyblue" onclick="setSkin('dhx_skyblue');">
+		<input type="button" value="web" onclick="setSkin('dhx_web');">
+		<input type="button" value="terrace" onclick="setSkin('dhx_terrace');">
+		<input type="button" value="material" onclick="setSkin('material');">
+		&nbsp;&nbsp;&nbsp;
+		<input type="button" value="with labels" onclick="setXML('dhxtoolbar_button.xml');">
+		<input type="button" value="without labels" onclick="setXML('dhxtoolbar_button2.xml');">
+	</div>
+	<div style="height: 350px;"><div id="toolbarObj"></div></div>
+</body>
+</html>

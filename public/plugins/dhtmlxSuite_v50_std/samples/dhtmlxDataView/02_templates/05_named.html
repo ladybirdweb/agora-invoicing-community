@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Named templates</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		dhtmlx.Type.add(dhtmlXDataView,{
+			name:"dataA",
+			template:"#Package# : #Version#<br/>#Maintainer#",
+			height:75
+		});
+		dhtmlx.Type.add(dhtmlXDataView,{
+			name:"dataB",
+			template:"#Package#",
+			height:40
+		});
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView({
+				container:"data_container",
+				type:"dataA"
+			});
+			myDataView.load("../common/data.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Named templates</h1>
+	<div id="data_container" style="border:1px solid #c0c0c0; background-color:white;width:596px;height:396px;"></div>
+	<input type="button" name="" value="Template A" onclick="myDataView.define('type','dataA')">
+	<input type="button" name="" value="Template B" onclick="myDataView.define('type','dataB')">
+</body>
+</html>

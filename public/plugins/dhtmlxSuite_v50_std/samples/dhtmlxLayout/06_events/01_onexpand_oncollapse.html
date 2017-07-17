@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onCollapse / onExpand events</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 700px;
+			height: 600px;
+		}
+		div.info {
+			margin: 0px 10px;
+			font-weight: bold;
+			font-size: 15px;
+			color: #3b5e7c;
+		}
+		div#logsHere {
+			position: relative;
+			height: 100px;
+			border: #dfdfdf 1px solid;
+			padding: 4px;
+			margin: 30px 10px 10px 10px;
+			font-size: 14px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var mainLayout, layout2E;
+		function doOnLoad() {
+			mainLayout = new dhtmlXLayoutObject({
+				parent: "layoutObj",
+				pattern: "5H"
+			});
+			mainLayout.forEachItem(function(cell){
+				cell.setText("mainLayout ["+cell.getId()+"]");
+			});
+			mainLayout.attachEvent("onCollapse", function(id){
+				writeLog("event onCollapse called for mainLayout, cell "+id);
+			});
+			mainLayout.attachEvent("onExpand", function(id){
+				writeLog("event onExpand called for mainLayout, cell "+id);
+			});
+			// second layout
+			layout2E = mainLayout.cells("c").attachLayout("2U");
+			layout2E.forEachItem(function(cell){
+				cell.setText("layout2E ["+cell.getId()+"]");
+			});
+			layout2E.attachEvent("onCollapse", function(id){
+				writeLog("event onCollapse called for layout2E, cell "+id);
+			});
+			layout2E.attachEvent("onExpand", function(id){
+				writeLog("event onExpand called for layout2E, cell "+id);
+			});
+		}
+		function writeLog(text) {
+			document.getElementById("logsHere").innerHTML += "<br>"+text;
+			document.getElementById("logsHere").scrollTop = document.getElementById("logsHere").scrollHeight;
+		}
+		function doOnUnload() {
+			if (mainLayout != null && mainLayout.unload != null) {
+				mainLayout.unload();
+				mainLayout = layout2E = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div class="info">
+		<div class="info_title">onCollapse / onExpand</div>
+	</div>
+	<div id="layoutObj"></div>
+	<div id="logsHere">logs</div>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Setting custom attributes</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales, Book Title, Author");
+			myGrid.setInitWidths("100,250,*");
+			myGrid.setColAlign("right,left");
+			myGrid.setColTypes("ed,ed,ed");
+			myGrid.setColSorting("int,str");
+			myGrid.enableAutoWidth(true);
+			myGrid.enableAutoHeight(true);
+			myGrid.init();
+			myGrid.setSerializationLevel(false,true);
+			myGrid.load("../common/grid_attr.xml");
+		}
+		function addAttribute(){
+			var val = document.getElementById('val').value;
+			var txt = document.getElementById('txt').value;
+			if (!val) return;
+			addAttrToSelect(val);
+			//add attribute
+			myGrid.setRowAttribute(myGrid.getSelectedId(),val,txt);
+			//register attribute for serialization
+			myGrid.xml.row_attrs.push(val);
+		}
+		function showAttribute(){
+			alert(myGrid.getRowAttribute(myGrid.getSelectedId(),document.getElementById('sel').value));
+		}
+		function addAttrToSelect(value){
+			 var z = document.createElement('option');
+			 z.value=value;
+			 z.appendChild(document.createTextNode(value)) ;
+			 document.getElementById("sel").appendChild(z);
+			 z.selected = true;
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Setting custom attributes</h1>
+	<p>Grid allows to set custom attributes for rows by the xml or using setRowAttribute grid method. To get attributes use getRowAttribute method.</p>
+	<table>
+		<tr>
+			<td valign="top">
+				<select id="sel">
+					<option value="price">price</option>
+					<option value="date">date of publication</option>
+				</select>
+				<input type="button" name="a2" value="show attribute" onclick="showAttribute();" />
+			</td>
+		</tr>
+		<tr>
+			<td  valign="top">
+				<div id="gridbox" style="width:600px; height:350px; background-color:white;"></div>
+			</td>
+		</tr>
+		<tr>
+			<td valign="top">
+				Name: <input type="text" id="val" size="18"> Value: <input type="text" id="txt" size="18">&nbsp;
+				<input type="button" name="a2" value="add attribute to selected" onclick="addAttribute();" />
+			</td>
+		</tr>
+	</table>
+	<a href="javascript:void(0)" onclick="myGrid.xml.row_attrs.push('price');myGrid.xml.row_attrs.push('date');alert(myGrid.serialize())">serialize</a>
+</body>
+</html>

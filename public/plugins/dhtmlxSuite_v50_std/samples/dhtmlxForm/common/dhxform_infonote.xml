@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<items>
+	<item type="settings" position="label-left" labelWidth="130" inputWidth="250" noteWidth="250"/>
+	<item type="label" label="Init from XML" labelWidth="auto"/>
+	<item type="input" name="prj_name" label="Project Name" value="My Project" tooltip="Enter your Project Name here" required="true" info="true">
+		<note>Enter your project name here. This fields is required</note>
+	</item>
+	<item type="input" name="prj_descr" label="Project Description" value="My project is great!" rows="3">
+		<note>Enter your project description. It should reflect your project basic purposes. This fields is not required but also important.</note>
+	</item>
+	<item type="input" name="email" label="E-mail" value="" tooltip="Please enter your valid e-mail address" validate="ValidEmail" required="true">
+		<note>Your valid email address to complete registartion. You will receive account activating instructions on this email.</note>
+	</item>
+	<item type="input" name="email2" label="Confirm e-mail" value="" validate="ValidEmail" required="true">
+		<note>Confirm your valid email address just to be sure it correct.</note>
+	</item>
+	<item type="select" name="acc_type" label="Account type" info="true" required="true">
+		<note><![CDATA[Specify type of account you need. Information regarding account features can be found <a href='javascript:void(0);' style='color:gray;'>here</a>]]></note>
+		<option text="Free limited account" value="free"/>
+		<option text="Standard functionality" value="std" selected="true"/>
+		<option text="Standard+ functionality" value="stdplus"/>
+		<option text="Full-featured account" value="full"/>
+	</item>
+	<item type="calendar" dateFormat="%Y-%m-%d %H:%i" name="valid_until" label="Valid Until" value="2014-01-01 02:35" enableTime="true" calendarPosition="right" info="true">
+		<note>Please specify date your project will valid until for</note>
+	</item>
+	<item type="checkbox" name="email_perm" label="Permanent E-mail" info="true" tooltip="Use this email as permanent e-mail address to contact me">
+		<note>Mark this checkbox if you want to use this email account as permanent email address to contact you.</note>
+	</item>
+	<item type="button" value="Submit"/>
+</items>

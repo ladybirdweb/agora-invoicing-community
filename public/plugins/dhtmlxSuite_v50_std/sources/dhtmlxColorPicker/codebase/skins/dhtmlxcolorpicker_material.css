@@ -1,0 +1,324 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: material
+	include extra file: skins/material.less
+*/
+
+@keyframes dhx_loader_rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes dhx_loader_dash {
+	0% {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px;
+	}
+	100% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -124px;
+	}
+}
+.dhtmlxcp_material {
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxcp_material * {
+	line-height: normal;
+}
+.dhtmlxcp_material.dhxcp_shadow div.dhxcp_g_area {
+	border-width: 1px 0px 0px 0px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.dhtmlxcp_material div.dhxcp_g_area {
+	position: absolute;
+	width: 235px;
+	height: 262px;
+	background-color: white;
+	border: 1px solid #dfdfdf;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area {
+	width: 235px;
+	height: 262px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area {
+	padding-bottom: 2px;
+	width: 235px;
+	height: 122px;
+	margin: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_color_selector {
+	position: absolute;
+	width: 210px;
+	height: 120px;
+	background-image: url("../imgs/dhxcp_material/dhxcp_colors.png");
+	background-repeat: no-repeat;
+	cursor: pointer;
+	float: left;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_color_selector div.dhxcp_h_line {
+	width: 210px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_color_selector div.dhxcp_v_line {
+	position: absolute;
+	width: 0px;
+	height: 120px;
+	border-left: 1px solid white;
+	cursor: pointer;
+	overflow: hidden;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_contrast_area {
+	position: relative;
+	height: 120px;
+	width: 24px;
+	cursor: pointer;
+	float: right;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_contrast_area div.dhxcp_ie_gradient {
+	height: 120px;
+	width: 24px;
+	margin: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_contrast_area div.dhxcp_h_line {
+	width: 24px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_color_area div.dhxcp_h_line {
+	position: absolute;
+	height: 0px;
+	border-top: 1px solid white;
+	cursor: pointer;
+	overflow: hidden;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area {
+	position: relative;
+	padding: 0px 14px;
+	width: auto;
+	height: 78px;
+	margin: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area div.dhxcp_value_cont {
+	height: 78px;
+	float: left;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area div.dhxcp_value_cont div.dhxcp_value_color {
+	margin-top: 5px;
+	width: 52px;
+	height: 48px;
+	border: 1px solid #dfdfdf;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area div.dhxcp_value_cont input.dhxcp_value {
+	width: 54px;
+	margin-top: 3px;
+	line-height: 1em;
+	border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color: #dfdfdf;
+	background-color: white;
+	padding: 3px 3px 3px 3px;
+	text-align: left;
+	font: inherit;
+	font-size: 13px;
+	outline: none !important;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area div.dhxcp_value_cont input.dhxcp_value:focus {
+	border-bottom-color: #3399cc;
+	border-bottom-width: 2px;
+	padding-bottom: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont {
+	position: absolute;
+	right: 14px;
+	top: 4px;
+	border: none;
+	border-spacing: 0px;
+	width: 130px;
+	height: 78px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont .dhxcp_label_hsl,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont .dhxcp_label_rgb {
+	text-align: right;
+	padding: 0px 7px 0px 0px;
+	font: inherit;
+	font-size: 13px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont td.dhxcp_input_hsl,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont td.dhxcp_input_rgb {
+	width: 28px;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+	font: inherit;
+	vertical-align: top;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont input.dhxcp_input_hsl,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont input.dhxcp_input_rgb {
+	width: 26px;
+	margin-top: 2px;
+	line-height: 1em;
+	border-width: 0px 0px 1px 0px;
+	border-style: solid;
+	border-color: #dfdfdf;
+	background-color: white;
+	padding: 3px 3px 3px 3px;
+	text-align: left;
+	font: inherit;
+	font-size: 13px;
+	outline: none !important;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont input.dhxcp_input_hsl:focus,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_input_area table.dhxcp_inputs_cont input.dhxcp_input_rgb:focus {
+	border-bottom-color: #3399cc;
+	border-bottom-width: 2px;
+	padding-bottom: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_g_memory_area {
+	display: none;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area {
+	position: relative;
+	width: auto;
+	height: 32px;
+	padding: 0px 14px;
+	text-align: right;
+	margin-top: 18px;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_save,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_cancel {
+	height: 32px;
+	line-height: 22px;
+	margin: 0 2px;
+	padding-left: 12px;
+	padding-right: 12px;
+	overflow: hidden;
+	text-align: center;
+	outline: none !important;
+	border: none !important;
+	background-color: white;
+	font-weight: 500;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #3399cc;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_save:hover,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_cancel:hover {
+	background-color: #ededed;
+}
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_save:active,
+.dhtmlxcp_material div.dhxcp_g_area div.dhxcp_sub_area div.dhxcp_buttons_area button.dhx_button_cancel:active {
+	background-color: #e1e1e1;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory {
+	height: 315px !important;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area {
+	height: 315px !important;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_buttons_area {
+	margin-top: 0px;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area {
+	position: relative;
+	display: block;
+	height: 60px;
+	padding: 0px 14px;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_button_cont {
+	position: relative;
+	width: auto;
+	height: 24px;
+	margin-top: 14px;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_button_cont button.dhxcp_save_to_memory {
+	width: 100%;
+	height: 24px;
+	margin: 0px;
+	outline: none !important;
+	border: none !important;
+	background-color: white;
+	font-weight: 500;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #3399cc;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_button_cont button.dhxcp_save_to_memory:hover {
+	background-color: #ededed;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_button_cont button.dhxcp_save_to_memory:active {
+	background-color: #e1e1e1;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_button_cont button.dhxcp_save_to_memory div.dhxcp_label_bm {
+	display: inherit;
+	width: 90px;
+	margin: 0 auto;
+	height: 16px;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_els_cont {
+	position: relative;
+	width: auto;
+	height: 25px;
+	margin-top: 3px;
+	text-align: center;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_els_cont a.dhxcp_memory_el {
+	width: 21px;
+	height: 20px;
+	background-color: #ffffff;
+	border: 1px solid #dfdfdf;
+	display: inline-block;
+	margin-right: 2px;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_els_cont a.dhxcp_memory_el.dhxcp_memory_el_select {
+	border: 1px dashed black !important;
+}
+.dhtmlxcp_material div.dhxcp_g_area.dhxcp_add_memory div.dhxcp_sub_area div.dhxcp_g_memory_area div.dhxcp_memory_els_cont a.dhxcp_memory_el.dhxcp_memory_el_next {
+	border: 1px dashed red !important;
+}
+.dhxcp_colorBox {
+	float: right;
+}
+.dhxcp_colorInput {
+	float: left;
+}
+.dhxcp_frm {
+	position: absolute;
+	background-color: white;
+	width: 256px;
+	height: 274px;
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.dhxcolorpicker_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 40px;
+	height: 10px;
+	overflow: hidden;
+}

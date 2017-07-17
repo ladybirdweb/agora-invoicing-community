@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Required flag</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 90, inputWidth: 140},
+				{type: "input", name: "name", label: "Full Name", value: "James Belop"},
+				{type: "input", name: "addr", label: "Address", value: "22 Acacia Avenue"},
+				{type: "checkbox", name: "lic", label: "I agree with terms and conditions", required: true, position: "label-right", labelWidth: "auto", offsetTop: 20},
+				{type: "button", name: "validate", value: "Validate", offsetTop: 20, offsetLeft: 45}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm.attachEvent("onButtonClick", function(name){
+				if (name == "validate") {
+					myForm.validate();
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div>
+		enable required for:
+		<a href='javascript:void(0);' onclick='myForm.setRequired("name",true);'>name</a>
+		<a href='javascript:void(0);' onclick='myForm.setRequired("addr",true);'>address</a>
+		<a href='javascript:void(0);' onclick='myForm.setRequired("lic",true);'>license</a>
+	</div>
+	<div>
+		disable required for:
+		<a href='javascript:void(0);' onclick='myForm.setRequired("name",false);'>name</a>
+		<a href='javascript:void(0);' onclick='myForm.setRequired("addr",false);'>address</a>
+		<a href='javascript:void(0);' onclick='myForm.setRequired("lic",false);'>license</a>
+	</div>
+	<div id="myForm" style="height:500px;margin-top: 50px;"></div>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to custom object</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myPop;
+		
+		function showPopup(inp) {
+			if (!myPop) {
+				myPop = new dhtmlXPopup();
+				myPop.attachHTML("You can enter some text into here");
+			}
+			if (myPop.isVisible()) {
+				myPop.hide();
+			} else {
+				var x = window.dhx4.absLeft(inp);
+				var y = window.dhx4.absTop(inp);
+				var w = inp.offsetWidth;
+				var h = inp.offsetHeight;
+				myPop.show(x,y,w,h);
+			}
+		}
+		
+		function hidePopup() {
+			if (myPop) myPop.hide();
+		}
+	</script>
+</head>
+<body>
+	<input type="text" onclick="showPopup(this);" onblur="hidePopup();" value="click">
+</body>
+</html>

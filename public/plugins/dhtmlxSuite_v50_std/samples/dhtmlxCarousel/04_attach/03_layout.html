@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxLayout</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#carouselObj {
+			position: relative;
+			margin-top: 20px;
+			margin-left: 20px;
+			width: 350px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+		}
+	</style>
+	<script>
+		var myCarousel;
+		var myLayout;
+		function doOnLoad() {
+			myCarousel = new dhtmlXCarousel({
+				parent: "carouselObj",
+				item_width: "auto",
+				item_height: "auto",
+				offset_item: 45,
+				offset_left: 30,
+				offset_top: 15
+			});
+			for (var q=0; q<=2; q++) {
+				var id = myCarousel.addCell();
+				if (q == 0) {
+					myLayout = myCarousel.cells(id).attachLayout("2E");
+				} else {
+					myCarousel.cells(id).attachURL("../common/test_pages/test_page_"+q+".html", true);
+				}
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="carouselObj"></div>
+	<div><br><br></div>
+</body>
+</html>

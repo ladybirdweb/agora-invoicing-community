@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Message</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+	dhtmlx.message({
+		text: "Test Message",
+		expire: -1
+	})
+	</script>
+	<script type="text/javascript">
+	dhtmlx.message({
+		type: "error",
+		text: "Test Error Message",
+		expire: -1
+	})
+	</script>
+	<input type='button' value='message' onclick='dhtmlx.message("You have pressed the button!")'> 
+	<input type='button' value='styled message' onclick='dhtmlx.message({ type:"error", text:"You have pressed the <br> CRITICAL button!" })'> 
+</body>
+</html>

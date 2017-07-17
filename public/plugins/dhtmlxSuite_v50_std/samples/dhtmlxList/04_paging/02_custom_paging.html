@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom paging</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.paging_text {
+			font-family: Tahoma;
+			font-size: 10pt;
+			float: left;
+			padding: 3px 10px 0px 10px;
+		}
+	</style>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<script>
+		var myList;
+		function doOnLoad() {
+			myList = new dhtmlXList({
+				container:"data_container",
+				template:"<span class='dhx_strong'>#name#</span>#address# <br/><span class='dhx_light'>#city#</span>",
+				type:{ height: 80 }
+			});
+			pager = myList.define("pager",{
+				container:"paging_here",
+				size:20
+			});
+			myList.load("../common/list.xml");
+		}
+		function setType(mode){
+			var new_one = "";
+			switch(mode){
+				case "a":
+					new_one="{common.pages()}";
+					break;
+				case "b":
+					new_one="{common.first()}{common.pages()}{common.last()}";
+					break;
+				case "c":
+					new_one="{common.prev()}<div class='paging_text'>Page {common.page()} from #limit#</div>{common.next()}";
+					break;
+			}
+			pager.define("template",new_one);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Custom paging</h1>
+	<div id="data_container" class="list_demo_samples"></div>
+	<div id="paging_here" style="width:320px;height:46px; "></div>
+	<div>
+		<a href="javascript:void(0)" onclick='setType("a");'>Paging template A</a><br />
+		<a href="javascript:void(0)" onclick='setType("b");'>Paging template B</a><br />
+		<a href="javascript:void(0)" onclick='setType("c");'>Paging template C</a><br />
+	</div>
+</body>
+</html>

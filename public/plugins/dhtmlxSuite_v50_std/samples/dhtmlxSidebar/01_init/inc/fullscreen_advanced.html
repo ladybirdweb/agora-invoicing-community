@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DHTMLX Explorer</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/dhtmlx.css"/>
+	<script src="../../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* important for proper init */
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			padding: 0px;
+			overflow: hidden;
+			background-color: #fcfff5;
+		}
+		/* header */
+		div.my_header {
+			padding-bottom: 1px;
+		}
+		div.my_header div.text_block {
+			height: 50px;
+			line-height: 44px;
+			font-size: 28px;
+			color: #199BC6;
+			margin-left: 5px;
+			padding-left: 86px;
+			background-image: url("../../common/dhx-logo.png");
+			background-repeat: no-repeat;
+			background-position: center left;
+		}
+		/* footer */
+		div.my_footer {
+			padding-top: 4px;
+		}
+		div.my_footer div.text_block {
+			padding: 5px 10px;
+			height: 21px;
+			line-height: 21px;
+			text-align: center;
+		}
+		div.text_block {
+			padding: 5px 10px;
+			font-family: "Lucida Grande","Lucida Sans Unicode","Lucida Sans",Geneva,Verdana,sans-serif;
+			font-size: 12px;
+			color: #333;
+		}
+		div.text_block a {
+			font: inherit;
+			color: inherit;
+			margin: 0px 4px;
+			text-decoration: none!important;
+			border-bottom: 1px dotted #555;
+		}
+		/* sidebar shadow */
+		div.dhxsidebar_cont {
+			box-shadow: 0 2px 7px rgba(0, 0, 0, 0.1);
+		}
+		/* change toolbar's bottom_4px color to body's */
+		.dhxsidebar_base_material div.dhxcelltop_toolbar {
+			background-color: inherit;
+			z-index: 1;
+		}
+	</style>
+	<script>
+		var mySidebar;
+		var myToolbar;
+		var loginPopup;
+		var loginForm;
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: document.body,
+				icons_path: "../../common/icons_material/",
+				width: 160,
+				json: "../../common/sidebar.json",
+				offsets: {
+					top: 6,
+					left: 12,
+					right: 12,
+					bottom: 6
+				}
+			});
+			mySidebar.attachHeader("my_logo");
+			mySidebar.attachFooter("my_copy");
+			myToolbar = mySidebar.attachToolbar({
+				icons_size: 18,
+				icons_path: "../../common/toolbar_18/",
+				json: "../../common/toolbar_18.json",
+				onload: function() {
+					loginPopup = new dhtmlXPopup({toolbar: myToolbar, id: "login"});
+					loginPopup.attachEvent("onShow", function(){
+						if (loginForm == null) {
+							loginForm = loginPopup.attachForm([
+								{type: "block", blockOffset: 0, width: 280, list: [
+									{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 130, offsetLeft: 20},
+									{type: "input", label: "E-mail", name: "email"},
+									{type: "password", label: "Password", name: "pwd"},
+									{type: "checkbox", label: "Remember me", checked: 1},
+									{type: "button", value: "Login", offsetLeft: 164, name: "proceed"}
+								]}
+							], (dhx4.isIE6||dhx4.isIE7?280:null));
+						}
+					});
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<!-- header -->
+	<div id="my_logo" class="my_header">
+		<div class="text_block">Explorer</div>
+	</div>
+	<!-- footer -->
+	<div id="my_copy" class="my_footer">
+		<div class="text_block">
+			<a href="#">Help</a>
+			<a href="#">Contact Us</a>
+			<a href="#">Send Feedback</a>
+			<a href="#">Privacy Terms</a>
+			&copy; 2015 DHTMLX
+		</div>
+	</div>
+</body>
+</html>

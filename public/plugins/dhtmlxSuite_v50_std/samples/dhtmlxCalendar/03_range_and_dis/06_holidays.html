@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Holidays</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myCalendar;
+		function doOnLoad() {
+			myCalendar = new dhtmlXCalendarObject("calendarHere");
+			myCalendar.hideTime();
+			myCalendar.show();
+			myCalendar.setDate("2011-06-24");
+			myCalendar.setHolidays("2011-06-23,2011-06-24,2011-06-25,2011-06-26,2011-06-27,2011-06-28,2011-06-29,2011-06-30,2011-07-01,2011-07-02,2011-07-03,2011-07-04");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="calendarHere" style="position:relative;height:350px;"></div>
+</body>
+</html>

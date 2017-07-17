@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='iso-8859-1'?>
+<tree id="0">
+	<item radio="1" text="Books" id="books" open="1" call="1" select="1">
+		<pathstart id="path1" color="red" width="3" mode="dashed"/>
+		<pathstart id="path2" color="green" />
+		<item nocheckbox="1" text="Mystery &amp; Thrillers" id="mystery">
+			<item nocheckbox="1" text="Lawrence Block" id="lb">
+				<item nocheckbox="1" text="All the Flowers Are Dying" id="lb_1"/>
+				<item nocheckbox="1" text="The Burglar on the Prowl" id="lb_2"/>
+				<item nocheckbox="1" text="The Plot Thickens" id="lb_3"/>
+				<item nocheckbox="1" text="Grifter's Game" id="lb_4"/>
+				<item nocheckbox="1" text="The Burglar Who Thought He Was Bogart" id="lb_5"/>
+			</item>
+			<item nocheckbox="1" text="Robert Crais" id="rc">
+				<item nocheckbox="1" text="The Forgotten Man" id="rc_1"/>
+				<item nocheckbox="1" text="Stalking the Angel" id="rc_2"/>
+				<item nocheckbox="1" text="Free Fall" id="rc_3"/>
+				<item nocheckbox="1" text="Sunset Express" id="rc_4"/>
+				<item nocheckbox="1" text="Hostage" id="rc_5"/>
+			</item>
+			<item nocheckbox="1" text="Ian Rankin" id="ir"></item>
+			<item nocheckbox="1" text="James Patterson" id="jp"></item>
+			<item nocheckbox="1" text="Nancy Atherton" id="na"></item>
+		</item>
+		<item nocheckbox="1" text="History" id="history">
+			<item nocheckbox="1" text="John Mack Faragher" id="jmf"></item>
+			<item nocheckbox="1" text="Jim Dwyer" id="jd"></item>
+			<item nocheckbox="1" text="Larry Schweikart" id="ls"></item>
+			<item nocheckbox="1" text="R. Lee Ermey" id="rle"></item>
+		</item>
+		<item nocheckbox="1" text="Horror" id="horror" open="1">
+			<item nocheckbox="1" text="Stephen King" id="sk"></item>
+			<item nocheckbox="1" text="Dan Brown" id="db">
+				<item nocheckbox="1" text="Angels &amp; Demons" id="db_1"/>
+				<item nocheckbox="1" text="Deception Point" id="db_2"/>
+				<item path_end="path1" nocheckbox="1" text="Digital Fortress" id="db_3">
+					<pathend id="path1" />
+				</item>
+				<item nocheckbox="1" text="The Da Vinci Code" id="db_4"/>
+				<item nocheckbox="1" text="Deception Point" id="db_5"/>
+			</item>
+			<item nocheckbox="1" text="Mary Janice Davidson" id="mjd"></item>
+			<item path_end="path2" nocheckbox="1" text="Katie Macalister" id="km">
+				<pathend id="path2" />
+			</item>
+		</item>
+		<item nocheckbox="1" text="Science Fiction &amp; Fantasy" id="fantasy">
+			<item nocheckbox="1" text="Audrey Niffenegger" id="af"></item>
+			<item nocheckbox="1" text="Philip Roth" id="pr"></item>
+		</item>
+		<item nocheckbox="1" text="Sport" id="sport">
+			<item nocheckbox="1" text="Bill Reynolds" id="br"></item>
+		</item>
+		<item open="1" text="Teens" id="teens">
+			<item nocheckbox="1" text="Joss Whedon" id="jw">
+				<item text="Astonishing X-Men" id="jw_1"/>
+				<item text="Joss Whedon: The Genius Behind Buffy" id="jw_2"/>
+				<item text="Fray" id="jw_3"/>
+				<item text="Tales Of The Vampires" id="jw_4"/>
+				<item text="The Harvest" id="jw_5"/>
+			</item>
+			<item text="Meg Cabot" id="mc"></item>
+			<item text="Garth Nix" id="gn"></item>
+			<item text="Ann Brashares" id="ab"></item>
+		</item>
+	</item>
+	<item nocheckbox="1" text="Magazines" id="magazines">
+		<item nocheckbox="1" text="Sport" id="mag_sp"></item>
+	</item>
+</tree> 

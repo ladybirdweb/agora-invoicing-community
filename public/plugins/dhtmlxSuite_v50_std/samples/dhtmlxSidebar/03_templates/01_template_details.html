@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Template [details]</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var mySidebar;
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/icons_material/",
+				width: 160,
+				items: [
+					{id: "recent", text: "Recent", icon: "recent.png", selected: true},
+					{id: "desktop", text: "Desktop", icon: "desktop.png"},
+					{id: "downloads", text: "Downloads", icon: "downloads.png"},
+					{type: "separator"},
+					{id: "documents", text: "Documents", icon: "documents.png"},
+					{id: "music", text: "Music", icon: "music.png"},
+					{id: "pictures", text: "Pictures", icon: "pictures.png"},
+					{id: "video", text: "Video", icon: "video.png"},
+					{type: "separator"},
+					{id: "disk_c", text: "Windows (C:)", icon: "disk_c.png"},
+					{id: "disk_d", text: "Data (D:)", icon: "disk_d.png"},
+					{id: "disk_e", text: "DVD RW (E:)", icon: "disk_e.png"}
+				]
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+</body>
+</html>

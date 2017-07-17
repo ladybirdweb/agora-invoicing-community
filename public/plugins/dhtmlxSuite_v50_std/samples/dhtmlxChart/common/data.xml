@@ -1,0 +1,18 @@
+<data>
+	<item id='01'>
+		<sales>35</sales><year>'07</year>
+	</item>
+	<item id='11'>
+		<sales>50</sales><year>'08</year>
+	</item>
+	<item id='21'>
+		<sales>65</sales><year>'09</year>
+	</item>
+	<item id='31'>
+		<sales>30</sales><year>'10</year>
+	</item>
+	<item id='41'>
+		<sales>45</sales><year>'11</year>
+	</item>
+</data>
+

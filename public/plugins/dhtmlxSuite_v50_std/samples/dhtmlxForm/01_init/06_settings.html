@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Settings</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm;
+		var t = {"labelWidth":false,"labelAlign":false,"inputWidth":false};
+		function initForm() {
+			var formData = [
+				{type: "settings", position: "label-left", labelWidth: 100, inputWidth: 120},
+				{type: "input", label: "Login", value: "login"},
+				{type: "password", label: "Password", value: "123"},
+				{type: "checkbox", label: "Remember me", checked: true}
+			];
+			for (var a in t) {
+				if (!t[a]) t[a] = document.getElementById(a);
+				formData[0][a] = t[a].options[t[a].selectedIndex].value;
+				if (!isNaN(parseInt(formData[0][a]))) formData[0][a] = parseInt(formData[0][a]);
+			}
+			if (myForm) myForm.unload();
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="initForm();">
+	<table>
+		<tr>
+			<td>label Width:</td>
+			<td><select id="labelWidth"><option value="100">100</option><option value="150">150</option><option value="200">200</option></select></td>
+		</tr>
+		<tr>
+			<td>Label Align:</td>
+			<td><select id="labelAlign"><option value="left">left</option><option value="center">center</option><option value="right">right</option></select></td>
+		</tr>
+		<tr>
+			<td>Input Width:</td>
+			<td><select id="inputWidth"><option value="100">100</option><option value="150">150</option><option value="200">200</option></select></td>
+		</tr>
+	</table>
+	<br><br>
+	<input type="button" value="Init Form" onclick="initForm();">
+	<br><br><br><br>
+	<div id="myForm" style="height:120px;"></div>
+</body>
+</html>

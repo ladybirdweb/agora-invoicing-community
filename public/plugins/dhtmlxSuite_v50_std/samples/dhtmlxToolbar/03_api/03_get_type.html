@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Get item type</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var sel;
+		var myToolbar;
+		function doOnLoad(){
+			sel = document.getElementById("sel");
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/"
+			});
+			myToolbar.loadStruct("../common/dhxtoolbar.xml", function(){
+				myToolbar.forEachItem(function(id){
+					sel.options.add(new Option(id, id))
+				});
+			});
+		}
+		function getType() {
+			var id = sel.options[sel.selectedIndex].value;
+			alert(myToolbar.getType(id));
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 150px;">
+		<div id="toolbarObj"></div>
+	</div>
+	<select id="sel"></select> <input type="button" value="Get Type" onclick="getType();">
+</body>
+</html>

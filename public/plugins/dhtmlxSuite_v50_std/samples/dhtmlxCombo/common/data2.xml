@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<complete>
+	<option value="the_adventures_of_tom_sawyer"><![CDATA[The Adventures of Tom Sawyer]]></option>
+	<option value="the_dead_zone"><![CDATA[The Dead Zone]]></option>
+	<option value="the_first_men_in_the_moon"><![CDATA[The First Men in the Moon]]></option>
+	<option value="the_girl_who_loved_tom_gordon"><![CDATA[The Girl Who Loved Tom Gordon]]></option>
+	<option value="the_green_mile"><![CDATA[The Green Mile]]></option>
+	<option value="the_invisible_man" selected="1"><![CDATA[The Invisible Man]]></option>
+	<option value="the_island_of_doctor_moreau" checked="1"><![CDATA[The Island of Doctor Moreau]]></option>
+	<option value="the_prince_and_the_pauper" checked="1"><![CDATA[The Prince and the Pauper]]></option>
+	<option value="the_running_man"><![CDATA[The Running Man]]></option>
+	<option value="the_talisman"><![CDATA[The Talisman]]></option>
+	<option value="the_time_machine"><![CDATA[The Time Machine]]></option>
+	<option value="the_tommyknockers"><![CDATA[The Tommyknockers]]></option>
+	<option value="the_war_of_the_worlds"><![CDATA[The War of the Worlds]]></option>
+</complete>

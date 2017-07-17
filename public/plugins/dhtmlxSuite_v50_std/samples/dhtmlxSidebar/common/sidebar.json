@@ -1,0 +1,14 @@
+{items: [
+	{id: "recent", text: "Recent", icon: "recent.png", selected: true},
+	{id: "desktop", text: "Desktop", icon: "desktop.png"},
+	{id: "downloads", text: "Downloads", icon: "downloads.png"},
+	{type: "separator"},
+	{id: "documents", text: "Documents", icon: "documents.png"},
+	{id: "music", text: "Music", icon: "music.png"},
+	{id: "pictures", text: "Pictures", icon: "pictures.png"},
+	{id: "video", text: "Video", icon: "video.png"},
+	{type: "separator"},
+	{id: "disk_c", text: "Windows (C:)", icon: "disk_c.png"},
+	{id: "disk_d", text: "Data (D:)", icon: "disk_d.png"},
+	{id: "disk_e", text: "DVD RW (E:)", icon: "disk_e.png"}
+]}

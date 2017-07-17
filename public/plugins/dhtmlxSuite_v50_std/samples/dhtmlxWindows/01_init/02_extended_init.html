@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Extended init</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var dhxWins;
+		function doOnLoad() {
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+		}
+		var idPrefix = 1;
+		function createWindow() {
+			var p = 0;
+			dhxWins.forEachWindow(function(){p++;});
+			if (p>5) {
+				alert("Too many windows");
+				return;
+			}
+			var id = "userWin "+(idPrefix++);
+			//
+			var w = Number(document.getElementById("win_w").value);
+			var h = Number(document.getElementById("win_h").value);
+			var x = Number(document.getElementById("win_x").value);
+			var y = Number(document.getElementById("win_y").value);
+			//
+			var win = dhxWins.createWindow(id, x, y, w, h);
+			win.setText(document.getElementById("win_t").value);
+			//
+			// extended
+			if (!document.getElementById("win_resize").checked) { win.denyResize(); }
+			if (!document.getElementById("win_move").checked) { win.denyMove(); }
+			if (!document.getElementById("win_park").checked) { win.denyPark(); }
+			if (document.getElementById("win_close").checked) { win.button("close").disable(); }
+			if (document.getElementById("win_help").checked) { win.button("help").show(); }
+			if (document.getElementById("win_stick").checked) { win.button("stick").show(); }
+			//
+			document.getElementById("win_x").value = x+50;
+			document.getElementById("win_y").value = y+40;
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div>
+		<table>
+			<tr>
+				<td>Input Position (x,y)</td>
+				<td><input id="win_x" type="text" style="width: 30px;" value="20"> <input id="win_y" type="text" style="width: 30px;" value="30"></td>
+			</tr>
+			<tr>
+				<td>Input Size (width, height)</td>
+				<td><input id="win_w" type="text" style="width: 30px;" value="320"> <input id="win_h" type="text" style="width: 30px;" value="200"></td>
+			</tr>
+			<tr>
+				<td>Input Header Text</td>
+				<td><input id="win_t" type="text" style="width: 150px;" value="New dhtmlxWindow"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="middle" style="padding-top: 10px;"><u>Extended Features</u></td>
+			</tr>
+			<tr>
+				<td>Allow Resizing</td>
+				<td><input id="win_resize" type="checkbox" checked></td>
+			</tr>
+			<tr>
+				<td>Allow Moving</td>
+				<td><input id="win_move" type="checkbox" checked></td>
+			</tr>
+			<tr>
+				<td>Allow Parking</td>
+				<td><input id="win_park" type="checkbox" checked></td>
+			</tr>
+			<tr>
+				<td>Disable Closing</td>
+				<td><input id="win_close" type="checkbox" checked></td>
+			</tr>
+			<tr>
+				<td>Show "Help" Button</td>
+				<td><input id="win_help" type="checkbox"></td>
+			</tr>
+			<tr>
+				<td>Show "Stick" Button</td>
+				<td><input id="win_stick" type="checkbox"></td>
+			</tr>
+			<tr>
+				<td colspan="2" align="center" style="padding-top: 10px;"><input type="button" value="Create Window" onclick="createWindow();"></td>
+			</tr>
+		</table>
+	</div>
+	<div id="winVP" style="position: relative; height: 500px; border: #cecece 1px solid; margin: 10px;">
+		<select style="margin-left: 100px;margin-top:50px;">
+			<option>I'm bad in IE</option>
+		</select>
+	</div>
+</body>
+</html>

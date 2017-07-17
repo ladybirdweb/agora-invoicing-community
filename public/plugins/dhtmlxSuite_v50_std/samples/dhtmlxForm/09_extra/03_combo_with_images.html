@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Combo with images</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		td.p2 {
+			padding-left: 50px;
+		}
+	</style>
+	<script>
+		var myForm, myForm2, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 150, inputWidth: 160},
+				{type: "label", label: "Init from JSON", labelWidth: "auto"},
+				{type: "combo", label: "Combo with images", name: "country", comboType: "image", comboImagePath: "../common/imgs_combo/", options: [
+					{value: "denmark", img: "denmark.png", text: "Denmark"},
+					{value: "finland", img: "finland.png", text: "Finland", selected: true},
+					{value: "germany", img: "germany.png", text: "Germany"},
+					{value: "italy", img: "italy.png", text: "Italy"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+			myForm2 = new dhtmlXForm("myForm2");
+			myForm2.loadStruct("../common/dhxform_combo_images.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table>
+		<tr>
+			<td valign="top"><div id="myForm" style="height:400px;"></div></td>
+			<td valign="top" class="p2"><div id="myForm2" style="height:400px;"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

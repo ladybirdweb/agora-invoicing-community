@@ -1,0 +1,129 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: material
+	include extra file: skins/material.less
+*/
+
+@keyframes dhx_loader_rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes dhx_loader_dash {
+	0% {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px;
+	}
+	100% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -124px;
+	}
+}
+.dhtmlxslider_material {
+	z-index: 0;
+}
+.dhtmlxslider_material .dhxsl_hidden {
+	display: none;
+}
+.dhtmlxslider_material .dhxsl_container {
+	position: relative;
+	float: left;
+	clear: left;
+	margin: 0px;
+	padding: 1px;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxslider_material .dhxsl_container.dhxsl_cont_hr {
+	margin-top: 4px;
+}
+.dhtmlxslider_material .dhxsl_container.dhxsl_cont_vr {
+	margin-left: 4px;
+}
+.dhtmlxslider_material .dhxsl_runner {
+	position: absolute;
+	background-color: #3399cc;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-ms-touch-action: none;
+	z-index: 1;
+	border-radius: 50%;
+	width: 12px;
+	height: 12px;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+.dhtmlxslider_material .dhxsl_runner.dhxsl_runner_actv {
+	z-index: 2;
+}
+.dhtmlxslider_material .dhxsl_runner_dis {
+	background-color: #dfdfdf;
+	border: 1px solid white;
+	width: 10px;
+	height: 10px;
+}
+.dhtmlxslider_material .dhxsl_track {
+	background-color: #dfdfdf;
+	overflow: hidden;
+	position: relative;
+	margin: 0px;
+	padding: 0px;
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-ms-touch-action: none;
+}
+.dhtmlxslider_material .dhxsl_track div.dhxsl_track_bg {
+	position: absolute;
+	font-size: 1px;
+	overflow: hidden;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhtmlxslider_material .dhxsl_cont_vr .dhxsl_track {
+	height: 100%;
+	width: 2px;
+}
+.dhtmlxslider_material .dhxsl_cont_vr .dhxsl_track div.dhxsl_track_bg {
+	left: 0px;
+	width: 100%;
+}
+.dhtmlxslider_material .dhxsl_cont_hr .dhxsl_track {
+	width: 100%;
+	height: 2px;
+}
+.dhtmlxslider_material .dhxsl_cont_hr .dhxsl_track div.dhxsl_track_bg {
+	top: 0px;
+	height: 100%;
+}
+.dhxslider_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 40px;
+	height: 10px;
+	overflow: hidden;
+}

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Keep window in viewport</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+		div#objId {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var dhxWins, w1;
+		function doOnLoad() {
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			
+			w1 = dhxWins.createWindow("w1", 20, 30, 320, 200);
+			w1.button("close").disable();
+			w1.keepInViewport(true);
+			w1.attachObject("objId");
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+	<div id="objId" style="display: none;">
+		<div style="margin: 5px 8px;">
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</div>
+	</div>
+</body>
+</html>

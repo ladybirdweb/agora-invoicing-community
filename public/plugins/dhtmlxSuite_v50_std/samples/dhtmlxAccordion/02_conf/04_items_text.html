@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Items Text Manipulation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+	</style>
+	<script>
+		var sel;
+		var myAcc;
+		function doOnLoad() {
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				items: [
+					{id: "a1", text: "Cell a1"},
+					{id: "a2", text: "Cell a2"},
+					{id: "a3", text: "Cell a3"}
+				]
+			});
+			sel = document.getElementById("sel");
+			myAcc.forEachItem(function(item){sel.options.add(new Option(item.getText(),item.getId()));});
+		}
+		function getId() {
+			var id = sel.options[sel.selectedIndex].value;
+			return id;
+		}
+		function setText() {
+			myAcc.cells(getId()).setText(document.getElementById("newText").value);
+		}
+		function getText() {
+			alert(myAcc.cells(getId()).getText());
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="accObj" style="position: relative; width: 320px; height: 400px;"></div>
+	<div style="margin: 50px 0px 20px 0px;">
+		Select Item <select id="sel"></select>
+		New Text <input id="newText" type="text" value="New Text">
+		<input type="button" value="Set Text" onclick="setText();"> <input type="button" value="Get Text" onclick="getText();">
+	</div>
+</body>
+</html>

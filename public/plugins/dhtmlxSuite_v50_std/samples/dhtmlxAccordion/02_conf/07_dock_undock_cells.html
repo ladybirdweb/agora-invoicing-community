@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dock / undock cells</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#accObj {
+			position: relative;
+			left: 10px;
+			top: 10px;
+			width: 360px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		div#winVP {
+			position: relative;
+			height: 600px;
+			border: #dfdfdf 1px solid;
+			top: 10px;
+		}
+	</style>
+	<script>
+		var myAcc;
+		var sel;
+		var myGrid;
+		var myMenu;
+		function doOnLoad() {
+			
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				icons_path: "../common/icons/",
+				items: [{id: "a1", text: "Cell a1", icon: "flag_red.png", height: 200},
+					{id: "a2", text: "Cell a2", open: false, icon: "flag_green.png"},
+					{id: "a3", text: "Cell a3", open: false, icon: "flag_blue.png"}
+				]
+			});
+			
+			// change window's viewport
+			myAcc.dhxWins.attachViewportTo("winVP");
+			
+			sel = document.getElementById("sel");
+			myAcc.forEachItem(function(cell){
+				sel.options.add(new Option(cell.getText(),cell.getId()));
+			});
+			
+			myMenu = myAcc.cells("a1").attachMenu({
+				icons_path: "../../dhtmlxMenu/common/imgs/",
+				xml: "../../dhtmlxMenu/common/dhxmenu.xml"
+			});
+			
+			myGrid = myAcc.cells("a1").attachGrid();
+			myGrid.setImagePath("../../../codebase/imgs/")
+			myGrid.load("../common/grid.xml");
+		}
+		function getId() {
+			var id = sel.options[sel.selectedIndex].value;
+			return id;
+		}
+		function dockCell() {
+			myAcc.cells(getId()).dock();
+		}
+		function undockCell() {
+			var id = getId();
+			myAcc.cells(id).undock(550,20,400,300);
+			myAcc.dhxWins.window(id).keepInViewport(true);
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="winVP">
+		<div id="accObj"></div>
+	</div>
+	<div style="margin: 50px 0px 20px 0px;">
+		Select Item <select id="sel"></select> <input type="button" value="Dock" onclick="dockCell();"> <input type="button" value="Undock" onclick="undockCell();">
+	</div>
+</body>
+</html>

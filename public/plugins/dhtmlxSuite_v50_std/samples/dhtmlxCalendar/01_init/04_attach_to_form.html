@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach to form</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "settings", position: "label-left", labelWidth: 120, inputWidth: 145},
+				{type: "calendar", name: "start_date", label: "Start Date", value: "2016-03-28 11:00", dateFormat: "%Y-%m-%d %H:%i", enableTime: true, calendarPosition: "right"},
+				{type: "calendar", name: "end_date", label: "End Date", value: "2016-03-29 12:30", dateFormat: "%Y-%m-%d %H:%i", enableTime: true, calendarPosition: "right"},
+				{type: "calendar", name: "empty_date", label: "Empty Date Test", dateFormat: "%Y-%m-%d", calendarPosition: "right"},
+				{type: "calendar", name: "with_icon", label: "With Icon", dateFormat: "%Y-%m-%d", value: "2013-06-01", calendarPosition: "right"}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm" style="height:300px;"></div>
+</body>
+</html>

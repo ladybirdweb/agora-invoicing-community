@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="46" type="img" align="right" sort="str">&amp;nbsp;</column>
+		<column width="*" type="ro" align="left" sort="str">Country</column>
+	</head>
+	<row id="1">
+		<cell>../common/imgs/fl/1.png</cell>
+		<cell>Australia</cell>
+	</row>
+	<row id="2">
+		<cell>../common/imgs/fl/2.png</cell>
+		<cell>Austria</cell>
+	</row>
+	<row id="3">
+		<cell>../common/imgs/fl/3.png</cell>
+		<cell>Brazil</cell>
+	</row>
+	<row id="4">
+		<cell>../common/imgs/fl/4.png</cell>
+		<cell>Canada</cell>
+	</row>
+	<row id="5">
+		<cell>../common/imgs/fl/5.png</cell>
+		<cell>China</cell>
+	</row>
+	<row id="6">
+		<cell>../common/imgs/fl/6.png</cell>
+		<cell>Denmark</cell>
+	</row>
+	<row id="7">
+		<cell>../common/imgs/fl/7.png</cell>
+		<cell>Finland</cell>
+	</row>
+	<row id="8">
+		<cell>../common/imgs/fl/8.png</cell>
+		<cell>France</cell>
+	</row>
+	<row id="9">
+		<cell>../common/imgs/fl/9.png</cell>
+		<cell>Germany</cell>
+	</row>
+	<row id="10">
+		<cell>../common/imgs/fl/10.png</cell>
+		<cell>Italy</cell>
+	</row>
+	<row id="11">
+		<cell>../common/imgs/fl/11.png</cell>
+		<cell>Netherlands</cell>
+	</row>
+	<row id="12">
+		<cell>../common/imgs/fl/12.png</cell>
+		<cell>Norway</cell>
+	</row>
+	<row id="13">
+		<cell>../common/imgs/fl/13.png</cell>
+		<cell>Poland</cell>
+	</row>
+	<row id="14">
+		<cell>../common/imgs/fl/14.png</cell>
+		<cell>Portugal</cell>
+	</row>
+	<row id="15">
+		<cell>../common/imgs/fl/15.png</cell>
+		<cell>Romania</cell>
+	</row>
+	<row id="16">
+		<cell>../common/imgs/fl/16.png</cell>
+		<cell>Russia</cell>
+	</row>
+	<row id="17">
+		<cell>../common/imgs/fl/17.png</cell>
+		<cell>Slovakia</cell>
+	</row>
+	<row id="18">
+		<cell>../common/imgs/fl/18.png</cell>
+		<cell>Slovenia</cell>
+	</row>
+	<row id="19">
+		<cell>../common/imgs/fl/19.png</cell>
+		<cell>Spain</cell>
+	</row>
+	<row id="20">
+		<cell>../common/imgs/fl/20.png</cell>
+		<cell>Sweden</cell>
+	</row>
+	<row id="21">
+		<cell>../common/imgs/fl/21.png</cell>
+		<cell>Ukraine</cell>
+	</row>
+	<row id="22">
+		<cell>../common/imgs/fl/22.png</cell>
+		<cell>United Kingdom</cell>
+	</row>
+	<row id="23">
+		<cell>../common/imgs/fl/23.png</cell>
+		<cell>United States</cell>
+	</row>
+	<row id="24">
+		<cell>../common/imgs/fl/24.png</cell>
+		<cell>Zimbabwe</cell>
+	</row>
+</rows>

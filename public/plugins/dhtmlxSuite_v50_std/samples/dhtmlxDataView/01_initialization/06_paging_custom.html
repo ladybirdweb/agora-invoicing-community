@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom paging</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.paging_text {
+			font-family: Tahoma;
+			font-size: 10pt;
+			float: left;
+			padding: 3px 10px 0px 10px;
+		}
+	</style>
+	<script>
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView({
+				container:"data_container",
+				type:{
+					template:"<span class='dhx_strong'>#Maintainer#</span>#Package# <span class='dhx_light'>#Version#</span>",
+					height:55
+				}
+			});
+			pager = myDataView.define("pager",{
+				container:"paging_here",
+				size:20
+			});
+			myDataView.load("php/data.php");
+		}
+		function setType(mode){
+			var new_one = "";
+			switch(mode){
+				case "a":
+					new_one="{common.pages()}";
+					break;
+				case "b":
+					new_one="{common.first()}{common.pages()}{common.last()}";
+					break;
+				case "c":
+					new_one="{common.prev()}<div class='paging_text'>Page {common.page()} from #limit#</div>{common.next()}";
+					break;
+			}
+			pager.define("template",new_one);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Custom paging</h1>
+	<div id="data_container" style="border:1px solid #c0c0c0; background-color:white; width:710px;height:392px;"></div><br>
+	<div id="paging_here" style="width:596px;height:46px; "></div>
+	<div>
+		<a href="javascript:void(0)" onclick='setType("a");'>Paging template A</a><br />
+		<a href="javascript:void(0)" onclick='setType("b");'>Paging template B</a><br />
+		<a href="javascript:void(0)" onclick='setType("c");'>Paging template C</a><br />
+	</div>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom color</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<style>
+		.dhx_chart_title{
+			padding-left:3px
+		}
+	</style>
+	<script>
+		var chartData = [
+			{ sales:"2.9", year:"2000" },
+			{ sales:"3.5", year:"2001" },
+			{ sales:"3.1", year:"2002" },
+			{ sales:"4.2", year:"2003" },
+			{ sales:"4.5", year:"2004" },
+			{ sales:"9.6", year:"2005" },
+			{ sales:"7.4", year:"2006" },
+			{ sales:"9.0", year:"2007" },
+			{ sales:"7.3", year:"2008" },
+			{ sales:"4.8", year:"2009" }
+		];
+		var myBarChart, myBarChart2;
+		function doOnLoad() {
+			myBarChart = new dhtmlXChart({
+				view:"bar",
+				container:"chart_container",
+				value:"#sales#",
+				gradient:"falling",
+				color:"#b9a8f9", //fixed color
+				radius:0,
+				alpha:0.5,
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(obj){
+						return (obj%20?"":obj)
+					}
+				}
+			});
+			myBarChart.parse(dataset,"json");
+			myBarChart2 = new dhtmlXChart({
+				view:"bar",
+				container:"chart_container2",
+				value:"#sales#",
+				color:"#color#", //"color" property in data
+				border:true,
+				barWidth:20,
+				radius:0,
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(obj){
+						return (obj%20?"":obj)
+					}
+				}
+			});
+			myBarChart2.parse(dataset_colors,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chart_container" style="width:400px;height:250px;border:1px solid #c0c0c0;float:left;margin-right:20px"></div>
+	<div id="chart_container2" style="width:400px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

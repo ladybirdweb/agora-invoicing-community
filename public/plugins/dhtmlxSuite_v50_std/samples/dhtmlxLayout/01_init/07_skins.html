@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 600px;
+			height: 400px;
+		}
+		div.controls {
+			margin-top: 10px;
+			margin-left: 10px;
+			font-size: 14px;
+			font-family: Tahoma;
+			color: #404040;
+			height: 80px;
+		}
+	</style>
+	<script>
+		var myLayout;
+		var myGrid;
+		var myToolbar;
+		
+		var iconsPath = {
+			dhx_skyblue: "imgs",
+			dhx_web: "icons_web",
+			dhx_terrace: "icons_terrace",
+			material: "icons_material"
+		};
+		
+		function doOnLoad(skin) {
+			
+			if (!skin) skin = "material";
+			
+			if (myLayout != null) {
+				myLayout.unload();
+				myToolbar = myGrid = myLayout = null;
+			}
+			
+			myLayout = new dhtmlXLayoutObject({
+				parent: "layoutObj",
+				pattern: "3L",
+				skin: skin,
+				cells: [{id: "a", header: false}]
+			});
+			
+			//
+			myToolbar = myLayout.attachToolbar({
+				icons_path: "../../dhtmlxToolbar/common/"+iconsPath[skin]+"/",
+				skin: skin,
+				xml: "../../dhtmlxToolbar/common/dhxtoolbar_button.xml"
+			});
+			
+			myGrid = myLayout.cells("a").attachGrid();
+			myGrid.load("../common/grid.xml");
+			
+			myLayout.attachStatusBar({text: "Status bar can be here"});
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="layoutObj"></div>
+	<div class="controls">
+		<input type="button" value="dhx_skyblue" onclick="doOnLoad('dhx_skyblue');">
+		<input type="button" value="dhx_web" onclick="doOnLoad('dhx_web');">
+		<input type="button" value="dhx_terrace" onclick="doOnLoad('dhx_terrace');">
+		<input type="button" value="material" onclick="doOnLoad('material');">
+	</div>
+</body>
+</html>

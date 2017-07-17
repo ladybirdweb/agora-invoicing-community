@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<toolbar>
+	<!-- text, tooltip, action -->
+	<item id="open" type="button" img="open.gif" text="Open" title="Tooltip here" action="myFunction">
+		<!-- userdata for item -->
+		<userdata name="my_data_name">my_data_value</userdata>
+		<userdata name="more_info">new_value</userdata>
+	</item>
+	<!-- icon only -->
+	<item id="save" type="button" img="save.gif"/>
+	<item type="separator"/>
+	<!-- disabled -->
+	<item id="cut" type="button" imgdis="cut_dis.gif" text="Cut" title="Tooltip here" enabled="false"/>
+	<item id="copy" type="button" imgdis="copy_dis.gif" enabled="false"/>
+	<!-- hidden -->
+	<item id="paste" type="button" img="paste.gif" hidden="true"/>
+</toolbar>

@@ -1,0 +1,15 @@
+[
+	{id: 1, text: "Herbert Wells", open: 1, icon_color: "indigo", items: [
+		{id: 3, text: "The Time Machine", icons: {file: "fa-book"}, icon_color: "darkblue"},
+		{id: 4, text: "The Island of Doctor Moreau", icons: {file: "fa-book"}, icon_color: "darkcyan"},
+		{id: 5, text: "The Invisible Man", icons: {file: "fa-book"}, icon_color: "darkgoldenrod"},
+		{id: 6, text: "The First Men in the Moon", icons: {file: "fa-book"}, icon_color: "darkgreen"},
+		{id: 7, text: "The War of the Worlds", icons: {file: "fa-book"}, icon_color: "darkolivegreen"}
+	]},
+	{id: 2, text: "Misc", open: 1,
+		items: [
+			{id: 8, text: "Privacy and Terms.pdf", icons: {file: "fa-file-pdf-o"}},
+			{id: 9, text: "Licence Agreement.txt", icons: {file: "fa-file-text-o"}}
+		]
+	}
+]

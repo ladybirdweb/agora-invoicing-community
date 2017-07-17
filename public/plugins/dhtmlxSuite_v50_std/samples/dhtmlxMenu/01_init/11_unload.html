@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Unload</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu, myContextMenu;
+		function initMenu() {
+			if (myMenu == null) {
+				myMenu = new dhtmlXMenuObject({
+					parent: "menuObj",
+					icons_path: "../common/imgs/",
+					xml: "../common/dhxmenu.xml"
+				});
+			}
+		}
+		function unloadMenu() {
+			if (myMenu != null) {
+				myMenu.unload();
+				myMenu = null;
+			}
+		}
+		function initContextMenu() {
+			if (myContextMenu == null) {
+				document.getElementById("contextArea").style.visibility = "visible";
+				myContextMenu = new dhtmlXMenuObject({
+					parent: "contextArea",
+					icons_path: "../common/imgs/",
+					context: true,
+					xml: "../common/dhxmenu.xml"
+				});
+			}
+		}
+		function unloadContextMenu() {
+			if (myContextMenu != null) {
+				myContextMenu.unload();
+				myContextMenu = null;
+				document.getElementById("contextArea").style.visibility = "hidden";
+			}
+		}
+	</script>
+</head>
+<body>
+	<div style="height: 400px; position: relative;">
+		<div id="menuObj"></div>
+		<div id="contextArea" style="position: absolute; left: 100px; top: 100px; width: 100px; height: 60px; border: #C1C1C1 1px solid; background-color: #E7F4FF; visibility: hidden;"></div>
+	</div>
+	<input type="button" value="init menu" onclick="initMenu();">
+	<input type="button" value="unload menu" onclick="unloadMenu();">
+	<input type="button" value="init context menu" onclick="initContextMenu();">
+	<input type="button" value="unload context menu" onclick="unloadContextMenu();">
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Style definition</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myLineChart1, myLineChart2, myLineChart3, myLineChart4;
+		function doOnLoad() {
+			myLineChart1 =  new dhtmlXChart({
+				view:"line",
+				container:"chart1",
+				value:"#sales#",
+				label:"'#year#",
+				tooltip:{
+					template:"#sales#"
+				},
+				item:{
+					borderColor: "#ffffff",
+					color: "#000000"
+				},
+				line:{
+					color:"#ff9900",
+					width:3
+				}
+			});
+			myLineChart1.parse(dataset,"json");
+			myLineChart2 =  new dhtmlXChart({
+				view:"line",
+				container:"chart2",
+				value:"#sales#",
+				label:"'#year#",
+				tooltip:{
+					template:"#sales#"
+				},
+				item:{
+					borderColor: "#3399ff",
+					color: "#ffffff"
+				},
+				line:{
+					color:"#3399ff",
+					width:3
+				}
+			});
+			myLineChart2.parse(dataset,"json");
+			myLineChart3 =  new dhtmlXChart({
+				view:"line",
+				container:"chart3",
+				value:"#sales#",
+				item:{
+					radius:0
+				},
+				line:{
+					color:"#b25151",
+					width:3
+				},
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{}
+			});
+			myLineChart3.parse(dataset,"json");
+			myLineChart4 =  new dhtmlXChart({
+				view:"line",
+				container:"chart4",
+				value:"#sales#",
+				item:{
+					borderColor: "#000000",
+					color: "#ffffff",
+					borderWidth:1,
+					radius:3
+				},
+				line:{
+					color:"#3399ff",
+					width:3
+				},
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{}
+			});
+			myLineChart4.parse(dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table>
+		<tr>
+			<td><div id="chart1" style="width:450px;height:250px;border:1px solid #c0c0c0;"></div></td>
+			<td><div id="chart2" style="width:450px;height:250px;border:1px solid #c0c0c0;"></div></td>
+		</tr>
+		<tr>
+			<td><div id="chart3" style="width:450px;height:250px;border:1px solid #c0c0c0;"></div></td>
+			<td><div id="chart4" style="width:450px;height:250px;border:1px solid #c0c0c0;"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

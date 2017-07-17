@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Overflow control</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myMenu;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: "menuObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxmenu.xml"
+			});
+		}
+		function setOverflow(h) {
+			if (isNaN(h)) return;
+			myMenu.setOverflowHeight(h);
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div style="height: 250px;"><div id="menuObj"></div></div>
+	<input type="text" value="4" id="overflowValue" size="2">
+	<input type="button" value="set overflow" onclick="setOverflow(document.getElementById('overflowValue').value);">
+</body>
+</html>

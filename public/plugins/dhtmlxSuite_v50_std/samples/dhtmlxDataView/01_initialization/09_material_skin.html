@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Material Skin</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView({
+				container:"data_container",
+				select:true,
+				type:{
+					template:"<span class='dhx_strong'>#Maintainer#</span>#Package#<br><span class='dhx_light'>#Version#</span>",
+					height:55,
+					padding:10
+				}
+			});
+			myDataView.load("php/data_static.php", function(){
+				myDataView.select( myDataView.first() );
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Material Skin</h1>
+	<div id="data_container" style="border:1px solid #c0c0c0; background-color:white; width:790px;height:392px;"></div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Context menu on body</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/dhtmlx.css"/>
+	<script src="../../../../codebase/dhtmlx.js"></script>
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
+	<script>
+		var myMenu;
+		function doOnLoad() {
+			myMenu = new dhtmlXMenuObject({
+				parent: document.body,
+				icons_path: "../../common/imgs/",
+				context: true,
+				xml: "../../common/dhxmenu.xml"
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div style="position: relative; padding: 10px 20px;">Right click on any area of the page. The context menu, generated with dhtmlxMenu, will appear.</div>
+</body>
+</html>

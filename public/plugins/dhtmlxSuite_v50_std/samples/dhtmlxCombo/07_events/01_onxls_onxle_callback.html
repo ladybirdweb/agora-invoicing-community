@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onXLS / onXLE / Callback</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#log_here {
+			font-size: 8pt;
+			font-family: Tahoma;
+			width: 500px;
+			height: 120px;
+			border: 1px solid #cecece;
+			padding: 2px 5px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var myCombo;
+		var eventIndex = 1;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone", null, null, "image");
+			myCombo.setImagePath("../common/flags/");
+			myCombo.attachEvent("onXLS", function(){
+				log("onXLS");
+			});
+			myCombo.attachEvent("onXLE", function(){
+				log("onXLE");
+			});
+			loadOpts();
+		}
+		function loadOpts() {
+			myCombo.clearAll();
+			myCombo.load("../common/data_countries.json", function(){
+				log("callback");
+			});
+		}
+		function log(text) {
+			var t = document.getElementById("log_here");
+			t.innerHTML += (eventIndex++)+") "+text+"<br>";
+			t.scrollTop = t.scrollHeight;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>onXLS / onXLE / Callback</h3>
+	<div id="combo_zone" style="width:230px;"></div>
+	<br>
+	<a href="javascript:void(0);" onclick="loadOpts();">reload</a>
+	<br><br><br><br><br><br><br><br><br><br>
+	<div id="log_here"></div>
+</body>
+</html>

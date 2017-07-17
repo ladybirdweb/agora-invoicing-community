@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Set element properties</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.cp_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 10px;
+			padding-bottom: 10px;
+		}
+	</style>
+	<script>
+		var myCP;
+		function doOnLoad() {
+			myCP = new dhtmlXColorPicker({
+				parent: "cpObj",
+				custom_colors: ["#ff00ff", "#00aabb", "#6633ff"],
+				closeable: false
+			});
+			myCP.attachEvent("onChange", setColor);
+		};
+		
+		function doOnUnload() {
+			if (myCP != null) {
+				myCP.unload();
+				myCP = null;
+			}
+		};
+		
+		function setColor(color) {
+			var ct = document.getElementById("colorType");
+			var inp = document.getElementById("testInput");
+			switch (ct.value) {
+				case "text":
+					inp.style.color =  color;
+					break;
+				case "bg":
+					inp.style.backgroundColor =  color;
+					break;
+				case "border":
+					inp.style.borderColor =  color;
+					break;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<table cellspacing="0" cellpadding="0" border"0" class="cp_table">
+		<tr>
+			<td>
+				<div>Select attribute: <select id="colorType">
+							<option value="text">Text color</option>
+							<option value="bg">Background color</option>
+							<option value="border">Border color</option>
+						</select>
+				</div>
+			</td><td>
+				&nbsp;
+			</td>
+		</tr>
+		<tr>
+			<td><div id="testInput" style="border: 2px black solid; width: 300px; height: 420px;">
+				<h3 style="font-family:tahoma;margin:10px;">Change attributes with dhtmlxColorPicker</h3>
+				<div style="margin:10px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;You can change any color-attribute of any html element on page with dhtmlxColorPicker using setOnSelectHandler event and your function.</div>
+			</div></td><td>
+				<div id="cpObj"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

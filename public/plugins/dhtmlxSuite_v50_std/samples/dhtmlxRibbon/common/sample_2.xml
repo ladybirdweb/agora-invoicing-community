@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ribbon>
+	<item type='block' mode='rows' text = 'Buttons' >
+		<item id='inpur_1' type='input' text='copy' value='input 1' width='180' />
+		<item id='check_box' type='checkbox' text='cut' checked='true' />
+		<item id='button_segment_1' type='buttonSegment' text='New' img="18/new.gif" />
+		<item id='button_segment_2' type='buttonSegment' text='open' img="48/open.gif" />
+		<item type='button' text='paste' img="18/paste.gif" />
+		<item type='button' text='print' img="18/print.gif" />
+	</item>
+</ribbon>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Range mode vertical slider</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		#sliderObj {
+			width: 60px;
+			height: 150px;
+			margin-top: 2px;
+		}
+		#sliderLink, #sliderLink2 {
+			font-size: 12px;
+			font-family: Tahoma;
+		}
+		table.demo_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 10px;
+		}
+		span.minussign {
+			font-size: 12px;
+			font-family: Tahoma;
+			padding: 0px 10px;
+		}
+	</style>
+	<script>
+		var mySlider;
+		
+		function doOnLoad(){
+			mySlider = new dhtmlXSlider({
+				parent: "sliderObj",
+				linkTo: ["sliderLink", "sliderLink2"],
+				vertical: true,
+				step: 1,
+				min: 10,
+				max: 30,
+				value: [15, 25],
+				range: true
+			});
+		};
+		
+		function doOnUnload(){
+			if (mySlider != null){
+				mySlider.unload();
+				mySlider = null;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<table cellspacing="0" cellpadding="0" border="0" class="demo_table">
+		<tr>
+			<td><span id="sliderLink"></span><span class="minussign">-</span><span id="sliderLink2"></span></td>
+			<td><div id="sliderObj"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

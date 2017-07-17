@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<toolbar>
+	<!-- text, tooltip, action -->
+	<item id="open" type="buttonTwoState" img="open.gif" text="Open" title="Tooltip here" action="myFunction">
+		<!-- userdata for select item -->
+		<userdata name="my_data_name">my_data_value</userdata>
+		<userdata name="more_info">new_value</userdata>
+	</item>
+	<!-- icon only -->
+	<item id="save" type="buttonTwoState" img="save.gif"/>
+	<item type="separator"/>
+	<!-- pressed -->
+	<item id="undo" type="buttonTwoState" img="undo.gif" text="Undo" selected="true"/>
+	<item id="redo" type="buttonTwoState" imgdis="redo_dis.gif" text="Redo" selected="true" enabled="false"/>
+	<item type="separator"/>
+	<!-- disabled -->
+	<item id="cut" type="buttonTwoState" imgdis="cut_dis.gif" text="Cut" title="Tooltip here" enabled="false"/>
+	<item id="copy" type="buttonTwoState" imgdis="copy_dis.gif" enabled="false"/>
+	<!-- hidden -->
+	<item id="paste" type="buttonTwoState" img="paste.gif" hidden="true"/>
+</toolbar>

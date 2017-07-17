@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>xml/json formats for slider</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.my_table td {
+			text-align: left;
+			vertical-align: top;
+			padding-right: 20px;
+			padding-bottom: 10px;
+			font-family: Tahoma;
+		}
+		table.my_table td.item_type {
+			height: 20px;
+			font-size: 12px;
+			vertical-align: middle;
+		}
+		pre.my_code {
+			font-size: 11px;
+		}
+	</style>
+	<script>
+		var myToolbarXML;
+		var myToolbarJSON;
+		function doOnLoad() {
+			myToolbarXML = new dhtmlXToolbarObject({
+				parent: "toolbarObjXML",
+				icons_path: "../common/imgs/",
+				xml: "../common/all_items/slider.xml",
+				onload: function(){logUserData("myToolbarXML", this);}
+			});
+			myToolbarJSON = new dhtmlXToolbarObject({
+				parent: "toolbarObjJSON",
+				icons_path: "../common/imgs/",
+				json: "../common/all_items/slider.json",
+				onload: function(){logUserData("myToolbarJSON", this);}
+			});
+		}
+		function logUserData(tbName, tbInst) {
+			var userData = {
+				my_data_name: tbInst.getUserData("net_limit", "my_data_name"),
+				more_info: tbInst.getUserData("net_limit", "more_info")
+			};
+			// console.log(tbName, userData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table border="0" cellspacing="0" cellpadding="0" class="my_table" width="100%">
+		<tr>
+			<td width="50%">from xml</td>
+			<td width="50%">from json</td>
+		</tr>
+		<tr>
+			<td><div style="height: 150px;"><div id="toolbarObjXML"></div></div></td>
+			<td><div style="height: 150px;"><div id="toolbarObjJSON"></div></div></td>
+		</tr>
+		<tr>
+			<td>
+<pre class="my_code">&lt;item
+	id       = "net_limit"	// required, will generated automatically if empty
+	type     = "slider"	// required, item type
+	length   = "70"		// optional, slider line length
+	valueMin = "10"		// required, min value
+	valueMax = "100"	// required, max value
+	valueNow = "70"		// optional, initial value
+	textMin  = "10 MBit"	// optional, text label for min value (left side)
+	textMax  = "100 MBit"	// optional, text label for max value (right side)
+	toolTip  = "%v MBit"	// optional, tooltip while dragging (%v will replaced with actual value)
+	enabled  = "false"	// optional, disable item
+	hidden   = "true"	// optional, hide item
+&gt;
+	// optional, userdata
+	&lt;userdata name="p1"&gt;value1&lt;/userdata&gt;
+	&lt;userdata name="p2"&gt;value2&lt;/userdata&gt;
+&lt;/item&gt;</pre>
+			</td>
+			<td>
+<pre class="my_code">{
+	id:       "net_limit"	// required, will generated automatically if empty
+	type:     "slider"	// required, item type
+	length:   70		// optional, slider line length
+	valueMin: 10		// required, min value
+	valueMax: 100		// required, max value
+	valueNow: 70		// optional, initial value
+	textMin:  "10 MBit"	// optional, text label for min value (left side)
+	textMax:  "100 MBit"	// optional, text label for max value (right side)
+	toolTip:  "%v MBit"	// optional, tooltip while dragging (%v will replaced with actual value)
+	enabled:  false		// optional, disable item
+	hidden:   true		// optional, hide item
+	userdata: {		// optional, userdata
+		p1: "value1"	// userdara, name:value pairs
+		p2: "value2"
+	}
+	
+	// deprecated:
+	
+	disabled:     true		// => enabled:  false
+	value_min:    10		// => valueMin: 10
+	value_max:    100		// => valueMax: 100
+	value_now:    70		// => valueNow: 70
+	text_min:     "10 MBit"		// => textMin:  "10 MBit"
+	text_max:     "100 MBit"	// => textMax:  "100 MBit"
+	tip_template: "%v MBit"		// => toolTip:  "%v MBit"
+	
+}</pre>
+			</td>
+		</tr>
+	</table>
+	<div>
+		The purpose of this demo is to show you list of available xml and json attributes in action
+	</div>
+</body>
+</html>

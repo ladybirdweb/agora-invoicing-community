@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div.controls {
+			margin: 0px 10px;
+			font-size: 14px;
+			font-family: Tahoma;
+			color: #404040;
+			height: 80px;
+		}
+		div#winVP {
+			position: relative;
+			height: 550px;
+			border: 1px solid #dfdfdf;
+			margin: 10px;
+		}
+	</style>
+	<script>
+		var dhxWins, w1, w2, w3;
+		var iconsPath = {
+			dhx_skyblue: "imgs",
+			dhx_web: "icons_web",
+			dhx_terrace: "icons_terrace",
+			material: "icons_material"
+		};
+		var loadData = {};
+		function doOnLoad(skin) {
+			
+			if (!checkLoadState()) return;
+			loadData = {grid: false, toolbar: false};
+			
+			skin = skin||"material";
+			
+			if (dhxWins == null) {
+				dhxWins = new dhtmlXWindows();
+			} else {
+				w1.close();
+				w2.close();
+				w3.close();
+			}
+			dhxWins.setSkin(skin);
+			dhxWins.attachViewportTo("winVP");
+			
+			w1 = dhxWins.createWindow("w1", 20, 30, 420, 300);
+			w1.setText("dhtmlxWindow #1");
+			
+			w2 = dhxWins.createWindow("w2", 50, 70, 420, 300);
+			w2.setText("dhtmlxWindow #2");
+			
+			w3 = dhxWins.createWindow("w3", 580, 110, 420, 300);
+			w3.setText("dhtmlxWindow #3");
+			
+			dhxWins.forEachWindow(function(win){
+				
+				win.button("close").disable();
+				//
+				win.attachToolbar({
+					icons_path: "../../dhtmlxToolbar/common/"+iconsPath[skin]+"/",
+					skin: skin,
+					xml: "../../dhtmlxToolbar/common/dhxtoolbar_button.xml",
+					onload: function(){
+						loadData.toolbar = true;
+					}
+				});
+				
+				var myGrid = win.attachGrid();
+				myGrid.setImagePath("../../../codebase/imgs/");
+				myGrid.load("../common/grid.xml");
+				myGrid.attachEvent("onXLE", function(){
+					loadData.grid = true;
+				});
+				myGrid = null;
+				
+				win.attachStatusBar({text: "Status bar can be here"});
+				
+				win.button("help").show();
+				
+			});
+			
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = w2 = w3 = null;
+			}
+		}
+		function checkLoadState() {
+			var s = true;
+			for (var a in loadData) s = s&&loadData[a];
+			return s;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="winVP"></div>
+	<div class="controls">
+		<input type="button" value="skyblue" onclick="doOnLoad('dhx_skyblue');">
+		<input type="button" value="web" onclick="doOnLoad('dhx_web');">
+		<input type="button" value="terrace" onclick="doOnLoad('dhx_terrace');">
+		<input type="button" value="material" onclick="doOnLoad('material');">
+	</div>
+</body>

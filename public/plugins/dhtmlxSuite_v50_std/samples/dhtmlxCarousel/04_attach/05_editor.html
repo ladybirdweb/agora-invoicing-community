@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Integration with dhtmlxEditor</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#carouselObj {
+			position: relative;
+			margin-top: 20px;
+			margin-left: 20px;
+			width: 350px;
+			height: 400px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+		}
+	</style>
+	<script>
+		var myCarousel;
+		var myEditor;
+		function doOnLoad() {
+			myCarousel = new dhtmlXCarousel({
+				parent: "carouselObj",
+				item_width: "auto",
+				item_height: "auto",
+				offset_item: 45,
+				offset_left: 30,
+				offset_top: 15
+			});
+			for (var q=0; q<=2; q++) {
+				var id = myCarousel.addCell();
+				if (q == 0) {
+					myEditor = myCarousel.cells(id).attachEditor({
+						content:"<br>"+
+							"Yoshi, full name T. Yoshisaur Munchakoopas, is a fictional anthropomorphic dinosaur (referred to as a dragon at times) who appears in video games published by Nintendo.<br><br>"+
+							"He debuted in Super Mario World (1990) on the Super Nintendo Entertainment System as Mario and Luigi's sidekick (a role he has often reprised), and he later established his own series with several platform and puzzle games, including Super Mario World 2: Yoshi's Island.<br><br>"
+					});
+				} else {
+					myCarousel.cells(id).attachURL("../common/test_pages/test_page_"+q+".html", true);
+				}
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="carouselObj"></div>
+	<div><br><br></div>
+</body>
+</html>

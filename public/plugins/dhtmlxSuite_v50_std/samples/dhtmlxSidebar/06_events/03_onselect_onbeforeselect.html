@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>onSelect/onBeforeSelect events</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		div#eLog {
+			position: relative;
+			width: auto;
+			height: 180px;
+			padding: 2px;
+			border: 1px solid #dfdfdf;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin-left: 10px;
+			margin-top: 50px;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var mySidebar;
+		var eLog;
+		var eCount = 0;
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/icons_material/",
+				width: 160,
+				json: "../common/sidebar.json"
+			});
+			mySidebar.attachEvent("onBeforeSelect", function(id, lastId){
+				if ({disk_c: 1, disk_d: 1, disk_e: 1}[id] == 1) {
+					logEvent("onBeforeSelect", id+", deny selection", lastId);
+					return false;
+				}
+				return true;
+			});
+			mySidebar.attachEvent("onSelect", function(id, lastId){
+				logEvent("onSelect", id, lastId);
+			});
+			eLog = document.getElementById("eLog");
+		}
+		function logEvent(name, itemId, lastId) {
+			eLog.innerHTML = (++eCount)+") event fired: "+name+", was selected: "+lastId+", new selected: "+itemId+"<br>"+eLog.innerHTML;
+			eLog.scrollTop = 0;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+	<div id="eLog"><br>Do not allow selection for Windows (C:), Data (D:) and DVD RW (E:)</div>
+</body>
+</html>

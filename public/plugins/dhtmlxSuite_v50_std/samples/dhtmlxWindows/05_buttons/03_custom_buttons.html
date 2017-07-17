@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Custom buttons</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		/* conf, enabled state */
+		.dhxwins_vp_material div.dhxwin_hdr div.dhxwin_btns div.dhxwin_button.dhxwin_button_conf {
+			background-image: url(../common/button_conf.png);
+			background-position: 0px 0px;
+		}
+		/* conf, disabled state */
+		.dhxwins_vp_material div.dhxwin_hdr div.dhxwin_btns div.dhxwin_button_dis.dhxwin_button_conf_dis {
+			background-image: url(../common/button_conf.png);
+			background-position: 0px -24px;
+		}
+		/* reload, enabled state */
+		.dhxwins_vp_material div.dhxwin_hdr div.dhxwin_btns div.dhxwin_button.dhxwin_button_reload {
+			background-image: url(../common/button_reload.png);
+			background-position: 0px 0px;
+		}
+		/* reload, disabled state */
+		.dhxwins_vp_material div.dhxwin_hdr div.dhxwin_btns div.dhxwin_button_dis.dhxwin_button_reload_dis {
+			background-image: url(../common/button_reload.png);
+			background-position: 0px -24px;
+		}
+		/* logs */
+		div#logsHere {
+			position: relative;
+			height: 100px;
+			border: #dfdfdf 1px solid;
+			margin: 10px;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			overflow: auto;
+		}
+		div#winVP {
+			position: relative;
+			height: 350px;
+			border: #dfdfdf 1px solid;
+			margin: 10px;
+		}
+		div#objId {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			overflow: auto;
+		}
+	</style>
+	<script>
+		var dhxWins, w1;
+		function doOnLoad() {
+			
+			dhxWins = new dhtmlXWindows();
+			dhxWins.attachViewportTo("winVP");
+			
+			w1 = dhxWins.createWindow("w1", 20, 30, 320, 200);
+			w1.attachObject("objId");
+			
+			// hide default buttons
+			for (var a in {close:1,minmax:1,park:1,stick:1,help:1}) w1.button(a).hide();
+			
+			w1.addUserButton("conf", 0, "Configure");
+			w1.button("conf").attachEvent("onClick", function(){
+				writeLog("button 'conf' was clicked");
+			});
+			
+			w1.addUserButton("reload", 0, "Reload");
+			w1.button("reload").attachEvent("onClick", function(){
+				writeLog("button 'reload' was clicked");
+			});
+			
+		}
+		
+		function executeScript(action) {
+			var sel = document.getElementById("sel");
+			var btn = sel.options[sel.selectedIndex].value;
+			switch (action) {
+				case "show":
+					w1.button(btn).show();
+					break;
+				case "hide":
+					w1.button(btn).hide();
+					break;
+				case "isHidden":
+					writeLog("button "+btn+" isHidden(): "+w1.button(btn).isHidden().toString());
+					break;
+				case "enable":
+					w1.button(btn).enable();
+					break;
+				case "disable":
+					w1.button(btn).disable();
+					break;
+				case "isEnabled":
+					writeLog("button "+btn+" isEnabled(): "+w1.button(btn).isEnabled().toString());
+					break;
+			}
+		}
+		function writeLog(text) {
+			document.getElementById("logsHere").innerHTML += "<br>"+text;
+			document.getElementById("logsHere").scrollTop = document.getElementById("logsHere").scrollHeight;
+		}
+		function doOnUnload() {
+			if (dhxWins != null && dhxWins.unload != null) {
+				dhxWins.unload();
+				dhxWins = w1 = null;
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div style="margin: 10px;">
+		<table>
+			<tr>
+				<td>
+					<select id="sel">
+						<option value="conf">button conf</option>
+						<option value="reload">button reload</option>
+					</select>
+					<input type="button" value="show" onclick="executeScript('show');">
+					<input type="button" value="hide" onclick="executeScript('hide');">
+					<input type="button" value="isHidden" onclick="executeScript('isHidden');">
+					<input type="button" value="enable" onclick="executeScript('enable');">
+					<input type="button" value="disable" onclick="executeScript('disable');">
+					<input type="button" value="isEnabled" onclick="executeScript('isEnabled');">
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div id="winVP"></div>
+	<div id="logsHere">
+		logs:
+	</div>
+	<div id="objId" style="display: none;">
+		<div style="margin: 5px 8px;">
+			Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+		</div>
+	</div>
+</body>

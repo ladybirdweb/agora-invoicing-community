@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Show / Hide</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myRibbon;
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon({
+				parent: "ribbonObj",
+				icons_path: "../common/",
+				json: "../common/tabs.json"
+			});
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+		
+		function hide(id,activateId) {
+			myRibbon.tabs(id).hide(activateId);
+		};
+		function show(id,activateId) {
+			myRibbon.tabs(id).show(activateId);
+		};
+	</script>
+
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+	<div>Tab 1 <button onclick="hide('tab_1')">hide</button> <button onclick="show('tab_1')">show</button></div>
+	<div>Tab 1 <button onclick="hide('tab_1',false)">hide a1 and do not select any tab</button> <button onclick="show('tab_1',true)">show and then select</button></div>
+	<div>Tab 1 <button onclick="hide('tab_1','tab_3')">hide and select tab 3</button> <button onclick="show('tab_1')">show</button></div>
+</body>
+</html>

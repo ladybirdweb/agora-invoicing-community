@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Legend markers</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myLineChart;
+		function doOnLoad() {
+			myLineChart =  new dhtmlXChart({
+				view:"line",
+				container:"chart1",
+				value:"#sales#",
+				item:{
+					borderColor: "#447900",
+					color: "#69ba00"
+				},
+				line:{
+					color:"#69ba00",
+					width:2
+				},
+				tooltip:{
+					template:"#sales#"
+				},
+				offset:0,
+				xAxis:{
+					template:"'#year#"
+				},
+				yAxis:{
+					start:0,
+					step: 10,
+					end: 100
+				},
+				padding:{
+					left:35,
+					bottom: 50
+				},
+				origin:0,
+				legend:{
+					values:[{text:"Company A"},{text:"Company B"},{text:"Company C"}],
+					align:"right",
+					valign:"middle",
+					layout:"y",
+					width: 100,
+					margin: 8,
+					marker:{
+						type: "item"
+					}
+				}
+			});
+			myLineChart.addSeries({
+				value:"#sales2#",
+				item:{
+					borderColor: "#0a796a",
+					color: "#4aa397",
+					type:"s",
+					radius: 4
+				},
+				line:{
+					color:"#4aa397",
+					width:2
+				},
+				tooltip:{
+					template:"#sales2#"
+				}
+			});
+			myLineChart.addSeries({
+				value:"#sales3#",
+				item:{
+					borderColor: "#b7286c",
+					color: "#de619c",
+					type:"t",
+					radius: 4
+				},
+				line:{
+					color:"#de619c",
+					width:2
+				},
+				tooltip:{
+					template:"#sales3#"
+				}
+			});
+			myLineChart.parse(multiple_dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chart1" style="width:600px;height:250px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

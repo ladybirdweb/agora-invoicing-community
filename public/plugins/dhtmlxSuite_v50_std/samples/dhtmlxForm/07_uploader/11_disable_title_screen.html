@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Disable title screen</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../../../codebase/ext/swfobject.js"></script>
+	<script>
+		var myForm, formData;
+		function doOnLoad() {
+			formData = [
+				{type: "fieldset", label: "Uploader", list:[
+					{type: "upload", name: "myFiles", inputWidth: 330, inputHeight: 160, url: "php/dhtmlxform_item_upload.php", titleScreen: false, swfPath: "uploader.swf", swfUrl: "php/dhtmlxform_item_upload.php"}
+				]}
+			];
+			myForm = new dhtmlXForm("myForm", formData);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="myForm"></div>
+</body>
+</html>

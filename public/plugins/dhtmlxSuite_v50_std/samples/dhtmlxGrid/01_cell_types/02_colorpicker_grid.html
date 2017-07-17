@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Colorpicker eXcell</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myGrid;
+		function doOnLoad() {
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Color Name,Color");
+			myGrid.setInitWidths("80,*");
+			myGrid.setColAlign("left,center");
+			myGrid.setColTypes("ed,cp");
+			myGrid.setColSorting("str,str");
+			myGrid.attachEvent("onEditCell",doOnColorChanged);
+			myGrid.enableAutoHeight(true);
+			myGrid.init();
+			myGrid.load("../common/colors.xml");
+		}
+		function doOnColorChanged(stage,rId,cIn){
+			if(stage==2){
+				if(cIn==0){
+					myGrid.cells(rId,1).setValue(myGrid.cells(rId,0).getValue())
+				}else if(cIn==1){
+					myGrid.cells(rId,0).setValue(myGrid.cells(rId,1).getValue())
+				}
+			}
+			return true;
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Colorpicker eXcell</h1>
+	<p>There is possiblity in dhtmlxGrid to edit color of any cell using Colorpicker.</p>
+	<div id="gridbox" style="width:500px;height:200px;background-color:white;"></div>
+	<p>Current example also uses onCellEdit event handler to populate corresponding text cell with color value chosen with color picker and vice versa.</p>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Init from object</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myRibbon;
+		var data = {
+			parent: "ribbonObj",
+			icons_path: "../common/",
+			items: [
+				{
+					type:'block', text:'office document', list:[
+						{type: "group", list: [
+							{id: "check_box_1", type:"checkbox", text:"check Box 1"},
+							{id: "check_box_4", type: "checkbox"}
+						]},
+						{"id": "check_box_2", "type":"checkbox", text: "check Box 2", disable: true},
+						{"id": "check_box_3", "type":"checkbox", "text": "check Box 3", checked: true}
+					]
+				}
+			]
+		};
+
+		function doOnLoad() {
+			myRibbon = new dhtmlXRibbon(data);
+		};
+
+		function doOnUnload() {
+			if (myRibbon) {
+				myRibbon.unload();
+				myRibbon = null;
+			}
+		};
+	</script>
+</head>
+<body onload="doOnLoad();" onunload="doOnUnload();">
+	<div id="ribbonObj"></div>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Multicolumn/multiline combo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		h4.info_text {
+			font-family: Arial;
+			font-size: 14px;
+		}
+		td.descr_td {
+			 padding-right: 50px;
+			 vertical-align: top;
+		}
+		/* multicolumn/multiline */
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline {
+			background-color: white;
+			border-top: 1px solid #dfdfdf;
+			border-bottom: 1px solid #dfdfdf;
+			margin-top: -1px;
+			z-index: 0;
+			height: 40px;
+			line-height: 20px;
+			overflow: hidden;
+			position: relative;
+			cursor: default;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_option_text {
+			position: relative;
+			white-space: normal;
+			height: 100%;
+			padding: 0;
+			font-size: 14px;
+			font-family: Roboto, Arial, Helvetica;
+			color: #404040;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_cell_first,
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_cell:first-child {
+			border-left-width: 0;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_cell,
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_cell_first {
+			border-left: 1px solid #dfdfdf;
+			float: left;
+			margin: 0;
+			overflow: hidden;
+			padding: 0;
+			position: relative;
+			white-space: normal;
+			height: 100%;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline div.dhxcombo_cell_text {
+			margin: 0 10px;
+			overflow: hidden;
+			position: relative;
+			text-overflow: ellipsis;
+			white-space: normal;
+			width: auto;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline.dhxcombo_option_selected {
+			background-color: #ebebeb;
+			z-index: 1;
+		}
+		div.dhxcombolist_material.dhxcombolist_multicolumn div.dhxcombo_option_mcol_mline.dhxcombo_option_selected div.dhxcombo_cell {
+			border-left-color: #dfdfdf;
+		}
+	</style>
+	<script>
+		var myCombo;
+		function doOnLoad() {
+			myCombo = new dhtmlXCombo("combo_zone_script", "combo_script", 200);
+			myCombo.setTemplate({
+				input: "#capital#, #country#",
+				columns: [
+					{header: "&nbsp;",  width:  40, css: "flag",    option: "<img src='#flag#' border='0' style='margin-top: 4px; margin-left: 2px;'>"},
+					{header: "Capital", width:  80, css: "capital", option: "#capital#"},
+					{header: "Country", width: 110, css: "country", option: "#country#"},
+					{header: "Proverb", width: 250, css: "proverb", option: "#proverb#"}
+				]
+			});
+			myCombo.addOption([
+				{value: "1", text: { flag: "../common/flags/austria.png", country: "Austria", capital: "Vienna", proverb: "Two wrongs don't make a right" } },
+				{value: "2", text: { flag: "../common/flags/belarus.png", country: "Belarus", capital: "Minsk", proverb: "The pen is mightier than the sword" } },
+				{value: "3", text: { flag: "../common/flags/cameroon.png", country: "Cameroon", capital: "Yaoundé", proverb: "Actions speak louder than words" }, selected: 1 },
+				{value: "4", text: { flag: "../common/flags/canada.png", country: "Canada", capital: "Ottawa", proverb: "If it ain't broke, don't fix it" } }
+			]);
+			myCombo.enableFilteringMode(true);
+			//
+			myCombo2 = new dhtmlXCombo("combo_zone_script2", "combo_script", 200, "mcol_mline");
+			myCombo2.setTemplate({
+				input: "#capital#, #country#",
+				columns: [
+					{header: "&nbsp;",  width:  40, css: "flag",    option: "<img src='#flag#' border='0' style='margin-top: 12px; margin-left: 2px;'>"},
+					{header: "Capital", width:  80, css: "capital", option: "#capital#<br>#country#"},
+					{header: "Proverb", width: 150, css: "proverb", option: "#proverb#"}
+				]
+			});
+			myCombo2.addOption([
+				{value: "1", text: { flag: "../common/flags/austria.png", country: "Austria", capital: "Vienna", proverb: "Two wrongs don't make a right" } },
+				{value: "2", text: { flag: "../common/flags/belarus.png", country: "Belarus", capital: "Minsk", proverb: "The pen is mightier than the sword" } },
+				{value: "3", text: { flag: "../common/flags/cameroon.png", country: "Cameroon", capital: "Yaoundé", proverb: "Actions speak louder than words" }, selected: 1 },
+				{value: "4", text: { flag: "../common/flags/canada.png", country: "Canada", capital: "Ottawa", proverb: "If it ain't broke, don't fix it" } }
+			]);
+			myCombo2.enableFilteringMode(true);
+		};
+		// multicolumn/multiline
+		dhtmlXCombo.prototype.modes.mcol_mline = {
+			html: true, // skip replaceing " " (space) to &nbsp; forcing multiline for last column
+			render: function(item, data) {
+				item._conf = {value: data.value, css: ""};
+				item.className = "dhxcombo_option_mcol_mline";
+				item.innerHTML = "<div class='dhxcombo_option_text'>&nbsp;</div>";
+				this.setText(item, data.text);
+				return this;
+			},
+			setSelected: function(item, state) {
+				item.className = "dhxcombo_option_mcol_mline"+(state?" dhxcombo_option_selected":"");
+			},
+			getExtraData: function(item) {
+				return {type: "my_mcol_mline"};
+			}
+		};
+		dhtmlXComboExtend("mcol_mline", "option");
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h3>Multicolumn/multiline combo demo</h3>
+	<div style='font-size: 10px; color: #555; font-family: Arial;'><b>*</b> Any resemblance to reality is purely coincidental</div>
+	<br>
+	<h4 class="info_text">Multicolumn</h3>
+	<div id="combo_zone_script"></div>
+	<br>
+	<h4 class="info_text">Multicolumn/multiline</h3>
+	<div id="combo_zone_script2"></div>
+</body>
+</html>

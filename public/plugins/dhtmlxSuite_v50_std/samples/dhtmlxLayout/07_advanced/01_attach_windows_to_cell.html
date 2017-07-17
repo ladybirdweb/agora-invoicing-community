@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach windows to cell</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#layoutObj {
+			position: relative;
+			margin-top: 10px;
+			margin-left: 10px;
+			width: 800px;
+			height: 600px;
+		}
+		div#winVP {
+			position: relative;
+			width: 100%;
+			height: 100%;
+			overflow: hidden;
+		}
+	</style>
+	<script>
+		var myLayout;
+		var dhxWins;
+		function doOnLoad() {
+			myLayout = new dhtmlXLayoutObject({
+				parent: "layoutObj",
+				pattern: "3L"
+			});
+			
+			myLayout.cells("a").setText("Windows");
+			myLayout.cells("a").attachObject("winVP");
+			
+			// init windows
+			dhxWins = new dhtmlXWindows();
+			// rendering viewport as an existing object on page
+			// which already attached to layout
+			dhxWins.attachViewportTo("winVP");
+			// open windows
+			dhxWins.createWindow("w1", 10, 10, 300, 190);
+			dhxWins.createWindow("w2", 30, 65, 300, 190);
+			dhxWins.createWindow("w3", 50, 120, 300, 190);
+			
+			// check windows' positions if cell resized
+			myLayout.attachEvent("onPanelResizeFinish", function(cells){
+				for (var q=0; q<cells.length; q++) {
+					if (cells[q] == "a") {
+						// cell "a" was resized, check windows' positions (out-of-viewport)
+						dhxWins.forEachWindow(function(win){
+							win.adjustPosition();
+						});
+					}
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<!-- layout's container -->
+	<div id="layoutObj"></div>
+	<!-- will used as windows viewport -->
+	<div id="winVP" style="display: none;"></div>
+</body>
+</html>

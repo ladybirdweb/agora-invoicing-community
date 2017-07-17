@@ -1,0 +1,726 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: material
+	include extra file: skins/material.less
+*/
+
+@keyframes dhx_loader_rotate {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+@keyframes dhx_loader_dash {
+	0% {
+		stroke-dasharray: 1, 200;
+		stroke-dashoffset: 0;
+	}
+	50% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -35px;
+	}
+	100% {
+		stroke-dasharray: 89, 200;
+		stroke-dashoffset: -124px;
+	}
+}
+.dhxsidebar_base_material {
+	position: relative;
+	cursor: default;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont {
+	position: absolute;
+	cursor: default;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: #fafafa;
+	border-style: solid;
+	border-color: #dfdfdf;
+	border-width: 1px 1px 0px 1px;
+	overflow: hidden;
+	z-index: 5;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items {
+	position: absolute;
+	width: 100%;
+	overflow: hidden;
+	box-sizing: border-box;
+	-ms-touch-action: none;
+	-webkit-transition: top 0.2s;
+	-moz-transition: top 0.2s;
+	-ms-transition: top 0.2s;
+	-o-transition: top 0.2s;
+	transition: top 0.2s;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item {
+	position: relative;
+	padding: 0px 10px;
+	z-index: 1;
+	cursor: default;
+	margin: 1px 0px;
+	background-color: #fafafa;
+	overflow: hidden;
+	opacity: 1;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+	-ms-touch-action: none;
+	-webkit-touch-callout: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_hidden {
+	height: 0px !important;
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item:hover {
+	background-color: #f5f5f5;
+	z-index: 2;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected {
+	z-index: 3;
+	background-color: #ebebeb;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: absolute;
+	left: 9px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: inherit;
+	line-height: inherit;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	line-height: 14px;
+	right: 5px;
+	top: 5px;
+	border-radius: 10px;
+	background-color: #fafafa;
+	border: 1px solid #3399cc;
+	font-family: Tahoma;
+	font-size: 10px;
+	text-align: center;
+	font-weight: normal;
+	color: #3399cc;
+	cursor: default;
+	overflow: hidden;
+	z-index: 1;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item:hover div.dhxsidebar_bubble {
+	background-color: #f5f5f5;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected div.dhxsidebar_bubble {
+	background-color: #ebebeb;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_sep {
+	position: relative;
+	height: 1px;
+	margin: 1px 0px;
+	overflow: hidden;
+	background-color: #ededed;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_touch div.dhxsidebar_side_items div.dhxsidebar_item:hover {
+	background-color: #fafafa;
+	z-index: 1;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_touch div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected {
+	z-index: 3;
+	background-color: #ebebeb;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 27px;
+	line-height: 27px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	top: 5px;
+	width: 16px;
+	height: 16px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 34px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 47px;
+	line-height: 47px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	top: 7px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 50px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
+	top: 15px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 47px;
+	line-height: 47px;
+	text-align: center;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: relative;
+	display: inline;
+	left: 0px;
+	top: 7px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 66px;
+	line-height: 1em;
+	text-align: center;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: relative;
+	display: inline;
+	left: 0px;
+	top: 4px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	position: relative;
+	display: block;
+	height: 16px;
+	margin-top: 10px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_text div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 27px;
+	line-height: 27px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_text div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 14px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar {
+	position: absolute;
+	background-color: white;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	cursor: default;
+	z-index: 0;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_cover {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	font-size: 1px;
+	background-color: white;
+	overflow: hidden;
+	z-index: 1;
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_bar {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index: 1;
+	opacity: 0.75;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=75);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_img {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	border: 1px solid #e4e4e4;
+	background-image: url('../imgs/dhxsidebar_material/dhxsidebar_cell_progress.gif');
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 2;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_svg {
+	border: 1px solid #e4e4e4;
+	z-index: 2;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_svg .dhx_cell_prsvg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 50px;
+	height: 50px;
+	animation: dhx_loader_rotate 2s linear infinite;
+	transform-origin: center center;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_svg .dhx_cell_prsvg .dhx_cell_prcircle {
+	fill: none;
+	stroke: #3399cc;
+	stroke-width: 2;
+	stroke-miterlimit: 10;
+	stroke-dasharray: 1, 200;
+	stroke-dashoffset: 0;
+	stroke-linecap: round;
+	animation: dhx_loader_dash 1.5s ease-in-out infinite;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_def {
+	position: relative;
+	overflow: hidden;
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
+	border-color: #dfdfdf;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def .dhx_toolbar_material {
+	border-width: 0px 1px 1px 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material {
+	border-top-width: 0px;
+	margin-top: -1px;
+	width: auto;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_material.dhxrb_without_tabbar {
+	border-top-width: 0px;
+	width: auto;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background-color: #fafafa;
+	z-index: 1;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	position: relative;
+	font: inherit;
+	height: 30px;
+	line-height: 30px;
+	border-style: solid;
+	border-width: 0px 1px 1px 1px;
+	border-color: #dfdfdf;
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 0px 12px;
+	color: #737373;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_def,
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def .dhx_toolbar_material,
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_material.dhxrb_without_tabbar {
+	border-width: 1px 1px 0px 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material {
+	border-width: 1px 1px 0px 0px;
+	margin-top: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material div.dhxtabbar_tabs {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material div.dhxtabbar_tabs_top div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	border-width: 0px 1px 0px 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_img {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar.dhx_cell_cont_no_top div.dhx_cell_cont_sidebar {
+	border-top-color: white;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_cont_sidebar {
+	position: absolute;
+	border-style: solid;
+	border-color: #dfdfdf;
+	border-width: 1px 1px 1px 0px;
+	overflow: hidden;
+	z-index: 0;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_cont_sidebar.dhx_cell_cont_no_borders {
+	border-width: 0px;
+	padding: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr {
+	position: relative;
+	background-color: #fafafa;
+	height: 36px;
+	line-height: 35px;
+	font-weight: normal;
+	overflow: hidden;
+	cursor: default;
+	z-index: 1;
+	border-style: solid;
+	border-color: #dfdfdf;
+	border-width: 1px 1px 0px 0px;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr.dhx_cell_sidebar_hdr_hidden {
+	border-width: 1px 0px 0px 0px;
+	height: 0px;
+	line-height: 0px;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_text {
+	position: relative;
+	margin: 0px 10px;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: default;
+	text-align: left;
+	height: 100%;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_text.dhx_cell_sidebar_hdr_text_icon {
+	margin-left: 34px !important;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_icon {
+	position: absolute;
+	top: 0px;
+	left: 10px;
+	width: 16px;
+	height: 100%;
+	background-image: url("../imgs/dhxsidebar_material/dhxsidebar_side_icon.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_cont_sidebar {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_cont_sidebar.dhx_cell_cont_no_borders {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_menu_def,
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_toolbar_def .dhx_toolbar_material,
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_material.dhxrb_without_tabbar,
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material div.dhxtabbar_tabs {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_material div.dhxtabbar_tabs_top div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide {
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhxsidebar_side {
+	-webkit-transition: left 0.2s;
+	-moz-transition: left 0.2s;
+	-ms-transition: left 0.2s;
+	-o-transition: left 0.2s;
+	transition: left 0.2s;
+	box-shadow: 0px 2px 8px rgba(127,127,127,0.4);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont.dhxsidebar_autohide div.dhxsidebar_arrows {
+	-webkit-transition: left 0.2s;
+	-moz-transition: left 0.2s;
+	-ms-transition: left 0.2s;
+	-o-transition: left 0.2s;
+	transition: left 0.2s;
+	box-shadow: 0px 4px 6px rgba(127,127,127,0.4);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side_cover {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: #fff;
+	z-index: 3;
+	-webkit-transition: opacity 0.3s;
+	-moz-transition: opacity 0.3s;
+	-ms-transition: opacity 0.3s;
+	-o-transition: opacity 0.3s;
+	transition: opacity 0.3s;
+	opacity: 0.0001;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_side_cover.dhxsidebar_side_cover_actv {
+	opacity: 0.6;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	height: 24px;
+	border: 1px solid #dfdfdf;
+	background-color: #fafafa;
+	font-size: 1px;
+	overflow: hidden;
+	z-index: 6;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-ms-touch-action: none;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows.dhxsidebar_arrows_hidden {
+	height: 0px;
+	border-width: 0px 1px 1px 1px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	top: 0px;
+	font-size: 1px;
+	overflow: hidden;
+	z-index: 1;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_left {
+	left: 0px;
+	border-right: 1px solid #dfdfdf;
+	z-index: 2;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_left div.dhxsidebar_arrow_image {
+	background-image: url("../imgs/dhxsidebar_material/dhxsidebar_arrow_up.gif");
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_right {
+	right: 0px;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_right div.dhxsidebar_arrow_image {
+	background-image: url("../imgs/dhxsidebar_material/dhxsidebar_arrow_down.gif");
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow div.dhxsidebar_arrow_image {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	font-size: 1px;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow:hover {
+	background-color: #f5f5f5;
+}
+.dhxsidebar_base_material div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow:active {
+	background-color: #f0f0f0;
+}
+.dhxsidebar_base_material div.dhxcelltop_hdr {
+	position: relative;
+}
+.dhxsidebar_base_material div.dhxcelltop_ftr {
+	position: absolute;
+}
+.dhxsidebar_base_material div.dhxcelltop_progress {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index: 3;
+	opacity: 0.55;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=55);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxcelltop_progress_img {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url('../imgs/dhxsidebar_material/dhxsidebar_cell_progress.gif');
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 4;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxcelltop_progress_svg {
+	z-index: 4;
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_material div.dhxcelltop_progress_svg .dhx_cell_prsvg {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 50px;
+	height: 50px;
+	animation: dhx_loader_rotate 2s linear infinite;
+	transform-origin: center center;
+}
+.dhxsidebar_base_material div.dhxcelltop_progress_svg .dhx_cell_prsvg .dhx_cell_prcircle {
+	fill: none;
+	stroke: #3399cc;
+	stroke-width: 2;
+	stroke-miterlimit: 10;
+	stroke-dasharray: 1, 200;
+	stroke-dashoffset: 0;
+	stroke-linecap: round;
+	animation: dhx_loader_dash 1.5s ease-in-out infinite;
+}
+.dhxsidebar_base_material div.dhxcelltop_menu {
+	position: relative;
+	overflow: hidden;
+	border-width: 1px 1px 0px 1px;
+	border-style: solid;
+	border-color: #dfdfdf;
+}
+.dhxsidebar_base_material div.dhxcelltop_toolbar {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxcelltop_toolbar div.dhx_toolbar_material {
+	border-width: 1px 1px 0px 1px;
+}
+.dhxsidebar_base_material div.dhxcelltop_ribbon {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_material div.dhxcelltop_ribbon div.dhtmlxribbon_material.dhxrb_without_tabbar {
+	border-bottom-width: 0px;
+	width: auto;
+}
+.dhxsidebar_base_material div.dhxcelltop_ribbon div.dhtmlxribbon_material div.dhxrb_with_tabbar.dhxtabbar_base_material div.dhxtabbar_tabs_top div.dhx_cell_tabbar div.dhx_cell_cont_tabbar {
+	border-bottom-width: 0px;
+}
+.dhxsidebar_base_material div.dhxcelltop_statusbar {
+	position: absolute;
+	overflow: hidden;
+	background-color: #fafafa;
+	font-size: 14px;
+	font-family: Roboto, Arial, Helvetica;
+	color: #404040;
+}
+.dhxsidebar_base_material div.dhxcelltop_statusbar div.dhxcont_statusbar {
+	position: relative;
+	background-color: #fafafa;
+	font: inherit;
+	height: 30px;
+	line-height: 30px;
+	border-width: 0px 1px 1px 1px;
+	border-style: solid;
+	border-color: #dfdfdf;
+	padding: 0px 12px;
+	color: #737373;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.dhxsidebar_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 40px;
+	height: 10px;
+	overflow: hidden;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Attach events to Items</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="STYLESHEET" type="text/css" href="./types/ftypes.css">
+	<script src="./types/ftypes.js" type="text/javascript"></script>
+	<script>
+		for (var key in dhtmlXDataView.prototype.types)
+			dhtmlXDataView.prototype.types[key].icons_src_dir = "../common/images";
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView("data_container");
+			changeType("ficon");
+			myDataView.load("../common/files_ext.xml");
+			myDataView.attachEvent("onItemDblClick",function(itemId){
+				setStatus("dblclick. Item :: "+myDataView.get(itemId).name)
+			});
+			myDataView.attachEvent("onItemClick",function(itemId){
+				setStatus("click. Item :: "+myDataView.get(itemId).name)
+			})
+		}
+		function changeType(type){
+			myDataView.define("type",type);
+		}
+		function setStatus(str){
+			document.getElementById("stat").innerHTML+=str+"<br>";
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Initialize object on page</h1>
+	<div style="position:relative;">
+		<img src="../common/images/samples_frame.gif" width="436" height="513" alt="" border="0">
+		<div id="data_container" style="width:396px;height:400px;overflow:hidden;position:absolute;top:65px;left:20px;border:0px solid red;"></div>
+		<div id="stat" style="position:absolute;left:450px;top:10px"><h3>Events Log</h3></div>
+	</div>
+	<h3>Change Items Type</h3>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ficon" checked> F-icon<br>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ftiles"> F-titles<br>
+	<input type="radio" name="switch" onclick="changeType(this.value)" value="ftable"> F-table<br>
+</body>
+</html>

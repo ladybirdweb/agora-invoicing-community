@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Add/delete data on runtime</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myDataView;
+		function doOnLoad() {
+			myDataView = new dhtmlXDataView({
+				container:"data_container",
+				type:{
+					template:"#Package# : #Version#<br/>#Maintainer#",
+					height:50
+				}
+			});
+			myDataView.load("../common/data.xml");
+		}
+		function add_data(argument) {
+			myDataView.add({
+				Package: document.getElementById("p_name").value,
+				Version: document.getElementById("v_name").value,
+				Maintainer: document.getElementById("m_name").value
+			},0)
+		}
+		function remove_data(){
+			myDataView.remove(myDataView.getSelected());
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Add/delete data on runtime</h1>
+	<form style="float:right;">
+		Product <input type="text" id="p_name" value="dhtmlxDataView"><br>
+		Version <input type="text" id="v_name" value="3.0"><br>
+		Maintainer <input type="text" id="m_name" value="Ivan"><br>
+		<input type="button" value="Add &rarr;" onclick='add_data()'>
+		<hr>
+		<input type="button" value="Remove selected &rarr;" onclick='remove_data()'>
+	</form>
+	<div id="data_container" style="border:1px solid #c0c0c0; background-color:white;width:596px;height:396px;"></div>
+</body>
+</html>

@@ -1,0 +1,593 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_skyblue
+	include extra file: skins/dhx_skyblue.less
+*/
+
+.dhxsidebar_base_dhx_skyblue {
+	position: relative;
+	cursor: default;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont {
+	position: absolute;
+	cursor: default;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	background-color: #f5f5f5;
+	border-style: solid;
+	border-color: #a4bed4;
+	border-width: 1px 1px 0px 1px;
+	overflow: hidden;
+	z-index: 5;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items {
+	position: absolute;
+	width: 100%;
+	overflow: hidden;
+	-ms-touch-action: none;
+	-webkit-transition: top 0.2s;
+	-moz-transition: top 0.2s;
+	-ms-transition: top 0.2s;
+	-o-transition: top 0.2s;
+	transition: top 0.2s;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item {
+	position: relative;
+	padding: 0px 10px;
+	z-index: 1;
+	cursor: default;
+	margin: 1px 2px;
+	border: 1px solid #f5f5f5;
+	background-color: #f5f5f5;
+	overflow: hidden;
+	opacity: 1;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+	font-family: Tahoma, Helvetica;
+	font-size: 11px;
+	color: black;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+	-ms-touch-action: none;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_hidden {
+	height: 0px !important;
+	opacity: 0;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item:hover {
+	background-color: #f1f7ff;
+	border-color: #b9cdde;
+	z-index: 2;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected {
+	z-index: 3;
+	border-color: #a4bed4;
+	background-color: #b5deff;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: absolute;
+	left: 9px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	height: inherit;
+	line-height: inherit;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	line-height: 14px;
+	right: 5px;
+	top: 2px;
+	border-radius: 10px;
+	background-color: #ff2222;
+	border: 2px solid #f5f5f5;
+	font-family: Tahoma;
+	font-size: 10px;
+	text-align: center;
+	font-weight: bold;
+	color: white;
+	cursor: default;
+	overflow: hidden;
+	z-index: 1;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item:hover div.dhxsidebar_bubble {
+	border-color: #f1f7ff;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected div.dhxsidebar_bubble {
+	border-color: white;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side div.dhxsidebar_side_items div.dhxsidebar_sep {
+	position: relative;
+	height: 1px;
+	margin: 5px 14px;
+	overflow: hidden;
+	background: #cccccc;
+	background: -moz-linear-gradient(left,#ebebeb 0%,#cccccc 50%,#ebebeb 100%);
+	background: -webkit-gradient(linear,left top,right top,color-stop(0%,#ebebeb),color-stop(50%,#cccccc),color-stop(100%,#ebebeb));
+	background: -webkit-linear-gradient(left,#ebebeb 0%,#cccccc 50%,#ebebeb 100%);
+	background: -o-linear-gradient(left,#ebebeb 0%,#cccccc 50%,#ebebeb 100%);
+	background: -ms-linear-gradient(left,#ebebeb 0%,#cccccc 50%,#ebebeb 100%);
+	background: linear-gradient(to right,#ebebeb 0%,#cccccc 50%,#ebebeb 100%);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_touch div.dhxsidebar_side_items div.dhxsidebar_item:hover {
+	border-color: #f5f5f5;
+	background-color: #f5f5f5;
+	z-index: 1;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_touch div.dhxsidebar_side_items div.dhxsidebar_item.dhxsidebar_item_selected {
+	z-index: 3;
+	border-color: #a4bed4;
+	background-color: #b5deff;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 23px;
+	line-height: 23px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	top: 3px;
+	width: 16px;
+	height: 16px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 34px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_details div.dhxsidebar_side_items div.dhxsidebar_sep {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 43px;
+	line-height: 43px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	top: 5px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 50px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_tiles div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_bubble {
+	top: 12px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 43px;
+	line-height: 43px;
+	text-align: center;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: relative;
+	display: inline;
+	left: 0px;
+	top: 5px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons div.dhxsidebar_side_items div.dhxsidebar_sep {
+	margin: 3px 6px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 62px;
+	line-height: 1em;
+	text-align: center;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item img.dhxsidebar_item_icon {
+	position: relative;
+	display: inline;
+	left: 0px;
+	top: 4px;
+	width: 32px;
+	height: 32px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	position: relative;
+	display: block;
+	height: 16px;
+	margin-top: 10px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_icons_text div.dhxsidebar_side_items div.dhxsidebar_sep {
+	margin: 3px 6px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_text div.dhxsidebar_side_items div.dhxsidebar_item {
+	height: 23px;
+	line-height: 23px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_text div.dhxsidebar_side_items div.dhxsidebar_item div.dhxsidebar_item_text {
+	padding-left: 14px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side.dhxsidebar_tpl_text div.dhxsidebar_side_items div.dhxsidebar_sep {
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar {
+	position: absolute;
+	background-color: white;
+	margin: 0px;
+	padding: 0px;
+	overflow: hidden;
+	cursor: default;
+	z-index: 0;
+	background-image: none !important;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_cont_sidebar {
+	position: absolute;
+	border-left: 0px solid #a4bed4;
+	border-right: 1px solid #a4bed4;
+	border-bottom: 1px solid #a4bed4;
+	border-top: 1px solid #a4bed4;
+	overflow: hidden;
+	z-index: 0;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_cont_sidebar.dhx_cell_cont_no_borders {
+	border-width: 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr {
+	position: relative;
+	height: 27px;
+	line-height: 26px;
+	overflow: hidden;
+	font-weight: bold;
+	border-color: #a4bed4;
+	border-style: solid;
+	border-width: 1px 1px 0px 0px;
+	cursor: default;
+	z-index: 1;
+	font-family: Tahoma, Helvetica;
+	font-size: 11px;
+	color: #34404b;
+	background-color: #e2efff;
+	background: linear-gradient(#e2efff,#d3e7ff);
+	background: -webkit-linear-gradient(#e2efff,#d3e7ff);
+	filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#e2efff,endColorStr=#d3e7ff) progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr.dhx_cell_sidebar_hdr_hidden {
+	border-width: 0px;
+	height: 0px;
+	line-height: 0px;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_text {
+	position: relative;
+	margin: 0px 10px;
+	overflow: hidden;
+	white-space: nowrap;
+	cursor: default;
+	text-align: left;
+	height: 100%;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_text.dhx_cell_sidebar_hdr_text_icon {
+	margin-left: 34px !important;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr div.dhx_cell_sidebar_hdr_icon {
+	position: absolute;
+	top: 0px;
+	left: 10px;
+	width: 16px;
+	height: 100%;
+	background-image: url("../imgs/dhxsidebar_skyblue/dhxsidebar_side_icon.gif");
+	background-position: center center;
+	background-repeat: no-repeat;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_def {
+	position: relative;
+	overflow: hidden;
+	border-width: 0px 1px 1px 1px;
+	border-color: #a4bed4;
+	border-style: solid;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_def div.dhtmlxMenu_dhx_skyblue_Middle {
+	padding: 0px 2px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_no_borders {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_no_borders div.dhtmlxMenu_dhx_skyblue_Middle {
+	padding: 0px 2px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def div.dhx_toolbar_dhx_skyblue {
+	border-top-width: 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_tabbar.dhxtabbar_base_dhx_skyblue {
+	margin-top: -1px;
+	width: auto;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_dhx_skyblue.dhxrb_without_tabbar {
+	border-top-width: 0px;
+	width: auto;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background-color: #ddecff;
+	font-family: Tahoma, Helvetica;
+	font-size: 11px;
+	color: black;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	position: relative;
+	padding: 0px 4px;
+	height: 21px;
+	line-height: 21px;
+	border-bottom: 1px solid #a4bed4;
+	border-left: 1px solid #a4bed4;
+	border-right: 1px solid #a4bed4;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_bar {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index: 5;
+	opacity: 0.75;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=75);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_img {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	border: 1px solid #a4bed4;
+	background-position: center 55%;
+	background-image: url('../imgs/dhxsidebar_skyblue/dhxsidebar_cell_progress.gif');
+	background-repeat: no-repeat;
+	cursor: progress;
+	z-index: 6;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_menu_def {
+	border-width: 1px 1px 0px 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_toolbar_def div.dhx_toolbar_dhx_skyblue {
+	border-width: 1px 1px 0px 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhxrb_with_itembar.dhxtabbar_base_dhx_skyblue {
+	margin-left: -1px;
+	margin-bottom: -1px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_dhx_skyblue.dhxrb_without_tabbar {
+	border-width: 1px 1px 0px 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhx_cell_sidebar div.dhx_cell_progress_img {
+	border-left-width: 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_cont_sidebar,
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_sidebar_hdr,
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_menu_def,
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_toolbar_def div.dhx_toolbar_dhx_skyblue,
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_ribbon_def div.dhtmlxribbon_dhx_skyblue.dhxrb_without_tabbar,
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhx_cell_sidebar div.dhx_cell_statusbar_def div.dhx_cell_statusbar_text {
+	border-left-width: 1px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide {
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhxsidebar_side {
+	-webkit-transition: left 0.2s;
+	-moz-transition: left 0.2s;
+	-ms-transition: left 0.2s;
+	-o-transition: left 0.2s;
+	transition: left 0.2s;
+	box-shadow: 0px 2px 8px rgba(127,127,127,0.4);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont.dhxsidebar_autohide div.dhxsidebar_arrows {
+	-webkit-transition: left 0.2s;
+	-moz-transition: left 0.2s;
+	-ms-transition: left 0.2s;
+	-o-transition: left 0.2s;
+	transition: left 0.2s;
+	box-shadow: 0px 4px 6px rgba(127,127,127,0.4);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side_cover {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background-color: #fff;
+	z-index: 3;
+	-webkit-transition: opacity 0.3s;
+	-moz-transition: opacity 0.3s;
+	-ms-transition: opacity 0.3s;
+	-o-transition: opacity 0.3s;
+	transition: opacity 0.3s;
+	opacity: 0.0001;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_side_cover.dhxsidebar_side_cover_actv {
+	opacity: 0.6;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=60);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows {
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	height: 24px;
+	border-color: #a4bed4;
+	border-style: solid;
+	border-width: 1px 1px 1px 1px;
+	font-size: 1px;
+	overflow: hidden;
+	z-index: 6;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+	-ms-touch-action: none;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows.dhxsidebar_arrows_hidden {
+	height: 0px;
+	border-width: 0px 1px 1px 1px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow {
+	position: absolute;
+	width: 50%;
+	height: 100%;
+	top: 0px;
+	font-size: 1px;
+	overflow: hidden;
+	z-index: 1;
+	background-color: #e2efff;
+	background: linear-gradient(#e2efff,#d3e7ff);
+	background: -webkit-linear-gradient(#e2efff,#d3e7ff);
+	filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#e2efff,endColorStr=#d3e7ff) progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_left {
+	left: 0px;
+	border-right: 1px solid #a4bed4;
+	z-index: 2;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_left div.dhxsidebar_arrow_image {
+	background-image: url("../imgs/dhxsidebar_skyblue/dhxsidebar_arrow_up.gif");
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_right {
+	right: 0px;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow.dhxsidebar_arrow_right div.dhxsidebar_arrow_image {
+	background-image: url("../imgs/dhxsidebar_skyblue/dhxsidebar_arrow_down.gif");
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow div.dhxsidebar_arrow_image {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-repeat: no-repeat;
+	background-position: center center;
+	font-size: 1px;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxsidebar_cont div.dhxsidebar_arrows div.dhxsidebar_arrow:active {
+	background-color: #d2e7fe;
+	background: linear-gradient(#d2e7fe,#d3e7ff);
+	background: -webkit-linear-gradient(#d2e7fe,#d3e7ff);
+	filter: progid:DXImageTransform.Microsoft.Gradient(gradientType=0,startColorStr=#d2e7fe,endColorStr=#d3e7ff) progid:DXImageTransform.Microsoft.Alpha(opacity=100);
+	box-shadow: 0 0 5px rgba(127,127,127,0.15) inset;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_progress {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-color: white;
+	z-index: 3;
+	opacity: 0.55;
+	filter: progid:DXImageTransform.Microsoft.Alpha(opacity=55);
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_progress_img {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	background-image: url('../imgs/dhxsidebar_skyblue/dhxsidebar_cell_progress.gif');
+	background-position: center center;
+	background-repeat: no-repeat;
+	z-index: 4;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_hdr {
+	position: relative;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_ftr {
+	position: absolute;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_menu {
+	position: relative;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_toolbar {
+	position: relative;
+	background-color: #ebebeb;
+	padding-bottom: 4px;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_ribbon {
+	padding-bottom: 4px;
+	position: relative;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_ribbon div.dhtmlxribbon_dhx_skyblue.dhxrb_without_tabbar {
+	width: auto;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_statusbar {
+	position: absolute;
+	bottom: 0px;
+	width: 100%;
+	background-color: #ebebeb;
+	overflow: hidden;
+}
+.dhxsidebar_base_dhx_skyblue div.dhxcelltop_statusbar div.dhxcont_statusbar {
+	position: relative;
+	margin-top: 4px;
+	border: 1px solid #a4bed4;
+	background-color: #ddecff;
+	padding: 7px 6px;
+	font-family: Tahoma, Helvetica;
+	font-size: 11px;
+	color: black;
+}
+.dhxsidebar_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 10px;
+	height: 10px;
+	overflow: hidden;
+}

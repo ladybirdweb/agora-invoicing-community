@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Switch to next/prev item</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		div#sidebarObj {
+			position: relative;
+			margin-left: 10px;
+			margin-top: 10px;
+			width: 600px;
+			height: 450px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 1px 3px rgba(0,0,0,0.09);
+		}
+		div.demo_links {
+			margin: 25px 9px;
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+		}
+		div.demo_links button {
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			margin-left: 5px;
+		}
+	</style>
+	<script>
+		var mySidebar;
+		function doOnLoad() {
+			mySidebar = new dhtmlXSideBar({
+				parent: "sidebarObj",
+				icons_path: "../common/icons_material/",
+				width: 160,
+				json: "../common/sidebar.json"
+			});
+		}
+		function changeSelectedItem(dir) {
+			if (dir > 0) {
+				mySidebar.goToNextItem();
+			} else {
+				mySidebar.goToPrevItem();
+			}
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="sidebarObj"></div>
+	<div class="demo_links">
+		Change selected item
+		<button onclick="changeSelectedItem(-1);">Prev</button>
+		<button onclick="changeSelectedItem(1);">Next</button>
+	</div>
+</body>
+</html>

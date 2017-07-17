@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>StackedArea</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.dhx_axis_item_x{
+			font-size: 10px
+		}
+		.dhx_axis_item_y{
+			font-size: 10px
+		}
+	</style>
+	<script>
+		var data = [
+			{ sales:3.0, sales1:2.8, sales2:3.9, year:"2000" },
+			{ sales:3.8, sales1:2.5, sales2:2.0, year:"2001" },
+			{ sales:3.4, sales1:1.7, sales2:3.1, year:"2002" },
+			{ sales:4.1, sales1:2.7, sales2:3.5, year:"2003" },
+			{ sales:4.3, sales1:3.6, sales2:4.0, year:"2004" },
+			{ sales:7.6, sales1:3.1, sales2:4.9, year:"2005" },
+			{ sales:7.8, sales1:3.9, sales2:5.2, year:"2006" },
+			{ sales:7.2, sales1:3.6, sales2:5.6, year:"2007" },
+			{ sales:5.3, sales1:2.9, sales2:4.1, year:"2008" },
+			{ sales:4.8, sales1:2.1, sales2:3.9, year:"2009" }
+		];
+		var myAreaChart;
+		function doOnLoad() {
+			myAreaChart =  new dhtmlXChart({
+				view:"stackedArea",
+				container:"chartbox",
+				value:"#sales#",
+				color:"#00ccff",
+				alpha:0.6,
+				padding:{
+					left:30
+				},
+				yAxis:{},
+				xAxis:{
+					lines:true,
+					title:"sales per year",
+					template:"#year#"
+				},
+				legend:{
+						layout:"x",
+						width: 75,
+						align:"center",
+						valign:"top",
+						marker:{
+							type:"round",
+							width:15
+						},
+						values:[
+							{text:"company A",color:"#00ccff"},
+							{text:"company B",color:"#0000ff"},
+							{text:"company C",color:"#cc33ff"}
+						]
+					}
+			});
+			myAreaChart.addSeries({
+				value:"#sales1#",
+				color:"#0000ff"
+			});
+			myAreaChart.addSeries({
+				value:"#sales2#",
+				color:"#cc33ff"
+			});
+			myAreaChart.parse(data,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartbox" style="width:470px;height:300px;border:1px solid #c0c0c0;"></div>
+</body>
+</html>

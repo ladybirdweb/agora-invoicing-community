@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Stacked Horizontal Bars</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart =  new dhtmlXChart({
+				view:"stackedBarH",
+				container:"chartDiv",
+				value:"#sales#",
+				label:"#sales#",
+				color: "#58dccd",
+				barWidth:60,
+				alpha:0.8,
+				xAxis:{
+				},
+				yAxis:{
+					lines:true,
+					template:"'#year#"
+				},
+				legend:{
+					values:[{text:"Type A",color:"#58dccd"},{text:"Type B",color:"#a7ee70"},{text:"Type C",color:"#36abee"}],
+					valign:"top",
+					align:"center",
+					width:90,
+					layout:"x"
+				}
+			});
+			myBarChart.addSeries({
+				value:"#sales2#",
+				color:"#a7ee70",
+				label:"#sales2#"
+			});
+			myBarChart.addSeries({
+				value:"#sales3#",
+				color:"#36abee",
+				label:"#sales3#"
+			});
+			myBarChart.parse(multiple_dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chartDiv" style="width:500px;height:350px;border:1px solid #c0c0c0;margin:20px"></div>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Header/footer</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../../codebase/dhtmlx.css"/>
+	<script src="../../../../codebase/dhtmlx.js"></script>
+	<style>
+		html, body {
+			width: 100%;
+			height: 100%;
+			margin: 0px;
+			padding: 0px;
+			overflow: hidden;
+		}
+		.my_hdr {
+			background-color: white;
+			padding-bottom: 9px;
+		}
+		.my_ftr {
+			background-color: white;
+			padding-top: 9px;
+		}
+		.my_hdr .text,
+		.my_ftr .text {
+			font-family: Roboto, Arial, Helvetica;
+			font-size: 14px;
+			color: #404040;
+			padding: 5px 10px;
+			height: 70px;
+			border: 1px solid #dfdfdf;
+		}
+	</style>
+	<script>
+		
+		var myLayout;
+		function doOnLoad() {
+			myLayout = new dhtmlXLayoutObject({parent: document.body, pattern: "3L"});
+			myLayout.cells("a").attachObject("controls");
+			document.getElementById("my_logo").style.display = "none";
+			document.getElementById("my_copy").style.display = "none";
+			
+		}
+		function attachHeader() {
+			document.getElementById("my_logo").style.display = "";
+			myLayout.attachHeader("my_logo");
+		}
+		function attachFooter() {
+			document.getElementById("my_copy").style.display = "";
+			myLayout.attachFooter("my_copy");
+		}
+		function detachHeader() {
+			myLayout.detachHeader();
+			document.getElementById("my_logo").style.display = "none";
+		}
+		function detachFooter() {
+			myLayout.detachFooter();
+			document.getElementById("my_copy").style.display = "none";
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="my_logo" class="my_hdr"><div class="text">Hi! I'm header!</div></div>
+	<div id="my_copy" class="my_ftr"><div class="text">Hi! I'm copyright &copy;!</div></div>
+	<div id="controls">
+		<div style="margin:20px;">
+			<input type="button" value="attach header" onclick="attachHeader();">
+			<input type="button" value="detach header" onclick="detachHeader();">
+			<br><br>
+			<input type="button" value="attach footer" onclick="attachFooter();">
+			<input type="button" value="detach footer" onclick="detachFooter();">
+		</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<doctype html>
+
+<html>
+<head>
+	<title>Skin material</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+</head>
+<body>
+	<script type="text/javascript">
+		dhtmlx.message({ text:"Test Message", expire:-1});
+		dhtmlx.message({ text:"Test Error Message", expire:-1, type:"error"});
+		dhtmlx.confirm({ 
+			title:"Title Here", text:"Test confirm",
+			callback:function(){
+				dhtmlx.alert("Test alert", function(){
+					dhtmlx.confirm({ type:"confirm-error", title:"Title Here", text:"Test confirm" });
+				});	
+			}
+		});
+	</script>	
+</body>
+</html>

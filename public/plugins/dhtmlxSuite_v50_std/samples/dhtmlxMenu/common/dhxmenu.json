@@ -1,0 +1,30 @@
+[
+	{id:"file", text:"File", items:[
+		{id: "new", text: "New", img: "new.gif", imgdis: "new_dis.gif"},
+		{id: "file_sep_1", type: "separator"},
+		{id: "open", text: "Open", img: "open.gif", imgdis: "open_dis.gif"},
+		{id: "save", text: "Save", img: "save.gif", imgdis: "save_dis.gif"},
+		{id: "saveAs", text: "Save As...", img: "save_as.gif", imgdis: "save_as_dis.gif", enabled: false},
+		{id: "file_sep_2", type: "separator"},
+		{id: "print", text: "Print", img: "print.gif", imgdis: "print_dis.gif"},
+		{id: "pageSetup", text: "Page Setup", img: "page_setup.gif", imgdis: "page_setup_dis.gif", enabled: "false"},
+		{id: "file_sep_3", type: "separator"},
+		{id: "close", text: "Close", img: "close.gif", imgdis: "close_dis.gif"}
+	]},
+	{id: "sep_top_1", type: "separator"},
+	{id: "edit", text: "Edit", items:[
+		{id: "undo", text: "Undo", img: "undo.gif", imgdis: "undo_dis.gif"},
+		{id: "redo", text: "Redo", img: "redo.gif", imgdis: "redo_dis.gif"},
+		{id: "edit_sep_1", type: "separator"},
+		{id: "selectAll", text: "Select All", img: "select_all.gif", imgdis: "select_all_dis.gif"},
+		{id: "edit_sep_2", type: "separator"},
+		{id: "cut", text: "Cut", img: "cut.gif", imgdis: "cut_dis.gif"},
+		{id: "copy", text: "Copy", img: "copy.gif", imgdis: "copy_dis.gif"},
+		{id: "paste", text: "Paste", img: "paste.gif", imgdis: "paste_dis.gif"}
+	]},
+	{id: "help", text: "Help", items:[
+		{id: "about", text: "About...", img: "about.gif", imgdis: "about_dis.gif"},
+		{id: "needhelp", text: "Help", img: "help.gif", imgdis: "help_dis.gif"},
+		{id: "bugReporting", text: "Bug Reporting", img: "bug_reporting.gif", imgdis: "bug_reporting_dis.gif"}
+	]}
+]

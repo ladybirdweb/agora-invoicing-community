@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="*" type="ro" align="left" sort="str">Filename</column>
+		<column width="60" type="ro" align="left" sort="int">Done</column>
+		<column width="90" type="ro" align="left" sort="int">Started</column>
+	</head>
+	<row id="1">
+		<cell>dhtmlxSuite_v412_pro.zip</cell>
+		<cell>36%</cell>
+		<cell>14 min ago</cell>
+	</row>
+	<row id="2">
+		<cell>dhxweb_icons.zip</cell>
+		<cell>12%</cell>
+		<cell>27 min ago</cell>
+	</row>
+	<row id="3">
+		<cell>debian-live-7.7.0-amd64-rescue.iso</cell>
+		<cell>98%</cell>
+		<cell>1 day ago</cell>
+	</row>
+</rows>

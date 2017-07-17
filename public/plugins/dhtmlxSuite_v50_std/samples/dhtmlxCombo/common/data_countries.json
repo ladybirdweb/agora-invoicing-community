@@ -1,0 +1,17 @@
+{
+	options: [
+		{value: "1", img: "austria.png", img_dis: "dis/austria.png", text: "Austria"},
+		{value: "2", img: "belarus.png", img_dis: "dis/belarus.png", text: "Belarus"},
+		{value: "3", img: "cameroon.png", img_dis: "dis/cameroon.png", text: "Cameroon"},
+		{value: "4", img: "canada.png", img_dis: "dis/canada.png", text: "Canada"},
+		{value: "5", img: "china.png", img_dis: "dis/china.png", text: "China"},
+		{value: "6", img: "czech_republic.png", img_dis: "dis/czech_republic.png", text: "Czech Republic"},
+		{value: "7", img: "denmark.png", img_dis: "dis/denmark.png", selected: "1", text: "Denmark"},
+		{value: "8", img: "finland.png", img_dis: "dis/finland.png", text: "Finland"},
+		{value: "9", img: "germany.png", img_dis: "dis/germany.png", text: "Germany"},
+		{value: "a", img: "britain.png", img_dis: "dis/britain.png", text: "Great Britain"},
+		{value: "b", img: "hungary.png", img_dis: "dis/hungary.png", text: "Hungary"},
+		{value: "c", img: "italy.png", img_dis: "dis/italy.png", text: "Italy"},
+		{value: "d", img: "us.png", img_dis: "dis/us.png", text: "United States"}
+	]
+}

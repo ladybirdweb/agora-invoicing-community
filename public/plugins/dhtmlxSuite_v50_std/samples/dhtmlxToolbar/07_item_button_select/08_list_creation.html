@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Listed option creation</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var sel;
+		var sel2;
+		var img;
+		var lastImg;
+		var myToolbar;
+		function doOnLoad() {
+			sel = document.getElementById("sel");
+			sel2 = document.getElementById("sel2");
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar_buttonselect.xml",
+				onload: updateList
+			});
+			img = "text_document.gif";
+			lastImg = document.getElementById("text_document");
+		}
+		function getId(selObj) {
+			var id = selObj.options[selObj.selectedIndex].value;
+			return id;
+		}
+		function changeImage(imgObj) {
+			img = imgObj.id;
+			imgObj.style.border = "#707070 1px solid";
+			lastImg.style.border = "#E0E0E0 1px solid";
+			lastImg = imgObj;
+		}
+		function removeItem() {
+			if (sel2.options.length == 0) { return; }
+			var id = getId(sel2).split(";");
+			myToolbar.removeListOption(id[0], id[1]);
+			updateList();
+		}
+		function add() {
+			var itemId = getId(sel);
+			var pos = Number(document.getElementById("txt1").value);
+			var text = document.getElementById("txt2").value;
+			id = new Date().getTime();
+			myToolbar.addListOption(itemId, id, pos, "button", text, lastImg.id+".gif");
+			updateList();
+		}
+		function updateList() {
+			sel.options.length = 0;
+			sel2.options.length = 0;
+			myToolbar.forEachItem(function(itemId){
+				if (myToolbar.getType(itemId) == "buttonSelect") {
+					sel.options.add(new Option(itemId, itemId));
+					myToolbar.forEachListOption(itemId, function(listId){
+						sel2.options.add(new Option(itemId+" - "+listId, itemId+";"+listId));
+					});
+				}
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="toolbarObj"></div>
+	<div style="margin-top: 200px;">
+		<table border="0" cellspacing="0" cellpading="2">
+			<tr>
+				<td style="padding-right: 5px;">Select Parent:</td>
+				<td><select id="sel"></select></td>
+			</tr>
+			<tr>
+				<td style="padding-right: 5px; padding-left: 5px;">Position:</td>
+				<td><input id="txt1" type="text" value="1" style="width: 30px;"></td>
+			</tr>
+			<tr>
+				<td style="padding-right: 5px; padding-left: 5px;">Title:</td>
+				<td><input id="txt2" type="text" value="New Listed Option"></td>
+			</tr>
+			<tr>
+				<td style="padding-right: 5px; padding-left: 5px;">Select Image:</td>
+				<td><table cellspacing="0" cellpadding="2" border="0"><tr>
+					<td><img id="text_document" onclick="changeImage(this);" src="../common/imgs/text_document.gif" style="border: #707070 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="stylesheet"    onclick="changeImage(this);" src="../common/imgs/stylesheet.gif"    style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="database"      onclick="changeImage(this);" src="../common/imgs/database.gif"      style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="presentation"  onclick="changeImage(this);" src="../common/imgs/presentation.gif"  style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="other"         onclick="changeImage(this);" src="../common/imgs/other.gif"         style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="page"          onclick="changeImage(this);" src="../common/imgs/page.gif"          style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="page_range"    onclick="changeImage(this);" src="../common/imgs/page_range.gif"    style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="selection"     onclick="changeImage(this);" src="../common/imgs/selection.gif"     style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+					<td><img id="settings"      onclick="changeImage(this);" src="../common/imgs/settings.gif"      style="border: #E0E0E0 1px solid; width: 16px; height: 16px; cursor: pointer;"></td>
+				</tr></table></td>
+			</tr>
+			<tr>
+				<td style="padding-right: 5px; padding-left: 5px;">Add?</td>
+				<td><input type="button" value="Add Listed Option" onclick="add();"></td>
+			</tr>
+		</table>
+	</div>
+	<div style="margin-top: 20px;">
+		<select id="sel2"></select>
+		<input type="button" value="Remove" onclick="removeItem();">
+	</div>
+</body>
+</html>

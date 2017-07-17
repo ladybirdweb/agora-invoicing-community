@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Icons size in accordion</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		
+		var myToolbar;
+		var tbIconSize = null;
+		var tbXML = "dhxtoolbar_button.xml";
+		var myAcc;
+		var myGrid;
+		var loadData = {};
+		
+		function doOnLoad() {
+			
+			myAcc = new dhtmlXAccordion({
+				parent: "accObj",
+				icon_path: "../../dhtmlxAccordion/common/icons/",
+				multi_mode: true,
+				items: [{id: "a1", text: "Hi", img: "flag_red.png", height: 230},
+					{id: "a2", text: "How", open: false, img: "flag_green.png"},
+					{id: "a3", text: "are you?", open: false, img: "flag_blue.png"}]
+			});
+			myAcc.cont.style.backgroundColor = "white";
+			//
+			myGrid = myAcc.cells("a1").attachGrid();
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.load("../common/grid.xml");
+			
+			myToolbar = myAcc.cells("a1").attachToolbar();
+			myToolbar.attachEvent("onXLE", function(){
+				loadData.toolbar = true;
+			});
+			loadToolbar(tbIconSize||18, true);
+		}
+		
+		function loadToolbar(size, force) {
+			if (tbIconSize == size && force !== true) return;
+			if (!checkLoadState()) return;
+			loadData.toolbar = false;
+			myToolbar.clearAll();
+			myToolbar.setIconSize(size);
+			myToolbar.setIconsPath("../common/icon_size/material/"+size+"/");
+			myToolbar.loadStruct("../common/"+tbXML);
+			tbIconSize = size;
+		}
+		function setXML(xml) {
+			if (tbXML == xml) return;
+			if (!checkLoadState()) return;
+			loadData.toolbar = false;
+			tbXML = xml;
+			myToolbar.clearAll();
+			myToolbar.loadStruct("../common/"+tbXML);
+		}
+		function checkLoadState() {
+			var s = true;
+			for (var a in loadData) s = s&&loadData[a];
+			return s;
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="padding-bottom: 10px;">
+		<input type="button" value="18" onclick="loadToolbar(18);">
+		<input type="button" value="24" onclick="loadToolbar(24);">
+		<input type="button" value="32" onclick="loadToolbar(32);">
+		<input type="button" value="48" onclick="loadToolbar(48);">
+		&nbsp;&nbsp;&nbsp;
+		<input type="button" value="with labels" onclick="setXML('dhxtoolbar_button.xml');">
+		<input type="button" value="without labels" onclick="setXML('dhxtoolbar_button2.xml');">
+	</div>
+	<div id="accObj" style="position: relative; width: 360px; height: 600px;"></div>
+</body>
+</html>

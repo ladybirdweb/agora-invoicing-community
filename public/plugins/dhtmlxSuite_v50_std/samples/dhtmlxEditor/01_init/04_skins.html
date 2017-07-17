@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Skins</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/skyblue/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/web/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../skins/terrace/dhtmlx.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		 div#editorObj {
+		 	 width: 100%;
+		 	 height: 300px;
+		 	 border: 1px solid #dfdfdf;
+		 }
+	</style>
+	<script>
+		var myEditor;
+		var myEditorSkin = "material";
+		function doOnLoad() {
+			myEditor = new dhtmlXEditor({
+				parent: "editorObj",
+				toolbar: true, // force dhtmlxToolbar using
+				iconsPath: "../../../codebase/imgs/", // path for toolbar icons
+				skin: myEditorSkin,
+				content: "<b>Lorem ipsum </b>dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud <u>exercitation ullamco laboris nisi ut aliquip ex ea commodo </u>consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. <i>Excepteur sint occaecat cupidatat non proident</i>, sunt in culpa qui officia deserunt mollit anim id est laborum."
+			});
+		}
+		function setSkin(skin) {
+			if (myEditorSkin == skin) return;
+			myEditor.setSkin(skin);
+			myEditorSkin = skin;
+			document.getElementById("editorObj").style.border = "1px solid "+{dhx_skyblue:"#a4bed4", dhx_web: "#8b8b8b", dhx_terrace:"#cecece", material: "#dfdfdf"}[skin];
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="editorObj"></div>
+	<div>
+		<br>
+		<button onclick='setSkin("dhx_skyblue")'>skyblue</button>
+		<button onclick='setSkin("dhx_web")'>web</button>
+		<button onclick='setSkin("dhx_terrace")'>terrace</button>
+		<button onclick='setSkin("material")'>material</button>
+	</div>
+</body>
+</html>

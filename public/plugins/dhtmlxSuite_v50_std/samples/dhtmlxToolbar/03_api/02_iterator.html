@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Iterator</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myToolbar;
+		function doOnLoad(){
+			myToolbar = new dhtmlXToolbarObject({
+				parent: "toolbarObj",
+				icons_path: "../common/imgs/",
+				xml: "../common/dhxtoolbar.xml"
+			});
+		}
+		function en() {
+			myToolbar.forEachItem(function(id){
+				myToolbar.enableItem(id);
+			});
+		}
+		function dis() {
+			myToolbar.forEachItem(function(id){
+				myToolbar.disableItem(id);
+			});
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div style="height: 150px;">
+		<div id="toolbarObj"></div>
+	</div>
+	<input type="button" value="Enable All" onclick="en();">
+	<input type="button" value="Disable All" onclick="dis();">
+</body>
+</html>

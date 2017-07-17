@@ -1,0 +1,40 @@
+#box1 div.gridbox{
+	overflow:hidden;
+}
+#box1 div.gridbox .xhdr{
+	background-Color:white;
+}
+#box1 div.gridbox table.hdr td {
+	font-family:verdana;
+	font-size:14px;
+	background-Color:orange;          
+	color:blue;
+	border: 1px solid;
+	border-color : orange Gray orange orange;
+	text-align: center;
+	padding:5px 0px 5px 0px ;
+	margin:0px;
+	font-weight:bold;
+	}
+#box1 div.gridbox table.obj td {
+	border: 1px solid;
+	border-color : #fff0f5 #fff0f5 #fff0f5 #fff0f5;
+	background-color:#fff0f5;
+	font-family:verdana;
+	font-size:14px;
+	
+	}
+#box1 div.gridbox .objbox {
+	background-color:white;
+	}
+#box1 div.gridbox table.obj td span.space, div.gridbox table.obj td img.space{
+	width:18px;
+	}
+#box1 div.gridbox table.obj tr.rowselected td.cellselected, div.gridbox table.obj td.cellselected {
+	background-color:#8a2be2;
+	color:white;
+	}
+#box1 div.gridbox table.obj tr.rowselected td{
+	background-color:#d2691e;
+	color:blue;
+	}

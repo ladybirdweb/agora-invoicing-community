@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Copy to clipboard</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		.dhtmlxGrid_selection {
+			-moz-opacity: 0.5;
+			filter: alpha(opacity = 50);
+			background-color:#83abeb;
+			opacity:0.5;
+		}
+	</style>
+	<script>
+		var myGrid;
+		function doOnLoad(){
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.setHeader("Sales,Book Title,Author,Price,In Store,Shipping,Bestseller,Date of Publication");
+			myGrid.setInitWidths("80,150,100,80,80,80,80,100");
+			myGrid.setColAlign("right,left,left,right,center,left,center,center");
+			myGrid.setColTypes("dyn,ed,ed,price,ch,co,ra,ro");
+			myGrid.setColSorting("int,str,str,int,str,str,str,date");
+			myGrid.enableAlterCss("even","uneven");
+			myGrid.attachEvent("onKeyPress",onKeyPressed);
+			myGrid.attachEvent("onBeforeSelect",function(){ return false; });
+			myGrid.init();
+			myGrid.load("../common/grid.xml");
+			myGrid.enableBlockSelection();
+		}
+		function onKeyPressed(code,ctrl,shift){
+			if(code==67&&ctrl){
+				if (!myGrid._selectionArea) return alert("You need to select a block area in grid first");
+					myGrid.setCSVDelimiter("\t");
+					myGrid.copyBlockToClipboard()
+				}
+				if(code==86&&ctrl){
+					myGrid.setCSVDelimiter("\t");
+					myGrid.pasteBlockFromClipboard()
+				}
+			return true;
+		}
+		function showClipboard(){
+			if (window.clipboardData)
+				document.getElementById("ser_1").value = window.clipboardData.getData("Text");
+		}
+		window.onerror=function(){
+			alert("Clipboard operations not enabled in your browser.");
+			window.open("http://www.febooti.com/support/website-help/website-javascript-copy-clipboard.html","_blank");
+		}
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<h1>Clipboard</h1>
+	<p>To select area in grid press left mouse button and move mouse to spread selection.<br/>
+		Press Ctrl+C to copy selected rows into the clipboard,  Ctrl+V to replace selected rows by rows from clipboard.</br> You can paste selected rows to eXcell. </p>
+	<table width="100%">
+		<tr>
+			<td width="400px" valign="top">
+				<div id="gridbox" style="width: 767px; height:315px; background-color:white;overflow:hidden"></div>
+			</td>
+			<td width="400px">
+				<textarea style="font-size:8pt; font-family:Arial; width:400px; height:313px;" id="ser_1"></textarea>
+			</td>
+		</tr>
+		<tr>
+			<td></td>
+			<td>
+				<div><a href="#" onClick="showClipboard()">show clipboard</a></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

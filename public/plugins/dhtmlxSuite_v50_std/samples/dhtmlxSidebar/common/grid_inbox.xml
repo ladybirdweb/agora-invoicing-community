@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rows>
+	<head>
+		<column width="120" type="ro" align="left" sort="str">From</column>
+		<column width="*" type="ro" align="left" sort="str">Subject</column>
+		<column width="90" type="ro" align="left" sort="date">Date</column>
+	</head>
+	<row id="1" style="font-weight: 500; color: #3399cc;">
+		<cell>Gary Welch</cell>
+		<cell>Preliminary floor plans</cell>
+		<cell>2015-03-10</cell>
+	</row>
+	<row id="2" style="font-weight: 500; color: #3399cc;">
+		<cell>Derek Love</cell>
+		<cell>Your website stats</cell>
+		<cell>2015-03-09</cell>
+	</row>
+	<row id="3" style="font-weight: 500; color: #3399cc;">
+		<cell>Troy Suarez</cell>
+		<cell>Important travel information</cell>
+		<cell>2015-03-07</cell>
+	</row>
+	<row id="4">
+		<cell>Dean Williams</cell>
+		<cell>Magazine reader survey</cell>
+		<cell>2015-03-01</cell>
+	</row>
+	<row id="5">
+		<cell>Manuel Ponce</cell>
+		<cell>Final reminder</cell>
+		<cell>2015-02-19</cell>
+	</row>
+	<row id="6">
+		<cell>Gregory Foster</cell>
+		<cell>Summer training camp</cell>
+		<cell>2015-02-18</cell>
+	</row>
+</rows>

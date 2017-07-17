@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Events</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart =  new dhtmlXChart({
+				view:"bar",
+				container:"chart1",
+				value:"#sales#",
+				radius:2,
+				gradient:"rising",
+				width:40,
+				tooltip:{
+					template:"#sales#"
+				},
+				yAxis:{
+					start:0,
+					end:100,
+					step:10,
+					template:function(value){
+						return value%20?"":value
+					}
+				},
+				xAxis:{
+					template:"'#year#"
+				}
+			});
+			myBarChart.parse(dataset,"json");
+			myBarChart.attachEvent("onMouseMove", function(id){
+				id = myBarChart.get(id).year;
+				log("onMouseMove", id);
+				return true;
+			});
+			myBarChart.attachEvent("onMouseOut", function(){
+				log("onMouseOut");
+				return true;
+			});
+
+			myBarChart.attachEvent("onItemClick", function(id){
+				id = myBarChart.get(id).year;
+				log("onItemClick", id);
+				return true;
+			});
+			myBarChart.attachEvent("onItemDblClick", function(id){
+				id = myBarChart.get(id).year;
+				log("onItemDblClick", id);
+				return true;
+			});
+		}
+		function log(name, id){
+			var t = document.createElement("DIV");
+			t.innerHTML = name+(id?" for element "+id:"");
+			var p = document.getElementById("log_div");
+			p.insertBefore(t, p.firstChild);
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="chart1" style="width:600px;height:250px;border:1px solid #c0c0c0;"></div>
+	<div id="log_div" style="widht:950px; height:300px; font-family:Tahoma;overflow:auto"></div>
+</body>
+</html>

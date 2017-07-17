@@ -1,0 +1,330 @@
+/*
+Product Name: dhtmlxSuite 
+Version: 5.0 
+Edition: Standard 
+License: content of this file is covered by GPL. Usage outside GPL terms is prohibited. To obtain Commercial or Enterprise license contact sales@dhtmlx.com
+Copyright UAB Dinamenta http://www.dhtmlx.com
+*/
+
+/*
+	skin detected: dhx_terrace
+	include extra file: skins/dhx_terrace.less
+*/
+
+div.dhxcombo_dhx_terrace {
+	position: relative;
+	border: 1px solid #cccccc;
+	overflow: hidden;
+	vertical-align: middle;
+	background-color: white;
+	font-size: 1px;
+	height: 24px;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+div.dhxcombo_dhx_terrace input.dhxcombo_input {
+	position: absolute;
+	left: 1px;
+	top: 0px;
+	*top: 1px;
+	height: 24px;
+	line-height: 23px;
+	*height: 22px;
+	*line-height: 21px;
+	border: 0px solid white;
+	outline: 0px solid white;
+	padding: 0px;
+	margin: 0px 0px 0px 2px;
+	background-color: white;
+	vertical-align: top;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: black;
+}
+div.dhxcombo_dhx_terrace input.dhxcombo_input::-ms-clear {
+	display: none;
+}
+div.dhxcombo_dhx_terrace div.dhxcombo_select_button {
+	position: absolute;
+	width: 16px;
+	height: 17px;
+	top: 4px;
+	right: 2px;
+	font-size: 1px;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+}
+div.dhxcombo_dhx_terrace div.dhxcombo_select_button div.dhxcombo_select_img {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	background-image: url("../imgs/dhxcombo_terrace/dhxcombo_arrow_down.gif");
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+div.dhxcombo_dhx_terrace div.dhxcombo_top_image {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	width: 23px;
+	height: 25px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombo_dhx_terrace div.dhxcombo_top_image div.dhxcombo_image {
+	top: 4px;
+	*top: 3px;
+}
+div.dhxcombolist_dhx_terrace {
+	position: absolute;
+	border: 1px solid #cccccc;
+	box-shadow: 0 3px 5px rgba(127,127,127,0.35);
+	background-color: #f5f5f5;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow-x: none;
+	overflow-y: auto;
+	-webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option {
+	position: relative;
+	font-size: inherit;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	color: #333333;
+	height: 27px;
+	line-height: 27px;
+	vertical-align: middle;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option.dhxcombo_option_selected {
+	background-color: #fff3a1;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option.dhxcombo_option_selected .dhxcombo_option_text {
+	color: black;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_option_text {
+	position: relative;
+	padding: 0px 4px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_option_text.dhxcombo_option_text_chbx {
+	position: relative;
+	padding: 0px 4px 0px 4px;
+	margin-left: 20px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_checkbox {
+	position: absolute;
+	left: 3px;
+	width: 18px;
+	height: 18px;
+	background-image: url("../imgs/dhxcombo_terrace/dhxcombo_chbx.gif");
+	background-repeat: no-repeat;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_checkbox {
+	top: 5px;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_chbx_1 {
+	background-position: 0px 0px;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_checkbox.dhxcombo_chbx_0 {
+	background-position: -18px 0px;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_option_text.dhxcombo_option_text_image {
+	position: relative;
+	padding: 0px 4px 0px 4px;
+	margin-left: 20px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	white-space: nowrap;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_image {
+	top: 5px;
+}
+div.dhxcombo_dhx_terrace div.dhxcombo_top_image div.dhxcombo_image,
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_image {
+	position: absolute;
+	top: 3px;
+	left: 3px;
+	width: 18px;
+	height: 18px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	overflow: hidden;
+	cursor: default;
+}
+div.dhxcombolist_dhx_terrace div.dhxcombo_option div.dhxcombo_image {
+	top: 5px;
+}
+div.dhxcombo_dhx_terrace.dhxcombo_disabled {
+	border: 1px solid #d4d4d4;
+	background-color: #fcfcfc;
+}
+div.dhxcombo_dhx_terrace.dhxcombo_disabled input.dhxcombo_input {
+	color: #bbbbbb;
+	background-color: #fcfcfc;
+}
+div.dhxcombo_dhx_terrace.dhxcombo_disabled div.dhxcombo_select_button div.dhxcombo_select_img {
+	background-image: url("../imgs/dhxcombo_terrace/dhxcombo_arrow_down_dis.gif");
+	cursor: default;
+}
+.dhxgrid_combo_icon {
+	position: absolute;
+	z-index: 1;
+	top: 0px;
+	right: 0px;
+}
+div.dhxcombo_in_grid_parent {
+	position: relative;
+	height: 100%;
+	top: 0px;
+}
+div.dhxcombo_in_grid_parent div.dhxcombo_dhx_terrace {
+	position: absolute;
+	top: 3px;
+	left: -22px;
+	border-color: #fff3a1;
+}
+div.dhxcombo_in_grid_parent input.dhxcombo_input {
+	border-left: 20px solid white;
+	font-family: Arial;
+	font-size: 12px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr {
+	border-bottom-width: 0px;
+	height: 31px;
+	line-height: 31px;
+	box-shadow: none;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext {
+	position: relative;
+	padding: 0px;
+	white-space: nowrap;
+	cursor: default;
+	font-family: Arial, Helvetica;
+	font-size: 13px;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell,
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_first {
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	z-index: 2;
+	border-left: 1px solid #f5f5f5;
+	padding: 0px;
+	margin: 0px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_first,
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell:first-child {
+	border-left-width: 0px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option {
+	height: 27px;
+	line-height: 27px;
+	margin-top: -1px;
+	z-index: 0;
+	border-top: 1px solid #f5f5f5;
+	border-bottom: 1px solid #f5f5f5;
+	background-color: white;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_option_text {
+	padding: 0px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell,
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_first {
+	float: left;
+	white-space: nowrap;
+	overflow: hidden;
+	position: relative;
+	border-left: 1px solid #f5f5f5;
+	padding: 0px;
+	margin: 0px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_first,
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell:first-child {
+	border-left-width: 0px;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option.dhxcombo_option_selected {
+	z-index: 1;
+	background-color: #fff3a1;
+	border-top-color: #cccccc;
+	border-bottom-color: #cccccc;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option.dhxcombo_option_selected div.dhxcombo_cell {
+	border-left-color: #fff3a1;
+	color: black;
+}
+div.dhxcombolist_dhx_terrace.dhxcombolist_multicolumn div.dhxcombo_option div.dhxcombo_cell_text,
+div.dhxcombolist_dhx_terrace.dhxcombolist_hdr div.dhxcombo_hdrtext div.dhxcombo_hdrcell_text {
+	position: relative;
+	margin: 0px 10px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	width: auto;
+}
+.dhxcombo_skin_detect {
+	position: absolute;
+	left: 0px;
+	top: -100px;
+	margin: 0;
+	padding: 0;
+	border: 0px solid white;
+	width: 30px;
+	height: 10px;
+	overflow: hidden;
+}

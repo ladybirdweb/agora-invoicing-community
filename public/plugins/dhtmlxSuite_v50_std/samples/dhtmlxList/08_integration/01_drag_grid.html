@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Drag-and-drop between List and Grid</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<style type="text/css">
+		body{ -webkit-user-select:none; -moz-user-select:none; -ms-user-select:none;}
+	</style>
+	<script>
+		dhtmlx.compat("dnd");
+		var myList, myGrid;
+		function doOnLoad() {
+			myList = new dhtmlXList({
+				container:"data_container1",
+				template:"<span class='dhx_strong'>#name#</span>#address# <br/><span class='dhx_light'>#city#</span>",
+				type:{ height:80 },
+				drag:true,
+				select:true
+			});
+			myList.load("../common/list.xml");
+			myGrid = new dhtmlXGridObject('data_container2');
+			myGrid.setImagePath("../../../codebase/imgs/");
+			myGrid.enableAutoWidth(true);
+			myGrid.enableDragAndDrop(true);
+			myGrid.load("../../dhtmlxGrid/common/gridH.xml");
+			//drag from grid into the list
+			myList.attachEvent("onBeforeDrop",function(context){
+				if (context.from == myGrid){
+					this.add({
+						name:context.from.cells(context.source, 1).getValue(),
+						city:context.from.cells(context.source, 2).getValue(),
+						Maintainer:"not defined"
+					}, this.indexById(context.target||this.first()));
+					context.from.deleteRow(context.source);
+					return false;
+				}
+				return true;
+			});
+			//drag from list into the grid
+			myGrid.attachEvent("onDrag",function(sid,tid,sobj,tobj){
+				if (sobj.object && sobj.object == myList){
+					var d = myList.get(sid);
+					var index = myGrid.getRowIndex(tid);
+
+					myGrid.addRow(myGrid.uid(), [sid, d.city, d.name], index);
+					myList.remove(sid);
+					return false;
+				}
+				return true;
+			})
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Drag-and-drop between List and Grid</h1>
+	<table border="0" cellspacing="5" cellpadding="5">
+		<tr>
+			<td>
+				<div id="data_container1" class="list_demo_samples" style="height:412px"></div>
+			</td>
+			<td>
+			</td>
+			<td>
+				<div id="data_container2" style="width:400px;height:412px;"></div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

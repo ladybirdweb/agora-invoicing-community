@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<title>Integration with Grid and Grouping</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script>
+		var myBarChart;
+		function doOnLoad() {
+			myBarChart =  new dhtmlXChart({
+				view:"bar",
+				container:"chart_container",
+				value:"#sales#",
+				label:"#sales#",
+				sort:{
+					by:"#sales#",
+					as:"int"
+				},
+				group:{
+					by:"#data2#",
+					map:{
+						author:["#data2#"],
+						sales:["#data0#","sum"]
+					}
+				},
+				xAxis:{
+					lines:false,
+					template:"#author#"
+				},
+				padding:{
+					left:0,
+					right:0
+				},
+				color:"#45abf5",
+				gradient:"rising",
+				width:50
+			});
+			myGrid = new dhtmlXGridObject('gridbox');
+			myGrid.setImagePath('../../../codebase/imgs/');
+			myGrid.load("../../dhtmlxGrid/common/gridH.xml",refresh_chart);
+			myGrid.attachEvent("onEditCell",function(stage){
+				if (stage == 2)
+					refresh_chart();
+				return true;
+			});
+			function refresh_chart(){
+				myBarChart.clearAll();
+				myBarChart.parse(myGrid,"dhtmlxgrid");
+			};
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<div id="gridbox" style="width:600px; height:270px; background-color:white;"></div><hr>
+	<div id="chart_container" style="width:600px;height:250px;"></div>
+</body>
+</html>

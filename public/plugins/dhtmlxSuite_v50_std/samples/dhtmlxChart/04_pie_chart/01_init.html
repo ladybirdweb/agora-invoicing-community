@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pie</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<script src="../common/testdata.js"></script>
+	<script>
+		var myPieChart, myPieChart2;
+		function doOnLoad() {
+			myPieChart = new dhtmlXChart({
+				view:"pie",
+				container:"chart1",
+				value:"#sales#",
+				color:"#color#",
+				label:"#month#",
+				pieInnerText:"#sales#",
+				shadow:0
+			});
+			myPieChart.parse(month_dataset,"json");
+			myPieChart2 = new dhtmlXChart({
+				view:"pie",
+				container:"chart2",
+				value:"#sales#",
+				color:"#color#",
+				tooltip:"#sales#",
+				label:"#month#",
+				shadow:0,
+				radius:65,
+				x:280,
+				y:120
+			});
+			myPieChart2.parse(month_dataset,"json");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<table>
+		<tr>
+			<td>Pie chart with Automatic radius and center position</td>
+			<td>Pie chart with Custom radius and center position</td>
+		</tr>
+		<tr>
+			<td><div id="chart1" style="width:400px;height:250px;border:1px solid #c0c0c0;"></div></td>
+			<td><div id="chart2" style="width:400px;height:250px;border:1px solid #c0c0c0;"></div></td>
+		</tr>
+	</table>
+</body>
+</html>

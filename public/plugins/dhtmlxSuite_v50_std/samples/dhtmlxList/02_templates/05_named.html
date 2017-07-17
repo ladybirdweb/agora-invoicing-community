@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Named templates</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<link rel="stylesheet" type="text/css" href="../common/demo_style.css"/>
+	<script>
+		dhtmlx.Type.add(dhtmlXList,{
+			name:"dataA",
+			template:"#name#.<br/>#address#<br/> #city#, #state#",
+			height:70,
+			padding:7,
+			margin:0
+		});
+		dhtmlx.Type.add(dhtmlXList,{
+			name:"dataB",
+			template:"#name#, #state#",
+			height:30,
+			padding:7,
+			margin:0
+		});
+		var myList;
+		function doOnLoad() {
+			myList = new dhtmlXList({
+				container:"data_container",
+				type:"dataA"
+			});
+			myList.load("../common/list.xml");
+		}
+	</script>
+</head>
+<body onload="doOnLoad();">
+	<h1>Named templates</h1>
+	<div id="data_container" class="list_demo_samples"></div>
+	<input type="button" name="" value="Template A" onclick="myList.define('type','dataA')">
+	<input type="button" name="" value="Template B" onclick="myList.define('type','dataB')"> 
+</body>
+</html>

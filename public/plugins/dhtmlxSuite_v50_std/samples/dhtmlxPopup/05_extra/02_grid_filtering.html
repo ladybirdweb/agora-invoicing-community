@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Grid filtering</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/fonts/font_roboto/roboto.css"/>
+	<link rel="stylesheet" type="text/css" href="../../../codebase/dhtmlx.css"/>
+	<script src="../../../codebase/dhtmlx.js"></script>
+	<style>
+		table.obj.row20px tr td img {
+			float: left;
+			margin-left: 7px;
+		}
+	</style>
+	<script>
+		
+		var myForm;
+		var myPop;
+		var myGrid;
+		var eId;
+		
+		function doOnLoad() {
+			
+			myForm = new dhtmlXForm("myForm", [
+				{type: "settings", position: "label-left", labelWidth: 110, inputWidth: 170},
+				{type: "input", name: "name", label: "Full Name", value: "Joe Black"},
+				{type: "input", name: "email", label: "Email", value: "joe@mail.com"},
+				{type: "input", name: "country", label: "Country", value: "", note: {text: "Start typing"}}
+			]);
+			
+			myPop = new dhtmlXPopup({ form: myForm, id: ["country"] });
+			
+			myForm.attachEvent("onFocus", function(id){
+				//myPop.show(id);
+			});
+			
+			//myForm.getInput("title").setAttribute("autocomplete","off");
+			
+			myForm.attachEvent("onKeyUp", function(input, e){
+				
+				if (!myGrid) return
+				if (myPop.isVisible()) {
+					if (e.keyCode == 38) { // up
+						var id = myGrid.getSelectedRowId();
+						if (id != null) {
+							var ind = myGrid.getRowIndex(id);
+							myGrid.selectRow(ind-1);
+						} else {
+							myGrid.selectRow(0);
+						}
+					}
+					if (e.keyCode == 40) { // down
+						var id = myGrid.getSelectedRowId();
+						if (id != null) {
+							var ind = myGrid.getRowIndex(id);
+							myGrid.selectRow(ind+1);
+						} else {
+							myGrid.selectRow(0);
+						}
+					}
+					if (e.keyCode == 13) { // enter
+						var id = myGrid.getSelectedRowId();
+						if (id != null && myGrid.getRowIndex(id) >= 0) {
+							myGrid.callEvent("onRowDblClicked",[id]);
+						}
+					}
+				} else {
+					if (e.keyCode == 113) { // f2
+						myPop.show();
+					}
+				}
+			});
+			
+			myForm.attachEvent("onInputChange", function(id,value){
+				if (id != "country") return;
+				if (!myGrid) {
+					if (!myPop.isVisible()) myPop.show("country");
+					return;
+				}
+				//myGrid.filterBy(1,"");
+				if (!myPop.isVisible()) myPop.show("country");
+				if (myGrid._loaded) {
+					myGrid.filterBy(1,value);
+					selectRowIfNotSelected();
+				}
+			});
+			
+			eId = myPop.attachEvent("onShow",function(){
+				
+				myGrid = myPop.attachGrid(300,200);
+				myGrid.setImagePath("../../../codebase/imgs/")
+				myGrid.load("../common/grid2.xml", function(){
+					myGrid.filterBy(1, myForm.getItemValue("country"));
+					myGrid.selectRow(0);
+					myGrid._loaded = true;
+				});
+				
+				myGrid.attachEvent("onRowDblClicked", function(id){
+					myForm.setItemValue("country", myGrid.cells(id,1).getValue());
+					myPop.hide();
+					myGrid.clearSelection();
+				});
+				
+				myPop.detachEvent(eId);
+				
+			});
+			
+			myPop.attachEvent("onShow",function(){
+				if (!myGrid) return;
+				//myGrid.filterBy(0,"");
+				//myGrid._f_rowsBuffer = null;
+				if (myGrid._loaded) {
+					myGrid.filterBy(1, myForm.getItemValue("country"));
+				}
+				selectRowIfNotSelected();
+			});
+		}
+		
+		function selectRowIfNotSelected() {
+			var id = myGrid.getSelectedRowId();
+			if (!id) {
+				myGrid.selectRow(0);
+			} else {
+				if (myGrid.getRowIndex(id) < 0) myGrid.selectRow(0);
+			}
+		}
+		
+	</script>
+</head>
+<body onload="doOnLoad()">
+	<div id="myForm"></div>
+</body>
+</html>

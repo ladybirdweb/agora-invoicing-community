@@ -41,7 +41,6 @@ class CartController extends Controller {
 
     public function ProductList(Request $request) {
         $location = \GeoIP::getLocation();
-        
 
         if ($location['country'] == 'India') {
             $currency = 'INR';
@@ -60,9 +59,9 @@ class CartController extends Controller {
             \Session::put('currency', 'INR');
 //dd(\Session::get('currency'));
         }
-
         try {
             $page_controller = new PageController();
+            //dd($page_controller);
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -128,7 +127,7 @@ class CartController extends Controller {
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
-            dd($ex);
+            //dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -164,7 +163,6 @@ class CartController extends Controller {
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
-
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);
@@ -530,7 +528,6 @@ class CartController extends Controller {
                 return $price;
             }
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception('error in get tax priority');
         }
     }

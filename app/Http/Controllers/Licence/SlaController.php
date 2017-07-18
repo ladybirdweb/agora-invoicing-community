@@ -26,7 +26,7 @@ class SlaController extends Controller
         $this->middleware('service.provider', ['only' => ['create', 'store', 'edit', 'update']]);
         //$this->middleware('admin');
         $cart = new \App\Http\Controllers\Front\CheckoutController();
-        $auth = '';//$cart->GetXdeskAuthOrganization();
+        $auth = ''; //$cart->GetXdeskAuthOrganization();
         $this->org = $auth;
 
         $sla = new Sla();

@@ -139,15 +139,16 @@ use ResetsPasswords;
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name,'url' => $url];
-        $type = "";
+        $replace = ['name' => $user->first_name.' '.$user->last_name, 'url' => $url];
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
         $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace,$type);
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+
         return redirect()->back()->with('success', "Reset instructions have been mailed to $to
 Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
     }

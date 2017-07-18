@@ -134,6 +134,7 @@ class GithubController extends Controller
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -278,13 +279,15 @@ class GithubController extends Controller
     {
         try {
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
-            if($repo=='faveo-helpdesk'){
-                return $array=['Location'=>$url];
+            if ($repo == 'faveo-helpdesk') {
+                return $array = ['Location'=>$url];
             }
             $link = $this->github_api->getCurl1($url);
+
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -293,10 +296,11 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
-            if(key_exists('tag_name', $release)){
+            if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }
-            return NULL;
+
+            return;
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

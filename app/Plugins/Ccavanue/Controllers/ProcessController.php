@@ -56,7 +56,7 @@ class ProcessController extends Controller
                 $country = \Auth::user()->country;
                 $currency = \Auth::user()->currency;
                 if (!$currency) {
-                    throw new \Exception("Your currency is unknown, Please update your Profile with currency");
+                    throw new \Exception('Your currency is unknown, Please update your Profile with currency');
                 }
                 $ccavanue_url = $ccavanue->ccavanue_url;
                 $working_key = $ccavanue->working_key;

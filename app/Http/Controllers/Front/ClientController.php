@@ -131,7 +131,7 @@ class ClientController extends Controller
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = '';
                             if ($status == 'success') {
-                                if($sub){
+                                if ($sub) {
                                     $url = $this->renewPopup($sub->id);
                                 }
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
@@ -187,8 +187,9 @@ class ClientController extends Controller
             $timezones = $timezones->lists('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
-            return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states','bussinesses'));
+            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+
+            return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states', 'bussinesses'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -250,24 +251,24 @@ class ClientController extends Controller
     {
         try {
             $order = $this->order->findOrFail($id);
- 	//dd($order);
-	if($order){
-            $invoice = $order->invoice()->first();
-            $items = $order->invoice()->first()->invoiceItem()->get();
-            $subscription = "";
-            $plan = "";
-            if($order->subscription){
+    //dd($order);
+    if ($order) {
+        $invoice = $order->invoice()->first();
+        $items = $order->invoice()->first()->invoiceItem()->get();
+        $subscription = '';
+        $plan = '';
+        if ($order->subscription) {
             $subscription = $order->subscription;
 
             $plan = $subscription->plan()->first();
-            }
-            $product = $order->product()->first();
-            $price = $product->price()->first();
+        }
+        $product = $order->product()->first();
+        $price = $product->price()->first();
             //dd($price);
             $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
-            }
+        return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
+    }
             throw new Exception('Sorry! We can not find your order');
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -286,7 +287,7 @@ class ClientController extends Controller
     {
         try {
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
-            
+
             $relation = $order->invoiceRelation()->lists('invoice_id')->toArray();
             $invoices = $this->invoice
                     ->select('number', 'created_at', 'grand_total', 'id', 'status')

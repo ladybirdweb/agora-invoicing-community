@@ -4,6 +4,7 @@
  *
  * @license MIT
  */
+
 namespace App\Http\Controllers\Common\Twitter;
 
 use App\Http\Controllers\Common\Twitter\Util\JsonDecoder;

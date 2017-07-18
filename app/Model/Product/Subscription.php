@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Subscription extends Model
 {
     protected $table = 'subscriptions';
-    protected $fillable = ['name', 'description', 'days', 'ends_at', 'user_id', 'plan_id', 'order_id', 'deny_after_subscription','version'];
+    protected $fillable = ['name', 'description', 'days', 'ends_at', 'user_id', 'plan_id', 'order_id', 'deny_after_subscription', 'version'];
     protected $dates = ['ends_at'];
-
 
     public function plan()
     {

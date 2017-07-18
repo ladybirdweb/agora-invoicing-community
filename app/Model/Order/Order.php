@@ -65,6 +65,7 @@ class Order extends BaseModel
         $tz = \Auth::user()->timezone()->first()->name;
         $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
         $d = $date->setTimezone($tz);
+
         return $d;
     }
 
@@ -92,19 +93,22 @@ class Order extends BaseModel
         }
     }
 
-    public function setDomainAttribute($value) {
-       $this->attributes['domain'] = $this->get_domain($value);
+    public function setDomainAttribute($value)
+    {
+        $this->attributes['domain'] = $this->get_domain($value);
     }
 
-    public function get_domain($url) {
+    public function get_domain($url)
+    {
         $pieces = parse_url($url);
         $domain = isset($pieces['host']) ? $pieces['host'] : '';
         if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
             return $regs['domain'];
         }
-        if(!$domain){
+        if (!$domain) {
             $domain = $pieces['path'];
         }
+
         return strtolower($domain);
     }
 }

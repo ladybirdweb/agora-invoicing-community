@@ -23,25 +23,24 @@ class ProfileRequest extends Request
      */
     public function rules()
     {
-            
-            if ($this->segment(1) == 'profile' || $this->segment(1) == 'my-profile') {
-                $userid = \Auth::user()->id;
-                return [
-                    'first_name'      => 'required',
-                    'last_name'       => 'required',
-                    'company'         => 'required',
-                    'mobile'          => 'required|numeric',
-                    'mobile_code'     => 'required|numeric',
-                    'address'         => 'required',
-                    'zip'             => 'required',
-                    'user_name'       => 'required|unique:users,user_name,'.$userid,
-                    'bussiness'   => 'required',
-                    'company_type'=> 'required',
+        if ($this->segment(1) == 'profile' || $this->segment(1) == 'my-profile') {
+            $userid = \Auth::user()->id;
+
+            return [
+                    'first_name'       => 'required',
+                    'last_name'        => 'required',
+                    'company'          => 'required',
+                    'mobile'           => 'required|numeric',
+                    'mobile_code'      => 'required|numeric',
+                    'address'          => 'required',
+                    'zip'              => 'required',
+                    'user_name'        => 'required|unique:users,user_name,'.$userid,
+                    'bussiness'        => 'required',
+                    'company_type'     => 'required',
                     'company_size'     => 'required',
-                    
 
         ];
-            }
+        }
         if ($this->segment(1) == 'password' || $this->segment(1) == 'my-password') {
             return [
                     'old_password'     => 'required|min:6',
@@ -52,10 +51,10 @@ class ProfileRequest extends Request
 
         if ($this->segment(1) == 'auth') {
             return [
-                    'first_name' => 'required',
-                    'last_name'  => 'required',
-                    'email'      => 'required|email|unique:users',
-                    'company'    => 'required',
+                    'first_name'            => 'required',
+                    'last_name'             => 'required',
+                    'email'                 => 'required|email|unique:users',
+                    'company'               => 'required',
                     'mobile'                => 'required|numeric',
                     'mobile_code'           => 'required|numeric',
                     'user_name'             => 'required|unique:users',
@@ -65,18 +64,18 @@ class ProfileRequest extends Request
                     'password_confirmation' => 'required|same:password',
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                'bussiness'   => 'required',
-                        'company_type'=> 'required',
-                        'company_size'     => 'required',
+                'bussiness'                 => 'required',
+                        'company_type'      => 'required',
+                        'company_size'      => 'required',
 
         ];
         }
     }
 
-public function messages()
+    public function messages()
     {
         return[
-            'bussiness.required' => 'Choose one Industry',
+            'bussiness.required'   => 'Choose one Industry',
             'mobile_code.required' => 'Enter Country code (mobile)',
         ];
     }

@@ -3,39 +3,36 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
-class CreatePaypalTable extends Migration {
+class CreatePaypalTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('paypal', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('business');
+            $table->string('cmd');
+            $table->string('currencies', 225);
+            $table->string('paypal_url');
+            $table->string('image_url');
+            $table->string('success_url');
+            $table->string('cancel_url');
+            $table->string('notify_url');
+            $table->timestamps();
+        });
+    }
 
-	/**
-	 * Run the migrations.
-	 *
-	 * @return void
-	 */
-	public function up()
-	{
-		Schema::create('paypal', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('business');
-			$table->string('cmd');
-			$table->string('currencies', 225);
-			$table->string('paypal_url');
-			$table->string('image_url');
-			$table->string('success_url');
-			$table->string('cancel_url');
-			$table->string('notify_url');
-			$table->timestamps();
-		});
-	}
-
-
-	/**
-	 * Reverse the migrations.
-	 *
-	 * @return void
-	 */
-	public function down()
-	{
-		Schema::drop('paypal');
-	}
-
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::drop('paypal');
+    }
 }

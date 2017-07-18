@@ -151,7 +151,7 @@ class ProductController extends Controller {
             $group = $this->group->lists('name', 'id')->toArray();
             $products = $this->product->lists('name', 'id')->toArray();
             $taxes = $this->tax_class->lists('name', 'id')->toArray();
-
+            //echo '<pre>'; print_r($currency); die;
             return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -215,8 +215,8 @@ class ProductController extends Controller {
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
             if(count($currencies)>0){
-                foreach ($currencies as $key => $currency) {
-                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
+                foreach ($currencies as $key1 => $currency) {
+                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price['$key'], 'sales_price' => $sales_price['$key']]);
                 }
             }
             
@@ -457,7 +457,7 @@ class ProductController extends Controller {
                     $relese = $github_controller->listRepositories($owner, $repository);
                     return ['release'=>$relese,'type'=>'github'];
                 } elseif ($file) {
-                    $relese = '/home/faveohelpdesk/products/' . $file;
+                    $relese = 'dist/product/images/' . $file;
                     return $relese;
                 }
             }

@@ -2,10 +2,11 @@
 
 ## Description ##
 
-This package provides an API for the GeoIP2 [web services]
-(http://dev.maxmind.com/geoip/geoip2/web-services) and [databases]
-(http://dev.maxmind.com/geoip/geoip2/downloadable). The API also works with
-the free [GeoLite2 databases](http://dev.maxmind.com/geoip/geoip2/geolite2/).
+This package provides an API for the GeoIP2
+[web services](http://dev.maxmind.com/geoip/geoip2/web-services) and
+[databases](http://dev.maxmind.com/geoip/geoip2/downloadable). The API also
+works with the free
+[GeoLite2 databases](http://dev.maxmind.com/geoip/geoip2/geolite2/).
 
 ## Install via Composer ##
 
@@ -45,9 +46,30 @@ require 'vendor/autoload.php';
 ## Install via Phar ##
 
 Although we strongly recommend using Composer, we also provide a
-[phar archive](http://php.net/manual/en/book.phar.php) containing all of the
+[phar archive](http://php.net/manual/en/book.phar.php) containing most of the
 dependencies for GeoIP2. Our latest phar archive is available on
 [our releases page](https://github.com/maxmind/GeoIP2-php/releases).
+
+### Install Dependencies ###
+
+In order to use the phar archive, you must have the PHP
+[Phar extension](http://php.net/manual/en/book.phar.php) installed and
+enabled.
+
+If you will be making web service requests, you must have the PHP
+[cURL extension](http://php.net/manual/en/book.curl.php)
+installed to use this archive. For Debian based distributions, this can
+typically be found in the the `php-curl` package. For other operating
+systems, please consult the relevant documentation. After installing the
+extension you may need to restart your web server.
+
+If you are missing this extension, you will see errors like the following:
+
+```
+PHP Fatal error:  Uncaught Error: Call to undefined function MaxMind\WebService\curl_version()
+```
+
+### Require Package ###
 
 To use the archive, just require it from your script:
 
@@ -63,6 +85,12 @@ the performance of lookups in GeoIP2 or GeoLite2 databases. To install, please
 follow the instructions included with that API.
 
 The extension has no effect on web-service lookups.
+
+## IP Geolocation Usage ##
+
+IP geolocation is inherently imprecise. Locations are often near the center of
+the population. Any location provided by a GeoIP2 database or web service
+should not be used to identify a particular address or household.
 
 ## Database Reader ##
 
@@ -168,6 +196,40 @@ print($record->ipAddress . "\n"); // '128.101.101.101'
 
 ```
 
+### Enterprise Example ###
+
+```php
+<?php
+require_once 'vendor/autoload.php';
+use GeoIp2\Database\Reader;
+
+// This creates the Reader object, which should be reused across
+// lookups.
+$reader = new Reader('/usr/local/share/GeoIP/GeoIP2-Enterprise.mmdb');
+
+// Use the ->enterprise method to do a lookup in the Enterprise database
+$record = $reader->enterprise('128.101.101.101');
+
+print($record->country->confidence . "\n"); // 99
+print($record->country->isoCode . "\n"); // 'US'
+print($record->country->name . "\n"); // 'United States'
+print($record->country->names['zh-CN'] . "\n"); // '美国'
+
+print($record->mostSpecificSubdivision->confidence . "\n"); // 77
+print($record->mostSpecificSubdivision->name . "\n"); // 'Minnesota'
+print($record->mostSpecificSubdivision->isoCode . "\n"); // 'MN'
+
+print($record->city->confidence . "\n"); // 60
+print($record->city->name . "\n"); // 'Minneapolis'
+
+print($record->postal->code . "\n"); // '55455'
+
+print($record->location->accuracyRadius . "\n"); // 50
+print($record->location->latitude . "\n"); // 44.9733
+print($record->location->longitude . "\n"); // -93.2323
+
+```
+
 ### ISP Example ###
 
 ```php
@@ -239,6 +301,20 @@ print($record->location->longitude . "\n"); // -93.2323
 
 ```
 
+## Values to use for Database or Array Keys ##
+
+**We strongly discourage you from using a value from any `names` property as
+a key in a database or array.**
+
+These names may change between releases. Instead we recommend using one of the
+following:
+
+* `GeoIp2\Record\City` - `$city->geonameId`
+* `GeoIp2\Record\Continent` - `$continent->code` or `$continent->geonameId`
+* `GeoIp2\Record\Country` and `GeoIp2\Record\RepresentedCountry` -
+  `$country->isoCode` or `$country->geonameId`
+* `GeoIp2\Record\Subdivision` - `$subdivision->isoCode` or `$subdivision->geonameId`
+
 ### What data is returned? ###
 
 While many of the end points return the same basic records, the attributes
@@ -300,18 +376,18 @@ to the client API, please see
 
 ## Requirements  ##
 
-This code requires PHP 5.3 or greater. Older versions of PHP are not
-supported. This library works and is tested with HHVM.
+This library requires PHP 5.4 or greater. This library works and is tested
+with HHVM.
 
 This library also relies on the [MaxMind DB Reader](https://github.com/maxmind/MaxMind-DB-Reader-php).
 
-If you are using PHP 5.3 with an autoloader besides Composer, you must load
-`JsonSerializable.php` in the `compat` directory.
-
 ## Contributing ##
 
-Patches and pull requests are encouraged. All code should follow the
-PSR-2 style guidelines. Please include unit tests whenever possible. You may obtain the test data for the maxmind-db folder by running `git submodule update --init --recursive` or adding `--recursive` to your initial clone, or from https://github.com/maxmind/MaxMind-DB
+Patches and pull requests are encouraged. All code should follow the PSR-2
+style guidelines. Please include unit tests whenever possible. You may obtain
+the test data for the maxmind-db folder by running `git submodule update
+--init --recursive` or adding `--recursive` to your initial clone, or from
+https://github.com/maxmind/MaxMind-DB
 
 ## Versioning ##
 
@@ -319,7 +395,7 @@ The GeoIP2 PHP API uses [Semantic Versioning](http://semver.org/).
 
 ## Copyright and License ##
 
-This software is Copyright (c) 2014 by MaxMind, Inc.
+This software is Copyright (c) 2013-2017 by MaxMind, Inc.
 
 This is free software, licensed under the Apache License, Version 2.0.
 

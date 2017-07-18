@@ -38,12 +38,15 @@ class Charge extends ApiResource
     }
 
     /**
+     * @param string $id The ID of the charge.
      * @param array|string|null $options
      *
-     * @return Charge The saved charge.
+     * @return Charge The reversed charge.
      */
-    public function save($options = null)
+    public static function reverse($id, $options = null)
     {
-        return $this->_save($options);
+        $url = static::classUrl().'/'.$id.'/reverse';
+        $params = [];
+        return static::_directRequest('post', $url, $params, $options);
     }
 }

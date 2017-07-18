@@ -2,6 +2,82 @@
 
 All notable changes of the PHPUnit 4.8 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [4.8.36] - 2017-06-21
+
+### Added
+
+* Added `PHPUnit\Framework\AssertionFailedError`, `PHPUnit\Framework\Test`, and `PHPUnit\Framework\TestSuite` to the forward compatibility layer for PHPUnit 6
+
+## [4.8.35] - 2017-02-06
+
+### Added
+
+* Backported the forward compatibility layer for PHPUnit 6 from PHPUnit 5 so that `PHPUnit\Framework\TestCase` can be used instead of `PHPUnit_Framework_TestCase`
+
+## [4.8.34] - 2017-01-26
+
+* Fixed [#2447](https://github.com/sebastianbergmann/phpunit/issues/2447): Reverted backwards incompatible change to handling of boolean environment variable values specified in XML
+
+## [4.8.33] - 2017-01-25
+
+### Fixed
+
+* Fixed [#1983](https://github.com/sebastianbergmann/phpunit/pull/1983): Tests with `@expectedException` annotation cannot be skipped
+* Fixed [#2275](https://github.com/sebastianbergmann/phpunit/pull/2275): Invalid UTF-8 characters can lead to missing output
+* Fixed [#2331](https://github.com/sebastianbergmann/phpunit/issues/2331): Boolean environment variable values specified in XML get mangled
+* Fixed [#2392](https://github.com/sebastianbergmann/phpunit/issues/2392): Empty (but valid) data provider should skip the test
+* Fixed [#2431](https://github.com/sebastianbergmann/phpunit/issues/2431): `assertArraySubset()` does not support `ArrayAccess`
+
+## [4.8.32] - 2017-01-22
+
+### Fixed
+
+* Fixed [#2428](https://github.com/sebastianbergmann/phpunit/pull/2428): Nested arrays specificied in XML configuration file are not handled correctly
+
+## [4.8.31] - 2016-12-09
+
+### Fixed
+
+* Fixed [#2384](https://github.com/sebastianbergmann/phpunit/pull/2384): Handle `PHPUnit_Framework_Exception` correctly when expecting exceptions
+
+## [4.8.30] - 2016-12-02
+
+### Fixed
+
+* Fixed [#2367](https://github.com/sebastianbergmann/phpunit/pull/2367): Bug in `PHPUnit_Util_Test::parseAnnotationContent()`
+* Fixed [#2375](https://github.com/sebastianbergmann/phpunit/issues/2375): Invalid regular expression for `--filter` causes PHP warning
+
+## [4.8.29] - 2016-11-20
+
+### Changed
+
+* Bumped the required version of `sebastian/comparator`
+
+## [4.8.28] - 2016-11-14
+
+### Fixed
+
+* Improved the fix for [#1955](https://github.com/sebastianbergmann/phpunit/issues/1955): Process isolation fails when running tests with `phpdbg -qrr`
+
+## [4.8.27] - 2016-07-21
+
+### Fixed
+
+* Fixed [#1968](https://github.com/sebastianbergmann/phpunit/issues/1968): Invalid data sets are not handled correctly for `@testWith` annotation
+
+## [4.8.26] - 2016-05-17
+
+### Fixed
+
+* Fixed [phpunit-mock-objects/#301](https://github.com/sebastianbergmann/phpunit-mock-objects/issues/301): `PHPUnit_Framework_MockObject_MockBuilder::getMock()` calls `PHPUnit_Framework_TestCase::getMock()` with more arguments than accepted
+
+## [4.8.25] - 2016-05-10
+
+### Fixed
+
+* Fixed [#2112](https://github.com/sebastianbergmann/phpunit/issues/2112): Output is html entity encoded when ran through `phpdbg`
+* Fixed [#2158](https://github.com/sebastianbergmann/phpunit/issues/2158): Failure to run tests in separate processes if a file included into main process contains constant definition
+
 ## [4.8.24] - 2016-03-14
 
 ### Fixed
@@ -177,6 +253,18 @@ New PHAR release due to updated dependencies
 * Made the argument check of `assertContains()` and `assertNotContains()` more strict to prevent undefined behavior such as [#1808](https://github.com/sebastianbergmann/phpunit/issues/1808)
 * Changed the name of the default group from `__nogroup__` to `default`
 
+[4.8.36]: https://github.com/sebastianbergmann/phpunit/compare/4.8.35...4.8.36
+[4.8.35]: https://github.com/sebastianbergmann/phpunit/compare/4.8.34...4.8.35
+[4.8.34]: https://github.com/sebastianbergmann/phpunit/compare/4.8.33...4.8.34
+[4.8.33]: https://github.com/sebastianbergmann/phpunit/compare/4.8.32...4.8.33
+[4.8.32]: https://github.com/sebastianbergmann/phpunit/compare/4.8.31...4.8.32
+[4.8.31]: https://github.com/sebastianbergmann/phpunit/compare/4.8.30...4.8.31
+[4.8.30]: https://github.com/sebastianbergmann/phpunit/compare/4.8.29...4.8.30
+[4.8.29]: https://github.com/sebastianbergmann/phpunit/compare/4.8.28...4.8.29
+[4.8.28]: https://github.com/sebastianbergmann/phpunit/compare/4.8.27...4.8.28
+[4.8.27]: https://github.com/sebastianbergmann/phpunit/compare/4.8.26...4.8.27
+[4.8.26]: https://github.com/sebastianbergmann/phpunit/compare/4.8.25...4.8.26
+[4.8.25]: https://github.com/sebastianbergmann/phpunit/compare/4.8.24...4.8.25
 [4.8.24]: https://github.com/sebastianbergmann/phpunit/compare/4.8.23...4.8.24
 [4.8.23]: https://github.com/sebastianbergmann/phpunit/compare/4.8.22...4.8.23
 [4.8.22]: https://github.com/sebastianbergmann/phpunit/compare/4.8.21...4.8.22

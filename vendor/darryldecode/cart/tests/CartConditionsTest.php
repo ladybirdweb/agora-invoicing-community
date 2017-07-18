@@ -28,7 +28,8 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
             new SessionMock(),
             $events,
             'shopping',
-            'SAMPLESESSIONKEY'
+            'SAMPLESESSIONKEY',
+             require(__DIR__.'/helpers/configMock.php')
         );
     }
 
@@ -70,6 +71,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(210.92625, $this->cart->getTotal(), 'Cart should have a total of 210.92625');
     }
 
@@ -100,6 +102,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(225.92625, $this->cart->getTotal(), 'Cart should have a total of 225.92625');
     }
 
@@ -130,6 +133,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(195.92625, $this->cart->getTotal(), 'Cart should have a total of 195.92625');
     }
 
@@ -160,6 +164,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(149.05375, $this->cart->getTotal(), 'Cart should have a total of 149.05375');
     }
 
@@ -189,6 +194,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(149.05375, $this->cart->getTotal(), 'Cart should have a total of 149.05375');
     }
 
@@ -219,6 +225,7 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals(187.49, $this->cart->getSubTotal(), 'Cart should have sub total of 187.49');
 
         // total should be changed
+        $this->cart->setDecimals(5);
         $this->assertEquals(179.05375, $this->cart->getTotal(), 'Cart should have a total of 179.05375');
     }
 
@@ -363,6 +370,33 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->cart->addItemCondition($item['id'], $coupon101);
 
         $this->assertCount(2, $this->cart->get($item['id'])['conditions'], "Item should have 2 conditions");
+    }
+
+    public function test_add_item_condition_restrict_negative_price()
+    {
+        $condition = new CartCondition([
+            'name' => 'Substract amount but prevent negative value',
+            'type' => 'promo',
+            'target' => 'item',
+            'value' => '-25',
+        ]);
+
+        $item = [
+            'id' => 789,
+            'name' => 'Sample Item 1',
+            'price' => 20,
+            'quantity' => 1,
+            'attributes' => [],
+            'conditions' => [
+                $condition,
+            ]
+        ];
+
+        $this->cart->add($item);
+
+        // Since the product price is 20 and the condition reduces it by 25,
+        // check that the item's price has been prevented from dropping below zero.
+        $this->assertEquals(0.00, $this->cart->get($item['id'])->getPriceSumWithConditions(), "The item's price should be prevented from going below zero.");
     }
 
     public function test_get_cart_condition_by_condition_name()
@@ -784,6 +818,46 @@ class CartConditionTest extends PHPUnit_Framework_TestCase  {
         $this->assertEquals('october fest promo sale',$conditionAttributes['description']);
         $this->assertEquals('2015-01-20',$conditionAttributes['sale_start_date']);
         $this->assertEquals('2015-01-30',$conditionAttributes['sale_end_date']);
+    }
+
+    public function test_get_order_from_condition()
+    {
+        $cartCondition1 = new CartCondition(array(
+            'name' => 'SALE 5%',
+            'type' => 'sale',
+            'target' => 'subtotal',
+            'value' => '-5%',
+            'order' => 2
+        ));
+        $cartCondition2 = new CartCondition(array(
+            'name' => 'Item Gift Pack 20',
+            'type' => 'promo',
+            'target' => 'subtotal',
+            'value' => '-25',
+            'order' => '3'
+        ));
+        $cartCondition3 = new CartCondition(array(
+            'name' => 'Item Less 8%',
+            'type' => 'tax',
+            'target' => 'subtotal',
+            'value' => '-8%',
+            'order' => 'first'
+        ));
+
+        $this->assertEquals(2, $cartCondition1->getOrder());
+        $this->assertEquals(3, $cartCondition2->getOrder()); // numeric string is converted to integer
+        $this->assertEquals(0, $cartCondition3->getOrder()); // no numeric string is converted to 0
+
+        $this->cart->condition($cartCondition1);
+        $this->cart->condition($cartCondition2);
+        $this->cart->condition($cartCondition3);
+
+        $conditions = $this->cart->getConditions();
+
+        $this->assertEquals('sale', $conditions->shift()->getType());
+        $this->assertEquals('promo', $conditions->shift()->getType());
+        $this->assertEquals('tax', $conditions->shift()->getType());
+
     }
 
     protected function fillCart()

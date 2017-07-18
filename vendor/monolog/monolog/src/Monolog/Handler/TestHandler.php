@@ -73,12 +73,18 @@ class TestHandler extends AbstractProcessingHandler
         return $this->records;
     }
 
-    protected function hasRecordRecords($level)
+    public function clear()
+    {
+        $this->records = array();
+        $this->recordsByLevel = array();
+    }
+
+    public function hasRecords($level)
     {
         return isset($this->recordsByLevel[$level]);
     }
 
-    protected function hasRecord($record, $level)
+    public function hasRecord($record, $level)
     {
         if (is_array($record)) {
             $record = $record['message'];
@@ -134,7 +140,7 @@ class TestHandler extends AbstractProcessingHandler
     public function __call($method, $args)
     {
         if (preg_match('/(.*)(Debug|Info|Notice|Warning|Error|Critical|Alert|Emergency)(.*)/', $method, $matches) > 0) {
-            $genericMethod = $matches[1] . 'Record' . $matches[3];
+            $genericMethod = $matches[1] . ('Records' !== $matches[3] ? 'Record' : '') . $matches[3];
             $level = constant('Monolog\Logger::' . strtoupper($matches[2]));
             if (method_exists($this, $genericMethod)) {
                 $args[] = $level;

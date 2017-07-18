@@ -5,7 +5,7 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
     private $_samplesDir;
     private $_factory;
 
-    public function setUp()
+    protected function setUp()
     {
         $this->_samplesDir = realpath(__DIR__.'/../../../_samples/charsets');
         $this->_factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
@@ -35,6 +35,10 @@ class Swift_Encoder_QpEncoderAcceptanceTest extends \PHPUnit_Framework_TestCase
 
                     $text = file_get_contents($sampleDir.'/'.$sampleFile);
                     $encodedText = $encoder->encodeString($text);
+
+                    foreach (explode("\r\n", $encodedText) as $line) {
+                        $this->assertLessThanOrEqual(76, strlen($line));
+                    }
 
                     $this->assertEquals(
                         quoted_printable_decode($encodedText), $text,

@@ -57,12 +57,12 @@ $reader = new Reader($databaseFile);
 
 print_r($reader->get($ipAddress));
 
-$reader->close()
+$reader->close();
 ```
 
 ## Optional PHP C Extension ##
 
-MaxMind provides an optional C extension that is a drop-in replacement for for
+MaxMind provides an optional C extension that is a drop-in replacement for
 `MaxMind\Db\Reader`. In order to use this extension, you must install the
 Reader API as described above and install the extension as described below. If
 you are using an autoloader, no changes to your code should be necessary.

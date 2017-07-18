@@ -1,47 +1,17 @@
-#!/usr/bin/env php
-<?php
-/*
- * This file is part of PHPUnit.
- *
- * (c) Sebastian Bergmann <sebastian@phpunit.de>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
+#!/usr/bin/env sh
 
-if (version_compare('5.3.3', PHP_VERSION, '>')) {
-    fwrite(
-        STDERR,
-        'This version of PHPUnit requires PHP 5.3.3; using the latest version of PHP is highly recommended.' . PHP_EOL
-    );
+dir=$(d=${0%[/\\]*}; cd "$d"; cd "../phpunit/phpunit" && pwd)
 
-    die(1);
-}
+# See if we are running in Cygwin by checking for cygpath program
+if command -v 'cygpath' >/dev/null 2>&1; then
+	# Cygwin paths start with /cygdrive/ which will break windows PHP,
+	# so we need to translate the dir path to windows format. However
+	# we could be using cygwin PHP which does not require this, so we
+	# test if the path to PHP starts with /cygdrive/ rather than /usr/bin
+	if [[ $(which php) == /cygdrive/* ]]; then
+		dir=$(cygpath -m "$dir");
+	fi
+fi
 
-if (!ini_get('date.timezone')) {
-    ini_set('date.timezone', 'UTC');
-}
-
-foreach (array(__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php') as $file) {
-    if (file_exists($file)) {
-        define('PHPUNIT_COMPOSER_INSTALL', $file);
-
-        break;
-    }
-}
-
-unset($file);
-
-if (!defined('PHPUNIT_COMPOSER_INSTALL')) {
-    fwrite(STDERR,
-        'You need to set up the project dependencies using the following commands:' . PHP_EOL .
-        'wget http://getcomposer.org/composer.phar' . PHP_EOL .
-        'php composer.phar install' . PHP_EOL
-    );
-
-    die(1);
-}
-
-require PHPUNIT_COMPOSER_INSTALL;
-
-PHPUnit_TextUI_Command::main();
+dir=$(echo $dir | sed 's/ /\ /g')
+"${dir}/phpunit" "$@"

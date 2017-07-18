@@ -9,7 +9,7 @@ cache:
 matrix:
   include:
     - php: 5.3
-    - php: 5.3.3
+    - php: 5.3
       env: DEPENDENCIES='low'
     - php: 5.4
     - php: 5.5
@@ -23,8 +23,7 @@ matrix:
   fast_finish: true
 
 before_install:
-  - composer selfupdate
-  - if [ "$DEPENDENCIES" == "low" ]; then composer config disable-tls true; fi;
+  - phpenv config-rm xdebug.ini || true
 
 install:
   - export COMPOSER_ROOT_VERSION=dev-master
@@ -32,10 +31,25 @@ install:
   - if [ "$DEPENDENCIES" != "low" ]; then composer update; fi;
   - if [ "$DEPENDENCIES" == "low" ]; then composer update --prefer-lowest; fi;
 
-before_script:
-  - echo "<?php if (defined('HHVM_VERSION')) { echo ',@hhvm'; } else { if (PHP_VERSION_ID >= 50400) echo ',@php5.4'; if (PHP_VERSION_ID >= 70000) echo ',@php7'; }" > php_version_tags.php
-
 script:
-   - bin/phpspec run --format=pretty
-   - ./vendor/bin/phpunit --testdox
-   - ./vendor/bin/behat --format=pretty --tags '~@php-version'`php php_version_tags.php`
+   - bin/phpspec run --format=dot
+   - ./vendor/bin/phpunit
+   - ./vendor/bin/behat --format=progress
+
+before_deploy:
+  - curl -LSs https://box-project.github.io/box2/installer.php | php
+  - export PATH=.:$PATH
+  - rm -Rf ./vendor
+  - composer install --no-dev -o
+  - box.phar build
+
+deploy:
+  provider: releases
+  api_key:
+    secure: eTlXM76IvH1Ws57gtBi5Q7trQ3rEXjt+7wOH4HLw6WhhywMF4THMuQQC0j5DhWtiLJlVYHaIfNbapbG+DVUqyXZZA+aXQSuh9aNM1fbkEShbWFpOrCd+Y3I1lXNvOcGZ5hvJieDVgWSc0osNLCQzaza17fhYUtbKsj4Qwc5ek8k=
+  file: phpspec.phar
+  skip_cleanup: true
+  on:
+    tags: true
+    php: 5.6
+    condition: $DEPENDENCIES != "low"

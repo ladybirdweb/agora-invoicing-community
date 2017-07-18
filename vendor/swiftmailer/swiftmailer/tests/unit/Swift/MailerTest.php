@@ -123,8 +123,6 @@ class Swift_MailerTest extends \SwiftMailerTestCase
         $mailer->registerPlugin($plugin);
     }
 
-    // -- Creation methods
-
     private function _createPlugin()
     {
         return $this->getMockery('Swift_Events_EventListener')->shouldIgnoreMissing();
@@ -138,11 +136,6 @@ class Swift_MailerTest extends \SwiftMailerTestCase
     private function _createMessage()
     {
         return $this->getMockery('Swift_Mime_Message')->shouldIgnoreMissing();
-    }
-
-    private function _createIterator()
-    {
-        return $this->getMockery('Swift_Mailer_RecipientIterator')->shouldIgnoreMissing();
     }
 
     private function _createMailer(Swift_Transport $transport)

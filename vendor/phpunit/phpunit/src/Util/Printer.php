@@ -127,8 +127,8 @@ class PHPUnit_Util_Printer
                 $this->incrementalFlush();
             }
         } else {
-            if (PHP_SAPI != 'cli') {
-                $buffer = htmlspecialchars($buffer);
+            if (PHP_SAPI != 'cli' && PHP_SAPI != 'phpdbg') {
+                $buffer = htmlspecialchars($buffer, ENT_SUBSTITUTE);
             }
 
             print $buffer;

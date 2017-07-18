@@ -5,38 +5,33 @@
 
 A Shopping Cart Implementation for Laravel Framework
 
-##INSTALLATION
+## QUICK PARTIAL DEMO
 
-Install the package through [Composer](http://getcomposer.org/). Edit your project's `composer.json` file by adding:
+Demo: http://phpstack-86254-257005.cloudwaysapps.com/cart
 
-### Laravel 5
+Git repo of the demo: https://github.com/darryldecode/laravelshoppingcart-demo
 
-```php
-"require": {
-	"laravel/framework": "5.0.*",
-	"darryldecode/cart": "dev-master"
-}
-```
+## INSTALLATION
 
-Next, run the Composer update command from the Terminal:
+Install the package through [Composer](http://getcomposer.org/). 
 
-    composer update
+For Laravel 5.1~:
+```composer require "darryldecode/cart:~2.0"```
+    
+For Laravel 5.4~:
+```composer require "darryldecode/cart:~3.0"```
 
-    or
+## CONFIGURATION
 
-    composer update "darryldecode/cart"
-
-##CONFIGURATION
-
-1. Open config/app.php and addd this line to your Service Providers Array
+1. Open config/app.php and add this line to your Service Providers Array
   ```php
-  'Darryldecode\Cart\CartServiceProvider'
+  Darryldecode\Cart\CartServiceProvider::class
   ```
 
-2. Open config/app.php and addd this line to your Aliases
+2. Open config/app.php and add this line to your Aliases
 
 ```php
-  'Cart' => 'Darryldecode\Cart\Facades\CartFacade'
+  'Cart' => Darryldecode\Cart\Facades\CartFacade::class
   ```
 
 ## HOW TO USE
@@ -46,6 +41,7 @@ Next, run the Composer update command from the Terminal:
 * [Instances](#instances)
 * [Exceptions](#exceptions)
 * [Events](#events)
+* [Format Response](#format)
 * [Examples](#examples)
 * [Changelogs](#changelogs)
 * [License](#license)
@@ -310,15 +306,20 @@ $condition1 = new \Darryldecode\Cart\CartCondition(array(
     'type' => 'tax',
     'target' => 'subtotal',
     'value' => '12.5%',
+    'order' => 2
 ));
 $condition2 = new \Darryldecode\Cart\CartCondition(array(
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
     'target' => 'subtotal',
     'value' => '+15',
+    'order' => 1
 ));
 Cart::condition($condition1);
 Cart::condition($condition2);
+
+// The property 'Order' lets you add different conditions through for example a shopping process with multiple
+// pages and still be able to set an order to apply the conditions. If no order is defined defaults to 0 
 
 // or add multiple conditions as array
 Cart::condition([$condition1, $condition2]);
@@ -331,6 +332,7 @@ foreach($carConditions as $condition)
     $condition->getName(); // the name of the condition
     $condition->getType(); // the type
     $condition->getValue(); // the value of the condition
+    $condition->getOrder(); // the order of the condition
     $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
 }
 
@@ -633,6 +635,16 @@ So for you wishlist cart instance, events will look like this:
 * wishlist.adding($items, $cart)
 * wishlist.added($items, $cart) and so on..
 
+## Format Response
+
+Now you can format all the responses. You can publish the config file from the package or use env vars to set the configuration.
+The options you have are:
+
+* format_numbers or env('SHOPPING_FORMAT_VALUES', false) => Activate or deactivate this feature. Default to false,
+* decimals or env('SHOPPING_DECIMALS', 0) => Number of decimals you want to show. Defaults to 0.
+* dec_point or env('SHOPPING_DEC_POINT', '.') => Decimal point type. Defaults to a '.'.
+* thousands_sep or env('SHOPPING_THOUSANDS_SEP', ',') => Thousands separator for value. Defaults to ','.
+ 
 ## Examples
 
 ```php

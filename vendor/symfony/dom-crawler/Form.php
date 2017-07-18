@@ -69,7 +69,7 @@ class Form extends Link implements \ArrayAccess
      *
      * @param array $values An array of field values
      *
-     * @return Form
+     * @return $this
      */
     public function setValues(array $values)
     {
@@ -85,7 +85,7 @@ class Form extends Link implements \ArrayAccess
      *
      * The returned array does not include file fields (@see getFiles).
      *
-     * @return array An array of field values.
+     * @return array An array of field values
      */
     public function getValues()
     {
@@ -106,7 +106,7 @@ class Form extends Link implements \ArrayAccess
     /**
      * Gets the file field values.
      *
-     * @return array An array of file field values.
+     * @return array An array of file field values
      */
     public function getFiles()
     {
@@ -135,7 +135,7 @@ class Form extends Link implements \ArrayAccess
      * This method converts fields with the array notation
      * (like foo[bar] to arrays) like PHP does.
      *
-     * @return array An array of field values.
+     * @return array An array of field values
      */
     public function getPhpValues()
     {
@@ -162,7 +162,7 @@ class Form extends Link implements \ArrayAccess
      * For a compound file field foo[bar] it will create foo[bar][name],
      * instead of foo[name][bar] which would be found in $_FILES.
      *
-     * @return array An array of file field values.
+     * @return array An array of file field values
      */
     public function getPhpFiles()
     {
@@ -211,6 +211,11 @@ class Form extends Link implements \ArrayAccess
 
     protected function getRawUri()
     {
+        // If the form was created from a button rather than the form node, check for HTML5 action overrides
+        if ($this->button !== $this->node && $this->button->getAttribute('formaction')) {
+            return $this->button->getAttribute('formaction');
+        }
+
         return $this->node->getAttribute('action');
     }
 
@@ -225,6 +230,11 @@ class Form extends Link implements \ArrayAccess
     {
         if (null !== $this->method) {
             return $this->method;
+        }
+
+        // If the form was created from a button rather than the form node, check for HTML5 method override
+        if ($this->button !== $this->node && $this->button->getAttribute('formmethod')) {
+            return strtoupper($this->button->getAttribute('formmethod'));
         }
 
         return $this->node->getAttribute('method') ? strtoupper($this->node->getAttribute('method')) : 'GET';
@@ -246,8 +256,6 @@ class Form extends Link implements \ArrayAccess
      * Removes a field from the form.
      *
      * @param string $name The field name
-     *
-     * @throws \InvalidArgumentException when the name is malformed
      */
     public function remove($name)
     {
@@ -281,7 +289,7 @@ class Form extends Link implements \ArrayAccess
     /**
      * Gets all fields.
      *
-     * @return FormField[] An array of fields
+     * @return FormField[]
      */
     public function all()
     {

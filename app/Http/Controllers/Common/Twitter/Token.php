@@ -3,6 +3,7 @@
  * The MIT License
  * Copyright (c) 2007 Andy Smith.
  */
+
 namespace App\Http\Controllers\Common\Twitter;
 
 class Token

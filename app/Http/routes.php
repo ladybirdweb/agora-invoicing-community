@@ -84,7 +84,7 @@ Route::get('twitter', 'Common\SocialMediaController@getTweets');
  * Authentication
  */
 Route::controllers([
-    'auth' => 'Auth\AuthController',
+    'auth'     => 'Auth\AuthController',
     'password' => 'Auth\PasswordController',
 ]);
 Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
@@ -233,7 +233,6 @@ Route::get('invoice/generate', 'Order\InvoiceController@generateById');
 Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
 Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
 
-
 /*
  * Payment
  */
@@ -303,7 +302,6 @@ Route::patch('github', 'Github\GithubController@postSettings');
 Route::get('download/{userid}/{invoice_number}', 'Product\ProductController@userDownload');
 Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
 
-
 /*
  * testings
  */
@@ -348,8 +346,6 @@ Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
 Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
-
-
 Route::post('serial', 'HomeController@serial');
 Route::post('v2/serial', 'HomeController@serialV2');
 Route::get('generate-keys', 'HomeController@createEncryptionKeys');
@@ -359,24 +355,24 @@ Route::get('get-currency', 'WelcomeController@getCurrency');
 
 Route::get('country-count', 'WelcomeController@countryCount');
 
-/**
+/*
  * Api
  */
-Route::group(['prefix' => 'api'], function() {
-    /**
+Route::group(['prefix' => 'api'], function () {
+    /*
      * Unautherised requests
      */
     Route::get('check-url', 'Api\ApiController@checkDomain');
 });
 
-Route::get('otp/send','Auth\AuthController@requestOtp');
-Route::get('otp/verify','Auth\AuthController@postOtp');
-Route::get('email/verify','Auth\AuthController@verifyEmail');
-Route::get('verify',function(){
+Route::get('otp/send', 'Auth\AuthController@requestOtp');
+Route::get('otp/verify', 'Auth\AuthController@postOtp');
+Route::get('email/verify', 'Auth\AuthController@verifyEmail');
+Route::get('verify', function () {
     $user = \Session::get('user');
-    if($user){
-        return view('themes.default1.user.verify',compact('user'));
+    if ($user) {
+        return view('themes.default1.user.verify', compact('user'));
     }
+
     return redirect('auth/login');
 });
-

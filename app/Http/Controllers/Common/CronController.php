@@ -5,21 +5,21 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
 
-class CronController extends Controller {
-
+class CronController extends Controller
+{
     protected $subscription;
     protected $order;
     protected $user;
     protected $template;
     protected $invoice;
 
-    public function __construct() {
+    public function __construct()
+    {
         $subscription = new Subscription();
         $this->sub = $subscription;
 
@@ -36,20 +36,22 @@ class CronController extends Controller {
         $this->invoice = $invoice;
     }
 
-    public function get30DaysExpiryInfo() {
+    public function get30DaysExpiryInfo()
+    {
         $plus29days = new Carbon('+29 days');
         $plus31days = new Carbon('+31 days');
-        
+
         $sub = $this->sub
                 ->where('ends_at', '!=', '0000-00-00 00:00:00')
                 ->whereNotNull('ends_at')
-                ->whereBetween('ends_at', [$plus29days,$plus31days]);
+                ->whereBetween('ends_at', [$plus29days, $plus31days]);
         //dd($sub->get());
 
         return $sub;
     }
 
-    public function get15DaysExpiryInfo() {
+    public function get15DaysExpiryInfo()
+    {
         $plus14days = new Carbon('+14 days');
         $plus16days = new Carbon('+16 days');
         $sub = $this->sub
@@ -60,7 +62,8 @@ class CronController extends Controller {
         return $sub;
     }
 
-    public function getOneDayExpiryInfo() {
+    public function getOneDayExpiryInfo()
+    {
         $yesterday = new Carbon('-2 days');
         $today = new Carbon('today');
         $sub = $this->sub
@@ -71,7 +74,8 @@ class CronController extends Controller {
         return $sub;
     }
 
-    public function getOnDayExpiryInfo() {
+    public function getOnDayExpiryInfo()
+    {
         $yesterday = new Carbon('yesterday');
         $tomorrow = new Carbon('tomorrow');
         $sub = $this->sub
@@ -82,7 +86,8 @@ class CronController extends Controller {
         return $sub;
     }
 
-    public function getExpiredInfo() {
+    public function getExpiredInfo()
+    {
         $yesterday = new Carbon('today');
         $tomorrow = new Carbon('+2 days');
         $sub = $this->sub
@@ -93,7 +98,8 @@ class CronController extends Controller {
         return $sub;
     }
 
-    public function getExpiredInfoByOrderId($orderid) {
+    public function getExpiredInfoByOrderId($orderid)
+    {
         $yesterday = new Carbon('today');
         $sub = $this->sub
                 ->where('order_id', $orderid)
@@ -105,23 +111,24 @@ class CronController extends Controller {
         return $sub;
     }
 
-    public function get30DaysExpiryUsers() {
+    public function get30DaysExpiryUsers()
+    {
         $sub = $this->get30DaysExpiryInfo();
         //dd($sub->get());
         $users = [];
         if ($sub->get()->count() > 0) {
             foreach ($sub->get() as $key => $value) {
-                
                 $users[$key]['users'] = $this->sub->find($value->id)->user()->get();
                 $users[$key]['orders'] = $this->sub->find($value->id)->order()->get();
                 $users[$key]['subscription'] = $value;
             }
         }
-        
+
         return $users;
     }
 
-    public function get15DaysExpiryUsers() {
+    public function get15DaysExpiryUsers()
+    {
         $sub = $this->get15DaysExpiryInfo();
         $users = [];
         if ($sub->get()->count() > 0) {
@@ -135,7 +142,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getOneDayExpiryUsers() {
+    public function getOneDayExpiryUsers()
+    {
         $sub = $this->getOneDayExpiryInfo();
         $users = [];
         if ($sub->get()->count() > 0) {
@@ -149,7 +157,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getOnDayExpiryUsers() {
+    public function getOnDayExpiryUsers()
+    {
         $sub = $this->getOnDayExpiryInfo();
         $users = [];
         if ($sub->get()->count() > 0) {
@@ -163,7 +172,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getExpiredUsers() {
+    public function getExpiredUsers()
+    {
         $sub = $this->getExpiredInfo();
         $users = [];
         if ($sub->get()->count() > 0) {
@@ -177,7 +187,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get30DaysUsers() {
+    public function get30DaysUsers()
+    {
         //$users = [];
         $users = $this->get30DaysExpiryUsers();
         //dd($users);
@@ -188,7 +199,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get15DaysUsers() {
+    public function get15DaysUsers()
+    {
         $users = [];
         $users = $this->get15DaysExpiryUsers();
         if (count($users) > 0) {
@@ -198,7 +210,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get1DaysUsers() {
+    public function get1DaysUsers()
+    {
         $users = [];
         $users = $this->getOneDayExpiryUsers();
         if (count($users) > 0) {
@@ -208,7 +221,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get0DaysUsers() {
+    public function get0DaysUsers()
+    {
         $users = [];
         $users = $this->getOnDayExpiryUsers();
         if (count($users) > 0) {
@@ -218,7 +232,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getPlus1Users() {
+    public function getPlus1Users()
+    {
         $users = [];
         $users = $this->getExpiredUsers();
         if (count($users) > 0) {
@@ -228,7 +243,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get30DaysOrders() {
+    public function get30DaysOrders()
+    {
         $users = [];
         $users = $this->get30DaysExpiryUsers();
         if (count($users) > 0) {
@@ -238,7 +254,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get15DaysOrders() {
+    public function get15DaysOrders()
+    {
         $users = [];
         $users = $this->get15DaysExpiryUsers();
         if (count($users) > 0) {
@@ -248,7 +265,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get1DaysOrders() {
+    public function get1DaysOrders()
+    {
         $users = [];
         $users = $this->getOneDayExpiryUsers();
         if (count($users) > 0) {
@@ -258,7 +276,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get0DaysOrders() {
+    public function get0DaysOrders()
+    {
         $users = [];
         $users = $this->getOnDayExpiryUsers();
         if (count($users) > 0) {
@@ -268,7 +287,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getPlus1Orders() {
+    public function getPlus1Orders()
+    {
         $users = [];
         $users = $this->getExpiredUsers();
         if (count($users) > 0) {
@@ -278,7 +298,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get30DaysSubscription() {
+    public function get30DaysSubscription()
+    {
         $users = [];
         $users = $this->get30DaysExpiryUsers();
         if (count($users) > 0) {
@@ -288,7 +309,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get15DaysSubscription() {
+    public function get15DaysSubscription()
+    {
         $users = [];
         $users = $this->get15DaysExpiryUsers();
         if (count($users) > 0) {
@@ -298,7 +320,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get1DaysSubscription() {
+    public function get1DaysSubscription()
+    {
         $users = [];
         $users = $this->getOneDayExpiryUsers();
         if (count($users) > 0) {
@@ -308,7 +331,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function get0DaysSubscription() {
+    public function get0DaysSubscription()
+    {
         $users = [];
         $users = $this->getOnDayExpiryUsers();
         if (count($users) > 0) {
@@ -318,7 +342,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getPlus1Subscription() {
+    public function getPlus1Subscription()
+    {
         $users = [];
         $users = $this->getExpiredUsers();
         if (count($users) > 0) {
@@ -328,7 +353,8 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getUsers() {
+    public function getUsers()
+    {
         $users = [];
         if (count($this->get30DaysUsers())) {
             array_push($users, $this->get30DaysUsers());
@@ -349,12 +375,13 @@ class CronController extends Controller {
         return $users;
     }
 
-    public function getSubscriptions() {
+    public function getSubscriptions()
+    {
         $sub = [];
         if (count($this->get30DaysSubscription())) {
             array_push($sub, $this->get30DaysSubscription());
         }
-        
+
         if (count($this->get15DaysUsers())) {
             array_push($sub, $this->get15DaysSubscription());
         }
@@ -369,37 +396,42 @@ class CronController extends Controller {
         if (count($this->getPlus1Users())) {
             array_push($sub, $this->getPlus1Subscription());
         }
-        
+
         return $sub;
     }
 
-    public function getUserById($id) {
+    public function getUserById($id)
+    {
         $user = $this->user->find($id);
 
         return $user;
     }
 
-    public function getOrderById($id) {
+    public function getOrderById($id)
+    {
         $order = $this->order->find($id);
 
         return $order;
     }
 
-    public function getInvoiceItemByInvoiceId($invoiceid) {
+    public function getInvoiceItemByInvoiceId($invoiceid)
+    {
         $invoice = $this->invoice->find($invoiceid);
         $item_id = $invoice->invoiceItem()->first();
 
         return $item_id;
     }
 
-    public function getInvoiceByOrderId($orderid) {
+    public function getInvoiceByOrderId($orderid)
+    {
         $order = $this->order->find($orderid);
         $invoice = $order->invoice()->first();
 
         return $invoice;
     }
 
-    public function eachSubscription() {
+    public function eachSubscription()
+    {
         $sub = $this->getSubscriptions();
         //dd($sub);
         foreach ($sub as $value) {
@@ -414,7 +446,8 @@ class CronController extends Controller {
         }
     }
 
-    public function mail($user, $end, $product, $order, $sub) {
+    public function mail($user, $end, $product, $order, $sub)
+    {
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
@@ -423,7 +456,7 @@ class CronController extends Controller {
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->subscription_going_to_end;
         //dd($setting);
-        if($end<date('Y-m-d H:m:i')){
+        if ($end < date('Y-m-d H:m:i')) {
             $temp_id = $setting->subscription_over;
         }
         //dd($temp_id);
@@ -434,13 +467,13 @@ class CronController extends Controller {
         $data = $template->data;
         $date = date_create($end);
         $end = date_format($date, 'l, F j, Y H:m A');
-        $replace = ['name' => ucfirst($user->first_name) . ' ' . ucfirst($user->last_name),
-            'expiry' => $end,
-            'product' => $product,
-            'number' => $order->number,
-            'url' => $url,
+        $replace = ['name' => ucfirst($user->first_name).' '.ucfirst($user->last_name),
+            'expiry'       => $end,
+            'product'      => $product,
+            'number'       => $order->number,
+            'url'          => $url,
         ];
-        $type = "";
+        $type = '';
         if ($template) {
             $type_id = $template->type;
             $temp_type = new \App\Model\Common\TemplateType();
@@ -448,8 +481,8 @@ class CronController extends Controller {
         }
         //dd([$from, $to, $data, $subject, $replace,$type]);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace,$type);
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+
         return $mail;
     }
-
 }

@@ -21,8 +21,9 @@ class ProfileController extends Controller
             $timezones = $timezones->lists('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            $bussinesses = \App\Model\Common\Bussiness::lists('name','short')->toArray();
-            return view('themes.default1.user.profile', compact('bussinesses','user', 'timezones', 'state', 'states'));
+            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+
+            return view('themes.default1.user.profile', compact('bussinesses', 'user', 'timezones', 'state', 'states'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }

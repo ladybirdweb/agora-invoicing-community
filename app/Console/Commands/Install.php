@@ -4,8 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class Install extends Command {
-
+class Install extends Command
+{
     /**
      * The name and signature of the console command.
      *
@@ -25,7 +25,8 @@ class Install extends Command {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -34,7 +35,8 @@ class Install extends Command {
      *
      * @return mixed
      */
-    public function handle() {
+    public function handle()
+    {
         if ($this->confirm('Do you want to intall Agora?')) {
             $this->createEnv();
             $default = $this->choice(
@@ -55,26 +57,27 @@ class Install extends Command {
             $data = [
                 [
                     'user_name' => 'demo',
-                    'email' => 'demo@admin.com',
-                    'password' => 'password'
+                    'email'     => 'demo@admin.com',
+                    'password'  => 'password',
                 ],
             ];
             $this->table($headers, $data);
             $this->warn('Please change the password immediately');
-            $this->info("Thank you! Agora has been installed successfully");
+            $this->info('Thank you! Agora has been installed successfully');
         }
     }
 
-    public function createEnv() {
-        $contents = "APP_ENV=developing
+    public function createEnv()
+    {
+        $contents = 'APP_ENV=developing
 APP_DEBUG=true
 APP_KEY=base64:7dBi4ai8SxvmqnWZAfUSxCGfZdOJkl6m0g1mNwgCK8g=
 APP_BUGSNAG=false
 APP_URL=http://localhost
 CACHE_DRIVER=file
 SESSION_DRIVER=file
-QUEUE_DRIVER=sync";
-        $env = base_path() . DIRECTORY_SEPARATOR . '.env';
+QUEUE_DRIVER=sync';
+        $env = base_path().DIRECTORY_SEPARATOR.'.env';
         if (is_file($env)) {
             unlink($env);
         }
@@ -83,37 +86,40 @@ QUEUE_DRIVER=sync";
         }
     }
 
-    public function updateEnv($key, $value) {
-        $env = base_path() . DIRECTORY_SEPARATOR . '.env';
+    public function updateEnv($key, $value)
+    {
+        $env = base_path().DIRECTORY_SEPARATOR.'.env';
         if (is_file($env)) {
             $contents = "$key=$value";
-            file_put_contents($env, $contents . PHP_EOL, FILE_APPEND | LOCK_EX);
+            file_put_contents($env, $contents.PHP_EOL, FILE_APPEND | LOCK_EX);
         } else {
             throw new Exception('.env not found');
         }
     }
 
-    public function updateDBEnv($array) {
+    public function updateDBEnv($array)
+    {
         foreach ($array as $key => $value) {
             $this->updateEnv($key, $value);
         }
     }
 
-    public function createAdmin() {
+    public function createAdmin()
+    {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('users')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         return \App\User::create([
-                    'first_name' => 'Demo',
-                    'last_name' => 'Admin',
-                    'user_name' => 'demo',
-                    'email' => 'demo@admin.com',
-                    'role' => 'admin',
-                    'password' => \Hash::make('password'),
-                    'active' => 1,
+                    'first_name'      => 'Demo',
+                    'last_name'       => 'Admin',
+                    'user_name'       => 'demo',
+                    'email'           => 'demo@admin.com',
+                    'role'            => 'admin',
+                    'password'        => \Hash::make('password'),
+                    'active'          => 1,
                     'mobile_verified' => 1,
-                    'currency' => 'INR',
+                    'currency'        => 'INR',
         ]);
     }
-
 }

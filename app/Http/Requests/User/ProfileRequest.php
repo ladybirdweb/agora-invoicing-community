@@ -36,8 +36,8 @@ class ProfileRequest extends Request
                     'zip'              => 'required',
                     'user_name'        => 'required|unique:users,user_name,'.$userid,
                     'bussiness'        => 'required',
-                    'company_type'     => 'required',
-                    'company_size'     => 'required',
+                    //'company_type'     => 'required',
+                    //'company_size'     => 'required',
 
         ];
         }
@@ -64,9 +64,9 @@ class ProfileRequest extends Request
                     'password_confirmation' => 'required|same:password',
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                'bussiness'                 => 'required',
-                        'company_type'      => 'required',
-                        'company_size'      => 'required',
+                    'bussiness'                 => 'required',
+                    //'company_type'      => 'required',
+                    //'company_size'      => 'required',
 
         ];
         }

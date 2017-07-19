@@ -344,7 +344,7 @@ Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 Route::get('renew/{id}', 'Order\RenewController@renewForm');
 Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
-Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
+Route::post('client/renetw/{id}', 'Order\RenewController@renewByClient');
 
 Route::post('serial', 'HomeController@serial');
 Route::post('v2/serial', 'HomeController@serialV2');

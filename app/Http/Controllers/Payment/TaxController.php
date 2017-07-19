@@ -229,7 +229,6 @@ class TaxController extends Controller
     {
         try {
             $id = $request->input('country_id');
-
             $states = \App\Model\Common\State::where('country_code_char2', $id)->get();
             //return $states;
             echo '<option value=>Select State</option>';

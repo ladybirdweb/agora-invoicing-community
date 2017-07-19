@@ -13,6 +13,7 @@ class PostgreDBDataWrapper extends DBDataWrapper
         if ($res === false) {
             throw new Exception("Postgre - sql execution failed\n".pg_last_error($this->connection));
         }
+
         return $res;
     }
 

@@ -21,6 +21,7 @@ class PDODBDataWrapper extends DBDataWrapper
         if ($res === false) {
             throw new Exception("PDO - sql execution failed\n".$this->connection->errorInfo());
         }
+
         return $res;
     }
 

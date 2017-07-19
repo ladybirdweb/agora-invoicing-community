@@ -261,7 +261,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         $.ajax({
             type: "POST",
             url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},
             success: function (data) {
                 $("#state-list").html(data);
             }

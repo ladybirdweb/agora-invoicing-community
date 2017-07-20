@@ -477,30 +477,31 @@ class ProductController extends Controller
         }
     }
 
-    public function adminDownload($id) {
+    public function adminDownload($id)
+    {
         try {
             $release = $this->downloadProduct($id);
-            if(is_array($release) && key_exists('type', $release)){
-                header("Location: ".$release['release']);
+            if (is_array($release) && array_key_exists('type', $release)) {
+                header('Location: '.$release['release']);
                 exit;
-            }else{
-               header("Content-type: Zip"); 
-               header('Content-Description: File Transfer');
-               header("Content-Disposition: attachment; filename=Faveo.zip");
-               //header("Content-type: application/zip"); 
-               header('Content-Length: ' . filesize($release));
+            } else {
+                header('Content-type: Zip');
+                header('Content-Description: File Transfer');
+                header('Content-Disposition: attachment; filename=Faveo.zip');
+               //header("Content-type: application/zip");
+               header('Content-Length: '.filesize($release));
                //ob_clean();
                flush();
-               readfile("$release");
-               exit;
-    
+                readfile("$release");
+                exit;
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function userDownload($userid, $invoice_number) {
+    public function userDownload($userid, $invoice_number)
+    {
         try {
             if (\Auth::user()->role != 'admin') {
                 if (\Auth::user()->id != $userid) {
@@ -511,26 +512,27 @@ class ProductController extends Controller
             $user = $user->findOrFail($userid);
             $invoice = new \App\Model\Order\Invoice();
             $invoice = $invoice->where('number', $invoice_number)->first();
-            
+
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    $order = $invoice->order()->orderBy('id','desc')->select('product')->first();
+                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
                     $release = $this->downloadProduct($product_id);
-               if(is_array($release) && key_exists('type', $release)){
-                  $release = $release['release'];
-                    return view('themes.default1.front.download', compact('release', 'form'));
-               }else{
-                  header("Content-type: Zip"); 
-                  header('Content-Description: File Transfer');
-                  header("Content-Disposition: attachment; filename=Faveo.zip");
-               //header("Content-type: application/zip"); 
-                  header('Content-Length: ' . filesize($release));
+                    if (is_array($release) && array_key_exists('type', $release)) {
+                        $release = $release['release'];
+
+                        return view('themes.default1.front.download', compact('release', 'form'));
+                    } else {
+                        header('Content-type: Zip');
+                        header('Content-Description: File Transfer');
+                        header('Content-Disposition: attachment; filename=Faveo.zip');
+               //header("Content-type: application/zip");
+                  header('Content-Length: '.filesize($release));
                   //ob_clean();
                   flush();
-                  readfile("$release");
-                  exit;
-               }
+                        readfile("$release");
+                        exit;
+                    }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
                 }

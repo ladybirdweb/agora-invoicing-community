@@ -11,7 +11,7 @@ class VerifyCsrfToken extends BaseVerifier
         'serial',
         'v2/serial',
     ];
-    
+
     /**
      * Handle an incoming request.
      *

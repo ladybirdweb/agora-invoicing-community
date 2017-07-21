@@ -476,6 +476,7 @@
                                                                                                         }
                                                                                                 });
         </script>
+        @yield('script')
 
         <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
         <script>

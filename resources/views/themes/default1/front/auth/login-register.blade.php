@@ -150,25 +150,50 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                     </div>
                                 </div>
                             </div>
+                            <div class='row'>
+                                <?php
+                                $type = DB::table('company_types')->pluck('name', 'short');
+                                $size = DB::table('company_sizes')->pluck('name', 'short');
+                                ?>
+                                <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
+                                    <!-- email -->
+                                    {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
+                                    {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg']) !!}
+
+                                </div>
+                                <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
+                                    <!-- email -->
+                                    {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
+                                    {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg']) !!}
+
+                                </div>
+                            </div>
                             <div class="row">
                                 <div class="form-group">
-                                    <div class="col-md-3 {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                                        <label class="required">Code</label>
-                                        {!! Form::text('mobile_code',$mobile_code,['class'=>'form-control input-lg']) !!}
-                                    </div>
-                                    <div class="col-md-5 {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                                        <label class="required">Mobile No</label>
-                                        {!! Form::text('mobile',null,['class'=>'form-control input-lg']) !!}
-                                    </div>
+
 
                                     <div class="form-group">
-                                        <div class="col-md-4 {{ $errors->has('country') ? 'has-error' : '' }}">
+                                        <div class="col-md-12 {{ $errors->has('country') ? 'has-error' : '' }}">
                                             {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
-<?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
-                                            {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getState(this.value);']) !!}
+                                            <?php $countries = \App\Model\Common\Country::lists('nicename', 'country_code_char2')->toArray(); ?>
+                                            {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
 
                                         </div>
+
                                     </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                    <label class="required">Country code</label>
+                                    {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                                    {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                </div>
+                                <div class="col-md-8 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
+                                    <!-- mobile -->
+                                    {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
+                                    {!! Form::text('mobile',null,['class' => 'form-control input-lg']) !!}
+
                                 </div>
                             </div>
                             <div class="row">
@@ -242,7 +267,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                     </label>
                                 </div>
                                 <div class="col-md-6">
-                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading...">
+                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'>
                                 </div>
                             </div>
                             {!! Form::close() !!}
@@ -254,19 +279,106 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         </div>
     </div>
 </div>
+@stop 
+@section('script')
 <script>
+
+    $(document).ready(function () {
+        var val = $("#country").val();
+        getCountryAttr(val);
+    });
+
+    function getCountryAttr(val) {
+        getState(val);
+        getCode(val);
+
+    }
+
     function getState(val) {
 
 
         $.ajax({
             type: "POST",
             url: "{{url('get-state')}}",
-            data: {'country_id':val,'_token':"{{csrf_token()}}"},
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
             }
         });
     }
+    function getCode(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-code')}}",
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+            success: function (data) {
+                $("#mobile_code").val(data);
+                $("#mobile_code_hidden").val(data);
+            }
+        });
+    }
+    function getCurrency(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-currency')}}",
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+            success: function (data) {
+                $("#currency").val(data);
+            }
+        });
+    }
 </script>
+<!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
+In your html page, add the snippet and call
+goog_report_conversion when someone clicks on the
+chosen link or button. -->
+<script type="text/javascript"> 
+//<![CDATA[
+  goog_snippet_vars = function() {
+    var w = window;
+    w.google_conversion_id = 1027628032;
+    w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+    w.google_remarketing_only = false;
+  }
+  // DO NOT CHANGE THE CODE BELOW.
+  goog_report_conversion = function(url) {
+    goog_snippet_vars();
+    window.google_conversion_format = "3";
+    var opt = new Object();
+    opt.onload_callback = function() {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  }
+  var conv_handler = window['google_trackConversion'];
+  if (typeof(conv_handler) == 'function') {
+    conv_handler(opt);
+  }
+fbq('track', 'CompleteRegistration');
+}
+//]]>
+</script>
+<script type="text/javascript"
+  src="//www.googleadservices.com/pagead/conversion_async.js">
+</script>
+<!-- Facebook Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+ fbq('init', '308328899511239'); 
+fbq('track', 'PageView');
 
+</script>
+<noscript>
+ <img height="1" width="1" 
+src="https://www.facebook.com/tr?id=308328899511239&ev=PageView
+&noscript=1"/>
+</noscript>
+<!-- End Facebook Pixel Code -->
 @stop

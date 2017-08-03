@@ -18,7 +18,7 @@ $location = \GeoIP::getLocation();
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
 //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
 $states = \App\Model\Common\State::lists('state_subdivision_name', 'state_subdivision_code')->toArray();
-$state_code = $location['isoCode'] . "-" . $location['state'];
+$state_code = $location['isoCode'].'-'.$location['state'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
 $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
 ?>
@@ -191,7 +191,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                         <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
                                             {!! Form::label('state',Lang::get('message.state')) !!}
                                             <?php
-                                            $value = "";
+                                            $value = '';
                                             if (count($state) > 0) {
                                                 $value = $state;
                                             }

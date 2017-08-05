@@ -24,7 +24,7 @@ class AuthController extends Controller {
       |
      */
 
-use AuthenticatesAndRegistersUsers;
+    use AuthenticatesAndRegistersUsers;
 
     /* to redirect after login */
 
@@ -168,7 +168,6 @@ use AuthenticatesAndRegistersUsers;
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-            //dd($request->method());
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -177,6 +176,7 @@ use AuthenticatesAndRegistersUsers;
                 $activate = $activate_model->create(['email' => $email, 'token' => $token]);
                 $token = $activate->token;
             }
+
             $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
@@ -196,9 +196,9 @@ use AuthenticatesAndRegistersUsers;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            //dd($type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+
             return $mail;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -218,7 +218,6 @@ use AuthenticatesAndRegistersUsers;
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
@@ -231,6 +230,7 @@ use AuthenticatesAndRegistersUsers;
             } else {
                 throw new NotFoundHttpException();
             }
+
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
@@ -326,9 +326,12 @@ use AuthenticatesAndRegistersUsers;
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
             $email = $request->input('email');
+            $pass = $request->input('password');
             $number = $code . $mobile;
             $result = $this->sendOtp($mobile, $code);
-            //$this->sendActivation($email, $request->method());
+            $method = 'POST';
+            $this->sendActivation($email, $method, $pass);
+            //$this->accountManagerMail($user);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
             return response()->json($response);
         } catch (\Exception $ex) {

@@ -493,6 +493,7 @@ border-top: none;
                             <p>You will be sent verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP here.</p>
                             <form name="verifyForm" >
                                 <input type="hidden" name="user_id" id="user_id"/>
+                                <input type="hidden" name="email_password" id="email_password"/>
                                 <div class="row">
                                     <div class="form-group">
                                         <div class="col-md-12 ">
@@ -627,9 +628,10 @@ border-top: none;
                 verifyForm.elements['verify_email'].value = $('#email').val();
                 verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
                 verifyForm.elements['verify_number'].value = $('#mobilenum').val();
-                setTimeout(function(){ 
+                verifyForm.elements['email_password'].value = $('#password').val();
+                /*setTimeout(function(){ 
                     $('#alertMessage1').hide(); 
-                }, 3000);
+                }, 3000);*/
             }
           },
           error: function (ex) {
@@ -651,7 +653,8 @@ border-top: none;
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
             "code": $('#verify_country_code').val(),
-            'id': $('#user_id').val()
+            'id': $('#user_id').val(),
+            'password': $('#email_password').val()
         };
         $.ajax({
           url: '{{url('otp/send')}}',
@@ -660,6 +663,7 @@ border-top: none;
           success: function (response) {
                 var result =  '<div class="alert alert-success alert-dismissable"><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage2').html(result);
+                $('#error1').hide();
                 $('.wizard-inner').show();
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
@@ -675,10 +679,11 @@ border-top: none;
                 html += '<li>' + myJSON[key][0] + '</li>'
             }
             html += '</ul></div>';
+            $('#alertMessage1').hide();
             document.getElementById('error1').innerHTML = html;
-            setTimeout(function(){ 
+            /*setTimeout(function(){ 
                 $('#error1').hide(); 
-            }, 5000);
+            }, 5000);*/
           }
         });
     }

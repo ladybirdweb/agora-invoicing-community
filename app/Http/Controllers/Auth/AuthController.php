@@ -137,7 +137,7 @@ class AuthController extends Controller {
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();
             //$this->sendActivation($user->email, $request->method(), $pass);
-            //$this->accountManagerMail($user);
+            $this->accountManagerMail($user);
             if ($user) {
                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
                 return response()->json($response);
@@ -331,7 +331,6 @@ class AuthController extends Controller {
             $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
             $this->sendActivation($email, $method, $pass);
-            //$this->accountManagerMail($user);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
             return response()->json($response);
         } catch (\Exception $ex) {

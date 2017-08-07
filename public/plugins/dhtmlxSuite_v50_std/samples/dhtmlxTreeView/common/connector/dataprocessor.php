@@ -16,8 +16,8 @@ class DataProcessor
     public static $action_param = '!nativeeditor_status';
 
     /*! constructor
-        
-        @param connector 
+
+        @param connector
             Connector object
         @param config
             DataConfig object
@@ -33,9 +33,9 @@ class DataProcessor
 
     /*! convert incoming data name to valid db name
         redirect to Connector->name_data by default
-        @param data 
+        @param data
             data name from incoming request
-        @return 
+        @return
             related db_name
     */
     public function name_data($data)
@@ -44,10 +44,10 @@ class DataProcessor
     }
 
     /*! retrieve data from incoming request and normalize it
-        
-        @param ids 
+
+        @param ids
             array of extected IDs
-        @return 
+        @return
             hash of data
     */
     protected function get_post_values($ids)
@@ -142,10 +142,10 @@ class DataProcessor
     }
 
     /*! converts status string to the inner mode name
-        
-        @param status 
+
+        @param status
             external status string
-        @return 
+        @return
             inner mode name
     */
     protected function status_to_mode($status)
@@ -167,10 +167,10 @@ class DataProcessor
     }
 
     /*! process data updated request received
-        
-        @param action 
+
+        @param action
             DataAction object
-        @return 
+        @return
             DataAction object with details of processing
     */
     protected function inner_process($action)
@@ -216,7 +216,7 @@ class DataProcessor
 
     /*! check if some event intercepts processing, send data to DataWrapper in other case
 
-        @param action 
+        @param action
             DataAction object
         @param mode
             name of inner mode ( will be used to generate event names )
@@ -288,8 +288,8 @@ class DataAction
     private $delf; //!< array of deleted fields
 
     /*! constructor
-        
-        @param status 
+
+        @param status
             current operation status
         @param id
             record id
@@ -312,8 +312,8 @@ class DataAction
     }
 
     /*! add custom field and value to DB operation
-        
-        @param name 
+
+        @param name
             name of field which will be added to DB operation
         @param value
             value which will be used for related field in DB operation
@@ -326,8 +326,8 @@ class DataAction
     }
 
     /*! remove field from DB operation
-        
-        @param name 
+
+        @param name
             name of field which will be removed from DB operation
     */
     public function remove_field($name)
@@ -337,10 +337,10 @@ class DataAction
     }
 
     /*! sync field configuration with external object
-        
-        @param slave 
+
+        @param slave
             SQLMaster object
-        @todo 
+        @todo
             check , if all fields removed then cancel action
     */
     public function sync_config($slave)
@@ -354,10 +354,10 @@ class DataAction
     }
 
     /*! get value of some record's propery
-        
-        @param name 
+
+        @param name
             name of record's property ( name of db field or alias )
-        @return 
+        @return
             value of related property
     */
     public function get_value($name)
@@ -373,8 +373,8 @@ class DataAction
     }
 
     /*! set value of some record's propery
-        
-        @param name 
+
+        @param name
             name of record's property ( name of db field or alias )
         @param value
             value of related property
@@ -386,8 +386,8 @@ class DataAction
     }
 
     /*! get hash of data properties
-        
-        @return 
+
+        @return
             hash of data properties
     */
     public function get_data()
@@ -397,9 +397,9 @@ class DataAction
 
     /*! get some extra info attached to record
         deprecated, exists just for backward compatibility, you can use set_value instead of it
-        @param name 
+        @param name
             name of userdata property
-        @return 
+        @return
             value of related userdata property
     */
     public function get_userdata_value($name)
@@ -409,7 +409,7 @@ class DataAction
 
     /*! set some extra info attached to record
         deprecated, exists just for backward compatibility, you can use get_value instead of it
-        @param name 
+        @param name
             name of userdata property
         @param value
             value of userdata property
@@ -420,8 +420,8 @@ class DataAction
     }
 
     /*! get current status of record
-        
-        @return 
+
+        @return
             string with status value
     */
     public function get_status()
@@ -430,8 +430,8 @@ class DataAction
     }
 
     /*! assign new status to the record
-        
-        @param status 
+
+        @param status
             new status value
     */
     public function set_status($status)
@@ -460,8 +460,8 @@ class DataAction
     }
 
     /*! get id of current record
-        
-        @return 
+
+        @return
             id of record
     */
     public function get_id()
@@ -470,9 +470,9 @@ class DataAction
     }
 
     /*! sets custom response text
-        
+
         can be accessed through defineAction on client side. Text wrapped in CDATA, so no extra escaping necessary
-        @param text 
+        @param text
             custom response text
     */
     public function set_response_text($text)
@@ -481,7 +481,7 @@ class DataAction
     }
 
     /*! sets custom response xml
-        
+
         can be accessed through defineAction on client side
         @param text
             string with XML data
@@ -492,7 +492,7 @@ class DataAction
     }
 
     /*! sets custom response attributes
-        
+
         can be accessed through defineAction on client side
         @param name
             name of custom attribute
@@ -504,9 +504,9 @@ class DataAction
         $this->attrs[$name] = $value;
     }
 
-    /*! check if action finished 
-        
-        @return 
+    /*! check if action finished
+
+        @return
             true if action finished, false otherwise
     */
     public function is_ready()
@@ -515,9 +515,9 @@ class DataAction
     }
 
     /*! return new id value
-    
-        equal to original ID normally, after insert operation - value assigned for new DB record	
-        @return 
+
+        equal to original ID normally, after insert operation - value assigned for new DB record
+        @return
             new id value
     */
     public function get_new_id()
@@ -554,7 +554,7 @@ class DataAction
     }
 
     /*! convert DataAction to xml format compatible with client side dataProcessor
-        @return 
+        @return
             DataAction operation report as XML string
     */
     public function to_xml()
@@ -569,10 +569,10 @@ class DataAction
     }
 
     /*! replace xml unsafe characters
-        
-        @param string 
+
+        @param string
             string to be escaped
-        @return 
+        @return
             escaped string
     */
     public function xmlentities($string)
@@ -581,9 +581,9 @@ class DataAction
     }
 
     /*! convert self to string ( for logs )
-        
-        @return 
-            DataAction operation report as plain string 
+
+        @return
+            DataAction operation report as plain string
     */
     public function __toString()
     {

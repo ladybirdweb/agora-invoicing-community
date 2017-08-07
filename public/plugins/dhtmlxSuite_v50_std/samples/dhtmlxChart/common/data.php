@@ -12,4 +12,3 @@ for ($i = 1; $i <= 100; $i++) {
 $str .= '</data>';
 
 file_put_contents('stat.xml', $str);
-

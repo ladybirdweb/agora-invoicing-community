@@ -75,6 +75,7 @@ class DataProcessor
         if (!isset($_POST['ids'])) {
             throw new Exception('Incorrect incoming data, ID of incoming records not recognized');
         }
+
         return explode(',', $_POST['ids']);
     }
 
@@ -83,6 +84,7 @@ class DataProcessor
         if (!isset($_POST[$rid.'_'.self::$action_param])) {
             throw new Exception("Status of record [{$rid}] not found in incoming request");
         }
+
         return $_POST[$rid.'_'.self::$action_param];
     }
 

@@ -47,8 +47,8 @@ function microtime_float()
     if (!isset($_GET['direction']) || $_GET['direction'] == 'asc') {
         $_GET['direction'] = 'ASC';
     } else {
-         $_GET['direction'] = 'DESC';
-     }
+        $_GET['direction'] = 'DESC';
+    }
 
     $fields = ['item_nm', '', 'item_cd'];
     getDataFromDB('', '', $fields[$_GET['orderBy']], $_GET['direction']);

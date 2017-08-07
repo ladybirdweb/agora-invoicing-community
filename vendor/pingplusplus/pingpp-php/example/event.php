@@ -7,13 +7,11 @@
  */
 
 require dirname(__FILE__) . '/../init.php';
+// 示例配置文件，测试请根据文件注释修改其配置
+require 'config.php';
+// 设置 API Key
+\Pingpp\Pingpp::setApiKey(APP_KEY);
 
-\Pingpp\Pingpp::setApiKey('sk_test_ibbTe5jLGCi5rzfH4OqPW9KC');
-
-//查询指定的 event 对象
+// 查询指定的 event 对象，通过 event 对象的 id 查询一个已创建的 event 对象
 $evt = \Pingpp\Event::retrieve('evt_zRFRk6ekazsH7t7yCqEeovhk');
 echo $evt;
-
-//查询 event 列表
-$evts = \Pingpp\Event::all(array('type' => 'charge.succeeded'));
-echo $evts;

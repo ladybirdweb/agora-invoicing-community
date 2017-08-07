@@ -34,7 +34,7 @@ class Customer extends ApiResource
      */
     public static function create($params = null, $options = null)
     {
-        return self::_create($params, $options);
+        return self::_create($params, $opts);
     }
 
     /**
@@ -44,7 +44,7 @@ class Customer extends ApiResource
      */
     public function save($options = null)
     {
-        return $this->_save($options);
+        return $this->_save($opts);
     }
 
     /**

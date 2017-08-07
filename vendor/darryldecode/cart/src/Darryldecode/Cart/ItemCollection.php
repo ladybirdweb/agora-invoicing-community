@@ -7,9 +7,29 @@
  * Time: 11:03 AM
  */
 
+use Darryldecode\Cart\Helpers\Helpers;
 use Illuminate\Support\Collection;
 
 class ItemCollection extends Collection {
+
+    /**
+     * Sets the config parameters.
+     *
+     * @var
+     */
+    protected $config;
+
+    /**
+     * ItemCollection constructor.
+     * @param array|mixed $items
+     * @param $config
+     */
+    public function __construct($items, $config)
+    {
+        parent::__construct($items);
+
+        $this->config = $config;
+    }
 
     /**
      * get the sum of price
@@ -18,7 +38,8 @@ class ItemCollection extends Collection {
      */
     public function getPriceSum()
     {
-        return $this->price * $this->quantity;
+        return Helpers::formatValue($this->price * $this->quantity, $this->config['format_numbers'], $this->config);
+
     }
 
     public function __get($name)
@@ -46,11 +67,22 @@ class ItemCollection extends Collection {
     }
 
     /**
-     * get the single price in which conditions are already applied
+     * check if item has conditions
      *
      * @return mixed|null
      */
-    public function getPriceWithConditions() 
+    public function getConditions()
+    {
+        if(! $this->hasConditions() ) return [];
+        return $this['conditions'];
+    }
+
+    /**
+     * get the single price in which conditions are already applied
+     * @param bool $formatted
+     * @return mixed|null
+     */
+    public function getPriceWithConditions($formatted = true)
     {
         $originalPrice = $this->price;
         $newPrice = 0.00;
@@ -78,18 +110,18 @@ class ItemCollection extends Collection {
                 }
             }
 
-            return $newPrice;
+            return Helpers::formatValue($newPrice, $formatted, $this->config);
         }
-        return $originalPrice;
+        return Helpers::formatValue($originalPrice, $formatted, $this->config);
     }
 
     /**
      * get the sum of price in which conditions are already applied
-     *
+     * @param bool $formatted
      * @return mixed|null
      */
-    public function getPriceSumWithConditions()
+    public function getPriceSumWithConditions($formatted = true)
     {
-        return $this->getPriceWithConditions() * $this->quantity;
+        return Helpers::formatValue($this->getPriceWithConditions(false) * $this->quantity, $formatted, $this->config);
     }
 }

@@ -8,6 +8,13 @@ use Illuminate\Database\Grammar as BaseGrammar;
 class Grammar extends BaseGrammar
 {
     /**
+     * The grammar specific operators.
+     *
+     * @var array
+     */
+    protected $operators = [];
+
+    /**
      * The components that make up a select clause.
      *
      * @var array
@@ -142,10 +149,10 @@ class Grammar extends BaseGrammar
 
             $type = $join->type;
 
-            // Cross joins generate a cartesian product between the first table and the joined
-            // table. Since they don't expect any "on" clauses to perform the join, we just
-            // just append the SQL statement and jump to the next iteration of this loop.
-            if ($type === 'cross') {
+            // Cross joins generate a cartesian product between this first table and a joined
+            // table. In case the user didn't specify any "on" clauses on the join we will
+            // append this SQL and jump right back into the next iteration of this loop.
+            if ($type === 'cross' &&  ! $join->clauses) {
                 $sql[] = "cross join $table";
 
                 continue;
@@ -302,6 +309,20 @@ class Grammar extends BaseGrammar
     }
 
     /**
+     * Compile a where clause comparing two columns..
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $where
+     * @return string
+     */
+    protected function whereColumn(Builder $query, $where)
+    {
+        $second = $this->wrap($where['second']);
+
+        return $this->wrap($where['first']).' '.$where['operator'].' '.$second;
+    }
+
+    /**
      * Compile a "between" where clause.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -437,6 +458,18 @@ class Grammar extends BaseGrammar
     protected function whereDate(Builder $query, $where)
     {
         return $this->dateBasedWhere('date', $query, $where);
+    }
+
+    /**
+     * Compile a "where time" clause.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $where
+     * @return string
+     */
+    protected function whereTime(Builder $query, $where)
+    {
+        return $this->dateBasedWhere('time', $query, $where);
     }
 
     /**
@@ -577,6 +610,17 @@ class Grammar extends BaseGrammar
 
             return $this->wrap($order['column']).' '.$order['direction'];
         }, $orders));
+    }
+
+    /**
+     * Compile the random statement into SQL.
+     *
+     * @param  string  $seed
+     * @return string
+     */
+    public function compileRandom($seed)
+    {
+        return 'RANDOM()';
     }
 
     /**
@@ -745,6 +789,18 @@ class Grammar extends BaseGrammar
     }
 
     /**
+     * Prepare the bindings for an update statement.
+     *
+     * @param  array  $bindings
+     * @param  array  $values
+     * @return array
+     */
+    public function prepareBindingsForUpdate(array $bindings, array $values)
+    {
+        return $bindings;
+    }
+
+    /**
      * Compile a delete statement into SQL.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -836,5 +892,15 @@ class Grammar extends BaseGrammar
     protected function removeLeadingBoolean($value)
     {
         return preg_replace('/and |or /i', '', $value, 1);
+    }
+
+    /**
+     * Get the gramar specific operators.
+     *
+     * @return array
+     */
+    public function getOperators()
+    {
+        return $this->operators;
     }
 }

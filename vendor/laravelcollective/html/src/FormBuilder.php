@@ -4,6 +4,7 @@ namespace Collective\Html;
 
 use DateTime;
 use BadMethodCallException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Contracts\View\Factory;
@@ -13,7 +14,6 @@ use Illuminate\Contracts\Routing\UrlGenerator;
 
 class FormBuilder
 {
-
     use Macroable, Componentable {
         Macroable::__call as macroCall;
         Componentable::__call as componentCall;
@@ -68,6 +68,8 @@ class FormBuilder
      */
     protected $labels = [];
 
+    protected $request;
+
     /**
      * The reserved form open attributes.
      *
@@ -97,12 +99,13 @@ class FormBuilder
      * @param  \Illuminate\Contracts\View\Factory         $view
      * @param  string                                     $csrfToken
      */
-    public function __construct(HtmlBuilder $html, UrlGenerator $url, Factory $view, $csrfToken)
+    public function __construct(HtmlBuilder $html, UrlGenerator $url, Factory $view, $csrfToken, Request $request = null)
     {
         $this->url = $url;
         $this->html = $html;
         $this->view = $view;
         $this->csrfToken = $csrfToken;
+        $this->request = $request;
     }
 
     /**
@@ -210,16 +213,21 @@ class FormBuilder
      * @param  string $name
      * @param  string $value
      * @param  array  $options
+     * @param  bool   $escape_html
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function label($name, $value = null, $options = [])
+    public function label($name, $value = null, $options = [], $escape_html = true)
     {
         $this->labels[] = $name;
 
         $options = $this->html->attributes($options);
 
-        $value = e($this->formatLabel($name, $value));
+        $value = $this->formatLabel($name, $value);
+
+        if ($escape_html) {
+            $value = $this->html->entities($value);
+        }
 
         return $this->toHtmlString('<label for="' . $name . '"' . $options . '>' . $value . '</label>');
     }
@@ -708,7 +716,7 @@ class FormBuilder
     protected function getSelectedValue($value, $selected)
     {
         if (is_array($selected)) {
-            return in_array($value, $selected) ? 'selected' : null;
+            return in_array($value, $selected, true) ? 'selected' : null;
         }
 
         return ((string) $value == (string) $selected) ? 'selected' : null;
@@ -805,11 +813,13 @@ class FormBuilder
      */
     protected function getCheckboxCheckedState($name, $value, $checked)
     {
-        if (isset($this->session) && ! $this->oldInputIsEmpty() && is_null($this->old($name))) {
+        $request = $this->request($name);
+
+        if (isset($this->session) && ! $this->oldInputIsEmpty() && is_null($this->old($name)) && !$request) {
             return false;
         }
 
-        if ($this->missingOldAndModel($name)) {
+        if ($this->missingOldAndModel($name) && !$request) {
             return $checked;
         }
 
@@ -835,7 +845,9 @@ class FormBuilder
      */
     protected function getRadioCheckedState($name, $value, $checked)
     {
-        if ($this->missingOldAndModel($name)) {
+        $request = $this->request($name);
+
+        if ($this->missingOldAndModel($name) && !$request) {
             return $checked;
         }
 
@@ -1080,8 +1092,13 @@ class FormBuilder
             return $value;
         }
 
-        if (! is_null($this->old($name))) {
+        if (! is_null($this->old($name)) && $name != '_method') {
             return $this->old($name);
+        }
+
+        $request = $this->request($name);
+        if (!is_null($request)) {
+            return $request;
         }
 
         if (! is_null($value)) {
@@ -1094,6 +1111,20 @@ class FormBuilder
     }
 
     /**
+     * Get value from current Request
+     * @param $name
+     * @return array|null|string
+     */
+    protected function request($name)
+    {
+        if (!isset($this->request)) {
+            return null;
+        }
+
+        return $this->request->input($this->transformKey($name));
+    }
+
+    /**
      * Get the model value that should be assigned to the field.
      *
      * @param  string $name
@@ -1103,7 +1134,7 @@ class FormBuilder
     protected function getModelValueAttribute($name)
     {
         if (method_exists($this->model, 'getFormValue')) {
-            return $this->model->getFormValue($name);
+            return $this->model->getFormValue($this->transformKey($name));
         }
 
         return data_get($this->model, $this->transformKey($name));
@@ -1193,16 +1224,12 @@ class FormBuilder
      */
     public function __call($method, $parameters)
     {
-        try {
+        if (static::hasComponent($method)) {
             return $this->componentCall($method, $parameters);
-        } catch (BadMethodCallException $e) {
-            //
         }
 
-        try {
+        if (static::hasMacro($method)) {
             return $this->macroCall($method, $parameters);
-        } catch (BadMethodCallException $e) {
-            //
         }
 
         throw new BadMethodCallException("Method {$method} does not exist.");

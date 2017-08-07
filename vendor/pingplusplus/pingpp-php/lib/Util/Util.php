@@ -94,10 +94,9 @@ abstract class Util
             'event' => 'Pingpp\\Event',
             'transfer' => 'Pingpp\\Transfer',
             'customer' => 'Pingpp\\Customer',
-            'card' => 'Pingpp\\Card',
-            'sms_code' => 'Pingpp\\SmsCode',
-            'card_info' => 'Pingpp\\CardInfo',
-            'token' => 'Pingpp\\Token'
+            'customs' => 'Pingpp\\Customs',
+            'batch_refund' => 'Pingpp\\BatchRefund',
+            'batch_transfer' => 'Pingpp\\BatchTransfer',
         );
         if (self::isList($resp)) {
             $mapped = array();
@@ -105,23 +104,31 @@ abstract class Util
                 array_push($mapped, self::convertToPingppObject($i, $opts));
             return $mapped;
         } else if (is_object($resp)) {
-            if (isset($resp->object) 
+            if (isset($resp->object)
                 && is_string($resp->object)
                 && isset($types[$resp->object])) {
                     $class = $types[$resp->object];
-                } else {
-                    $class = 'Pingpp\\PingppObject';
-                }
+            } else {
+                $class = 'Pingpp\\PingppObject';
+            }
             return $class::constructFrom($resp, $opts);
         } else {
             return $resp;
         }
     }
 
+    /**
+     * Get the request headers
+     * @return array An hash map of request headers.
+     */
     public static function getRequestHeaders()
     {
         if (function_exists('getallheaders')) {
-            return getallheaders();
+            $headers = array();
+            foreach (getallheaders() as $name => $value) {
+                $headers[str_replace(' ', '-', ucwords(strtolower(str_replace('-', ' ', $name))))] = $value;
+            }
+            return $headers;
         }
         $headers = array();
         foreach ($_SERVER as $name => $value) {
@@ -135,16 +142,17 @@ abstract class Util
     /**
      * @param string|mixed $value A string to UTF8-encode.
      *
-     * @returns string|mixed The UTF8-encoded string, or the object passed in if
+     * @return string|mixed The UTF8-encoded string, or the object passed in if
      *    it wasn't a string.
      */
     public static function utf8($value)
     {
         if (is_string($value)
-            && mb_detect_encoding($value, "UTF-8", TRUE) != "UTF-8") {
-                return utf8_encode($value);
-            } else {
-                return $value;
-            }
+            && mb_detect_encoding($value, "UTF-8", TRUE) != "UTF-8"
+        ) {
+            return utf8_encode($value);
+        } else {
+            return $value;
+        }
     }
 }

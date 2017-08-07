@@ -26,7 +26,7 @@ class CurrencyController extends Controller
      * @return Response
      */
     public function index()
-    {
+    {  
         return view('themes.default1.payment.currency.index');
     }
 

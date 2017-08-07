@@ -41,7 +41,8 @@ trait FormAccessible
             return $this->mutateFormAttribute($key, $value);
         }
 
-        return $value;
+        // No form mutator, let the model resolve this
+        return data_get($this, $key);
     }
 
     /**

@@ -21,11 +21,11 @@ System Requirements
 The basic requirements to operate Swift Mailer are extremely minimal and
 easily achieved. Historically, Swift Mailer has supported both PHP 4 and PHP 5
 by following a parallel development workflow. Now in it's fourth major
-version, and Swift Mailer operates on servers running PHP 5.2 or higher.
+version, and Swift Mailer operates on servers running PHP 5.3.3 or higher.
 
 The library aims to work with as many PHP 5 projects as possible:
 
-* PHP 5.2 or higher, with the SPL extension (standard)
+* PHP 5.3.3 or higher, with the SPL extension (standard)
 
 * Limited network access to connect to remote SMTP servers
 
@@ -83,8 +83,6 @@ use for your environment.
 | ``Swift_SmtpTransport``         | Sends messages over SMTP; Supports Authentication; Supports Encryption                      | Very portable; Pleasingly predictable results; Provides good feedback                                                                         |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 | ``Swift_SendmailTransport``     | Communicates with a locally installed ``sendmail`` executable (Linux/UNIX)                  | Quick time-to-run;  Provides less-accurate feedback than SMTP; Requires ``sendmail`` installation                                             |
-+---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
-| ``Swift_MailTransport``         | Uses PHP's built-in ``mail()`` function                                                     | Very portable; Potentially unpredictable results; Provides extremely weak feedback                                                            |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+
 | ``Swift_LoadBalancedTransport`` | Cycles through a collection of the other Transports to manage load-reduction                | Provides graceful fallback if one Transport fails (e.g. an SMTP server is down); Keeps the load on remote services down by spreading the work |
 +---------------------------------+---------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------------+

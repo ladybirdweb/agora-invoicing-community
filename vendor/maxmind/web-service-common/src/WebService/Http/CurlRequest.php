@@ -6,7 +6,7 @@ use MaxMind\Exception\HttpException;
 
 /**
  * This class is for internal use only. Semantic versioning does not not apply.
- * @package MaxMind\WebService\Http
+ *
  * @internal
  */
 class CurlRequest implements Request
@@ -26,6 +26,7 @@ class CurlRequest implements Request
 
     /**
      * @param $body
+     *
      * @return array
      */
     public function post($body)
@@ -54,16 +55,20 @@ class CurlRequest implements Request
     {
         $curl = curl_init($this->url);
 
-        $opts[CURLOPT_CAINFO] = $this->options['caBundle'];
+        if (!empty($this->options['caBundle'])) {
+            $opts[CURLOPT_CAINFO] = $this->options['caBundle'];
+        }
         $opts[CURLOPT_SSL_VERIFYHOST] = 2;
         $opts[CURLOPT_FOLLOWLOCATION] = false;
         $opts[CURLOPT_SSL_VERIFYPEER] = true;
         $opts[CURLOPT_RETURNTRANSFER] = true;
 
-
         $opts[CURLOPT_HTTPHEADER] = $this->options['headers'];
         $opts[CURLOPT_USERAGENT] = $this->options['userAgent'];
+        $opts[CURLOPT_PROXY] = $this->options['proxy'];
 
+        // The defined()s are here as the *_MS opts are not available on older
+        // cURL versions
         $connectTimeout = $this->options['connectTimeout'];
         if (defined('CURLOPT_CONNECTTIMEOUT_MS')) {
             $opts[CURLOPT_CONNECTTIMEOUT_MS] = ceil($connectTimeout * 1000);
@@ -79,6 +84,7 @@ class CurlRequest implements Request
         }
 
         curl_setopt_array($curl, $opts);
+
         return $curl;
     }
 
@@ -86,10 +92,10 @@ class CurlRequest implements Request
     {
         $body = curl_exec($curl);
         if ($errno = curl_errno($curl)) {
-            $error_message = curl_error($curl);
+            $errorMessage = curl_error($curl);
 
             throw new HttpException(
-                "cURL error ({$errno}): {$error_message}",
+                "cURL error ({$errno}): {$errorMessage}",
                 0,
                 $this->url
             );
@@ -99,6 +105,6 @@ class CurlRequest implements Request
         $contentType = curl_getinfo($curl, CURLINFO_CONTENT_TYPE);
         curl_close($curl);
 
-        return array($statusCode, $contentType, $body);
+        return [$statusCode, $contentType, $body];
     }
 }

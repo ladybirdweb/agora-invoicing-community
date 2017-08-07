@@ -32,7 +32,9 @@
 - _PushoverHandler_: Sends mobile notifications via the [Pushover](https://www.pushover.net/) API.
 - _HipChatHandler_: Logs records to a [HipChat](http://hipchat.com) chat room using its API.
 - _FlowdockHandler_: Logs records to a [Flowdock](https://www.flowdock.com/) account.
-- _SlackHandler_: Logs records to a [Slack](https://www.slack.com/) account.
+- _SlackHandler_: Logs records to a [Slack](https://www.slack.com/) account using the Slack API.
+- _SlackbotHandler_: Logs records to a [Slack](https://www.slack.com/) account using the Slackbot incoming hook.
+- _SlackWebhookHandler_: Logs records to a [Slack](https://www.slack.com/) account using Slack Webhooks.
 - _MandrillHandler_: Sends emails via the Mandrill API using a [`Swift_Message`](http://swiftmailer.org/) instance.
 - _FleepHookHandler_: Logs records to a [Fleep](https://fleep.io/) conversation using Webhooks.
 - _IFTTTHandler_: Notifies an [IFTTT](https://ifttt.com/maker) trigger with the log channel, level name and message.
@@ -85,6 +87,16 @@
   when it happens you will have the full information, including debug and info
   records. This provides you with all the information you need, but only when
   you need it.
+- _DeduplicationHandler_: Useful if you are sending notifications or emails
+  when critical errors occur. It takes a logger as parameter and will
+  accumulate log records of all levels until the end of the request (or
+  `flush()` is called). At that point it delivers all records to the handler
+  it wraps, but only if the records are unique over a given time period
+  (60seconds by default). If the records are duplicates they are simply
+  discarded. The main use of this is in case of critical failure like if your
+  database is unreachable for example all your requests will fail and that
+  can result in a lot of notifications being sent. Adding this handler reduces
+  the amount of notifications to a manageable level.
 - _WhatFailureGroupHandler_: This handler extends the _GroupHandler_ ignoring
    exceptions raised by each child handler. This allows you to ignore issues
    where a remote tcp connection may have died but you do not want your entire

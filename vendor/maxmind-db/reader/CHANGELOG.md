@@ -1,6 +1,26 @@
 CHANGELOG
 =========
 
+1.1.3 (2017-01-19)
+------------------
+
+* Fix incorrect version in `ext/php_maxminddb.h`. GitHub #48.
+
+1.1.2 (2016-11-22)
+------------------
+
+* Searching for database metadata only occurs within the last 128KB
+  (128 * 1024 bytes) of the file, speeding detection of corrupt
+  datafiles. Reported by Eric Teubert. GitHub #42.
+* Suggest relevant extensions when installing with Composer. GitHub #37.
+
+1.1.1 (2016-09-15)
+------------------
+
+* Development files were added to the `.gitattributes` as `export-ignore` so
+  that they are not part of the Composer release. Pull request by Michele
+  Locati. GitHub #39.
+
 1.1.0 (2016-01-04)
 ------------------
 

@@ -211,8 +211,44 @@ class GelfMessageFormatterTest extends \PHPUnit_Framework_TestCase
         );
         $message = $formatter->format($record);
         $messageArray = $message->toArray();
-        $this->assertLessThanOrEqual(32766, strlen($messageArray['_key']));
-        $this->assertLessThanOrEqual(32766, strlen($messageArray['_ctxt_exception']));
+
+        // 200 for padding + metadata
+        $length = 200;
+
+        foreach ($messageArray as $key => $value) {
+            if (!in_array($key, array('level', 'timestamp'))) {
+                $length += strlen($value);
+            }
+        }
+
+        $this->assertLessThanOrEqual(65792, $length, 'The message length is no longer than the maximum allowed length');
+    }
+
+    public function testFormatWithUnlimitedLength()
+    {
+        $formatter = new GelfMessageFormatter('LONG_SYSTEM_NAME', null, 'ctxt_', PHP_INT_MAX);
+        $record = array(
+            'level' => Logger::ERROR,
+            'level_name' => 'ERROR',
+            'channel' => 'meh',
+            'context' => array('exception' => str_repeat(' ', 32767 * 2)),
+            'datetime' => new \DateTime("@0"),
+            'extra' => array('key' => str_repeat(' ', 32767 * 2)),
+            'message' => 'log'
+        );
+        $message = $formatter->format($record);
+        $messageArray = $message->toArray();
+
+        // 200 for padding + metadata
+        $length = 200;
+
+        foreach ($messageArray as $key => $value) {
+            if (!in_array($key, array('level', 'timestamp'))) {
+                $length += strlen($value);
+            }
+        }
+
+        $this->assertGreaterThanOrEqual(131289, $length, 'The message should not be truncated');
     }
 
     private function isLegacy()

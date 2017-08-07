@@ -198,14 +198,25 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
             }
 
             $enc = $this->_encodeByteSequence($bytes, $size);
-            if ($currentLine && $lineLen + $size >= $thisLineLength) {
+
+            $i = strpos($enc, '=0D=0A');
+            $newLineLength = $lineLen + ($i === false ? $size : $i);
+
+            if ($currentLine && $newLineLength >= $thisLineLength) {
                 $lines[$lNo] = '';
                 $currentLine = &$lines[$lNo++];
                 $thisLineLength = $maxLineLength;
                 $lineLen = 0;
             }
-            $lineLen += $size;
+
             $currentLine .= $enc;
+
+            if ($i === false) {
+                $lineLen += $size;
+            } else {
+                // 6 is the length of '=0D=0A'.
+                $lineLen = $size - strrpos($enc, '=0D=0A') - 6;
+            }
         }
 
         return $this->_standardize(implode("=\r\n", $lines));
@@ -224,8 +235,8 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
     /**
      * Encode the given byte array into a verbatim QP form.
      *
-     * @param integer[] $bytes
-     * @param int       $size
+     * @param int[] $bytes
+     * @param int   $size
      *
      * @return string
      */
@@ -251,7 +262,7 @@ class Swift_Encoder_QpEncoder implements Swift_Encoder
      *
      * @param int $size number of bytes to read
      *
-     * @return integer[]
+     * @return int[]
      */
     protected function _nextSequence($size = 4)
     {

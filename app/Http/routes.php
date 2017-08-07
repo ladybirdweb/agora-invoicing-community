@@ -344,6 +344,7 @@ Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 Route::get('renew/{id}', 'Order\RenewController@renewForm');
 Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
+
 Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
 Route::post('serial', 'HomeController@serial');
@@ -368,6 +369,7 @@ Route::group(['prefix' => 'api'], function () {
 Route::get('otp/send', 'Auth\AuthController@requestOtp');
 Route::get('otp/verify', 'Auth\AuthController@postOtp');
 Route::get('email/verify', 'Auth\AuthController@verifyEmail');
+Route::get('resend_otp','Auth\AuthController@retryOTP');
 Route::get('verify', function () {
     $user = \Session::get('user');
     if ($user) {

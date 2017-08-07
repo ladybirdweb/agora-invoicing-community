@@ -48,7 +48,7 @@ class Swift_DependencyContainer
     /**
      * Returns a singleton of the DependencyContainer.
      *
-     * @return Swift_DependencyContainer
+     * @return self
      */
     public static function getInstance()
     {
@@ -143,7 +143,7 @@ class Swift_DependencyContainer
      *
      * @param string $itemName
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function register($itemName)
     {
@@ -160,7 +160,7 @@ class Swift_DependencyContainer
      *
      * @param mixed $value
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function asValue($value)
     {
@@ -176,7 +176,7 @@ class Swift_DependencyContainer
      *
      * @param string $lookup
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function asAliasOf($lookup)
     {
@@ -198,7 +198,7 @@ class Swift_DependencyContainer
      *
      * @param string $className
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function asNewInstanceOf($className)
     {
@@ -216,7 +216,7 @@ class Swift_DependencyContainer
      *
      * @param string $className
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function asSharedInstanceOf($className)
     {
@@ -236,7 +236,7 @@ class Swift_DependencyContainer
      *
      * @param array $lookups
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function withDependencies(array $lookups)
     {
@@ -257,7 +257,7 @@ class Swift_DependencyContainer
      *
      * @param mixed $value
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function addConstructorValue($value)
     {
@@ -278,7 +278,7 @@ class Swift_DependencyContainer
      *
      * @param string $lookup
      *
-     * @return Swift_DependencyContainer
+     * @return $this
      */
     public function addConstructorLookup($lookup)
     {
@@ -311,9 +311,9 @@ class Swift_DependencyContainer
             return $reflector->newInstanceArgs(
                 $this->createDependenciesFor($itemName)
                 );
-        } else {
-            return $reflector->newInstance();
         }
+
+        return $reflector->newInstance();
     }
 
     /** Create and register a shared instance of $itemName */
@@ -366,8 +366,8 @@ class Swift_DependencyContainer
             }
 
             return $collection;
-        } else {
-            return $this->lookup($item);
         }
+
+        return $this->lookup($item);
     }
 }

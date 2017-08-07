@@ -61,7 +61,6 @@ class CartController extends Controller
             \Session::put('currency', 'INR');
 //dd(\Session::get('currency'));
         }
-
         try {
             $page_controller = new PageController();
 
@@ -132,7 +131,7 @@ class CartController extends Controller
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
-            dd($ex);
+            //dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -542,7 +541,6 @@ class CartController extends Controller
                 return $price;
             }
         } catch (\Exception $ex) {
-            dd($ex);
             throw new \Exception('error in get tax priority');
         }
     }

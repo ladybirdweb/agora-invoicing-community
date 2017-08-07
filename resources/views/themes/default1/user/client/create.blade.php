@@ -238,8 +238,6 @@
     }
 
     function getState(val) {
-
-
         $.ajax({
             type: "POST",
             url: "{{url('get-state')}}",

@@ -23,7 +23,7 @@ class AuthController extends Controller
       |
      */
 
-use AuthenticatesAndRegistersUsers;
+    use AuthenticatesAndRegistersUsers;
 
     /* to redirect after login */
 
@@ -89,7 +89,7 @@ use AuthenticatesAndRegistersUsers;
         }
 
         $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-        if ($user && ($user->active !== '1' || $user->mobile_verified !== '1')) {
+        if ($user && ($user->active!=='1' || $user->mobile_verified!=='1')) {
             return redirect('verify')->with('user', $user);
         }
 
@@ -105,6 +105,7 @@ use AuthenticatesAndRegistersUsers;
      *
      * @return \Illuminate\Http\Response
      */
+
     public function getRegister()
     {
         return view('auth.new_register');
@@ -137,18 +138,21 @@ use AuthenticatesAndRegistersUsers;
             $password = \Hash::make($pass);
             $user->password = $password;
             $user->role = 'user';
-            $user->ip = $location['ip'];
             $user->manager = $account_manager;
+            $user->ip = $location['ip'];
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();
-            $this->sendActivation($user->email, $request->method(), $pass);
+            //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
             if ($user) {
-                return redirect('verify')->with('user', $user);
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
+                return response()->json($response);
             }
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            //return redirect()->back()->with('fails', $ex->getMessage());
+            $result = [$ex->getMessage()];
+            return response()->json($result);
         }
     }
 
@@ -173,7 +177,6 @@ use AuthenticatesAndRegistersUsers;
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-            //dd($request->method());
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -182,6 +185,7 @@ use AuthenticatesAndRegistersUsers;
                 $activate = $activate_model->create(['email' => $email, 'token' => $token]);
                 $token = $activate->token;
             }
+
             $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
@@ -201,7 +205,6 @@ use AuthenticatesAndRegistersUsers;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            //dd($type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
@@ -225,7 +228,6 @@ use AuthenticatesAndRegistersUsers;
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
@@ -238,6 +240,7 @@ use AuthenticatesAndRegistersUsers;
             } else {
                 throw new NotFoundHttpException();
             }
+
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
@@ -313,20 +316,57 @@ use AuthenticatesAndRegistersUsers;
         return $array['type'];
     }
 
-    public function requestOtp(Request $request)
-    {
+
+    public function sendForReOtp($mobile, $code) {
+        $client = new \GuzzleHttp\Client();
+        $number = $code . $mobile;
+        $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number]
+        ]);
+        $send = $response->getBody()->getContents();
+        $array = json_decode($send, true);
+        if ($array['type'] == 'error') {
+            throw new \Exception($array['message']);
+        }
+        return $array['type'];
+    }
+
+    public function requestOtp(Request $request) {
         $this->validate($request, [
-            'code'   => 'required|numeric',
+            'email' => 'required|email',
+            'code' => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
-            $number = $code.$mobile;
+            $email = $request->input('email');
+            $pass = $request->input('password');
+            $number = $code . $mobile;
             $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => $result, 'user_id' => $userid, 'message' => 'OTP has been sent to '.$number];
+            $method = 'POST';
+            $this->sendActivation($email, $method, $pass);
+            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
+            return response()->json($response);
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+            return response()->json(compact('result'), 500);
+        }
+    }
 
+    public function retryOTP($request)
+    {
+        $this->validate($request, [
+            'code' => 'required|numeric',
+            'mobile' => 'required|numeric',
+        ]);
+        try {
+            $code = $request->input('code');
+            $mobile = $request->input('mobile');
+            $number = $code . $mobile;
+            $result = $this->sendForReOtp($mobile, $code);
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -370,8 +410,7 @@ use AuthenticatesAndRegistersUsers;
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'mobile verified'];
-
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -431,7 +470,9 @@ use AuthenticatesAndRegistersUsers;
     public function accountManagerMail($user)
     {
         $manager = $user->manager()
-                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
+
+                ->where('position','manager')
+                ->select('first_name','last_name','email','mobile_code','mobile','skype')
                 ->first();
         if ($user && $user->role == 'user' && $manager) {
             $settings = new \App\Model\Common\Setting();
@@ -460,4 +501,6 @@ use AuthenticatesAndRegistersUsers;
             $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
     }
+
+
 }

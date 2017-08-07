@@ -11,9 +11,10 @@
 
 namespace Symfony\Component\DomCrawler\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\DomCrawler\Crawler;
 
-class CrawlerTest extends \PHPUnit_Framework_TestCase
+class CrawlerTest extends TestCase
 {
     public function testConstructor()
     {
@@ -25,6 +26,20 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
 
         $crawler = new Crawler($node);
         $this->assertCount(1, $crawler, '__construct() takes a node as a first argument');
+    }
+
+    public function testGetUri()
+    {
+        $uri = 'http://symfony.com';
+        $crawler = new Crawler(null, $uri);
+        $this->assertEquals($uri, $crawler->getUri());
+    }
+
+    public function testGetBaseHref()
+    {
+        $baseHref = 'http://symfony.com';
+        $crawler = new Crawler(null, null, $baseHref);
+        $this->assertEquals($baseHref, $crawler->getBaseHref());
     }
 
     public function testAdd()
@@ -224,7 +239,13 @@ EOF
         $crawler = new Crawler();
         $crawler->addContent('<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><span>中文</span></html>');
         $this->assertEquals('中文', $crawler->filterXPath('//span')->text(), '->addContent() guess wrong charset');
+    }
 
+    /**
+     * @requires extension iconv
+     */
+    public function testAddContentNonUtf8()
+    {
         $crawler = new Crawler();
         $crawler->addContent(iconv('UTF-8', 'SJIS', '<html><head><meta charset="Shift_JIS"></head><body>日本語</body></html>'));
         $this->assertEquals('日本語', $crawler->filterXPath('//body')->text(), '->addContent() can recognize "Shift_JIS" in html5 meta charset tag');
@@ -416,6 +437,7 @@ EOF
         $this->assertCount(5, $crawler->filterXPath('(//a | //div)//img'));
         $this->assertCount(7, $crawler->filterXPath('((//a | //div)//img | //ul)'));
         $this->assertCount(7, $crawler->filterXPath('( ( //a | //div )//img | //ul )'));
+        $this->assertCount(1, $crawler->filterXPath("//a[./@href][((./@id = 'Klausi|Claudiu' or normalize-space(string(.)) = 'Klausi|Claudiu' or ./@title = 'Klausi|Claudiu' or ./@rel = 'Klausi|Claudiu') or .//img[./@alt = 'Klausi|Claudiu'])]"));
     }
 
     public function testFilterXPath()
@@ -582,7 +604,7 @@ EOF
 
         $this->assertCount(0, $crawler->filterXPath('self::a'), 'The fake root node has no "real" element name');
         $this->assertCount(0, $crawler->filterXPath('self::a/img'), 'The fake root node has no "real" element name');
-        $this->assertCount(9, $crawler->filterXPath('self::*/a'));
+        $this->assertCount(10, $crawler->filterXPath('self::*/a'));
     }
 
     public function testFilter()
@@ -655,6 +677,17 @@ EOF
 
         $this->assertCount(4, $crawler->selectLink('Foo'), '->selectLink() selects links by the node values');
         $this->assertCount(4, $crawler->selectLink('Bar'), '->selectLink() selects links by the node values');
+    }
+
+    public function testSelectImage()
+    {
+        $crawler = $this->createTestCrawler();
+        $this->assertNotSame($crawler, $crawler->selectImage('Bar'), '->selectImage() returns a new instance of a crawler');
+        $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Crawler', $crawler, '->selectImage() returns a new instance of a crawler');
+
+        $this->assertCount(1, $crawler->selectImage('Fabien\'s Bar'), '->selectImage() selects images by alt attribute');
+        $this->assertCount(2, $crawler->selectImage('Fabien"s Bar'), '->selectImage() selects images by alt attribute');
+        $this->assertCount(1, $crawler->selectImage('\' Fabien"s Bar'), '->selectImage() selects images by alt attribute');
     }
 
     public function testSelectButton()
@@ -755,6 +788,19 @@ HTML;
         $crawler->filterXPath('//li/text()')->link();
     }
 
+    public function testImage()
+    {
+        $crawler = $this->createTestCrawler('http://example.com/bar/')->selectImage('Bar');
+        $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Image', $crawler->image(), '->image() returns an Image instance');
+
+        try {
+            $this->createTestCrawler()->filterXPath('//ol')->image();
+            $this->fail('->image() throws an \InvalidArgumentException if the node list is empty');
+        } catch (\InvalidArgumentException $e) {
+            $this->assertTrue(true, '->image() throws an \InvalidArgumentException if the node list is empty');
+        }
+    }
+
     public function testSelectLinkAndLinkFiltered()
     {
         $html = <<<'HTML'
@@ -801,6 +847,18 @@ HTML;
         $this->assertCount(4, $crawler->links(), '->links() returns an array');
         $links = $crawler->links();
         $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Link', $links[0], '->links() returns an array of Link instances');
+
+        $this->assertEquals(array(), $this->createTestCrawler()->filterXPath('//ol')->links(), '->links() returns an empty array if the node selection is empty');
+    }
+
+    public function testImages()
+    {
+        $crawler = $this->createTestCrawler('http://example.com/bar/')->selectImage('Bar');
+        $this->assertInternalType('array', $crawler->images(), '->images() returns an array');
+
+        $this->assertCount(4, $crawler->images(), '->images() returns an array');
+        $images = $crawler->images();
+        $this->assertInstanceOf('Symfony\\Component\\DomCrawler\\Image', $images[0], '->images() returns an array of Image instances');
 
         $this->assertEquals(array(), $this->createTestCrawler()->filterXPath('//ol')->links(), '->links() returns an empty array if the node selection is empty');
     }
@@ -938,6 +996,8 @@ HTML;
             $crawler = new Crawler('<p></p>');
             $crawler->filter('p')->children();
             $this->assertTrue(true, '->children() does not trigger a notice if the node has no children');
+        } catch (\PHPUnit\Framework\Error\Notice $e) {
+            $this->fail('->children() does not trigger a notice if the node has no children');
         } catch (\PHPUnit_Framework_Error_Notice $e) {
             $this->fail('->children() does not trigger a notice if the node has no children');
         }
@@ -1011,6 +1071,51 @@ HTML;
         $this->assertCount(1, $crawler->filter('li:contains("List item 1")'));
     }
 
+    public function testEvaluateReturnsTypedResultOfXPathExpressionOnADocumentSubset()
+    {
+        $crawler = $this->createTestCrawler();
+
+        $result = $crawler->filterXPath('//form/input')->evaluate('substring-before(@name, "Name")');
+
+        $this->assertSame(array('Text', 'Foo', 'Bar'), $result);
+    }
+
+    public function testEvaluateReturnsTypedResultOfNamespacedXPathExpressionOnADocumentSubset()
+    {
+        $crawler = $this->createTestXmlCrawler();
+
+        $result = $crawler->filterXPath('//yt:accessControl/@action')->evaluate('string(.)');
+
+        $this->assertSame(array('comment', 'videoRespond'), $result);
+    }
+
+    public function testEvaluateReturnsTypedResultOfNamespacedXPathExpression()
+    {
+        $crawler = $this->createTestXmlCrawler();
+        $crawler->registerNamespace('youtube', 'http://gdata.youtube.com/schemas/2007');
+
+        $result = $crawler->evaluate('string(//youtube:accessControl/@action)');
+
+        $this->assertSame(array('comment'), $result);
+    }
+
+    public function testEvaluateReturnsACrawlerIfXPathExpressionEvaluatesToANode()
+    {
+        $crawler = $this->createTestCrawler()->evaluate('//form/input[1]');
+
+        $this->assertInstanceOf(Crawler::class, $crawler);
+        $this->assertCount(1, $crawler);
+        $this->assertSame('input', $crawler->first()->nodeName());
+    }
+
+    /**
+     * @expectedException \LogicException
+     */
+    public function testEvaluateThrowsAnExceptionIfDocumentIsEmpty()
+    {
+        (new Crawler())->evaluate('//form/input[1]');
+    }
+
     public function createTestCrawler($uri = null)
     {
         $dom = new \DOMDocument();
@@ -1028,6 +1133,8 @@ HTML;
                     <a href="/bar"><img alt="\' Fabien&quot;s Bar"/></a>
 
                     <a href="?get=param">GetLink</a>
+
+                    <a href="/example">Klausi|Claudiu</a>
 
                     <form action="foo" id="FooFormId">
                         <input type="text" value="TextValue" name="TextName" />

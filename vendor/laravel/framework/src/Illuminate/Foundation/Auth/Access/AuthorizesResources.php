@@ -2,36 +2,48 @@
 
 namespace Illuminate\Foundation\Auth\Access;
 
-use Illuminate\Routing\ControllerMiddlewareOptions;
-
 trait AuthorizesResources
 {
     /**
      * Authorize a resource action based on the incoming request.
      *
      * @param  string  $model
-     * @param  string|null  $name
+     * @param  string|null  $parameter
      * @param  array  $options
-     * @param  \Illuminate\Http\Request|null  $request
-     * @return \Illuminate\Routing\ControllerMiddlewareOptions
+     * @return void
      */
-    public function authorizeResource($model, $name = null, array $options = [], $request = null)
+    public function authorizeResource($model, $parameter = null, array $options = [])
     {
-        $action = with($request ?: request())->route()->getActionName();
+        $parameter = $parameter ?: strtolower(class_basename($model));
 
-        $map = [
-            'index' => 'view', 'create' => 'create', 'store' => 'create', 'show' => 'view',
-            'edit' => 'update', 'update' => 'update', 'delete' => 'delete',
-        ];
+        $middleware = [];
 
-        if (! in_array($method = array_last(explode('@', $action)), array_keys($map))) {
-            return new ControllerMiddlewareOptions($options);
+        foreach ($this->resourceAbilityMap() as $method => $ability) {
+            $modelName = in_array($method, ['index', 'create', 'store']) ? $model : $parameter;
+
+            $middleware["can:{$ability},{$modelName}"][] = $method;
         }
 
-        $name = $name ?: strtolower(class_basename($model));
+        foreach ($middleware as $middlewareName => $methods) {
+            $this->middleware($middlewareName, $options)->only($methods);
+        }
+    }
 
-        $model = in_array($method, ['index', 'create', 'store']) ? $model : $name;
-
-        return $this->middleware("can:{$map[$method]},{$model}", $options);
+    /**
+     * Get the map of resource methods to ability names.
+     *
+     * @return array
+     */
+    protected function resourceAbilityMap()
+    {
+        return [
+            'index' => 'view',
+            'create' => 'create',
+            'store' => 'create',
+            'show' => 'view',
+            'edit' => 'update',
+            'update' => 'update',
+            'destroy' => 'delete',
+        ];
     }
 }

@@ -25,7 +25,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      *
      * @var string
      */
-    const VERSION = '5.2.29';
+    const VERSION = '5.2.45';
 
     /**
      * The base path for the Laravel installation.
@@ -1084,6 +1084,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
             'auth.password.broker' => ['Illuminate\Auth\Passwords\PasswordBroker', 'Illuminate\Contracts\Auth\PasswordBroker'],
             'queue'                => ['Illuminate\Queue\QueueManager', 'Illuminate\Contracts\Queue\Factory', 'Illuminate\Contracts\Queue\Monitor'],
             'queue.connection'     => ['Illuminate\Contracts\Queue\Queue'],
+            'queue.failer'         => ['Illuminate\Queue\Failed\FailedJobProviderInterface'],
             'redirect'             => ['Illuminate\Routing\Redirector'],
             'redis'                => ['Illuminate\Redis\Database', 'Illuminate\Contracts\Redis\Database'],
             'request'              => ['Illuminate\Http\Request', 'Symfony\Component\HttpFoundation\Request'],

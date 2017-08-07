@@ -9,7 +9,7 @@ if (isset($_GET['id'])) {
 }
 echo "<tree id='".$url_var."'>";
          for ($inta = 0; $inta < 4; $inta++) {
-             print "<item child='1' id='".$url_var.'_'.$inta."' text='Item ".$url_var.'-'.$inta."'><userdata name='ud_block'>ud_data</userdata></item>";
+             echo "<item child='1' id='".$url_var.'_'.$inta."' text='Item ".$url_var.'-'.$inta."'><userdata name='ud_block'>ud_data</userdata></item>";
          }
 echo '</tree>';
 ?> 

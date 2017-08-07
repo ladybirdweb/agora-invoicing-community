@@ -941,6 +941,7 @@ class MySQLDBDataWrapper extends DBDataWrapper
         if ($res === false) {
             throw new Exception("MySQL operation failed\n".mysql_error($this->connection));
         }
+
         return $res;
     }
 

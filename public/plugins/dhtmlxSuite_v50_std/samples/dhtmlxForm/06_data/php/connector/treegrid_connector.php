@@ -16,7 +16,7 @@ class TreeGridDataItem extends GridDataItem
 
     /*! return id of parent record
 
-        @return 
+        @return
             id of parent record
     */
     public function get_parent_id()
@@ -26,7 +26,7 @@ class TreeGridDataItem extends GridDataItem
 
     /*! assign image to treegrid's item
         longer description
-        @param img 
+        @param img
             relative path to the image
     */
     public function set_image($img)
@@ -36,7 +36,7 @@ class TreeGridDataItem extends GridDataItem
 
     /*! return count of child items
         -1 if there is no info about childs
-        @return 
+        @return
             count of child items
     */
     public function has_kids()
@@ -63,16 +63,16 @@ class TreeGridConnector extends GridConnector
     private $id_swap = [];
 
     /*! constructor
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param res 
+        @param res
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
     */
     public function __construct($res, $type = false, $item_type = false, $data_type = false)
     {
@@ -89,7 +89,7 @@ class TreeGridConnector extends GridConnector
     }
 
     /*! store info about ID changes during insert operation
-        @param dataAction 
+        @param dataAction
             data action object during insert operation
     */
     public function parent_id_correction_a($dataAction)
@@ -98,7 +98,7 @@ class TreeGridConnector extends GridConnector
     }
 
     /*! update ID if it was affected by previous operation
-        @param dataAction 
+        @param dataAction
             data action object, before any processing operation
     */
     public function parent_id_correction_b($dataAction)
@@ -168,9 +168,9 @@ class TreeGridDataProcessor extends GridDataProcessor
 {
     /*! convert incoming data name to valid db name
         converts c0..cN to valid field names
-        @param data 
+        @param data
             data name from incoming request
-        @return 
+        @return
             related db_name
     */
     public function name_data($data)

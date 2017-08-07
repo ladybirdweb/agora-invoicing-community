@@ -23,8 +23,8 @@ class TreeDataItem extends DataItem
     }
 
     /*! get id of parent record
-        
-        @return 
+
+        @return
             id of parent record
     */
     public function get_parent_id()
@@ -33,8 +33,8 @@ class TreeDataItem extends DataItem
     }
 
     /*! get state of items checkbox
-        
-        @return 
+
+        @return
             state of item's checkbox as int value, false if state was not defined
     */
     public function get_check_state()
@@ -44,7 +44,7 @@ class TreeDataItem extends DataItem
 
     /*! set state of item's checkbox
 
-        @param value 
+        @param value
             int value, 1 - checked, 0 - unchecked, -1 - third state
     */
     public function set_check_state($value)
@@ -54,7 +54,7 @@ class TreeDataItem extends DataItem
 
     /*! return count of child items
         -1 if there is no info about childs
-        @return 
+        @return
             count of child items
     */
     public function has_kids()
@@ -72,12 +72,12 @@ class TreeDataItem extends DataItem
     }
 
     /*! assign image for tree's item
-        
-        @param img_folder_closed 
+
+        @param img_folder_closed
             image for item, which represents folder in closed state
-        @param img_folder_open 
+        @param img_folder_open
             image for item, which represents folder in opened state, optional
-        @param img_leaf 
+        @param img_leaf
             image for item, which represents leaf item, optional
     */
     public function set_image($img_folder_closed, $img_folder_open = false, $img_leaf = false)
@@ -131,16 +131,16 @@ class TreeConnector extends Connector
     private $id_swap = [];
 
     /*! constructor
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param res 
+        @param res
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
     */
     public function __construct($res, $type = false, $item_type = false, $data_type = false)
     {
@@ -157,7 +157,7 @@ class TreeConnector extends Connector
     }
 
     /*! store info about ID changes during insert operation
-        @param dataAction 
+        @param dataAction
             data action object during insert operation
     */
     public function parent_id_correction_a($dataAction)
@@ -166,7 +166,7 @@ class TreeConnector extends Connector
     }
 
     /*! update ID if it was affected by previous operation
-        @param dataAction 
+        @param dataAction
             data action object, before any processing operation
     */
     public function parent_id_correction_b($dataAction)
@@ -237,9 +237,9 @@ class TreeDataProcessor extends DataProcessor
 {
     /*! convert incoming data name to valid db name
         converts c0..cN to valid field names
-        @param data 
+        @param data
             data name from incoming request
-        @return 
+        @return
             related db_name
     */
     public function name_data($data)

@@ -63,6 +63,7 @@ class CartController extends Controller
         }
         try {
             $page_controller = new PageController();
+
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -54,9 +54,9 @@
         $sql .= ' Order By item_nm LIMIT '.$_REQUEST['pos'].',20';
 
         if ($_REQUEST['pos'] == 0) {
-            print '<complete>';
+            echo '<complete>';
         } else {
-            print "<complete add='true'>";
+            echo "<complete add='true'>";
         }
         $res = mysql_query($sql);
 

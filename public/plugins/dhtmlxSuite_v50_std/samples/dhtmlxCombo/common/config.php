@@ -12,3 +12,4 @@
     $mysql_user = 'root';
     $mysql_pasw = '1';
     $mysql_db = 'dhx4';
+

@@ -16,14 +16,14 @@
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
-           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
         @endif
-        
+
         @if(Session::has('warning'))
         <div class="alert alert-warning alert-dismissable">
-           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('warning')}}
         </div>
         @endif
@@ -78,56 +78,64 @@
                         {!! Form::text('user_name',null,['class' => 'form-control']) !!}
 
                     </div>
-                    
+
 
                 </div>
 
                 <div class="row">
 
-                    <div class="col-md-3 form-group {{ $errors->has('company') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('company') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('company',Lang::get('message.company'),['class'=>'required']) !!}
                         {!! Form::text('company',null,['class' => 'form-control']) !!}
 
                     </div>
-                    <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
-                        {!! Form::label('bussiness','Business') !!}
-                        {!! Form::select('bussiness',[''=>'Select','Bussinesses'=>$bussinesses],null,['class' => 'form-control']) !!}
-
-                    </div>
-                    <div class="col-md-3 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Country code</label>
-                        {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
-                    </div>
-                    <div class="col-md-3 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                        {!! Form::text('mobile',null,['class' => 'form-control']) !!}
+                        {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
+                        {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class' => 'form-control']) !!}
 
                     </div>
 
-                    <div class="col-md-3 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','code')],null,['class' => 'form-control']) !!}
 
-                    </div>
-
-                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('active',Lang::get('message.active')) !!}
                         <p>{!! Form::radio('active',1,true) !!}&nbsp;Active&nbsp;&nbsp;{!! Form::radio('active',0) !!}&nbsp;Inactive</p>
 
                     </div>
+                </div>
+                <div class="row">
                     <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('role',Lang::get('message.role')) !!}
                         {!! Form::select('role',['user'=>'User','admin'=>'Admin'],null,['class' => 'form-control']) !!}
 
                     </div>
+                    <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
+                        <!-- email -->
+                        {!! Form::label('position','Position') !!}
+                        {!! Form::select('position',[''=>'Select','manager'=>'Manager'],null,['class' => 'form-control']) !!}
 
+                    </div>
+                    <?php
+                    $type = DB::table('company_types')->pluck('name','short');
+                    $size = DB::table('company_sizes')->pluck('name','short');
+                    ?>
+                     <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
+                        <!-- email -->
+                        {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
+                        {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control']) !!}
+
+                    </div>
+                     <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
+                        <!-- email -->
+                        {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
+                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
+
+                    </div>
                 </div>
+
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
@@ -151,7 +159,7 @@
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getCountryAttr(this.value);']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -177,6 +185,38 @@
                         {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
 
                     </div>
+                    <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('currency',Lang::get('message.currency')) !!}
+                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','code')],null,['class' => 'form-control','id'=>'currency']) !!}
+
+                    </div>
+                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                        <label class="required">Country code</label>
+                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                        {!! Form::text('mobile_code',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
+                    </div>
+                    <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
+                        {!! Form::text('mobile',null,['class' => 'form-control']) !!}
+
+                    </div>
+                    <div class="col-md-4 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('skype','Skype') !!}
+                        {!! Form::text('skype',null,['class' => 'form-control']) !!}
+
+                    </div>
+                    
+                    <div class="col-md-4 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
+                        <!-- mobile -->
+                        {!! Form::label('manager','Manager') !!}
+                        {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
+
+                    </div>
+
+
                 </div>
                 {!! Form::close() !!}
             </div>
@@ -189,6 +229,14 @@
 {!! Form::close() !!}
 
 <script>
+
+    function getCountryAttr(val) {
+        getState(val);
+        getCode(val);
+//        getCurrency(val);
+
+    }
+
     function getState(val) {
         $.ajax({
             type: "POST",
@@ -196,6 +244,27 @@
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
+            }
+        });
+    }
+    function getCode(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-code')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#mobile_code").val(data);
+                $("#mobile_code_hidden").val(data);
+            }
+        });
+    }
+    function getCurrency(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-currency')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#currency").val(data);
             }
         });
     }

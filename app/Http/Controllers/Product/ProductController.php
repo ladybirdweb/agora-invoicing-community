@@ -219,6 +219,7 @@ class ProductController extends Controller
             $price = $request->input('price');
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
+
             if(count($currencies) > 0){
                 foreach ($currencies as $key1 => $currency) {
                     $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price['$key'], 'sales_price' => $sales_price['$key']]);
@@ -467,7 +468,9 @@ class ProductController extends Controller
 
                     return ['release'=>$relese, 'type'=>'github'];
                 } elseif ($file) {
+
                     $relese = 'dist/product/images/' . $file;
+
                     return $relese;
                 }
             }
@@ -482,10 +485,20 @@ class ProductController extends Controller
             $release = $this->downloadProduct($id);
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
-                exit;
-            }
 
             return response()->download($release);
+                exit;
+            } else {
+                header('Content-type: Zip');
+                header('Content-Description: File Transfer');
+                header('Content-Disposition: attachment; filename=Faveo.zip');
+               //header("Content-type: application/zip");
+               header('Content-Length: '.filesize($release));
+               //ob_clean();
+               flush();
+                readfile("$release");
+                exit;
+            }
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -508,9 +521,22 @@ class ProductController extends Controller
                 if ($user->active == 1) {
                     $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
-                    $release = $this->downloadProduct($product_id)['release'];
+                    $release = $this->downloadProduct($product_id);
+                    if (is_array($release) && array_key_exists('type', $release)) {
+                        $release = $release['release'];
 
-                    return view('themes.default1.front.download', compact('release', 'form'));
+                        return view('themes.default1.front.download', compact('release', 'form'));
+                    } else {
+                        header('Content-type: Zip');
+                        header('Content-Description: File Transfer');
+                        header('Content-Disposition: attachment; filename=Faveo.zip');
+               //header("Content-type: application/zip");
+                  header('Content-Length: '.filesize($release));
+                  //ob_clean();
+                  flush();
+                        readfile("$release");
+                        exit;
+                    }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
                 }

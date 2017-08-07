@@ -339,6 +339,36 @@
                                             <strong>{{Lang::get('message.currency')}} :</strong> <span class="pull-right">{{$client->currency}}</span>
                                         </a>
                                     </li>
+                                     <li>
+                                        <a href="#">
+                                            <strong>Company Type :</strong> <span class="pull-right">{{str_replace('-',' ',ucfirst($client->company_type))}}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <strong>Company Size :</strong> <span class="pull-right">{{str_replace('-',' ',ucfirst($client->company_size))}}</span>
+                                        </a>
+                                    </li>
+                                     <li>
+                                        <a href="#">
+                                            <strong>IP :</strong> <span class="pull-right">{{$client->ip}}</span>
+                                        </a>
+                                    </li>
+                                    @if($client && $client->skype)
+                                    <li>
+                                        <a href="#">
+                                            <strong>Skype :</strong> <span class="pull-right">{{$client->skype}}</span>
+                                        </a>
+                                    </li>
+                                    @endif
+                                    <?php $manager = $client->manager()->select('id','first_name','last_name')->first(); ?>
+                                    @if($client && $manager)
+                                    <li>
+                                        <a href="{{url('clients/'.$manager->id)}}">
+                                            <strong>Account Manager :</strong> <span class="pull-right">{{$manager->first_name}} {{$manager->last_name}}</span>
+                                        </a>
+                                    </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>
@@ -360,6 +390,7 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
+                                    <th>Product</th>
                                     <th>Number</th>
                                     <th>Total</th>
                                     <th>Status</th>
@@ -371,6 +402,13 @@
                                 @forelse($client->order()->orderBy('created_at','desc')->get() as $order)
                                 <tr>
                                     <td>{{$order->created_at}}</td>
+                                    <td>
+                                        @if($order->product()->first() && $order->product()->first()->name) 
+                                        {{$order->product()->first()->name}}
+                                        @else 
+                                        Unknown
+                                        @endif
+                                    </td>
                                     <td>{{$order->number}}</td>
                                     <td>{{$order->price_override}}</td>
                                     <td>{{$order->order_status}}</td>

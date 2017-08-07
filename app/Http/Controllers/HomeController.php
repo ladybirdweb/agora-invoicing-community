@@ -100,6 +100,37 @@ class HomeController extends Controller
         dd($request->all());
     }
 
+    public function serialV2(Request $request, Order $order)
+    {
+        try {
+            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
+            $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
+            $request_type = $request->input('request_type');
+            $faveo_name = $request->input('name');
+            $faveo_version = $request->input('version');
+            $order_number = $this->checkOrder($faveo_encrypted_order_number);
+            $domain = $this->getDomain($request->input('domain'));
+            $domain = $this->checkDomain($domain);
+            $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
+            \Log::emergency(json_encode(['domain'=>$request->input('domain'), 'serial'=>$serial_key, 'order'=>$order_number]));
+            $result = [];
+            if ($request_type == 'install') {
+                $result = $this->verificationResult($order_number, $serial_key, $domain);
+            }
+            if ($request_type == 'check_update') {
+                $result = $this->checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version);
+            }
+            $result = self::encryptByPublicKey(json_encode($result));
+
+            return $result;
+        } catch (Exception $ex) {
+            $result = ['status' => 'error', 'message' => $ex->getMessage()];
+            $result = self::encryptByPublicKey(json_encode($result));
+
+            return $result;
+        }
+    }
+
     public function serial(Request $request, Order $order)
     {
         try {
@@ -440,7 +471,6 @@ class HomeController extends Controller
         if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
             return $regs['domain'];
         }
-
-        return false;
+        return $domain;
     }
 }

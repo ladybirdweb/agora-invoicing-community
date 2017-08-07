@@ -6,13 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
 use App\User;
-use Illuminate\Contracts\Auth\Guard;
-use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Validator;
 
-class AuthController extends Controller {
+class AuthController extends Controller
+{
     /*
       |--------------------------------------------------------------------------
       | Registration & Login Controller
@@ -44,13 +43,16 @@ class AuthController extends Controller {
      *
      * @return void
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
 
-    public function getLogin() {
+    public function getLogin()
+    {
         try {
             $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+
             return view('themes.default1.front.auth.login-register', compact('bussinesses'));
         } catch (\Exception $ex) {
             //dd($ex);
@@ -65,11 +67,12 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function postLogin(Request $request) {
+    public function postLogin(Request $request)
+    {
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
-            'email1.required' => 'Username/Email is required',
+            'email1.required'    => 'Username/Email is required',
             'password1.required' => 'Password is required',
         ]);
         $usernameinput = $request->input('email1');
@@ -89,6 +92,7 @@ class AuthController extends Controller {
         if ($user && ($user->active!=='1' || $user->mobile_verified!=='1')) {
             return redirect('verify')->with('user', $user);
         }
+
         return redirect()->back()
                         ->withInput($request->only('email1', 'remember'))
                         ->withErrors([
@@ -101,7 +105,9 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function getRegister() {
+
+    public function getRegister()
+    {
         return view('auth.new_register');
     }
 
@@ -112,7 +118,8 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate) {
+    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
+    {
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
@@ -149,10 +156,11 @@ class AuthController extends Controller {
         }
     }
 
-    public function sendActivationByGet($email, Request $request) {
+    public function sendActivationByGet($email, Request $request)
+    {
         try {
             $mail = $this->sendActivation($email, $request->method());
-            if ($mail == "success") {
+            if ($mail == 'success') {
                 return redirect()->back()->with('success', 'Activation link has sent to your email address');
             }
         } catch (\Exception $ex) {
@@ -160,7 +168,8 @@ class AuthController extends Controller {
         }
     }
 
-    public function sendActivation($email, $method, $str = '') {
+    public function sendActivation($email, $method, $str = '')
+    {
         try {
             $user = new User();
             $activate_model = new AccountActivate();
@@ -189,8 +198,8 @@ class AuthController extends Controller {
             $to = $user->email;
             $subject = $template->name;
             $data = $template->data;
-            $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
-            $type = "";
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+            $type = '';
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
@@ -205,7 +214,8 @@ class AuthController extends Controller {
         }
     }
 
-    public function Activate($token, AccountActivate $activate, Request $request, User $user) {
+    public function Activate($token, AccountActivate $activate, Request $request, User $user)
+    {
         try {
             if ($activate->where('token', $token)->first()) {
                 $email = $activate->where('token', $token)->first()->email;
@@ -249,10 +259,11 @@ class AuthController extends Controller {
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    public function validator(array $data) {
+    public function validator(array $data)
+    {
         return Validator::make($data, [
-                    'name' => 'required|max:255',
-                    'email' => 'required|email|max:255|unique:users',
+                    'name'     => 'required|max:255',
+                    'email'    => 'required|email|max:255|unique:users',
                     'password' => 'required|confirmed|min:6',
         ]);
     }
@@ -264,10 +275,11 @@ class AuthController extends Controller {
      *
      * @return User
      */
-    public function create(array $data) {
+    public function create(array $data)
+    {
         return User::create([
-                    'name' => $data['name'],
-                    'email' => $data['email'],
+                    'name'     => $data['name'],
+                    'email'    => $data['email'],
                     'password' => bcrypt($data['password']),
         ]);
     }
@@ -277,29 +289,33 @@ class AuthController extends Controller {
      *
      * @return string
      */
-    public function redirectPath() {
+    public function redirectPath()
+    {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
 
-            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/' . $url;
+            return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
         } else {
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
         }
     }
 
-    public function sendOtp($mobile, $code) {
+    public function sendOtp($mobile, $code)
+    {
         $client = new \GuzzleHttp\Client();
-        $number = $code . $mobile;
+        $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number]
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
         if ($array['type'] == 'error') {
             throw new \Exception($array['message']);
         }
+
         return $array['type'];
     }
+
 
     public function sendForReOtp($mobile, $code) {
         $client = new \GuzzleHttp\Client();
@@ -354,20 +370,24 @@ class AuthController extends Controller {
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }
 
-    public function verifyOtp($mobile, $code, $otp) {
+    public function verifyOtp($mobile, $code, $otp)
+    {
         $client = new \GuzzleHttp\Client();
-        $number = $code . $mobile;
+        $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp]
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp],
         ]);
+
         return $response->getBody()->getContents();
     }
 
-    public function postOtp(Request $request) {
+    public function postOtp(Request $request)
+    {
         $this->validate($request, [
             'otp' => 'required|numeric',
         ]);
@@ -394,14 +414,15 @@ class AuthController extends Controller {
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }
 
-
-    public function verifyEmail(Request $request) {
+    public function verifyEmail(Request $request)
+    {
         $this->validate($request, [
-            'email' => 'required|email'
+            'email' => 'required|email',
         ]);
         try {
             $email = $request->input('email');
@@ -409,40 +430,47 @@ class AuthController extends Controller {
             $user = User::find($userid);
             $check = $this->checkVerify($user);
             $this->sendActivation($email, $request->method());
-            $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to ' . $email];
+            $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
+
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }
 
-    public function checkVerify($user) {
+    public function checkVerify($user)
+    {
         $check = false;
         if ($user->active == '1' && $user->mobile_verified == '1') {
             \Auth::login($user);
             $check = true;
         }
+
         return $check;
     }
 
-    public function accountManager() {
-        $manager = "";
+    public function accountManager()
+    {
+        $manager = '';
         $users = new User();
-        $account_count = $users->select(\DB::raw("count('manager') as count"),'manager')
+        $account_count = $users->select(\DB::raw("count('manager') as count"), 'manager')
                 ->whereNotNull('manager')
                 ->groupBy('manager')
-                ->pluck('count','manager')
-                ->toArray()
-                ;
-        if($account_count){
-            $manager = array_keys($account_count, min($account_count))[0]; 
+                ->pluck('count', 'manager')
+                ->toArray();
+        if ($account_count) {
+            $manager = array_keys($account_count, min($account_count))[0];
         }
+
         return $manager;
     }
 
-    public function accountManagerMail($user) {
+    public function accountManagerMail($user)
+    {
         $manager = $user->manager()
+
                 ->where('position','manager')
                 ->select('first_name','last_name','email','mobile_code','mobile','skype')
                 ->first();
@@ -461,19 +489,18 @@ class AuthController extends Controller {
             $template_name = $template->name;
             $template_controller = new \App\Http\Controllers\Common\TemplateController();
             $replace = [
-                'name' => $user->first_name . " " . $user->last_name,
+                'name'               => $user->first_name.' '.$user->last_name,
                 'manager_first_name' => $manager->first_name,
-                'manager_last_name' => $manager->last_name,
-                'manager_email' => $manager->email,
-                'manager_code' => $manager->mobile_code,
-                'manager_mobile' => $manager->mobile,
-                'manager_skype' => $manager->skype,
+                'manager_last_name'  => $manager->last_name,
+                'manager_email'      => $manager->email,
+                'manager_code'       => $manager->mobile_code,
+                'manager_mobile'     => $manager->mobile,
+                'manager_skype'      => $manager->skype,
             ];
             //dd($from, $to, $template_data, $template_name, $replace);
             $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
     }
 
-   
 
 }

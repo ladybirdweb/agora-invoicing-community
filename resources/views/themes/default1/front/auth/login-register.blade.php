@@ -313,9 +313,7 @@ border-top: none;
                                                         <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
                                                             {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!}
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
-
                                                         </div>
-
                                                         <div class="form-group">
                                                             <div class="col-md-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
@@ -330,7 +328,6 @@ border-top: none;
                                                             <label class="required">Email Address</label>
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
                                                         </div>
-
 
                                                     </div>
                                                 </div>
@@ -472,9 +469,9 @@ border-top: none;
                                                 </form>
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="col-md-12 tab-pane" id="step2">
@@ -570,6 +567,8 @@ border-top: none;
                                 <div class="col-md-6">
                                     <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
                                     <!-- <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" > -->
+                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'>
+
                                 </div>
                             </div>
                         </div>
@@ -586,7 +585,6 @@ border-top: none;
 </div>
 @stop 
 @section('script')
-
 <script type="text/javascript">
 
     function registerUser() {
@@ -760,6 +758,7 @@ border-top: none;
     function getCountryAttr(val) {
         getState(val);
         getCode(val);
+
 //        getCurrency(val);
 
     }
@@ -770,7 +769,7 @@ border-top: none;
         $.ajax({
             type: "POST",
             url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
             }
@@ -780,7 +779,7 @@ border-top: none;
         $.ajax({
             type: "GET",
             url: "{{url('get-code')}}",
-            data: 'country_id=' + val,
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
                 $("#mobile_code").val(data);
                 $("#mobile_code_hidden").val(data);
@@ -791,7 +790,7 @@ border-top: none;
         $.ajax({
             type: "GET",
             url: "{{url('get-currency')}}",
-            data: 'country_id=' + val,
+            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
                 $("#currency").val(data);
             }
@@ -828,6 +827,37 @@ fbq('track', 'CompleteRegistration');
 }
 //]]>
 </script>
+<!-- Google Code for Help Desk Pro | Campaign 001 Conversion Page
+In your html page, add the snippet and call
+goog_report_conversion when someone clicks on the
+chosen link or button. -->
+<script type="text/javascript"> 
+//<![CDATA[
+  goog_snippet_vars = function() {
+    var w = window;
+    w.google_conversion_id = 1027628032;
+    w.google_conversion_label = "uBhoCLT3i3AQgLiB6gM";
+    w.google_remarketing_only = false;
+  }
+  // DO NOT CHANGE THE CODE BELOW.
+  goog_report_conversion = function(url) {
+    goog_snippet_vars();
+    window.google_conversion_format = "3";
+    var opt = new Object();
+    opt.onload_callback = function() {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  }
+  var conv_handler = window['google_trackConversion'];
+  if (typeof(conv_handler) == 'function') {
+    conv_handler(opt);
+  }
+fbq('track', 'CompleteRegistration');
+}
+//]]>
+</script>
+>>>>>>> refs/remotes/origin/master
 <script type="text/javascript"
   src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
@@ -934,8 +964,8 @@ function prevTab(elem) {
     $('form').on('submit', function (e) {
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
-</script>
 
+</script>
 <noscript>
  <img height="1" width="1" 
 src="https://www.facebook.com/tr?id=308328899511239&ev=PageView

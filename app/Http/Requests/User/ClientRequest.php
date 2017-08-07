@@ -31,7 +31,9 @@ class ClientRequest extends Request
                         'email'            => 'required|email|unique:users',
                         'company'          => 'required',
                         'mobile'           => 'required|numeric',
-                        'mobile_code'          => 'required|numeric',
+
+                        'mobile_code'      => 'required|numeric',
+
                         'address'          => 'required',
                         'zip'              => 'required',
                         'timezone_id'      => 'required',
@@ -58,7 +60,7 @@ class ClientRequest extends Request
                         'user_name'        => 'required|unique:users,user_name,'.$id,
                         'bussiness'        => 'required',
                         //'company_type'     => 'required',
-                        //'company_size'     => 'required',
+                        //'company_size'     => 'required', 
                     ];
                 }
             default:break;

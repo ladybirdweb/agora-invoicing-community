@@ -7,4 +7,3 @@
 
     $data = new DataViewConnector($conn);
     $data->render_table('packages_small', 'Id', 'Package,Version,Maintainer');
-

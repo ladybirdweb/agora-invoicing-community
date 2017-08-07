@@ -18,7 +18,7 @@ class DataRequestConfig
 
     /*! constructor
 
-        @param proto 
+        @param proto
             DataRequestConfig object, optional, if provided then new request object will copy all properties from provided one
     */
     public function __construct($proto = false)
@@ -32,8 +32,8 @@ class DataRequestConfig
     }
 
     /*! copy parameters of source object into self
-        
-        @param proto 
+
+        @param proto
             source object
     */
     public function copy($proto)
@@ -48,7 +48,7 @@ class DataRequestConfig
     }
 
     /*! convert self to string ( for logs )
-        @return 
+        @return
             self as plain string,
     */
     public function __toString()
@@ -67,7 +67,7 @@ class DataRequestConfig
     }
 
     /*! returns set of filtering rules
-        @return 
+        @return
             set of filtering rules
     */
     public function get_filters()
@@ -76,7 +76,7 @@ class DataRequestConfig
     }
 
     /*! returns list of used fields
-        @return 
+        @return
             list of used fields
     */
     public function get_fieldset()
@@ -84,9 +84,9 @@ class DataRequestConfig
         return $this->fieldset;
     }
 
-    /*! returns name of source table 
-        @return 
-            name of source table 
+    /*! returns name of source table
+        @return
+            name of source table
     */
     public function get_source()
     {
@@ -94,7 +94,7 @@ class DataRequestConfig
     }
 
     /*! returns set of sorting rules
-        @return 
+        @return
             set of sorting rules
     */
     public function get_sort_by()
@@ -102,8 +102,8 @@ class DataRequestConfig
         return $this->sort_by;
     }
 
-    /*! returns start index 
-        @return 
+    /*! returns start index
+        @return
             start index
     */
     public function get_start()
@@ -112,7 +112,7 @@ class DataRequestConfig
     }
 
     /*! returns count of requested records
-        @return 
+        @return
             count of requested records
     */
     public function get_count()
@@ -121,7 +121,7 @@ class DataRequestConfig
     }
 
     /*! returns name of relation id
-        @return 
+        @return
             relation id name
     */
     public function get_relation()
@@ -130,8 +130,8 @@ class DataRequestConfig
     }
 
     /*! sets sorting rule
-        
-        @param field 
+
+        @param field
             name of column
         @param order
             direction of sorting
@@ -147,8 +147,8 @@ class DataRequestConfig
     }
 
     /*! sets filtering rule
-        
-        @param field 
+
+        @param field
             name of column
         @param value
             value for filtering
@@ -161,7 +161,7 @@ class DataRequestConfig
     }
 
     /*! sets list of used fields
-        
+
         @param value
             list of used fields
     */
@@ -171,8 +171,8 @@ class DataRequestConfig
     }
 
     /*! sets name of source table
-        
-        @param value 
+
+        @param value
             name of source table
     */
     public function set_source($value)
@@ -184,7 +184,7 @@ class DataRequestConfig
     }
 
     /*! sets data limits
-        
+
         @param start
             start index
         @param count
@@ -197,8 +197,8 @@ class DataRequestConfig
     }
 
     /*! sets name of relation id
-        
-        @param value 
+
+        @param value
             name of relation id field
     */
     public function set_relation($value)
@@ -207,7 +207,7 @@ class DataRequestConfig
     }
 
     /*! parse incoming sql, to fill other properties
-        
+
         @param sql
             incoming sql string
     */
@@ -272,7 +272,7 @@ class DataConfig
     }
 
     /*! removes un-used fields from configuration
-        @param name 
+        @param name
             name of field , which need to be preserved
     */
     public function minimize($name)
@@ -291,7 +291,7 @@ class DataConfig
 
     /*! initialize inner state by parsing configuration parameters
 
-        @param id 
+        @param id
             name of id field
         @param fields
             name of data field(s)
@@ -299,7 +299,7 @@ class DataConfig
             name of extra field(s)
         @param relation
             name of relation field
-            
+
     */
     public function init($id, $fields, $extra, $relation)
     {
@@ -310,12 +310,12 @@ class DataConfig
     }
 
     /*! parse configuration string
-        
-        @param key 
+
+        @param key
             key string from configuration
         @param mode
             multi names flag
-        @return 
+        @return
             parsed field name object
     */
     private function parse($key, $mode)
@@ -358,8 +358,8 @@ class DataConfig
     }
 
     /*! copy properties from source object
-        
-        @param proto 
+
+        @param proto
             source object
     */
     public function copy($proto)
@@ -371,7 +371,7 @@ class DataConfig
     }
 
     /*! returns list of data fields (db_names)
-        @return 
+        @return
             list of data fields ( ready to be used in SQL query )
     */
     public function db_names_list()
@@ -396,9 +396,9 @@ class DataConfig
     }
 
     /*! add field to dataset config ($text collection)
-    
+
         added field will be used in all auto-generated queries
-        @param name 
+        @param name
             name of field
         @param aliase
             aliase of field, optional
@@ -427,7 +427,7 @@ class DataConfig
     /*! remove field from dataset config ($text collection)
 
         removed field will be excluded from all auto-generated queries
-        @param name 
+        @param name
             name of field, or aliase of field
     */
     public function remove_field($name)
@@ -442,11 +442,11 @@ class DataConfig
 
     /*! check if field is a part of dataset
 
-        @param name 
+        @param name
             name of field
         @param collection
             collection, against which check will be done, $text collection by default
-        @return 
+        @return
             returns true if field already a part of dataset, otherwise returns true
     */
     private function is_field($name, $collection = false)
@@ -477,7 +477,7 @@ abstract class DataWrapper
     /*! constructor
         @param connection
             DB connection
-        @param config 
+        @param config
             DataConfig instance
     */
     public function __construct($connection, $config)
@@ -487,8 +487,8 @@ abstract class DataWrapper
     }
 
     /*! insert record in storage
-        
-        @param data 
+
+        @param data
             DataAction object
         @param source
             DataRequestConfig object
@@ -496,8 +496,8 @@ abstract class DataWrapper
     abstract public function insert($data, $source);
 
     /*! delete record from storage
-        
-        @param data 
+
+        @param data
             DataAction object
         @param source
             DataRequestConfig object
@@ -505,8 +505,8 @@ abstract class DataWrapper
     abstract public function delete($data, $source);
 
     /*! update record in storage
-        
-        @param data 
+
+        @param data
             DataAction object
         @param source
             DataRequestConfig object
@@ -514,21 +514,21 @@ abstract class DataWrapper
     abstract public function update($data, $source);
 
     /*! select record from storage
-        
+
         @param source
             DataRequestConfig object
     */
     abstract public function select($source);
 
     /*! get size of storage
-        
+
         @param source
             DataRequestConfig object
     */
     abstract public function get_size($source);
 
     /*! get all variations of field in storage
-        
+
         @param name
             name of field
         @param source
@@ -537,12 +537,12 @@ abstract class DataWrapper
     abstract public function get_variants($name, $source);
 
     /*! checks if there is a custom sql string for specified db operation
-        
+
         @param  name
             name of DB operation
         @param  data
             hash of data
-        @return 
+        @return
             sql string
     */
     public function get_sql($name, $data)
@@ -582,7 +582,7 @@ abstract class DBDataWrapper extends DataWrapper
     private $sqls = []; //!< predefined sql actions
 
     /*! assign named sql query
-        @param name 
+        @param name
             name of sql query
         @param data
             sql query text
@@ -594,10 +594,10 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! replace vars in sql string with actual values
-        
-        @param matches 
+
+        @param matches
             array of field name matches
-        @return 
+        @return
             value for the var name
     */
     public function get_sql_callback($matches)
@@ -686,12 +686,12 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! create an sql string for filtering rules
-        
-        @param rules 
+
+        @param rules
             set of filtering rules
         @param relation
             name of relation id field
-        @return 
+        @return
             sql string with filtering rules
     */
     protected function build_where($rules, $relation = false)
@@ -716,10 +716,10 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! convert sorting rules to sql string
-        
-        @param by 
+
+        @param by
             set of sorting rules
-        @return 
+        @return
             sql string for set of sorting rules
     */
     protected function build_order($by)
@@ -738,10 +738,10 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates sql code for select operation
-        
-        @param select 
+
+        @param select
             list of fields in select
-        @param from 
+        @param from
             table name
         @param where
             list of filtering rules
@@ -749,9 +749,9 @@ abstract class DBDataWrapper extends DataWrapper
             list of sorting rules
         @param start
             start index of fetching
-        @param count 
+        @param count
             count of records to fetch
-        @return 
+        @return
             sql string for select operation
     */
     protected function select_query($select, $from, $where, $sort, $start, $count)
@@ -771,12 +771,12 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates update sql
-        
+
         @param data
             DataAction object
         @param request
             DataRequestConfig object
-        @return 
+        @return
             sql string, which updates record with provided data
     */
     protected function update_query($data, $request)
@@ -799,13 +799,13 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates delete sql
-        
+
         @param data
             DataAction object
         @param request
             DataRequestConfig object
-        @return 
-            sql string, which delete record 
+        @return
+            sql string, which delete record
     */
     protected function delete_query($data, $request)
     {
@@ -822,12 +822,12 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates insert sql
-        
+
         @param data
             DataAction object
         @param request
             DataRequestConfig object
-        @return 
+        @return
             sql string, which inserts new record with provided data
     */
     protected function insert_query($data, $request)
@@ -853,8 +853,8 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! sets the transaction mode, used by dataprocessor
-        
-        @param mode 
+
+        @param mode
             mode name
     */
     public function set_transaction_mode($mode)
@@ -866,7 +866,7 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! returns true if global transaction mode was specified
-        @return 
+        @return
             true if global transaction mode was specified
     */
     public function is_global_transaction()
@@ -875,7 +875,7 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! returns true if record transaction mode was specified
-        @return 
+        @return
             true if record transaction mode was specified
     */
     public function is_record_transaction()
@@ -899,33 +899,33 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! exec sql string
-        
-        @param sql 
+
+        @param sql
             sql string
-        @return 
+        @return
             sql result set
     */
     abstract protected function query($sql);
 
     /*! returns next record from result set
-        
-        @param res 
+
+        @param res
             sql result set
-        @return 
+        @return
             hash of data
     */
     abstract public function get_next($res);
 
     /*! returns new id value, for newly inserted row
-        @return 
+        @return
             new id value, for newly inserted row
     */
     abstract protected function get_new_id();
 
     /*! escape data to prevent sql injections
-        @param data 
+        @param data
             unescaped data
-        @return 
+        @return
             escaped data
     */
     abstract public function escape($data);
@@ -941,6 +941,7 @@ class MySQLDBDataWrapper extends DBDataWrapper
         if ($res === false) {
             throw new Exception("MySQL operation failed\n".mysql_error($this->connection));
         }
+
         return $res;
     }
 

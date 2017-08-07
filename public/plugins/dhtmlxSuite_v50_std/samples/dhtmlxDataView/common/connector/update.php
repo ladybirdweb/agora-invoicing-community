@@ -124,8 +124,8 @@ class DataUpdate
     //protected $request;//!< DataRequestConfig instance
 
     /*! constructor
-      
-      @param connector 
+
+      @param connector
          Connector object
       @param config
          DataConfig object

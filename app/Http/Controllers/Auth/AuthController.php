@@ -390,7 +390,7 @@ class AuthController extends Controller {
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];

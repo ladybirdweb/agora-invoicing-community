@@ -618,7 +618,6 @@ border-top: none;
             if(response.type == 'success'){
                 var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage1').html(result);
-
                 $('.wizard-inner').show();
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
@@ -703,7 +702,7 @@ border-top: none;
                 $('#error2').hide(); 
                 $('#alertMessage2').show();
                 var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage2').html(result+ ".");
+                $('#alertMessage2').html(result);
             },
             error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);

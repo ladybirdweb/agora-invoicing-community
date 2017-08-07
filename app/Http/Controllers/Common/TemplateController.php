@@ -270,7 +270,6 @@ class TemplateController extends Controller
             $fromname = $settings->company;
 
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
-
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);

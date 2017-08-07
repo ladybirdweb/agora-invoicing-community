@@ -89,7 +89,7 @@ class AuthController extends Controller
         }
 
         $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-        if ($user && ($user->active!=='1' || $user->mobile_verified!=='1')) {
+        if ($user && ($user->active !== '1' || $user->mobile_verified !== '1')) {
             return redirect('verify')->with('user', $user);
         }
 
@@ -105,7 +105,6 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
     public function getRegister()
     {
         return view('auth.new_register');
@@ -147,11 +146,13 @@ class AuthController extends Controller
             $this->accountManagerMail($user);
             if ($user) {
                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
+
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
             //return redirect()->back()->with('fails', $ex->getMessage());
             $result = [$ex->getMessage()];
+
             return response()->json($result);
         }
     }
@@ -240,7 +241,6 @@ class AuthController extends Controller
             } else {
                 throw new NotFoundHttpException();
             }
-
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
@@ -316,25 +316,27 @@ class AuthController extends Controller
         return $array['type'];
     }
 
-
-    public function sendForReOtp($mobile, $code) {
+    public function sendForReOtp($mobile, $code)
+    {
         $client = new \GuzzleHttp\Client();
-        $number = $code . $mobile;
+        $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number]
+            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
         if ($array['type'] == 'error') {
             throw new \Exception($array['message']);
         }
+
         return $array['type'];
     }
 
-    public function requestOtp(Request $request) {
+    public function requestOtp(Request $request)
+    {
         $this->validate($request, [
-            'email' => 'required|email',
-            'code' => 'required|numeric',
+            'email'  => 'required|email',
+            'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
         try {
@@ -343,14 +345,16 @@ class AuthController extends Controller
             $userid = $request->input('id');
             $email = $request->input('email');
             $pass = $request->input('password');
-            $number = $code . $mobile;
+            $number = $code.$mobile;
             $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
+
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }
@@ -358,15 +362,16 @@ class AuthController extends Controller
     public function retryOTP($request)
     {
         $this->validate($request, [
-            'code' => 'required|numeric',
+            'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
-            $number = $code . $mobile;
+            $number = $code.$mobile;
             $result = $this->sendForReOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
+
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -411,6 +416,7 @@ class AuthController extends Controller
             }
             $check = $this->checkVerify($user);
             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
+
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -471,8 +477,8 @@ class AuthController extends Controller
     {
         $manager = $user->manager()
 
-                ->where('position','manager')
-                ->select('first_name','last_name','email','mobile_code','mobile','skype')
+                ->where('position', 'manager')
+                ->select('first_name', 'last_name', 'email', 'mobile_code', 'mobile', 'skype')
                 ->first();
         if ($user && $user->role == 'user' && $manager) {
             $settings = new \App\Model\Common\Setting();
@@ -501,6 +507,4 @@ class AuthController extends Controller
             $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
     }
-
-
 }

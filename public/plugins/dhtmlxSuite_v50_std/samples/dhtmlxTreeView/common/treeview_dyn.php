@@ -1,15 +1,15 @@
 <?php
 
     /*
-    
+
     top-level output
     [ {item}, {item}, {item} ]
-    
+
     sub-level output
     [{id: $_REQUEST["id"], items: [
         {item}, {item}, {item}
     ]}]
-    
+
     */
 
     header('Content-Type: text/plain');

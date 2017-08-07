@@ -21,8 +21,8 @@ class GridDataItem extends DataItem
     }
 
     /*! set color of row
-        
-        @param color 
+
+        @param color
             color of row
     */
     public function set_row_color($color)
@@ -31,8 +31,8 @@ class GridDataItem extends DataItem
     }
 
     /*! set style of row
-        
-        @param color 
+
+        @param color
             color of row
     */
     public function set_row_style($color)
@@ -41,7 +41,7 @@ class GridDataItem extends DataItem
     }
 
     /*! assign custom style to the cell
-        
+
         @param name
             name of column
         @param value
@@ -53,7 +53,7 @@ class GridDataItem extends DataItem
     }
 
     /*! assign custom class to specific cell
-        
+
         @param name
             name of column
         @param value
@@ -65,7 +65,7 @@ class GridDataItem extends DataItem
     }
 
     /*! set custom cell attribute
-        
+
         @param name
             name of column
         @param attr
@@ -82,7 +82,7 @@ class GridDataItem extends DataItem
     }
 
     /*! set custom row attribute
-        
+
         @param attr
             name of attribute
         @param value
@@ -136,16 +136,16 @@ class GridConnector extends Connector
     private $options = []; //!< hash of OptionsConnector
 
     /*! constructor
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param res 
+        @param res
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
     */
     public function __construct($res, $type = false, $item_type = false, $data_type = false)
     {
@@ -181,8 +181,8 @@ class GridConnector extends Connector
     }
 
     /*! assign options collection to the column
-        
-        @param name 
+
+        @param name
             name of the column
         @param options
             array or connector object
@@ -200,8 +200,8 @@ class GridConnector extends Connector
     }
 
     /*! generates xml description for options collections
-        
-        @param list 
+
+        @param list
             comma separated list of column names, for which options need to be generated
     */
     protected function fill_collections($list)
@@ -257,9 +257,9 @@ class GridDataProcessor extends DataProcessor
 {
     /*! convert incoming data name to valid db name
         converts c0..cN to valid field names
-        @param data 
+        @param data
             data name from incoming request
-        @return 
+        @return
             related db_name
     */
     public function name_data($data)

@@ -15,4 +15,3 @@ require_once './connector/tree_connector.php';
 
 $conn = mysql_connect($mysql_host, $mysql_user, $mysql_pasw);
 mysql_select_db($mysql_db);
-

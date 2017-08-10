@@ -367,9 +367,11 @@ Route::group(['prefix' => 'api'], function () {
 });
 
 Route::get('otp/send', 'Auth\AuthController@requestOtp');
+Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');
 Route::get('otp/verify', 'Auth\AuthController@postOtp');
 Route::get('email/verify', 'Auth\AuthController@verifyEmail');
 Route::get('resend_otp', 'Auth\AuthController@retryOTP');
+
 Route::get('verify', function () {
     $user = \Session::get('user');
     if ($user) {

@@ -654,7 +654,7 @@ border-top: none;
             'password': $('#email_password').val()
         };
         $.ajax({
-          url: '{{url('otp/send')}}',
+          url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
           data: data,
           success: function (response) {

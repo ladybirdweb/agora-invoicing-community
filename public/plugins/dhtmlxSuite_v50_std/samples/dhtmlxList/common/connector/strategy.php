@@ -99,7 +99,7 @@ class RenderStrategy
 <<<<<<< HEAD
             DB resultset
 =======
-            DB resultset 
+            DB resultset
 >>>>>>> refs/remotes/origin/master
         process commands, output requested data as XML
     */
@@ -134,7 +134,7 @@ class JSONRenderStrategy extends RenderStrategy
 <<<<<<< HEAD
             DB resultset
 =======
-            DB resultset 
+            DB resultset
 >>>>>>> refs/remotes/origin/master
         process commands, output requested data as json
     */
@@ -211,7 +211,7 @@ class TreeRenderStrategy extends RenderStrategy
 <<<<<<< HEAD
         @param dataAction
 =======
-        @param dataAction 
+        @param dataAction
 >>>>>>> refs/remotes/origin/master
             data action object during insert operation
     */
@@ -224,7 +224,7 @@ class TreeRenderStrategy extends RenderStrategy
 <<<<<<< HEAD
         @param dataAction
 =======
-        @param dataAction 
+        @param dataAction
 >>>>>>> refs/remotes/origin/master
             data action object, before any processing operation
     */

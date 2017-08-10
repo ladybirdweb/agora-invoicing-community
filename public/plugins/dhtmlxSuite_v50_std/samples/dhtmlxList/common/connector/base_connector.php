@@ -75,7 +75,11 @@ class EventInterface
 
     /*! constructor
         creates a new interface based on existing request
+<<<<<<< HEAD
         @param request
+=======
+        @param request 
+>>>>>>> refs/remotes/origin/master
             DataRequestConfig object
     */
     public function __construct($request)
@@ -91,10 +95,17 @@ class EventInterface
     }
 
     /*! get index by name
+<<<<<<< HEAD
 
         @param name
             name of field
         @return
+=======
+        
+        @param name 
+            name of field
+        @return 
+>>>>>>> refs/remotes/origin/master
             index of named field
     */
     public function index($name)
@@ -115,7 +126,11 @@ class SortInterface extends EventInterface
 {
     /*! constructor
         creates a new interface based on existing request
+<<<<<<< HEAD
         @param request
+=======
+        @param request 
+>>>>>>> refs/remotes/origin/master
             DataRequestConfig object
     */
     public function __construct($request)
@@ -125,8 +140,13 @@ class SortInterface extends EventInterface
     }
 
     /*! add new sorting rule
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field
         @param dir
             direction of sorting
@@ -151,7 +171,11 @@ class FilterInterface extends EventInterface
 {
     /*! constructor
         creates a new interface based on existing request
+<<<<<<< HEAD
         @param request
+=======
+        @param request 
+>>>>>>> refs/remotes/origin/master
             DataRequestConfig object
     */
     public function __construct($request)
@@ -161,8 +185,13 @@ class FilterInterface extends EventInterface
     }
 
     /*! add new filatering rule
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field
         @param value
             value to filter by
@@ -180,7 +209,11 @@ class FilterInterface extends EventInterface
     }
 }
 
+<<<<<<< HEAD
 /*! base class for component item representation
+=======
+/*! base class for component item representation	
+>>>>>>> refs/remotes/origin/master
 **/
 class DataItem
 {
@@ -191,7 +224,11 @@ class DataItem
     protected $userdata;
 
     /*! constructor
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param data
             hash of data
         @param config
@@ -219,10 +256,17 @@ class DataItem
     }
 
     /*! get named value
+<<<<<<< HEAD
 
         @param name
             name or alias of field
         @return
+=======
+        
+        @param name 
+            name or alias of field
+        @return 
+>>>>>>> refs/remotes/origin/master
             value from field with provided name or alias
     */
     public function get_value($name)
@@ -231,8 +275,13 @@ class DataItem
     }
 
     /*! set named value
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name or alias of field
         @param value
             value for field with provided name or alias
@@ -243,7 +292,11 @@ class DataItem
     }
 
     /*! get id of element
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             id of element
     */
     public function get_id()
@@ -257,8 +310,13 @@ class DataItem
     }
 
     /*! change id of element
+<<<<<<< HEAD
 
         @param value
+=======
+        
+        @param value 
+>>>>>>> refs/remotes/origin/master
             new id value
     */
     public function set_id($value)
@@ -267,8 +325,13 @@ class DataItem
     }
 
     /*! get index of element
+<<<<<<< HEAD
 
         @return
+=======
+        
+        @return 
+>>>>>>> refs/remotes/origin/master
             index of element
     */
     public function get_index()
@@ -291,10 +354,17 @@ class DataItem
     }
 
     /*! replace xml unsafe characters
+<<<<<<< HEAD
 
         @param string
             string to be escaped
         @return
+=======
+        
+        @param string 
+            string to be escaped
+        @return 
+>>>>>>> refs/remotes/origin/master
             escaped string
     */
     public function xmlentities($string)
@@ -302,7 +372,11 @@ class DataItem
         return str_replace(['&', '"', "'", '<', '>', '’'], ['&amp;', '&quot;', '&apos;', '&lt;', '&gt;', '&apos;'], $string);
     }
 
+<<<<<<< HEAD
     /*! return starting tag for self as XML string
+=======
+    /*! return starting tag for self as XML string 
+>>>>>>> refs/remotes/origin/master
     */
     public function to_xml_start()
     {
@@ -331,8 +405,13 @@ class DataItem
 }
 
 /*! Base connector class
+<<<<<<< HEAD
     This class used as a base for all component specific connectors.
     Can be used on its own to provide raw data.
+=======
+    This class used as a base for all component specific connectors. 
+    Can be used on its own to provide raw data.	
+>>>>>>> refs/remotes/origin/master
 **/
 class Connector
 {
@@ -370,16 +449,26 @@ class Connector
     protected $order = false;
 
     /*! constructor
+<<<<<<< HEAD
 
         Here initilization of all Masters occurs, execution timer initialized
         @param db
+=======
+        
+        Here initilization of all Masters occurs, execution timer initialized
+        @param db 
+>>>>>>> refs/remotes/origin/master
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
+<<<<<<< HEAD
             name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
+=======
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+>>>>>>> refs/remotes/origin/master
     */
     public function __construct($db, $type = false, $item_type = false, $data_type = false, $render_type = false)
     {
@@ -430,7 +519,11 @@ class Connector
 
     /*! return db connection resource
         nested class may neeed to access live connection object
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             DB connection resource
     */
     protected function get_connection()
@@ -464,10 +557,17 @@ class Connector
     }
 
     /*! config connector based on table
+<<<<<<< HEAD
 
         @param table
             name of table in DB
         @param id
+=======
+        
+        @param table 
+            name of table in DB
+        @param id 
+>>>>>>> refs/remotes/origin/master
             name of id field
         @param fields
             list of fields names
@@ -507,10 +607,17 @@ class Connector
     }
 
     /*! config connector based on sql
+<<<<<<< HEAD
 
         @param sql
             sql query used as base of configuration
         @param id
+=======
+        
+        @param sql 
+            sql query used as base of configuration
+        @param id 
+>>>>>>> refs/remotes/origin/master
             name of id field
         @param fields
             list of fields names
@@ -544,7 +651,11 @@ class Connector
     }
 
     /*! render already configured connector
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param config
             configuration of data
         @param request
@@ -625,9 +736,15 @@ class Connector
 
     /*! prevent SQL injection through column names
         replace dangerous chars in field names
+<<<<<<< HEAD
         @param str
             incoming field name
         @return
+=======
+        @param str 
+            incoming field name
+        @return 
+>>>>>>> refs/remotes/origin/master
             safe field name
     */
     protected function safe_field_name($str)
@@ -637,9 +754,15 @@ class Connector
 
     /*! limit max count of records
         connector will ignore any records after outputing max count
+<<<<<<< HEAD
         @param limit
             max count of records
         @return
+=======
+        @param limit 
+            max count of records
+        @return 
+>>>>>>> refs/remotes/origin/master
             none
     */
     public function set_limit($limit)
@@ -718,9 +841,15 @@ class Connector
     }
 
     /*! convert incoming request name to the actual DB name
+<<<<<<< HEAD
         @param name
             incoming parameter name
         @return
+=======
+        @param name 
+            incoming parameter name
+        @return 
+>>>>>>> refs/remotes/origin/master
             name of related DB field
     */
     protected function resolve_parameter($name)
@@ -758,7 +887,11 @@ class Connector
 
     /*! render from DB resultset
         @param res
+<<<<<<< HEAD
             DB resultset
+=======
+            DB resultset 
+>>>>>>> refs/remotes/origin/master
         process commands, output requested data as XML
     */
     protected function render_set($res)
@@ -768,7 +901,11 @@ class Connector
 
     /*! output fetched data as XML
         @param res
+<<<<<<< HEAD
             DB resultset
+=======
+            DB resultset 
+>>>>>>> refs/remotes/origin/master
     */
     protected function output_as_xml($res)
     {
@@ -801,9 +938,15 @@ class Connector
     }
 
     /*! set xml encoding
+<<<<<<< HEAD
 
         methods sets only attribute in XML, no real encoding conversion occurs
         @param encoding
+=======
+        
+        methods sets only attribute in XML, no real encoding conversion occurs	
+        @param encoding 
+>>>>>>> refs/remotes/origin/master
             value which will be used as XML encoding
     */
     public function set_encoding($encoding)
@@ -812,9 +955,15 @@ class Connector
     }
 
     /*! enable or disable dynamic loading mode
+<<<<<<< HEAD
 
         @param count
             count of rows loaded from server, actual only for grid-connector, can be skiped in other cases.
+=======
+        
+        @param count 
+            count of rows loaded from server, actual only for grid-connector, can be skiped in other cases. 
+>>>>>>> refs/remotes/origin/master
             If value is a false or 0 - dyn. loading will be disabled
     */
     public function dynamic_loading($count)
@@ -823,8 +972,13 @@ class Connector
     }
 
     /*! enable or disable data reordering
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field, which will be used for order storing, optional
             by default 'sortorder' field will be used
     */
@@ -841,8 +995,13 @@ class Connector
     }
 
     /*! enable logging
+<<<<<<< HEAD
 
         @param path
+=======
+        
+        @param path 
+>>>>>>> refs/remotes/origin/master
             path to the log file. If set as false or empty strig - logging will be disabled
         @param client_log
             enable output of log data to the client side
@@ -853,7 +1012,11 @@ class Connector
     }
 
     /*! provides infor about current processing mode
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             true if processing dataprocessor command, false otherwise
     */
     public function is_select_mode()
@@ -918,8 +1081,13 @@ class Connector
     }
 
     /*! assign options collection to the column
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of the column
         @param options
             array or connector object

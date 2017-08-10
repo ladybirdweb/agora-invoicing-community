@@ -107,16 +107,26 @@ class CommonDataItem extends DataItem
 class DataConnector extends Connector
 {
     /*! constructor
+<<<<<<< HEAD
 
         Here initilization of all Masters occurs, execution timer initialized
         @param res
+=======
+        
+        Here initilization of all Masters occurs, execution timer initialized
+        @param res 
+>>>>>>> refs/remotes/origin/master
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
+<<<<<<< HEAD
             name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
+=======
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+>>>>>>> refs/remotes/origin/master
     */
     public function __construct($res, $type = false, $item_type = false, $data_type = false, $render_type = false)
     {
@@ -218,8 +228,13 @@ class JSONDataConnector extends DataConnector
     }
 
     /*! assign options collection to the column
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of the column
         @param options
             array or connector object
@@ -237,8 +252,13 @@ class JSONDataConnector extends DataConnector
     }
 
     /*! generates xml description for options collections
+<<<<<<< HEAD
 
         @param list
+=======
+        
+        @param list 
+>>>>>>> refs/remotes/origin/master
             comma separated list of column names, for which options need to be generated
     */
     protected function fill_collections($list = '')
@@ -451,16 +471,26 @@ class TreeDataConnector extends DataConnector
     public $rootId = '0';
 
     /*! constructor
+<<<<<<< HEAD
 
         Here initilization of all Masters occurs, execution timer initialized
         @param res
+=======
+        
+        Here initilization of all Masters occurs, execution timer initialized
+        @param res 
+>>>>>>> refs/remotes/origin/master
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
+<<<<<<< HEAD
             name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
+=======
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+>>>>>>> refs/remotes/origin/master
      *	@param render_type
      *		name of class which will provides data rendering
     */

@@ -335,6 +335,27 @@ class AuthController extends Controller
     public function requestOtp(Request $request)
     {
         $this->validate($request, [
+            'code'   => 'required|numeric',
+            'mobile' => 'required|numeric',
+        ]);
+        try {
+            $code = $request->input('code');
+            $mobile = $request->input('mobile');
+            $number = $code.$mobile;
+            $result = $this->sendOtp($mobile, $code);
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number];
+
+            return response()->json($response);
+        } catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
+        }
+    }
+
+    public function requestOtpFromAjax(Request $request)
+    {
+        $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',

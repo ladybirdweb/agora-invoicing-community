@@ -96,7 +96,11 @@ class RenderStrategy
 
     /*! render from DB resultset
         @param res
+<<<<<<< HEAD
             DB resultset
+=======
+            DB resultset 
+>>>>>>> refs/remotes/origin/master
         process commands, output requested data as XML
     */
     public function render_set($res, $name, $dload, $sep, $config, $mix)
@@ -127,7 +131,11 @@ class JSONRenderStrategy extends RenderStrategy
 {
     /*! render from DB resultset
         @param res
+<<<<<<< HEAD
             DB resultset
+=======
+            DB resultset 
+>>>>>>> refs/remotes/origin/master
         process commands, output requested data as json
     */
     public function render_set($res, $name, $dload, $sep, $config, $mix)
@@ -200,7 +208,11 @@ class TreeRenderStrategy extends RenderStrategy
     }
 
     /*! store info about ID changes during insert operation
+<<<<<<< HEAD
         @param dataAction
+=======
+        @param dataAction 
+>>>>>>> refs/remotes/origin/master
             data action object during insert operation
     */
     public function parent_id_correction_a($dataAction)
@@ -209,7 +221,11 @@ class TreeRenderStrategy extends RenderStrategy
     }
 
     /*! update ID if it was affected by previous operation
+<<<<<<< HEAD
         @param dataAction
+=======
+        @param dataAction 
+>>>>>>> refs/remotes/origin/master
             data action object, before any processing operation
     */
     public function parent_id_correction_b($dataAction)

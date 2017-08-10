@@ -18,7 +18,11 @@ class DataRequestConfig
 
     /*! constructor
 
+<<<<<<< HEAD
         @param proto
+=======
+        @param proto 
+>>>>>>> refs/remotes/origin/master
             DataRequestConfig object, optional, if provided then new request object will copy all properties from provided one
     */
     public function __construct($proto = false)
@@ -32,8 +36,13 @@ class DataRequestConfig
     }
 
     /*! copy parameters of source object into self
+<<<<<<< HEAD
 
         @param proto
+=======
+        
+        @param proto 
+>>>>>>> refs/remotes/origin/master
             source object
     */
     public function copy($proto)
@@ -48,7 +57,11 @@ class DataRequestConfig
     }
 
     /*! convert self to string ( for logs )
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             self as plain string,
     */
     public function __toString()
@@ -67,7 +80,11 @@ class DataRequestConfig
     }
 
     /*! returns set of filtering rules
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             set of filtering rules
     */
     public function get_filters()
@@ -76,7 +93,11 @@ class DataRequestConfig
     }
 
     /*! returns list of used fields
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             list of used fields
     */
     public function get_fieldset()
@@ -84,9 +105,15 @@ class DataRequestConfig
         return $this->fieldset;
     }
 
+<<<<<<< HEAD
     /*! returns name of source table
         @return
             name of source table
+=======
+    /*! returns name of source table 
+        @return 
+            name of source table 
+>>>>>>> refs/remotes/origin/master
     */
     public function get_source()
     {
@@ -94,7 +121,11 @@ class DataRequestConfig
     }
 
     /*! returns set of sorting rules
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             set of sorting rules
     */
     public function get_sort_by()
@@ -102,8 +133,13 @@ class DataRequestConfig
         return $this->sort_by;
     }
 
+<<<<<<< HEAD
     /*! returns start index
         @return
+=======
+    /*! returns start index 
+        @return 
+>>>>>>> refs/remotes/origin/master
             start index
     */
     public function get_start()
@@ -112,7 +148,11 @@ class DataRequestConfig
     }
 
     /*! returns count of requested records
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             count of requested records
     */
     public function get_count()
@@ -121,7 +161,11 @@ class DataRequestConfig
     }
 
     /*! returns name of relation id
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             relation id name
     */
     public function get_relation()
@@ -130,8 +174,13 @@ class DataRequestConfig
     }
 
     /*! sets sorting rule
+<<<<<<< HEAD
 
         @param field
+=======
+        
+        @param field 
+>>>>>>> refs/remotes/origin/master
             name of column
         @param order
             direction of sorting
@@ -147,8 +196,13 @@ class DataRequestConfig
     }
 
     /*! sets filtering rule
+<<<<<<< HEAD
 
         @param field
+=======
+        
+        @param field 
+>>>>>>> refs/remotes/origin/master
             name of column
         @param value
             value for filtering
@@ -161,7 +215,11 @@ class DataRequestConfig
     }
 
     /*! sets list of used fields
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param value
             list of used fields
     */
@@ -171,8 +229,13 @@ class DataRequestConfig
     }
 
     /*! sets name of source table
+<<<<<<< HEAD
 
         @param value
+=======
+        
+        @param value 
+>>>>>>> refs/remotes/origin/master
             name of source table
     */
     public function set_source($value)
@@ -184,7 +247,11 @@ class DataRequestConfig
     }
 
     /*! sets data limits
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param start
             start index
         @param count
@@ -197,8 +264,13 @@ class DataRequestConfig
     }
 
     /*! sets name of relation id
+<<<<<<< HEAD
 
         @param value
+=======
+        
+        @param value 
+>>>>>>> refs/remotes/origin/master
             name of relation id field
     */
     public function set_relation($value)
@@ -207,7 +279,11 @@ class DataRequestConfig
     }
 
     /*! parse incoming sql, to fill other properties
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param sql
             incoming sql string
     */
@@ -272,7 +348,11 @@ class DataConfig
     }
 
     /*! removes un-used fields from configuration
+<<<<<<< HEAD
         @param name
+=======
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field , which need to be preserved
     */
     public function minimize($name)
@@ -291,7 +371,11 @@ class DataConfig
 
     /*! initialize inner state by parsing configuration parameters
 
+<<<<<<< HEAD
         @param id
+=======
+        @param id 
+>>>>>>> refs/remotes/origin/master
             name of id field
         @param fields
             name of data field(s)
@@ -299,7 +383,11 @@ class DataConfig
             name of extra field(s)
         @param relation
             name of relation field
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> refs/remotes/origin/master
     */
     public function init($id, $fields, $extra, $relation)
     {
@@ -310,12 +398,21 @@ class DataConfig
     }
 
     /*! parse configuration string
+<<<<<<< HEAD
 
         @param key
             key string from configuration
         @param mode
             multi names flag
         @return
+=======
+        
+        @param key 
+            key string from configuration
+        @param mode
+            multi names flag
+        @return 
+>>>>>>> refs/remotes/origin/master
             parsed field name object
     */
     private function parse($key, $mode)
@@ -358,8 +455,13 @@ class DataConfig
     }
 
     /*! copy properties from source object
+<<<<<<< HEAD
 
         @param proto
+=======
+        
+        @param proto 
+>>>>>>> refs/remotes/origin/master
             source object
     */
     public function copy($proto)
@@ -371,7 +473,11 @@ class DataConfig
     }
 
     /*! returns list of data fields (db_names)
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             list of data fields ( ready to be used in SQL query )
     */
     public function db_names_list()
@@ -396,9 +502,15 @@ class DataConfig
     }
 
     /*! add field to dataset config ($text collection)
+<<<<<<< HEAD
 
         added field will be used in all auto-generated queries
         @param name
+=======
+    
+        added field will be used in all auto-generated queries
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field
         @param aliase
             aliase of field, optional
@@ -427,7 +539,11 @@ class DataConfig
     /*! remove field from dataset config ($text collection)
 
         removed field will be excluded from all auto-generated queries
+<<<<<<< HEAD
         @param name
+=======
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field, or aliase of field
     */
     public function remove_field($name)
@@ -442,11 +558,19 @@ class DataConfig
 
     /*! check if field is a part of dataset
 
+<<<<<<< HEAD
         @param name
             name of field
         @param collection
             collection, against which check will be done, $text collection by default
         @return
+=======
+        @param name 
+            name of field
+        @param collection
+            collection, against which check will be done, $text collection by default
+        @return 
+>>>>>>> refs/remotes/origin/master
             returns true if field already a part of dataset, otherwise returns true
     */
     private function is_field($name, $collection = false)
@@ -477,7 +601,11 @@ abstract class DataWrapper
     /*! constructor
         @param connection
             DB connection
+<<<<<<< HEAD
         @param config
+=======
+        @param config 
+>>>>>>> refs/remotes/origin/master
             DataConfig instance
     */
     public function __construct($connection, $config)
@@ -487,8 +615,13 @@ abstract class DataWrapper
     }
 
     /*! insert record in storage
+<<<<<<< HEAD
 
         @param data
+=======
+        
+        @param data 
+>>>>>>> refs/remotes/origin/master
             DataAction object
         @param source
             DataRequestConfig object
@@ -496,8 +629,13 @@ abstract class DataWrapper
     abstract public function insert($data, $source);
 
     /*! delete record from storage
+<<<<<<< HEAD
 
         @param data
+=======
+        
+        @param data 
+>>>>>>> refs/remotes/origin/master
             DataAction object
         @param source
             DataRequestConfig object
@@ -505,8 +643,13 @@ abstract class DataWrapper
     abstract public function delete($data, $source);
 
     /*! update record in storage
+<<<<<<< HEAD
 
         @param data
+=======
+        
+        @param data 
+>>>>>>> refs/remotes/origin/master
             DataAction object
         @param source
             DataRequestConfig object
@@ -514,21 +657,33 @@ abstract class DataWrapper
     abstract public function update($data, $source);
 
     /*! select record from storage
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param source
             DataRequestConfig object
     */
     abstract public function select($source);
 
     /*! get size of storage
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param source
             DataRequestConfig object
     */
     abstract public function get_size($source);
 
     /*! get all variations of field in storage
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param name
             name of field
         @param source
@@ -537,12 +692,20 @@ abstract class DataWrapper
     abstract public function get_variants($name, $source);
 
     /*! checks if there is a custom sql string for specified db operation
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param  name
             name of DB operation
         @param  data
             hash of data
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string
     */
     public function get_sql($name, $data)
@@ -582,7 +745,11 @@ abstract class DBDataWrapper extends DataWrapper
     private $sqls = []; //!< predefined sql actions
 
     /*! assign named sql query
+<<<<<<< HEAD
         @param name
+=======
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of sql query
         @param data
             sql query text
@@ -594,10 +761,17 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! replace vars in sql string with actual values
+<<<<<<< HEAD
 
         @param matches
             array of field name matches
         @return
+=======
+        
+        @param matches 
+            array of field name matches
+        @return 
+>>>>>>> refs/remotes/origin/master
             value for the var name
     */
     public function get_sql_callback($matches)
@@ -686,12 +860,21 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! create an sql string for filtering rules
+<<<<<<< HEAD
 
         @param rules
             set of filtering rules
         @param relation
             name of relation id field
         @return
+=======
+        
+        @param rules 
+            set of filtering rules
+        @param relation
+            name of relation id field
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string with filtering rules
     */
     protected function build_where($rules, $relation = false)
@@ -716,10 +899,17 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! convert sorting rules to sql string
+<<<<<<< HEAD
 
         @param by
             set of sorting rules
         @return
+=======
+        
+        @param by 
+            set of sorting rules
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string for set of sorting rules
     */
     protected function build_order($by)
@@ -738,10 +928,17 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates sql code for select operation
+<<<<<<< HEAD
 
         @param select
             list of fields in select
         @param from
+=======
+        
+        @param select 
+            list of fields in select
+        @param from 
+>>>>>>> refs/remotes/origin/master
             table name
         @param where
             list of filtering rules
@@ -749,9 +946,15 @@ abstract class DBDataWrapper extends DataWrapper
             list of sorting rules
         @param start
             start index of fetching
+<<<<<<< HEAD
         @param count
             count of records to fetch
         @return
+=======
+        @param count 
+            count of records to fetch
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string for select operation
     */
     protected function select_query($select, $from, $where, $sort, $start, $count)
@@ -771,12 +974,20 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates update sql
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param data
             DataAction object
         @param request
             DataRequestConfig object
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string, which updates record with provided data
     */
     protected function update_query($data, $request)
@@ -799,13 +1010,22 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates delete sql
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param data
             DataAction object
         @param request
             DataRequestConfig object
+<<<<<<< HEAD
         @return
             sql string, which delete record
+=======
+        @return 
+            sql string, which delete record 
+>>>>>>> refs/remotes/origin/master
     */
     protected function delete_query($data, $request)
     {
@@ -822,12 +1042,20 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! generates insert sql
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         @param data
             DataAction object
         @param request
             DataRequestConfig object
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql string, which inserts new record with provided data
     */
     protected function insert_query($data, $request)
@@ -853,8 +1081,13 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! sets the transaction mode, used by dataprocessor
+<<<<<<< HEAD
 
         @param mode
+=======
+        
+        @param mode 
+>>>>>>> refs/remotes/origin/master
             mode name
     */
     public function set_transaction_mode($mode)
@@ -866,7 +1099,11 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! returns true if global transaction mode was specified
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             true if global transaction mode was specified
     */
     public function is_global_transaction()
@@ -875,7 +1112,11 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! returns true if record transaction mode was specified
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             true if record transaction mode was specified
     */
     public function is_record_transaction()
@@ -899,33 +1140,57 @@ abstract class DBDataWrapper extends DataWrapper
     }
 
     /*! exec sql string
+<<<<<<< HEAD
 
         @param sql
             sql string
         @return
+=======
+        
+        @param sql 
+            sql string
+        @return 
+>>>>>>> refs/remotes/origin/master
             sql result set
     */
     abstract protected function query($sql);
 
     /*! returns next record from result set
+<<<<<<< HEAD
 
         @param res
             sql result set
         @return
+=======
+        
+        @param res 
+            sql result set
+        @return 
+>>>>>>> refs/remotes/origin/master
             hash of data
     */
     abstract public function get_next($res);
 
     /*! returns new id value, for newly inserted row
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             new id value, for newly inserted row
     */
     abstract protected function get_new_id();
 
     /*! escape data to prevent sql injections
+<<<<<<< HEAD
         @param data
             unescaped data
         @return
+=======
+        @param data 
+            unescaped data
+        @return 
+>>>>>>> refs/remotes/origin/master
             escaped data
     */
     abstract public function escape($data);

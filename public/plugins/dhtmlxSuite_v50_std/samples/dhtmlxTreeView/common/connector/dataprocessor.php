@@ -16,8 +16,13 @@ class DataProcessor
     public static $action_param = '!nativeeditor_status';
 
     /*! constructor
+<<<<<<< HEAD
 
         @param connector
+=======
+        
+        @param connector 
+>>>>>>> refs/remotes/origin/master
             Connector object
         @param config
             DataConfig object
@@ -33,9 +38,15 @@ class DataProcessor
 
     /*! convert incoming data name to valid db name
         redirect to Connector->name_data by default
+<<<<<<< HEAD
         @param data
             data name from incoming request
         @return
+=======
+        @param data 
+            data name from incoming request
+        @return 
+>>>>>>> refs/remotes/origin/master
             related db_name
     */
     public function name_data($data)
@@ -44,10 +55,17 @@ class DataProcessor
     }
 
     /*! retrieve data from incoming request and normalize it
+<<<<<<< HEAD
 
         @param ids
             array of extected IDs
         @return
+=======
+        
+        @param ids 
+            array of extected IDs
+        @return 
+>>>>>>> refs/remotes/origin/master
             hash of data
     */
     protected function get_post_values($ids)
@@ -142,10 +160,17 @@ class DataProcessor
     }
 
     /*! converts status string to the inner mode name
+<<<<<<< HEAD
 
         @param status
             external status string
         @return
+=======
+        
+        @param status 
+            external status string
+        @return 
+>>>>>>> refs/remotes/origin/master
             inner mode name
     */
     protected function status_to_mode($status)
@@ -167,10 +192,17 @@ class DataProcessor
     }
 
     /*! process data updated request received
+<<<<<<< HEAD
 
         @param action
             DataAction object
         @return
+=======
+        
+        @param action 
+            DataAction object
+        @return 
+>>>>>>> refs/remotes/origin/master
             DataAction object with details of processing
     */
     protected function inner_process($action)
@@ -216,7 +248,11 @@ class DataProcessor
 
     /*! check if some event intercepts processing, send data to DataWrapper in other case
 
+<<<<<<< HEAD
         @param action
+=======
+        @param action 
+>>>>>>> refs/remotes/origin/master
             DataAction object
         @param mode
             name of inner mode ( will be used to generate event names )
@@ -288,8 +324,13 @@ class DataAction
     private $delf; //!< array of deleted fields
 
     /*! constructor
+<<<<<<< HEAD
 
         @param status
+=======
+        
+        @param status 
+>>>>>>> refs/remotes/origin/master
             current operation status
         @param id
             record id
@@ -312,8 +353,13 @@ class DataAction
     }
 
     /*! add custom field and value to DB operation
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field which will be added to DB operation
         @param value
             value which will be used for related field in DB operation
@@ -326,8 +372,13 @@ class DataAction
     }
 
     /*! remove field from DB operation
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of field which will be removed from DB operation
     */
     public function remove_field($name)
@@ -337,10 +388,17 @@ class DataAction
     }
 
     /*! sync field configuration with external object
+<<<<<<< HEAD
 
         @param slave
             SQLMaster object
         @todo
+=======
+        
+        @param slave 
+            SQLMaster object
+        @todo 
+>>>>>>> refs/remotes/origin/master
             check , if all fields removed then cancel action
     */
     public function sync_config($slave)
@@ -354,10 +412,17 @@ class DataAction
     }
 
     /*! get value of some record's propery
+<<<<<<< HEAD
 
         @param name
             name of record's property ( name of db field or alias )
         @return
+=======
+        
+        @param name 
+            name of record's property ( name of db field or alias )
+        @return 
+>>>>>>> refs/remotes/origin/master
             value of related property
     */
     public function get_value($name)
@@ -373,8 +438,13 @@ class DataAction
     }
 
     /*! set value of some record's propery
+<<<<<<< HEAD
 
         @param name
+=======
+        
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of record's property ( name of db field or alias )
         @param value
             value of related property
@@ -386,8 +456,13 @@ class DataAction
     }
 
     /*! get hash of data properties
+<<<<<<< HEAD
 
         @return
+=======
+        
+        @return 
+>>>>>>> refs/remotes/origin/master
             hash of data properties
     */
     public function get_data()
@@ -397,9 +472,15 @@ class DataAction
 
     /*! get some extra info attached to record
         deprecated, exists just for backward compatibility, you can use set_value instead of it
+<<<<<<< HEAD
         @param name
             name of userdata property
         @return
+=======
+        @param name 
+            name of userdata property
+        @return 
+>>>>>>> refs/remotes/origin/master
             value of related userdata property
     */
     public function get_userdata_value($name)
@@ -409,7 +490,11 @@ class DataAction
 
     /*! set some extra info attached to record
         deprecated, exists just for backward compatibility, you can use get_value instead of it
+<<<<<<< HEAD
         @param name
+=======
+        @param name 
+>>>>>>> refs/remotes/origin/master
             name of userdata property
         @param value
             value of userdata property
@@ -420,8 +505,13 @@ class DataAction
     }
 
     /*! get current status of record
+<<<<<<< HEAD
 
         @return
+=======
+        
+        @return 
+>>>>>>> refs/remotes/origin/master
             string with status value
     */
     public function get_status()
@@ -430,8 +520,13 @@ class DataAction
     }
 
     /*! assign new status to the record
+<<<<<<< HEAD
 
         @param status
+=======
+        
+        @param status 
+>>>>>>> refs/remotes/origin/master
             new status value
     */
     public function set_status($status)
@@ -460,8 +555,13 @@ class DataAction
     }
 
     /*! get id of current record
+<<<<<<< HEAD
 
         @return
+=======
+        
+        @return 
+>>>>>>> refs/remotes/origin/master
             id of record
     */
     public function get_id()
@@ -470,9 +570,15 @@ class DataAction
     }
 
     /*! sets custom response text
+<<<<<<< HEAD
 
         can be accessed through defineAction on client side. Text wrapped in CDATA, so no extra escaping necessary
         @param text
+=======
+        
+        can be accessed through defineAction on client side. Text wrapped in CDATA, so no extra escaping necessary
+        @param text 
+>>>>>>> refs/remotes/origin/master
             custom response text
     */
     public function set_response_text($text)
@@ -481,7 +587,11 @@ class DataAction
     }
 
     /*! sets custom response xml
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         can be accessed through defineAction on client side
         @param text
             string with XML data
@@ -492,7 +602,11 @@ class DataAction
     }
 
     /*! sets custom response attributes
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> refs/remotes/origin/master
         can be accessed through defineAction on client side
         @param name
             name of custom attribute
@@ -504,9 +618,15 @@ class DataAction
         $this->attrs[$name] = $value;
     }
 
+<<<<<<< HEAD
     /*! check if action finished
 
         @return
+=======
+    /*! check if action finished 
+        
+        @return 
+>>>>>>> refs/remotes/origin/master
             true if action finished, false otherwise
     */
     public function is_ready()
@@ -515,9 +635,15 @@ class DataAction
     }
 
     /*! return new id value
+<<<<<<< HEAD
 
         equal to original ID normally, after insert operation - value assigned for new DB record
         @return
+=======
+    
+        equal to original ID normally, after insert operation - value assigned for new DB record	
+        @return 
+>>>>>>> refs/remotes/origin/master
             new id value
     */
     public function get_new_id()
@@ -554,7 +680,11 @@ class DataAction
     }
 
     /*! convert DataAction to xml format compatible with client side dataProcessor
+<<<<<<< HEAD
         @return
+=======
+        @return 
+>>>>>>> refs/remotes/origin/master
             DataAction operation report as XML string
     */
     public function to_xml()
@@ -569,10 +699,17 @@ class DataAction
     }
 
     /*! replace xml unsafe characters
+<<<<<<< HEAD
 
         @param string
             string to be escaped
         @return
+=======
+        
+        @param string 
+            string to be escaped
+        @return 
+>>>>>>> refs/remotes/origin/master
             escaped string
     */
     public function xmlentities($string)
@@ -581,9 +718,15 @@ class DataAction
     }
 
     /*! convert self to string ( for logs )
+<<<<<<< HEAD
 
         @return
             DataAction operation report as plain string
+=======
+        
+        @return 
+            DataAction operation report as plain string 
+>>>>>>> refs/remotes/origin/master
     */
     public function __toString()
     {

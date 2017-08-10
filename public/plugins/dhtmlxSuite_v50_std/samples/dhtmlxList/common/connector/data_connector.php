@@ -112,9 +112,9 @@ class DataConnector extends Connector
         Here initilization of all Masters occurs, execution timer initialized
         @param res
 =======
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param res 
+        @param res
 >>>>>>> refs/remotes/origin/master
             db connection resource
         @param type
@@ -125,7 +125,7 @@ class DataConnector extends Connector
 <<<<<<< HEAD
             name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
 =======
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
 >>>>>>> refs/remotes/origin/master
     */
     public function __construct($res, $type = false, $item_type = false, $data_type = false, $render_type = false)
@@ -232,8 +232,8 @@ class JSONDataConnector extends DataConnector
 
         @param name
 =======
-        
-        @param name 
+
+        @param name
 >>>>>>> refs/remotes/origin/master
             name of the column
         @param options
@@ -256,8 +256,8 @@ class JSONDataConnector extends DataConnector
 
         @param list
 =======
-        
-        @param list 
+
+        @param list
 >>>>>>> refs/remotes/origin/master
             comma separated list of column names, for which options need to be generated
     */
@@ -476,9 +476,9 @@ class TreeDataConnector extends DataConnector
         Here initilization of all Masters occurs, execution timer initialized
         @param res
 =======
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param res 
+        @param res
 >>>>>>> refs/remotes/origin/master
             db connection resource
         @param type
@@ -489,7 +489,7 @@ class TreeDataConnector extends DataConnector
 <<<<<<< HEAD
             name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
 =======
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
 >>>>>>> refs/remotes/origin/master
      *	@param render_type
      *		name of class which will provides data rendering

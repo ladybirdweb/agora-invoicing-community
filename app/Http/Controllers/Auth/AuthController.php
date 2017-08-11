@@ -456,7 +456,8 @@ class AuthController extends Controller
             $userid = $request->input('id');
             $user = User::find($userid);
             $check = $this->checkVerify($user);
-            $this->sendActivation($email, $request->method());
+            $method = 'POST';
+            $this->sendActivation($email, $method);
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);

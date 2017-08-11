@@ -14,7 +14,8 @@
                "pingplusplus/pingpp-php": "dev-master",
                "pacely/mailchimp-apiv3": "dev-master",
                "barryvdh/laravel-dompdf": "0.6.*",
-               "torann/geoip": "0.2.*@dev"
+               "torann/geoip": "0.2.*@dev",
+		"geoip2/geoip2": "^2.6"
 		
 		
 	},

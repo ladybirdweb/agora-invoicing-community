@@ -176,6 +176,7 @@ class ConnectorSecurity
 
             return self::$filterClass->basic($value);
         }
+
         throw new Error('Invalid security mode:' + $mode);
     }
 

@@ -43,7 +43,7 @@ class GithubController extends Controller
             dd($auth);
 
             return $auth;
-//            if($auth!='true'){
+            //            if($auth!='true'){
 //                throw new Exception('can not authenticate with github', 401);
 //            }
             //$authenticated = json_decode($auth);
@@ -128,7 +128,7 @@ class GithubController extends Controller
                 $release = $this->latestRelese($owner, $repo);
                 //dd($release);
             }
-//            dd($release);
+            //            dd($release);
             return $release;
 
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
@@ -176,7 +176,7 @@ class GithubController extends Controller
             } else {
                 $version[0] = $all_releases[0];
             }
-//            dd($version);
+            //            dd($version);
             //execute download
 
             if ($this->download($version) == 'success') {
@@ -266,6 +266,7 @@ class GithubController extends Controller
                 'username' => 'required',
                 'password' => 'required',
             ]);
+
         try {
             $this->github->fill($request->input())->save();
 

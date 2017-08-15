@@ -15,9 +15,9 @@ class ApiController extends Controller
             $result = 'fails';
             $url = $request->input('url');
 
-//            if (ends_with($domain, '/')) {
-//                $domain = substr_replace($domain,"", -1, 1);
-//            }
+            //            if (ends_with($domain, '/')) {
+            //                $domain = substr_replace($domain,"", -1, 1);
+            //            }
 
             $url_info = parse_url($url);
             $domain = $url_info['host'];

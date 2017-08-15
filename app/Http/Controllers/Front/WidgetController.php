@@ -74,6 +74,7 @@ class WidgetController extends Controller
 
             'content'=> 'required',
         ]);
+
         try {
             $this->widget->fill($request->input())->save();
 
@@ -91,6 +92,7 @@ class WidgetController extends Controller
 
             'content'=> 'required',
         ]);
+
         try {
             $widget = $this->widget->where('id', $id)->first();
             $widget->fill($request->input())->save();

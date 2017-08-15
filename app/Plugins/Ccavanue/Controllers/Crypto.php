@@ -39,12 +39,12 @@ class Crypto extends Controller
 
     //*********** Padding Function *********************
 
-     public function pkcs5_pad($plainText, $blockSize)
-     {
-         $pad = $blockSize - (strlen($plainText) % $blockSize);
+    public function pkcs5_pad($plainText, $blockSize)
+    {
+        $pad = $blockSize - (strlen($plainText) % $blockSize);
 
-         return $plainText.str_repeat(chr($pad), $pad);
-     }
+        return $plainText.str_repeat(chr($pad), $pad);
+    }
 
     //********** Hexadecimal to Binary function for php 4.0 version ********
 

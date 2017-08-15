@@ -71,16 +71,16 @@ function getDataFromDB($name_mask, $code_mask, $sort_by, $sort_dir)
     if ($sort_by != '') {
         $sql .= " Order By $sort_by $sort_dir";
     }
-        //print($sql);
-        //echo $sql;
-        if ($posStart == 0) {
-            $sqlCount = "Select count(*) as cnt from ($sql) as tbl";
-            //print($sqlCount);
-            $resCount = mysql_query($sqlCount);
-            while ($rowCount = mysql_fetch_array($resCount)) {
-                $totalCount = $rowCount['cnt'];
-            }
+    //print($sql);
+    //echo $sql;
+    if ($posStart == 0) {
+        $sqlCount = "Select count(*) as cnt from ($sql) as tbl";
+        //print($sqlCount);
+        $resCount = mysql_query($sqlCount);
+        while ($rowCount = mysql_fetch_array($resCount)) {
+            $totalCount = $rowCount['cnt'];
         }
+    }
     $sql .= ' LIMIT '.$posStart.','.$count;
     $res = mysql_query($sql);
     echo "<rows total_count='".$totalCount."' pos='".$posStart."'>";
@@ -89,7 +89,7 @@ function getDataFromDB($name_mask, $code_mask, $sort_by, $sort_dir)
             echo "<row id='".$row['item_id']."'>";
             echo '<cell>';
             echo $row['item_nm']; //."[".$row['item_id']."]");
-                    echo '</cell>';
+            echo '</cell>';
             echo '<cell>';
             echo 'index is '.$posStart;
             echo '</cell>';

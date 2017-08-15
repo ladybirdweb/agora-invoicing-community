@@ -46,6 +46,7 @@ class ProcessController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -120,6 +121,7 @@ class ProcessController extends Controller
             return $data;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -145,6 +147,7 @@ class ProcessController extends Controller
             dd($output);
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -165,6 +168,7 @@ class ProcessController extends Controller
             echo"<script language='javascript'>document.redirect.submit();</script>";
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

@@ -68,14 +68,14 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         //        $validator = \Validator::make($request->all(), [
-//                    'domain' => 'url',
-//        ]);
+        //                    'domain' => 'url',
+        //        ]);
 
-//        if ($validator->fails()) {
-//            return redirect('orders')
-//                            ->withErrors($validator)
-//                            ->withInput();
-//        }
+        //        if ($validator->fails()) {
+        //            return redirect('orders')
+        //                            ->withErrors($validator)
+        //                            ->withInput();
+        //        }
         try {
             $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
             $order_no = $request->input('order_no');
@@ -533,8 +533,8 @@ class OrderController extends Controller
     public function domainChange(Request $request)
     {
         //        $this->validate($request, [
-//            'domain' => 'url',
-//        ]);
+        //            'domain' => 'url',
+        //        ]);
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = $this->order->find($id);

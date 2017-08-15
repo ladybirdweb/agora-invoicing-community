@@ -75,7 +75,7 @@ class EventInterface
 
     /*! constructor
         creates a new interface based on existing request
-        @param request 
+        @param request
             DataRequestConfig object
     */
     public function __construct($request)
@@ -91,10 +91,10 @@ class EventInterface
     }
 
     /*! get index by name
-        
-        @param name 
+
+        @param name
             name of field
-        @return 
+        @return
             index of named field
     */
     public function index($name)
@@ -115,7 +115,7 @@ class SortInterface extends EventInterface
 {
     /*! constructor
         creates a new interface based on existing request
-        @param request 
+        @param request
             DataRequestConfig object
     */
     public function __construct($request)
@@ -125,8 +125,8 @@ class SortInterface extends EventInterface
     }
 
     /*! add new sorting rule
-        
-        @param name 
+
+        @param name
             name of field
         @param dir
             direction of sorting
@@ -151,7 +151,7 @@ class FilterInterface extends EventInterface
 {
     /*! constructor
         creates a new interface based on existing request
-        @param request 
+        @param request
             DataRequestConfig object
     */
     public function __construct($request)
@@ -161,8 +161,8 @@ class FilterInterface extends EventInterface
     }
 
     /*! add new filatering rule
-        
-        @param name 
+
+        @param name
             name of field
         @param value
             value to filter by
@@ -180,7 +180,7 @@ class FilterInterface extends EventInterface
     }
 }
 
-/*! base class for component item representation	
+/*! base class for component item representation
 **/
 class DataItem
 {
@@ -191,7 +191,7 @@ class DataItem
     protected $userdata;
 
     /*! constructor
-        
+
         @param data
             hash of data
         @param config
@@ -219,10 +219,10 @@ class DataItem
     }
 
     /*! get named value
-        
-        @param name 
+
+        @param name
             name or alias of field
-        @return 
+        @return
             value from field with provided name or alias
     */
     public function get_value($name)
@@ -231,8 +231,8 @@ class DataItem
     }
 
     /*! set named value
-        
-        @param name 
+
+        @param name
             name or alias of field
         @param value
             value for field with provided name or alias
@@ -243,7 +243,7 @@ class DataItem
     }
 
     /*! get id of element
-        @return 
+        @return
             id of element
     */
     public function get_id()
@@ -257,8 +257,8 @@ class DataItem
     }
 
     /*! change id of element
-        
-        @param value 
+
+        @param value
             new id value
     */
     public function set_id($value)
@@ -267,8 +267,8 @@ class DataItem
     }
 
     /*! get index of element
-        
-        @return 
+
+        @return
             index of element
     */
     public function get_index()
@@ -291,10 +291,10 @@ class DataItem
     }
 
     /*! replace xml unsafe characters
-        
-        @param string 
+
+        @param string
             string to be escaped
-        @return 
+        @return
             escaped string
     */
     public function xmlentities($string)
@@ -302,7 +302,7 @@ class DataItem
         return str_replace(['&', '"', "'", '<', '>', '’'], ['&amp;', '&quot;', '&apos;', '&lt;', '&gt;', '&apos;'], $string);
     }
 
-    /*! return starting tag for self as XML string 
+    /*! return starting tag for self as XML string
     */
     public function to_xml_start()
     {
@@ -331,8 +331,8 @@ class DataItem
 }
 
 /*! Base connector class
-    This class used as a base for all component specific connectors. 
-    Can be used on its own to provide raw data.	
+    This class used as a base for all component specific connectors.
+    Can be used on its own to provide raw data.
 **/
 class Connector
 {
@@ -370,16 +370,16 @@ class Connector
     protected $order = false;
 
     /*! constructor
-        
+
         Here initilization of all Masters occurs, execution timer initialized
-        @param db 
+        @param db
             db connection resource
         @param type
             string , which hold type of database ( MySQL or Postgre ), optional, instead of short DB name, full name of DataWrapper-based class can be provided
         @param item_type
             name of class, which will be used for item rendering, optional, DataItem will be used by default
         @param data_type
-            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default. 
+            name of class which will be used for dataprocessor calls handling, optional, DataProcessor class will be used by default.
     */
     public function __construct($db, $type = false, $item_type = false, $data_type = false, $render_type = false)
     {
@@ -430,7 +430,7 @@ class Connector
 
     /*! return db connection resource
         nested class may neeed to access live connection object
-        @return 
+        @return
             DB connection resource
     */
     protected function get_connection()
@@ -464,10 +464,10 @@ class Connector
     }
 
     /*! config connector based on table
-        
-        @param table 
+
+        @param table
             name of table in DB
-        @param id 
+        @param id
             name of id field
         @param fields
             list of fields names
@@ -507,10 +507,10 @@ class Connector
     }
 
     /*! config connector based on sql
-        
-        @param sql 
+
+        @param sql
             sql query used as base of configuration
-        @param id 
+        @param id
             name of id field
         @param fields
             list of fields names
@@ -544,7 +544,7 @@ class Connector
     }
 
     /*! render already configured connector
-        
+
         @param config
             configuration of data
         @param request
@@ -625,9 +625,9 @@ class Connector
 
     /*! prevent SQL injection through column names
         replace dangerous chars in field names
-        @param str 
+        @param str
             incoming field name
-        @return 
+        @return
             safe field name
     */
     protected function safe_field_name($str)
@@ -637,9 +637,9 @@ class Connector
 
     /*! limit max count of records
         connector will ignore any records after outputing max count
-        @param limit 
+        @param limit
             max count of records
-        @return 
+        @return
             none
     */
     public function set_limit($limit)
@@ -718,9 +718,9 @@ class Connector
     }
 
     /*! convert incoming request name to the actual DB name
-        @param name 
+        @param name
             incoming parameter name
-        @return 
+        @return
             name of related DB field
     */
     protected function resolve_parameter($name)
@@ -758,7 +758,7 @@ class Connector
 
     /*! render from DB resultset
         @param res
-            DB resultset 
+            DB resultset
         process commands, output requested data as XML
     */
     protected function render_set($res)
@@ -768,7 +768,7 @@ class Connector
 
     /*! output fetched data as XML
         @param res
-            DB resultset 
+            DB resultset
     */
     protected function output_as_xml($res)
     {
@@ -801,9 +801,9 @@ class Connector
     }
 
     /*! set xml encoding
-        
-        methods sets only attribute in XML, no real encoding conversion occurs	
-        @param encoding 
+
+        methods sets only attribute in XML, no real encoding conversion occurs
+        @param encoding
             value which will be used as XML encoding
     */
     public function set_encoding($encoding)
@@ -812,9 +812,9 @@ class Connector
     }
 
     /*! enable or disable dynamic loading mode
-        
-        @param count 
-            count of rows loaded from server, actual only for grid-connector, can be skiped in other cases. 
+
+        @param count
+            count of rows loaded from server, actual only for grid-connector, can be skiped in other cases.
             If value is a false or 0 - dyn. loading will be disabled
     */
     public function dynamic_loading($count)
@@ -823,8 +823,8 @@ class Connector
     }
 
     /*! enable or disable data reordering
-        
-        @param name 
+
+        @param name
             name of field, which will be used for order storing, optional
             by default 'sortorder' field will be used
     */
@@ -841,8 +841,8 @@ class Connector
     }
 
     /*! enable logging
-        
-        @param path 
+
+        @param path
             path to the log file. If set as false or empty strig - logging will be disabled
         @param client_log
             enable output of log data to the client side
@@ -853,7 +853,7 @@ class Connector
     }
 
     /*! provides infor about current processing mode
-        @return 
+        @return
             true if processing dataprocessor command, false otherwise
     */
     public function is_select_mode()
@@ -918,8 +918,8 @@ class Connector
     }
 
     /*! assign options collection to the column
-        
-        @param name 
+
+        @param name
             name of the column
         @param options
             array or connector object

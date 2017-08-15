@@ -110,9 +110,9 @@ class CheckoutController extends Controller
             }
             //$attributes[] = $item->attributes;
         }
-//        if ($content->count() == 0) {
-//            return redirect('home');
-//        }
+        //        if ($content->count() == 0) {
+        //            return redirect('home');
+        //        }
         if ($cart_currency != $currency) {
             return redirect('checkout');
         }
@@ -124,6 +124,7 @@ class CheckoutController extends Controller
                 //'domain.*.url'      => 'Domain name is not valid',
             ]);
         }
+
         try {
             $domain = $request->input('domain');
             if (count($domain) > 0) {
@@ -175,6 +176,7 @@ class CheckoutController extends Controller
                 'payment_gateway.required' => 'Please choose a payment gateway',
             ]);
         }
+
         try {
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
@@ -206,8 +208,8 @@ class CheckoutController extends Controller
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 //                if ($paynow == true) {
-//                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
-//                }
+                //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
+                //                }
                 \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
             } else {
                 $action = $this->checkoutAction($invoice);
@@ -272,11 +274,12 @@ class CheckoutController extends Controller
             return $product;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
 
-//    public function GenerateOrder() {
+    //    public function GenerateOrder() {
 //        try {
 //
 //            $products = [];

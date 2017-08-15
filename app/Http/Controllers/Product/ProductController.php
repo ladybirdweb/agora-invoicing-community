@@ -130,7 +130,7 @@ class ProductController extends Controller
                         ->searchColumns('name', 'email')
                         ->orderColumns('name', 'email')
                         ->make();
-//        } catch (\Exception $e) {
+        //        } catch (\Exception $e) {
 //            return redirect()->back()->with('fails', $e->getMessage());
 //        }
     }
@@ -193,6 +193,7 @@ class ProductController extends Controller
                     ->withInput()
                     ->with('currency');
         }
+
         try {
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
@@ -283,7 +284,7 @@ class ProductController extends Controller
             $taxes = $this->tax_class->lists('name', 'id')->toArray();
             //dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
-//            dd($saved_taxes);
+            //            dd($saved_taxes);
             return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -309,13 +310,13 @@ class ProductController extends Controller
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-//        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-//            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-//        });
-//
-//        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-//            return $input->type == 2 && $input->file == '' && $input->image == '';
-//        });
+        //        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+        //            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+        //        });
+        //
+        //        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+        //            return $input->type == 2 && $input->file == '' && $input->image == '';
+        //        });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -323,6 +324,7 @@ class ProductController extends Controller
             return redirect()->back()->with('errors', $v->errors());
             //dd();
         }
+
         try {
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
@@ -491,10 +493,10 @@ class ProductController extends Controller
                 header('Content-type: Zip');
                 header('Content-Description: File Transfer');
                 header('Content-Disposition: attachment; filename=Faveo.zip');
-               //header("Content-type: application/zip");
-               header('Content-Length: '.filesize($release));
-               //ob_clean();
-               flush();
+                //header("Content-type: application/zip");
+                header('Content-Length: '.filesize($release));
+                //ob_clean();
+                flush();
                 readfile("$release");
                 exit;
             }
@@ -529,10 +531,10 @@ class ProductController extends Controller
                         header('Content-type: Zip');
                         header('Content-Description: File Transfer');
                         header('Content-Disposition: attachment; filename=Faveo.zip');
-               //header("Content-type: application/zip");
-                  header('Content-Length: '.filesize($release));
-                  //ob_clean();
-                  flush();
+                        //header("Content-type: application/zip");
+                        header('Content-Length: '.filesize($release));
+                        //ob_clean();
+                        flush();
                         readfile("$release");
                         exit;
                     }

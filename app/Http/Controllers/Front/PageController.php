@@ -97,6 +97,7 @@ class PageController extends Controller
             'url'     => 'required',
             'content' => 'required',
         ]);
+
         try {
             $page = $this->page->where('id', $id)->first();
             $page->fill($request->input())->save();
@@ -309,7 +310,7 @@ class PageController extends Controller
     public function checkConfigKey($config, $transform)
     {
         $result = [];
-//        dd($config);
+        //        dd($config);
         if (count($config) > 0) {
             foreach ($config as $key => $value) {
                 if (array_key_exists($key, $transform)) {

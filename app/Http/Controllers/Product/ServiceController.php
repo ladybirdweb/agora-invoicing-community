@@ -16,8 +16,8 @@ class ServiceController extends Controller
         $this->middleware('admin');
         $product = new Product();
         $this->product = $product;
-//        $plan = new Plan();
-//        $this->plan = $plan;
+        //        $plan = new Plan();
+        //        $this->plan = $plan;
         $service = new Service();
         $this->service = $service;
     }

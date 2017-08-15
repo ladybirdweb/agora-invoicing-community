@@ -67,6 +67,7 @@ class SocialMediaController extends Controller
             'class'    => 'required',
             'fa_class' => 'required',
         ]);
+
         try {
             $this->social->fill($request->input())->save();
 
@@ -95,6 +96,7 @@ class SocialMediaController extends Controller
             'class'    => 'required',
             'fa_class' => 'required',
         ]);
+
         try {
             $social = $this->social->findOrFail($id);
             $social->fill($request->input())->save();

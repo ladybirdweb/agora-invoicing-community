@@ -120,7 +120,7 @@ class DataItem
     protected $index; //!< index of element
     protected $skip;
 
-//!< flag , which set if element need to be skiped during rendering
+    //!< flag , which set if element need to be skiped during rendering
     /*! constructor
 
         @param data

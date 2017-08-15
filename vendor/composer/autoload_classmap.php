@@ -23,6 +23,7 @@ return array(
     'AddForeignKeysToTemplatesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
     'Adobe_Font_Metrics' => $vendorDir . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
     'App\\BaseModel' => $baseDir . '/app/BaseModel.php',
+    'App\\Box' => $baseDir . '/app/Box.php',
     'App\\Commands\\Command' => $baseDir . '/app/Jobs/Command.php',
     'App\\Console\\Commands\\Inspire' => $baseDir . '/app/Console/Commands/Inspire.php',
     'App\\Console\\Commands\\Install' => $baseDir . '/app/Console/Commands/Install.php',

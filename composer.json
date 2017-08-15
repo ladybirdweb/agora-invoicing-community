@@ -5,11 +5,11 @@
 	"license": "MIT",
 	"type": "project",
 	"require": {
-		"laravel/framework": "5.2.*",
+		"laravel/framework": "5.4.*",
 		"illuminate/html": "5.*",
                 "thomaswelton/laravel-gravatar": "~1.0",
 		"chumper/datatable": "dev-develop",
-                "laravelcollective/html": "5.2.*",
+                "laravelcollective/html": "5.4.*",
                "darryldecode/cart": "dev-master",
                "pingplusplus/pingpp-php": "dev-master",
                "pacely/mailchimp-apiv3": "dev-master",

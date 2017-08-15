@@ -82,6 +82,7 @@ class ProcessController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

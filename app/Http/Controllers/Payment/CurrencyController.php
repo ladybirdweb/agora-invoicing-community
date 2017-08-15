@@ -122,6 +122,7 @@ class CurrencyController extends Controller
             'name'           => 'required',
             'base_conversion'=> 'required',
         ]);
+
         try {
             $this->currency->fill($request->input())->save();
 
@@ -169,6 +170,7 @@ class CurrencyController extends Controller
             'name'           => 'required',
             'base_conversion'=> 'required',
         ]);
+
         try {
             $currency = $this->currency->where('id', $id)->first();
             $currency->fill($request->input())->save();

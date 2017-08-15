@@ -229,8 +229,8 @@ class TreeConnector extends Connector
         $this->request->set_limit(0, 0); //netralize default reaction on dyn. loading mode
     }
 
-   /*! renders self as  xml, starting part
-    */
+    /*! renders self as  xml, starting part
+     */
     public function xml_start()
     {
         $attributes = '';

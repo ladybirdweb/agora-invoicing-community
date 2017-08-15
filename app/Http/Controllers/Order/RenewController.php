@@ -64,6 +64,7 @@ class RenewController extends Controller
             return $sub;
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -124,6 +125,7 @@ class RenewController extends Controller
             return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '');
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -193,6 +195,7 @@ class RenewController extends Controller
             return $items;
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -230,6 +233,7 @@ class RenewController extends Controller
             return $cost;
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -245,6 +249,7 @@ class RenewController extends Controller
             return $user->currency;
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -280,6 +285,7 @@ class RenewController extends Controller
             'cost'           => 'required',
             'code'           => 'exists:promotions,code',
         ]);
+
         try {
             $planid = $request->input('plan');
             $payment_method = $request->input('payment_method');
@@ -341,6 +347,7 @@ class RenewController extends Controller
             'cost'           => 'required',
             'code'           => 'exists:promotions,code',
         ]);
+
         try {
             $planid = $request->input('plan');
             $payment_method = $request->input('payment_method');

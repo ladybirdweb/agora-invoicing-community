@@ -130,8 +130,8 @@ class ServiceProviderController extends Controller
                 ]);
 
             //dd($request);
-           \Event::fire(new \App\Events\SmsIntegration($request));
-           //\Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => [], 'order' => $order]));
+            \Event::fire(new \App\Events\SmsIntegration($request));
+            //\Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => [], 'order' => $order]));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

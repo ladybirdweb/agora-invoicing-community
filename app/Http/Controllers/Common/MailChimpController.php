@@ -92,6 +92,7 @@ class MailChimpController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
+
         try {
             $email = $request->input('email');
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
@@ -257,6 +258,7 @@ class MailChimpController extends Controller
             'api_key' => 'required',
             //'list_id'=>'required',
         ]);
+
         try {
             $this->mailchimp_set->fill($request->input())->save();
             $this->addListsToAgora();

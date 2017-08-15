@@ -273,7 +273,7 @@ class HomeController extends Controller
     {
         try {
             $order = new Order();
-//            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
+            //            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
 
             $this_order = $order->where('number', $faveo_decrypted_order)->first();
             if (!$this_order) {

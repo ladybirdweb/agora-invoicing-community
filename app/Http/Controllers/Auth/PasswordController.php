@@ -21,7 +21,7 @@ class PasswordController extends Controller
       |
      */
 
-use ResetsPasswords;
+    use ResetsPasswords;
 
     /**
      * Create a new password controller instance.

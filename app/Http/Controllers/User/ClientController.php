@@ -67,9 +67,9 @@ class ClientController extends Controller
         $industry = $request->input('industry');
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
-//$user = new User;
-// $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
-//dd($user);
+        //$user = new User;
+        // $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
+        //dd($user);
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
         return \Datatable::query($user)
@@ -156,7 +156,7 @@ class ClientController extends Controller
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
             $client = $this->user->where('id', $id)->first();
             $orders = $order->where('client', $id)->get();
-//dd($client);
+            //dd($client);
 
             return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders'));
         } catch (\Exception $ex) {
@@ -227,7 +227,7 @@ class ClientController extends Controller
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.no-record').'
                 </div>';
-//echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
@@ -243,14 +243,14 @@ class ClientController extends Controller
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.select-a-row').'
                 </div>';
-//echo \Lang::get('message.select-a-row');
+            //echo \Lang::get('message.select-a-row');
         }
     }
 
     public function getUsers(Request $request)
     {
         //dd($request->all());
-//$s = $request->input('mask');
+        //$s = $request->input('mask');
         $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
                 ->select('email AS text', 'id AS value')

@@ -73,8 +73,8 @@ if (isset($_GET['!nativeeditor_status']) && $_GET['!nativeeditor_status'] == 'in
     //updateitems order on the level where node was deleted
     $sql_uorders = 'UPDATE samples_tree SET item_order=item_order-1 WHERE item_parent_id='.$_GET['tr_pid'].' AND item_order>'.($_GET['tr_order'])." and GUID='".$_SESSION['id']."'";
 
-        //delete all nested nodes and current node
-        deleteBranch($_GET['tr_id']);
+    //delete all nested nodes and current node
+    deleteBranch($_GET['tr_id']);
     deleteSingleNode($_GET['tr_id']);
     $res = mysql_query($sql_uorders);
     //set values to use in response

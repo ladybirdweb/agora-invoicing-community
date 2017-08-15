@@ -390,6 +390,7 @@ class ComposerStaticInita78728cf2724979b73ef3507346831a2
         'AddForeignKeysToTemplatesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
         'Adobe_Font_Metrics' => __DIR__ . '/..' . '/phenx/php-font-lib/classes/Adobe_Font_Metrics.php',
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',
+        'App\\Box' => __DIR__ . '/../..' . '/app/Box.php',
         'App\\Commands\\Command' => __DIR__ . '/../..' . '/app/Jobs/Command.php',
         'App\\Console\\Commands\\Inspire' => __DIR__ . '/../..' . '/app/Console/Commands/Inspire.php',
         'App\\Console\\Commands\\Install' => __DIR__ . '/../..' . '/app/Console/Commands/Install.php',

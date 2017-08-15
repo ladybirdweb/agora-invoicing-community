@@ -149,16 +149,16 @@ class PromotionController extends Controller
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->lists('name', 'id')->toArray();
             $type = $this->type->lists('name', 'id')->toArray();
-//            if ($promotion->start != null) {
-//                $start = $promotion->start;
-//            } else {
-//                $start = null;
-//            }
-//            if ($promotion->expiry != null) {
-//                $expiry=$promotion->expiry;
-//            } else {
-//                $expiry = null;
-//            }
+            //            if ($promotion->start != null) {
+            //                $start = $promotion->start;
+            //            } else {
+            //                $start = null;
+            //            }
+            //            if ($promotion->expiry != null) {
+            //                $expiry=$promotion->expiry;
+            //            } else {
+            //                $expiry = null;
+            //            }
             $selectedProduct = $this->promoRelation->where('promotion_id', $id)->lists('product_id', 'product_id')->toArray();
             //dd($selectedProduct);
             return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
@@ -306,6 +306,7 @@ class PromotionController extends Controller
             return 'success';
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
@@ -421,6 +422,7 @@ class PromotionController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }

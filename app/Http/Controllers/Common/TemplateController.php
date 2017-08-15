@@ -164,6 +164,7 @@ class TemplateController extends Controller
             'data'=> 'required',
             'type'=> 'required',
         ]);
+
         try {
             //dd($request);
             $this->template->fill($request->input())->save();
@@ -199,6 +200,7 @@ class TemplateController extends Controller
             'data'=> 'required',
             'type'=> 'required',
         ]);
+
         try {
             //dd($request);
             $template = $this->template->where('id', $id)->first();
@@ -233,7 +235,7 @@ class TemplateController extends Controller
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.no-record').'
                 </div>';
-//echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
@@ -295,6 +297,7 @@ class TemplateController extends Controller
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
+
             throw new \Exception('mailing problem');
         }
     }
@@ -387,6 +390,7 @@ class TemplateController extends Controller
             return $price;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -397,14 +401,14 @@ class TemplateController extends Controller
             $product = $this->product->findOrFail($productid);
             //dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
-//            $price = $controller->cost($productid);
-////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
-////            if (!$price) {
-////                $price = $product->price()->where('currency', $currency)->first()->price;
-////            }
-//
+            //            $price = $controller->cost($productid);
+            ////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
+            ////            if (!$price) {
+            ////                $price = $product->price()->where('currency', $currency)->first()->price;
+            ////            }
+            //
             $currency = $controller->currency();
-//
+            //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
@@ -431,6 +435,7 @@ class TemplateController extends Controller
             return $tax_amount;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -452,6 +457,7 @@ class TemplateController extends Controller
             return $tax_amount;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -516,6 +522,7 @@ class TemplateController extends Controller
             return $result;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -530,6 +537,7 @@ class TemplateController extends Controller
             return $price;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

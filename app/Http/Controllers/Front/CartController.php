@@ -59,8 +59,9 @@ class CartController extends Controller
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
-//dd(\Session::get('currency'));
+            //dd(\Session::get('currency'));
         }
+
         try {
             $page_controller = new PageController();
 
@@ -127,7 +128,7 @@ class CartController extends Controller
             if ($cart_currency != $currency) {
                 return redirect('show/cart');
             }
-//dd(Cart::getContent());
+            //dd(Cart::getContent());
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
@@ -147,7 +148,7 @@ class CartController extends Controller
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-//dd($tax_attribute);
+            //dd($tax_attribute);
             $product = $this->product->findOrFail($productid);
 
             $location = \GeoIP::getLocation();
@@ -241,6 +242,7 @@ class CartController extends Controller
             return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('Can not check the tax');
         }
     }
@@ -310,7 +312,7 @@ class CartController extends Controller
                         ]);
                     }
                     $currency_attribute = $this->addCurrencyAttributes($id);
-//dd($currency_attribute);
+                    //dd($currency_attribute);
                     if ($compound == 1) {
                         return ['conditions' => [$taxCondition1, $taxCondition2], 'attributes' => ['tax' => [['name' => $name1, 'rate' => $rate1], ['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
                     } else {
@@ -320,6 +322,7 @@ class CartController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('Can not check the tax');
         }
     }
@@ -327,7 +330,7 @@ class CartController extends Controller
     public function CartRemove(Request $request)
     {
         $id = $request->input('id');
-//dd($id);
+        //dd($id);
         Cart::remove($id);
 
         return 'success';
@@ -339,7 +342,7 @@ class CartController extends Controller
         Cart::update($id, [
             'quantity' => -1, // so if the current product has a quantity of 4, it will subtract 1 and will result to 3
         ]);
-//dd(Cart::getContent());
+        //dd(Cart::getContent());
         return 'success';
     }
 
@@ -353,7 +356,7 @@ class CartController extends Controller
                 'value'    => $qty,
             ],
         ]);
-//dd(Cart::getContent());
+        //dd(Cart::getContent());
         return 'success';
     }
 
@@ -368,7 +371,7 @@ class CartController extends Controller
         $items = ['id' => 'addon'.$addon->id, 'name' => $addon->name, 'price' => $addon->selling_price, 'quantity' => 1];
         $items = array_merge($items, $taxConditions);
 
-//dd($items);
+        //dd($items);
 
         return $items;
     }
@@ -460,6 +463,7 @@ class CartController extends Controller
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('Problem while adding licence to cart');
         }
     }
@@ -480,7 +484,7 @@ class CartController extends Controller
         try {
             $currency = $this->currency();
             $product = $this->product->where('id', $id)->first();
-//dd($product);
+            //dd($product);
             if ($product) {
                 $productCurrency = $this->currency();
                 $currency = $this->currency->where('code', $productCurrency)->get()->toArray();
@@ -497,14 +501,14 @@ class CartController extends Controller
     {
         try {
             $code = \Input::get('coupon');
-//dd($code);
+            //dd($code);
             $cart = Cart::getContent();
             foreach ($cart as $item) {
                 $id = $item->id;
             }
             $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
             $result = $promo_controller->checkCode($code, $id);
-//dd($result);
+            //dd($result);
             if ($result == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             }
@@ -525,6 +529,7 @@ class CartController extends Controller
             return $taxe_relation;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('error in get tax priority');
         }
     }
@@ -749,6 +754,7 @@ class CartController extends Controller
         $parents_string = [];
         $parent = [];
         $productid = [];
+
         try {
             $parents = $this->product
                     ->whereNotNull('parent')
@@ -790,6 +796,7 @@ class CartController extends Controller
             return $parent_products;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -807,6 +814,7 @@ class CartController extends Controller
             return $products;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -876,10 +884,10 @@ class CartController extends Controller
     {
         try {
             $sales = 0;
-//            $subscription = $this->allowSubscription($productid);
-//            if ($subscription == false) {
-                //$cost = '';
-                $currency = $this->currency($userid);
+            //            $subscription = $this->allowSubscription($productid);
+            //            if ($subscription == false) {
+            //$cost = '';
+            $currency = $this->currency($userid);
 
             $product = $this->product->find($productid);
 

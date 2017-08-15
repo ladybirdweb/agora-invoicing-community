@@ -143,7 +143,7 @@ class ClientController extends Controller
                         ->searchColumns('id', 'created_at', 'ends_at', 'product')
                         ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make();
-//        } catch (Exception $ex) {
+        //        } catch (Exception $ex) {
 //            echo $ex->getMessage();
 //        }
     }
@@ -251,24 +251,25 @@ class ClientController extends Controller
     {
         try {
             $order = $this->order->findOrFail($id);
-    //dd($order);
-    if ($order) {
-        $invoice = $order->invoice()->first();
-        $items = $order->invoice()->first()->invoiceItem()->get();
-        $subscription = '';
-        $plan = '';
-        if ($order->subscription) {
-            $subscription = $order->subscription;
+            //dd($order);
+            if ($order) {
+                $invoice = $order->invoice()->first();
+                $items = $order->invoice()->first()->invoiceItem()->get();
+                $subscription = '';
+                $plan = '';
+                if ($order->subscription) {
+                    $subscription = $order->subscription;
 
-            $plan = $subscription->plan()->first();
-        }
-        $product = $order->product()->first();
-        $price = $product->price()->first();
-            //dd($price);
-            $user = \Auth::user();
+                    $plan = $subscription->plan()->first();
+                }
+                $product = $order->product()->first();
+                $price = $product->price()->first();
+                //dd($price);
+                $user = \Auth::user();
 
-        return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
-    }
+                return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
+            }
+
             throw new Exception('Sorry! We can not find your order');
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());

@@ -1,4 +1,5 @@
 <?php
+
 class AlphaTest extends TestCase
 {
     public function testDisplaysAlpha()

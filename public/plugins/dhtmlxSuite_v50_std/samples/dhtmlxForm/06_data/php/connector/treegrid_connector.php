@@ -135,9 +135,9 @@ class TreeGridConnector extends GridConnector
         while ($data = $this->sql->get_next($res)) {
             $data = new $this->names['item_class']($data, $this->config, $index);
             $this->event->trigger('beforeRender', $data);
-        //there is no info about child elements,
-        //if we are using dyn. loading - assume that it has,
-        //in normal mode juse exec sub-render routine
+            //there is no info about child elements,
+            //if we are using dyn. loading - assume that it has,
+            //in normal mode juse exec sub-render routine
             if ($data->has_kids() === -1 && $this->dload) {
                 $data->set_kids(true);
             }

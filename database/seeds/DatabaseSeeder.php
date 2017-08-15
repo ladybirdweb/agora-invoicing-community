@@ -81,7 +81,7 @@ class PlanTableSeeder extends Seeder
             5 => ['name' => 'one year', 'days' => 365],
             6 => ['name' => 'three year', 'days' => 1095],
             ];
-            //var_dump($subcriptions);
+        //var_dump($subcriptions);
         for ($i = 0; $i < count($subcriptions); $i++) {
             Plan::create(['id' => $i + 1, 'name' => $subcriptions[$i]['name'], 'days' => $subcriptions[$i]['days']]);
         }
@@ -99,7 +99,7 @@ class ProductTypesTableSeeder extends Seeder
             1 => ['name' => 'download'],
             0 => ['name' => 'SaaS'],
             ];
-            //var_dump($subcriptions);
+        //var_dump($subcriptions);
         for ($i = 0; $i < count($types); $i++) {
             Type::create(['id' => $i + 1, 'name' => $types[$i]['name']]);
         }
@@ -146,7 +146,7 @@ class ProductTableSeeder extends Seeder
         \DB::table('products')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1]);
-         //Product::create(['id'=>2,'name'=>'none1','type'=>1,'group' =>1]);
+        //Product::create(['id'=>2,'name'=>'none1','type'=>1,'group' =>1]);
     }
 }
 

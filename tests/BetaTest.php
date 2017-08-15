@@ -1,4 +1,5 @@
 <?php
+
 class BetaTest extends TestCase
 {
     public function testDisplaysBeta()

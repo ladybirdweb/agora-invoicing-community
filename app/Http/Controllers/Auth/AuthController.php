@@ -178,7 +178,7 @@ class AuthController extends Controller
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-           //dd($method);
+            //dd($method);
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -339,6 +339,7 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -361,6 +362,7 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -387,6 +389,7 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -418,6 +421,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'otp' => 'required|numeric',
         ]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -441,10 +445,11 @@ class AuthController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
-            $result = [$ex->getMessage()]; 
-            if($ex->getMessage() == 'otp_not_verified'){
+            $result = [$ex->getMessage()];
+            if ($ex->getMessage() == 'otp_not_verified') {
                 $result = ['OTP Not Verified!'];
             }
+
             return response()->json(compact('result'), 500);
         }
     }
@@ -454,6 +459,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
+
         try {
             $email = $request->input('email');
             $userid = $request->input('id');

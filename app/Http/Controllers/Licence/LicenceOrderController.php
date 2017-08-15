@@ -51,7 +51,7 @@ class LicenceOrderController extends Controller
                         ->make();
     }
 
-//    public function create() {
+    //    public function create() {
 //        try {
 //            $productController = new \App\Http\Controllers\Product\ProductController();
 //            $url = $productController->GetMyUrl();

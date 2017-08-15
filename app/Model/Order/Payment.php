@@ -19,7 +19,7 @@ class Payment extends BaseModel
         return $this->belongsTo('App\User');
     }
 
-//    public function setCreatedAtAttribute($value) {
+    //    public function setCreatedAtAttribute($value) {
 //        dd($value);
 //    }
 }

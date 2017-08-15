@@ -8,7 +8,7 @@ class Promotion extends BaseModel
 {
     protected $table = 'promotions';
     protected $fillable = ['code', 'type', 'uses', 'value', 'start', 'expiry'];
-   // protected $dates = ['start','expiry'];
+    // protected $dates = ['start','expiry'];
 
     public function relation()
     {

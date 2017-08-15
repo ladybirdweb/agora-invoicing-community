@@ -8,9 +8,9 @@ abstract class ServiceProvider extends \Illuminate\Support\ServiceProvider
     {
         if ($module = $this->getModule(func_get_args())) {
             //$this->package('app/' . $module, $module, app_path() . '/modules/' . $module);
-//            $this->publishes([
-//                'app/' . $module => app_path() . '/Plugins/' . $module . '/config',
-//            ]);
+            //            $this->publishes([
+            //                'app/' . $module => app_path() . '/Plugins/' . $module . '/config',
+            //            ]);
             $this->publishes([
                 'app/plugins/'.$module.'/Config/config.php' => config_path($module.'/config.php'),
             ]);
@@ -22,9 +22,9 @@ abstract class ServiceProvider extends \Illuminate\Support\ServiceProvider
         if ($module = $this->getModule(func_get_args())) {
             //$this->app['config']->package('app/' . $module, app_path() . '/modules/' . $module . '/config');
 
-//            $this->publishes([
-//                'app/' . $module => app_path() . '/Plugins/' . $module . '/config',
-//            ]);
+            //            $this->publishes([
+            //                'app/' . $module => app_path() . '/Plugins/' . $module . '/config',
+            //            ]);
 
             $this->publishes([
                 'app/plugins/'.$module.'/Config/config.php' => config_path($module.'/config.php'),

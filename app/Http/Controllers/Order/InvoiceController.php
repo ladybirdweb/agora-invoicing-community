@@ -39,7 +39,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-//        $this->middleware('admin');
+        //        $this->middleware('admin');
 
         $invoice = new Invoice();
         $this->invoice = $invoice;
@@ -195,6 +195,7 @@ class InvoiceController extends Controller
                 ], [
             'plan.required_if' => 'Subscription field is required',
         ]);
+
         try {
             if ($user_id == '') {
                 $user_id = \Input::get('user');
@@ -249,9 +250,9 @@ class InvoiceController extends Controller
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
-//            if ($grand_total > 0) {
-//                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
-//            }
+            //            if ($grand_total > 0) {
+            //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
+            //            }
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan);
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
@@ -322,6 +323,7 @@ class InvoiceController extends Controller
             return $invoice;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('Can not Generate Invoice');
         }
     }
@@ -350,7 +352,7 @@ class InvoiceController extends Controller
                 $tax_percentage .= $tax['rate'].',';
             }
 
-//            dd($tax_name);
+            //            dd($tax_name);
 
             $invoiceItem = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
@@ -367,6 +369,7 @@ class InvoiceController extends Controller
             return $invoiceItem;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception('Can not create Invoice Items');
         }
     }
@@ -491,6 +494,7 @@ class InvoiceController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
@@ -589,6 +593,7 @@ class InvoiceController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
@@ -626,6 +631,7 @@ class InvoiceController extends Controller
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -666,7 +672,7 @@ class InvoiceController extends Controller
             //dd($total);
             $rates = explode(',', $rate);
             //dd($rates);
-//            $total = '';
+            //            $total = '';
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->tax_enable == 1 && $rule->inclusive == 0) {
@@ -678,6 +684,7 @@ class InvoiceController extends Controller
             return $total;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -856,6 +863,7 @@ class InvoiceController extends Controller
             'amount'         => 'required|numeric',
             'payment_date'   => 'required|date_format:Y-m-d',
         ]);
+
         try {
             $payment_method = $request->input('payment_method');
             $payment_status = 'success';

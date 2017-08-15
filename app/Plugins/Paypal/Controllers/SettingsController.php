@@ -61,6 +61,7 @@ class SettingsController extends Controller
             'notify_url'  => 'url',
             'currencies'  => 'required',
         ]);
+
         try {
             $ccavanue1 = new Paypal();
             $ccavanue = $ccavanue1->where('id', '1')->first();

@@ -17,7 +17,7 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
     use Authenticatable,
         CanResetPassword;
 
-// use Billable;
+    // use Billable;
     // use CustomerBillableTrait;
 
     /**

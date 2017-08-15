@@ -178,6 +178,7 @@ class AuthController extends Controller
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
+           //dd($method);
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -186,7 +187,6 @@ class AuthController extends Controller
                 $activate = $activate_model->create(['email' => $email, 'token' => $token]);
                 $token = $activate->token;
             }
-
             $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
@@ -206,6 +206,7 @@ class AuthController extends Controller
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
+            //dd($type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
@@ -440,8 +441,10 @@ class AuthController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-
+            $result = [$ex->getMessage()]; 
+            if($ex->getMessage() == 'otp_not_verified'){
+                $result = ['OTP Not Verified!'];
+            }
             return response()->json(compact('result'), 500);
         }
     }
@@ -457,11 +460,13 @@ class AuthController extends Controller
             $user = User::find($userid);
             $check = $this->checkVerify($user);
             $method = 'POST';
+            //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
         } catch (\Exception $ex) {
+            //dd($ex);
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);

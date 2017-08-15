@@ -13,6 +13,13 @@
 
 Route::get('/', 'HomeController@index');
 
+Route::get('/alpha', function () {
+    return view('alpha');
+});
+
+Route::get('/beta', function () {
+    return view('beta');
+});
 /*
  * Front end
  */

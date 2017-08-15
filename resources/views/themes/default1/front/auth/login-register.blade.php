@@ -463,7 +463,9 @@ border-top: none;
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6 pull-right">
-                                                        <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
+                                                        <!-- <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser(this)"> -->
+                                                        <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
+                                                        </button>
                                                     </div>
                                                 </div>
                                                 </form>
@@ -487,7 +489,7 @@ border-top: none;
                     <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Email and Mobile Verification</h4>
-                            <p>You will be sent verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP here.</p>
+                            <p>You will be send verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step.</p>
                             <form name="verifyForm" >
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
@@ -514,7 +516,10 @@ border-top: none;
                                 </div>
                                 <div class="row">
                                     <div class="col-md-6" style="float: right;">
-                                        <input type="button" value="Verify" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                        <!-- <input type="button" value="Verify" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="sendOtp" id="sendOtp" onclick="sendOTP()"> -->
+                                        <button type="button" class="btn btn-primary mb-xl next-step" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                            Send
+                                        </button>
                                     </div>
                                 </div>
                             </form>
@@ -567,7 +572,7 @@ border-top: none;
                                 <div class="col-md-6">
                                     <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
                                     <!-- <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" > -->
-                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'>
+                                    <!-- <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'> -->
 
                                 </div>
                             </div>
@@ -588,6 +593,7 @@ border-top: none;
 <script type="text/javascript">
 
     function registerUser() {
+        $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
         $.ajax({
           url: '{{url('auth/register')}}',
           type: 'post',
@@ -626,6 +632,7 @@ border-top: none;
                 verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
                 verifyForm.elements['verify_number'].value = $('#mobilenum').val();
                 verifyForm.elements['email_password'].value = $('#password').val();
+                $("#register").html("Register");
                 /*setTimeout(function(){ 
                     $('#alertMessage1').hide(); 
                 }, 3000);*/
@@ -634,18 +641,24 @@ border-top: none;
           error: function (ex) {
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+            $("#register").html("Register");
+            $('html, body').animate({scrollTop:0}, 500);
             for (var key in myJSON)
             {
                 html += '<li>' + myJSON[key][0] + '</li>'
             }
             html += '</ul></div>';
+            $('#error').show();
             document.getElementById('error').innerHTML = html;
+            setTimeout(function(){ 
+                $('#error').hide(); 
+            }, 5000);
           }
         });
     }
 
     function sendOTP() {
-        
+        $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
@@ -667,25 +680,29 @@ border-top: none;
                 nextTab($active);
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
+                $("#sendOtp").html("Send");
           },
           error: function (ex) {
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+            $("#sendOtp").html("Send");
             for (var key in myJSON)
             {
                 html += '<li>' + myJSON[key][0] + '</li>'
             }
             html += '</ul></div>';
             $('#alertMessage1').hide();
+            $('#error1').show();
             document.getElementById('error1').innerHTML = html;
-            /*setTimeout(function(){ 
+            setTimeout(function(){ 
                 $('#error1').hide(); 
-            }, 5000);*/
+            }, 5000);
           }
         });
     }
 
     function verifyBySendOtp() {
+        $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
             "mobile":   $('#verify_number').val(),
             "code"  :   $('#verify_country_code').val(),
@@ -701,10 +718,12 @@ border-top: none;
                 $('#alertMessage2').show();
                 var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage2').html(result);
+                $("#verifyOtp").html("Verify OTP");
             },
             error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);
                 var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                $("#verifyOtp").html("Verify OTP");
                 for (var key in myJSON)
                 {
                     html += '<li>' + myJSON[key][0] + '</li>'
@@ -713,6 +732,9 @@ border-top: none;
                 $('#alertMessage2').hide(); 
                 $('#error2').show();
                 document.getElementById('error2').innerHTML = html;
+                setTimeout(function(){ 
+                    $('#error2').hide(); 
+                }, 5000);
             }
         });
     }
@@ -911,9 +933,23 @@ fbq('track', 'PageView');
 
     });*/
     $(".prev-step").click(function (e) {
-        
-          $('.nav-tabs li a[href="#step1"]').tab('show');
-          $('.wizard-inner').hide();
+
+        registerForm.elements['first_name'].value = '';
+        registerForm.elements['last_name'].value = '';
+        registerForm.elements['email'].value = '';
+        registerForm.elements['company'].value = '';
+        registerForm.elements['bussiness'].value = '';
+        registerForm.elements['company_type'].value = '';
+        registerForm.elements['company_size'].value = '';
+        registerForm.elements['mobile'].value = '';
+        registerForm.elements['address'].value = '';
+        registerForm.elements['user_name'].value = '';
+        registerForm.elements['password'].value = '';
+        registerForm.elements['password_confirmation'].value = '';
+        registerForm.elements['terms'].checked = false;
+
+        $('.nav-tabs li a[href="#step1"]').tab('show');
+        $('.wizard-inner').hide();
 
     });
     $(".prev").click(function (e) {

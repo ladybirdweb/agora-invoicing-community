@@ -102,7 +102,9 @@
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="email" value="{{$user -> email}}" id="u_email"></div>
-                        <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" ng-click="sendEmail()">Verify Email</button></div>
+                        <div class="col-sm-4" style="margin: 5px">
+                            <button class="btn btn-info" id="sendEmail" ng-click="sendEmail()">Send Email</button>
+                        </div>
                     </div>
                     @endif
                     @if($user->mobile_verified!=1)
@@ -112,12 +114,12 @@
                         <div class="row" ng-hide="showOTP" style="margin-bottom: 10px">
                             <div class="col-sm-1" style="margin: 5px"><input type="text" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code"></div>
                             <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="mobile" value="{{$user -> mobile}}" id="u_mobile"></div>
-                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" ng-click="sendOTP()">Send OTP</button></div>
+                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="sendOTP" ng-click="sendOTP()">Send OTP</button></div>
                         </div>
                         <div class="row" ng-show="showOTP">
                             <div class="col-sm-2" style="margin: 5px"><label>Enter OTP</label></div>
                             <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control"   ng-model="otp"></div>
-                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" ng-click="submitOTP(otp)">Verify OTP</button><a  ng-click="resendOTP()" style="margin-left: 5px;line-height: 2.5;cursor: pointer">Resend OTP</a></div>
+                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button><a  ng-click="resendOTP()" style="margin-left: 5px;line-height: 2.5;cursor: pointer">Resend OTP</a></div>
                         </div>
                         @endif
                         @endif
@@ -204,6 +206,7 @@
                                 app.controller('smsCtrl', function ($scope, $http) {
 
                                     $scope.sendOTP = function () {
+                                        $("#sendOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                         $scope.newObj = {};
                                         $scope.newObj['id'] = $('#u_id').val();
                                         $scope.newObj['code'] = $('#u_code').val();
@@ -217,12 +220,14 @@
                                             if (data.type == "success") {
                                                 $scope.showOTP = true;
                                                 $scope.msg2 = true;
+                                                $("#sendOTP").html("Send OTP");
                                                 $('#mobile1').html(data.message);
                                                 $('#mobile1').css('color', 'green');
                                             }
                                         }).error(function (data) {
                                             $scope.msg2 = true;
                                             var res = "";
+                                            $("#sendOTP").html("Send OTP");
                                             $('#mobile1').css('color', 'red');
                                             $.each(data, function (idx, topic) {
                                                 res += "<li style='list-style-type:none'>" + topic + "</li>";
@@ -234,6 +239,7 @@
                                         $scope.showOTP = false;
                                     }
                                     $scope.submitOTP = function (x) {
+                                        $("#verifyOTP").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                         $scope.newObj['otp'] = x;
                                         $http({
                                             url: '{{url("otp/verify")}}',
@@ -242,12 +248,14 @@
                                         }).success(function (data) {
                                             $scope.proceedo=data.proceed;
                                             $scope.msg2 = true;
+                                            $("#verifyOTP").html("Verify OTP");
                                             $('#mobile1').html(data.message);
                                             $('#mobile1').css('color', 'green');
                                     
                                         }).error(function (data,status) {
                                             $scope.msg2 = true;
                                             var res = "";
+                                            $("#verifyOTP").html("Verify OTP");
                                             $('#mobile1').css('color', 'red');
                                             $.each(data, function (idx, topic) {
                                                 res += "<li style='list-style-type:none'>" + topic + "</li>";
@@ -257,6 +265,7 @@
                                         })
                                     }
                                     $scope.sendEmail = function () {
+                                        $("#sendEmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                         $scope.newObj1 = {};
                                         $scope.newObj1['id'] = $('#u_id').val();
                                         $scope.newObj1['email'] = $('#u_email').val();
@@ -269,8 +278,9 @@
                                             $scope.msg1 = true;
                                             $('#email1').html(data.message);
                                             $('#email1').css('color', 'green');
+                                            $("#sendEmail").html("Send Email");
                                         }).error(function (data) {
-                                            
+                                            $("#sendEmail").html("Send Email");
                                             $scope.msg1 = true;
                                             var res = "";
                                             $('#email1').css('color', 'red');

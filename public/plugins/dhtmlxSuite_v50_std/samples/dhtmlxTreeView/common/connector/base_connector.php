@@ -402,10 +402,10 @@ class Connector
         }
 
         $this->names = [
-            'db_class'    => $type,
-            'item_class'  => $item_type,
-            'data_class'  => $data_type,
-            'render_class'=> $render_type,
+            'db_class'     => $type,
+            'item_class'   => $item_type,
+            'data_class'   => $data_type,
+            'render_class' => $render_type,
         ];
         $this->attributes = [];
         $this->filters = [];
@@ -884,7 +884,7 @@ class Connector
                 $attributes .= " total_count='".$this->sql->get_size($this->request)."'";
             }
         }
-        foreach ($this->attributes as $k=>$v) {
+        foreach ($this->attributes as $k => $v) {
             $attributes .= ' '.$k."='".$v."'";
         }
 
@@ -905,7 +905,7 @@ class Connector
 
     protected function fill_collections($list = '')
     {
-        foreach ($this->options as $k=>$v) {
+        foreach ($this->options as $k => $v) {
             $name = $k;
             $this->extra_output .= "<coll_options for='{$name}'>";
             if (!is_string($this->options[$name])) {
@@ -1037,7 +1037,7 @@ class Connector
 
     public function mix($name, $value, $filter = false)
     {
-        $this->mix[] = ['name'=>$name, 'value'=>$value, 'filter'=>$filter];
+        $this->mix[] = ['name' => $name, 'value' => $value, 'filter' => $filter];
     }
 }
 

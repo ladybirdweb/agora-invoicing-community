@@ -234,7 +234,7 @@ class TreeConnector extends Connector
     public function xml_start()
     {
         $attributes = '';
-        foreach ($this->attributes as $k=>$v) {
+        foreach ($this->attributes as $k => $v) {
             $attributes .= ' '.$k."='".$v."'";
         }
 

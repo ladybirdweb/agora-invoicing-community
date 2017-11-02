@@ -222,7 +222,7 @@ class LogMaster
     {
         if (is_array($data)) {
             $str = [''];
-            foreach ($data as $k=>$v) {
+            foreach ($data as $k => $v) {
                 array_push($str, $pref.$k.' => '.self::log_details($v, $pref."\t"));
             }
 

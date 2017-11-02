@@ -69,10 +69,10 @@ class WidgetController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'   => 'required',
-            'publish'=> 'required',
+            'name'    => 'required',
+            'publish' => 'required',
 
-            'content'=> 'required',
+            'content' => 'required',
         ]);
 
         try {
@@ -87,10 +87,10 @@ class WidgetController extends Controller
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'name'   => 'required',
-            'publish'=> 'required',
+            'name'    => 'required',
+            'publish' => 'required',
 
-            'content'=> 'required',
+            'content' => 'required',
         ]);
 
         try {

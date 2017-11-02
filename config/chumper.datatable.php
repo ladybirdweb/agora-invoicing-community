@@ -72,11 +72,11 @@ return [
           |
          */
         'callbacks' => [
-'fnDrawCallback'=> 'function( oSettings ) {
+'fnDrawCallback' => 'function( oSettings ) {
                     $(".box-body").css({"opacity": "1"});
                     $("#blur-bg").css({"opacity": "1", "z-index": "99999"});
                 }',
-                'fnPreDrawCallback'=> 'function(oSettings, json) {
+                'fnPreDrawCallback' => 'function(oSettings, json) {
                     $(".box-body").css({"opacity":"0.3"});
                 }',
 ],

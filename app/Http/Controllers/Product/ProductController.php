@@ -468,7 +468,7 @@ class ProductController extends Controller
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $relese = $github_controller->listRepositories($owner, $repository);
 
-                    return ['release'=>$relese, 'type'=>'github'];
+                    return ['release' => $relese, 'type' => 'github'];
                 } elseif ($file) {
                     $relese = 'dist/product/images/'.$file;
 

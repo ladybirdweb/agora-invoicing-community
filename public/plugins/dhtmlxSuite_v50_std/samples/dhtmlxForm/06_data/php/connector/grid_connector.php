@@ -102,7 +102,7 @@ class GridDataItem extends DataItem
         }
 
         $str = "<row id='".$this->get_id()."'";
-        foreach ($this->row_attrs as $k=>$v) {
+        foreach ($this->row_attrs as $k => $v) {
             $str .= ' '.$k."='".$v."'";
         }
         $str .= '>';

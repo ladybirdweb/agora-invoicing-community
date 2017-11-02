@@ -431,7 +431,7 @@ class OrderController extends Controller
                     $ends_at = '';
                 }
                 $user_id = $this->order->find($orderid)->client;
-                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version'=>$version]);
+                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version]);
             }
         } catch (\Exception $ex) {
             //dd($ex);

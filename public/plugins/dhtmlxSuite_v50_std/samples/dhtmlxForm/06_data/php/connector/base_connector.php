@@ -281,9 +281,9 @@ class Connector
         }
 
         $this->names = [
-            'db_class'  => $type,
-            'item_class'=> $item_type,
-            'data_class'=> $data_type,
+            'db_class'   => $type,
+            'item_class' => $item_type,
+            'data_class' => $data_type,
         ];
 
         $this->config = new DataConfig();

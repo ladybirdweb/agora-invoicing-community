@@ -13,7 +13,7 @@ class CommonDataProcessor extends DataProcessor
             $data = [];
             if (isset($_POST['id'])) {
                 $dataset = [];
-                foreach ($_POST as $key=>$value) {
+                foreach ($_POST as $key => $value) {
                     $dataset[$key] = ConnectorSecurity::filter($value);
                 }
 
@@ -187,12 +187,12 @@ class DataConnector extends Connector
     protected function xml_start()
     {
         $start = '<data';
-        foreach ($this->attributes as $k=>$v) {
+        foreach ($this->attributes as $k => $v) {
             $start .= ' '.$k."='".$v."'";
         }
         $start .= '>';
 
-        foreach ($this->sections as $k=>$v) {
+        foreach ($this->sections as $k => $v) {
             $start .= '<'.$k.'>'.$v.'</'.$k.">\n";
         }
 
@@ -244,7 +244,7 @@ class JSONDataConnector extends DataConnector
     protected function fill_collections($list = '')
     {
         $options = [];
-        foreach ($this->options as $k=>$v) {
+        foreach ($this->options as $k => $v) {
             $name = $k;
             $option = "\"{$name}\":[";
             if (!is_string($this->options[$name])) {
@@ -279,7 +279,7 @@ class JSONDataConnector extends DataConnector
         $is_sections = count($this->sections) && $this->is_first_call();
         if ($this->dload || $is_sections || count($this->attributes) || !empty($this->extra_data)) {
             $attributes = '';
-            foreach ($this->attributes as $k=>$v) {
+            foreach ($this->attributes as $k => $v) {
                 $attributes .= ', "'.$k.'":"'.$v.'"';
             }
 
@@ -291,7 +291,7 @@ class JSONDataConnector extends DataConnector
             $sections = '';
             if ($is_sections) {
                 //extra sections
-                foreach ($this->sections as $k=>$v) {
+                foreach ($this->sections as $k => $v) {
                     $sections .= ', "'.$k.'":'.$v;
                 }
             }
@@ -501,7 +501,7 @@ class TreeDataConnector extends DataConnector
             $attributes = " parent='".$this->request->get_relation()."' ";
         }
 
-        foreach ($this->attributes as $k=>$v) {
+        foreach ($this->attributes as $k => $v) {
             $attributes .= ' '.$k."='".$v."'";
         }
 
@@ -544,7 +544,7 @@ class JSONTreeDataConnector extends TreeDataConnector
             $data['collections'] = $this->options;
         }
 
-        foreach ($this->attributes as $k=>$v) {
+        foreach ($this->attributes as $k => $v) {
             $data[$k] = $v;
         }
 
@@ -574,7 +574,7 @@ class JSONTreeDataConnector extends TreeDataConnector
         if (is_array($options)) {
             $str = [];
             foreach ($options as $k => $v) {
-                $str[] = ['id'=>$this->xmlentities($k), 'value'=>$this->xmlentities($v)];
+                $str[] = ['id' => $this->xmlentities($k), 'value' => $this->xmlentities($v)];
             } //'{"id":"'.$this->xmlentities($k).'", "value":"'.$this->xmlentities($v).'"}';
             $options = $str;
         }
@@ -589,7 +589,7 @@ class JSONTreeDataConnector extends TreeDataConnector
     protected function fill_collections($list = '')
     {
         $options = [];
-        foreach ($this->options as $k=>$v) {
+        foreach ($this->options as $k => $v) {
             $name = $k;
             if (!is_array($this->options[$name])) {
                 $option = $this->options[$name]->render();

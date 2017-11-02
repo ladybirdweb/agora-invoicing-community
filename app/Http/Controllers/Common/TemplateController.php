@@ -160,9 +160,9 @@ class TemplateController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'name'=> 'required',
-            'data'=> 'required',
-            'type'=> 'required',
+            'name' => 'required',
+            'data' => 'required',
+            'type' => 'required',
         ]);
 
         try {
@@ -196,9 +196,9 @@ class TemplateController extends Controller
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'name'=> 'required',
-            'data'=> 'required',
-            'type'=> 'required',
+            'name' => 'required',
+            'data' => 'required',
+            'type' => 'required',
         ]);
 
         try {

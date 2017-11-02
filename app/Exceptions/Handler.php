@@ -124,7 +124,7 @@ class Handler extends ExceptionHandler
                 return $this->render404($request, $e);
             case $e instanceof \Illuminate\Session\TokenMismatchException:
                 if ($request->ajax()) {
-                    return response()->json(['error'=>'Session timeout, refresh the page'], 500);
+                    return response()->json(['error' => 'Session timeout, refresh the page'], 500);
                 }
 
                 return redirect()->back()->with('fails', 'Session time out');

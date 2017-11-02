@@ -27,7 +27,7 @@ $stat = [
     'stat_depr' => $fname.'_deprecated.js',
 ];
 
-foreach ($stat as $st=>$output) {
+foreach ($stat as $st => $output) {
     $content = '';
     // list of files
     $files = array_values(array_map('trim', array_diff(explode("\n", file_get_contents('conf/'.$st)), [''])));

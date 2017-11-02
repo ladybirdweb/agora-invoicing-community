@@ -281,7 +281,7 @@ class GithubController extends Controller
         try {
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
             if ($repo == 'faveo-helpdesk') {
-                return $array = ['Location'=>$url];
+                return $array = ['Location' => $url];
             }
             $link = $this->github_api->getCurl1($url);
 

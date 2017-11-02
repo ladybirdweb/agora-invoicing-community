@@ -15,7 +15,7 @@ class OracleDBDataWrapper extends DBDataWrapper
         if ($stm === false) {
             throw new Exception("Oracle - sql parsing failed\n".oci_error($this->connection));
         }
-        $out = [0=>null];
+        $out = [0 => null];
         if ($this->insert_operation) {
             oci_bind_by_name($stm, ':outID', $out[0], 999);
             $this->insert_operation = false;

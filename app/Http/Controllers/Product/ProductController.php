@@ -193,6 +193,7 @@ class ProductController extends Controller
                     ->withInput()
                     ->with('currency');
         }
+
         try {
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
@@ -322,6 +323,7 @@ class ProductController extends Controller
             return redirect()->back()->with('errors', $v->errors());
             //dd();
         }
+
         try {
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
@@ -474,37 +476,40 @@ class ProductController extends Controller
             }
         } catch (\Exception $e) {
             dd($e->getMessage());
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function adminDownload($id,$api=false) {
+    public function adminDownload($id, $api = false)
+    {
         try {
             $release = $this->downloadProduct($id);
-            if(is_array($release) && key_exists('type', $release)){
-                header("Location: ".$release['release']);
+            if (is_array($release) && array_key_exists('type', $release)) {
+                header('Location: '.$release['release']);
                 exit;
-            }else{
-               header("Content-type: Zip"); 
-               header('Content-Description: File Transfer');
-               header("Content-Disposition: attachment; filename=Faveo.zip");
-               //header("Content-type: application/zip"); 
-               header('Content-Length: ' . filesize($release));
-               //ob_clean();
-               flush();
-               readfile("$release");
-               exit;
-    
+            } else {
+                header('Content-type: Zip');
+                header('Content-Description: File Transfer');
+                header('Content-Disposition: attachment; filename=Faveo.zip');
+                //header("Content-type: application/zip");
+                header('Content-Length: '.filesize($release));
+                //ob_clean();
+                flush();
+                readfile("$release");
+                exit;
             }
         } catch (\Exception $e) {
-            if($api){
+            if ($api) {
                 return response()->json(['error'=>$e->getMessage()]);
             }
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function userDownload($userid, $invoice_number) {
+    public function userDownload($userid, $invoice_number)
+    {
         try {
             if (\Auth::user()->role != 'admin') {
                 if (\Auth::user()->id != $userid) {
@@ -515,26 +520,27 @@ class ProductController extends Controller
             $user = $user->findOrFail($userid);
             $invoice = new \App\Model\Order\Invoice();
             $invoice = $invoice->where('number', $invoice_number)->first();
-            
+
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    $order = $invoice->order()->orderBy('id','desc')->select('product')->first();
+                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
                     $release = $this->downloadProduct($product_id);
-               if(is_array($release) && key_exists('type', $release)){
-                  $release = $release['release'];
-                    return view('themes.default1.front.download', compact('release', 'form'));
-               }else{
-                  header("Content-type: Zip"); 
-                  header('Content-Description: File Transfer');
-                  header("Content-Disposition: attachment; filename=Faveo.zip");
-               //header("Content-type: application/zip"); 
-                  header('Content-Length: ' . filesize($release));
-                  //ob_clean();
-                  flush();
-                  readfile("$release");
-                  exit;
-               }
+                    if (is_array($release) && array_key_exists('type', $release)) {
+                        $release = $release['release'];
+
+                        return view('themes.default1.front.download', compact('release', 'form'));
+                    } else {
+                        header('Content-type: Zip');
+                        header('Content-Description: File Transfer');
+                        header('Content-Disposition: attachment; filename=Faveo.zip');
+                        //header("Content-type: application/zip");
+                        header('Content-Length: '.filesize($release));
+                        //ob_clean();
+                        flush();
+                        readfile("$release");
+                        exit;
+                    }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
                 }

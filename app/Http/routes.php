@@ -13,7 +13,6 @@
 //Route::group(['middleware' => ['web']], function () {
  Route::get('/', 'HomeController@index');
 
-
 /*
  * Front end
  */
@@ -370,7 +369,7 @@ Route::get('otp/send', 'Auth\AuthController@requestOtp');
 Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');
 Route::get('otp/verify', 'Auth\AuthController@postOtp');
 Route::get('email/verify', 'Auth\AuthController@verifyEmail');
-Route::get('resend_otp','Auth\AuthController@retryOTP');
+Route::get('resend_otp', 'Auth\AuthController@retryOTP');
 Route::get('verify', function () {
     $user = \Session::get('user');
     if ($user) {
@@ -380,7 +379,7 @@ Route::get('verify', function () {
     return redirect('auth/login');
 });
 
-Route::post('download/faveo','HomeController@downloadForFaveo');
-Route::get('version/latest','HomeController@latestVersion');
+Route::post('download/faveo', 'HomeController@downloadForFaveo');
+Route::get('version/latest', 'HomeController@latestVersion');
 
 //});

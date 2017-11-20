@@ -7,14 +7,13 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 
 class VerifyCsrfToken extends BaseVerifier
 {
-    
     protected $except = [
         'serial',
         'v2/serial',
         'verification',
-        'download/faveo'
+        'download/faveo',
     ];
-    
+
     /**
      * Handle an incoming request.
      *

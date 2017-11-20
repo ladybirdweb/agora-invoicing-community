@@ -130,7 +130,7 @@ class ProductController extends Controller
                         ->searchColumns('name', 'email')
                         ->orderColumns('name', 'email')
                         ->make();
-        //        } catch (\Exception $e) {
+//        } catch (\Exception $e) {
 //            return redirect()->back()->with('fails', $e->getMessage());
 //        }
     }
@@ -155,7 +155,7 @@ class ProductController extends Controller
             $group = $this->group->lists('name', 'id')->toArray();
             $products = $this->product->lists('name', 'id')->toArray();
             $taxes = $this->tax_class->lists('name', 'id')->toArray();
-            //echo '<pre>'; print_r($currency); die;
+
             return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -193,7 +193,6 @@ class ProductController extends Controller
                     ->withInput()
                     ->with('currency');
         }
-
         try {
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
@@ -220,10 +219,9 @@ class ProductController extends Controller
             $price = $request->input('price');
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
-
             if (count($currencies) > 0) {
-                foreach ($currencies as $key1 => $currency) {
-                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price['$key'], 'sales_price' => $sales_price['$key']]);
+                foreach ($currencies as $key => $currency) {
+                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
                 }
             }
 
@@ -284,7 +282,7 @@ class ProductController extends Controller
             $taxes = $this->tax_class->lists('name', 'id')->toArray();
             //dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
-            //            dd($saved_taxes);
+//            dd($saved_taxes);
             return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -310,13 +308,13 @@ class ProductController extends Controller
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-        //        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-        //            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-        //        });
-        //
-        //        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-        //            return $input->type == 2 && $input->file == '' && $input->image == '';
-        //        });
+//        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+//            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+//        });
+//
+//        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+//            return $input->type == 2 && $input->file == '' && $input->image == '';
+//        });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -324,7 +322,6 @@ class ProductController extends Controller
             return redirect()->back()->with('errors', $v->errors());
             //dd();
         }
-
         try {
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
@@ -468,45 +465,46 @@ class ProductController extends Controller
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $relese = $github_controller->listRepositories($owner, $repository);
 
-                    return ['release' => $relese, 'type' => 'github'];
+                    return ['release'=>$relese, 'type'=>'github'];
                 } elseif ($file) {
-                    $relese = 'dist/product/images/'.$file;
+                    $relese = '/home/faveo/products/'.$file;
 
                     return $relese;
                 }
             }
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function adminDownload($id)
-    {
+    public function adminDownload($id,$api=false) {
         try {
             $release = $this->downloadProduct($id);
-            if (is_array($release) && array_key_exists('type', $release)) {
-                header('Location: '.$release['release']);
-
-                return response()->download($release);
+            if(is_array($release) && key_exists('type', $release)){
+                header("Location: ".$release['release']);
                 exit;
-            } else {
-                header('Content-type: Zip');
-                header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=Faveo.zip');
-                //header("Content-type: application/zip");
-                header('Content-Length: '.filesize($release));
-                //ob_clean();
-                flush();
-                readfile("$release");
-                exit;
+            }else{
+               header("Content-type: Zip"); 
+               header('Content-Description: File Transfer');
+               header("Content-Disposition: attachment; filename=Faveo.zip");
+               //header("Content-type: application/zip"); 
+               header('Content-Length: ' . filesize($release));
+               //ob_clean();
+               flush();
+               readfile("$release");
+               exit;
+    
             }
         } catch (\Exception $e) {
+            if($api){
+                return response()->json(['error'=>$e->getMessage()]);
+            }
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-    public function userDownload($userid, $invoice_number)
-    {
+    public function userDownload($userid, $invoice_number) {
         try {
             if (\Auth::user()->role != 'admin') {
                 if (\Auth::user()->id != $userid) {
@@ -517,27 +515,26 @@ class ProductController extends Controller
             $user = $user->findOrFail($userid);
             $invoice = new \App\Model\Order\Invoice();
             $invoice = $invoice->where('number', $invoice_number)->first();
-
+            
             if ($user && $invoice) {
                 if ($user->active == 1) {
-                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
+                    $order = $invoice->order()->orderBy('id','desc')->select('product')->first();
                     $product_id = $order->product;
                     $release = $this->downloadProduct($product_id);
-                    if (is_array($release) && array_key_exists('type', $release)) {
-                        $release = $release['release'];
-
-                        return view('themes.default1.front.download', compact('release', 'form'));
-                    } else {
-                        header('Content-type: Zip');
-                        header('Content-Description: File Transfer');
-                        header('Content-Disposition: attachment; filename=Faveo.zip');
-                        //header("Content-type: application/zip");
-                        header('Content-Length: '.filesize($release));
-                        //ob_clean();
-                        flush();
-                        readfile("$release");
-                        exit;
-                    }
+               if(is_array($release) && key_exists('type', $release)){
+                  $release = $release['release'];
+                    return view('themes.default1.front.download', compact('release', 'form'));
+               }else{
+                  header("Content-type: Zip"); 
+                  header('Content-Description: File Transfer');
+                  header("Content-Disposition: attachment; filename=Faveo.zip");
+               //header("Content-type: application/zip"); 
+                  header('Content-Length: ' . filesize($release));
+                  //ob_clean();
+                  flush();
+                  readfile("$release");
+                  exit;
+               }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
                 }

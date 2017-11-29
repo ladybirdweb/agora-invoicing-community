@@ -22,14 +22,8 @@ use Symfony\Component\Translation\DataCollectorTranslator;
  */
 class TranslationDataCollector extends DataCollector implements LateDataCollectorInterface
 {
-    /**
-     * @var DataCollectorTranslator
-     */
     private $translator;
 
-    /**
-     * @param DataCollectorTranslator $translator
-     */
     public function __construct(DataCollectorTranslator $translator)
     {
         $this->translator = $translator;
@@ -44,6 +38,8 @@ class TranslationDataCollector extends DataCollector implements LateDataCollecto
 
         $this->data = $this->computeCount($messages);
         $this->data['messages'] = $messages;
+
+        $this->data = $this->cloneVar($this->data);
     }
 
     /**

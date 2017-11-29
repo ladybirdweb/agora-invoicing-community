@@ -15,8 +15,6 @@ use Symfony\Component\Process\Exception\InvalidArgumentException;
 use Symfony\Component\Process\Exception\LogicException;
 
 /**
- * Process builder.
- *
  * @author Kris Wallsmith <kris@symfony.com>
  */
 class ProcessBuilder
@@ -26,14 +24,12 @@ class ProcessBuilder
     private $env = array();
     private $input;
     private $timeout = 60;
-    private $options = array();
+    private $options;
     private $inheritEnv = true;
     private $prefix = array();
     private $outputDisabled = false;
 
     /**
-     * Constructor.
-     *
      * @param string[] $arguments An array of arguments
      */
     public function __construct(array $arguments = array())
@@ -120,9 +116,13 @@ class ProcessBuilder
      * @param bool $inheritEnv
      *
      * @return $this
+     *
+     * @deprecated since version 3.3, to be removed in 4.0.
      */
     public function inheritEnvironmentVariables($inheritEnv = true)
     {
+        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0.', __METHOD__), E_USER_DEPRECATED);
+
         $this->inheritEnv = $inheritEnv;
 
         return $this;
@@ -217,9 +217,13 @@ class ProcessBuilder
      * @param string $value The option value
      *
      * @return $this
+     *
+     * @deprecated since version 3.3, to be removed in 4.0.
      */
     public function setOption($name, $value)
     {
+        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0.', __METHOD__), E_USER_DEPRECATED);
+
         $this->options[$name] = $value;
 
         return $this;
@@ -262,19 +266,15 @@ class ProcessBuilder
             throw new LogicException('You must add() command arguments before calling getProcess().');
         }
 
-        $options = $this->options;
-
         $arguments = array_merge($this->prefix, $this->arguments);
-        $script = implode(' ', array_map(array(__NAMESPACE__.'\\ProcessUtils', 'escapeArgument'), $arguments));
+        $process = new Process($arguments, $this->cwd, $this->env, $this->input, $this->timeout, $this->options);
+        // to preserve the BC with symfony <3.3, we convert the array structure
+        // to a string structure to avoid the prefixing with the exec command
+        $process->setCommandLine($process->getCommandLine());
 
         if ($this->inheritEnv) {
-            $env = array_replace($_ENV, $_SERVER, $this->env);
-        } else {
-            $env = $this->env;
+            $process->inheritEnvironmentVariables();
         }
-
-        $process = new Process($script, $this->cwd, $env, $this->input, $this->timeout, $options);
-
         if ($this->outputDisabled) {
             $process->disableOutput();
         }

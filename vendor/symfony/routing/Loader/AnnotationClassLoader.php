@@ -57,9 +57,6 @@ use Symfony\Component\Config\Loader\LoaderResolverInterface;
  */
 abstract class AnnotationClassLoader implements LoaderInterface
 {
-    /**
-     * @var Reader
-     */
     protected $reader;
 
     /**
@@ -72,11 +69,6 @@ abstract class AnnotationClassLoader implements LoaderInterface
      */
     protected $defaultRouteIndex = 0;
 
-    /**
-     * Constructor.
-     *
-     * @param Reader $reader
-     */
     public function __construct(Reader $reader)
     {
         $this->reader = $reader;
@@ -125,6 +117,11 @@ abstract class AnnotationClassLoader implements LoaderInterface
                     $this->addRoute($collection, $annot, $globals, $class, $method);
                 }
             }
+        }
+
+        if (0 === $collection->count() && $class->hasMethod('__invoke') && $annot = $this->reader->getClassAnnotation($class, $this->routeAnnotationClass)) {
+            $globals['path'] = '';
+            $this->addRoute($collection, $annot, $globals, $class, $class->getMethod('__invoke'));
         }
 
         return $collection;

@@ -50,7 +50,8 @@ class ArrayStore extends TaggableStore implements Store
      */
     public function increment($key, $value = 1)
     {
-        $this->storage[$key] = ((int) $this->storage[$key]) + $value;
+        $this->storage[$key] = ! isset($this->storage[$key])
+                ? $value : ((int) $this->storage[$key]) + $value;
 
         return $this->storage[$key];
     }
@@ -95,11 +96,13 @@ class ArrayStore extends TaggableStore implements Store
     /**
      * Remove all items from the cache.
      *
-     * @return void
+     * @return bool
      */
     public function flush()
     {
         $this->storage = [];
+
+        return true;
     }
 
     /**

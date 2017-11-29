@@ -7,6 +7,9 @@ use InvalidArgumentException;
 use Illuminate\Contracts\Queue\Factory as FactoryContract;
 use Illuminate\Contracts\Queue\Monitor as MonitorContract;
 
+/**
+ * @mixin \Illuminate\Contracts\Queue\Queue
+ */
 class QueueManager implements FactoryContract, MonitorContract
 {
     /**
@@ -82,7 +85,7 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     public function looping($callback)
     {
-        $this->app['events']->listen('illuminate.queue.looping', $callback);
+        $this->app['events']->listen(Events\Looping::class, $callback);
     }
 
     /**
@@ -150,7 +153,9 @@ class QueueManager implements FactoryContract, MonitorContract
     {
         $config = $this->getConfig($name);
 
-        return $this->getConnector($config['driver'])->connect($config);
+        return $this->getConnector($config['driver'])
+                        ->connect($config)
+                        ->setConnectionName($name);
     }
 
     /**
@@ -163,11 +168,11 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     protected function getConnector($driver)
     {
-        if (isset($this->connectors[$driver])) {
-            return call_user_func($this->connectors[$driver]);
+        if (! isset($this->connectors[$driver])) {
+            throw new InvalidArgumentException("No connector for [$driver]");
         }
 
-        throw new InvalidArgumentException("No connector for [$driver]");
+        return call_user_func($this->connectors[$driver]);
     }
 
     /**
@@ -202,11 +207,11 @@ class QueueManager implements FactoryContract, MonitorContract
      */
     protected function getConfig($name)
     {
-        if (is_null($name) || $name === 'null') {
-            return ['driver' => 'null'];
+        if (! is_null($name) && $name !== 'null') {
+            return $this->app['config']["queue.connections.{$name}"];
         }
 
-        return $this->app['config']["queue.connections.{$name}"];
+        return ['driver' => 'null'];
     }
 
     /**

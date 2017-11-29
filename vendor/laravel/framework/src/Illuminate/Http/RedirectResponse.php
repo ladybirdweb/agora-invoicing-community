@@ -73,9 +73,9 @@ class RedirectResponse extends BaseRedirectResponse
      */
     public function withInput(array $input = null)
     {
-        $input = $input ?: $this->request->input();
-
-        $this->session->flashInput($this->removeFilesFromInput($input));
+        $this->session->flashInput($this->removeFilesFromInput(
+            ! is_null($input) ? $input : $this->request->input()
+        ));
 
         return $this;
     }
@@ -132,8 +132,14 @@ class RedirectResponse extends BaseRedirectResponse
     {
         $value = $this->parseErrors($provider);
 
+        $errors = $this->session->get('errors', new ViewErrorBag);
+
+        if (! $errors instanceof ViewErrorBag) {
+            $errors = new ViewErrorBag;
+        }
+
         $this->session->flash(
-            'errors', $this->session->get('errors', new ViewErrorBag)->put($key, $value)
+            'errors', $errors->put($key, $value)
         );
 
         return $this;
@@ -152,6 +158,16 @@ class RedirectResponse extends BaseRedirectResponse
         }
 
         return new MessageBag((array) $provider);
+    }
+
+    /**
+     * Get the original response content.
+     *
+     * @return null
+     */
+    public function getOriginalContent()
+    {
+        //
     }
 
     /**
@@ -215,6 +231,8 @@ class RedirectResponse extends BaseRedirectResponse
             return $this->with(Str::snake(substr($method, 4)), $parameters[0]);
         }
 
-        throw new BadMethodCallException("Method [$method] does not exist on Redirect.");
+        throw new BadMethodCallException(
+            "Method [$method] does not exist on Redirect."
+        );
     }
 }

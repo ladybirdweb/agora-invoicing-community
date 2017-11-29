@@ -31,21 +31,9 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
     const REQUIREMENT_MISMATCH = 1;
     const ROUTE_MATCH = 2;
 
-    /**
-     * @var RequestContext
-     */
     protected $context;
-
-    /**
-     * @var array
-     */
     protected $allow = array();
-
-    /**
-     * @var RouteCollection
-     */
     protected $routes;
-
     protected $request;
     protected $expressionLanguage;
 
@@ -54,12 +42,6 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
      */
     protected $expressionLanguageProviders = array();
 
-    /**
-     * Constructor.
-     *
-     * @param RouteCollection $routes  A RouteCollection instance
-     * @param RequestContext  $context The context
-     */
     public function __construct(RouteCollection $routes, RequestContext $context)
     {
         $this->routes = $routes;
@@ -207,7 +189,7 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
     protected function handleRouteRequirements($pathinfo, $name, Route $route)
     {
         // expression condition
-        if ($route->getCondition() && !$this->getExpressionLanguage()->evaluate($route->getCondition(), array('context' => $this->context, 'request' => $this->request))) {
+        if ($route->getCondition() && !$this->getExpressionLanguage()->evaluate($route->getCondition(), array('context' => $this->context, 'request' => $this->request ?: $this->createRequest($pathinfo)))) {
             return array(self::REQUIREMENT_MISMATCH, null);
         }
 
@@ -247,5 +229,20 @@ class UrlMatcher implements UrlMatcherInterface, RequestMatcherInterface
         }
 
         return $this->expressionLanguage;
+    }
+
+    /**
+     * @internal
+     */
+    protected function createRequest($pathinfo)
+    {
+        if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
+            return null;
+        }
+
+        return Request::create($this->context->getScheme().'://'.$this->context->getHost().$this->context->getBaseUrl().$pathinfo, $this->context->getMethod(), $this->context->getParameters(), array(), array(), array(
+            'SCRIPT_FILENAME' => $this->context->getBaseUrl(),
+            'SCRIPT_NAME' => $this->context->getBaseUrl(),
+        ));
     }
 }

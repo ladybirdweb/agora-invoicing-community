@@ -33,8 +33,6 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
 
     /**
      * Loads the container configuration.
-     *
-     * @param LoaderInterface $loader A LoaderInterface instance
      */
     public function registerContainerConfiguration(LoaderInterface $loader);
 
@@ -121,9 +119,9 @@ interface KernelInterface extends HttpKernelInterface, \Serializable
     public function isDebug();
 
     /**
-     * Gets the application root dir.
+     * Gets the application root dir (path of the project's Kernel class).
      *
-     * @return string The application root dir
+     * @return string The Kernel root dir
      */
     public function getRootDir();
 

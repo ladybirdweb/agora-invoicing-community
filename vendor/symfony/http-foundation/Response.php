@@ -126,6 +126,7 @@ class Response
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',            // RFC2518
+        103 => 'Early Hints',
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -179,7 +180,7 @@ class Response
         503 => 'Service Unavailable',
         504 => 'Gateway Timeout',
         505 => 'HTTP Version Not Supported',
-        506 => 'Variant Also Negotiates (Experimental)',                      // RFC2295
+        506 => 'Variant Also Negotiates',                                     // RFC2295
         507 => 'Insufficient Storage',                                        // RFC4918
         508 => 'Loop Detected',                                               // RFC5842
         510 => 'Not Extended',                                                // RFC2774
@@ -187,8 +188,6 @@ class Response
     );
 
     /**
-     * Constructor.
-     *
      * @param mixed $content The response content, see setContent()
      * @param int   $status  The response status code
      * @param array $headers An array of response headers
@@ -201,6 +200,11 @@ class Response
         $this->setContent($content);
         $this->setStatusCode($status);
         $this->setProtocolVersion('1.0');
+
+        /* RFC2616 - 14.18 says all Responses need to have a Date */
+        if (!$this->headers->has('Date')) {
+            $this->setDate(\DateTime::createFromFormat('U', time()));
+        }
     }
 
     /**
@@ -256,8 +260,6 @@ class Response
      * compliant with RFC 2616. Most of the changes are based on
      * the Request that is "associated" with this Response.
      *
-     * @param Request $request A Request instance
-     *
      * @return $this
      */
     public function prepare(Request $request)
@@ -307,7 +309,7 @@ class Response
         }
 
         // Check if we need to send extra expire info headers
-        if ('1.0' == $this->getProtocolVersion() && 'no-cache' == $this->headers->get('Cache-Control')) {
+        if ('1.0' == $this->getProtocolVersion() && false !== strpos($this->headers->get('Cache-Control'), 'no-cache')) {
             $this->headers->set('pragma', 'no-cache');
             $this->headers->set('expires', -1);
         }
@@ -329,12 +331,13 @@ class Response
             return $this;
         }
 
+        /* RFC2616 - 14.18 says all Responses need to have a Date */
         if (!$this->headers->has('Date')) {
             $this->setDate(\DateTime::createFromFormat('U', time()));
         }
 
         // headers
-        foreach ($this->headers->allPreserveCase() as $name => $values) {
+        foreach ($this->headers->allPreserveCaseWithoutCookies() as $name => $values) {
             foreach ($values as $value) {
                 header($name.': '.$value, false, $this->statusCode);
             }
@@ -424,6 +427,8 @@ class Response
      * @param string $version The HTTP protocol version
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setProtocolVersion($version)
     {
@@ -436,6 +441,8 @@ class Response
      * Gets the HTTP protocol version.
      *
      * @return string The HTTP protocol version
+     *
+     * @final since version 3.2
      */
     public function getProtocolVersion()
     {
@@ -445,15 +452,17 @@ class Response
     /**
      * Sets the response status code.
      *
-     * @param int   $code HTTP status code
-     * @param mixed $text HTTP status text
-     *
      * If the status text is null it will be automatically populated for the known
      * status codes and left empty otherwise.
+     *
+     * @param int   $code HTTP status code
+     * @param mixed $text HTTP status text
      *
      * @return $this
      *
      * @throws \InvalidArgumentException When the HTTP status code is not valid
+     *
+     * @final since version 3.2
      */
     public function setStatusCode($code, $text = null)
     {
@@ -483,6 +492,8 @@ class Response
      * Retrieves the status code for the current web response.
      *
      * @return int Status code
+     *
+     * @final since version 3.2
      */
     public function getStatusCode()
     {
@@ -495,6 +506,8 @@ class Response
      * @param string $charset Character set
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setCharset($charset)
     {
@@ -507,6 +520,8 @@ class Response
      * Retrieves the response charset.
      *
      * @return string Character set
+     *
+     * @final since version 3.2
      */
     public function getCharset()
     {
@@ -523,6 +538,8 @@ class Response
      * validator (Last-Modified, ETag) are considered uncacheable.
      *
      * @return bool true if the response is worth caching, false otherwise
+     *
+     * @final since version 3.3
      */
     public function isCacheable()
     {
@@ -545,6 +562,8 @@ class Response
      * indicator or Expires header and the calculated age is less than the freshness lifetime.
      *
      * @return bool true if the response is fresh, false otherwise
+     *
+     * @final since version 3.3
      */
     public function isFresh()
     {
@@ -556,6 +575,8 @@ class Response
      * the response with the origin server using a conditional GET request.
      *
      * @return bool true if the response is validateable, false otherwise
+     *
+     * @final since version 3.3
      */
     public function isValidateable()
     {
@@ -568,6 +589,8 @@ class Response
      * It makes the response ineligible for serving other clients.
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setPrivate()
     {
@@ -583,6 +606,8 @@ class Response
      * It makes the response eligible for serving other clients.
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setPublic()
     {
@@ -601,6 +626,8 @@ class Response
      * greater than the value provided by the origin.
      *
      * @return bool true if the response must be revalidated by a cache, false otherwise
+     *
+     * @final since version 3.3
      */
     public function mustRevalidate()
     {
@@ -613,9 +640,16 @@ class Response
      * @return \DateTime A \DateTime instance
      *
      * @throws \RuntimeException When the header is not parseable
+     *
+     * @final since version 3.2
      */
     public function getDate()
     {
+        /*
+            RFC2616 - 14.18 says all Responses need to have a Date.
+            Make sure we provide one even if it the header
+            has been removed in the meantime.
+         */
         if (!$this->headers->has('Date')) {
             $this->setDate(\DateTime::createFromFormat('U', time()));
         }
@@ -626,9 +660,9 @@ class Response
     /**
      * Sets the Date header.
      *
-     * @param \DateTime $date A \DateTime instance
-     *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setDate(\DateTime $date)
     {
@@ -642,6 +676,8 @@ class Response
      * Returns the age of the response.
      *
      * @return int The age of the response in seconds
+     *
+     * @final since version 3.2
      */
     public function getAge()
     {
@@ -670,6 +706,8 @@ class Response
      * Returns the value of the Expires header as a DateTime instance.
      *
      * @return \DateTime|null A DateTime instance or null if the header does not exist
+     *
+     * @final since version 3.2
      */
     public function getExpires()
     {
@@ -689,6 +727,8 @@ class Response
      * @param \DateTime|null $date A \DateTime instance or null to remove the header
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setExpires(\DateTime $date = null)
     {
@@ -711,6 +751,8 @@ class Response
      * back on an expires header. It returns null when no maximum age can be established.
      *
      * @return int|null Number of seconds
+     *
+     * @final since version 3.2
      */
     public function getMaxAge()
     {
@@ -735,6 +777,8 @@ class Response
      * @param int $value Number of seconds
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setMaxAge($value)
     {
@@ -751,6 +795,8 @@ class Response
      * @param int $value Number of seconds
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setSharedMaxAge($value)
     {
@@ -769,6 +815,8 @@ class Response
      * revalidating with the origin.
      *
      * @return int|null The TTL in seconds
+     *
+     * @final since version 3.2
      */
     public function getTtl()
     {
@@ -785,6 +833,8 @@ class Response
      * @param int $seconds Number of seconds
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setTtl($seconds)
     {
@@ -801,6 +851,8 @@ class Response
      * @param int $seconds Number of seconds
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setClientTtl($seconds)
     {
@@ -815,6 +867,8 @@ class Response
      * @return \DateTime|null A DateTime instance or null if the header does not exist
      *
      * @throws \RuntimeException When the HTTP header is not parseable
+     *
+     * @final since version 3.2
      */
     public function getLastModified()
     {
@@ -829,6 +883,8 @@ class Response
      * @param \DateTime|null $date A \DateTime instance or null to remove the header
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setLastModified(\DateTime $date = null)
     {
@@ -847,6 +903,8 @@ class Response
      * Returns the literal value of the ETag HTTP header.
      *
      * @return string|null The ETag HTTP header or null if it does not exist
+     *
+     * @final since version 3.2
      */
     public function getEtag()
     {
@@ -860,6 +918,8 @@ class Response
      * @param bool        $weak Whether you want a weak ETag or not
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setEtag($etag = null, $weak = false)
     {
@@ -886,6 +946,8 @@ class Response
      * @return $this
      *
      * @throws \InvalidArgumentException
+     *
+     * @final since version 3.3
      */
     public function setCache(array $options)
     {
@@ -937,6 +999,8 @@ class Response
      * @return $this
      *
      * @see http://tools.ietf.org/html/rfc2616#section-10.3.5
+     *
+     * @final since version 3.3
      */
     public function setNotModified()
     {
@@ -955,6 +1019,8 @@ class Response
      * Returns true if the response includes a Vary header.
      *
      * @return bool true if the response includes a Vary header, false otherwise
+     *
+     * @final since version 3.2
      */
     public function hasVary()
     {
@@ -965,6 +1031,8 @@ class Response
      * Returns an array of header names given in the Vary header.
      *
      * @return array An array of Vary names
+     *
+     * @final since version 3.2
      */
     public function getVary()
     {
@@ -987,6 +1055,8 @@ class Response
      * @param bool         $replace Whether to replace the actual value or not (true by default)
      *
      * @return $this
+     *
+     * @final since version 3.2
      */
     public function setVary($headers, $replace = true)
     {
@@ -1002,9 +1072,9 @@ class Response
      * If the Response is not modified, it sets the status code to 304 and
      * removes the actual content by calling the setNotModified() method.
      *
-     * @param Request $request A Request instance
-     *
      * @return bool true if the Response validators match the Request, false otherwise
+     *
+     * @final since version 3.3
      */
     public function isNotModified(Request $request)
     {
@@ -1037,6 +1107,8 @@ class Response
      * @return bool
      *
      * @see http://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html
+     *
+     * @final since version 3.2
      */
     public function isInvalid()
     {
@@ -1047,6 +1119,8 @@ class Response
      * Is response informative?
      *
      * @return bool
+     *
+     * @final since version 3.3
      */
     public function isInformational()
     {
@@ -1057,6 +1131,8 @@ class Response
      * Is response successful?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isSuccessful()
     {
@@ -1067,6 +1143,8 @@ class Response
      * Is the response a redirect?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isRedirection()
     {
@@ -1077,6 +1155,8 @@ class Response
      * Is there a client error?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isClientError()
     {
@@ -1087,6 +1167,8 @@ class Response
      * Was there a server side error?
      *
      * @return bool
+     *
+     * @final since version 3.3
      */
     public function isServerError()
     {
@@ -1097,6 +1179,8 @@ class Response
      * Is the response OK?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isOk()
     {
@@ -1107,6 +1191,8 @@ class Response
      * Is the response forbidden?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isForbidden()
     {
@@ -1117,6 +1203,8 @@ class Response
      * Is the response a not found error?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isNotFound()
     {
@@ -1129,6 +1217,8 @@ class Response
      * @param string $location
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isRedirect($location = null)
     {
@@ -1139,6 +1229,8 @@ class Response
      * Is the response empty?
      *
      * @return bool
+     *
+     * @final since version 3.2
      */
     public function isEmpty()
     {
@@ -1152,6 +1244,8 @@ class Response
      *
      * @param int  $targetLevel The target output buffering level
      * @param bool $flush       Whether to flush or clean the buffers
+     *
+     * @final since version 3.3
      */
     public static function closeOutputBuffers($targetLevel, $flush)
     {
@@ -1160,7 +1254,7 @@ class Response
         // PHP_OUTPUT_HANDLER_* are not defined on HHVM 3.3
         $flags = defined('PHP_OUTPUT_HANDLER_REMOVABLE') ? PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? PHP_OUTPUT_HANDLER_FLUSHABLE : PHP_OUTPUT_HANDLER_CLEANABLE) : -1;
 
-        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || $flags === ($s['flags'] & $flags) : $s['del'])) {
+        while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || ($s['flags'] & $flags) === $flags : $s['del'])) {
             if ($flush) {
                 ob_end_flush();
             } else {
@@ -1173,10 +1267,12 @@ class Response
      * Checks if we need to remove Cache-Control for SSL encrypted downloads when using IE < 9.
      *
      * @see http://support.microsoft.com/kb/323308
+     *
+     * @final since version 3.3
      */
     protected function ensureIEOverSSLCompatibility(Request $request)
     {
-        if (false !== stripos($this->headers->get('Content-Disposition'), 'attachment') && preg_match('/MSIE (.*?);/i', $request->server->get('HTTP_USER_AGENT'), $match) == 1 && true === $request->isSecure()) {
+        if (false !== stripos($this->headers->get('Content-Disposition'), 'attachment') && 1 == preg_match('/MSIE (.*?);/i', $request->server->get('HTTP_USER_AGENT'), $match) && true === $request->isSecure()) {
             if ((int) preg_replace('/(MSIE )(.*?);/', '$2', $match[0]) < 9) {
                 $this->headers->remove('Cache-Control');
             }

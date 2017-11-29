@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\HttpKernel\Tests\EventListener;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\EventListener\ExceptionListener;
 use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
@@ -26,7 +27,7 @@ use Symfony\Component\HttpKernel\Tests\Logger;
  *
  * @group time-sensitive
  */
-class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
+class ExceptionListenerTest extends TestCase
 {
     public function testConstruct()
     {
@@ -95,8 +96,8 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
 
         $request = new Request();
         $exception = new \Exception('foo');
-        $event = new GetResponseForExceptionEvent(new TestKernel(), $request, 'foo', $exception);
-        $event2 = new GetResponseForExceptionEvent(new TestKernelThatThrowsException(), $request, 'foo', $exception);
+        $event = new GetResponseForExceptionEvent(new TestKernel(), $request, HttpKernelInterface::MASTER_REQUEST, $exception);
+        $event2 = new GetResponseForExceptionEvent(new TestKernelThatThrowsException(), $request, HttpKernelInterface::MASTER_REQUEST, $exception);
 
         return array(
             array($event, $event2),
@@ -115,7 +116,7 @@ class ExceptionListenerTest extends \PHPUnit_Framework_TestCase
         $request = Request::create('/');
         $request->setRequestFormat('xml');
 
-        $event = new GetResponseForExceptionEvent($kernel, $request, 'foo', new \Exception('foo'));
+        $event = new GetResponseForExceptionEvent($kernel, $request, HttpKernelInterface::MASTER_REQUEST, new \Exception('foo'));
         $listener->onKernelException($event);
 
         $response = $event->getResponse();

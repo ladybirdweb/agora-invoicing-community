@@ -2,7 +2,7 @@
 
 namespace Illuminate\Mail\Transport;
 
-use Swift_Mime_Message;
+use Swift_Mime_SimpleMessage;
 use Illuminate\Support\Collection;
 
 class ArrayTransport extends Transport
@@ -27,7 +27,7 @@ class ArrayTransport extends Transport
     /**
      * {@inheritdoc}
      */
-    public function send(Swift_Mime_Message $message, &$failedRecipients = null)
+    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
     {
         $this->beforeSendPerformed($message);
 
@@ -49,7 +49,7 @@ class ArrayTransport extends Transport
     /**
      * Clear all of the messages from the local collection.
      *
-     * @return void
+     * @return \Illuminate\Support\Collection
      */
     public function flush()
     {

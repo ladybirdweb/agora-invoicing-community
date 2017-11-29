@@ -2,18 +2,20 @@
 
 namespace Illuminate\Foundation\Console;
 
-use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\InteractsWithTime;
 
 class DownCommand extends Command
 {
+    use InteractsWithTime;
+
     /**
      * The console command signature.
      *
      * @var string
      */
     protected $signature = 'down {--message= : The message for the maintenance mode. }
-            {--retry= : The number of seconds after which the request may be retried.}';
+                                 {--retry= : The number of seconds after which the request may be retried.}';
 
     /**
      * The console command description.
@@ -27,7 +29,7 @@ class DownCommand extends Command
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         file_put_contents(
             $this->laravel->storagePath().'/framework/down',
@@ -45,7 +47,7 @@ class DownCommand extends Command
     protected function getDownFilePayload()
     {
         return [
-            'time' => Carbon::now()->getTimestamp(),
+            'time' => $this->currentTime(),
             'message' => $this->option('message'),
             'retry' => $this->getRetryTime(),
         ];

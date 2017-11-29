@@ -2,7 +2,9 @@
 
 namespace Illuminate\Notifications\Channels;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Illuminate\Mail\Markdown;
 use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Contracts\Mail\Mailable;
 use Illuminate\Notifications\Notification;
@@ -17,14 +19,23 @@ class MailChannel
     protected $mailer;
 
     /**
+     * The markdown implementation.
+     *
+     * @var \Illuminate\Mail\Markdown
+     */
+    protected $markdown;
+
+    /**
      * Create a new mail channel instance.
      *
      * @param  \Illuminate\Contracts\Mail\Mailer  $mailer
+     * @param  \Illuminate\Mail\Markdown  $markdown
      * @return void
      */
-    public function __construct(Mailer $mailer)
+    public function __construct(Mailer $mailer, Markdown $markdown)
     {
         $this->mailer = $mailer;
+        $this->markdown = $markdown;
     }
 
     /**
@@ -36,52 +47,155 @@ class MailChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        if (! $notifiable->routeNotificationFor('mail')) {
+        $message = $notification->toMail($notifiable);
+
+        if (! $notifiable->routeNotificationFor('mail') &&
+            ! $message instanceof Mailable) {
             return;
         }
-
-        $message = $notification->toMail($notifiable);
 
         if ($message instanceof Mailable) {
             return $message->send($this->mailer);
         }
 
-        $this->mailer->send($message->view, $message->data(), function ($m) use ($notifiable, $notification, $message) {
-            $recipients = empty($message->to) ? $notifiable->routeNotificationFor('mail') : $message->to;
+        $this->mailer->send(
+            $this->buildView($message),
+            $message->data(),
+            $this->messageBuilder($notifiable, $notification, $message)
+        );
+    }
 
-            if (! empty($message->from)) {
-                $m->from($message->from[0], isset($message->from[1]) ? $message->from[1] : null);
-            }
+    /**
+     * Get the mailer Closure for the message.
+     *
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return \Closure
+     */
+    protected function messageBuilder($notifiable, $notification, $message)
+    {
+        return function ($mailMessage) use ($notifiable, $notification, $message) {
+            $this->buildMessage($mailMessage, $notifiable, $notification, $message);
+        };
+    }
 
-            if (is_array($recipients)) {
-                $m->bcc($recipients);
-            } else {
-                $m->to($recipients);
-            }
+    /**
+     * Build the notification's view.
+     *
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return void
+     */
+    protected function buildView($message)
+    {
+        if ($message->view) {
+            return $message->view;
+        }
 
-            if ($message->cc) {
-                $m->cc($message->cc);
-            }
+        return [
+            'html' => $this->markdown->render($message->markdown, $message->data()),
+            'text' => $this->markdown->renderText($message->markdown, $message->data()),
+        ];
+    }
 
-            if (! empty($message->replyTo)) {
-                $m->replyTo($message->replyTo[0], isset($message->replyTo[1]) ? $message->replyTo[1] : null);
-            }
+    /**
+     * Build the mail message.
+     *
+     * @param  \Illuminate\Mail\Message  $mailMessage
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return void
+     */
+    protected function buildMessage($mailMessage, $notifiable, $notification, $message)
+    {
+        $this->addressMessage($mailMessage, $notifiable, $message);
 
-            $m->subject($message->subject ?: Str::title(
-                Str::snake(class_basename($notification), ' ')
-            ));
+        $mailMessage->subject($message->subject ?: Str::title(
+            Str::snake(class_basename($notification), ' ')
+        ));
 
-            foreach ($message->attachments as $attachment) {
-                $m->attach($attachment['file'], $attachment['options']);
-            }
+        $this->addAttachments($mailMessage, $message);
 
-            foreach ($message->rawAttachments as $attachment) {
-                $m->attachData($attachment['data'], $attachment['name'], $attachment['options']);
-            }
+        if (! is_null($message->priority)) {
+            $mailMessage->setPriority($message->priority);
+        }
+    }
 
-            if (! is_null($message->priority)) {
-                $m->setPriority($message->priority);
-            }
-        });
+    /**
+     * Address the mail message.
+     *
+     * @param  \Illuminate\Mail\Message  $mailMessage
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return void
+     */
+    protected function addressMessage($mailMessage, $notifiable, $message)
+    {
+        $this->addSender($mailMessage, $message);
+
+        $mailMessage->to($this->getRecipients($notifiable, $message));
+
+        if ($message->cc) {
+            $mailMessage->cc($message->cc[0], Arr::get($message->cc, 1));
+        }
+
+        if ($message->bcc) {
+            $mailMessage->bcc($message->bcc[0], Arr::get($message->bcc, 1));
+        }
+    }
+
+    /**
+     * Add the "from" and "reply to" addresses to the message.
+     *
+     * @param  \Illuminate\Mail\Message  $mailMessage
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return void
+     */
+    protected function addSender($mailMessage, $message)
+    {
+        if (! empty($message->from)) {
+            $mailMessage->from($message->from[0], Arr::get($message->from, 1));
+        }
+
+        if (! empty($message->replyTo)) {
+            $mailMessage->replyTo($message->replyTo[0], Arr::get($message->replyTo, 1));
+        }
+    }
+
+    /**
+     * Get the recipients of the given message.
+     *
+     * @param  mixed  $notifiable
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return mixed
+     */
+    protected function getRecipients($notifiable, $message)
+    {
+        if (is_string($recipients = $notifiable->routeNotificationFor('mail'))) {
+            $recipients = [$recipients];
+        }
+
+        return collect($recipients)->map(function ($recipient) {
+            return is_string($recipient) ? $recipient : $recipient->email;
+        })->all();
+    }
+
+    /**
+     * Add the attachments to the message.
+     *
+     * @param  \Illuminate\Mail\Message  $mailMessage
+     * @param  \Illuminate\Notifications\Messages\MailMessage  $message
+     * @return void
+     */
+    protected function addAttachments($mailMessage, $message)
+    {
+        foreach ($message->attachments as $attachment) {
+            $mailMessage->attach($attachment['file'], $attachment['options']);
+        }
+
+        foreach ($message->rawAttachments as $attachment) {
+            $mailMessage->attachData($attachment['data'], $attachment['name'], $attachment['options']);
+        }
     }
 }

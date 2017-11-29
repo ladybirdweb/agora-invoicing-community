@@ -19,40 +19,14 @@ namespace Symfony\Component\Routing;
  */
 class Route implements \Serializable
 {
-    /**
-     * @var string
-     */
     private $path = '/';
-
-    /**
-     * @var string
-     */
     private $host = '';
-
-    /**
-     * @var array
-     */
     private $schemes = array();
-
-    /**
-     * @var array
-     */
     private $methods = array();
-
-    /**
-     * @var array
-     */
     private $defaults = array();
-
-    /**
-     * @var array
-     */
     private $requirements = array();
-
-    /**
-     * @var array
-     */
     private $options = array();
+    private $condition = '';
 
     /**
      * @var null|CompiledRoute
@@ -60,25 +34,19 @@ class Route implements \Serializable
     private $compiled;
 
     /**
-     * @var string
-     */
-    private $condition = '';
-
-    /**
-     * Constructor.
-     *
      * Available options:
      *
      *  * compiler_class: A class name able to compile this route instance (RouteCompiler by default)
+     *  * utf8:           Whether UTF-8 matching is enforced ot not
      *
-     * @param string       $path         The path pattern to match
-     * @param array        $defaults     An array of default parameter values
-     * @param array        $requirements An array of requirements for parameters (regexes)
-     * @param array        $options      An array of options
-     * @param string       $host         The host pattern to match
-     * @param string|array $schemes      A required URI scheme or an array of restricted schemes
-     * @param string|array $methods      A required HTTP method or an array of restricted methods
-     * @param string       $condition    A condition that should evaluate to true for the route to match
+     * @param string          $path         The path pattern to match
+     * @param array           $defaults     An array of default parameter values
+     * @param array           $requirements An array of requirements for parameters (regexes)
+     * @param array           $options      An array of options
+     * @param string          $host         The host pattern to match
+     * @param string|string[] $schemes      A required URI scheme or an array of restricted schemes
+     * @param string|string[] $methods      A required HTTP method or an array of restricted methods
+     * @param string          $condition    A condition that should evaluate to true for the route to match
      */
     public function __construct($path, array $defaults = array(), array $requirements = array(), array $options = array(), $host = '', $schemes = array(), $methods = array(), $condition = '')
     {
@@ -192,7 +160,7 @@ class Route implements \Serializable
      * Returns the lowercased schemes this route is restricted to.
      * So an empty array means that any scheme is allowed.
      *
-     * @return array The schemes
+     * @return string[] The schemes
      */
     public function getSchemes()
     {
@@ -205,7 +173,7 @@ class Route implements \Serializable
      *
      * This method implements a fluent interface.
      *
-     * @param string|array $schemes The scheme or an array of schemes
+     * @param string|string[] $schemes The scheme or an array of schemes
      *
      * @return $this
      */
@@ -233,7 +201,7 @@ class Route implements \Serializable
      * Returns the uppercased HTTP methods this route is restricted to.
      * So an empty array means that any method is allowed.
      *
-     * @return array The methods
+     * @return string[] The methods
      */
     public function getMethods()
     {
@@ -246,7 +214,7 @@ class Route implements \Serializable
      *
      * This method implements a fluent interface.
      *
-     * @param string|array $methods The method or an array of methods
+     * @param string|string[] $methods The method or an array of methods
      *
      * @return $this
      */

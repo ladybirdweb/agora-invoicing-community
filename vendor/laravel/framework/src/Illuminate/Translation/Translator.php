@@ -7,18 +7,18 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
+use Illuminate\Contracts\Translation\Loader;
 use Illuminate\Support\NamespacedItemResolver;
-use Symfony\Component\Translation\MessageSelector;
-use Symfony\Component\Translation\TranslatorInterface;
+use Illuminate\Contracts\Translation\Translator as TranslatorContract;
 
-class Translator extends NamespacedItemResolver implements TranslatorInterface
+class Translator extends NamespacedItemResolver implements TranslatorContract
 {
     use Macroable;
 
     /**
      * The loader implementation.
      *
-     * @var \Illuminate\Translation\LoaderInterface
+     * @var \Illuminate\Contracts\Translation\Loader
      */
     protected $loader;
 
@@ -46,18 +46,18 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     /**
      * The message selector.
      *
-     * @var \Symfony\Component\Translation\MessageSelector
+     * @var \Illuminate\Translation\MessageSelector
      */
     protected $selector;
 
     /**
      * Create a new translator instance.
      *
-     * @param  \Illuminate\Translation\LoaderInterface  $loader
+     * @param  \Illuminate\Contracts\Translation\Loader  $loader
      * @param  string  $locale
      * @return void
      */
-    public function __construct(LoaderInterface $loader, $locale)
+    public function __construct(Loader $loader, $locale)
     {
         $this->loader = $loader;
         $this->locale = $locale;
@@ -89,6 +89,19 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     }
 
     /**
+     * Get the translation for a given key.
+     *
+     * @param  string  $key
+     * @param  array   $replace
+     * @param  string  $locale
+     * @return string|array|null
+     */
+    public function trans($key, array $replace = [], $locale = null)
+    {
+        return $this->get($key, $replace, $locale);
+    }
+
+    /**
      * Get the translation for the given key.
      *
      * @param  string  $key
@@ -104,16 +117,13 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
         // Here we will get the locale that should be used for the language line. If one
         // was not passed, we will use the default locales which was given to us when
         // the translator was instantiated. Then, we can load the lines and return.
-        $locales = $fallback ? $this->parseLocale($locale) : [$locale ?: $this->locale];
+        $locales = $fallback ? $this->localeArray($locale)
+                             : [$locale ?: $this->locale];
 
         foreach ($locales as $locale) {
-            $this->load($namespace, $group, $locale);
-
-            $line = $this->getLine(
+            if (! is_null($line = $this->getLine(
                 $namespace, $group, $locale, $item, $replace
-            );
-
-            if (! is_null($line)) {
+            ))) {
                 break;
             }
         }
@@ -121,28 +131,98 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
         // If the line doesn't exist, we will return back the key which was requested as
         // that will be quick to spot in the UI if language keys are wrong or missing
         // from the application's language files. Otherwise we can return the line.
-        if (! isset($line)) {
-            return $key;
+        if (isset($line)) {
+            return $line;
         }
 
-        return $line;
+        return $key;
     }
 
     /**
-     * Add translation lines to the given locale.
+     * Get the translation for a given key from the JSON translation files.
      *
-     * @param  array  $lines
+     * @param  string  $key
+     * @param  array  $replace
      * @param  string  $locale
-     * @param  string  $namespace
-     * @return void
+     * @return string|array|null
      */
-    public function addLines(array $lines, $locale, $namespace = '*')
+    public function getFromJson($key, array $replace = [], $locale = null)
     {
-        foreach ($lines as $key => $value) {
-            list($group, $item) = explode('.', $key, 2);
+        $locale = $locale ?: $this->locale;
 
-            Arr::set($this->loaded, "$namespace.$group.$locale.$item", $value);
+        // For JSON translations, there is only one file per locale, so we will simply load
+        // that file and then we will be ready to check the array for the key. These are
+        // only one level deep so we do not need to do any fancy searching through it.
+        $this->load('*', '*', $locale);
+
+        $line = $this->loaded['*']['*'][$locale][$key] ?? null;
+
+        // If we can't find a translation for the JSON key, we will attempt to translate it
+        // using the typical translation file. This way developers can always just use a
+        // helper such as __ instead of having to pick between trans or __ with views.
+        if (! isset($line)) {
+            $fallback = $this->get($key, $replace, $locale);
+
+            if ($fallback !== $key) {
+                return $fallback;
+            }
         }
+
+        return $this->makeReplacements($line ?: $key, $replace);
+    }
+
+    /**
+     * Get a translation according to an integer value.
+     *
+     * @param  string  $key
+     * @param  int|array|\Countable  $number
+     * @param  array   $replace
+     * @param  string  $locale
+     * @return string
+     */
+    public function transChoice($key, $number, array $replace = [], $locale = null)
+    {
+        return $this->choice($key, $number, $replace, $locale);
+    }
+
+    /**
+     * Get a translation according to an integer value.
+     *
+     * @param  string  $key
+     * @param  int|array|\Countable  $number
+     * @param  array   $replace
+     * @param  string  $locale
+     * @return string
+     */
+    public function choice($key, $number, array $replace = [], $locale = null)
+    {
+        $line = $this->get(
+            $key, $replace, $locale = $this->localeForChoice($locale)
+        );
+
+        // If the given "number" is actually an array or countable we will simply count the
+        // number of elements in an instance. This allows developers to pass an array of
+        // items without having to count it on their end first which gives bad syntax.
+        if (is_array($number) || $number instanceof Countable) {
+            $number = count($number);
+        }
+
+        $replace['count'] = $number;
+
+        return $this->makeReplacements(
+            $this->getSelector()->choose($line, $number, $locale), $replace
+        );
+    }
+
+    /**
+     * Get the proper locale for a choice operation.
+     *
+     * @param  string|null  $locale
+     * @return string
+     */
+    protected function localeForChoice($locale)
+    {
+        return $locale ?: $this->locale ?: $this->fallback;
     }
 
     /**
@@ -157,6 +237,8 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
      */
     protected function getLine($namespace, $group, $locale, $item, array $replace)
     {
+        $this->load($namespace, $group, $locale);
+
         $line = Arr::get($this->loaded[$namespace][$group][$locale], $item);
 
         if (is_string($line)) {
@@ -175,6 +257,10 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
      */
     protected function makeReplacements($line, array $replace)
     {
+        if (empty($replace)) {
+            return $line;
+        }
+
         $replace = $this->sortReplacements($replace);
 
         foreach ($replace as $key => $value) {
@@ -202,54 +288,20 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     }
 
     /**
-     * Get a translation according to an integer value.
+     * Add translation lines to the given locale.
      *
-     * @param  string  $key
-     * @param  int|array|\Countable  $number
-     * @param  array   $replace
+     * @param  array  $lines
      * @param  string  $locale
-     * @return string
+     * @param  string  $namespace
+     * @return void
      */
-    public function choice($key, $number, array $replace = [], $locale = null)
+    public function addLines(array $lines, $locale, $namespace = '*')
     {
-        $line = $this->get($key, $replace, $locale = $locale ?: $this->locale ?: $this->fallback);
+        foreach ($lines as $key => $value) {
+            list($group, $item) = explode('.', $key, 2);
 
-        if (is_array($number) || $number instanceof Countable) {
-            $number = count($number);
+            Arr::set($this->loaded, "$namespace.$group.$locale.$item", $value);
         }
-
-        $replace['count'] = $number;
-
-        return $this->makeReplacements($this->getSelector()->choose($line, $number, $locale), $replace);
-    }
-
-    /**
-     * Get the translation for a given key.
-     *
-     * @param  string  $id
-     * @param  array   $parameters
-     * @param  string  $domain
-     * @param  string  $locale
-     * @return string|array|null
-     */
-    public function trans($id, array $parameters = [], $domain = 'messages', $locale = null)
-    {
-        return $this->get($id, $parameters, $locale);
-    }
-
-    /**
-     * Get a translation according to an integer value.
-     *
-     * @param  string  $id
-     * @param  int|array|\Countable  $number
-     * @param  array   $parameters
-     * @param  string  $domain
-     * @param  string  $locale
-     * @return string
-     */
-    public function transChoice($id, $number, array $parameters = [], $domain = 'messages', $locale = null)
-    {
-        return $this->choice($id, $number, $parameters, $locale);
     }
 
     /**
@@ -300,6 +352,17 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     }
 
     /**
+     * Add a new JSON path to the loader.
+     *
+     * @param  string  $path
+     * @return void
+     */
+    public function addJsonPath($path)
+    {
+        $this->loader->addJsonPath($path);
+    }
+
+    /**
      * Parse a key into namespace, group, and item.
      *
      * @param  string  $key
@@ -322,7 +385,7 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
      * @param  string|null  $locale
      * @return array
      */
-    protected function parseLocale($locale)
+    protected function localeArray($locale)
     {
         return array_filter([$locale ?: $this->locale, $this->fallback]);
     }
@@ -330,7 +393,7 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     /**
      * Get the message selector instance.
      *
-     * @return \Symfony\Component\Translation\MessageSelector
+     * @return \Illuminate\Translation\MessageSelector
      */
     public function getSelector()
     {
@@ -344,7 +407,7 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     /**
      * Set the message selector instance.
      *
-     * @param  \Symfony\Component\Translation\MessageSelector  $selector
+     * @param  \Illuminate\Translation\MessageSelector  $selector
      * @return void
      */
     public function setSelector(MessageSelector $selector)
@@ -355,7 +418,7 @@ class Translator extends NamespacedItemResolver implements TranslatorInterface
     /**
      * Get the language line loader implementation.
      *
-     * @return \Illuminate\Translation\LoaderInterface
+     * @return \Illuminate\Contracts\Translation\Loader
      */
     public function getLoader()
     {

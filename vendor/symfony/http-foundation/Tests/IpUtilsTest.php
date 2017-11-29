@@ -11,19 +11,20 @@
 
 namespace Symfony\Component\HttpFoundation\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\IpUtils;
 
-class IpUtilsTest extends \PHPUnit_Framework_TestCase
+class IpUtilsTest extends TestCase
 {
     /**
-     * @dataProvider testIpv4Provider
+     * @dataProvider getIpv4Data
      */
     public function testIpv4($matches, $remoteAddr, $cidr)
     {
         $this->assertSame($matches, IpUtils::checkIp($remoteAddr, $cidr));
     }
 
-    public function testIpv4Provider()
+    public function getIpv4Data()
     {
         return array(
             array(true, '192.168.1.1', '192.168.1.1'),
@@ -42,7 +43,7 @@ class IpUtilsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testIpv6Provider
+     * @dataProvider getIpv6Data
      */
     public function testIpv6($matches, $remoteAddr, $cidr)
     {
@@ -53,7 +54,7 @@ class IpUtilsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($matches, IpUtils::checkIp($remoteAddr, $cidr));
     }
 
-    public function testIpv6Provider()
+    public function getIpv6Data()
     {
         return array(
             array(true, '2a01:198:603:0:396e:4789:8e99:890f', '2a01:198:603:0::/65'),
@@ -80,5 +81,22 @@ class IpUtilsTest extends \PHPUnit_Framework_TestCase
         }
 
         IpUtils::checkIp('2a01:198:603:0:396e:4789:8e99:890f', '2a01:198:603:0::/65');
+    }
+
+    /**
+     * @dataProvider invalidIpAddressData
+     */
+    public function testInvalidIpAddressesDoNotMatch($requestIp, $proxyIp)
+    {
+        $this->assertFalse(IpUtils::checkIp4($requestIp, $proxyIp));
+    }
+
+    public function invalidIpAddressData()
+    {
+        return array(
+            'invalid proxy wildcard' => array('192.168.20.13', '*'),
+            'invalid proxy missing netmask' => array('192.168.20.13', '0.0.0.0'),
+            'invalid request IP with invalid proxy wildcard' => array('0.0.0.0', '*'),
+        );
     }
 }

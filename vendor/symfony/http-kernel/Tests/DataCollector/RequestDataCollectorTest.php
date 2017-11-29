@@ -11,6 +11,8 @@
 
 namespace Symfony\Component\HttpKernel\Tests\DataCollector;
 
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
@@ -25,13 +27,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
-class RequestDataCollectorTest extends \PHPUnit_Framework_TestCase
+class RequestDataCollectorTest extends TestCase
 {
     public function testCollect()
     {
         $c = new RequestDataCollector();
 
-        $c->collect($this->createRequest(), $this->createResponse());
+        $c->collect($request = $this->createRequest(), $this->createResponse());
+        $c->lateCollect();
 
         $attributes = $c->getRequestAttributes();
 
@@ -42,18 +45,30 @@ class RequestDataCollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\ParameterBag', $attributes);
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\ParameterBag', $c->getRequestRequest());
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\ParameterBag', $c->getRequestQuery());
+        $this->assertInstanceOf(ParameterBag::class, $c->getResponseCookies());
         $this->assertSame('html', $c->getFormat());
-        $this->assertSame('foobar', $c->getRoute());
-        $this->assertSame(array('name' => 'foo'), $c->getRouteParams());
+        $this->assertEquals('foobar', $c->getRoute());
+        $this->assertEquals(array('name' => 'foo'), $c->getRouteParams());
         $this->assertSame(array(), $c->getSessionAttributes());
         $this->assertSame('en', $c->getLocale());
-        $this->assertRegExp('/Resource\(stream#\d+\)/', $attributes->get('resource'));
-        $this->assertSame('Object(stdClass)', $attributes->get('object'));
+        $this->assertContains(__FILE__, $attributes->get('resource'));
+        $this->assertSame('stdClass', $attributes->get('object')->getType());
 
         $this->assertInstanceOf('Symfony\Component\HttpFoundation\ParameterBag', $c->getResponseHeaders());
         $this->assertSame('OK', $c->getStatusText());
         $this->assertSame(200, $c->getStatusCode());
         $this->assertSame('application/json', $c->getContentType());
+    }
+
+    public function testCollectWithoutRouteParams()
+    {
+        $request = $this->createRequest(array());
+
+        $c = new RequestDataCollector();
+        $c->collect($request, $this->createResponse());
+        $c->lateCollect();
+
+        $this->assertEquals(array(), $c->getRouteParams());
     }
 
     public function testKernelResponseDoesNotStartSession()
@@ -80,8 +95,9 @@ class RequestDataCollectorTest extends \PHPUnit_Framework_TestCase
         $response = $this->createResponse();
         $this->injectController($c, $callable, $request);
         $c->collect($request, $response);
+        $c->lateCollect();
 
-        $this->assertSame($expected, $c->getController(), sprintf('Testing: %s', $name));
+        $this->assertSame($expected, $c->getController()->getValue(true), sprintf('Testing: %s', $name));
     }
 
     public function provideControllerCallables()
@@ -194,12 +210,12 @@ class RequestDataCollectorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('n/a', $c->getController());
     }
 
-    protected function createRequest()
+    protected function createRequest($routeParams = array('name' => 'foo'))
     {
         $request = Request::create('http://test.com/foo?bar=baz');
         $request->attributes->set('foo', 'bar');
         $request->attributes->set('_route', 'foobar');
-        $request->attributes->set('_route_params', array('name' => 'foo'));
+        $request->attributes->set('_route_params', $routeParams);
         $request->attributes->set('resource', fopen(__FILE__, 'r'));
         $request->attributes->set('object', new \stdClass());
 
@@ -221,6 +237,7 @@ class RequestDataCollectorTest extends \PHPUnit_Framework_TestCase
         $response = new Response();
         $response->setStatusCode(200);
         $response->headers->set('Content-Type', 'application/json');
+        $response->headers->set('X-Foo-Bar', null);
         $response->headers->setCookie(new Cookie('foo', 'bar', 1, '/foo', 'localhost', true, true));
         $response->headers->setCookie(new Cookie('bar', 'foo', new \DateTime('@946684800')));
         $response->headers->setCookie(new Cookie('bazz', 'foo', '2000-12-12'));

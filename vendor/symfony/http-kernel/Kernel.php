@@ -16,7 +16,6 @@ use Symfony\Bridge\ProxyManager\LazyProxy\PhpDumper\ProxyDumper;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Dumper\PhpDumper;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Loader\IniFileLoader;
@@ -29,7 +28,8 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Symfony\Component\HttpKernel\Config\EnvParametersResource;
 use Symfony\Component\HttpKernel\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfigurationPass;
-use Symfony\Component\HttpKernel\DependencyInjection\AddClassesToCachePass;
+use Symfony\Component\HttpKernel\DependencyInjection\AddAnnotatedClassesToCachePass;
+use Symfony\Component\Config\Loader\GlobFileLoader;
 use Symfony\Component\Config\Loader\LoaderResolver;
 use Symfony\Component\Config\Loader\DelegatingLoader;
 use Symfony\Component\Config\ConfigCache;
@@ -59,19 +59,19 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     protected $startTime;
     protected $loadClassCache;
 
-    const VERSION = '3.1.10';
-    const VERSION_ID = 30110;
+    private $projectDir;
+
+    const VERSION = '3.3.13';
+    const VERSION_ID = 30313;
     const MAJOR_VERSION = 3;
-    const MINOR_VERSION = 1;
-    const RELEASE_VERSION = 10;
+    const MINOR_VERSION = 3;
+    const RELEASE_VERSION = 13;
     const EXTRA_VERSION = '';
 
-    const END_OF_MAINTENANCE = '01/2017';
-    const END_OF_LIFE = '07/2017';
+    const END_OF_MAINTENANCE = '01/2018';
+    const END_OF_LIFE = '07/2018';
 
     /**
-     * Constructor.
-     *
      * @param string $environment The environment
      * @param bool   $debug       Whether to enable debugging or not
      */
@@ -269,6 +269,9 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     {
         if (null === $this->name) {
             $this->name = preg_replace('/[^a-zA-Z0-9_]+/', '', basename($this->rootDir));
+            if (ctype_digit($this->name[0])) {
+                $this->name = '_'.$this->name;
+            }
         }
 
         return $this->name;
@@ -304,6 +307,28 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     }
 
     /**
+     * Gets the application root dir (path of the project's composer file).
+     *
+     * @return string The project root dir
+     */
+    public function getProjectDir()
+    {
+        if (null === $this->projectDir) {
+            $r = new \ReflectionObject($this);
+            $dir = $rootDir = dirname($r->getFileName());
+            while (!file_exists($dir.'/composer.json')) {
+                if ($dir === dirname($dir)) {
+                    return $this->projectDir = $rootDir;
+                }
+                $dir = dirname($dir);
+            }
+            $this->projectDir = $dir;
+        }
+
+        return $this->projectDir;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getContainer()
@@ -322,18 +347,38 @@ abstract class Kernel implements KernelInterface, TerminableInterface
      *
      * @param string $name      The cache name prefix
      * @param string $extension File extension of the resulting file
+     *
+     * @deprecated since version 3.3, to be removed in 4.0. The class cache is not needed anymore when using PHP 7.0.
      */
     public function loadClassCache($name = 'classes', $extension = '.php')
     {
+        if (\PHP_VERSION_ID >= 70000) {
+            @trigger_error(__METHOD__.'() is deprecated since version 3.3, to be removed in 4.0.', E_USER_DEPRECATED);
+        }
+
         $this->loadClassCache = array($name, $extension);
     }
 
     /**
-     * Used internally.
+     * @internal
+     *
+     * @deprecated since version 3.3, to be removed in 4.0.
      */
     public function setClassCache(array $classes)
     {
+        if (\PHP_VERSION_ID >= 70000) {
+            @trigger_error(__METHOD__.'() is deprecated since version 3.3, to be removed in 4.0.', E_USER_DEPRECATED);
+        }
+
         file_put_contents($this->getCacheDir().'/classes.map', sprintf('<?php return %s;', var_export($classes, true)));
+    }
+
+    /**
+     * @internal
+     */
+    public function setAnnotatedClassCache(array $annotatedClasses)
+    {
+        file_put_contents($this->getCacheDir().'/annotations.map', sprintf('<?php return %s;', var_export($annotatedClasses, true)));
     }
 
     /**
@@ -368,8 +413,15 @@ abstract class Kernel implements KernelInterface, TerminableInterface
         return 'UTF-8';
     }
 
+    /**
+     * @deprecated since version 3.3, to be removed in 4.0.
+     */
     protected function doLoadClassCache($name, $extension)
     {
+        if (\PHP_VERSION_ID >= 70000) {
+            @trigger_error(__METHOD__.'() is deprecated since version 3.3, to be removed in 4.0.', E_USER_DEPRECATED);
+        }
+
         if (!$this->booted && is_file($this->getCacheDir().'/classes.map')) {
             ClassCollectionLoader::load(include($this->getCacheDir().'/classes.map'), $this->getCacheDir(), $name, $this->debug, false, $extension);
         }
@@ -440,6 +492,15 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     }
 
     /**
+     * The extension point similar to the Bundle::build() method.
+     *
+     * Use this method to register compiler passes and manipulate the container during the building process.
+     */
+    protected function build(ContainerBuilder $container)
+    {
+    }
+
+    /**
      * Gets the container class.
      *
      * @return string The container class
@@ -473,8 +534,51 @@ abstract class Kernel implements KernelInterface, TerminableInterface
         $cache = new ConfigCache($this->getCacheDir().'/'.$class.'.php', $this->debug);
         $fresh = true;
         if (!$cache->isFresh()) {
-            $container = $this->buildContainer();
-            $container->compile();
+            if ($this->debug) {
+                $collectedLogs = array();
+                $previousHandler = set_error_handler(function ($type, $message, $file, $line) use (&$collectedLogs, &$previousHandler) {
+                    if (E_USER_DEPRECATED !== $type && E_DEPRECATED !== $type) {
+                        return $previousHandler ? $previousHandler($type, $message, $file, $line) : false;
+                    }
+
+                    if (isset($collectedLogs[$message])) {
+                        ++$collectedLogs[$message]['count'];
+
+                        return;
+                    }
+
+                    $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+                    // Clean the trace by removing first frames added by the error handler itself.
+                    for ($i = 0; isset($backtrace[$i]); ++$i) {
+                        if (isset($backtrace[$i]['file'], $backtrace[$i]['line']) && $backtrace[$i]['line'] === $line && $backtrace[$i]['file'] === $file) {
+                            $backtrace = array_slice($backtrace, 1 + $i);
+                            break;
+                        }
+                    }
+
+                    $collectedLogs[$message] = array(
+                        'type' => $type,
+                        'message' => $message,
+                        'file' => $file,
+                        'line' => $line,
+                        'trace' => $backtrace,
+                        'count' => 1,
+                    );
+                });
+            }
+
+            try {
+                $container = null;
+                $container = $this->buildContainer();
+                $container->compile();
+            } finally {
+                if ($this->debug) {
+                    restore_error_handler();
+
+                    file_put_contents($this->getCacheDir().'/'.$class.'Deprecations.log', serialize(array_values($collectedLogs)));
+                    file_put_contents($this->getCacheDir().'/'.$class.'Compiler.log', null !== $container ? implode("\n", $container->getCompiler()->getLog()) : '');
+                }
+            }
             $this->dumpContainer($cache, $container, $class, $this->getContainerBaseClass());
 
             $fresh = false;
@@ -512,6 +616,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
         return array_merge(
             array(
                 'kernel.root_dir' => realpath($this->rootDir) ?: $this->rootDir,
+                'kernel.project_dir' => realpath($this->getProjectDir()) ?: $this->getProjectDir(),
                 'kernel.environment' => $this->environment,
                 'kernel.debug' => $this->debug,
                 'kernel.name' => $this->name,
@@ -522,7 +627,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
                 'kernel.charset' => $this->getCharset(),
                 'kernel.container_class' => $this->getContainerClass(),
             ),
-            $this->getEnvParameters()
+            $this->getEnvParameters(false)
         );
     }
 
@@ -532,12 +637,19 @@ abstract class Kernel implements KernelInterface, TerminableInterface
      * Only the parameters starting with "SYMFONY__" are considered.
      *
      * @return array An array of parameters
+     *
+     * @deprecated since version 3.3, to be removed in 4.0
      */
     protected function getEnvParameters()
     {
+        if (0 === func_num_args() || func_get_arg(0)) {
+            @trigger_error(sprintf('The %s() method is deprecated as of 3.3 and will be removed in 4.0. Use the %%env()%% syntax to get the value of any environment variable from configuration files instead.', __METHOD__), E_USER_DEPRECATED);
+        }
+
         $parameters = array();
         foreach ($_SERVER as $key => $value) {
             if (0 === strpos($key, 'SYMFONY__')) {
+                @trigger_error(sprintf('The support of special environment variables that start with SYMFONY__ (such as "%s") is deprecated as of 3.3 and will be removed in 4.0. Use the %%env()%% syntax instead to get the value of environment variables in configuration files.', $key), E_USER_DEPRECATED);
                 $parameters[strtolower(str_replace('__', '.', substr($key, 9)))] = $value;
             }
         }
@@ -572,7 +684,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
             $container->merge($cont);
         }
 
-        $container->addCompilerPass(new AddClassesToCachePass($this));
+        $container->addCompilerPass(new AddAnnotatedClassesToCachePass($this));
         $container->addResource(new EnvParametersResource('SYMFONY__'));
 
         return $container;
@@ -580,8 +692,6 @@ abstract class Kernel implements KernelInterface, TerminableInterface
 
     /**
      * Prepares the ContainerBuilder before it is compiled.
-     *
-     * @param ContainerBuilder $container A ContainerBuilder instance
      */
     protected function prepareContainer(ContainerBuilder $container)
     {
@@ -596,9 +706,12 @@ abstract class Kernel implements KernelInterface, TerminableInterface
                 $container->addObjectResource($bundle);
             }
         }
+
         foreach ($this->bundles as $bundle) {
             $bundle->build($container);
         }
+
+        $this->build($container);
 
         // ensure these extensions are implicitly loaded
         $container->getCompilerPassConfig()->setMergePass(new MergeExtensionConfigurationPass($extensions));
@@ -611,7 +724,8 @@ abstract class Kernel implements KernelInterface, TerminableInterface
      */
     protected function getContainerBuilder()
     {
-        $container = new ContainerBuilder(new ParameterBag($this->getKernelParameters()));
+        $container = new ContainerBuilder();
+        $container->getParameterBag()->add($this->getKernelParameters());
 
         if (class_exists('ProxyManager\Configuration') && class_exists('Symfony\Bridge\ProxyManager\LazyProxy\Instantiator\RuntimeInstantiator')) {
             $container->setProxyInstantiator(new RuntimeInstantiator());
@@ -645,8 +759,6 @@ abstract class Kernel implements KernelInterface, TerminableInterface
     /**
      * Returns a loader for the container.
      *
-     * @param ContainerInterface $container The service container
-     *
      * @return DelegatingLoader The loader
      */
     protected function getContainerLoader(ContainerInterface $container)
@@ -657,6 +769,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
             new YamlFileLoader($container, $locator),
             new IniFileLoader($container, $locator),
             new PhpFileLoader($container, $locator),
+            new GlobFileLoader($locator),
             new DirectoryLoader($container, $locator),
             new ClosureLoader($container),
         ));
@@ -693,7 +806,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
                 do {
                     $token = $tokens[++$i];
                     $output .= isset($token[1]) && 'b"' !== $token ? $token[1] : $token;
-                } while ($token[0] !== T_END_HEREDOC);
+                } while (T_END_HEREDOC !== $token[0]);
                 $rawChunk = '';
             } elseif (T_WHITESPACE === $token[0]) {
                 if ($ignoreSpace) {
@@ -718,7 +831,7 @@ abstract class Kernel implements KernelInterface, TerminableInterface
 
         $output .= $rawChunk;
 
-        if (PHP_VERSION_ID >= 70000) {
+        if (\PHP_VERSION_ID >= 70000) {
             // PHP 7 memory manager will not release after token_get_all(), see https://bugs.php.net/70098
             unset($tokens, $rawChunk);
             gc_mem_caches();
@@ -734,7 +847,11 @@ abstract class Kernel implements KernelInterface, TerminableInterface
 
     public function unserialize($data)
     {
-        list($environment, $debug) = unserialize($data);
+        if (\PHP_VERSION_ID >= 70000) {
+            list($environment, $debug) = unserialize($data, array('allowed_classes' => false));
+        } else {
+            list($environment, $debug) = unserialize($data);
+        }
 
         $this->__construct($environment, $debug);
     }

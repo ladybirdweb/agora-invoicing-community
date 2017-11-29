@@ -36,16 +36,16 @@ class SplCaster
         $b = array(
             $prefix.'flag::STD_PROP_LIST' => (bool) ($flags & \ArrayObject::STD_PROP_LIST),
             $prefix.'flag::ARRAY_AS_PROPS' => (bool) ($flags & \ArrayObject::ARRAY_AS_PROPS),
-            $prefix.'iteratorClass' => $c->getIteratorClass(),
+            $prefix.'iteratorClass' => new ClassStub($c->getIteratorClass()),
             $prefix.'storage' => $c->getArrayCopy(),
         );
 
-        if ($class === 'ArrayObject') {
+        if ('ArrayObject' === $class) {
             $a = $b;
         } else {
             if (!($flags & \ArrayObject::STD_PROP_LIST)) {
                 $c->setFlags(\ArrayObject::STD_PROP_LIST);
-                $a = Caster::castObject($c, new \ReflectionClass($class));
+                $a = Caster::castObject($c, $class);
                 $c->setFlags($flags);
             }
 
@@ -115,6 +115,10 @@ class SplCaster
             }
         }
 
+        if (isset($a[$prefix.'realPath'])) {
+            $a[$prefix.'realPath'] = new LinkStub($a[$prefix.'realPath']);
+        }
+
         if (isset($a[$prefix.'perms'])) {
             $a[$prefix.'perms'] = new ConstStub(sprintf('0%o', $a[$prefix.'perms']), $a[$prefix.'perms']);
         }
@@ -180,7 +184,7 @@ class SplCaster
         $storage = array();
         unset($a[Caster::PREFIX_DYNAMIC."\0gcdata"]); // Don't hit https://bugs.php.net/65967
 
-        foreach ($c as $obj) {
+        foreach (clone $c as $obj) {
             $storage[spl_object_hash($obj)] = array(
                 'object' => $obj,
                 'info' => $c->getInfo(),

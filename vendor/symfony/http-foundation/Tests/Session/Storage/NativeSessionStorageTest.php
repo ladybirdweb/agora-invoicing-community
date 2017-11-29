@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\HttpFoundation\Tests\Session\Storage;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 use Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler;
@@ -28,7 +29,7 @@ use Symfony\Component\HttpFoundation\Session\Storage\Proxy\SessionHandlerProxy;
  * @runTestsInSeparateProcesses
  * @preserveGlobalState disabled
  */
-class NativeSessionStorageTest extends \PHPUnit_Framework_TestCase
+class NativeSessionStorageTest extends TestCase
 {
     private $savePath;
 
@@ -53,8 +54,6 @@ class NativeSessionStorageTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param array $options
-     *
      * @return NativeSessionStorage
      */
     protected function getStorage(array $options = array())
@@ -242,5 +241,37 @@ class NativeSessionStorageTest extends \PHPUnit_Framework_TestCase
         $storage->start();
         $this->assertSame($id, $storage->getId(), 'Same session ID after restarting');
         $this->assertSame(7, $storage->getBag('attributes')->get('lucky'), 'Data still available');
+    }
+
+    public function testCanCreateNativeSessionStorageWhenSessionAlreadyStarted()
+    {
+        session_start();
+        $this->getStorage();
+
+        // Assert no exception has been thrown by `getStorage()`
+        $this->addToAssertionCount(1);
+    }
+
+    public function testSetSessionOptionsOnceSessionStartedIsIgnored()
+    {
+        session_start();
+        $this->getStorage(array(
+            'name' => 'something-else',
+        ));
+
+        // Assert no exception has been thrown by `getStorage()`
+        $this->addToAssertionCount(1);
+    }
+
+    public function testGetBagsOnceSessionStartedIsIgnored()
+    {
+        session_start();
+        $bag = new AttributeBag();
+        $bag->setName('flashes');
+
+        $storage = $this->getStorage();
+        $storage->registerBag($bag);
+
+        $this->assertEquals($storage->getBag('flashes'), $bag);
     }
 }

@@ -2,15 +2,17 @@
 
 namespace Collective\Html;
 
-use DateTime;
 use BadMethodCallException;
+use DateTime;
+use Illuminate\Contracts\Routing\UrlGenerator;
+use Illuminate\Contracts\Session\Session;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\HtmlString;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Session\SessionInterface;
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\Contracts\Routing\UrlGenerator;
 
 class FormBuilder
 {
@@ -50,7 +52,7 @@ class FormBuilder
     /**
      * The session store implementation.
      *
-     * @var \Illuminate\Session\SessionInterface
+     * @var \Illuminate\Contracts\Session\Session
      */
     protected $session;
 
@@ -90,6 +92,14 @@ class FormBuilder
      * @var array
      */
     protected $skipValueTypes = ['file', 'password', 'checkbox', 'radio'];
+
+
+    /**
+     * Input Type.
+     *
+     * @var null
+     */
+    protected $type = null;
 
     /**
      * Create a new form builder instance.
@@ -202,7 +212,7 @@ class FormBuilder
      */
     public function token()
     {
-        $token = ! empty($this->csrfToken) ? $this->csrfToken : $this->session->getToken();
+        $token = ! empty($this->csrfToken) ? $this->csrfToken : $this->session->token();
 
         return $this->hidden('_token', $token);
     }
@@ -257,6 +267,8 @@ class FormBuilder
      */
     public function input($type, $name, $value = null, $options = [])
     {
+        $this->type = $type;
+
         if (! isset($options['name'])) {
             $options['name'] = $name;
         }
@@ -319,6 +331,20 @@ class FormBuilder
     public function hidden($name, $value = null, $options = [])
     {
         return $this->input('hidden', $name, $value, $options);
+    }
+
+    /**
+     * Create a search input field.
+     *
+     * @param  string $name
+     * @param  string $value
+     * @param  array  $options
+     *
+     * @return \Illuminate\Support\HtmlString
+     */
+    public function search($name, $value = null, $options = [])
+    {
+        return $this->input('search', $name, $value, $options);
     }
 
     /**
@@ -469,6 +495,8 @@ class FormBuilder
      */
     public function textarea($name, $value = null, $options = [])
     {
+        $this->type = 'textarea';
+
         if (! isset($options['name'])) {
             $options['name'] = $name;
         }
@@ -535,21 +563,29 @@ class FormBuilder
      * @param  string $name
      * @param  array  $list
      * @param  string $selected
-     * @param  array  $options
+     * @param  array  $selectAttributes
+     * @param  array  $optionsAttributes
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function select($name, $list = [], $selected = null, $options = [])
-    {
+    public function select(
+        $name,
+        $list = [],
+        $selected = null,
+        array $selectAttributes = [],
+        array $optionsAttributes = []
+    ) {
+        $this->type = 'select';
+
         // When building a select box the "value" attribute is really the selected one
         // so we will use that when checking the model or session for a value which
         // should provide a convenient method of re-populating the forms on post.
         $selected = $this->getValueAttribute($name, $selected);
 
-        $options['id'] = $this->getIdAttribute($name, $options);
+        $selectAttributes['id'] = $this->getIdAttribute($name, $selectAttributes);
 
-        if (! isset($options['name'])) {
-            $options['name'] = $name;
+        if (! isset($selectAttributes['name'])) {
+            $selectAttributes['name'] = $name;
         }
 
         // We will simply loop through the options and build an HTML value for each of
@@ -557,23 +593,24 @@ class FormBuilder
         // all together into one single HTML element that can be put on the form.
         $html = [];
 
-        if (isset($options['placeholder'])) {
-            $html[] = $this->placeholderOption($options['placeholder'], $selected);
-            unset($options['placeholder']);
+        if (isset($selectAttributes['placeholder'])) {
+            $html[] = $this->placeholderOption($selectAttributes['placeholder'], $selected);
+            unset($selectAttributes['placeholder']);
         }
 
         foreach ($list as $value => $display) {
-            $html[] = $this->getSelectOption($display, $value, $selected);
+            $optionAttributes = isset($optionsAttributes[$value]) ? $optionsAttributes[$value] : [];
+            $html[] = $this->getSelectOption($display, $value, $selected, $optionAttributes);
         }
 
         // Once we have all of this HTML, we can join this into a single element after
         // formatting the attributes into an HTML "attributes" string, then we will
         // build out a final select statement, which will contain all the values.
-        $options = $this->html->attributes($options);
+        $selectAttributes = $this->html->attributes($selectAttributes);
 
         $list = implode('', $html);
 
-        return $this->toHtmlString("<select{$options}>{$list}</select>");
+        return $this->toHtmlString("<select{$selectAttributes}>{$list}</select>");
     }
 
     /**
@@ -637,16 +674,17 @@ class FormBuilder
      * @param  string $display
      * @param  string $value
      * @param  string $selected
+     * @param  array  $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
-    public function getSelectOption($display, $value, $selected)
+    public function getSelectOption($display, $value, $selected, array $attributes = [])
     {
         if (is_array($display)) {
-            return $this->optionGroup($display, $value, $selected);
+            return $this->optionGroup($display, $value, $selected, $attributes);
         }
 
-        return $this->option($display, $value, $selected);
+        return $this->option($display, $value, $selected, $attributes);
     }
 
     /**
@@ -655,15 +693,16 @@ class FormBuilder
      * @param  array  $list
      * @param  string $label
      * @param  string $selected
+     * @param  array  $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function optionGroup($list, $label, $selected)
+    protected function optionGroup($list, $label, $selected, array $attributes = [])
     {
         $html = [];
 
         foreach ($list as $value => $display) {
-            $html[] = $this->option($display, $value, $selected);
+            $html[] = $this->option($display, $value, $selected, $attributes);
         }
 
         return $this->toHtmlString('<optgroup label="' . e($label) . '">' . implode('', $html) . '</optgroup>');
@@ -675,14 +714,15 @@ class FormBuilder
      * @param  string $display
      * @param  string $value
      * @param  string $selected
+     * @param  array  $attributes
      *
      * @return \Illuminate\Support\HtmlString
      */
-    protected function option($display, $value, $selected)
+    protected function option($display, $value, $selected, array $attributes = [])
     {
         $selected = $this->getSelectedValue($value, $selected);
 
-        $options = ['value' => $value, 'selected' => $selected];
+        $options = ['value' => $value, 'selected' => $selected] + $attributes;
 
         return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display) . '</option>');
     }
@@ -701,9 +741,7 @@ class FormBuilder
 
         $options = [
             'selected' => $selected,
-            'disabled' => 'disabled',
-            'hidden' => 'hidden',
-            'value' => ''
+            'value' => '',
         ];
 
         return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display) . '</option>');
@@ -720,7 +758,9 @@ class FormBuilder
     protected function getSelectedValue($value, $selected)
     {
         if (is_array($selected)) {
-            return in_array($value, $selected, true) ? 'selected' : null;
+            return in_array($value, $selected, true) || in_array((string) $value, $selected, true) ? 'selected' : null;
+        } elseif ($selected instanceof Collection) {
+            return $selected->contains($value) ? 'selected' : null;
         }
 
         return ((string) $value == (string) $selected) ? 'selected' : null;
@@ -773,6 +813,8 @@ class FormBuilder
      */
     protected function checkable($type, $name, $value, $checked, $options)
     {
+        $this->type = $type;
+
         $checked = $this->getCheckedState($type, $name, $value, $checked);
 
         if ($checked) {
@@ -1096,8 +1138,24 @@ class FormBuilder
             return $value;
         }
 
-        if (! is_null($this->old($name)) && $name != '_method') {
-            return $this->old($name);
+        $old = $this->old($name);
+
+        if (! is_null($old) && $name != '_method') {
+            return $old;
+        }
+
+        if (function_exists('app')) {
+            $hasNullMiddleware = app("Illuminate\Contracts\Http\Kernel")
+                ->hasMiddleware(ConvertEmptyStringsToNull::class);
+
+            if ($hasNullMiddleware
+                && is_null($old)
+                && is_null($value)
+                && !is_null($this->view->shared('errors'))
+                && count($this->view->shared('errors')) > 0
+            ) {
+                return null;
+            }
         }
 
         $request = $this->request($name);
@@ -1137,8 +1195,10 @@ class FormBuilder
      */
     protected function getModelValueAttribute($name)
     {
+        $key = $this->transformKey($name);
+
         if (method_exists($this->model, 'getFormValue')) {
-            return $this->model->getFormValue($this->transformKey($name));
+            return $this->model->getFormValue($key);
         }
 
         return data_get($this->model, $this->transformKey($name));
@@ -1154,7 +1214,25 @@ class FormBuilder
     public function old($name)
     {
         if (isset($this->session)) {
-            return $this->session->getOldInput($this->transformKey($name));
+            $key = $this->transformKey($name);
+            $payload = $this->session->getOldInput($key);
+
+            if (!is_array($payload)) {
+                return $payload;
+            }
+
+            if (!in_array($this->type, ['select', 'checkbox'])) {
+                if (!isset($this->payload[$key])) {
+                    $this->payload[$key] = collect($payload);
+                }
+
+                if (!empty($this->payload[$key])) {
+                    $value = $this->payload[$key]->shift();
+                    return $value;
+                }
+            }
+
+            return $payload;
         }
     }
 
@@ -1195,7 +1273,7 @@ class FormBuilder
     /**
      * Get the session store implementation.
      *
-     * @return  \Illuminate\Session\SessionInterface  $session
+     * @return  \Illuminate\Contracts\Session\Session  $session
      */
     public function getSessionStore()
     {
@@ -1205,11 +1283,11 @@ class FormBuilder
     /**
      * Set the session store implementation.
      *
-     * @param  \Illuminate\Session\SessionInterface $session
+     * @param  \Illuminate\Contracts\Session\Session $session
      *
      * @return $this
      */
-    public function setSessionStore(SessionInterface $session)
+    public function setSessionStore(Session $session)
     {
         $this->session = $session;
 

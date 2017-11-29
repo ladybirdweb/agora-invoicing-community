@@ -2,6 +2,8 @@
 
 namespace Illuminate\Support\Facades;
 
+use Illuminate\Notifications\ChannelManager;
+use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Support\Testing\Fakes\NotificationFake;
 
 /**
@@ -20,12 +22,24 @@ class Notification extends Facade
     }
 
     /**
+     * Begin sending a notification to an anonymous notifiable.
+     *
+     * @param  string  $channel
+     * @param  mixed  $route
+     * @return \Illuminate\Notifications\AnonymousNotifiable
+     */
+    public static function route($channel, $route)
+    {
+        return (new AnonymousNotifiable)->route($channel, $route);
+    }
+
+    /**
      * Get the registered name of the component.
      *
      * @return string
      */
     protected static function getFacadeAccessor()
     {
-        return 'Illuminate\Notifications\ChannelManager';
+        return ChannelManager::class;
     }
 }

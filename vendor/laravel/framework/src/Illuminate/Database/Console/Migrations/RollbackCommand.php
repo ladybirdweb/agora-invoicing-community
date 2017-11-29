@@ -49,7 +49,7 @@ class RollbackCommand extends BaseCommand
      *
      * @return void
      */
-    public function fire()
+    public function handle()
     {
         if (! $this->confirmToProceed()) {
             return;
@@ -58,7 +58,10 @@ class RollbackCommand extends BaseCommand
         $this->migrator->setConnection($this->option('database'));
 
         $this->migrator->rollback(
-            $this->getMigrationPaths(), ['pretend' => $this->option('pretend'), 'step' => (int) $this->option('step')]
+            $this->getMigrationPaths(), [
+                'pretend' => $this->option('pretend'),
+                'step' => (int) $this->option('step'),
+            ]
         );
 
         // Once the migrator has run we will grab the note output and send it out to

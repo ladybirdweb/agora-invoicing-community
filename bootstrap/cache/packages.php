@@ -1,47 +1,37 @@
-<?php return array (
-  'thomaswelton/laravel-gravatar' => 
-  array (
-    'providers' => 
-    array (
+<?php
+
+return [
+  'thomaswelton/laravel-gravatar' => [
+    'providers' => [
       0 => 'Thomaswelton\\LaravelGravatar\\LaravelGravatarServiceProvider',
-    ),
-    'aliases' => 
-    array (
+    ],
+    'aliases' => [
       'Gravatar' => 'Thomaswelton\\LaravelGravatar\\Facades\\Gravatar',
-    ),
-  ),
-  'barryvdh/laravel-dompdf' => 
-  array (
-    'providers' => 
-    array (
+    ],
+  ],
+  'barryvdh/laravel-dompdf' => [
+    'providers' => [
       0 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    ),
-    'aliases' => 
-    array (
+    ],
+    'aliases' => [
       'PDF' => 'Barryvdh\\DomPDF\\Facade',
-    ),
-  ),
-  'darryldecode/cart' => 
-  array (
-    'providers' => 
-    array (
+    ],
+  ],
+  'darryldecode/cart' => [
+    'providers' => [
       0 => 'Darryldecode\\Cart\\CartServiceProvider',
-    ),
-    'aliases' => 
-    array (
+    ],
+    'aliases' => [
       'Cart' => 'Darryldecode\\Cart\\Facades\\CartFacade',
-    ),
-  ),
-  'laravelcollective/html' => 
-  array (
-    'providers' => 
-    array (
+    ],
+  ],
+  'laravelcollective/html' => [
+    'providers' => [
       0 => 'Collective\\Html\\HtmlServiceProvider',
-    ),
-    'aliases' => 
-    array (
+    ],
+    'aliases' => [
       'Form' => 'Collective\\Html\\FormFacade',
       'Html' => 'Collective\\Html\\HtmlFacade',
-    ),
-  ),
-);
+    ],
+  ],
+];

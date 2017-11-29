@@ -25,7 +25,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      *
      * @var string
      */
-    const VERSION = '5.2.45';
+    const VERSION = '5.3.31';
 
     /**
      * The base path for the Laravel installation.
@@ -130,7 +130,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      *
      * @var string
      */
-    protected $namespace = null;
+    protected $namespace;
 
     /**
      * Create a new Illuminate application instance.
@@ -282,6 +282,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         $this->instance('path.public', $this->publicPath());
         $this->instance('path.storage', $this->storagePath());
         $this->instance('path.database', $this->databasePath());
+        $this->instance('path.resources', $this->resourcePath());
         $this->instance('path.bootstrap', $this->bootstrapPath());
     }
 
@@ -357,7 +358,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
      */
     public function langPath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'resources'.DIRECTORY_SEPARATOR.'lang';
+        return $this->resourcePath().DIRECTORY_SEPARATOR.'lang';
     }
 
     /**
@@ -393,6 +394,16 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         $this->instance('path.storage', $path);
 
         return $this;
+    }
+
+    /**
+     * Get the path to the resources directory.
+     *
+     * @return string
+     */
+    public function resourcePath()
+    {
+        return $this->basePath.DIRECTORY_SEPARATOR.'resources';
     }
 
     /**
@@ -454,7 +465,6 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     /**
      * Get or check the current application environment.
      *
-     * @param  mixed
      * @return string|bool
      */
     public function environment()
@@ -551,7 +561,9 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
             $provider = $this->resolveProviderClass($provider);
         }
 
-        $provider->register();
+        if (method_exists($provider, 'register')) {
+            $provider->register();
+        }
 
         // Once we have registered the service we will iterate through the options
         // and set each of them on the application so they will be available on
@@ -564,7 +576,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
 
         // If the application has already booted, we will call this boot method on
         // the provider class so it has an opportunity to do its boot logic and
-        // will be ready for any usage by the developer's application logics.
+        // will be ready for any usage by this developer's application logic.
         if ($this->booted) {
             $this->bootProvider($provider);
         }
@@ -582,7 +594,7 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
     {
         $name = is_string($provider) ? $provider : get_class($provider);
 
-        return Arr::first($this->serviceProviders, function ($key, $value) use ($name) {
+        return Arr::first($this->serviceProviders, function ($value) use ($name) {
             return $value instanceof $name;
         });
     }

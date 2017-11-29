@@ -3,7 +3,7 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
-    "homepage": "http://laravel.com",
+    "homepage": "https://laravel.com",
     "support": {
         "issues": "https://github.com/laravel/framework/issues",
         "source": "https://github.com/laravel/framework"
@@ -11,11 +11,11 @@
     "authors": [
         {
             "name": "Taylor Otwell",
-            "email": "taylorotwell@gmail.com"
+            "email": "taylor@laravel.com"
         }
     ],
     "require": {
-        "php": ">=5.5.9",
+        "php": ">=5.6.4",
         "ext-mbstring": "*",
         "ext-openssl": "*",
         "classpreloader/classpreloader": "~3.0",
@@ -25,19 +25,19 @@
         "monolog/monolog": "~1.11",
         "mtdowling/cron-expression": "~1.0",
         "nesbot/carbon": "~1.20",
-        "paragonie/random_compat": "~1.4",
-        "psy/psysh": "0.7.*",
-        "swiftmailer/swiftmailer": "~5.1",
-        "symfony/console": "2.8.*|3.0.*",
-        "symfony/debug": "2.8.*|3.0.*",
-        "symfony/finder": "2.8.*|3.0.*",
-        "symfony/http-foundation": "2.8.*|3.0.*",
-        "symfony/http-kernel": "2.8.*|3.0.*",
-        "symfony/polyfill-php56": "~1.0",
-        "symfony/process": "2.8.*|3.0.*",
-        "symfony/routing": "2.8.*|3.0.*",
-        "symfony/translation": "2.8.*|3.0.*",
-        "symfony/var-dumper": "2.8.*|3.0.*",
+        "paragonie/random_compat": "~1.4|~2.0",
+        "psy/psysh": "0.7.*|0.8.*",
+        "ramsey/uuid": "~3.0",
+        "swiftmailer/swiftmailer": "~5.4",
+        "symfony/console": "3.1.*",
+        "symfony/debug": "3.1.*",
+        "symfony/finder": "3.1.*",
+        "symfony/http-foundation": "3.1.*",
+        "symfony/http-kernel": "3.1.*",
+        "symfony/process": "3.1.*",
+        "symfony/routing": "3.1.*",
+        "symfony/translation": "3.1.*",
+        "symfony/var-dumper": "3.1.*",
         "vlucas/phpdotenv": "~2.2"
     },
     "replace": {
@@ -59,6 +59,7 @@
         "illuminate/http": "self.version",
         "illuminate/log": "self.version",
         "illuminate/mail": "self.version",
+        "illuminate/notifications": "self.version",
         "illuminate/pagination": "self.version",
         "illuminate/pipeline": "self.version",
         "illuminate/queue": "self.version",
@@ -75,15 +76,12 @@
         "aws/aws-sdk-php": "~3.0",
         "mockery/mockery": "~0.9.4",
         "pda/pheanstalk": "~3.0",
-        "phpunit/phpunit": "~4.1",
+        "phpunit/phpunit": "~5.4",
         "predis/predis": "~1.0",
-        "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*"
+        "symfony/css-selector": "3.1.*",
+        "symfony/dom-crawler": "3.1.*"
     },
     "autoload": {
-        "classmap": [
-            "src/Illuminate/Queue/IlluminateQueueClosure.php"
-        ],
         "files": [
             "src/Illuminate/Foundation/helpers.php",
             "src/Illuminate/Support/helpers.php"
@@ -94,7 +92,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "5.2-dev"
+            "dev-master": "5.3-dev"
         }
     },
     "suggest": {
@@ -107,9 +105,12 @@
         "pda/pheanstalk": "Required to use the beanstalk queue driver (~3.0).",
         "predis/predis": "Required to use the redis cache and queue drivers (~1.0).",
         "pusher/pusher-php-server": "Required to use the Pusher broadcast driver (~2.0).",
-        "symfony/css-selector": "Required to use some of the crawler integration testing tools (2.8.*|3.0.*).",
-        "symfony/dom-crawler": "Required to use most of the crawler integration testing tools (2.8.*|3.0.*).",
+        "symfony/css-selector": "Required to use some of the crawler integration testing tools (3.1.*).",
+        "symfony/dom-crawler": "Required to use most of the crawler integration testing tools (3.1.*).",
         "symfony/psr-http-message-bridge": "Required to use psr7 bridging features (0.2.*)."
+    },
+    "config": {
+        "sort-packages": true
     },
     "minimum-stability": "dev"
 }

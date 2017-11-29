@@ -83,10 +83,12 @@ Route::get('twitter', 'Common\SocialMediaController@getTweets');
 /*
  * Authentication
  */
-Route::controllers([
-    'auth'     => 'Auth\AuthController',
-    'password' => 'Auth\PasswordController',
-]);
+// Route::controllers([
+//     'auth'     => 'Auth\AuthController',
+//     'password' => 'Auth\PasswordController',
+// ]);
+
+Route::auth();
 Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
 Route::get('activate/{token}', 'Auth\AuthController@Activate');

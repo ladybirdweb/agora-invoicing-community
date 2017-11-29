@@ -29,18 +29,27 @@ class SparkPostTransport extends Transport
     protected $options = [];
 
     /**
+     * Transmission metadata.
+     *
+     * @var array
+     */
+    protected $metadata = [];
+
+    /**
      * Create a new SparkPost transport instance.
      *
      * @param  \GuzzleHttp\ClientInterface  $client
      * @param  string  $key
      * @param  array  $options
+     * @param  array  $metadata
      * @return void
      */
-    public function __construct(ClientInterface $client, $key, $options = [])
+    public function __construct(ClientInterface $client, $key, $options = [], $metadata = [])
     {
         $this->key = $key;
         $this->client = $client;
         $this->options = $options;
+        $this->metadata = $metadata;
     }
 
     /**
@@ -70,7 +79,15 @@ class SparkPostTransport extends Transport
             $options['json']['options'] = $this->options;
         }
 
-        return $this->client->post('https://api.sparkpost.com/api/v1/transmissions', $options);
+        if ($this->metadata) {
+            $options['json']['metadata'] = $this->metadata;
+        }
+
+        $this->client->post('https://api.sparkpost.com/api/v1/transmissions', $options);
+
+        $this->sendPerformed($message);
+
+        return $this->numberOfRecipients($message);
     }
 
     /**
@@ -123,5 +140,47 @@ class SparkPostTransport extends Transport
     public function setKey($key)
     {
         return $this->key = $key;
+    }
+
+    /**
+     * Get the transmission options being used by the transport.
+     *
+     * @return string
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * Set the transmission options being used by the transport.
+     *
+     * @param  array  $options
+     * @return array
+     */
+    public function setOptions(array $options)
+    {
+        return $this->options = $options;
+    }
+
+    /**
+     * Get the transmission metadata being used by the transport.
+     *
+     * @return string
+     */
+    public function getMetadata()
+    {
+        return $this->metadata;
+    }
+
+    /**
+     * Set the transmission metadata being used by the transport.
+     *
+     * @param  array  $metadata
+     * @return array
+     */
+    public function setMetadata(array $metadata)
+    {
+        return $this->metadata = $metadata;
     }
 }

@@ -174,7 +174,8 @@ class BelongsTo extends Relation
         // null or 0 in (depending on if incrementing keys are in use) so the query wont
         // fail plus returns zero results, which should be what the developer expects.
         if (count($keys) === 0) {
-            return [$this->related->getIncrementing() ? 0 : null];
+            return [$this->related->getIncrementing() &&
+                    $this->related->getKeyType() === 'int' ? 0 : null, ];
         }
 
         return array_values(array_unique($keys));
@@ -303,6 +304,16 @@ class BelongsTo extends Relation
     public function getOtherKey()
     {
         return $this->otherKey;
+    }
+
+    /**
+     * Get the name of the relationship.
+     *
+     * @return string
+     */
+    public function getRelation()
+    {
+        return $this->relation;
     }
 
     /**

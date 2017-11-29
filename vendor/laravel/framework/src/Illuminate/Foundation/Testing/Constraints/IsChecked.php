@@ -35,7 +35,7 @@ class IsChecked extends FormFieldConstraint
     {
         $crawler = $this->crawler($crawler);
 
-        return $this->field($crawler)->attr('checked') !== null;
+        return ! is_null($this->field($crawler)->attr('checked'));
     }
 
     /**
@@ -46,5 +46,15 @@ class IsChecked extends FormFieldConstraint
     protected function getFailureDescription()
     {
         return "the checkbox [{$this->selector}] is checked";
+    }
+
+    /**
+     * Returns the reversed description of the failure.
+     *
+     * @return string
+     */
+    protected function getReverseFailureDescription()
+    {
+        return "the checkbox [{$this->selector}] is not checked";
     }
 }

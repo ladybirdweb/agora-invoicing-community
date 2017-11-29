@@ -132,7 +132,7 @@ class QuestionHelper extends Helper
             if (false === $ret) {
                 $ret = fgets($inputStream, 4096);
                 if (false === $ret) {
-                    throw new \RuntimeException('Aborted');
+                    throw new RuntimeException('Aborted');
                 }
                 $ret = trim($ret);
             }
@@ -198,6 +198,7 @@ class QuestionHelper extends Helper
      *
      * @param OutputInterface $output
      * @param Question        $question
+     * @param resource        $inputStream
      *
      * @return string
      */
@@ -314,7 +315,8 @@ class QuestionHelper extends Helper
     /**
      * Gets a hidden response from user.
      *
-     * @param OutputInterface $output An Output instance
+     * @param OutputInterface $output      An Output instance
+     * @param resource        $inputStream The handler resource
      *
      * @return string The answer
      *
@@ -393,6 +395,8 @@ class QuestionHelper extends Helper
 
             try {
                 return call_user_func($question->getValidator(), $interviewer());
+            } catch (RuntimeException $e) {
+                throw $e;
             } catch (\Exception $error) {
             }
         }

@@ -489,7 +489,7 @@ class FormBuilder
         // the element. Then we'll create the final textarea elements HTML for us.
         $options = $this->html->attributes($options);
 
-        return $this->toHtmlString('<textarea' . $options . '>' . e($value) . '</textarea>');
+        return $this->toHtmlString('<textarea' . $options . '>' . e($value). '</textarea>');
     }
 
     /**
@@ -699,8 +699,12 @@ class FormBuilder
     {
         $selected = $this->getSelectedValue(null, $selected);
 
-        $options = compact('selected');
-        $options['value'] = '';
+        $options = [
+            'selected' => $selected,
+            'disabled' => 'disabled',
+            'hidden' => 'hidden',
+            'value' => ''
+        ];
 
         return $this->toHtmlString('<option' . $this->html->attributes($options) . '>' . e($display) . '</option>');
     }

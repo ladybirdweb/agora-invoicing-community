@@ -128,7 +128,7 @@ return [
         'Illuminate\Translation\TranslationServiceProvider',
         'Illuminate\Validation\ValidationServiceProvider',
         'Illuminate\View\ViewServiceProvider',
-        'Illuminate\Html\HtmlServiceProvider',
+        // 'Illuminate\Html\HtmlServiceProvider',
         'Thomaswelton\LaravelGravatar\LaravelGravatarServiceProvider',
         //'Laravel\Socialite\SocialiteServiceProvider',
         'Chumper\Datatable\DatatableServiceProvider',

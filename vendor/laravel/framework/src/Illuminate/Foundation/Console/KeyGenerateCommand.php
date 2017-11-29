@@ -51,9 +51,9 @@ class KeyGenerateCommand extends Command
      */
     protected function setKeyInEnvironmentFile($key)
     {
-        file_put_contents($this->laravel->environmentFilePath(), str_replace(
-            'APP_KEY='.$this->laravel['config']['app.key'],
-            'APP_KEY='.$key,
+        file_put_contents($this->laravel->environmentFilePath(), preg_replace(
+            $this->keyReplacementPattern(),
+            "APP_KEY={$key}",
             file_get_contents($this->laravel->environmentFilePath())
         ));
     }
@@ -68,5 +68,17 @@ class KeyGenerateCommand extends Command
         return 'base64:'.base64_encode(random_bytes(
             $this->laravel['config']['app.cipher'] == 'AES-128-CBC' ? 16 : 32
         ));
+    }
+
+    /**
+     * Get a regex pattern that will match env APP_KEY with any random key.
+     *
+     * @return string
+     */
+    protected function keyReplacementPattern()
+    {
+        $escaped = preg_quote($this->laravel['config']['app.key'], '/');
+
+        return "/^APP_KEY={$escaped}/m";
     }
 }

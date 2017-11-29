@@ -11,6 +11,9 @@
 
 namespace Symfony\Component\HttpKernel\Tests\Fragment;
 
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\Controller\ArgumentResolver;
+use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\HttpKernel\Fragment\InlineFragmentRenderer;
@@ -49,9 +52,12 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
         $strategy->render(new ControllerReference('main_controller', array('object' => $object), array()), Request::create('/'));
     }
 
-    public function testRenderWithObjectsAsAttributesPassedAsObjectsInTheController()
+    /**
+     * @group legacy
+     */
+    public function testRenderWithObjectsAsAttributesPassedAsObjectsInTheControllerLegacy()
     {
-        $resolver = $this->getMock('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolver', array('getController'));
+        $resolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolver')->setMethods(array('getController'))->getMock();
         $resolver
             ->expects($this->once())
             ->method('getController')
@@ -60,7 +66,28 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
             }))
         ;
 
-        $kernel = new HttpKernel(new EventDispatcher(), $resolver);
+        $kernel = new HttpKernel(new EventDispatcher(), $resolver, new RequestStack());
+        $renderer = new InlineFragmentRenderer($kernel);
+
+        $response = $renderer->render(new ControllerReference('main_controller', array('object' => new \stdClass(), 'object1' => new Bar()), array()), Request::create('/'));
+        $this->assertEquals('bar', $response->getContent());
+    }
+
+    /**
+     * @group legacy
+     */
+    public function testRenderWithObjectsAsAttributesPassedAsObjectsInTheController()
+    {
+        $resolver = $this->getMockBuilder(ControllerResolverInterface::class)->getMock();
+        $resolver
+            ->expects($this->once())
+            ->method('getController')
+            ->will($this->returnValue(function (\stdClass $object, Bar $object1) {
+                return new Response($object1->getBar());
+            }))
+        ;
+
+        $kernel = new HttpKernel(new EventDispatcher(), $resolver, new RequestStack(), new ArgumentResolver());
         $renderer = new InlineFragmentRenderer($kernel);
 
         $response = $renderer->render(new ControllerReference('main_controller', array('object' => new \stdClass(), 'object1' => new Bar()), array()), Request::create('/'));
@@ -84,7 +111,7 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
      */
     public function testRenderExceptionNoIgnoreErrors()
     {
-        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
         $dispatcher->expects($this->never())->method('dispatch');
 
         $strategy = new InlineFragmentRenderer($this->getKernel($this->throwException(new \RuntimeException('foo'))), $dispatcher);
@@ -94,7 +121,7 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
 
     public function testRenderExceptionIgnoreErrors()
     {
-        $dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
+        $dispatcher = $this->getMockBuilder('Symfony\Component\EventDispatcher\EventDispatcherInterface')->getMock();
         $dispatcher->expects($this->once())->method('dispatch')->with(KernelEvents::EXCEPTION);
 
         $strategy = new InlineFragmentRenderer($this->getKernel($this->throwException(new \RuntimeException('foo'))), $dispatcher);
@@ -114,7 +141,7 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
 
     private function getKernel($returnValue)
     {
-        $kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $kernel
             ->expects($this->any())
             ->method('handle')
@@ -130,7 +157,7 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
      */
     private function getKernelExpectingRequest(Request $request)
     {
-        $kernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')->getMock();
         $kernel
             ->expects($this->any())
             ->method('handle')
@@ -142,8 +169,8 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
 
     public function testExceptionInSubRequestsDoesNotMangleOutputBuffers()
     {
-        $resolver = $this->getMock('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface');
-        $resolver
+        $controllerResolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ControllerResolverInterface')->getMock();
+        $controllerResolver
             ->expects($this->once())
             ->method('getController')
             ->will($this->returnValue(function () {
@@ -152,13 +179,15 @@ class InlineFragmentRendererTest extends \PHPUnit_Framework_TestCase
                 throw new \RuntimeException();
             }))
         ;
-        $resolver
+
+        $argumentResolver = $this->getMockBuilder('Symfony\\Component\\HttpKernel\\Controller\\ArgumentResolverInterface')->getMock();
+        $argumentResolver
             ->expects($this->once())
             ->method('getArguments')
             ->will($this->returnValue(array()))
         ;
 
-        $kernel = new HttpKernel(new EventDispatcher(), $resolver);
+        $kernel = new HttpKernel(new EventDispatcher(), $controllerResolver, new RequestStack(), $argumentResolver);
         $renderer = new InlineFragmentRenderer($kernel);
 
         // simulate a main request with output buffering

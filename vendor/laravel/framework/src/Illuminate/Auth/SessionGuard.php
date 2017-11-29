@@ -5,8 +5,8 @@ namespace Illuminate\Auth;
 use RuntimeException;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
-use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Auth\UserProvider;
+use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Auth\StatefulGuard;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Contracts\Auth\SupportsBasicAuth;
@@ -129,7 +129,9 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         $user = null;
 
         if (! is_null($id)) {
-            $user = $this->provider->retrieveById($id);
+            if ($user = $this->provider->retrieveById($id)) {
+                $this->fireAuthenticatedEvent($user);
+            }
         }
 
         // If the user is null, but we decrypt a "recaller" cookie we can attempt to
@@ -161,13 +163,11 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
             return;
         }
 
-        $id = $this->session->get($this->getName());
-
-        if (is_null($id) && $this->user()) {
-            $id = $this->user()->getAuthIdentifier();
+        if ($this->user()) {
+            return $this->user()->getAuthIdentifier();
         }
 
-        return $id;
+        return $this->session->get($this->getName());
     }
 
     /**
@@ -472,6 +472,19 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     }
 
     /**
+     * Fire the authenticated event if the dispatcher is set.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return void
+     */
+    protected function fireAuthenticatedEvent($user)
+    {
+        if (isset($this->events)) {
+            $this->events->fire(new Events\Authenticated($user));
+        }
+    }
+
+    /**
      * Update the session with the given ID.
      *
      * @param  string  $id
@@ -489,7 +502,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      *
      * @param  mixed  $id
      * @param  bool   $remember
-     * @return \Illuminate\Contracts\Auth\Authenticatable
+     * @return \Illuminate\Contracts\Auth\Authenticatable|false
      */
     public function loginUsingId($id, $remember = false)
     {
@@ -508,7 +521,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      * Log the given user ID into the application without sessions or cookies.
      *
      * @param  mixed  $id
-     * @return bool
+     * @return \Illuminate\Contracts\Auth\Authenticatable|false
      */
     public function onceUsingId($id)
     {
@@ -517,7 +530,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         if (! is_null($user)) {
             $this->setUser($user);
 
-            return true;
+            return $user;
         }
 
         return false;
@@ -719,6 +732,8 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         $this->user = $user;
 
         $this->loggedOut = false;
+
+        $this->fireAuthenticatedEvent($user);
 
         return $this;
     }

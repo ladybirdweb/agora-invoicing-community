@@ -39,7 +39,17 @@ class ResourceRegistrar
      *
      * @var bool
      */
-    protected static $singularParameters = false;
+    protected static $singularParameters = true;
+
+    /**
+     * The verbs used in the resource URIs.
+     *
+     * @var array
+     */
+    protected static $verbs = [
+        'create' => 'create',
+        'edit' => 'edit',
+    ];
 
     /**
      * Create a new resource registrar instance.
@@ -209,8 +219,12 @@ class ResourceRegistrar
      */
     protected function getResourceName($resource, $method, $options)
     {
-        if (isset($options['names'][$method])) {
-            return $options['names'][$method];
+        if (isset($options['names'])) {
+            if (is_string($options['names'])) {
+                $resource = $options['names'];
+            } elseif (isset($options['names'][$method])) {
+                return $options['names'][$method];
+            }
         }
 
         // If a global prefix has been assigned to all names for this resource, we will
@@ -235,13 +249,7 @@ class ResourceRegistrar
      */
     protected function getGroupResourceName($prefix, $resource, $method)
     {
-        $group = trim(str_replace('/', '.', $this->router->getLastGroupPrefix()), '.');
-
-        if (empty($group)) {
-            return trim("{$prefix}{$resource}.{$method}", '.');
-        }
-
-        return trim("{$prefix}{$group}.{$resource}.{$method}", '.');
+        return trim("{$prefix}{$resource}.{$method}", '.');
     }
 
     /**
@@ -292,7 +300,7 @@ class ResourceRegistrar
      */
     protected function addResourceCreate($name, $base, $controller, $options)
     {
-        $uri = $this->getResourceUri($name).'/create';
+        $uri = $this->getResourceUri($name).'/'.static::$verbs['create'];
 
         $action = $this->getResourceAction($name, $controller, 'create', $options);
 
@@ -346,7 +354,7 @@ class ResourceRegistrar
      */
     protected function addResourceEdit($name, $base, $controller, $options)
     {
-        $uri = $this->getResourceUri($name).'/{'.$base.'}/edit';
+        $uri = $this->getResourceUri($name).'/{'.$base.'}/'.static::$verbs['edit'];
 
         $action = $this->getResourceAction($name, $controller, 'edit', $options);
 
@@ -392,6 +400,7 @@ class ResourceRegistrar
     /**
      * Set or unset the unmapped global parameters to singular.
      *
+     * @param  bool  $singular
      * @return void
      */
     public static function singularParameters($singular = true)
@@ -418,5 +427,20 @@ class ResourceRegistrar
     public static function setParameters(array $parameters = [])
     {
         static::$parameterMap = $parameters;
+    }
+
+    /**
+     * Get or set the action verbs used in the resource URIs.
+     *
+     * @param  array  $verbs
+     * @return array
+     */
+    public static function verbs(array $verbs = [])
+    {
+        if (empty($verbs)) {
+            return static::$verbs;
+        } else {
+            static::$verbs = array_merge(static::$verbs, $verbs);
+        }
     }
 }

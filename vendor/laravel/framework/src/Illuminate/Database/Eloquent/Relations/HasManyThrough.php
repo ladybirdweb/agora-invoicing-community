@@ -138,7 +138,7 @@ class HasManyThrough extends Relation
     {
         $table = $this->parent->getTable();
 
-        $this->query->whereIn($table.'.'.$this->firstKey, $this->getKeys($models));
+        $this->query->whereIn($table.'.'.$this->firstKey, $this->getKeys($models, $this->localKey));
     }
 
     /**
@@ -308,6 +308,38 @@ class HasManyThrough extends Relation
     }
 
     /**
+     * Get the first related model record matching the attributes or instantiate it.
+     *
+     * @param  array  $attributes
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function firstOrNew(array $attributes)
+    {
+        if (is_null($instance = $this->where($attributes)->first())) {
+            $instance = $this->related->newInstance($attributes);
+        }
+
+        return $instance;
+    }
+
+    /**
+     * Create or update a related record matching the attributes, and fill it with values.
+     *
+     * @param  array  $attributes
+     * @param  array  $values
+     * @param  bool   $touch
+     * @return \Illuminate\Database\Eloquent\Model
+     */
+    public function updateOrCreate(array $attributes, array $values = [])
+    {
+        $instance = $this->firstOrNew($attributes);
+
+        $instance->fill($values)->save();
+
+        return $instance;
+    }
+
+    /**
      * Execute the query as a "select" statement.
      *
      * @param  array  $columns
@@ -373,13 +405,14 @@ class HasManyThrough extends Relation
      * @param  int  $perPage
      * @param  array  $columns
      * @param  string  $pageName
+     * @param  int|null  $page
      * @return \Illuminate\Contracts\Pagination\Paginator
      */
-    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page')
+    public function simplePaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null)
     {
         $this->query->addSelect($this->getSelectColumns($columns));
 
-        return $this->query->simplePaginate($perPage, $columns, $pageName);
+        return $this->query->simplePaginate($perPage, $columns, $pageName, $page);
     }
 
     /**

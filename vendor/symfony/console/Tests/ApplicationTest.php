@@ -176,7 +176,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException        \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage The command "foofoo" does not exist.
      */
     public function testGetInvalidCommand()
@@ -212,7 +212,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException        \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage The namespace "f" is ambiguous (foo, foo1).
      */
     public function testFindAmbiguousNamespace()
@@ -225,7 +225,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException        \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage There are no commands defined in the "bar" namespace.
      */
     public function testFindInvalidNamespace()
@@ -235,7 +235,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException        Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException        \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage Command "foo1" is not defined
      */
     public function testFindUniqueNameButNamespaceName()
@@ -313,7 +313,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider             provideInvalidCommandNamesSingle
-     * @expectedException        Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException        \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage Did you mean this
      */
     public function testFindAlternativeExceptionMessageSingle($name)
@@ -454,7 +454,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testFindNamespaceDoesNotFailOnDeepSimilarNamespaces()
     {
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getNamespaces'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getNamespaces'))->getMock();
         $application->expects($this->once())
             ->method('getNamespaces')
             ->will($this->returnValue(array('foo:sublong', 'bar:sub')));
@@ -463,7 +463,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Symfony\Component\Console\Exception\CommandNotFoundException
+     * @expectedException \Symfony\Component\Console\Exception\CommandNotFoundException
      * @expectedExceptionMessage Command "foo::bar" is not defined.
      */
     public function testFindWithDoubleColonInNameThrowsException()
@@ -476,7 +476,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
     public function testSetCatchExceptions()
     {
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getTerminalWidth'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->any())
             ->method('getTerminalWidth')
@@ -484,8 +484,14 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $tester = new ApplicationTester($application);
 
         $application->setCatchExceptions(true);
+        $this->assertTrue($application->areExceptionsCaught());
+
         $tester->run(array('command' => 'foo'), array('decorated' => false));
         $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception1.txt', $tester->getDisplay(true), '->setCatchExceptions() sets the catch exception flag');
+
+        $tester->run(array('command' => 'foo'), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception1.txt', $tester->getErrorOutput(true), '->setCatchExceptions() sets the catch exception flag');
+        $this->assertSame('', $tester->getDisplay(true));
 
         $application->setCatchExceptions(false);
         try {
@@ -497,46 +503,63 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function testAutoExitSetting()
+    {
+        $application = new Application();
+        $this->assertTrue($application->isAutoExitEnabled());
+
+        $application->setAutoExit(false);
+        $this->assertFalse($application->isAutoExitEnabled());
+    }
+
     public function testRenderException()
     {
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getTerminalWidth'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->any())
             ->method('getTerminalWidth')
             ->will($this->returnValue(120));
         $tester = new ApplicationTester($application);
 
-        $tester->run(array('command' => 'foo'), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception1.txt', $tester->getDisplay(true), '->renderException() renders a pretty exception');
+        $tester->run(array('command' => 'foo'), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception1.txt', $tester->getErrorOutput(true), '->renderException() renders a pretty exception');
 
-        $tester->run(array('command' => 'foo'), array('decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
-        $this->assertContains('Exception trace', $tester->getDisplay(), '->renderException() renders a pretty exception with a stack trace when verbosity is verbose');
+        $tester->run(array('command' => 'foo'), array('decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE, 'capture_stderr_separately' => true));
+        $this->assertContains('Exception trace', $tester->getErrorOutput(), '->renderException() renders a pretty exception with a stack trace when verbosity is verbose');
 
-        $tester->run(array('command' => 'list', '--foo' => true), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception2.txt', $tester->getDisplay(true), '->renderException() renders the command synopsis when an exception occurs in the context of a command');
+        $tester->run(array('command' => 'list', '--foo' => true), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception2.txt', $tester->getErrorOutput(true), '->renderException() renders the command synopsis when an exception occurs in the context of a command');
 
         $application->add(new \Foo3Command());
         $tester = new ApplicationTester($application);
-        $tester->run(array('command' => 'foo3:bar'), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception3.txt', $tester->getDisplay(true), '->renderException() renders a pretty exceptions with previous exceptions');
+        $tester->run(array('command' => 'foo3:bar'), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception3.txt', $tester->getErrorOutput(true), '->renderException() renders a pretty exceptions with previous exceptions');
+
+        $tester->run(array('command' => 'foo3:bar'), array('decorated' => false, 'verbosity' => Output::VERBOSITY_VERBOSE));
+        $this->assertRegExp('/\[Exception\]\s*First exception/', $tester->getDisplay(), '->renderException() renders a pretty exception without code exception when code exception is default and verbosity is verbose');
+        $this->assertRegExp('/\[Exception\]\s*Second exception/', $tester->getDisplay(), '->renderException() renders a pretty exception without code exception when code exception is 0 and verbosity is verbose');
+        $this->assertRegExp('/\[Exception \(404\)\]\s*Third exception/', $tester->getDisplay(), '->renderException() renders a pretty exception with code exception when code exception is 404 and verbosity is verbose');
 
         $tester->run(array('command' => 'foo3:bar'), array('decorated' => true));
         $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception3decorated.txt', $tester->getDisplay(true), '->renderException() renders a pretty exceptions with previous exceptions');
 
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
+        $tester->run(array('command' => 'foo3:bar'), array('decorated' => true, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception3decorated.txt', $tester->getErrorOutput(true), '->renderException() renders a pretty exceptions with previous exceptions');
+
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getTerminalWidth'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->any())
             ->method('getTerminalWidth')
             ->will($this->returnValue(32));
         $tester = new ApplicationTester($application);
 
-        $tester->run(array('command' => 'foo'), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception4.txt', $tester->getDisplay(true), '->renderException() wraps messages when they are bigger than the terminal');
+        $tester->run(array('command' => 'foo'), array('decorated' => false,  'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception4.txt', $tester->getErrorOutput(true), '->renderException() wraps messages when they are bigger than the terminal');
     }
 
     public function testRenderExceptionWithDoubleWidthCharacters()
     {
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getTerminalWidth'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->any())
             ->method('getTerminalWidth')
@@ -546,13 +569,13 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         });
         $tester = new ApplicationTester($application);
 
-        $tester->run(array('command' => 'foo'), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth1.txt', $tester->getDisplay(true), '->renderException() renders a pretty exceptions with previous exceptions');
+        $tester->run(array('command' => 'foo'), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth1.txt', $tester->getErrorOutput(true), '->renderException() renders a pretty exceptions with previous exceptions');
 
-        $tester->run(array('command' => 'foo'), array('decorated' => true));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth1decorated.txt', $tester->getDisplay(true), '->renderException() renders a pretty exceptions with previous exceptions');
+        $tester->run(array('command' => 'foo'), array('decorated' => true, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth1decorated.txt', $tester->getErrorOutput(true), '->renderException() renders a pretty exceptions with previous exceptions');
 
-        $application = $this->getMock('Symfony\Component\Console\Application', array('getTerminalWidth'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('getTerminalWidth'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->any())
             ->method('getTerminalWidth')
@@ -561,8 +584,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
             throw new \Exception('コマンドの実行中にエラーが発生しました。');
         });
         $tester = new ApplicationTester($application);
-        $tester->run(array('command' => 'foo'), array('decorated' => false));
-        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth2.txt', $tester->getDisplay(true), '->renderException() wraps messages when they are bigger than the terminal');
+        $tester->run(array('command' => 'foo'), array('decorated' => false, 'capture_stderr_separately' => true));
+        $this->assertStringEqualsFile(self::$fixturesPath.'/application_renderexception_doublewidth2.txt', $tester->getErrorOutput(true), '->renderException() wraps messages when they are bigger than the terminal');
     }
 
     public function testRun()
@@ -616,9 +639,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
 
         $tester->run(array('command' => 'list', '--quiet' => true));
         $this->assertSame('', $tester->getDisplay(), '->run() removes all output if --quiet is passed');
+        $this->assertFalse($tester->getInput()->isInteractive(), '->run() sets off the interactive mode if --quiet is passed');
 
         $tester->run(array('command' => 'list', '-q' => true));
         $this->assertSame('', $tester->getDisplay(), '->run() removes all output if -q is passed');
+        $this->assertFalse($tester->getInput()->isInteractive(), '->run() sets off the interactive mode if -q is passed');
 
         $tester->run(array('command' => 'list', '--verbose' => true));
         $this->assertSame(Output::VERBOSITY_VERBOSE, $tester->getOutput()->getVerbosity(), '->run() sets the output to verbose if --verbose is passed');
@@ -684,11 +709,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new \Exception('', 4);
 
-        $application = $this->getMock('Symfony\Component\Console\Application', array('doRun'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('doRun'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->once())
-             ->method('doRun')
-             ->will($this->throwException($exception));
+            ->method('doRun')
+            ->will($this->throwException($exception));
 
         $exitCode = $application->run(new ArrayInput(array()), new NullOutput());
 
@@ -699,11 +724,11 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
         $exception = new \Exception('', 0);
 
-        $application = $this->getMock('Symfony\Component\Console\Application', array('doRun'));
+        $application = $this->getMockBuilder('Symfony\Component\Console\Application')->setMethods(array('doRun'))->getMock();
         $application->setAutoExit(false);
         $application->expects($this->once())
-             ->method('doRun')
-             ->will($this->throwException($exception));
+            ->method('doRun')
+            ->will($this->throwException($exception));
 
         $exitCode = $application->run(new ArrayInput(array()), new NullOutput());
 
@@ -925,6 +950,80 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $tester = new ApplicationTester($application);
         $tester->run(array('command' => 'foo'));
         $this->assertContains('before.foo.caught.after.', $tester->getDisplay());
+    }
+
+    public function testRunWithError()
+    {
+        $this->setExpectedException('Exception', 'dymerr');
+
+        $application = new Application();
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+
+        $application->register('dym')->setCode(function (InputInterface $input, OutputInterface $output) {
+            $output->write('dym.');
+
+            throw new \Error('dymerr');
+        });
+
+        $tester = new ApplicationTester($application);
+        $tester->run(array('command' => 'dym'));
+    }
+
+    /**
+     * @expectedException        \LogicException
+     * @expectedExceptionMessage caught
+     */
+    public function testRunWithErrorAndDispatcher()
+    {
+        $application = new Application();
+        $application->setDispatcher($this->getDispatcher());
+        $application->setAutoExit(false);
+        $application->setCatchExceptions(false);
+
+        $application->register('dym')->setCode(function (InputInterface $input, OutputInterface $output) {
+            $output->write('dym.');
+
+            throw new \Error('dymerr');
+        });
+
+        $tester = new ApplicationTester($application);
+        $tester->run(array('command' => 'dym'));
+        $this->assertContains('before.dym.caught.after.', $tester->getDisplay(), 'The PHP Error did not dispached events');
+    }
+
+    public function testRunDispatchesAllEventsWithError()
+    {
+        $application = new Application();
+        $application->setDispatcher($this->getDispatcher());
+        $application->setAutoExit(false);
+
+        $application->register('dym')->setCode(function (InputInterface $input, OutputInterface $output) {
+            $output->write('dym.');
+
+            throw new \Error('dymerr');
+        });
+
+        $tester = new ApplicationTester($application);
+        $tester->run(array('command' => 'dym'));
+        $this->assertContains('before.dym.caught.after.', $tester->getDisplay(), 'The PHP Error did not dispached events');
+    }
+
+    public function testRunWithErrorFailingStatusCode()
+    {
+        $application = new Application();
+        $application->setDispatcher($this->getDispatcher());
+        $application->setAutoExit(false);
+
+        $application->register('dus')->setCode(function (InputInterface $input, OutputInterface $output) {
+            $output->write('dus.');
+
+            throw new \Error('duserr');
+        });
+
+        $tester = new ApplicationTester($application);
+        $tester->run(array('command' => 'dus'));
+        $this->assertSame(1, $tester->getStatusCode(), 'Status code should be 1');
     }
 
     public function testRunWithDispatcherSkippingCommand()

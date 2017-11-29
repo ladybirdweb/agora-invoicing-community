@@ -6,7 +6,7 @@
  * (c) Fabien Potencier <fabien@symfony.com>
  *
  * For the full copyright and license information, please view the LICENSE
- * file this was distributed with this source code.
+ * file that was distributed with this source code.
  */
 
 namespace Symfony\Component\HttpFoundation\Tests\Session\Storage\Handler;

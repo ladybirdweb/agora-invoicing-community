@@ -40,7 +40,14 @@ Basic usage
 
 ```php
 $curl = curl_init("https://example.org/");
-curl_setopt($curl, CURLOPT_CAINFO, \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath());
+
+$caPathOrFile = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
+if (is_dir($caPathOrFile) || (is_link($caPathOrFile) && is_dir(readlink($caPathOrFile)))) {
+    curl_setopt($curl, CURLOPT_CAPATH, $caPathOrFile);
+} else {
+    curl_setopt($curl, CURLOPT_CAINFO, $caPathOrFile);
+}
+
 $result = curl_exec($curl);
 ```
 
@@ -53,15 +60,23 @@ $opts = array(
     )
 );
 
-$caPath = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
-if (is_dir($caPath)) {
-    $opts['ssl']['capath'] = $caPath;
+$caPathOrFile = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
+if (is_dir($caPathOrFile) || (is_link($caPathOrFile) && is_dir(readlink($caPathOrFile)))) {
+    $opts['ssl']['capath'] = $caPathOrFile;
 } else {
-    $opts['ssl']['cafile'] = $caPath;
+    $opts['ssl']['cafile'] = $caPathOrFile;
 }
 
 $context = stream_context_create($opts);
 $result = file_get_contents('https://example.com', false, $context);
+```
+
+## To use with Guzzle
+
+```php
+$client = new \GuzzleHttp\Client([
+    \GuzzleHttp\RequestOptions::VERIFY => \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath()
+]);
 ```
 
 License

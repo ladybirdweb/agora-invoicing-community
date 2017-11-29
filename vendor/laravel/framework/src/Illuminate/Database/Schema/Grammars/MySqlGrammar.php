@@ -170,7 +170,9 @@ class MySqlGrammar extends Grammar
 
         $index = $this->wrap($command->index);
 
-        return "alter table {$table} add {$type} {$index}($columns)";
+        $algorithm = $command->algorithm ? ' using '.$command->algorithm : '';
+
+        return "alter table {$table} add {$type} {$index}{$algorithm}($columns)";
     }
 
     /**
@@ -374,7 +376,7 @@ class MySqlGrammar extends Grammar
     }
 
     /**
-     * Create the column definition for a integer type.
+     * Create the column definition for an integer type.
      *
      * @param  \Illuminate\Support\Fluent  $column
      * @return string
@@ -706,7 +708,9 @@ class MySqlGrammar extends Grammar
      */
     protected function modifyNullable(Blueprint $blueprint, Fluent $column)
     {
-        return $column->nullable ? ' null' : ' not null';
+        if (is_null($column->virtualAs) && is_null($column->storedAs)) {
+            return $column->nullable ? ' null' : ' not null';
+        }
     }
 
     /**
@@ -775,7 +779,7 @@ class MySqlGrammar extends Grammar
     protected function modifyComment(Blueprint $blueprint, Fluent $column)
     {
         if (! is_null($column->comment)) {
-            return ' comment "'.$column->comment.'"';
+            return " comment '".$column->comment."'";
         }
     }
 

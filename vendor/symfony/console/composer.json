@@ -17,7 +17,8 @@
     ],
     "require": {
         "php": ">=5.5.9",
-        "symfony/polyfill-mbstring": "~1.0"
+        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/debug": "~2.8|~3.0"
     },
     "require-dev": {
         "symfony/event-dispatcher": "~2.8|~3.0",
@@ -38,7 +39,7 @@
     "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "dev-master": "3.1-dev"
         }
     }
 }

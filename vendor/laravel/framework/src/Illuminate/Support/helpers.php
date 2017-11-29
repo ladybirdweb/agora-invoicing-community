@@ -44,22 +44,6 @@ if (! function_exists('array_add')) {
     }
 }
 
-if (! function_exists('array_build')) {
-    /**
-     * Build a new array using a callback.
-     *
-     * @param  array  $array
-     * @param  callable  $callback
-     * @return array
-     *
-     * @deprecated since version 5.2.
-     */
-    function array_build($array, callable $callback)
-    {
-        return Arr::build($array, $callback);
-    }
-}
-
 if (! function_exists('array_collapse')) {
     /**
      * Collapse an array of arrays into a single array.
@@ -174,15 +158,15 @@ if (! function_exists('array_get')) {
 
 if (! function_exists('array_has')) {
     /**
-     * Check if an item exists in an array using "dot" notation.
+     * Check if an item or items exist in an array using "dot" notation.
      *
      * @param  \ArrayAccess|array  $array
-     * @param  string  $key
+     * @param  string|array  $keys
      * @return bool
      */
-    function array_has($array, $key)
+    function array_has($array, $keys)
     {
-        return Arr::has($array, $key);
+        return Arr::has($array, $keys);
     }
 }
 
@@ -350,11 +334,15 @@ if (! function_exists('class_uses_recursive')) {
     /**
      * Returns all traits used by a class, its subclasses and trait of their traits.
      *
-     * @param  string  $class
+     * @param  object|string  $class
      * @return array
      */
     function class_uses_recursive($class)
     {
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+
         $results = [];
 
         foreach (array_merge([$class => $class], class_parents($class)) as $class) {
@@ -410,7 +398,7 @@ if (! function_exists('data_get')) {
 
         $key = is_array($key) ? $key : explode('.', $key);
 
-        while (($segment = array_shift($key)) !== null) {
+        while (! is_null($segment = array_shift($key))) {
             if ($segment === '*') {
                 if ($target instanceof Collection) {
                     $target = $target->all();
@@ -517,7 +505,7 @@ if (! function_exists('dd')) {
 
 if (! function_exists('e')) {
     /**
-     * Escape HTML entities in a string.
+     * Escape HTML special characters in a string.
      *
      * @param  \Illuminate\Contracts\Support\Htmlable|string  $value
      * @return string
@@ -528,7 +516,7 @@ if (! function_exists('e')) {
             return $value->toHtml();
         }
 
-        return htmlentities($value, ENT_QUOTES, 'UTF-8', false);
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
     }
 }
 
@@ -599,7 +587,7 @@ if (! function_exists('object_get')) {
     }
 }
 
-if (! function_exists('preg_replace_sub')) {
+if (! function_exists('preg_replace_array')) {
     /**
      * Replace a given pattern with each value in the array in sequentially.
      *
@@ -608,9 +596,9 @@ if (! function_exists('preg_replace_sub')) {
      * @param  string  $subject
      * @return string
      */
-    function preg_replace_sub($pattern, &$replacements, $subject)
+    function preg_replace_array($pattern, array $replacements, $subject)
     {
-        return preg_replace_callback($pattern, function ($match) use (&$replacements) {
+        return preg_replace_callback($pattern, function () use (&$replacements) {
             foreach ($replacements as $key => $value) {
                 return array_shift($replacements);
             }
@@ -743,11 +731,7 @@ if (! function_exists('str_replace_array')) {
      */
     function str_replace_array($search, array $replace, $subject)
     {
-        foreach ($replace as $value) {
-            $subject = preg_replace('/'.$search.'/', $value, $subject, 1);
-        }
-
-        return $subject;
+        return Str::replaceArray($search, $replace, $subject);
     }
 }
 
@@ -818,6 +802,22 @@ if (! function_exists('studly_case')) {
     function studly_case($value)
     {
         return Str::studly($value);
+    }
+}
+
+if (! function_exists('tap')) {
+    /**
+     * Call the given Closure with the given value then return the value.
+     *
+     * @param  mixed  $value
+     * @param  callable  $callback
+     * @return mixed
+     */
+    function tap($value, $callback)
+    {
+        $callback($value);
+
+        return $value;
     }
 }
 

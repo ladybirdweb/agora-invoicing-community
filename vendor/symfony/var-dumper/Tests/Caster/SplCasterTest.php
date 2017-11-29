@@ -96,10 +96,10 @@ SplFileObject {
   file: true
   dir: false
   link: false
-%AcsvControl: array:2 [
+%AcsvControl: array:%d [
     0 => ","
     1 => """
-  ]
+%A]
   flags: DROP_NEW_LINE|SKIP_EMPTY
   maxLineLen: 0
   fstat: array:26 [
@@ -116,5 +116,31 @@ SplFileObject {
 }
 EOTXT;
         $this->assertDumpMatchesFormat($dump, $var);
+    }
+
+    /**
+     * @dataProvider provideCastSplDoublyLinkedList
+     */
+    public function testCastSplDoublyLinkedList($modeValue, $modeDump)
+    {
+        $var = new \SplDoublyLinkedList();
+        $var->setIteratorMode($modeValue);
+        $dump = <<<EOTXT
+SplDoublyLinkedList {
+%Amode: $modeDump
+  dllist: []
+}
+EOTXT;
+        $this->assertDumpMatchesFormat($dump, $var);
+    }
+
+    public function provideCastSplDoublyLinkedList()
+    {
+        return array(
+            array(\SplDoublyLinkedList::IT_MODE_FIFO, 'IT_MODE_FIFO | IT_MODE_KEEP'),
+            array(\SplDoublyLinkedList::IT_MODE_LIFO, 'IT_MODE_LIFO | IT_MODE_KEEP'),
+            array(\SplDoublyLinkedList::IT_MODE_FIFO | \SplDoublyLinkedList::IT_MODE_DELETE, 'IT_MODE_FIFO | IT_MODE_DELETE'),
+            array(\SplDoublyLinkedList::IT_MODE_LIFO | \SplDoublyLinkedList::IT_MODE_DELETE, 'IT_MODE_LIFO | IT_MODE_DELETE'),
+        );
     }
 }

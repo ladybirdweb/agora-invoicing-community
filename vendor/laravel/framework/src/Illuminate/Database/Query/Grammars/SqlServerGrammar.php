@@ -2,6 +2,7 @@
 
 namespace Illuminate\Database\Query\Grammars;
 
+use Illuminate\Support\Arr;
 use Illuminate\Database\Query\Builder;
 
 class SqlServerGrammar extends Grammar
@@ -106,7 +107,7 @@ class SqlServerGrammar extends Grammar
         // An ORDER BY clause is required to make this offset query work, so if one does
         // not exist we'll just create a dummy clause to trick the database and so it
         // does not complain about the queries for not having an "order by" clause.
-        if (! isset($components['orders'])) {
+        if (empty($components['orders'])) {
             $components['orders'] = 'order by (select 0)';
         }
 
@@ -331,6 +332,22 @@ class SqlServerGrammar extends Grammar
         }
 
         return trim("update {$table}{$joins} set $columns $where");
+    }
+
+    /**
+     * Prepare the bindings for an update statement.
+     *
+     * @param  array  $bindings
+     * @param  array  $values
+     * @return array
+     */
+    public function prepareBindingsForUpdate(array $bindings, array $values)
+    {
+        $bindingsWithoutJoin = Arr::except($bindings, 'join');
+
+        return array_values(
+            array_merge($values, $bindings['join'], Arr::flatten($bindingsWithoutJoin))
+        );
     }
 
     /**

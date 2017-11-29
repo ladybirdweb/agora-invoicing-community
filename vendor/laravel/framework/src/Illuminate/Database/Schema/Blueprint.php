@@ -317,6 +317,16 @@ class Blueprint
     }
 
     /**
+     * Indicate that the soft delete column should be dropped.
+     *
+     * @return void
+     */
+    public function dropSoftDeletesTz()
+    {
+        $this->dropSoftDeletes();
+    }
+
+    /**
      * Indicate that the remember token column should be dropped.
      *
      * @return void
@@ -342,11 +352,12 @@ class Blueprint
      *
      * @param  string|array  $columns
      * @param  string  $name
+     * @param  string|null  $algorithm
      * @return \Illuminate\Support\Fluent
      */
-    public function primary($columns, $name = null)
+    public function primary($columns, $name = null, $algorithm = null)
     {
-        return $this->indexCommand('primary', $columns, $name);
+        return $this->indexCommand('primary', $columns, $name, $algorithm);
     }
 
     /**
@@ -354,11 +365,12 @@ class Blueprint
      *
      * @param  string|array  $columns
      * @param  string  $name
+     * @param  string|null  $algorithm
      * @return \Illuminate\Support\Fluent
      */
-    public function unique($columns, $name = null)
+    public function unique($columns, $name = null, $algorithm = null)
     {
-        return $this->indexCommand('unique', $columns, $name);
+        return $this->indexCommand('unique', $columns, $name, $algorithm);
     }
 
     /**
@@ -366,11 +378,12 @@ class Blueprint
      *
      * @param  string|array  $columns
      * @param  string  $name
+     * @param  string|null  $algorithm
      * @return \Illuminate\Support\Fluent
      */
-    public function index($columns, $name = null)
+    public function index($columns, $name = null, $algorithm = null)
     {
-        return $this->indexCommand('index', $columns, $name);
+        return $this->indexCommand('index', $columns, $name, $algorithm);
     }
 
     /**
@@ -819,6 +832,16 @@ class Blueprint
     }
 
     /**
+     * Add a "deleted at" timestampTz for the table.
+     *
+     * @return \Illuminate\Support\Fluent
+     */
+    public function softDeletesTz()
+    {
+        return $this->timestampTz('deleted_at')->nullable();
+    }
+
+    /**
      * Create a new binary column on the table.
      *
      * @param  string  $column
@@ -879,6 +902,22 @@ class Blueprint
     }
 
     /**
+     * Add nullable columns for a polymorphic table.
+     *
+     * @param  string  $name
+     * @param  string|null  $indexName
+     * @return void
+     */
+    public function nullableMorphs($name, $indexName = null)
+    {
+        $this->unsignedInteger("{$name}_id")->nullable();
+
+        $this->string("{$name}_type")->nullable();
+
+        $this->index(["{$name}_id", "{$name}_type"], $indexName);
+    }
+
+    /**
      * Adds the `remember_token` column to the table.
      *
      * @return \Illuminate\Support\Fluent
@@ -918,9 +957,10 @@ class Blueprint
      * @param  string        $type
      * @param  string|array  $columns
      * @param  string        $index
+     * @param  string|null   $algorithm
      * @return \Illuminate\Support\Fluent
      */
-    protected function indexCommand($type, $columns, $index)
+    protected function indexCommand($type, $columns, $index, $algorithm = null)
     {
         $columns = (array) $columns;
 
@@ -931,7 +971,7 @@ class Blueprint
             $index = $this->createIndexName($type, $columns);
         }
 
-        return $this->addCommand($type, compact('index', 'columns'));
+        return $this->addCommand($type, compact('index', 'columns', 'algorithm'));
     }
 
     /**

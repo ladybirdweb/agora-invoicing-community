@@ -261,7 +261,7 @@ class Request
     /**
      * Creates a new request with values from PHP's super globals.
      *
-     * @return Request A new request
+     * @return static
      */
     public static function createFromGlobals()
     {
@@ -304,7 +304,7 @@ class Request
      * @param array  $server     The server parameters ($_SERVER)
      * @param string $content    The raw body data
      *
-     * @return Request A Request instance
+     * @return static
      */
     public static function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array(), $content = null)
     {
@@ -422,7 +422,7 @@ class Request
      * @param array $files      The FILES parameters
      * @param array $server     The SERVER parameters
      *
-     * @return Request The duplicated request
+     * @return static
      */
     public function duplicate(array $query = null, array $request = null, array $attributes = null, array $cookies = null, array $files = null, array $server = null)
     {
@@ -1316,6 +1316,22 @@ class Request
     }
 
     /**
+     * Gets the mime types associated with the format.
+     *
+     * @param string $format The format
+     *
+     * @return array The associated mime types
+     */
+    public static function getMimeTypes($format)
+    {
+        if (null === static::$formats) {
+            static::initializeFormats();
+        }
+
+        return isset(static::$formats[$format]) ? static::$formats[$format] : array();
+    }
+
+    /**
      * Gets the format associated with the mime type.
      *
      * @param string $mimeType The associated mime type
@@ -1459,11 +1475,27 @@ class Request
     /**
      * Checks whether the method is safe or not.
      *
+     * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
+     *
+     * @param bool $andCacheable Adds the additional condition that the method should be cacheable. True by default.
+     *
      * @return bool
      */
-    public function isMethodSafe()
+    public function isMethodSafe(/* $andCacheable = true */)
     {
-        return in_array($this->getMethod(), array('GET', 'HEAD', 'OPTIONS', 'TRACE'));
+        return in_array($this->getMethod(), 0 < func_num_args() && !func_get_arg(0) ? array('GET', 'HEAD', 'OPTIONS', 'TRACE') : array('GET', 'HEAD'));
+    }
+
+    /**
+     * Checks whether the method is cacheable or not.
+     *
+     * @see https://tools.ietf.org/html/rfc7231#section-4.2.3
+     *
+     * @return bool
+     */
+    public function isMethodCacheable()
+    {
+        return in_array($this->getMethod(), array('GET', 'HEAD'));
     }
 
     /**
@@ -1509,7 +1541,7 @@ class Request
             return stream_get_contents($this->content);
         }
 
-        if (null === $this->content) {
+        if (null === $this->content || false === $this->content) {
             $this->content = file_get_contents('php://input');
         }
 
@@ -1657,7 +1689,7 @@ class Request
      * It works if your JavaScript library sets an X-Requested-With HTTP header.
      * It is known to work with common JavaScript frameworks:
      *
-     * @link http://en.wikipedia.org/wiki/List_of_Ajax_frameworks#JavaScript
+     * @see http://en.wikipedia.org/wiki/List_of_Ajax_frameworks#JavaScript
      *
      * @return bool true if the request is an XMLHttpRequest, false otherwise
      */
@@ -1913,7 +1945,15 @@ class Request
         return new static($query, $request, $attributes, $cookies, $files, $server, $content);
     }
 
-    private function isFromTrustedProxy()
+    /**
+     * Indicates whether this request originated from a trusted proxy.
+     *
+     * This can be useful to determine whether or not to trust the
+     * contents of a proxy-specific header.
+     *
+     * @return bool true if the request came from a trusted proxy, false otherwise
+     */
+    public function isFromTrustedProxy()
     {
         return self::$trustedProxies && IpUtils::checkIp($this->server->get('REMOTE_ADDR'), self::$trustedProxies);
     }

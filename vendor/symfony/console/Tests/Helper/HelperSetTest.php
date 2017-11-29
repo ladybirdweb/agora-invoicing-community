@@ -108,16 +108,9 @@ class HelperSetTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    /**
-     * Create a generic mock for the helper interface. Optionally check for a call to setHelperSet with a specific
-     * helperset instance.
-     *
-     * @param string    $name
-     * @param HelperSet $helperset allows a mock to verify a particular helperset set is being added to the Helper
-     */
     private function getGenericMockHelper($name, HelperSet $helperset = null)
     {
-        $mock_helper = $this->getMock('\Symfony\Component\Console\Helper\HelperInterface');
+        $mock_helper = $this->getMockBuilder('\Symfony\Component\Console\Helper\HelperInterface')->getMock();
         $mock_helper->expects($this->any())
             ->method('getName')
             ->will($this->returnValue($name));

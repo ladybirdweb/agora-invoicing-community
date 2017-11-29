@@ -2,6 +2,7 @@
 
 namespace Illuminate\Database\Console\Migrations;
 
+use Illuminate\Support\Collection;
 use Illuminate\Database\Migrations\Migrator;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -48,25 +49,22 @@ class StatusCommand extends BaseCommand
      */
     public function fire()
     {
+        $this->migrator->setConnection($this->option('database'));
+
         if (! $this->migrator->repositoryExists()) {
             return $this->error('No migrations found.');
         }
 
-        $this->migrator->setConnection($this->input->getOption('database'));
-
-        if (! is_null($path = $this->input->getOption('path'))) {
-            $path = $this->laravel->basePath().'/'.$path;
-        } else {
-            $path = $this->getMigrationPath();
-        }
-
         $ran = $this->migrator->getRepository()->getRan();
 
-        $migrations = [];
+        $migrations = Collection::make($this->getAllMigrationFiles())
+                            ->map(function ($migration) use ($ran) {
+                                $migrationName = $this->migrator->getMigrationName($migration);
 
-        foreach ($this->getAllMigrationFiles($path) as $migration) {
-            $migrations[] = in_array($migration, $ran) ? ['<info>Y</info>', $migration] : ['<fg=red>N</fg=red>', $migration];
-        }
+                                return in_array($migrationName, $ran)
+                                        ? ['<info>Y</info>', $migrationName]
+                                        : ['<fg=red>N</fg=red>', $migrationName];
+                            });
 
         if (count($migrations) > 0) {
             $this->table(['Ran?', 'Migration'], $migrations);
@@ -76,14 +74,13 @@ class StatusCommand extends BaseCommand
     }
 
     /**
-     * Get all of the migration files.
+     * Get an array of all of the migration files.
      *
-     * @param  string  $path
      * @return array
      */
-    protected function getAllMigrationFiles($path)
+    protected function getAllMigrationFiles()
     {
-        return $this->migrator->getMigrationFiles($path);
+        return $this->migrator->getMigrationFiles($this->getMigrationPaths());
     }
 
     /**

@@ -6,10 +6,11 @@ use Aws\Ses\SesClient;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Manager;
 use GuzzleHttp\Client as HttpClient;
-use Swift_SmtpTransport as SmtpTransport;
 use Swift_MailTransport as MailTransport;
+use Swift_SmtpTransport as SmtpTransport;
 use Illuminate\Mail\Transport\LogTransport;
 use Illuminate\Mail\Transport\SesTransport;
+use Illuminate\Mail\Transport\ArrayTransport;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Mail\Transport\MandrillTransport;
 use Illuminate\Mail\Transport\SparkPostTransport;
@@ -151,10 +152,20 @@ class TransportManager extends Manager
     }
 
     /**
+     * Create an instance of the Array Swift Transport Driver.
+     *
+     * @return \Illuminate\Mail\Transport\ArrayTransport
+     */
+    protected function createArrayDriver()
+    {
+        return new ArrayTransport;
+    }
+
+    /**
      * Get a fresh Guzzle HTTP client instance.
      *
      * @param  array  $config
-     * @return HttpClient
+     * @return \GuzzleHttp\Client
      */
     protected function getHttpClient($config)
     {

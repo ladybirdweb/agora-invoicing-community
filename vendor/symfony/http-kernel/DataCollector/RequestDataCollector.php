@@ -12,10 +12,9 @@
 namespace Symfony\Component\HttpKernel\DataCollector;
 
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -27,6 +26,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class RequestDataCollector extends DataCollector implements EventSubscriberInterface
 {
+    /** @var \SplObjectStorage */
     protected $controllers;
 
     public function __construct()
@@ -40,12 +40,8 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
     public function collect(Request $request, Response $response, \Exception $exception = null)
     {
         $responseHeaders = $response->headers->all();
-        $cookies = array();
         foreach ($response->headers->getCookies() as $cookie) {
-            $cookies[] = $this->getCookieHeader($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
-        }
-        if (count($cookies) > 0) {
-            $responseHeaders['Set-Cookie'] = $cookies;
+            $responseHeaders['set-cookie'][] = (string) $cookie;
         }
 
         // attributes are serialized and as they can be anything, they need to be converted to strings.
@@ -74,6 +70,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
 
         $sessionMetadata = array();
         $sessionAttributes = array();
+        $session = null;
         $flashes = array();
         if ($request->hasSession()) {
             $session = $request->getSession();
@@ -89,6 +86,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
         $statusCode = $response->getStatusCode();
 
         $this->data = array(
+            'method' => $request->getMethod(),
             'format' => $request->getRequestFormat(),
             'content' => $content,
             'content_type' => $response->headers->get('Content-Type', 'text/html'),
@@ -121,49 +119,44 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
             $this->data['request_request']['_password'] = '******';
         }
 
-        if (isset($this->controllers[$request])) {
-            $controller = $this->controllers[$request];
-            if (is_array($controller)) {
-                try {
-                    $r = new \ReflectionMethod($controller[0], $controller[1]);
-                    $this->data['controller'] = array(
-                        'class' => is_object($controller[0]) ? get_class($controller[0]) : $controller[0],
-                        'method' => $controller[1],
-                        'file' => $r->getFileName(),
-                        'line' => $r->getStartLine(),
-                    );
-                } catch (\ReflectionException $e) {
-                    if (is_callable($controller)) {
-                        // using __call or  __callStatic
-                        $this->data['controller'] = array(
-                            'class' => is_object($controller[0]) ? get_class($controller[0]) : $controller[0],
-                            'method' => $controller[1],
-                            'file' => 'n/a',
-                            'line' => 'n/a',
-                        );
-                    }
-                }
-            } elseif ($controller instanceof \Closure) {
-                $r = new \ReflectionFunction($controller);
-                $this->data['controller'] = array(
-                    'class' => $r->getName(),
-                    'method' => null,
-                    'file' => $r->getFileName(),
-                    'line' => $r->getStartLine(),
-                );
-            } elseif (is_object($controller)) {
-                $r = new \ReflectionClass($controller);
-                $this->data['controller'] = array(
-                    'class' => $r->getName(),
-                    'method' => null,
-                    'file' => $r->getFileName(),
-                    'line' => $r->getStartLine(),
-                );
-            } else {
-                $this->data['controller'] = (string) $controller ?: 'n/a';
+        foreach ($this->data as $key => $value) {
+            if (!is_array($value)) {
+                continue;
             }
+            if ('request_headers' === $key || 'response_headers' === $key) {
+                $value = array_map(function ($v) { return isset($v[0]) && !isset($v[1]) ? $v[0] : $v; }, $value);
+            }
+            if ('request_server' !== $key && 'request_cookies' !== $key) {
+                $this->data[$key] = $value;
+            }
+        }
+
+        if (isset($this->controllers[$request])) {
+            $this->data['controller'] = $this->parseController($this->controllers[$request]);
             unset($this->controllers[$request]);
         }
+
+        if (null !== $session && $session->isStarted()) {
+            if ($request->attributes->has('_redirected')) {
+                $this->data['redirect'] = $session->remove('sf_redirect');
+            }
+
+            if ($response->isRedirect()) {
+                $session->set('sf_redirect', array(
+                    'token' => $response->headers->get('x-debug-token'),
+                    'route' => $request->attributes->get('_route', 'n/a'),
+                    'method' => $request->getMethod(),
+                    'controller' => $this->parseController($request->attributes->get('_controller')),
+                    'status_code' => $statusCode,
+                    'status_text' => Response::$statusTexts[(int) $statusCode],
+                ));
+            }
+        }
+    }
+
+    public function getMethod()
+    {
+        return $this->data['method'];
     }
 
     public function getPathInfo()
@@ -183,7 +176,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
 
     public function getRequestHeaders()
     {
-        return new HeaderBag($this->data['request_headers']);
+        return new ParameterBag($this->data['request_headers']);
     }
 
     public function getRequestServer()
@@ -203,7 +196,7 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
 
     public function getResponseHeaders()
     {
-        return new ResponseHeaderBag($this->data['response_headers']);
+        return new ParameterBag($this->data['response_headers']);
     }
 
     public function getSessionMetadata()
@@ -276,13 +269,25 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
     }
 
     /**
-     * Gets the controller.
+     * Gets the parsed controller.
      *
-     * @return string The controller as a string
+     * @return array|string The controller as a string or array of data
+     *                      with keys 'class', 'method', 'file' and 'line'
      */
     public function getController()
     {
         return $this->data['controller'];
+    }
+
+    /**
+     * Gets the previous request attributes.
+     *
+     * @return array|bool A legacy array of data from the previous redirection response
+     *                    or false otherwise
+     */
+    public function getRedirect()
+    {
+        return isset($this->data['redirect']) ? $this->data['redirect'] : false;
     }
 
     public function onKernelController(FilterControllerEvent $event)
@@ -290,9 +295,23 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
         $this->controllers[$event->getRequest()] = $event->getController();
     }
 
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
+        if (!$event->isMasterRequest() || !$event->getRequest()->hasSession() || !$event->getRequest()->getSession()->isStarted()) {
+            return;
+        }
+
+        if ($event->getRequest()->getSession()->has('sf_redirect')) {
+            $event->getRequest()->attributes->set('_redirected', true);
+        }
+    }
+
     public static function getSubscribedEvents()
     {
-        return array(KernelEvents::CONTROLLER => 'onKernelController');
+        return array(
+            KernelEvents::CONTROLLER => 'onKernelController',
+            KernelEvents::RESPONSE => 'onKernelResponse',
+        );
     }
 
     /**
@@ -303,40 +322,64 @@ class RequestDataCollector extends DataCollector implements EventSubscriberInter
         return 'request';
     }
 
-    private function getCookieHeader($name, $value, $expires, $path, $domain, $secure, $httponly)
+    /**
+     * Parse a controller.
+     *
+     * @param mixed $controller The controller to parse
+     *
+     * @return array|string An array of controller data or a simple string
+     */
+    protected function parseController($controller)
     {
-        $cookie = sprintf('%s=%s', $name, urlencode($value));
+        if (is_string($controller) && false !== strpos($controller, '::')) {
+            $controller = explode('::', $controller);
+        }
 
-        if (0 !== $expires) {
-            if (is_numeric($expires)) {
-                $expires = (int) $expires;
-            } elseif ($expires instanceof \DateTime) {
-                $expires = $expires->getTimestamp();
-            } else {
-                $tmp = strtotime($expires);
-                if (false === $tmp || -1 == $tmp) {
-                    throw new \InvalidArgumentException(sprintf('The "expires" cookie parameter is not valid (%s).', $expires));
+        if (is_array($controller)) {
+            try {
+                $r = new \ReflectionMethod($controller[0], $controller[1]);
+
+                return array(
+                    'class' => is_object($controller[0]) ? get_class($controller[0]) : $controller[0],
+                    'method' => $controller[1],
+                    'file' => $r->getFileName(),
+                    'line' => $r->getStartLine(),
+                );
+            } catch (\ReflectionException $e) {
+                if (is_callable($controller)) {
+                    // using __call or  __callStatic
+                    return array(
+                        'class' => is_object($controller[0]) ? get_class($controller[0]) : $controller[0],
+                        'method' => $controller[1],
+                        'file' => 'n/a',
+                        'line' => 'n/a',
+                    );
                 }
-                $expires = $tmp;
             }
-
-            $cookie .= '; expires='.str_replace('+0000', '', \DateTime::createFromFormat('U', $expires, new \DateTimeZone('GMT'))->format('D, d-M-Y H:i:s T'));
         }
 
-        if ($domain) {
-            $cookie .= '; domain='.$domain;
+        if ($controller instanceof \Closure) {
+            $r = new \ReflectionFunction($controller);
+
+            return array(
+                'class' => $r->getName(),
+                'method' => null,
+                'file' => $r->getFileName(),
+                'line' => $r->getStartLine(),
+            );
         }
 
-        $cookie .= '; path='.$path;
+        if (is_object($controller)) {
+            $r = new \ReflectionClass($controller);
 
-        if ($secure) {
-            $cookie .= '; secure';
+            return array(
+                'class' => $r->getName(),
+                'method' => null,
+                'file' => $r->getFileName(),
+                'line' => $r->getStartLine(),
+            );
         }
 
-        if ($httponly) {
-            $cookie .= '; httponly';
-        }
-
-        return $cookie;
+        return is_string($controller) ? $controller : 'n/a';
     }
 }

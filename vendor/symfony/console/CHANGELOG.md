@@ -1,6 +1,12 @@
 CHANGELOG
 =========
 
+3.1.0
+-----
+
+ * added truncate method to FormatterHelper
+ * added setColumnWidth(s) method to Table 
+
 2.8.3
 -----
 

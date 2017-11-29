@@ -23,20 +23,18 @@ class Parser
             throw new InvalidArgumentException('Console command definition is empty.');
         }
 
-        preg_match('/[^\s]+/', $expression, $matches);
-
-        if (isset($matches[0])) {
-            $name = $matches[0];
-        } else {
+        if (! preg_match('/[^\s]+/', $expression, $matches)) {
             throw new InvalidArgumentException('Unable to determine command name from signature.');
         }
 
-        preg_match_all('/\{\s*(.*?)\s*\}/', $expression, $matches);
+        $name = $matches[0];
 
-        $tokens = isset($matches[1]) ? $matches[1] : [];
+        if (preg_match_all('/\{\s*(.*?)\s*\}/', $expression, $matches)) {
+            $tokens = $matches[1];
 
-        if (count($tokens)) {
-            return array_merge([$name], static::parameters($tokens));
+            if (count($tokens)) {
+                return array_merge([$name], static::parameters($tokens));
+            }
         }
 
         return [$name, [], []];
@@ -55,10 +53,10 @@ class Parser
         $options = [];
 
         foreach ($tokens as $token) {
-            if (! Str::startsWith($token, '--')) {
-                $arguments[] = static::parseArgument($token);
+            if (preg_match('/-{2,}(.*)/', $token, $matches)) {
+                $options[] = static::parseOption($matches[1]);
             } else {
-                $options[] = static::parseOption(ltrim($token, '-'));
+                $arguments[] = static::parseArgument($token);
             }
         }
 
@@ -73,15 +71,7 @@ class Parser
      */
     protected static function parseArgument($token)
     {
-        $description = null;
-
-        if (Str::contains($token, ' : ')) {
-            list($token, $description) = explode(' : ', $token, 2);
-
-            $token = trim($token);
-
-            $description = trim($description);
-        }
+        list($token, $description) = static::parseToken($token);
 
         switch (true) {
             case Str::endsWith($token, '?*'):
@@ -105,21 +95,15 @@ class Parser
      */
     protected static function parseOption($token)
     {
-        $description = null;
-
-        if (Str::contains($token, ' : ')) {
-            list($token, $description) = explode(' : ', $token);
-            $token = trim($token);
-            $description = trim($description);
-        }
-
-        $shortcut = null;
+        list($token, $description) = static::parseToken($token);
 
         $matches = preg_split('/\s*\|\s*/', $token, 2);
 
         if (isset($matches[1])) {
             $shortcut = $matches[0];
             $token = $matches[1];
+        } else {
+            $shortcut = null;
         }
 
         switch (true) {
@@ -132,5 +116,18 @@ class Parser
             default:
                 return new InputOption($token, $shortcut, InputOption::VALUE_NONE, $description);
         }
+    }
+
+    /**
+     * Parse the token into its token and description segments.
+     *
+     * @param  string  $token
+     * @return array
+     */
+    protected static function parseToken($token)
+    {
+        $parts = preg_split('/\s+:\s+/', trim($token), 2);
+
+        return count($parts) === 2 ? $parts : [$token, null];
     }
 }

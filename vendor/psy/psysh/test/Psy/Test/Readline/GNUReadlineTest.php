@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@ namespace Psy\Test\Readline;
 
 use Psy\Readline\GNUReadline;
 
-class GNUReadlineTest extends \PHPUnit_Framework_TestCase
+class GNUReadlineTest extends \PHPUnit\Framework\TestCase
 {
     private $historyFile;
 

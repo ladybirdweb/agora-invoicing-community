@@ -24,24 +24,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
  */
 class RegisterListenersPass implements CompilerPassInterface
 {
-    /**
-     * @var string
-     */
     protected $dispatcherService;
-
-    /**
-     * @var string
-     */
     protected $listenerTag;
-
-    /**
-     * @var string
-     */
     protected $subscriberTag;
 
     /**
-     * Constructor.
-     *
      * @param string $dispatcherService Service name of the event dispatcher in processed container
      * @param string $listenerTag       Tag name used for listener
      * @param string $subscriberTag     Tag name used for subscribers
@@ -62,8 +49,6 @@ class RegisterListenersPass implements CompilerPassInterface
         $definition = $container->findDefinition($this->dispatcherService);
 
         foreach ($container->findTaggedServiceIds($this->listenerTag, true) as $id => $events) {
-            $def = $container->getDefinition($id);
-
             foreach ($events as $event) {
                 $priority = isset($event['priority']) ? $event['priority'] : 0;
 

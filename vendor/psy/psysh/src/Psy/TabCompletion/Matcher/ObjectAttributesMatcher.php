@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -36,11 +36,18 @@ class ObjectAttributesMatcher extends AbstractContextAwareMatcher
             array_pop($tokens);
         }
         $objectToken = array_pop($tokens);
+        if (!is_array($objectToken)) {
+            return array();
+        }
         $objectName = str_replace('$', '', $objectToken[1]);
 
         try {
             $object = $this->getVariable($objectName);
         } catch (InvalidArgumentException $e) {
+            return array();
+        }
+
+        if (!is_object($object)) {
             return array();
         }
 

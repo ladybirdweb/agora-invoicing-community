@@ -115,7 +115,7 @@ EOTXT
         $var = xml_parser_create();
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 xml resource {
   current_byte_index: %i
   current_column_number: %i
@@ -137,7 +137,7 @@ EOTXT
         $var[''] = 2;
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 array:4 [
   "0" => {}
   "1" => &1 null
@@ -156,7 +156,7 @@ EOTXT
         $var->{1} = 2;
 
         $this->assertDumpMatchesFormat(
-            <<<EOTXT
+            <<<'EOTXT'
 {
   +1: 1
   +"1": 2
@@ -188,7 +188,7 @@ EOTXT
 
         $this->assertStringMatchesFormat(
             <<<EOTXT
-Unknown resource @{$res}
+Closed resource @{$res}
 
 EOTXT
             ,
@@ -196,6 +196,41 @@ EOTXT
         );
     }
 
+    public function testFlags()
+    {
+        putenv('DUMP_LIGHT_ARRAY=1');
+        putenv('DUMP_STRING_LENGTH=1');
+
+        $var = array(
+            range(1, 3),
+            array('foo', 2 => 'bar'),
+        );
+
+        $this->assertDumpEquals(
+            <<<EOTXT
+[
+  [
+    1
+    2
+    3
+  ]
+  [
+    0 => (3) "foo"
+    2 => (3) "bar"
+  ]
+]
+EOTXT
+            ,
+            $var
+        );
+
+        putenv('DUMP_LIGHT_ARRAY=');
+        putenv('DUMP_STRING_LENGTH=');
+    }
+
+    /**
+     * @requires function Twig_Template::getSourceContext
+     */
     public function testThrowingCaster()
     {
         $out = fopen('php://memory', 'r+b');
@@ -230,19 +265,6 @@ EOTXT
         rewind($out);
         $out = stream_get_contents($out);
 
-        if (method_exists($twig, 'getSource')) {
-            $twig = <<<EOTXT
-          foo.twig:2: """
-            foo bar\\n
-              twig source\\n
-            \\n
-            """
-
-EOTXT;
-        } else {
-            $twig = '';
-        }
-
         $r = defined('HHVM_VERSION') ? '' : '#%d';
         $this->assertStringMatchesFormat(
             <<<EOTXT
@@ -259,12 +281,17 @@ stream resource {@{$ref}
     -trace: {
       %d. __TwigTemplate_VarDumperFixture_u75a09->doDisplay() ==> new Exception(): {
         src: {
-          %sTwig.php:19: """
+          %sTwig.php:21: """
                 // line 2\\n
                 throw new \Exception('Foobar');\\n
             }\\n
             """
-{$twig}        }
+          bar.twig:2: """
+            foo bar\\n
+              twig source\\n
+            \\n
+            """
+        }
       }
       %d. Twig_Template->displayWithErrorHandling() ==> __TwigTemplate_VarDumperFixture_u75a09->doDisplay(): {
         src: {
@@ -289,7 +316,7 @@ stream resource {@{$ref}
           %sTemplate.php:%d: """
             try {\\n
                 \$this->display(\$context);\\n
-            } catch (Exception \$e) {\\n
+            } catch (%s \$e) {\\n
             """
         }
       }
@@ -351,7 +378,7 @@ EOTXT
         $var = $this->getSpecialVars();
 
         $this->assertDumpEquals(
-            <<<EOTXT
+            <<<'EOTXT'
 array:3 [
   0 => array:1 [
     0 => &1 array:1 [
@@ -397,7 +424,7 @@ EOTXT
         $dumper->dump($data);
 
         $this->assertSame(
-            <<<EOTXT
+            <<<'EOTXT'
 array:2 [
   1 => array:1 [
     "GLOBALS" => &1 array:1 [
@@ -439,7 +466,7 @@ EOTXT
         });
 
         $this->assertSame(
-            <<<EOTXT
+            <<<'EOTXT'
 array:1 [
   0 => array:1 [
     0 => array:1 [

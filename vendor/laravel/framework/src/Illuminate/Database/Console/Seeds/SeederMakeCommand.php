@@ -55,9 +55,9 @@ class SeederMakeCommand extends GeneratorCommand
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
-        parent::handle();
+        parent::fire();
 
         $this->composer->dumpAutoloads();
     }

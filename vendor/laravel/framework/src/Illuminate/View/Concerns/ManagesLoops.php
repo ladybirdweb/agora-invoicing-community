@@ -29,7 +29,7 @@ trait ManagesLoops
         $this->loopsStack[] = [
             'iteration' => 0,
             'index' => 0,
-            'remaining' => $length ?? null,
+            'remaining' => isset($length) ? $length : null,
             'count' => $length,
             'first' => true,
             'last' => isset($length) ? $length == 1 : null,

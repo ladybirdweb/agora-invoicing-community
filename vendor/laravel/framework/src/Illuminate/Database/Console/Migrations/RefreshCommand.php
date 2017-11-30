@@ -29,7 +29,7 @@ class RefreshCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         if (! $this->confirmToProceed()) {
             return;

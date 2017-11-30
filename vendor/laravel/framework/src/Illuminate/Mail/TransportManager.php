@@ -7,11 +7,11 @@ use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
 use Illuminate\Support\Manager;
 use GuzzleHttp\Client as HttpClient;
+use Swift_MailTransport as MailTransport;
 use Swift_SmtpTransport as SmtpTransport;
 use Illuminate\Mail\Transport\LogTransport;
 use Illuminate\Mail\Transport\SesTransport;
 use Illuminate\Mail\Transport\ArrayTransport;
-use Swift_SendmailTransport as MailTransport;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Mail\Transport\MandrillTransport;
 use Illuminate\Mail\Transport\SparkPostTransport;
@@ -31,7 +31,9 @@ class TransportManager extends Manager
         // The Swift SMTP transport instance will allow us to use any SMTP backend
         // for delivering mail such as Sendgrid, Amazon SES, or a custom server
         // a developer has available. We will just pass this configured host.
-        $transport = new SmtpTransport($config['host'], $config['port']);
+        $transport = SmtpTransport::newInstance(
+            $config['host'], $config['port']
+        );
 
         if (isset($config['encryption'])) {
             $transport->setEncryption($config['encryption']);
@@ -63,7 +65,9 @@ class TransportManager extends Manager
      */
     protected function createSendmailDriver()
     {
-        return new SendmailTransport($this->app['config']['mail']['sendmail']);
+        return SendmailTransport::newInstance(
+            $this->app['config']['mail']['sendmail']
+        );
     }
 
     /**
@@ -100,11 +104,11 @@ class TransportManager extends Manager
     /**
      * Create an instance of the Mail Swift Transport driver.
      *
-     * @return \Swift_SendmailTransport
+     * @return \Swift_MailTransport
      */
     protected function createMailDriver()
     {
-        return new MailTransport;
+        return MailTransport::newInstance();
     }
 
     /**
@@ -146,7 +150,7 @@ class TransportManager extends Manager
         $config = $this->app['config']->get('services.sparkpost', []);
 
         return new SparkPostTransport(
-            $this->guzzle($config), $config['secret'], $config['options'] ?? []
+            $this->guzzle($config), $config['secret'], Arr::get($config, 'options', [])
         );
     }
 
@@ -179,7 +183,7 @@ class TransportManager extends Manager
     protected function guzzle($config)
     {
         return new HttpClient(Arr::add(
-            $config['guzzle'] ?? [], 'connect_timeout', 60
+            Arr::get($config, 'guzzle', []), 'connect_timeout', 60
         ));
     }
 

@@ -20,7 +20,7 @@ class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject
      *
      * @var Swift_TransportException
      */
-    private $exception;
+    private $_exception;
 
     /**
      * Create a new TransportExceptionEvent for $transport.
@@ -31,7 +31,7 @@ class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject
     public function __construct(Swift_Transport $transport, Swift_TransportException $ex)
     {
         parent::__construct($transport);
-        $this->exception = $ex;
+        $this->_exception = $ex;
     }
 
     /**
@@ -41,6 +41,6 @@ class Swift_Events_TransportExceptionEvent extends Swift_Events_EventObject
      */
     public function getException()
     {
-        return $this->exception;
+        return $this->_exception;
     }
 }

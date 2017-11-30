@@ -46,7 +46,7 @@ class ConfigClearCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $this->files->delete($this->laravel->getCachedConfigPath());
 

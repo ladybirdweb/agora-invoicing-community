@@ -42,4 +42,18 @@ class Swift_MimePart extends Swift_Mime_MimePart
             $this->setContentType($contentType);
         }
     }
+
+    /**
+     * Create a new MimePart.
+     *
+     * @param string $body
+     * @param string $contentType
+     * @param string $charset
+     *
+     * @return self
+     */
+    public static function newInstance($body = null, $contentType = null, $charset = null)
+    {
+        return new self($body, $contentType, $charset);
+    }
 }

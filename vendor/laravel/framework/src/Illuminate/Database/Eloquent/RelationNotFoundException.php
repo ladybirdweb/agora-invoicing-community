@@ -7,20 +7,6 @@ use RuntimeException;
 class RelationNotFoundException extends RuntimeException
 {
     /**
-     * The name of the affected Eloquent model.
-     *
-     * @var string
-     */
-    public $model;
-
-    /**
-     * The name of the relation.
-     *
-     * @var string
-     */
-    public $relation;
-
-    /**
      * Create a new exception instance.
      *
      * @param  mixed  $model
@@ -31,11 +17,6 @@ class RelationNotFoundException extends RuntimeException
     {
         $class = get_class($model);
 
-        $instance = new static("Call to undefined relationship [{$relation}] on model [{$class}].");
-
-        $instance->model = $model;
-        $instance->relation = $relation;
-
-        return $instance;
+        return new static("Call to undefined relationship [{$relation}] on model [{$class}].");
     }
 }

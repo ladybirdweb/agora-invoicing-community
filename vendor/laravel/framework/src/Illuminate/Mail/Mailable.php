@@ -8,12 +8,11 @@ use BadMethodCallException;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Contracts\Queue\Factory as Queue;
 use Illuminate\Contracts\Mail\Mailer as MailerContract;
 use Illuminate\Contracts\Mail\Mailable as MailableContract;
 
-class Mailable implements MailableContract, Renderable
+class Mailable implements MailableContract
 {
     /**
      * The person the message is from.
@@ -149,8 +148,8 @@ class Mailable implements MailableContract, Renderable
     /**
      * Deliver the queued message after the given delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
-     * @param  \Illuminate\Contracts\Queue\Factory  $queue
+     * @param  \DateTime|int  $delay
+     * @param  Queue  $queue
      * @return mixed
      */
     public function later($delay, Queue $queue)
@@ -161,20 +160,6 @@ class Mailable implements MailableContract, Renderable
 
         return $queue->connection($connection)->laterOn(
             $queueName ?: null, $delay, new SendQueuedMailable($this)
-        );
-    }
-
-    /**
-     * Render the mailable into a view.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function render()
-    {
-        Container::getInstance()->call([$this, 'build']);
-
-        return Container::getInstance()->make('mailer')->render(
-            $this->buildView(), $this->buildViewData()
         );
     }
 
@@ -206,10 +191,6 @@ class Mailable implements MailableContract, Renderable
     protected function buildMarkdownView()
     {
         $markdown = Container::getInstance()->make(Markdown::class);
-
-        if (isset($this->theme)) {
-            $markdown->theme($this->theme);
-        }
 
         $data = $this->buildViewData();
 
@@ -246,8 +227,9 @@ class Mailable implements MailableContract, Renderable
      */
     protected function buildMarkdownText($markdown, $data)
     {
-        return $this->textView
-                ?? $markdown->renderText($this->markdown, $data);
+        return isset($this->textView)
+                ? $this->textView
+                : $markdown->renderText($this->markdown, $data);
     }
 
     /**
@@ -461,18 +443,6 @@ class Mailable implements MailableContract, Renderable
     }
 
     /**
-     * Determine if the given recipient is set on the mailable.
-     *
-     * @param  object|array|string  $address
-     * @param  string|null  $name
-     * @return bool
-     */
-    public function hasReplyTo($address, $name = null)
-    {
-        return $this->hasRecipient($address, $name, 'replyTo');
-    }
-
-    /**
      * Set the recipients of the message.
      *
      * All recipients are stored internally as [['name' => ?, 'address' => ?]]
@@ -488,7 +458,7 @@ class Mailable implements MailableContract, Renderable
             $recipient = $this->normalizeRecipient($recipient);
 
             $this->{$property}[] = [
-                'name' => $recipient->name ?? null,
+                'name' => isset($recipient->name) ? $recipient->name : null,
                 'address' => $recipient->email,
             ];
         }
@@ -544,7 +514,7 @@ class Mailable implements MailableContract, Renderable
         );
 
         $expected = [
-            'name' => $expected->name ?? null,
+            'name' => isset($expected->name) ? $expected->name : null,
             'address' => $expected->email,
         ];
 

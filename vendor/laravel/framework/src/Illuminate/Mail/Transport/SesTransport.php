@@ -3,7 +3,7 @@
 namespace Illuminate\Mail\Transport;
 
 use Aws\Ses\SesClient;
-use Swift_Mime_SimpleMessage;
+use Swift_Mime_Message;
 
 class SesTransport extends Transport
 {
@@ -28,7 +28,7 @@ class SesTransport extends Transport
     /**
      * {@inheritdoc}
      */
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
         $this->beforeSendPerformed($message);
 

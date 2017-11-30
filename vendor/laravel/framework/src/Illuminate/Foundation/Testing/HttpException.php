@@ -2,9 +2,9 @@
 
 namespace Illuminate\Foundation\Testing;
 
-use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit_Framework_ExpectationFailedException;
 
-class HttpException extends ExpectationFailedException
+class HttpException extends PHPUnit_Framework_ExpectationFailedException
 {
     //
 }

@@ -97,7 +97,7 @@ class FilesystemManager implements FactoryContract
      */
     protected function get($name)
     {
-        return $this->disks[$name] ?? $this->resolve($name);
+        return isset($this->disks[$name]) ? $this->disks[$name] : $this->resolve($name);
     }
 
     /**
@@ -150,9 +150,9 @@ class FilesystemManager implements FactoryContract
      */
     public function createLocalDriver(array $config)
     {
-        $permissions = $config['permissions'] ?? [];
+        $permissions = isset($config['permissions']) ? $config['permissions'] : [];
 
-        $links = ($config['links'] ?? null) === 'skip'
+        $links = Arr::get($config, 'links') === 'skip'
             ? LocalAdapter::SKIP_LINKS
             : LocalAdapter::DISALLOW_LINKS;
 
@@ -188,9 +188,9 @@ class FilesystemManager implements FactoryContract
     {
         $s3Config = $this->formatS3Config($config);
 
-        $root = $s3Config['root'] ?? null;
+        $root = isset($s3Config['root']) ? $s3Config['root'] : null;
 
-        $options = $config['options'] ?? [];
+        $options = isset($config['options']) ? $config['options'] : [];
 
         return $this->adapt($this->createFlysystem(
             new S3Adapter(new S3Client($s3Config), $s3Config['bucket'], $root, $options), $config
@@ -226,7 +226,7 @@ class FilesystemManager implements FactoryContract
             'username' => $config['username'], 'apiKey' => $config['key'],
         ]);
 
-        $root = $config['root'] ?? null;
+        $root = isset($config['root']) ? $config['root'] : null;
 
         return $this->adapt($this->createFlysystem(
             new RackspaceAdapter($this->getRackspaceContainer($client, $config), $root), $config
@@ -242,7 +242,7 @@ class FilesystemManager implements FactoryContract
      */
     protected function getRackspaceContainer(Rackspace $client, array $config)
     {
-        $urlType = $config['url_type'] ?? null;
+        $urlType = Arr::get($config, 'url_type');
 
         $store = $client->objectStoreService('cloudFiles', $config['region'], $urlType);
 

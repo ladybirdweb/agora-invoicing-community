@@ -8,13 +8,6 @@ use Illuminate\Database\Schema\Blueprint;
 class SqlServerGrammar extends Grammar
 {
     /**
-     * If this Grammar supports schema changes wrapped in a transaction.
-     *
-     * @var bool
-     */
-    protected $transactions = true;
-
-    /**
      * The possible column modifiers.
      *
      * @var array
@@ -129,22 +122,6 @@ class SqlServerGrammar extends Grammar
     }
 
     /**
-     * Compile a spatial index key command.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
-     * @return string
-     */
-    public function compileSpatialIndex(Blueprint $blueprint, Fluent $command)
-    {
-        return sprintf('create spatial index %s on %s (%s)',
-            $this->wrap($command->index),
-            $this->wrapTable($blueprint),
-            $this->columnize($command->columns)
-        );
-    }
-
-    /**
      * Compile a drop table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
@@ -169,16 +146,6 @@ class SqlServerGrammar extends Grammar
             "'".str_replace("'", "''", $this->getTablePrefix().$blueprint->getTable())."'",
             $this->wrapTable($blueprint)
         );
-    }
-
-    /**
-     * Compile the SQL needed to drop all tables.
-     *
-     * @return string
-     */
-    public function compileDropAllTables()
-    {
-        return "EXEC sp_msforeachtable 'DROP TABLE ?'";
     }
 
     /**
@@ -235,18 +202,6 @@ class SqlServerGrammar extends Grammar
         $index = $this->wrap($command->index);
 
         return "drop index {$index} on {$this->wrapTable($blueprint)}";
-    }
-
-    /**
-     * Compile a drop spatial index command.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
-     * @return string
-     */
-    public function compileDropSpatialIndex(Blueprint $blueprint, Fluent $command)
-    {
-        return $this->compileDropIndex($blueprint, $command);
     }
 
     /**
@@ -503,18 +458,18 @@ class SqlServerGrammar extends Grammar
      */
     protected function typeDateTime(Fluent $column)
     {
-        return $column->precision ? "datetime2($column->precision)" : 'datetime';
+        return 'datetime';
     }
 
     /**
-     * Create the column definition for a date-time (with time zone) type.
+     * Create the column definition for a date-time type.
      *
      * @param  \Illuminate\Support\Fluent  $column
      * @return string
      */
     protected function typeDateTimeTz(Fluent $column)
     {
-        return $column->precision ? "datetimeoffset($column->precision)" : 'datetimeoffset';
+        return 'datetimeoffset(0)';
     }
 
     /**
@@ -525,18 +480,18 @@ class SqlServerGrammar extends Grammar
      */
     protected function typeTime(Fluent $column)
     {
-        return $column->precision ? "time($column->precision)" : 'time';
+        return 'time';
     }
 
     /**
-     * Create the column definition for a time (with time zone) type.
+     * Create the column definition for a time type.
      *
      * @param  \Illuminate\Support\Fluent  $column
      * @return string
      */
     protected function typeTimeTz(Fluent $column)
     {
-        return $this->typeTime($column);
+        return 'time';
     }
 
     /**
@@ -547,13 +502,15 @@ class SqlServerGrammar extends Grammar
      */
     protected function typeTimestamp(Fluent $column)
     {
-        $columnType = $column->precision ? "datetime2($column->precision)" : 'datetime';
+        if ($column->useCurrent) {
+            return 'datetime default CURRENT_TIMESTAMP';
+        }
 
-        return $column->useCurrent ? "$columnType default CURRENT_TIMESTAMP" : $columnType;
+        return 'datetime';
     }
 
     /**
-     * Create the column definition for a timestamp (with time zone) type.
+     * Create the column definition for a timestamp type.
      *
      * @link https://msdn.microsoft.com/en-us/library/bb630289(v=sql.120).aspx
      *
@@ -563,12 +520,10 @@ class SqlServerGrammar extends Grammar
     protected function typeTimestampTz(Fluent $column)
     {
         if ($column->useCurrent) {
-            $columnType = $column->precision ? "datetimeoffset($column->precision)" : 'datetimeoffset';
-
-            return "$columnType default CURRENT_TIMESTAMP";
+            return 'datetimeoffset(0) default CURRENT_TIMESTAMP';
         }
 
-        return "datetimeoffset($column->precision)";
+        return 'datetimeoffset(0)';
     }
 
     /**
@@ -613,94 +568,6 @@ class SqlServerGrammar extends Grammar
     protected function typeMacAddress(Fluent $column)
     {
         return 'nvarchar(17)';
-    }
-
-    /**
-     * Create the column definition for a spatial Geometry type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeGeometry(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial Point type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typePoint(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial LineString type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeLineString(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial Polygon type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typePolygon(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial GeometryCollection type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeGeometryCollection(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiPoint type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiPoint(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiLineString type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiLineString(Fluent $column)
-    {
-        return 'geography';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiPolygon type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiPolygon(Fluent $column)
-    {
-        return 'geography';
     }
 
     /**
@@ -755,20 +622,5 @@ class SqlServerGrammar extends Grammar
         if (in_array($column->type, $this->serials) && $column->autoIncrement) {
             return ' identity primary key';
         }
-    }
-
-    /**
-     * Wrap a table in keyword identifiers.
-     *
-     * @param  \Illuminate\Database\Query\Expression|string  $table
-     * @return string
-     */
-    public function wrapTable($table)
-    {
-        if ($table instanceof Blueprint && $table->temporary) {
-            $this->setTablePrefix('#');
-        }
-
-        return parent::wrapTable($table);
     }
 }

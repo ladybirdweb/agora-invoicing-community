@@ -32,7 +32,7 @@ class SQLiteGrammar extends Grammar
      */
     protected $operators = [
         '=', '<', '>', '<=', '>=', '<>', '!=',
-        'like', 'not like', 'ilike',
+        'like', 'not like', 'between', 'ilike',
         '&', '|', '<<', '>>',
     ];
 

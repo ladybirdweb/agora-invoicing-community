@@ -23,7 +23,6 @@ class Attempting
      *
      * @param  array  $credentials
      * @param  bool  $remember
-     * @return void
      */
     public function __construct($credentials, $remember)
     {

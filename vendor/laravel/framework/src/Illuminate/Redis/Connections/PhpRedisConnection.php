@@ -2,7 +2,6 @@
 
 namespace Illuminate\Redis\Connections;
 
-use Redis;
 use Closure;
 
 /**
@@ -48,28 +47,13 @@ class PhpRedisConnection extends Connection
     }
 
     /**
-     * Determine if the given keys exist.
-     *
-     * @param  dynamic  $keys
-     * @return int
-     */
-    public function exists(...$keys)
-    {
-        $keys = collect($keys)->map(function ($key) {
-            return $this->applyPrefix($key);
-        })->all();
-
-        return $this->executeRaw(array_merge(['exists'], $keys));
-    }
-
-    /**
      * Set the string value in argument as value of the key.
      *
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  string|null  $expireResolution
-     * @param  int|null  $expireTTL
-     * @param  string|null  $flag
+     * @param string  $key
+     * @param mixed  $value
+     * @param string|null  $expireResolution
+     * @param int|null  $expireTTL
+     * @param string|null  $flag
      * @return bool
      */
     public function set($key, $value, $expireResolution = null, $expireTTL = null, $flag = null)
@@ -77,69 +61,8 @@ class PhpRedisConnection extends Connection
         return $this->command('set', [
             $key,
             $value,
-            $expireResolution ? [$flag, $expireResolution => $expireTTL] : null,
+            $expireResolution ? [$expireResolution, $flag => $expireTTL] : null,
         ]);
-    }
-
-    /**
-     * Set the given key if it doesn't exist.
-     *
-     * @param  string  $key
-     * @param  string  $value
-     * @return int
-     */
-    public function setnx($key, $value)
-    {
-        return (int) $this->client->setnx($key, $value);
-    }
-
-    /**
-     * Get the value of the given hash fields.
-     *
-     * @param  string  $key
-     * @param  dynamic  $dictionary
-     * @return int
-     */
-    public function hmget($key, ...$dictionary)
-    {
-        if (count($dictionary) == 1) {
-            $dictionary = $dictionary[0];
-        }
-
-        return array_values($this->command('hmget', [$key, $dictionary]));
-    }
-
-    /**
-     * Set the given hash fields to their respective values.
-     *
-     * @param  string  $key
-     * @param  dynamic  $dictionary
-     * @return int
-     */
-    public function hmset($key, ...$dictionary)
-    {
-        if (count($dictionary) == 1) {
-            $dictionary = $dictionary[0];
-        } else {
-            $input = collect($dictionary);
-
-            $dictionary = $input->nth(2)->combine($input->nth(2, 1))->toArray();
-        }
-
-        return $this->command('hmset', [$key, $dictionary]);
-    }
-
-    /**
-     * Set the given hash field if it doesn't exist.
-     *
-     * @param  string  $hash
-     * @param  string  $key
-     * @param  string  $value
-     * @return int
-     */
-    public function hsetnx($hash, $key, $value)
-    {
-        return (int) $this->client->hsetnx($hash, $key, $value);
     }
 
     /**
@@ -171,102 +94,30 @@ class PhpRedisConnection extends Connection
      * Add one or more members to a sorted set or update its score if it already exists.
      *
      * @param  string  $key
-     * @param  dynamic  $dictionary
+     * @param  mixed  $dictionary
      * @return int
      */
     public function zadd($key, ...$dictionary)
     {
-        if (is_array(end($dictionary))) {
-            foreach (array_pop($dictionary) as $member => $score) {
-                $dictionary[] = $score;
-                $dictionary[] = $member;
+        if (count($dictionary) === 1) {
+            $_dictionary = [];
+
+            foreach ($dictionary[0] as $member => $score) {
+                $_dictionary[] = $score;
+                $_dictionary[] = $member;
             }
+
+            $dictionary = $_dictionary;
         }
 
-        $key = $this->applyPrefix($key);
-
-        return $this->executeRaw(array_merge(['zadd', $key], $dictionary));
-    }
-
-    /**
-     * Return elements with score between $min and $max.
-     *
-     * @param  string  $key
-     * @param  mixed  $min
-     * @param  mixed  $max
-     * @param  array  $options
-     * @return int
-     */
-    public function zrangebyscore($key, $min, $max, $options = [])
-    {
-        if (isset($options['limit'])) {
-            $options['limit'] = [
-                $options['limit']['offset'],
-                $options['limit']['count'],
-            ];
-        }
-
-        return $this->command('zRangeByScore', [$key, $min, $max, $options]);
-    }
-
-    /**
-     * Return elements with score between $min and $max.
-     *
-     * @param  string  $key
-     * @param  mixed  $min
-     * @param  mixed  $max
-     * @param  array  $options
-     * @return int
-     */
-    public function zrevrangebyscore($key, $min, $max, $options = [])
-    {
-        if (isset($options['limit'])) {
-            $options['limit'] = [
-                $options['limit']['offset'],
-                $options['limit']['count'],
-            ];
-        }
-
-        return $this->command('zRevRangeByScore', [$key, $min, $max, $options]);
-    }
-
-    /**
-     * Find the intersection between sets and store in a new set.
-     *
-     * @param  string  $output
-     * @param  array  $keys
-     * @param  array  $options
-     * @return int
-     */
-    public function zinterstore($output, $keys, $options = [])
-    {
-        return $this->zInter($output, $keys,
-            $options['weights'] ?? null,
-            $options['aggregate'] ?? 'sum'
-        );
-    }
-
-    /**
-     * Find the union between sets and store in a new set.
-     *
-     * @param  string  $output
-     * @param  array  $keys
-     * @param  array  $options
-     * @return int
-     */
-    public function zunionstore($output, $keys, $options = [])
-    {
-        return $this->zUnion($output, $keys,
-            $options['weights'] ?? null,
-            $options['aggregate'] ?? 'sum'
-        );
+        return $this->client->zadd($key, ...$dictionary);
     }
 
     /**
      * Execute commands in a pipeline.
      *
      * @param  callable  $callback
-     * @return \Redis|array
+     * @return array|\Redis
      */
     public function pipeline(callable $callback = null)
     {
@@ -281,7 +132,7 @@ class PhpRedisConnection extends Connection
      * Execute commands in a transaction.
      *
      * @param  callable  $callback
-     * @return \Redis|array
+     * @return array|\Redis
      */
     public function transaction(callable $callback = null)
     {
@@ -308,16 +159,18 @@ class PhpRedisConnection extends Connection
     }
 
     /**
-     * Evaluate a script and retunr its result.
+     * Proxy a call to the eval function of PhpRedis.
      *
-     * @param  string  $script
-     * @param  int  $numberOfKeys
-     * @param  dynamic  $arguments
+     * @param  array  $parameters
      * @return mixed
      */
-    public function eval($script, $numberOfKeys, ...$arguments)
+    protected function proxyToEval(array $parameters)
     {
-        return $this->client->eval($script, $arguments, $numberOfKeys);
+        return $this->command('eval', [
+            isset($parameters[0]) ? $parameters[0] : null,
+            array_slice($parameters, 2),
+            isset($parameters[1]) ? $parameters[1] : null,
+        ]);
     }
 
     /**
@@ -383,19 +236,6 @@ class PhpRedisConnection extends Connection
     }
 
     /**
-     * Apply prefix to the given key if necessary.
-     *
-     * @param  string  $key
-     * @return string
-     */
-    private function applyPrefix($key)
-    {
-        $prefix = (string) $this->client->getOption(Redis::OPT_PREFIX);
-
-        return $prefix.$key;
-    }
-
-    /**
      * Pass other method calls down to the underlying client.
      *
      * @param  string  $method
@@ -405,6 +245,16 @@ class PhpRedisConnection extends Connection
     public function __call($method, $parameters)
     {
         $method = strtolower($method);
+
+        if ($method == 'eval') {
+            return $this->proxyToEval($parameters);
+        }
+
+        if ($method == 'zrangebyscore' || $method == 'zrevrangebyscore') {
+            $parameters = array_map(function ($parameter) {
+                return is_array($parameter) ? array_change_key_case($parameter) : $parameter;
+            }, $parameters);
+        }
 
         return parent::__call($method, $parameters);
     }

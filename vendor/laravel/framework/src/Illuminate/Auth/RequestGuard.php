@@ -5,7 +5,6 @@ namespace Illuminate\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Support\Traits\Macroable;
-use Illuminate\Contracts\Auth\UserProvider;
 
 class RequestGuard implements Guard
 {
@@ -30,14 +29,12 @@ class RequestGuard implements Guard
      *
      * @param  callable  $callback
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Contracts\Auth\UserProvider|null $provider
      * @return void
      */
-    public function __construct(callable $callback, Request $request, UserProvider $provider = null)
+    public function __construct(callable $callback, Request $request)
     {
         $this->request = $request;
         $this->callback = $callback;
-        $this->provider = $provider;
     }
 
     /**
@@ -55,7 +52,7 @@ class RequestGuard implements Guard
         }
 
         return $this->user = call_user_func(
-            $this->callback, $this->request, $this->getProvider()
+            $this->callback, $this->request
         );
     }
 
@@ -68,7 +65,7 @@ class RequestGuard implements Guard
     public function validate(array $credentials = [])
     {
         return ! is_null((new static(
-            $this->callback, $credentials['request'], $this->getProvider()
+            $this->callback, $credentials['request']
         ))->user());
     }
 

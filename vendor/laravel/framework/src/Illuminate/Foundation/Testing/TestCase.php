@@ -3,7 +3,6 @@
 namespace Illuminate\Foundation\Testing;
 
 use Mockery;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Console\Application as Artisan;
@@ -16,7 +15,6 @@ abstract class TestCase extends BaseTestCase
         Concerns\InteractsWithAuthentication,
         Concerns\InteractsWithConsole,
         Concerns\InteractsWithDatabase,
-        Concerns\InteractsWithExceptionHandling,
         Concerns\InteractsWithSession,
         Concerns\MocksApplicationServices;
 
@@ -100,10 +98,6 @@ abstract class TestCase extends BaseTestCase
     {
         $uses = array_flip(class_uses_recursive(static::class));
 
-        if (isset($uses[RefreshDatabase::class])) {
-            $this->refreshDatabase();
-        }
-
         if (isset($uses[DatabaseMigrations::class])) {
             $this->runDatabaseMigrations();
         }
@@ -146,20 +140,8 @@ abstract class TestCase extends BaseTestCase
             $this->serverVariables = [];
         }
 
-        if (property_exists($this, 'defaultHeaders')) {
-            $this->defaultHeaders = [];
-        }
-
         if (class_exists('Mockery')) {
-            if ($container = Mockery::getContainer()) {
-                $this->addToAssertionCount($container->mockery_getExpectationCount());
-            }
-
             Mockery::close();
-        }
-
-        if (class_exists(Carbon::class)) {
-            Carbon::setTestNow();
         }
 
         $this->afterApplicationCreatedCallbacks = [];

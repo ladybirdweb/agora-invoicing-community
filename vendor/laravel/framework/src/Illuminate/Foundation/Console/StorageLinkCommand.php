@@ -25,7 +25,7 @@ class StorageLinkCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         if (file_exists(public_path('storage'))) {
             return $this->error('The "public/storage" directory already exists.');

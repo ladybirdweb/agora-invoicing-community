@@ -14,7 +14,7 @@ class SqlServerGrammar extends Grammar
      */
     protected $operators = [
         '=', '<', '>', '<=', '>=', '!<', '!>', '<>', '!=',
-        'like', 'not like', 'ilike',
+        'like', 'not like', 'between', 'ilike',
         '&', '&=', '|', '|=', '^', '^=',
     ];
 
@@ -400,7 +400,7 @@ class SqlServerGrammar extends Grammar
      */
     public function getDateFormat()
     {
-        return 'Y-m-d H:i:s.v';
+        return 'Y-m-d H:i:s.000';
     }
 
     /**

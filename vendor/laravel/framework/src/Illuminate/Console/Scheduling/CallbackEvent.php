@@ -64,15 +64,13 @@ class CallbackEvent extends Event
             $this->removeMutex();
         });
 
-        parent::callBeforeCallbacks($container);
-
         try {
             $response = $container->call($this->callback, $this->parameters);
         } finally {
             $this->removeMutex();
-
-            parent::callAfterCallbacks($container);
         }
+
+        parent::callAfterCallbacks($container);
 
         return $response;
     }

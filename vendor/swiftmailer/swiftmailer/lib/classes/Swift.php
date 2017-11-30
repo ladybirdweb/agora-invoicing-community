@@ -16,7 +16,8 @@
  */
 abstract class Swift
 {
-    const VERSION = '6.0.2';
+    /** Swift Mailer Version number generated during dist release process */
+    const VERSION = '@SWIFT_VERSION_NUMBER@';
 
     public static $initialized = false;
     public static $inits = array();

@@ -30,7 +30,7 @@ class ServeCommand extends Command
      *
      * @throws \Exception
      */
-    public function handle()
+    public function fire()
     {
         chdir($this->laravel->publicPath());
 

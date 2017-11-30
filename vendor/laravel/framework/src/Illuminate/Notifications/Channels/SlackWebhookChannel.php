@@ -59,8 +59,6 @@ class SlackWebhookChannel
             'icon_emoji' => data_get($message, 'icon'),
             'icon_url' => data_get($message, 'image'),
             'link_names' => data_get($message, 'linkNames'),
-            'unfurl_links' => data_get($message, 'unfurlLinks'),
-            'unfurl_media' => data_get($message, 'unfurlMedia'),
             'username' => data_get($message, 'username'),
         ]);
 
@@ -90,7 +88,6 @@ class SlackWebhookChannel
                 'image_url' => $attachment->imageUrl,
                 'mrkdwn_in' => $attachment->markdown,
                 'text' => $attachment->content,
-                'thumb_url' => $attachment->thumbUrl,
                 'title' => $attachment->title,
                 'title_link' => $attachment->url,
                 'ts' => $attachment->timestamp,

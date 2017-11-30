@@ -2,9 +2,7 @@
 
 namespace Illuminate\View\Engines;
 
-use Illuminate\Contracts\View\Engine;
-
-class FileEngine implements Engine
+class FileEngine implements EngineInterface
 {
     /**
      * Get the evaluated contents of the view.

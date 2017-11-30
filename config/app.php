@@ -69,8 +69,8 @@ return [
       |
      */
     'key' => env('APP_KEY', 'SomeRandomString'),
-    //'cipher' => '',
-    'cipher' => ,
+     //'cipher' => 'AES-256-CBC',
+    'cipher' => MCRYPT_RIJNDAEL_128,
     /*
       |--------------------------------------------------------------------------
       | Logging Configuration
@@ -147,7 +147,7 @@ return [
         'App\Providers\RouteServiceProvider',
         'Illuminate\Broadcasting\BroadcastServiceProvider',
         Mailchimp\MailchimpServiceProvider::class,
-        // 'Torann\GeoIP\GeoIPServiceProvider',
+        'Torann\GeoIP\GeoIPServiceProvider',
 
     ],
     /*
@@ -205,7 +205,7 @@ return [
         //'Newsletter' => 'Spatie\Newsletter\NewsletterFacade',
         'MC'    => Mailchimp\MailchimpFacade::class,
         'PDF'   => Barryvdh\DomPDF\Facade::class,
-        // 'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
+        'GeoIP' => 'Torann\GeoIP\GeoIPFacade',
 
     ],
     /*

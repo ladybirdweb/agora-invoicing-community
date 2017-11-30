@@ -4,16 +4,16 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 {
     public function testNameCanBeSpecifiedInConstructor()
     {
-        $encoder = $this->getEncoder('7bit');
+        $encoder = $this->_getEncoder('7bit');
         $this->assertEquals('7bit', $encoder->getName());
 
-        $encoder = $this->getEncoder('8bit');
+        $encoder = $this->_getEncoder('8bit');
         $this->assertEquals('8bit', $encoder->getName());
     }
 
     public function testNoOctetsAreModifiedInString()
     {
-        $encoder = $this->getEncoder('7bit');
+        $encoder = $this->_getEncoder('7bit');
         foreach (range(0x00, 0xFF) as $octet) {
             $byte = pack('C', $octet);
             $this->assertIdenticalBinary($byte, $encoder->encodeString($byte));
@@ -22,12 +22,12 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     public function testNoOctetsAreModifiedInByteStream()
     {
-        $encoder = $this->getEncoder('7bit');
+        $encoder = $this->_getEncoder('7bit');
         foreach (range(0x00, 0xFF) as $octet) {
             $byte = pack('C', $octet);
 
-            $os = $this->createOutputByteStream();
-            $is = $this->createInputByteStream();
+            $os = $this->_createOutputByteStream();
+            $is = $this->_createInputByteStream();
             $collection = new Swift_StreamCollector();
 
             $is->shouldReceive('write')
@@ -47,7 +47,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     public function testLineLengthCanBeSpecified()
     {
-        $encoder = $this->getEncoder('7bit');
+        $encoder = $this->_getEncoder('7bit');
 
         $chars = array();
         for ($i = 0; $i < 50; ++$i) {
@@ -65,10 +65,10 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     public function testLineLengthCanBeSpecifiedInByteStream()
     {
-        $encoder = $this->getEncoder('7bit');
+        $encoder = $this->_getEncoder('7bit');
 
-        $os = $this->createOutputByteStream();
-        $is = $this->createInputByteStream();
+        $os = $this->_createOutputByteStream();
+        $is = $this->_createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -94,7 +94,7 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
 
     public function testencodeStringGeneratesCorrectCrlf()
     {
-        $encoder = $this->getEncoder('7bit', true);
+        $encoder = $this->_getEncoder('7bit', true);
         $this->assertEquals("a\r\nb", $encoder->encodeString("a\rb"),
             '%s: Line endings should be standardized'
             );
@@ -128,10 +128,10 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
      */
     public function testCanonicEncodeByteStreamGeneratesCorrectCrlf($test, $expected)
     {
-        $encoder = $this->getEncoder('7bit', true);
+        $encoder = $this->_getEncoder('7bit', true);
 
-        $os = $this->createOutputByteStream();
-        $is = $this->createInputByteStream();
+        $os = $this->_createOutputByteStream();
+        $is = $this->_createInputByteStream();
         $collection = new Swift_StreamCollector();
 
         $is->shouldReceive('write')
@@ -154,17 +154,17 @@ class Swift_Mime_ContentEncoder_PlainContentEncoderTest extends \SwiftMailerTest
         $this->assertEquals($expected, $collection->content);
     }
 
-    private function getEncoder($name, $canonical = false)
+    private function _getEncoder($name, $canonical = false)
     {
         return new Swift_Mime_ContentEncoder_PlainContentEncoder($name, $canonical);
     }
 
-    private function createOutputByteStream($stub = false)
+    private function _createOutputByteStream($stub = false)
     {
         return $this->getMockery('Swift_OutputByteStream')->shouldIgnoreMissing();
     }
 
-    private function createInputByteStream($stub = false)
+    private function _createInputByteStream($stub = false)
     {
         return $this->getMockery('Swift_InputByteStream')->shouldIgnoreMissing();
     }

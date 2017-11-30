@@ -13,7 +13,7 @@ trait InteractsWithFlashData
      */
     public function old($key = null, $default = null)
     {
-        return $this->hasSession() ? $this->session()->getOldInput($key, $default) : $default;
+        return $this->session()->getOldInput($key, $default);
     }
 
     /**

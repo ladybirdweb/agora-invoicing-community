@@ -2,13 +2,11 @@
 
 namespace Illuminate\Foundation\Console;
 
+use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\InteractsWithTime;
 
 class DownCommand extends Command
 {
-    use InteractsWithTime;
-
     /**
      * The console command signature.
      *
@@ -29,7 +27,7 @@ class DownCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         file_put_contents(
             $this->laravel->storagePath().'/framework/down',
@@ -47,7 +45,7 @@ class DownCommand extends Command
     protected function getDownFilePayload()
     {
         return [
-            'time' => $this->currentTime(),
+            'time' => Carbon::now()->getTimestamp(),
             'message' => $this->option('message'),
             'retry' => $this->getRetryTime(),
         ];

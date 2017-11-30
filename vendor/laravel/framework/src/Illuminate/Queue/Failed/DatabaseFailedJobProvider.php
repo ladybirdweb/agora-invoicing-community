@@ -2,7 +2,7 @@
 
 namespace Illuminate\Queue\Failed;
 
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Database\ConnectionResolverInterface;
 
 class DatabaseFailedJobProvider implements FailedJobProviderInterface
@@ -77,7 +77,7 @@ class DatabaseFailedJobProvider implements FailedJobProviderInterface
      * Get a single failed job.
      *
      * @param  mixed  $id
-     * @return object|null
+     * @return array
      */
     public function find($id)
     {

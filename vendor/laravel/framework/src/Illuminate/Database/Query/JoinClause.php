@@ -97,14 +97,4 @@ class JoinClause extends Builder
     {
         return new static($this->parentQuery, $this->type, $this->table);
     }
-
-    /**
-     * Create a new query instance for sub-query.
-     *
-     * @return \Illuminate\Database\Query\Builder
-     */
-    protected function forSubQuery()
-    {
-        return $this->parentQuery->newQuery();
-    }
 }

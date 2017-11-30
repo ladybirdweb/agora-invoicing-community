@@ -1,6 +1,6 @@
 <?php
 
-class Swift_Mailer_ArrayRecipientIteratorTest extends \PHPUnit\Framework\TestCase
+class Swift_Mailer_ArrayRecipientIteratorTest extends \PHPUnit_Framework_TestCase
 {
     public function testHasNextReturnsFalseForEmptyArray()
     {

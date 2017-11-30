@@ -41,7 +41,7 @@ class PaginationServiceProvider extends ServiceProvider
             $page = $this->app['request']->input($pageName);
 
             if (filter_var($page, FILTER_VALIDATE_INT) !== false && (int) $page >= 1) {
-                return (int) $page;
+                return $page;
             }
 
             return 1;

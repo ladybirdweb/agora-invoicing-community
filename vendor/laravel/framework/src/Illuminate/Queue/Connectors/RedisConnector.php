@@ -2,6 +2,7 @@
 
 namespace Illuminate\Queue\Connectors;
 
+use Illuminate\Support\Arr;
 use Illuminate\Queue\RedisQueue;
 use Illuminate\Contracts\Redis\Factory as Redis;
 
@@ -44,8 +45,8 @@ class RedisConnector implements ConnectorInterface
     {
         return new RedisQueue(
             $this->redis, $config['queue'],
-            $config['connection'] ?? $this->connection,
-            $config['retry_after'] ?? 60
+            Arr::get($config, 'connection', $this->connection),
+            Arr::get($config, 'retry_after', 60)
         );
     }
 }

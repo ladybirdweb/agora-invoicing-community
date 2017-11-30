@@ -2,15 +2,13 @@
 
 namespace Illuminate\Session;
 
+use Carbon\Carbon;
 use SessionHandlerInterface;
-use Illuminate\Support\InteractsWithTime;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Contracts\Cookie\QueueingFactory as CookieJar;
 
 class CookieSessionHandler implements SessionHandlerInterface
 {
-    use InteractsWithTime;
-
     /**
      * The cookie jar instance.
      *
@@ -69,7 +67,7 @@ class CookieSessionHandler implements SessionHandlerInterface
         $value = $this->request->cookies->get($sessionId) ?: '';
 
         if (! is_null($decoded = json_decode($value, true)) && is_array($decoded)) {
-            if (isset($decoded['expires']) && $this->currentTime() <= $decoded['expires']) {
+            if (isset($decoded['expires']) && Carbon::now()->getTimestamp() <= $decoded['expires']) {
                 return $decoded['data'];
             }
         }
@@ -84,7 +82,7 @@ class CookieSessionHandler implements SessionHandlerInterface
     {
         $this->cookie->queue($sessionId, json_encode([
             'data' => $data,
-            'expires' => $this->availableAt($this->minutes * 60),
+            'expires' => Carbon::now()->addMinutes($this->minutes)->getTimestamp(),
         ]), $this->minutes);
 
         return true;

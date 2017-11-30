@@ -2,62 +2,62 @@
 
 class Swift_Transport_Esmtp_Auth_LoginAuthenticatorTest extends \SwiftMailerTestCase
 {
-    private $agent;
+    private $_agent;
 
     protected function setUp()
     {
-        $this->agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
+        $this->_agent = $this->getMockery('Swift_Transport_SmtpAgent')->shouldIgnoreMissing();
     }
 
     public function testKeywordIsLogin()
     {
-        $login = $this->getAuthenticator();
+        $login = $this->_getAuthenticator();
         $this->assertEquals('LOGIN', $login->getAuthKeyword());
     }
 
     public function testSuccessfulAuthentication()
     {
-        $login = $this->getAuthenticator();
+        $login = $this->_getAuthenticator();
 
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("AUTH LOGIN\r\n", array(334));
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(base64_encode('jack')."\r\n", array(334));
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(base64_encode('pass')."\r\n", array(235));
 
-        $this->assertTrue($login->authenticate($this->agent, 'jack', 'pass'),
+        $this->assertTrue($login->authenticate($this->_agent, 'jack', 'pass'),
             '%s: The buffer accepted all commands authentication should succeed'
             );
     }
 
     public function testAuthenticationFailureSendRsetAndReturnFalse()
     {
-        $login = $this->getAuthenticator();
+        $login = $this->_getAuthenticator();
 
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("AUTH LOGIN\r\n", array(334));
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(base64_encode('jack')."\r\n", array(334));
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with(base64_encode('pass')."\r\n", array(235))
              ->andThrow(new Swift_TransportException(''));
-        $this->agent->shouldReceive('executeCommand')
+        $this->_agent->shouldReceive('executeCommand')
              ->once()
              ->with("RSET\r\n", array(250));
 
-        $this->assertFalse($login->authenticate($this->agent, 'jack', 'pass'),
+        $this->assertFalse($login->authenticate($this->_agent, 'jack', 'pass'),
             '%s: Authentication fails, so RSET should be sent'
             );
     }
 
-    private function getAuthenticator()
+    private function _getAuthenticator()
     {
         return new Swift_Transport_Esmtp_Auth_LoginAuthenticator();
     }

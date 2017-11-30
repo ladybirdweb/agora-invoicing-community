@@ -2,30 +2,31 @@
 
 class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtpEventSupportTest
 {
-    protected function getTransport($buf, $dispatcher = null, $command = '/usr/sbin/sendmail -bs')
+    protected function _getTransport($buf, $dispatcher = null, $command = '/usr/sbin/sendmail -bs')
     {
         if (!$dispatcher) {
-            $dispatcher = $this->createEventDispatcher();
+            $dispatcher = $this->_createEventDispatcher();
         }
-        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher, 'example.org');
+        $transport = new Swift_Transport_SendmailTransport($buf, $dispatcher);
         $transport->setCommand($command);
 
         return $transport;
     }
 
-    protected function getSendmail($buf, $dispatcher = null)
+    protected function _getSendmail($buf, $dispatcher = null)
     {
         if (!$dispatcher) {
-            $dispatcher = $this->createEventDispatcher();
+            $dispatcher = $this->_createEventDispatcher();
         }
+        $sendmail = new Swift_Transport_SendmailTransport($buf, $dispatcher);
 
-        return new Swift_Transport_SendmailTransport($buf, $dispatcher);
+        return $sendmail;
     }
 
     public function testCommandCanBeSetAndFetched()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getSendmail($buf);
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getSendmail($buf);
 
         $sendmail->setCommand('/usr/sbin/sendmail -bs');
         $this->assertEquals('/usr/sbin/sendmail -bs', $sendmail->getCommand());
@@ -35,9 +36,9 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
     public function testSendingMessageIn_t_ModeUsesSimplePipe()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getSendmail($buf);
-        $message = $this->createMessage();
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getSendmail($buf);
+        $message = $this->_createMessage();
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -62,9 +63,9 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
     public function testSendingIn_t_ModeWith_i_FlagDoesntEscapeDot()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getSendmail($buf);
-        $message = $this->createMessage();
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getSendmail($buf);
+        $message = $this->_createMessage();
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -89,9 +90,9 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
     public function testSendingInTModeWith_oi_FlagDoesntEscapeDot()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getSendmail($buf);
-        $message = $this->createMessage();
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getSendmail($buf);
+        $message = $this->_createMessage();
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -116,9 +117,9 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
     public function testSendingMessageRegeneratesId()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getSendmail($buf);
-        $message = $this->createMessage();
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getSendmail($buf);
+        $message = $this->_createMessage();
 
         $message->shouldReceive('getTo')
                 ->zeroOrMoreTimes()
@@ -141,8 +142,8 @@ class Swift_Transport_SendmailTransportTest extends Swift_Transport_AbstractSmtp
 
     public function testFluidInterface()
     {
-        $buf = $this->getBuffer();
-        $sendmail = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $sendmail = $this->_getTransport($buf);
 
         $ref = $sendmail->setCommand('/foo');
         $this->assertEquals($ref, $sendmail);

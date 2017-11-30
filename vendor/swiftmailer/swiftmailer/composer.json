@@ -3,7 +3,7 @@
     "type": "library",
     "description": "Swiftmailer, free feature-rich PHP mailer",
     "keywords": ["mail","mailer","email"],
-    "homepage": "http://swiftmailer.symfony.com",
+    "homepage": "http://swiftmailer.org",
     "license": "MIT",
     "authors": [
         {
@@ -15,22 +15,23 @@
         }
     ],
     "require": {
-        "php": ">=7.0.0",
-        "egulias/email-validator": "~2.0"
+        "php": ">=5.3.3"
     },
     "require-dev": {
         "mockery/mockery": "~0.9.1",
-        "symfony/phpunit-bridge": "~3.3@dev"
+        "symfony/phpunit-bridge": "~3.2"
     },
     "autoload": {
         "files": ["lib/swift_required.php"]
     },
     "autoload-dev": {
-        "psr-0": { "Swift_": "tests/unit" }
+        "psr-0": {
+            "Swift_": "tests/unit"
+        }
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "6.0-dev"
+            "dev-master": "5.4-dev"
         }
     }
 }

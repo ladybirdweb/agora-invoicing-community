@@ -47,7 +47,7 @@ class ConfigCacheCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $this->call('config:clear');
 

@@ -2,8 +2,9 @@
 
 namespace Illuminate\Broadcasting;
 
+use Pusher;
 use Closure;
-use Pusher\Pusher;
+use Illuminate\Support\Arr;
 use Psr\Log\LoggerInterface;
 use InvalidArgumentException;
 use Illuminate\Broadcasting\Broadcasters\LogBroadcaster;
@@ -65,7 +66,7 @@ class BroadcastManager implements FactoryContract
         $attributes = $attributes ?: ['middleware' => ['web']];
 
         $this->app['router']->group($attributes, function ($router) {
-            $router->post('/broadcasting/auth', '\\'.BroadcastController::class.'@authenticate');
+            $router->post('/broadcasting/auth', BroadcastController::class.'@authenticate');
         });
     }
 
@@ -83,7 +84,9 @@ class BroadcastManager implements FactoryContract
 
         $request = $request ?: $this->app['request'];
 
-        return $request->header('X-Socket-ID');
+        if ($request->hasHeader('X-Socket-ID')) {
+            return $request->header('X-Socket-ID');
+        }
     }
 
     /**
@@ -158,7 +161,7 @@ class BroadcastManager implements FactoryContract
      */
     protected function get($name)
     {
-        return $this->drivers[$name] ?? $this->resolve($name);
+        return isset($this->drivers[$name]) ? $this->drivers[$name] : $this->resolve($name);
     }
 
     /**
@@ -211,7 +214,7 @@ class BroadcastManager implements FactoryContract
     {
         return new PusherBroadcaster(
             new Pusher($config['key'], $config['secret'],
-            $config['app_id'], $config['options'] ?? [])
+            $config['app_id'], Arr::get($config, 'options', []))
         );
     }
 
@@ -224,7 +227,7 @@ class BroadcastManager implements FactoryContract
     protected function createRedisDriver(array $config)
     {
         return new RedisBroadcaster(
-            $this->app->make('redis'), $config['connection'] ?? null
+            $this->app->make('redis'), Arr::get($config, 'connection')
         );
     }
 

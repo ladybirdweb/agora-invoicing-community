@@ -109,19 +109,6 @@ class MailMessage extends SimpleMessage
     }
 
     /**
-     * Set the default markdown template.
-     *
-     * @param  string  $template
-     * @return $this
-     */
-    public function template($template)
-    {
-        $this->markdown = $template;
-
-        return $this;
-    }
-
-    /**
      * Set the from address for the mail message.
      *
      * @param  string  $address

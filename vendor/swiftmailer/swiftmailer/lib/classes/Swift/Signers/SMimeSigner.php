@@ -34,7 +34,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
     protected $replacementFactory;
 
     /**
-     * @var Swift_Mime_SimpleHeaderFactory
+     * @var Swift_Mime_HeaderFactory
      */
     protected $headerFactory;
 
@@ -59,7 +59,26 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             ->lookup('transport.replacementfactory');
 
         $this->signOptions = PKCS7_DETACHED;
-        $this->encryptCipher = OPENSSL_CIPHER_AES_128_CBC;
+
+        // Supported since php5.4
+        if (defined('OPENSSL_CIPHER_AES_128_CBC')) {
+            $this->encryptCipher = OPENSSL_CIPHER_AES_128_CBC;
+        } else {
+            $this->encryptCipher = OPENSSL_CIPHER_RC2_128;
+        }
+    }
+
+    /**
+     * Returns an new Swift_Signers_SMimeSigner instance.
+     *
+     * @param string $certificate
+     * @param string $privateKey
+     *
+     * @return self
+     */
+    public static function newInstance($certificate = null, $privateKey = null)
+    {
+        return new self($certificate, $privateKey);
     }
 
     /**
@@ -278,7 +297,7 @@ class Swift_Signers_SMimeSigner implements Swift_Signers_BodySigner
             $args[] = $this->extraCerts;
         }
 
-        if (!openssl_pkcs7_sign(...$args)) {
+        if (!call_user_func_array('openssl_pkcs7_sign', $args)) {
             throw new Swift_IoException(sprintf('Failed to sign S/Mime message. Error: "%s".', openssl_error_string()));
         }
 

@@ -1,8 +1,6 @@
 <?php
 
-use Egulias\EmailValidator\EmailValidator;
-
-class Swift_Bug650Test extends \PHPUnit\Framework\TestCase
+class Swift_Bug650Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider encodingDataProvider
@@ -15,7 +13,7 @@ class Swift_Bug650Test extends \PHPUnit\Framework\TestCase
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
         $charStream = new Swift_CharacterStream_NgCharacterStream($factory, 'utf-8');
         $encoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder($charStream);
-        $header = new Swift_Mime_Headers_MailboxHeader('To', $encoder, new EmailValidator());
+        $header = new Swift_Mime_Headers_MailboxHeader('To', $encoder, new Swift_Mime_Grammar());
         $header->setCharset('utf-8');
 
         $header->setNameAddresses(array(

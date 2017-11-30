@@ -3,7 +3,6 @@
 namespace Illuminate\Foundation\Console;
 
 use Illuminate\Console\Command;
-use Illuminate\Encryption\Encrypter;
 use Illuminate\Console\ConfirmableTrait;
 
 class KeyGenerateCommand extends Command
@@ -31,7 +30,7 @@ class KeyGenerateCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $key = $this->generateRandomKey();
 
@@ -58,9 +57,9 @@ class KeyGenerateCommand extends Command
      */
     protected function generateRandomKey()
     {
-        return 'base64:'.base64_encode(
-            Encrypter::generateKey($this->laravel['config']['app.cipher'])
-        );
+        return 'base64:'.base64_encode(random_bytes(
+            $this->laravel['config']['app.cipher'] == 'AES-128-CBC' ? 16 : 32
+        ));
     }
 
     /**

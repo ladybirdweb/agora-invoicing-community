@@ -2,6 +2,7 @@
 
 namespace Illuminate\Queue;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Queue\Jobs\RedisJob;
 use Illuminate\Contracts\Redis\Factory as Redis;
@@ -94,13 +95,13 @@ class RedisQueue extends Queue implements QueueContract
     {
         $this->getConnection()->rpush($this->getQueue($queue), $payload);
 
-        return json_decode($payload, true)['id'] ?? null;
+        return Arr::get(json_decode($payload, true), 'id');
     }
 
     /**
      * Push a new job onto the queue after a delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
+     * @param  \DateTime|int  $delay
      * @param  object|string  $job
      * @param  mixed   $data
      * @param  string  $queue
@@ -114,7 +115,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Push a raw job onto the queue after a delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
+     * @param  \DateTime|int  $delay
      * @param  string  $payload
      * @param  string  $queue
      * @return mixed
@@ -125,7 +126,7 @@ class RedisQueue extends Queue implements QueueContract
             $this->getQueue($queue).':delayed', $this->availableAt($delay), $payload
         );
 
-        return json_decode($payload, true)['id'] ?? null;
+        return Arr::get(json_decode($payload, true), 'id');
     }
 
     /**
@@ -133,11 +134,12 @@ class RedisQueue extends Queue implements QueueContract
      *
      * @param  string  $job
      * @param  mixed   $data
-     * @return string
+     * @param  string  $queue
+     * @return array
      */
-    protected function createPayloadArray($job, $data = '')
+    protected function createPayloadArray($job, $data = '', $queue = null)
     {
-        return array_merge(parent::createPayloadArray($job, $data), [
+        return array_merge(parent::createPayloadArray($job, $data, $queue), [
             'id' => $this->getRandomId(),
             'attempts' => 0,
         ]);
@@ -252,7 +254,7 @@ class RedisQueue extends Queue implements QueueContract
      * @param  string|null  $queue
      * @return string
      */
-    public function getQueue($queue)
+    protected function getQueue($queue)
     {
         return 'queues:'.($queue ?: $this->default);
     }
@@ -260,7 +262,7 @@ class RedisQueue extends Queue implements QueueContract
     /**
      * Get the connection for the queue.
      *
-     * @return \Illuminate\Redis\Connections\Connection
+     * @return \Predis\ClientInterface
      */
     protected function getConnection()
     {

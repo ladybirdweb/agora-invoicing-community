@@ -3,7 +3,6 @@
 namespace Illuminate\Database\Eloquent;
 
 use RuntimeException;
-use Illuminate\Support\Arr;
 
 class ModelNotFoundException extends RuntimeException
 {
@@ -31,7 +30,7 @@ class ModelNotFoundException extends RuntimeException
     public function setModel($model, $ids = [])
     {
         $this->model = $model;
-        $this->ids = Arr::wrap($ids);
+        $this->ids = array_wrap($ids);
 
         $this->message = "No query results for model [{$model}]";
 

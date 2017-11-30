@@ -2,7 +2,6 @@
 
 namespace Illuminate\Database\Schema\Grammars;
 
-use RuntimeException;
 use Illuminate\Support\Fluent;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
@@ -173,18 +172,6 @@ class SQLiteGrammar extends Grammar
     }
 
     /**
-     * Compile a spatial index key command.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
-     * @throws \RuntimeException
-     */
-    public function compileSpatialIndex(Blueprint $blueprint, Fluent $command)
-    {
-        throw new RuntimeException('The database driver in use does not support spatial indexes.');
-    }
-
-    /**
      * Compile a foreign key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
@@ -218,16 +205,6 @@ class SQLiteGrammar extends Grammar
     public function compileDropIfExists(Blueprint $blueprint, Fluent $command)
     {
         return 'drop table if exists '.$this->wrapTable($blueprint);
-    }
-
-    /**
-     * Compile the SQL needed to drop all tables.
-     *
-     * @return string
-     */
-    public function compileDropAllTables()
-    {
-        return "delete from sqlite_master where type in ('table', 'index', 'trigger')";
     }
 
     /**
@@ -282,18 +259,6 @@ class SQLiteGrammar extends Grammar
     }
 
     /**
-     * Compile a drop spatial index command.
-     *
-     * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
-     * @param  \Illuminate\Support\Fluent  $command
-     * @throws \RuntimeException
-     */
-    public function compileDropSpatialIndex(Blueprint $blueprint, Fluent $command)
-    {
-        throw new RuntimeException('The database driver in use does not support spatial indexes.');
-    }
-
-    /**
      * Compile a rename table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint  $blueprint
@@ -325,26 +290,6 @@ class SQLiteGrammar extends Grammar
     public function compileDisableForeignKeyConstraints()
     {
         return 'PRAGMA foreign_keys = OFF;';
-    }
-
-    /**
-     * Compile the SQL needed to enable a writable schema.
-     *
-     * @return string
-     */
-    public function compileEnableWriteableSchema()
-    {
-        return 'PRAGMA writable_schema = 1;';
-    }
-
-    /**
-     * Compile the SQL needed to disable a writable schema.
-     *
-     * @return string
-     */
-    public function compileDisableWriteableSchema()
-    {
-        return 'PRAGMA writable_schema = 0;';
     }
 
     /**
@@ -557,7 +502,7 @@ class SQLiteGrammar extends Grammar
     }
 
     /**
-     * Create the column definition for a date-time (with time zone) type.
+     * Create the column definition for a date-time type.
      *
      * Note: "SQLite does not have a storage class set aside for storing dates and/or times."
      * @link https://www.sqlite.org/datatype3.html
@@ -567,7 +512,7 @@ class SQLiteGrammar extends Grammar
      */
     protected function typeDateTimeTz(Fluent $column)
     {
-        return $this->typeDateTime($column);
+        return 'datetime';
     }
 
     /**
@@ -582,14 +527,14 @@ class SQLiteGrammar extends Grammar
     }
 
     /**
-     * Create the column definition for a time (with time zone) type.
+     * Create the column definition for a time type.
      *
      * @param  \Illuminate\Support\Fluent  $column
      * @return string
      */
     protected function typeTimeTz(Fluent $column)
     {
-        return $this->typeTime($column);
+        return 'time';
     }
 
     /**
@@ -600,18 +545,26 @@ class SQLiteGrammar extends Grammar
      */
     protected function typeTimestamp(Fluent $column)
     {
-        return $column->useCurrent ? 'datetime default CURRENT_TIMESTAMP' : 'datetime';
+        if ($column->useCurrent) {
+            return 'datetime default CURRENT_TIMESTAMP';
+        }
+
+        return 'datetime';
     }
 
     /**
-     * Create the column definition for a timestamp (with time zone) type.
+     * Create the column definition for a timestamp type.
      *
      * @param  \Illuminate\Support\Fluent  $column
      * @return string
      */
     protected function typeTimestampTz(Fluent $column)
     {
-        return $this->typeTimestamp($column);
+        if ($column->useCurrent) {
+            return 'datetime default CURRENT_TIMESTAMP';
+        }
+
+        return 'datetime';
     }
 
     /**
@@ -656,94 +609,6 @@ class SQLiteGrammar extends Grammar
     protected function typeMacAddress(Fluent $column)
     {
         return 'varchar';
-    }
-
-    /**
-     * Create the column definition for a spatial Geometry type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeGeometry(Fluent $column)
-    {
-        return 'geometry';
-    }
-
-    /**
-     * Create the column definition for a spatial Point type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typePoint(Fluent $column)
-    {
-        return 'point';
-    }
-
-    /**
-     * Create the column definition for a spatial LineString type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeLineString(Fluent $column)
-    {
-        return 'linestring';
-    }
-
-    /**
-     * Create the column definition for a spatial Polygon type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typePolygon(Fluent $column)
-    {
-        return 'polygon';
-    }
-
-    /**
-     * Create the column definition for a spatial GeometryCollection type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeGeometryCollection(Fluent $column)
-    {
-        return 'geometrycollection';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiPoint type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiPoint(Fluent $column)
-    {
-        return 'multipoint';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiLineString type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiLineString(Fluent $column)
-    {
-        return 'multilinestring';
-    }
-
-    /**
-     * Create the column definition for a spatial MultiPolygon type.
-     *
-     * @param  \Illuminate\Support\Fluent  $column
-     * @return string
-     */
-    public function typeMultiPolygon(Fluent $column)
-    {
-        return 'multipolygon';
     }
 
     /**

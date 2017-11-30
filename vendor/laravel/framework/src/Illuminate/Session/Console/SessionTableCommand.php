@@ -54,7 +54,7 @@ class SessionTableCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $fullPath = $this->createBaseMigration();
 

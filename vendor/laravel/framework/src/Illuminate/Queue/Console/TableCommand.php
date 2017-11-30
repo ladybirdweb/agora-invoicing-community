@@ -55,7 +55,7 @@ class TableCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $table = $this->laravel['config']['queue.connections.database.table'];
 

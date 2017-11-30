@@ -2,55 +2,54 @@
 
 class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEventSupportTest
 {
-    protected function getTransport($buf, $dispatcher = null)
+    protected function _getTransport($buf, $dispatcher = null)
     {
         if (!$dispatcher) {
-            $dispatcher = $this->createEventDispatcher();
+            $dispatcher = $this->_createEventDispatcher();
         }
 
-        return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher, 'example.org');
+        return new Swift_Transport_EsmtpTransport($buf, array(), $dispatcher);
     }
 
     public function testHostCanBeSetAndFetched()
     {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $smtp->setHost('foo');
         $this->assertEquals('foo', $smtp->getHost(), '%s: Host should be returned');
     }
 
     public function testPortCanBeSetAndFetched()
     {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $smtp->setPort(25);
         $this->assertEquals(25, $smtp->getPort(), '%s: Port should be returned');
     }
 
     public function testTimeoutCanBeSetAndFetched()
     {
-        $buf = $this->getBuffer();
+        $buf = $this->_getBuffer();
         $buf->shouldReceive('setParam')
             ->once()
             ->with('timeout', 10);
 
-        $smtp = $this->getTransport($buf);
+        $smtp = $this->_getTransport($buf);
         $smtp->setTimeout(10);
         $this->assertEquals(10, $smtp->getTimeout(), '%s: Timeout should be returned');
     }
 
     public function testEncryptionCanBeSetAndFetched()
     {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $smtp->setEncryption('tls');
         $this->assertEquals('tls', $smtp->getEncryption(), '%s: Crypto should be returned');
     }
 
     public function testStartSendsHeloToInitiate()
     {
-        // previous loop would fail if there is an issue
-        $this->addToAssertionCount(1);
+        //Overridden for EHLO instead
     }
 
     public function testStartSendsEhloToInitiate()
@@ -89,8 +88,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
 
      */
 
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
 
         $buf->shouldReceive('initialize')
             ->once();
@@ -107,11 +106,11 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->with(1)
             ->andReturn('250 ServerName'."\r\n");
 
-        $this->finishBuffer($buf);
+        $this->_finishBuffer($buf);
         try {
             $smtp->start();
         } catch (Exception $e) {
-            $this->fail('Starting Esmtp should send EHLO and accept 250 response: '.$e->getMessage());
+            $this->fail('Starting Esmtp should send EHLO and accept 250 response');
         }
     }
 
@@ -125,8 +124,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
        that it was in before the EHLO was received.
         */
 
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
 
         $buf->shouldReceive('initialize')
             ->once();
@@ -151,7 +150,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->with(2)
             ->andReturn('250 HELO'."\r\n");
 
-        $this->finishBuffer($buf);
+        $this->_finishBuffer($buf);
         try {
             $smtp->start();
         } catch (Exception $e) {
@@ -164,8 +163,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
     public function testInvalidHeloResponseCausesException()
     {
         //Overridden to first try EHLO
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
 
         $buf->shouldReceive('initialize')
             ->once();
@@ -189,7 +188,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->once()
             ->with(2)
             ->andReturn('504 WTF'."\r\n");
-        $this->finishBuffer($buf);
+        $this->_finishBuffer($buf);
 
         try {
             $this->assertFalse($smtp->isStarted(), '%s: SMTP should begin non-started');
@@ -213,8 +212,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
        identifying the client.
         */
 
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $buf->shouldReceive('initialize')
             ->once();
         $buf->shouldReceive('readLine')
@@ -230,7 +229,7 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->with(1)
             ->andReturn('250 ServerName'."\r\n");
 
-        $this->finishBuffer($buf);
+        $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');
         $smtp->start();
     }
@@ -249,8 +248,8 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
        identifying the client.
         */
 
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $buf->shouldReceive('initialize')
             ->once();
         $buf->shouldReceive('readLine')
@@ -274,15 +273,15 @@ class Swift_Transport_EsmtpTransportTest extends Swift_Transport_AbstractSmtpEve
             ->with(2)
             ->andReturn('250 ServerName'."\r\n");
 
-        $this->finishBuffer($buf);
+        $this->_finishBuffer($buf);
         $smtp->setLocalDomain('mydomain.com');
         $smtp->start();
     }
 
     public function testFluidInterface()
     {
-        $buf = $this->getBuffer();
-        $smtp = $this->getTransport($buf);
+        $buf = $this->_getBuffer();
+        $smtp = $this->_getTransport($buf);
         $buf->shouldReceive('setParam')
             ->once()
             ->with('timeout', 30);

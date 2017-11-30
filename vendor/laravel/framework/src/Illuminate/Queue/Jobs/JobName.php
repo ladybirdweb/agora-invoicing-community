@@ -2,6 +2,7 @@
 
 namespace Illuminate\Queue\Jobs;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 class JobName
@@ -28,6 +29,14 @@ class JobName
     {
         if (! empty($payload['displayName'])) {
             return $payload['displayName'];
+        }
+
+        if ($name === 'Illuminate\Queue\CallQueuedHandler@call') {
+            return Arr::get($payload, 'data.commandName', $name);
+        }
+
+        if ($name === 'Illuminate\Events\CallQueuedHandler@call') {
+            return $payload['data']['class'].'@'.$payload['data']['method'];
         }
 
         return $name;

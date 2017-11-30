@@ -4,7 +4,6 @@ namespace Illuminate\Routing;
 
 use Closure;
 use BadMethodCallException;
-use Illuminate\Support\Arr;
 use InvalidArgumentException;
 
 class RouteRegistrar
@@ -76,7 +75,7 @@ class RouteRegistrar
             throw new InvalidArgumentException("Attribute [{$key}] does not exist.");
         }
 
-        $this->attributes[Arr::get($this->aliases, $key, $key)] = $value;
+        $this->attributes[array_get($this->aliases, $key, $key)] = $value;
 
         return $this;
     }
@@ -87,11 +86,11 @@ class RouteRegistrar
      * @param  string  $name
      * @param  string  $controller
      * @param  array  $options
-     * @return \Illuminate\Routing\PendingResourceRegistration
+     * @return void
      */
     public function resource($name, $controller, array $options = [])
     {
-        return $this->router->resource($name, $controller, $this->attributes + $options);
+        $this->router->resource($name, $controller, $this->attributes + $options);
     }
 
     /**
@@ -168,10 +167,6 @@ class RouteRegistrar
         }
 
         if (in_array($method, $this->allowedAttributes)) {
-            if ($method == 'middleware') {
-                return $this->attribute($method, is_array($parameters[0]) ? $parameters[0] : $parameters);
-            }
-
             return $this->attribute($method, $parameters[0]);
         }
 

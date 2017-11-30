@@ -4,6 +4,7 @@ namespace Illuminate\Auth;
 
 use RuntimeException;
 use Illuminate\Support\Str;
+use Illuminate\Http\Response;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -12,7 +13,6 @@ use Illuminate\Contracts\Auth\StatefulGuard;
 use Symfony\Component\HttpFoundation\Request;
 use Illuminate\Contracts\Auth\SupportsBasicAuth;
 use Illuminate\Contracts\Cookie\QueueingFactory as CookieJar;
-use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 class SessionGuard implements StatefulGuard, SupportsBasicAuth
@@ -127,9 +127,11 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         // First we will try to load the user using the identifier in the session if
         // one exists. Otherwise we will check for a "remember me" cookie in this
         // request, and if one exists, attempt to retrieve the user using that.
+        $user = null;
+
         if (! is_null($id)) {
-            if ($this->user = $this->provider->retrieveById($id)) {
-                $this->fireAuthenticatedEvent($this->user);
+            if ($user = $this->provider->retrieveById($id)) {
+                $this->fireAuthenticatedEvent($user);
             }
         }
 
@@ -138,17 +140,17 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         // the application. Once we have a user we can return it to the caller.
         $recaller = $this->recaller();
 
-        if (is_null($this->user) && ! is_null($recaller)) {
-            $this->user = $this->userFromRecaller($recaller);
+        if (is_null($user) && ! is_null($recaller)) {
+            $user = $this->userFromRecaller($recaller);
 
-            if ($this->user) {
-                $this->updateSession($this->user->getAuthIdentifier());
+            if ($user) {
+                $this->updateSession($user->getAuthIdentifier());
 
-                $this->fireLoginEvent($this->user, true);
+                $this->fireLoginEvent($user, true);
             }
         }
 
-        return $this->user;
+        return $this->user = $user;
     }
 
     /**
@@ -329,12 +331,11 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     /**
      * Get the response for basic authentication.
      *
-     * @return void
-     * @throws \Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     protected function failedBasicResponse()
     {
-        throw new UnauthorizedHttpException('Basic', 'Invalid credentials.');
+        return new Response('Invalid credentials.', 401, ['WWW-Authenticate' => 'Basic']);
     }
 
     /**
@@ -460,7 +461,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     protected function queueRecallerCookie(AuthenticatableContract $user)
     {
         $this->getCookieJar()->queue($this->createRecaller(
-            $user->getAuthIdentifier().'|'.$user->getRememberToken().'|'.$user->getAuthPassword()
+            $user->getAuthIdentifier().'|'.$user->getRememberToken()
         ));
     }
 
@@ -694,11 +695,32 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
     /**
      * Get the session store used by the guard.
      *
-     * @return \Illuminate\Contracts\Session\Session.
+     * @return \Illuminate\Session\Store
      */
     public function getSession()
     {
         return $this->session;
+    }
+
+    /**
+     * Get the user provider used by the guard.
+     *
+     * @return \Illuminate\Contracts\Auth\UserProvider
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
+
+    /**
+     * Set the user provider used by the guard.
+     *
+     * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
+     * @return void
+     */
+    public function setProvider(UserProvider $provider)
+    {
+        $this->provider = $provider;
     }
 
     /**

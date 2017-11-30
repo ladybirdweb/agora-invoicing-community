@@ -18,19 +18,11 @@ trait SerializesAndRestoresModelIdentifiers
     protected function getSerializedPropertyValue($value)
     {
         if ($value instanceof QueueableCollection) {
-            return new ModelIdentifier(
-                $value->getQueueableClass(),
-                $value->getQueueableIds(),
-                $value->getQueueableConnection()
-            );
+            return new ModelIdentifier($value->getQueueableClass(), $value->getQueueableIds());
         }
 
         if ($value instanceof QueueableEntity) {
-            return new ModelIdentifier(
-                get_class($value),
-                $value->getQueueableId(),
-                $value->getQueueableConnection()
-            );
+            return new ModelIdentifier(get_class($value), $value->getQueueableId());
         }
 
         return $value;
@@ -48,12 +40,10 @@ trait SerializesAndRestoresModelIdentifiers
             return $value;
         }
 
-        $model = (new $value->class)->setConnection($value->connection);
-
         return is_array($value->id)
                 ? $this->restoreCollection($value)
-                : $this->getQueryForModelRestoration($model, $value->id)
-                        ->useWritePdo()->firstOrFail();
+                : $this->getQueryForModelRestoration(new $value->class)
+                            ->useWritePdo()->findOrFail($value->id);
     }
 
     /**
@@ -68,20 +58,20 @@ trait SerializesAndRestoresModelIdentifiers
             return new EloquentCollection;
         }
 
-        return $this->getQueryForModelRestoration(
-            (new $value->class)->setConnection($value->connection), $value->id
-        )->useWritePdo()->get();
+        $model = new $value->class;
+
+        return $this->getQueryForModelRestoration($model)->useWritePdo()
+                    ->whereIn($model->getQualifiedKeyName(), $value->id)->get();
     }
 
     /**
      * Get the query for restoration.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  array|int                            $ids
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getQueryForModelRestoration($model, $ids)
+    protected function getQueryForModelRestoration($model)
     {
-        return $model->newQueryForRestoration($ids);
+        return $model->newQueryWithoutScopes();
     }
 }

@@ -55,7 +55,7 @@ class FailedTableCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         $table = $this->laravel['config']['queue.failed.table'];
 

@@ -1,12 +1,17 @@
 <?php
 
-use Egulias\EmailValidator\EmailValidator;
-
 class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 {
+    protected function setUp()
+    {
+        if (PHP_VERSION_ID < 50400 && !defined('OPENSSL_ALGO_SHA256')) {
+            $this->markTestSkipped('skipping because of https://bugs.php.net/bug.php?id=61421');
+        }
+    }
+
     public function testBasicSigningHeaderManipulation()
     {
-        $headers = $this->createHeaders();
+        $headers = $this->_createHeaders();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         /* @var $signer Swift_Signers_HeaderSigner */
@@ -25,7 +30,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // SHA1 Signing
     public function testSigningSHA1()
     {
-        $headerSet = $this->createHeaderSet();
+        $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha1');
@@ -48,7 +53,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // SHA256 Signing
     public function testSigning256()
     {
-        $headerSet = $this->createHeaderSet();
+        $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -71,7 +76,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Relaxed/Relaxed Hash Signing
     public function testSigningRelaxedRelaxed256()
     {
-        $headerSet = $this->createHeaderSet();
+        $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -96,7 +101,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Relaxed/Simple Hash Signing
     public function testSigningRelaxedSimple256()
     {
-        $headerSet = $this->createHeaderSet();
+        $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -120,7 +125,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     // Simple/Relaxed Hash Signing
     public function testSigningSimpleRelaxed256()
     {
-        $headerSet = $this->createHeaderSet();
+        $headerSet = $this->_createHeaderSet();
         $messageContent = 'Hello World';
         $signer = new Swift_Signers_DKIMSigner(file_get_contents(dirname(dirname(dirname(__DIR__))).'/_samples/dkim/dkim.test.priv'), 'dummy.nxdomain.be', 'dummySelector');
         $signer->setHashAlgorithm('rsa-sha256');
@@ -141,7 +146,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
         $this->assertEquals($sig->getValue(), 'v=1; a=rsa-sha256; bh=f+W+hu8dIhf2VAni89o8lF6WKTXi7nViA4RrMdpD5/U=; d=dummy.nxdomain.be; h=; i=@dummy.nxdomain.be; s=dummySelector; c=simple/relaxed; t=1299879181; b=M5eomH/zamyzix9kOes+6YLzQZxuJdBP4x3nP9zF2N26eMLG2/cBKbnNyqiOTDhJdYfWPbLIa 1CWnjST0j5p4CpeOkGYuiE+M4TWEZwhRmRWootlPO3Ii6XpbBJKFk1o9zviS7OmXblUUE4aqb yRSIMDhtLdCK5GlaCneFLN7RQ=');
     }
 
-    private function createHeaderSet()
+    private function _createHeaderSet()
     {
         $cache = new Swift_KeyCache_ArrayKeyCache(new Swift_KeyCache_SimpleKeyCacheInputStream());
         $factory = new Swift_CharacterReaderFactory_SimpleCharacterReaderFactory();
@@ -149,8 +154,8 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'));
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'));
-        $emailValidator = new EmailValidator();
-        $headers = new Swift_Mime_SimpleHeaderSet(new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $emailValidator));
+        $grammar = new Swift_Mime_Grammar();
+        $headers = new Swift_Mime_SimpleHeaderSet(new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar));
 
         return $headers;
     }
@@ -158,7 +163,7 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
     /**
      * @return Swift_Mime_Headers
      */
-    private function createHeaders()
+    private function _createHeaders()
     {
         $x = 0;
         $cache = new Swift_KeyCache_ArrayKeyCache(new Swift_KeyCache_SimpleKeyCacheInputStream());
@@ -167,9 +172,9 @@ class Swift_Signers_DKIMSignerTest extends \SwiftMailerTestCase
 
         $headerEncoder = new Swift_Mime_HeaderEncoder_QpHeaderEncoder(new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'));
         $paramEncoder = new Swift_Encoder_Rfc2231Encoder(new Swift_CharacterStream_ArrayCharacterStream($factory, 'utf-8'));
-        $emailValidator = new EmailValidator();
-        $headerFactory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $emailValidator);
-        $headers = $this->getMockery('Swift_Mime_SimpleHeaderSet');
+        $grammar = new Swift_Mime_Grammar();
+        $headerFactory = new Swift_Mime_SimpleHeaderFactory($headerEncoder, $paramEncoder, $grammar);
+        $headers = $this->getMockery('Swift_Mime_HeaderSet');
 
         $headers->shouldReceive('listAll')
                 ->zeroOrMoreTimes()

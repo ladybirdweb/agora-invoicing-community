@@ -33,9 +33,9 @@ class MailMakeCommand extends GeneratorCommand
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
-        if (parent::handle() === false && ! $this->option('force')) {
+        if (parent::fire() === false && ! $this->option('force')) {
             return;
         }
 

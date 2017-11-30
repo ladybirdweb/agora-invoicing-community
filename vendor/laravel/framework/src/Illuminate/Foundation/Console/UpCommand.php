@@ -25,7 +25,7 @@ class UpCommand extends Command
      *
      * @return void
      */
-    public function handle()
+    public function fire()
     {
         @unlink($this->laravel->storagePath().'/framework/down');
 

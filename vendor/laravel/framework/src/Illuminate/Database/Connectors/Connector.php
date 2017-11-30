@@ -4,6 +4,7 @@ namespace Illuminate\Database\Connectors;
 
 use PDO;
 use Exception;
+use Illuminate\Support\Arr;
 use Doctrine\DBAL\Driver\PDOConnection;
 use Illuminate\Database\DetectsLostConnections;
 
@@ -35,7 +36,7 @@ class Connector
     public function createConnection($dsn, array $config, array $options)
     {
         list($username, $password) = [
-            $config['username'] ?? null, $config['password'] ?? null,
+            Arr::get($config, 'username'), Arr::get($config, 'password'),
         ];
 
         try {
@@ -108,7 +109,7 @@ class Connector
      */
     public function getOptions(array $config)
     {
-        $options = $config['options'] ?? [];
+        $options = Arr::get($config, 'options', []);
 
         return array_diff_key($this->options, $options) + $options;
     }

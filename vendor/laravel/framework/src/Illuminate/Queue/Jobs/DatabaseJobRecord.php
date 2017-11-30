@@ -2,7 +2,7 @@
 
 namespace Illuminate\Queue\Jobs;
 
-use Illuminate\Support\InteractsWithTime;
+use Illuminate\Queue\InteractsWithTime;
 
 class DatabaseJobRecord
 {

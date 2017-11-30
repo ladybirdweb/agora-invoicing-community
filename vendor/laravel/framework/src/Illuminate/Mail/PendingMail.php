@@ -9,7 +9,7 @@ class PendingMail
     /**
      * The mailer instance.
      *
-     * @var \Illuminate\Mail\Mailer
+     * @var array
      */
     protected $mailer;
 
@@ -37,7 +37,7 @@ class PendingMail
     /**
      * Create a new mailable mailer instance.
      *
-     * @param  \Illuminate\Mail\Mailer  $mailer
+     * @param  Mailer  $mailer
      * @return void
      */
     public function __construct(Mailer $mailer)
@@ -87,7 +87,7 @@ class PendingMail
     /**
      * Send a new mailable message instance.
      *
-     * @param  \Illuminate\Mail\Mailable  $mailable
+     * @param  Mailable  $mailable
      * @return mixed
      */
     public function send(Mailable $mailable)
@@ -102,7 +102,7 @@ class PendingMail
     /**
      * Send a mailable message immediately.
      *
-     * @param  \Illuminate\Mail\Mailable  $mailable
+     * @param  Mailable  $mailable
      * @return mixed
      */
     public function sendNow(Mailable $mailable)
@@ -113,7 +113,7 @@ class PendingMail
     /**
      * Push the given mailable onto the queue.
      *
-     * @param  \Illuminate\Mail\Mailable  $mailable
+     * @param  Mailable  $mailable
      * @return mixed
      */
     public function queue(Mailable $mailable)
@@ -130,8 +130,8 @@ class PendingMail
     /**
      * Deliver the queued message after the given delay.
      *
-     * @param  \DateTimeInterface|\DateInterval|int  $delay
-     * @param  \Illuminate\Mail\Mailable  $mailable
+     * @param  \DateTime|int  $delay
+     * @param  Mailable  $mailable
      * @return mixed
      */
     public function later($delay, Mailable $mailable)
@@ -142,8 +142,8 @@ class PendingMail
     /**
      * Populate the mailable with the addresses.
      *
-     * @param  \Illuminate\Mail\Mailable  $mailable
-     * @return \Illuminate\Mail\Mailable
+     * @param  Mailable  $mailable
+     * @return Mailable
      */
     protected function fill(Mailable $mailable)
     {

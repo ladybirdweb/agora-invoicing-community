@@ -17,14 +17,14 @@
 class Swift_FileSpool extends Swift_ConfigurableSpool
 {
     /** The spool directory */
-    private $path;
+    private $_path;
 
     /**
      * File WriteRetry Limit.
      *
      * @var int
      */
-    private $retryLimit = 10;
+    private $_retryLimit = 10;
 
     /**
      * Create a new FileSpool.
@@ -35,11 +35,11 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function __construct($path)
     {
-        $this->path = $path;
+        $this->_path = $path;
 
-        if (!file_exists($this->path)) {
-            if (!mkdir($this->path, 0777, true)) {
-                throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->path));
+        if (!file_exists($this->_path)) {
+            if (!mkdir($this->_path, 0777, true)) {
+                throw new Swift_IoException(sprintf('Unable to create path "%s".', $this->_path));
             }
         }
     }
@@ -77,25 +77,25 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function setRetryLimit($limit)
     {
-        $this->retryLimit = $limit;
+        $this->_retryLimit = $limit;
     }
 
     /**
      * Queues a message.
      *
-     * @param Swift_Mime_SimpleMessage $message The message to store
+     * @param Swift_Mime_Message $message The message to store
      *
      * @throws Swift_IoException
      *
      * @return bool
      */
-    public function queueMessage(Swift_Mime_SimpleMessage $message)
+    public function queueMessage(Swift_Mime_Message $message)
     {
         $ser = serialize($message);
-        $fileName = $this->path.'/'.$this->getRandomString(10);
-        for ($i = 0; $i < $this->retryLimit; ++$i) {
+        $fileName = $this->_path.'/'.$this->getRandomString(10);
+        for ($i = 0; $i < $this->_retryLimit; ++$i) {
             /* We try an exclusive creation of the file. This is an atomic operation, it avoid locking mechanism */
-            $fp = @fopen($fileName.'.message', 'xb');
+            $fp = @fopen($fileName.'.message', 'x');
             if (false !== $fp) {
                 if (false === fwrite($fp, $ser)) {
                     return false;
@@ -108,7 +108,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
             }
         }
 
-        throw new Swift_IoException(sprintf('Unable to create a file for enqueuing Message in "%s".', $this->path));
+        throw new Swift_IoException(sprintf('Unable to create a file for enqueuing Message in "%s".', $this->_path));
     }
 
     /**
@@ -118,7 +118,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function recover($timeout = 900)
     {
-        foreach (new DirectoryIterator($this->path) as $file) {
+        foreach (new DirectoryIterator($this->_path) as $file) {
             $file = $file->getRealPath();
 
             if (substr($file, -16) == '.message.sending') {
@@ -140,7 +140,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
      */
     public function flushQueue(Swift_Transport $transport, &$failedRecipients = null)
     {
-        $directoryIterator = new DirectoryIterator($this->path);
+        $directoryIterator = new DirectoryIterator($this->_path);
 
         /* Start the transport only if there are queued files to send */
         if (!$transport->isStarted()) {
@@ -200,7 +200,7 @@ class Swift_FileSpool extends Swift_ConfigurableSpool
         $ret = '';
         $strlen = strlen($base);
         for ($i = 0; $i < $count; ++$i) {
-            $ret .= $base[random_int(0, $strlen - 1)];
+            $ret .= $base[((int) rand(0, $strlen - 1))];
         }
 
         return $ret;

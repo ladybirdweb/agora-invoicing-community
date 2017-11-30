@@ -16,45 +16,28 @@ trait CreatesUserProviders
     /**
      * Create the user provider implementation for the driver.
      *
-     * @param  string|null  $provider
-     * @return \Illuminate\Contracts\Auth\UserProvider|null
+     * @param  string  $provider
+     * @return \Illuminate\Contracts\Auth\UserProvider
      *
      * @throws \InvalidArgumentException
      */
-    public function createUserProvider($provider = null)
+    public function createUserProvider($provider)
     {
-        if (is_null($config = $this->getProviderConfiguration($provider))) {
-            return;
-        }
+        $config = $this->app['config']['auth.providers.'.$provider];
 
-        if (isset($this->customProviderCreators[$driver = ($config['driver'] ?? null)])) {
+        if (isset($this->customProviderCreators[$config['driver']])) {
             return call_user_func(
-                $this->customProviderCreators[$driver], $this->app, $config
+                $this->customProviderCreators[$config['driver']], $this->app, $config
             );
         }
 
-        switch ($driver) {
+        switch ($config['driver']) {
             case 'database':
                 return $this->createDatabaseProvider($config);
             case 'eloquent':
                 return $this->createEloquentProvider($config);
             default:
-                throw new InvalidArgumentException(
-                    "Authentication user provider [{$driver}] is not defined."
-                );
-        }
-    }
-
-    /**
-     * Get the user provider configuration.
-     *
-     * @param  string|null  $provider
-     * @return array|null
-     */
-    protected function getProviderConfiguration($provider)
-    {
-        if ($provider = $provider ?: $this->getDefaultUserProvider()) {
-            return $this->app['config']['auth.providers.'.$provider];
+                throw new InvalidArgumentException("Authentication user provider [{$config['driver']}] is not defined.");
         }
     }
 
@@ -80,15 +63,5 @@ trait CreatesUserProviders
     protected function createEloquentProvider($config)
     {
         return new EloquentUserProvider($this->app['hash'], $config['model']);
-    }
-
-    /**
-     * Get the default user provider name.
-     *
-     * @return string
-     */
-    public function getDefaultUserProvider()
-    {
-        return $this->app['config']['auth.defaults.provider'];
     }
 }

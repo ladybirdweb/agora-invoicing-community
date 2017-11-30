@@ -3,13 +3,10 @@
 namespace Illuminate\Routing;
 
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Traits\Macroable;
 use Illuminate\Session\Store as SessionStore;
 
 class Redirector
 {
-    use Macroable;
-
     /**
      * The URL generator instance.
      *

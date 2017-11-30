@@ -60,17 +60,6 @@ class Encrypter implements EncrypterContract
     }
 
     /**
-     * Create a new encryption key for the given cipher.
-     *
-     * @param  string  $cipher
-     * @return string
-     */
-    public static function generateKey($cipher)
-    {
-        return random_bytes($cipher == 'AES-128-CBC' ? 16 : 32);
-    }
-
-    /**
      * Encrypt the given value.
      *
      * @param  mixed  $value
@@ -81,7 +70,7 @@ class Encrypter implements EncrypterContract
      */
     public function encrypt($value, $serialize = true)
     {
-        $iv = random_bytes(openssl_cipher_iv_length($this->cipher));
+        $iv = random_bytes(16);
 
         // First we will encrypt the value using OpenSSL. After this is encrypted we
         // will proceed to calculating a MAC for the encrypted value so that this
@@ -102,7 +91,7 @@ class Encrypter implements EncrypterContract
 
         $json = json_encode(compact('iv', 'value', 'mac'));
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
+        if (! is_string($json)) {
             throw new EncryptException('Could not encrypt the data.');
         }
 

@@ -9,7 +9,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Bridge\PsrHttpMessage\Factory\DiactorosFactory;
 use Illuminate\Contracts\View\Factory as ViewFactoryContract;
 use Illuminate\Contracts\Routing\ResponseFactory as ResponseFactoryContract;
-use Illuminate\Routing\Contracts\ControllerDispatcher as ControllerDispatcherContract;
 
 class RoutingServiceProvider extends ServiceProvider
 {
@@ -31,8 +30,6 @@ class RoutingServiceProvider extends ServiceProvider
         $this->registerPsrResponse();
 
         $this->registerResponseFactory();
-
-        $this->registerControllerDispatcher();
     }
 
     /**
@@ -136,7 +133,7 @@ class RoutingServiceProvider extends ServiceProvider
     protected function registerPsrResponse()
     {
         $this->app->bind(ResponseInterface::class, function ($app) {
-            return new PsrResponse;
+            return new PsrResponse();
         });
     }
 
@@ -149,18 +146,6 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->app->singleton(ResponseFactoryContract::class, function ($app) {
             return new ResponseFactory($app[ViewFactoryContract::class], $app['redirect']);
-        });
-    }
-
-    /**
-     * Register the controller dispatcher.
-     *
-     * @return void
-     */
-    protected function registerControllerDispatcher()
-    {
-        $this->app->singleton(ControllerDispatcherContract::class, function ($app) {
-            return new ControllerDispatcher($app);
         });
     }
 }

@@ -337,7 +337,7 @@ class Store implements Session
      * @param  mixed   $value
      * @return void
      */
-    public function flash(string $key, $value = true)
+    public function flash($key, $value)
     {
         $this->put($key, $value);
 

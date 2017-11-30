@@ -20,17 +20,17 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      *
      * @var int
      */
-    private $out = 0;
+    private $_out = 0;
 
     /**
      * The incoming traffic counter.
      *
      * @var int
      */
-    private $in = 0;
+    private $_in = 0;
 
     /** Bound byte streams */
-    private $mirrors = array();
+    private $_mirrors = array();
 
     /**
      * Not used.
@@ -58,7 +58,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     public function commandSent(Swift_Events_CommandEvent $evt)
     {
         $command = $evt->getCommand();
-        $this->out += strlen($command);
+        $this->_out += strlen($command);
     }
 
     /**
@@ -69,7 +69,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
     public function responseReceived(Swift_Events_ResponseEvent $evt)
     {
         $response = $evt->getResponse();
-        $this->in += strlen($response);
+        $this->_in += strlen($response);
     }
 
     /**
@@ -79,8 +79,8 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function write($bytes)
     {
-        $this->out += strlen($bytes);
-        foreach ($this->mirrors as $stream) {
+        $this->_out += strlen($bytes);
+        foreach ($this->_mirrors as $stream) {
             $stream->write($bytes);
         }
     }
@@ -102,7 +102,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function bind(Swift_InputByteStream $is)
     {
-        $this->mirrors[] = $is;
+        $this->_mirrors[] = $is;
     }
 
     /**
@@ -116,9 +116,9 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function unbind(Swift_InputByteStream $is)
     {
-        foreach ($this->mirrors as $k => $stream) {
+        foreach ($this->_mirrors as $k => $stream) {
             if ($is === $stream) {
-                unset($this->mirrors[$k]);
+                unset($this->_mirrors[$k]);
             }
         }
     }
@@ -128,7 +128,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function flushBuffers()
     {
-        foreach ($this->mirrors as $stream) {
+        foreach ($this->_mirrors as $stream) {
             $stream->flushBuffers();
         }
     }
@@ -140,7 +140,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function getBytesOut()
     {
-        return $this->out;
+        return $this->_out;
     }
 
     /**
@@ -150,7 +150,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function getBytesIn()
     {
-        return $this->in;
+        return $this->_in;
     }
 
     /**
@@ -158,7 +158,7 @@ class Swift_Plugins_BandwidthMonitorPlugin implements Swift_Events_SendListener,
      */
     public function reset()
     {
-        $this->out = 0;
-        $this->in = 0;
+        $this->_out = 0;
+        $this->_in = 0;
     }
 }

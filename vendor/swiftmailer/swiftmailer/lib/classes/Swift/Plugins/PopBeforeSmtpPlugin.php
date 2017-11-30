@@ -11,36 +11,36 @@
 /**
  * Makes sure a connection to a POP3 host has been established prior to connecting to SMTP.
  *
- * @author     Chris Corbyn
+ * @author Chris Corbyn
  */
 class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeListener, Swift_Plugins_Pop_Pop3Connection
 {
     /** A delegate connection to use (mostly a test hook) */
-    private $connection;
+    private $_connection;
 
     /** Hostname of the POP3 server */
-    private $host;
+    private $_host;
 
     /** Port number to connect on */
-    private $port;
+    private $_port;
 
     /** Encryption type to use (if any) */
-    private $crypto;
+    private $_crypto;
 
     /** Username to use (if any) */
-    private $username;
+    private $_username;
 
     /** Password to use (if any) */
-    private $password;
+    private $_password;
 
     /** Established connection via TCP socket */
-    private $socket;
+    private $_socket;
 
     /** Connect timeout in seconds */
-    private $timeout = 10;
+    private $_timeout = 10;
 
     /** SMTP Transport to bind to */
-    private $transport;
+    private $_transport;
 
     /**
      * Create a new PopBeforeSmtpPlugin for $host and $port.
@@ -51,9 +51,23 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function __construct($host, $port = 110, $crypto = null)
     {
-        $this->host = $host;
-        $this->port = $port;
-        $this->crypto = $crypto;
+        $this->_host = $host;
+        $this->_port = $port;
+        $this->_crypto = $crypto;
+    }
+
+    /**
+     * Create a new PopBeforeSmtpPlugin for $host and $port.
+     *
+     * @param string $host
+     * @param int    $port
+     * @param string $crypto as "tls" or "ssl"
+     *
+     * @return self
+     */
+    public static function newInstance($host, $port = 110, $crypto = null)
+    {
+        return new self($host, $port, $crypto);
     }
 
     /**
@@ -65,7 +79,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function setConnection(Swift_Plugins_Pop_Pop3Connection $connection)
     {
-        $this->connection = $connection;
+        $this->_connection = $connection;
 
         return $this;
     }
@@ -77,7 +91,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function bindSmtp(Swift_Transport $smtp)
     {
-        $this->transport = $smtp;
+        $this->_transport = $smtp;
     }
 
     /**
@@ -89,7 +103,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function setTimeout($timeout)
     {
-        $this->timeout = (int) $timeout;
+        $this->_timeout = (int) $timeout;
 
         return $this;
     }
@@ -103,7 +117,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function setUsername($username)
     {
-        $this->username = $username;
+        $this->_username = $username;
 
         return $this;
     }
@@ -117,7 +131,7 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function setPassword($password)
     {
-        $this->password = $password;
+        $this->_password = $password;
 
         return $this;
     }
@@ -129,29 +143,29 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function connect()
     {
-        if (isset($this->connection)) {
-            $this->connection->connect();
+        if (isset($this->_connection)) {
+            $this->_connection->connect();
         } else {
-            if (!isset($this->socket)) {
+            if (!isset($this->_socket)) {
                 if (!$socket = fsockopen(
-                    $this->getHostString(), $this->port, $errno, $errstr, $this->timeout)) {
+                    $this->_getHostString(), $this->_port, $errno, $errstr, $this->_timeout)) {
                     throw new Swift_Plugins_Pop_Pop3Exception(
-                        sprintf('Failed to connect to POP3 host [%s]: %s', $this->host, $errstr)
+                        sprintf('Failed to connect to POP3 host [%s]: %s', $this->_host, $errstr)
                     );
                 }
-                $this->socket = $socket;
+                $this->_socket = $socket;
 
-                if (false === $greeting = fgets($this->socket)) {
+                if (false === $greeting = fgets($this->_socket)) {
                     throw new Swift_Plugins_Pop_Pop3Exception(
                         sprintf('Failed to connect to POP3 host [%s]', trim($greeting))
                     );
                 }
 
-                $this->assertOk($greeting);
+                $this->_assertOk($greeting);
 
-                if ($this->username) {
-                    $this->command(sprintf("USER %s\r\n", $this->username));
-                    $this->command(sprintf("PASS %s\r\n", $this->password));
+                if ($this->_username) {
+                    $this->_command(sprintf("USER %s\r\n", $this->_username));
+                    $this->_command(sprintf("PASS %s\r\n", $this->_password));
                 }
             }
         }
@@ -162,16 +176,16 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function disconnect()
     {
-        if (isset($this->connection)) {
-            $this->connection->disconnect();
+        if (isset($this->_connection)) {
+            $this->_connection->disconnect();
         } else {
-            $this->command("QUIT\r\n");
-            if (!fclose($this->socket)) {
+            $this->_command("QUIT\r\n");
+            if (!fclose($this->_socket)) {
                 throw new Swift_Plugins_Pop_Pop3Exception(
-                    sprintf('POP3 host [%s] connection could not be stopped', $this->host)
+                    sprintf('POP3 host [%s] connection could not be stopped', $this->_host)
                 );
             }
-            $this->socket = null;
+            $this->_socket = null;
         }
     }
 
@@ -182,8 +196,8 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
      */
     public function beforeTransportStarted(Swift_Events_TransportChangeEvent $evt)
     {
-        if (isset($this->transport)) {
-            if ($this->transport !== $evt->getTransport()) {
+        if (isset($this->_transport)) {
+            if ($this->_transport !== $evt->getTransport()) {
                 return;
             }
         }
@@ -213,26 +227,26 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
     {
     }
 
-    private function command($command)
+    private function _command($command)
     {
-        if (!fwrite($this->socket, $command)) {
+        if (!fwrite($this->_socket, $command)) {
             throw new Swift_Plugins_Pop_Pop3Exception(
                 sprintf('Failed to write command [%s] to POP3 host', trim($command))
             );
         }
 
-        if (false === $response = fgets($this->socket)) {
+        if (false === $response = fgets($this->_socket)) {
             throw new Swift_Plugins_Pop_Pop3Exception(
                 sprintf('Failed to read from POP3 host after command [%s]', trim($command))
             );
         }
 
-        $this->assertOk($response);
+        $this->_assertOk($response);
 
         return $response;
     }
 
-    private function assertOk($response)
+    private function _assertOk($response)
     {
         if (substr($response, 0, 3) != '+OK') {
             throw new Swift_Plugins_Pop_Pop3Exception(
@@ -241,10 +255,10 @@ class Swift_Plugins_PopBeforeSmtpPlugin implements Swift_Events_TransportChangeL
         }
     }
 
-    private function getHostString()
+    private function _getHostString()
     {
-        $host = $this->host;
-        switch (strtolower($this->crypto)) {
+        $host = $this->_host;
+        switch (strtolower($this->_crypto)) {
             case 'ssl':
                 $host = 'ssl://'.$host;
                 break;

@@ -381,15 +381,22 @@ class Filesystem
      * Get an array of all files in a directory.
      *
      * @param  string  $directory
-     * @param  bool  $hidden
-     * @return \Symfony\Component\Finder\SplFileInfo[]
+     * @return array
      */
-    public function files($directory, $hidden = false)
+    public function files($directory)
     {
-        return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory)->depth(0),
-            false
-        );
+        $glob = glob($directory.DIRECTORY_SEPARATOR.'*');
+
+        if ($glob === false) {
+            return [];
+        }
+
+        // To get the appropriate files, we'll simply glob the directory and filter
+        // out any "files" that are not truly files so we do not end up with any
+        // directories in our list, but only true files within the directory.
+        return array_filter($glob, function ($file) {
+            return filetype($file) == 'file';
+        });
     }
 
     /**
@@ -397,14 +404,11 @@ class Filesystem
      *
      * @param  string  $directory
      * @param  bool  $hidden
-     * @return \Symfony\Component\Finder\SplFileInfo[]
+     * @return array
      */
     public function allFiles($directory, $hidden = false)
     {
-        return iterator_to_array(
-            Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory),
-            false
-        );
+        return iterator_to_array(Finder::create()->files()->ignoreDotFiles(! $hidden)->in($directory), false);
     }
 
     /**

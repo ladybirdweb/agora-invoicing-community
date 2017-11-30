@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Cache\RateLimiter;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Lang;
-use Illuminate\Validation\ValidationException;
 
 trait ThrottlesLogins
 {
@@ -32,17 +31,14 @@ trait ThrottlesLogins
      */
     protected function incrementLoginAttempts(Request $request)
     {
-        $this->limiter()->hit(
-            $this->throttleKey($request), $this->decayMinutes()
-        );
+        $this->limiter()->hit($this->throttleKey($request));
     }
 
     /**
      * Redirect the user after determining they are locked out.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return void
-     * @throws \Illuminate\Validation\ValidationException
+     * @return \Illuminate\Http\RedirectResponse
      */
     protected function sendLockoutResponse(Request $request)
     {
@@ -50,9 +46,17 @@ trait ThrottlesLogins
             $this->throttleKey($request)
         );
 
-        throw ValidationException::withMessages([
-            $this->username() => [Lang::get('auth.throttle', ['seconds' => $seconds])],
-        ])->status(423);
+        $message = Lang::get('auth.throttle', ['seconds' => $seconds]);
+
+        $errors = [$this->username() => $message];
+
+        if ($request->expectsJson()) {
+            return response()->json($errors, 423);
+        }
+
+        return redirect()->back()
+            ->withInput($request->only($this->username(), 'remember'))
+            ->withErrors($errors);
     }
 
     /**

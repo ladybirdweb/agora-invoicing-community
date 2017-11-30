@@ -144,17 +144,6 @@ abstract class Relation
     }
 
     /**
-     * Execute the query as a "select" statement.
-     *
-     * @param  array  $columns
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function get($columns = ['*'])
-    {
-        return $this->query->get($columns);
-    }
-
-    /**
      * Touch all of the related models for the relationship.
      *
      * @return void
@@ -174,7 +163,7 @@ abstract class Relation
      */
     public function rawUpdate(array $attributes = [])
     {
-        return $this->query->withoutGlobalScopes()->update($attributes);
+        return $this->query->update($attributes);
     }
 
     /**
@@ -188,7 +177,7 @@ abstract class Relation
     {
         return $this->getRelationExistenceQuery(
             $query, $parentQuery, new Expression('count(*)')
-        )->setBindings([], 'select');
+        );
     }
 
     /**
@@ -315,7 +304,7 @@ abstract class Relation
 
         if (is_array($map)) {
             static::$morphMap = $merge && static::$morphMap
-                            ? $map + static::$morphMap : $map;
+                            ? array_merge(static::$morphMap, $map) : $map;
         }
 
         return static::$morphMap;
@@ -364,7 +353,7 @@ abstract class Relation
             return $this->macroCall($method, $parameters);
         }
 
-        $result = $this->query->{$method}(...$parameters);
+        $result = call_user_func_array([$this->query, $method], $parameters);
 
         if ($result === $this->query) {
             return $this;

@@ -47,7 +47,7 @@ abstract class GeneratorCommand extends Command
      *
      * @return bool|null
      */
-    public function handle()
+    public function fire()
     {
         $name = $this->qualifyClass($this->getNameInput());
 
@@ -80,8 +80,6 @@ abstract class GeneratorCommand extends Command
      */
     protected function qualifyClass($name)
     {
-        $name = ltrim($name, '\\/');
-
         $rootNamespace = $this->rootNamespace();
 
         if (Str::startsWith($name, $rootNamespace)) {
@@ -125,7 +123,7 @@ abstract class GeneratorCommand extends Command
      */
     protected function getPath($name)
     {
-        $name = Str::replaceFirst($this->rootNamespace(), '', $name);
+        $name = str_replace_first($this->rootNamespace(), '', $name);
 
         return $this->laravel['path'].'/'.str_replace('\\', '/', $name).'.php';
     }
@@ -168,8 +166,8 @@ abstract class GeneratorCommand extends Command
     protected function replaceNamespace(&$stub, $name)
     {
         $stub = str_replace(
-            ['DummyNamespace', 'DummyRootNamespace', 'NamespacedDummyUserModel'],
-            [$this->getNamespace($name), $this->rootNamespace(), config('auth.providers.users.model')],
+            ['DummyNamespace', 'DummyRootNamespace'],
+            [$this->getNamespace($name), $this->rootNamespace()],
             $stub
         );
 

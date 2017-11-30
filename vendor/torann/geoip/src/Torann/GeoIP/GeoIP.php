@@ -105,7 +105,7 @@ class GeoIP {
 	 */
 	function saveLocation()
 	{
-		$this->session->put('geoip-location', $this->location);
+		$this->session->set('geoip-location', $this->location);
 	}
 
 	/**

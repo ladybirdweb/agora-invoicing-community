@@ -551,7 +551,7 @@ class Grammar extends BaseGrammar
     /**
      * Compile the query orders to an array.
      *
-     * @param  \Illuminate\Database\Query\Builder
+     * @param  \Illuminate\Database\Query\Builder  $query
      * @param  array  $orders
      * @return array
      */
@@ -741,10 +741,10 @@ class Grammar extends BaseGrammar
      */
     public function prepareBindingsForUpdate(array $bindings, array $values)
     {
-        $bindingsWithoutJoin = Arr::except($bindings, 'join');
+        $cleanBindings = Arr::except($bindings, ['join', 'select']);
 
         return array_values(
-            array_merge($bindings['join'], $values, Arr::flatten($bindingsWithoutJoin))
+            array_merge($bindings['join'], $values, Arr::flatten($cleanBindings))
         );
     }
 

@@ -142,8 +142,8 @@ Route::group(['middleware' => ['web']], function () {
 
     /*
      * Addons
-    
-    
+
+
       Route::resource('addons','Product\AddonController');
       Route::get('get-addons','Product\AddonController@GetAddons');
       Route::get('addons-delete','Product\AddonController@destroy');

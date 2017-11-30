@@ -10,7 +10,7 @@
   | and give it the controller to call when that URI is requested.
   |
  */
-Route::group(['middleware' => ['web']], function () {
+    Route::group(['middleware' => ['web']], function () {
     Route::get('/', 'HomeController@index');
 
     /*
@@ -39,10 +39,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
     Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
     Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
-
     Route::get('contact-us', 'Front\CartController@contactUs');
     Route::post('contact-us', 'Front\CartController@postContactUs');
-
     Route::get('add-cart/{slug}', 'Front\CartController@addCartBySlug');
 
     /*
@@ -376,7 +374,7 @@ Route::group(['middleware' => ['web']], function () {
         if ($user) {
             return view('themes.default1.user.verify', compact('user'));
         }
-
+            
         return redirect('auth/login');
     });
 

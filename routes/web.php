@@ -23,7 +23,7 @@
          */
 
         Route::match(['get', 'post'], 'home', 'Front\CartController@ProductList');
-        
+
         Route::get('pricing', 'Front\CartController@Cart');
         Route::get('cart/remove', 'Front\CartController@CartRemove');
         Route::get('update-qty', 'Front\CartController@updateQty');

@@ -2,7 +2,6 @@
 
 namespace App\Model\User;
 
-use App\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 class AccountActivate extends Model

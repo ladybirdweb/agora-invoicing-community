@@ -42,20 +42,20 @@ class CartController extends Controller
 
     public function ProductList(Request $request)
     {
-        
+
         // $location = \GeoIP::getLocation();
 
-        $location=[  "ip" => "::1",
-  "isoCode" => "IN",
-  "country" => "India",
-  "city" => "Bengaluru",
-  "state" => "KA",
-  "postal_code" => 560076,
-  "lat" => 12.9833,
-  "lon" => 77.5833,
-  "timezone" => "Asia/Kolkata",
-  "continent" => "AS",
-  "default" => false];
+        $location = ['ip' => '::1',
+  'isoCode'               => 'IN',
+  'country'               => 'India',
+  'city'                  => 'Bengaluru',
+  'state'                 => 'KA',
+  'postal_code'           => 560076,
+  'lat'                   => 12.9833,
+  'lon'                   => 77.5833,
+  'timezone'              => 'Asia/Kolkata',
+  'continent'             => 'AS',
+  'default'               => false, ];
 
         if ($location['country'] == 'India') {
             $currency = 'INR';

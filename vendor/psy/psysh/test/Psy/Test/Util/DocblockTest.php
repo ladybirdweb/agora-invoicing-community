@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@ namespace Psy\Test\Util;
 
 use Psy\Util\Docblock;
 
-class DocblockTest extends \PHPUnit_Framework_TestCase
+class DocblockTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @dataProvider comments
@@ -41,6 +41,10 @@ class DocblockTest extends \PHPUnit_Framework_TestCase
 
     public function comments()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('We have issues with PHPUnit mocks on HHVM.');
+        }
+
         return array(
             array('', '', array()),
             array(

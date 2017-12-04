@@ -14,10 +14,21 @@ main
 @stop
 @section('content')
 <?php
-$location = \GeoIP::getLocation();
+// $location = \GeoIP::getLocation();
+$location=[  "ip" => "::1",
+  "isoCode" => "IN",
+  "country" => "India",
+  "city" => "Bengaluru",
+  "state" => "KA",
+  "postal_code" => 560076,
+  "lat" => 12.9833,
+  "lon" => 77.5833,
+  "timezone" => "Asia/Kolkata",
+  "continent" => "AS",
+  "default" => false];
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
 //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
-$states = \App\Model\Common\State::lists('state_subdivision_name', 'state_subdivision_code')->toArray();
+$states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
 $state_code = $location['isoCode'] . "-" . $location['state'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
 $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
@@ -267,7 +278,7 @@ border-top: none;
                                         <div class="featured-box featured-box-primary align-left mt-xlg">
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-md">I'm a Returning Customer</h4>
-                                                {!!  Form::open(['action'=>'Auth\AuthController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
+                                                {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
                                                 <div class="row">
                                                     <div class="form-group  {{ $errors->has('email1') ? 'has-error' : '' }}">
                                                         <div class="col-md-12">
@@ -311,7 +322,8 @@ border-top: none;
                                                 <div class="row">
                                                     <div class="form-group">
                                                         <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
-                                                            {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!}
+                                                          <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
+                                                          <label class="required">First Name</label>
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
                                                         </div>
                                                         <div class="form-group">
@@ -345,8 +357,10 @@ border-top: none;
                                                 </div>
                                                 <div class='row'>
                                                     <?php
-                                                    $type = DB::table('company_types')->pluck('name', 'short');
-                                                    $size = DB::table('company_sizes')->pluck('name', 'short');
+                                                    $type = DB::table('company_types')->pluck('name', 'short')->toArray();;
+
+                                                    $size = DB::table('company_sizes')->pluck('name', 'short')->toArray();;
+
                                                     ?>
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
@@ -368,7 +382,7 @@ border-top: none;
                                                         <div class="form-group">
                                                             <div class="col-md-12 {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
-                                                                <?php $countries = \App\Model\Common\Country::lists('nicename', 'country_code_char2')->toArray(); ?>
+                                                                <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
 
                                                             </div>
@@ -594,6 +608,7 @@ border-top: none;
 
     function registerUser() {
         $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
+
         $.ajax({
           url: '{{url('auth/register')}}',
           type: 'post',
@@ -666,6 +681,7 @@ border-top: none;
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
+           alert('ok');
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',

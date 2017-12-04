@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -50,6 +50,9 @@ class ConsoleColorFactory
     {
         $color = new ConsoleColor();
         $color->addTheme(Highlighter::LINE_NUMBER, array('blue'));
+        $color->addTheme(Highlighter::TOKEN_KEYWORD, array('yellow'));
+        $color->addTheme(Highlighter::TOKEN_STRING, array('green'));
+        $color->addTheme(Highlighter::TOKEN_COMMENT, array('dark_gray'));
 
         return $color;
     }

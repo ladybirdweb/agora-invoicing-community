@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,7 @@ namespace Psy\Test\Exception;
 use Psy\Exception\ErrorException;
 use Psy\Exception\Exception;
 
-class ErrorExceptionTest extends \PHPUnit_Framework_TestCase
+class ErrorExceptionTest extends \PHPUnit\Framework\TestCase
 {
     public function testInstance()
     {
@@ -60,12 +60,12 @@ class ErrorExceptionTest extends \PHPUnit_Framework_TestCase
     public function getLevels()
     {
         return array(
-            array(E_WARNING,         'warning'),
-            array(E_CORE_WARNING,    'warning'),
-            array(E_COMPILE_WARNING, 'warning'),
-            array(E_USER_WARNING,    'warning'),
+            array(E_WARNING,         'Warning'),
+            array(E_CORE_WARNING,    'Warning'),
+            array(E_COMPILE_WARNING, 'Warning'),
+            array(E_USER_WARNING,    'Warning'),
             array(E_STRICT,          'Strict error'),
-            array(0,                 'error'),
+            array(0,                 'Error'),
         );
     }
 
@@ -87,10 +87,10 @@ class ErrorExceptionTest extends \PHPUnit_Framework_TestCase
     public function getUserLevels()
     {
         return array(
-            array(E_USER_ERROR,      'error'),
-            array(E_USER_WARNING,    'warning'),
-            array(E_USER_NOTICE,     'error'),
-            array(E_USER_DEPRECATED, 'error'),
+            array(E_USER_ERROR,      'Error'),
+            array(E_USER_WARNING,    'Warning'),
+            array(E_USER_NOTICE,     'Notice'),
+            array(E_USER_DEPRECATED, 'Deprecated'),
         );
     }
 

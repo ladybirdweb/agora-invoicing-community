@@ -19,7 +19,7 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
         $user = new User();
         $this->user = $user;
         $activate = new AccountActivate();
@@ -111,8 +111,8 @@ class ClientController extends Controller
     public function create()
     {
         $timezones = new \App\Model\Common\Timezone();
-        $timezones = $timezones->lists('name', 'id')->toArray();
-        $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+        $timezones = $timezones->pluck('name', 'id')->toArray();
+        $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
 
         return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers'));
@@ -176,13 +176,13 @@ class ClientController extends Controller
         try {
             $user = $this->user->where('id', $id)->first();
             $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->lists('name', 'id')->toArray();
+            $timezones = $timezones->pluck('name', 'id')->toArray();
 
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
 
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
@@ -299,7 +299,7 @@ class ClientController extends Controller
     public function soldEdition($name)
     {
         $invoice = new \App\Model\Order\InvoiceItem();
-        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->lists('invoice_id');
+        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->pluck('invoice_id');
         $order = new Order();
         $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
 

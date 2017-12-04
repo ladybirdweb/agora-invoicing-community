@@ -271,18 +271,16 @@ class TemplateController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
-            $https['ssl']['verify_peer']      = FALSE;
-            $https['ssl']['verify_peer_name'] = FALSE;
-            $transport  = new \Swift_SmtpTransport("smtp.gmail.com", "465", "ssl");
+            $https['ssl']['verify_peer'] = false;
+            $https['ssl']['verify_peer_name'] = false;
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
             $transport->setUsername('arindam.ladybird@gmail.com');
-            $transport->setPassword("ar@9933385385");
+            $transport->setPassword('ar@9933385385');
             $transport->setStreamOptions($https);
-            $set                              = new \Swift_Mailer($transport);
+            $set = new \Swift_Mailer($transport);
 
             // Set the mailer
             \Mail::setSwiftMailer($set);
-
-
 
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
                 $m->from($from, $fromname);

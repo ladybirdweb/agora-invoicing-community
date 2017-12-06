@@ -82,7 +82,7 @@ class ProductController extends Controller
     {
 
         // try {
-        
+
         return\ DataTables::of($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
         // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
@@ -130,9 +130,9 @@ class ProductController extends Controller
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
 
-                        ->rawColumns(['name','type','group','price','currency','action'])
+                        ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'action'])
                         ->make(true);
-                        // ->searchColumns('name', 'email')
+        // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
                         // ->make();
 //        } catch (\Exception $e) {

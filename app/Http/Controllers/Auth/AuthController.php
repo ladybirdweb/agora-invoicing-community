@@ -120,6 +120,7 @@ class AuthController extends Controller
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
         return $request->all();
+
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
@@ -160,8 +161,6 @@ class AuthController extends Controller
 
     public function sendActivationByGet($email, Request $request)
     {
-
-
         try {
             $mail = $this->sendActivation($email, $request->method());
             if ($mail == 'success') {
@@ -176,13 +175,13 @@ class AuthController extends Controller
     {
         try {
             $user = new User();
-            
+
             $activate_model = new AccountActivate();
             $user = $user->where('email', $email)->first();
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-           
+
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -197,18 +196,17 @@ class AuthController extends Controller
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
 
-
             //template
             $template = new \App\Model\Common\Template();
             $temp_id = $settings->where('id', 1)->first()->welcome_mail;
             $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
-       // var_dump($temp_id);
-       //  die();
+            // var_dump($temp_id);
+            //  die();
             $to = $user->email;
             $subject = $template->name;
             $data = $template->data;
-        
+
             $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
             $type = '';
 
@@ -225,6 +223,7 @@ class AuthController extends Controller
             return $mail;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -304,9 +303,7 @@ class AuthController extends Controller
      * @return string
      */
     public function redirectPath()
-    {  
-
-
+    {
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
 
@@ -372,7 +369,6 @@ class AuthController extends Controller
 
     public function requestOtpFromAjax(Request $request)
     {
-        
         $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
@@ -380,14 +376,13 @@ class AuthController extends Controller
         ]);
 
         try {
-           
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
             $email = $request->input('email');
             $pass = $request->input('password');
             $number = $code.$mobile;
-           // $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];

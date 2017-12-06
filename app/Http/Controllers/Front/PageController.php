@@ -267,7 +267,7 @@ class PageController extends Controller
     public function cart()
     {
         // $location = \GeoIP::getLocation();
-        $location = ['ip' => '::1',
+        $location = ['ip'   => '::1',
   'isoCode'                 => 'IN',
   'country'                 => 'India',
   'city'                    => 'Bengaluru',

@@ -22,7 +22,7 @@ class PlanController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
         $plan = new Plan();
         $this->plan = $plan;
         $subscription = new Subscription();
@@ -55,13 +55,18 @@ class PlanController extends Controller
 
         //$user = new User;
         //$user = $this->user->where('role', 'user')->get();
-        //dd($user);
+        // dd($this->plan->get());
 
-        return \Datatable::collection($this->plan->get())
+
+        // return \Datatable::collection($this->plan->get())
+         return\ DataTables::of($this->plan->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name')
+                        ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
+                        })
+                        
                         ->addColumn('days', function ($model) {
                             $months = $model->days / 30;
 
@@ -80,9 +85,14 @@ class PlanController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name', 'subscription', 'price', 'expiry')
-                        ->orderColumns('name', 'subscription', 'price', 'expiry')
-                        ->make();
+
+                        ->rawColumns(['name', 'days',  'product', 'action'])
+                        ->make(true);
+
+
+                        // ->searchColumns('name', 'subscription', 'price', 'expiry')
+                        // ->orderColumns('name', 'subscription', 'price', 'expiry')
+                        // ->make();
     }
 
     /**
@@ -92,9 +102,9 @@ class PlanController extends Controller
      */
     public function create()
     {
-        $currency = $this->currency->lists('name', 'code')->toArray();
-        $periods = $this->period->lists('name', 'days')->toArray();
-        $products = $this->product->lists('name', 'id')->toArray();
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
 
         return view('themes.default1.product.plan.create', compact('currency', 'periods', 'products'));
     }

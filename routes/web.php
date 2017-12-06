@@ -144,7 +144,8 @@
          */
 
         Route::resource('plans', 'Product\PlanController');
-        Route::get('get-plans', 'Product\PlanController@GetPlans');
+         Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@GetPlans']);
+        // Route::get('get-plans', 'Product\PlanController@GetPlans');
         Route::get('plans-delete', 'Product\PlanController@destroy');
 
         /*

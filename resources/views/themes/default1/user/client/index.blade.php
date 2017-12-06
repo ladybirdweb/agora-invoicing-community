@@ -185,7 +185,7 @@
         <div class="row">
 
             <div class="col-md-12">
-               <!--  {!! Datatable::table()
+                {!! Datatable::table()
                 ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Email','Registered On','Status','Action')
                 ->setUrl("get-clients?name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry")
                 ->setOptions([
@@ -222,7 +222,7 @@
 
                 
                 ->render() !!}
- -->
+
             </div>
         </div>
 

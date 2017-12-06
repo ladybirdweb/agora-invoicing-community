@@ -48,34 +48,50 @@
 
             </div><br><br>
             <div class="col-md-12">
-                {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Months','Product','Action')
-                ->setUrl('get-plans') 
-                ->render() !!}
-                <script>
-                    $('#delete').click(function () {
-                        $.ajax({
-                            url: "plans-delete",
-                            type: "GET",
-                            data: $('#check:checked').serialize(),
-                            beforeSend: function () {
-                                $('#gif').show();
-                            },
-                            success: function (data) {
-                                $('#gif').hide();
-                                $('#response').html(data);
-                                location.reload();
-                            }
-                        });
-                    });
-                </script>
-            </div>
+
+<table id="plan-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+                    <thead><tr>
+                            <th>Name</th>
+                            <th>Months</th>
+                            <th>Product</th>
+                            <th>Action</th>
+                        </tr></thead>
+                     </table>
+                </div>
         </div>
 
     </div>
 
 </div>
 
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#plan-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{!! route('get-plans') !!}',
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+    
+            columns: [
+                {data: 'name', name: 'name'},
+                {data: 'days', name: 'months'},
+                {data: 'Product', name: 'product'},
+                {data: 'actions', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    </script>
 
 
 @stop

@@ -226,7 +226,13 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
             return in_array($key, $this->items);
         }
 
-        return $this->contains($this->operatorForWhere(...func_get_args()));
+        if (func_num_args() == 2) {
+            $value = $operator;
+
+            $operator = '=';
+        }
+
+        return $this->contains($this->operatorForWhere($key, $operator, $value));
     }
 
     /**
@@ -379,7 +385,13 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
             return true;
         }
 
-        return $this->every($this->operatorForWhere(...func_get_args()));
+        if (func_num_args() == 2) {
+            $value = $operator;
+
+            $operator = '=';
+        }
+
+        return $this->every($this->operatorForWhere($key, $operator, $value));
     }
 
     /**
@@ -421,9 +433,9 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
     public function when($value, callable $callback, callable $default = null)
     {
         if ($value) {
-            return $callback($this, $value);
+            return $callback($this);
         } elseif ($default) {
-            return $default($this, $value);
+            return $default($this);
         }
 
         return $this;
@@ -469,23 +481,13 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
      * @param  mixed  $value
      * @return \Closure
      */
-    protected function operatorForWhere($key, $operator, $value = null)
+    protected function operatorForWhere($key, $operator, $value)
     {
-        if (func_num_args() == 2) {
-            $value = $operator;
-
-            $operator = '=';
-        }
-
         return function ($item) use ($key, $operator, $value) {
             $retrieved = data_get($item, $key);
 
-            $strings = array_filter([$retrieved, $value], function ($value) {
-                return is_string($value) || (is_object($value) && method_exists($value, '__toString'));
-            });
-
-            if (count($strings) < 2 && count(array_filter([$retrieved, $value], 'is_object')) == 1) {
-                return in_array($operator, ['!=', '<>', '!==']);
+            if (count(array_filter([$retrieved, $value], 'is_object')) == 1) {
+                return false;
             }
 
             switch ($operator) {
@@ -584,19 +586,6 @@ class Collection implements ArrayAccess, Arrayable, Countable, IteratorAggregate
     public function first(callable $callback = null, $default = null)
     {
         return Arr::first($this->items, $callback, $default);
-    }
-
-    /**
-     * Get the first item by the given key value pair.
-     *
-     * @param  string  $key
-     * @param  mixed  $operator
-     * @param  mixed  $value
-     * @return static
-     */
-    public function firstWhere($key, $operator, $value = null)
-    {
-        return $this->first($this->operatorForWhere(...func_get_args()));
     }
 
     /**

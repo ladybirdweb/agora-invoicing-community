@@ -67,11 +67,11 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
     private $requestStackSize = 0;
     private $resetServices = false;
 
-    const VERSION = '3.4.1';
-    const VERSION_ID = 30401;
+    const VERSION = '3.4.0';
+    const VERSION_ID = 30400;
     const MAJOR_VERSION = 3;
     const MINOR_VERSION = 4;
-    const RELEASE_VERSION = 1;
+    const RELEASE_VERSION = 0;
     const EXTRA_VERSION = '';
 
     const END_OF_MAINTENANCE = '11/2020';
@@ -423,7 +423,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
      */
     public function setAnnotatedClassCache(array $annotatedClasses)
     {
-        file_put_contents(($this->warmupDir ?: $this->getCacheDir()).'/annotations.map', sprintf('<?php return %s;', var_export($annotatedClasses, true)), LOCK_EX);
+        file_put_contents(($this->warmupDir ?: $this->getCacheDir()).'/annotations.map', sprintf('<?php return %s;', var_export($annotatedClasses, true)));
     }
 
     /**
@@ -582,13 +582,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
         $cacheDir = $this->warmupDir ?: $this->getCacheDir();
         $cache = new ConfigCache($cacheDir.'/'.$class.'.php', $this->debug);
         if ($fresh = $cache->isFresh()) {
-            // Silence E_WARNING to ignore "include" failures - don't use "@" to prevent silencing fatal errors
-            $errorLevel = error_reporting(\E_ALL ^ \E_WARNING);
-            try {
-                $this->container = include $cache->getPath();
-            } finally {
-                error_reporting($errorLevel);
-            }
+            $this->container = require $cache->getPath();
             $fresh = \is_object($this->container);
         }
         if (!$fresh) {
@@ -596,7 +590,7 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
                 $collectedLogs = array();
                 $previousHandler = set_error_handler(function ($type, $message, $file, $line) use (&$collectedLogs, &$previousHandler) {
                     if (E_USER_DEPRECATED !== $type && E_DEPRECATED !== $type) {
-                        return $previousHandler ? $previousHandler($type & ~E_WARNING, $message, $file, $line) : E_WARNING === $type;
+                        return $previousHandler ? $previousHandler($type, $message, $file, $line) : false;
                     }
 
                     if (isset($collectedLogs[$message])) {
@@ -623,26 +617,22 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
                         'count' => 1,
                     );
                 });
-            } else {
-                $errorLevel = error_reporting(\E_ALL ^ \E_WARNING);
             }
 
             try {
                 $container = null;
                 $container = $this->buildContainer();
                 $container->compile();
-
-                $oldContainer = file_exists($cache->getPath()) && is_object($oldContainer = include $cache->getPath()) ? new \ReflectionClass($oldContainer) : false;
             } finally {
                 if ($this->debug) {
                     restore_error_handler();
 
                     file_put_contents($cacheDir.'/'.$class.'Deprecations.log', serialize(array_values($collectedLogs)));
                     file_put_contents($cacheDir.'/'.$class.'Compiler.log', null !== $container ? implode("\n", $container->getCompiler()->getLog()) : '');
-                } else {
-                    error_reporting($errorLevel);
                 }
             }
+
+            $oldContainer = file_exists($cache->getPath()) && is_object($oldContainer = @include $cache->getPath()) ? new \ReflectionClass($oldContainer) : false;
 
             $this->dumpContainer($cache, $container, $class, $this->getContainerBaseClass());
             $this->container = require $cache->getPath();
@@ -659,13 +649,13 @@ abstract class Kernel implements KernelInterface, RebootableInterface, Terminabl
             // old container files are not removed immediately,
             // but on a next dump of the container.
             $oldContainerDir = dirname($oldContainer->getFileName());
-            foreach (glob(dirname($oldContainerDir).'/*.legacy') as $legacyContainer) {
-                if ($oldContainerDir.'.legacy' !== $legacyContainer && @unlink($legacyContainer)) {
+            foreach (glob(dirname($oldContainerDir).'/*.legacyContainer') as $legacyContainer) {
+                if ($oldContainerDir.'.legacyContainer' !== $legacyContainer && @unlink($legacyContainer)) {
                     (new Filesystem())->remove(substr($legacyContainer, 0, -16));
                 }
             }
 
-            touch($oldContainerDir.'.legacy');
+            touch($oldContainerDir.'.legacyContainer');
         }
 
         if ($this->container->has('cache_warmer')) {

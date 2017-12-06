@@ -2224,9 +2224,7 @@ class Builder
         }
 
         return $this->connection->delete(
-            $this->grammar->compileDelete($this), $this->cleanBindings(
-                $this->grammar->prepareBindingsForDelete($this->bindings)
-            )
+            $this->grammar->compileDelete($this), $this->getBindings()
         );
     }
 

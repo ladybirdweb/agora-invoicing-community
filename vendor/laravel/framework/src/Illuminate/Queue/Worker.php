@@ -593,16 +593,12 @@ class Worker
     /**
      * Sleep the script for a given number of seconds.
      *
-     * @param  int|float   $seconds
+     * @param  int   $seconds
      * @return void
      */
     public function sleep($seconds)
     {
-        if ($seconds < 1) {
-            usleep($seconds * 1000000);
-        } else {
-            sleep($seconds);
-        }
+        sleep($seconds);
     }
 
     /**

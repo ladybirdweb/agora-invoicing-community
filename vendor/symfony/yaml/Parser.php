@@ -637,10 +637,21 @@ class Parser
                 continue;
             }
 
+            // we ignore "comment" lines only when we are not inside a scalar block
+            if (empty($blockScalarIndentations) && $this->isCurrentLineComment()) {
+                // remember ignored comment lines (they are used later in nested
+                // parser calls to determine real line numbers)
+                //
+                // CAUTION: beware to not populate the global property here as it
+                // will otherwise influence the getRealCurrentLineNb() call here
+                // for consecutive comment lines and subsequent embedded blocks
+                $this->locallySkippedLineNumbers[] = $this->getRealCurrentLineNb();
+
+                continue;
+            }
+
             if ($indent >= $newIndent) {
                 $data[] = substr($this->currentLine, $newIndent);
-            } elseif ($this->isCurrentLineComment()) {
-                $data[] = $this->currentLine;
             } elseif (0 == $indent) {
                 $this->moveToPreviousLine();
 
@@ -738,8 +749,6 @@ class Parser
                 return Inline::parse($value, $flags, $this->refs);
             }
 
-            $lines = array();
-
             while ($this->moveToNextLine()) {
                 // unquoted strings end before the first unindented line
                 if (null === $quotation && 0 === $this->getCurrentLineIndentation()) {
@@ -748,28 +757,13 @@ class Parser
                     break;
                 }
 
-                $lines[] = trim($this->currentLine);
+                $value .= ' '.trim($this->currentLine);
 
                 // quoted string values end with a line that is terminated with the quotation character
                 if ('' !== $this->currentLine && substr($this->currentLine, -1) === $quotation) {
                     break;
                 }
             }
-
-            for ($i = 0, $linesCount = count($lines), $previousLineBlank = false; $i < $linesCount; ++$i) {
-                if ('' === $lines[$i]) {
-                    $value .= "\n";
-                    $previousLineBlank = true;
-                } elseif ($previousLineBlank) {
-                    $value .= $lines[$i];
-                    $previousLineBlank = false;
-                } else {
-                    $value .= ' '.$lines[$i];
-                    $previousLineBlank = false;
-                }
-            }
-
-            Inline::$parsedLineNumber = $this->getRealCurrentLineNb();
 
             $parsedValue = Inline::parse($value, $flags, $this->refs);
 

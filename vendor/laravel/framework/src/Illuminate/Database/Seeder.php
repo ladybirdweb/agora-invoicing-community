@@ -28,7 +28,7 @@ abstract class Seeder
      *
      * @param  array|string  $class
      * @param  bool  $silent
-     * @return $this
+     * @return void
      */
     public function call($class, $silent = false)
     {
@@ -41,8 +41,6 @@ abstract class Seeder
 
             $this->resolve($class)->__invoke();
         }
-
-        return $this;
     }
 
     /**

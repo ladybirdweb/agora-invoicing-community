@@ -13,7 +13,7 @@ class PageController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -49,7 +49,7 @@ class PageController extends Controller
     public function create()
     {
         try {
-            $parents = $this->page->pluck('name', 'id')->toArray();
+            $parents = $this->page->lists('name', 'id')->toArray();
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
@@ -61,7 +61,7 @@ class PageController extends Controller
     {
         try {
             $page = $this->page->where('id', $id)->first();
-            $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
+            $parents = $this->page->where('id', '!=', $id)->lists('name', 'id')->toArray();
 
             return view('themes.default1.front.page.edit', compact('parents', 'page'));
         } catch (\Exception $ex) {
@@ -267,17 +267,17 @@ class PageController extends Controller
     public function cart()
     {
         // $location = \GeoIP::getLocation();
-        $location = ['ip'   => '::1',
-  'isoCode'                 => 'IN',
-  'country'                 => 'India',
-  'city'                    => 'Bengaluru',
-  'state'                   => 'KA',
-  'postal_code'             => 560076,
-  'lat'                     => 12.9833,
-  'lon'                     => 77.5833,
-  'timezone'                => 'Asia/Kolkata',
-  'continent'               => 'AS',
-  'default'                 => false, ];
+          $location=[  "ip" => "::1",
+  "isoCode" => "IN",
+  "country" => "India",
+  "city" => "Bengaluru",
+  "state" => "KA",
+  "postal_code" => 560076,
+  "lat" => 12.9833,
+  "lon" => 77.5833,
+  "timezone" => "Asia/Kolkata",
+  "continent" => "AS",
+  "default" => false];
         if ($location['country'] == 'India') {
             $currency = 'INR';
         } else {

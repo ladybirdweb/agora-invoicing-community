@@ -109,7 +109,7 @@
         <div class="row">
 
             <div class="col-md-12">
-                {!! Datatable::table()
+  <!--               {!! Datatable::table()
                 ->addColumn('<input type="checkbox" class="checkbox-toggle">','Date','Client Name','Order No.','Total','Status','Expiry Date','Action')
                 ->setUrl("get-orders?order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain") 
                 ->setOrder([1=>'desc'])
@@ -145,7 +145,7 @@
                 ],
 
                 ])
-                ->render() !!}
+                ->render() !!} -->
 
             </div>
         </div>

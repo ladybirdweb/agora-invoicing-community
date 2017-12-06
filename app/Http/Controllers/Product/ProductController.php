@@ -31,7 +31,7 @@ class ProductController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin', ['except' => ['userDownload']]);
+        // $this->middleware('admin', ['except' => ['userDownload']]);
 
         $product = new Product();
         $this->product = $product;
@@ -82,7 +82,9 @@ class ProductController extends Controller
     {
 
         // try {
-        return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+        
+        return\ DataTables::of($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+        // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -127,9 +129,12 @@ class ProductController extends Controller
 
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
-                        ->searchColumns('name', 'email')
-                        ->orderColumns('name', 'email')
-                        ->make();
+
+                        ->rawColumns(['name','type','group','price','currency','action'])
+                        ->make(true);
+                        // ->searchColumns('name', 'email')
+                        // ->orderColumns('name', 'email')
+                        // ->make();
 //        } catch (\Exception $e) {
 //            return redirect()->back()->with('fails', $e->getMessage());
 //        }
@@ -149,12 +154,12 @@ class ProductController extends Controller
             $url = $this->GetMyUrl();
             $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/pricing?id='.$i;
-            $type = $this->type->lists('name', 'id')->toArray();
-            $subscription = $this->plan->lists('name', 'id')->toArray();
-            $currency = $this->currency->lists('name', 'code')->toArray();
-            $group = $this->group->lists('name', 'id')->toArray();
-            $products = $this->product->lists('name', 'id')->toArray();
-            $taxes = $this->tax_class->lists('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
+            $subscription = $this->plan->pluck('name', 'id')->toArray();
+            $currency = $this->currency->pluck('name', 'code')->toArray();
+            $group = $this->group->pluck('name', 'id')->toArray();
+            $products = $this->product->pluck('name', 'id')->toArray();
+            $taxes = $this->tax_class->pluck('name', 'id')->toArray();
 
             return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
         } catch (\Exception $e) {

@@ -13,7 +13,7 @@ class PageController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -49,7 +49,7 @@ class PageController extends Controller
     public function create()
     {
         try {
-            $parents = $this->page->lists('name', 'id')->toArray();
+            $parents = $this->page->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
@@ -61,7 +61,7 @@ class PageController extends Controller
     {
         try {
             $page = $this->page->where('id', $id)->first();
-            $parents = $this->page->where('id', '!=', $id)->lists('name', 'id')->toArray();
+            $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.edit', compact('parents', 'page'));
         } catch (\Exception $ex) {

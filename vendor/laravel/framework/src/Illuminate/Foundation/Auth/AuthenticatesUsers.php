@@ -6,11 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-use App\User;
-use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-
-use Validator;
-
 trait AuthenticatesUsers
 {
     use RedirectsUsers, ThrottlesLogins;
@@ -22,69 +17,8 @@ trait AuthenticatesUsers
      */
     public function showLoginForm()
     {
-       $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-        return view('themes.default1.front.auth.login-register', compact('bussinesses'));
+        return view('auth.login');
     }
-
-
-     /**
-     * Handle a login request to the application.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function postLogin(Request $request)
-    {
-        $this->validate($request, [
-            'email1' => 'required', 'password1' => 'required',
-                ], [
-            'email1.required'    => 'Username/Email is required',
-            'password1.required' => 'Password is required',
-        ]);
-        $usernameinput = $request->input('email1');
-        //$email = $request->input('email');
-        $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
-        $password = $request->input('password1');
-        $credentials = [$field => $usernameinput, 'password' => $password, 'active' => 1, 'mobile_verified' => 1];
-
-        //$credentials = $request->only('email', 'password');
-        $auth = \Auth::attempt($credentials, $request->has('remember'));
-
-        if ($auth) {
-            return redirect()->intended($this->redirectPath());
-        }
-
-        $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-        if ($user && ($user->active !== '1' || $user->mobile_verified !== '1')) {
-            return redirect('verify')->with('user', $user);
-        }
-
-        return redirect()->back()
-                        ->withInput($request->only('email1', 'remember'))
-                        ->withErrors([
-                            'email1' => 'Invalid Email and/or Password',
-        ]);
-    }
-
-
-//         /**
-//      * Get the post register / login redirect path.
-//      *
-//      * @return string
-//      */
-//     public function redirectPath()
-//     {  
-
-// dd('op');
-//         if (\Session::has('session-url')) {
-//             $url = \Session::get('session-url');
-
-//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
-//         } else {
-//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
-//         }
-//     }
 
     /**
      * Handle a login request to the application.
@@ -216,8 +150,7 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-        
-        // $this->guard()->logout();
+        $this->guard()->logout();
 
         $request->session()->invalidate();
 

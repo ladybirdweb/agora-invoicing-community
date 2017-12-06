@@ -43,40 +43,19 @@
         <div class="row">
 
             <div class="col-md-12">
-                {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Name','Type','Group','Price','Currency','Action')
-                ->setUrl('get-products') 
-                ->setOptions([
+                 <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
-                "dom" => "Bfrtip",
-                "buttons" => [
-                [
-                "text" => "Delete",
-                "action" => "function ( e, dt, node, config ) {
-                e.preventDefault();
-                var answer = confirm ('Are you sure you want to delete from the database?');
-                if(answer){
-                $.ajax({
-                url: 'products-delete',
-                type: 'GET',
-                data: $('#check:checked').serialize(),
-                beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
+                    <thead><tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>Group</th>
+                            <th>Price</th>
+                            <th>Currency</th>
+                            <th>Action</th>
+                        </tr></thead>
 
-                });
-                }
-                }"
-                ]
-                ],
 
-                ])
-                ->render() !!}
+                </table>
 
             </div>
         </div>
@@ -85,11 +64,42 @@
 
 </div>
 
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#products-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{!! route('get-products') !!}',
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+    
+            columns: [
+                {data: 'name', name: 'Name'},
+                {data: 'type', name: 'Type'},
+                {data: 'price', name: 'Price'},
+                {data: 'group', name: 'Group'},
+                {data: 'currency', name: 'Currency'},
+                {data: 'actions', name: 'Action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    </script>
 
 
 @stop
 
+
 @section('icheck')
+
 <script>
     $(function () {
 

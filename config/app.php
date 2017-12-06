@@ -176,9 +176,9 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-
-         Yajra\DataTables\HtmlServiceProvider::class,
-         Yajra\DataTables\DataTablesServiceProvider::class,
+       Yajra\DataTables\DataTablesServiceProvider::class,
+         // Yajra\DataTables\HtmlServiceProvider::class,
+         // Yajra\DataTables\DataTablesServiceProvider::class,
 
     ],
 
@@ -230,8 +230,8 @@ return [
         'View'         => Illuminate\Support\Facades\View::class,
 
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
-          'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-
+          // 'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 
 ];

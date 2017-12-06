@@ -132,7 +132,9 @@
          */
 
         Route::resource('products', 'Product\ProductController');
-        Route::get('get-products', 'Product\ProductController@GetProducts');
+         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@GetProducts']);
+
+        // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy');
         Route::Post('get-price', 'Product\ProductController@getPrice');
         Route::Post('get-product-field', 'Product\ProductController@getProductField');

@@ -1561,6 +1561,38 @@ YAML;
         $this->assertSame(array('foobar' => 'foobar'), $this->parser->parse($yaml));
     }
 
+    public function testCommentCharactersInMultiLineQuotedStrings()
+    {
+        $yaml = <<<YAML
+foo:
+    foobar: 'foo
+      #bar'
+    bar: baz
+YAML;
+        $expected = array(
+            'foo' => array(
+                'foobar' => 'foo #bar',
+                'bar' => 'baz',
+            ),
+        );
+
+        $this->assertSame($expected, $this->parser->parse($yaml));
+    }
+
+    public function testBlankLinesInQuotedMultiLineString()
+    {
+        $yaml = <<<YAML
+foobar: 'foo
+
+    bar'
+YAML;
+        $expected = array(
+            'foobar' => "foo\nbar",
+        );
+
+        $this->assertSame($expected, $this->parser->parse($yaml));
+    }
+
     public function testParseMultiLineUnquotedString()
     {
         $yaml = <<<EOT

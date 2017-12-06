@@ -16,7 +16,7 @@ class CreateProductBundlesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->timestamp('valid_from')->default(DB::raw('CURRENT_TIMESTAMP'));
-            $table->dateTime('valid_till')->default('0000-00-00 00:00:00');
+            $table->dateTime('valid_till')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('uses');
             $table->integer('maximum_uses');
             $table->integer('allow-promotion');

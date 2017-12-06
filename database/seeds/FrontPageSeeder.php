@@ -17,6 +17,7 @@ class FrontPageSeeder extends Seeder
         \App\Model\Front\FrontendPage::create([
             'slug'    => 'pricing',
             'name'    => 'pricing',
+            'parent_page_id'=>0,
             'content' => '<div class="col-md-3 col-sm-6">
 <div class="plan">
 <h3>{{name}}</h3>

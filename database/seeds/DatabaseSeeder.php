@@ -83,7 +83,7 @@ class PlanTableSeeder extends Seeder
             ];
         //var_dump($subcriptions);
         for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['id' => $i + 1, 'name' => $subcriptions[$i]['name'], 'days' => $subcriptions[$i]['days']]);
+            Plan::create(['id' => $i + 1, 'name' => $subcriptions[$i]['name'],'product'=>'1','allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
         }
     }
 }
@@ -101,7 +101,7 @@ class ProductTypesTableSeeder extends Seeder
             ];
         //var_dump($subcriptions);
         for ($i = 0; $i < count($types); $i++) {
-            Type::create(['id' => $i + 1, 'name' => $types[$i]['name']]);
+            Type::create(['id' => $i + 1, 'name' => $types[$i]['name'],'description'=>'null']);
         }
     }
 }
@@ -123,7 +123,7 @@ class GroupTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('product_groups')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ProductGroup::create(['id' => 1, 'name' => 'none', 'headline' => 'none', 'tagline' => 'none', 'hidden' => 0, 'cart_link' => 'none']);
+        ProductGroup::create(['id' => 1, 'name' => 'none', 'headline' => 'none', 'tagline' => 'none', 'available_payment'=>'null','hidden' => 0, 'cart_link' => 'none']);
     }
 }
 
@@ -134,7 +134,7 @@ class PromotionTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('promotions')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '', 'expiry' => '']);
+        Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '1000-01-01 00:00:00', 'expiry' => '1000-01-01 00:00:00']);
     }
 }
 
@@ -142,10 +142,10 @@ class ProductTableSeeder extends Seeder
 {
     public function run()
     {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('products')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1]);
+        // \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // \DB::table('products')->truncate();
+        // \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1,'description'=>'null','category'=>'null']);
         //Product::create(['id'=>2,'name'=>'none1','type'=>1,'group' =>1]);
     }
 }
@@ -189,7 +189,7 @@ class TemplateTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('templates')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Template::create(['id' => 1, 'name' => 'cart1', 'type' => 3, 'data' => '<div class="col-sm-6 col-md-3 col-lg-3"><div class="pricing-item"><div class="pricing-item-inner"><div class="pricing-wrap"><div class="pricing-icon"><i class="fa fa-credit-card-alt"></i></div><div class="pricing-title">{{title}}</div><div class="pricing-features font-alt"><ul class="sf-list pr-list"><li>{{feature}}</li></ul></div><div class="pricing-num"><sup>{{currency}}</sup>{{price}}</div><div class="pr-per">{{subscription}}</div><div class="pr-button"><a href="{{url}}" class="btn btn-mod">Buy Now</a></div></div> </div> </div></div>']);
+        Template::create(['id' => 1, 'name' => 'cart1', 'type' => 3, 'url'=>'null','data' => '<div class="col-sm-6 col-md-3 col-lg-3"><div class="pricing-item"><div class="pricing-item-inner"><div class="pricing-wrap"><div class="pricing-icon"><i class="fa fa-credit-card-alt"></i></div><div class="pricing-title">{{title}}</div><div class="pricing-features font-alt"><ul class="sf-list pr-list"><li>{{feature}}</li></ul></div><div class="pricing-num"><sup>{{currency}}</sup>{{price}}</div><div class="pr-per">{{subscription}}</div><div class="pr-button"><a href="{{url}}" class="btn btn-mod">Buy Now</a></div></div> </div> </div></div>']);
     }
 }
 class GitHubTableSeeder extends Seeder
@@ -199,6 +199,6 @@ class GitHubTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1]);
+        Github::create(['id' => 1,'client_id'=>'','client_secret'=>'','username'=>'','password'=>'']);
     }
 }

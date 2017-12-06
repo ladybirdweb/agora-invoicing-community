@@ -57,16 +57,15 @@ class PlanController extends Controller
         //$user = $this->user->where('role', 'user')->get();
         // dd($this->plan->get());
 
-
         // return \Datatable::collection($this->plan->get())
-         return\ DataTables::of($this->plan->get())
+        return\ DataTables::of($this->plan->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
                         })
-                        
+
                         ->addColumn('days', function ($model) {
                             $months = $model->days / 30;
 
@@ -89,8 +88,7 @@ class PlanController extends Controller
                         ->rawColumns(['name', 'days',  'product', 'action'])
                         ->make(true);
 
-
-                        // ->searchColumns('name', 'subscription', 'price', 'expiry')
+        // ->searchColumns('name', 'subscription', 'price', 'expiry')
                         // ->orderColumns('name', 'subscription', 'price', 'expiry')
                         // ->make();
     }

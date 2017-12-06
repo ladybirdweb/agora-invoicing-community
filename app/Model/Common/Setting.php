@@ -2,7 +2,6 @@
 
 namespace App\Model\Common;
 
-use App\BaseModel;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model

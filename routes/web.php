@@ -92,14 +92,13 @@
     // // 'password' => 'Auth\PasswordController',
     //     ]);
 
-        Route::group([ 'middleware' => 'install'], function () {
-        Route::auth();
+        Route::group(['middleware' => 'install'], function () {
+            Route::auth();
         });
         Route::get('/', 'HomeController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
         Route::get('activate/{token}', 'Auth\AuthController@Activate');
-
 
         /*
          * Profile Process

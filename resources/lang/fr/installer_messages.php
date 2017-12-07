@@ -2,16 +2,15 @@
 
 return [
 
-    /**
+    /*
      *
      * Shared translations.
      *
      */
     'title' => 'Installateur de Laravel',
-    'next' => 'Suivant',
+    'next'  => 'Suivant',
 
-
-    /**
+    /*
      *
      * Home page translations.
      *
@@ -21,8 +20,7 @@ return [
         'message' => 'Bienvenue dans le programme d’installation.',
     ],
 
-
-    /**
+    /*
      *
      * Requirements page translations.
      *
@@ -31,8 +29,7 @@ return [
         'title' => 'Prérequis',
     ],
 
-
-    /**
+    /*
      *
      * Permissions page translations.
      *
@@ -41,45 +38,43 @@ return [
         'title' => 'Permissions',
     ],
 
-
-    /**
+    /*
      *
      * Environment page translations.
      *
      */
     'environment' => [
-        'title' => 'Paramètres d’environment',
-        'save' => 'Enregistrer .env',
+        'title'   => 'Paramètres d’environment',
+        'save'    => 'Enregistrer .env',
         'success' => 'Votre fichier .env a été sauvegardé.',
-        'errors' => 'Impossible d’enregistrer le fichier .env, il faut que vous le créiez manuellement.',
+        'errors'  => 'Impossible d’enregistrer le fichier .env, il faut que vous le créiez manuellement.',
     ],
 
-
-    /**
+    /*
      *
      * Final page translations.
      *
      */
     'final' => [
-        'title' => 'Terminé',
+        'title'    => 'Terminé',
         'finished' => 'L’application a été installée avec succès.',
-        'exit' => 'Cliquez ici pour quitter',
+        'exit'     => 'Cliquez ici pour quitter',
     ],
 
-    /**
+    /*
      *
      * Update specific translations
      *
      */
     'updater' => [
-        /**
+        /*
          *
          * Shared translations.
          *
          */
         'title' => 'Updateur de Laravel',
 
-        /**
+        /*
          *
          * Welcome page translations for update feature.
          *
@@ -89,7 +84,7 @@ return [
             'message' => 'Bienvenue dans le programme de mise à jour.',
         ],
 
-        /**
+        /*
          *
          * Welcome page translations for update feature.
          *
@@ -99,15 +94,15 @@ return [
             'message' => 'Il y a 1 mise à jour.|Il y a :number mises à jour.',
         ],
 
-        /**
+        /*
          *
          * Final page translations.
          *
          */
         'final' => [
-            'title' => 'Terminé',
+            'title'    => 'Terminé',
             'finished' => 'L’application a été mise à jour avec succès.',
-            'exit' => 'Cliquez ici pour quitter',
+            'exit'     => 'Cliquez ici pour quitter',
         ],
     ],
 ];

@@ -38,12 +38,12 @@ class PageController extends Controller
                             return ucfirst($model->name);
                         })
                         ->addColumn('url', function ($model) {
-                            return ($model->url);
+                            return $model->url;
                         })
                         ->addColumn('created_at', function ($model) {
-                            return ($model->created_at);
+                            return $model->created_at;
                         })
-                     
+
                         ->addColumn('content', function ($model) {
                             return str_limit($model->content, 10, '...');
                         })
@@ -51,9 +51,9 @@ class PageController extends Controller
                             return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
 
-                          ->rawColumns(['name', 'url',  'created_at','content', 'action'])
+                          ->rawColumns(['name', 'url',  'created_at', 'content', 'action'])
                         ->make(true);
-                        // ->searchColumns('name', 'content')
+        // ->searchColumns('name', 'content')
                         // ->orderColumns('name')
                         // ->make();
     }
@@ -62,7 +62,8 @@ class PageController extends Controller
     {
         try {
             $parents = $this->page->pluck('name', 'id')->toArray();
-             return view('themes.default1.front.page.create', compact('parents'));
+
+            return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

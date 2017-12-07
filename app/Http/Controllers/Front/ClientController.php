@@ -20,7 +20,8 @@ class ClientController extends Controller
     public $payment;
 
     public function __construct()
-    {
+    {   
+        // $this->midleware('install');
         $this->middleware('auth');
 
         $user = new User();

@@ -123,7 +123,8 @@
          */
 
         Route::resource('clients', 'User\ClientController');
-        Route::get('get-clients', 'User\ClientController@GetClients');
+        Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
+        // Route::get('get-clients', 'User\ClientController@GetClients');
         Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 
@@ -205,6 +206,7 @@
          */
 
         Route::resource('orders', 'Order\OrderController');
+        Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@GetOrders']);
         Route::get('get-orders', 'Order\OrderController@GetOrders');
         Route::get('orders-delete', 'Order\OrderController@destroy');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
@@ -235,7 +237,8 @@
 
         Route::get('invoices', 'Order\InvoiceController@index');
         Route::get('invoices/{id}', 'Order\InvoiceController@show');
-        Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
+        Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@GetInvoices']);
+        // Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
         Route::get('pdf', 'Order\InvoiceController@pdf');
         Route::get('invoice-delete', 'Order\InvoiceController@destroy');
         Route::get('invoice/generate', 'Order\InvoiceController@generateById');
@@ -283,7 +286,8 @@
         Route::resource('pages', 'Front\PageController');
         Route::get('pages/{slug}', 'Front\PageController@show');
         Route::get('page/search', 'Front\PageController@Search');
-        Route::get('get-pages', 'Front\PageController@GetPages');
+        Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@GetPages']);
+        // Route::get('get-pages', 'Front\PageController@GetPages');
         Route::get('pages-delete', 'Front\PageController@destroy');
         Route::get('get-url', 'Front\PageController@Generate');
 

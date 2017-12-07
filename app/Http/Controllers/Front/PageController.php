@@ -13,7 +13,7 @@ class PageController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -30,26 +30,38 @@ class PageController extends Controller
 
     public function GetPages()
     {
-        return \Datatable::collection($this->page->get())
+        return \Datatable::of($this->page->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name', 'url', 'created_at')
+                        ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
+                        })
+                        ->addColumn('url', function ($model) {
+                            return $model->url;
+                        })
+                        ->addColumn('created_at', function ($model) {
+                            return $model->created_at;
+                        })
+
                         ->addColumn('content', function ($model) {
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name', 'content')
-                        ->orderColumns('name')
-                        ->make();
+
+                          ->rawColumns(['name', 'url',  'created_at', 'content', 'action'])
+                        ->make(true);
+        // ->searchColumns('name', 'content')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     public function create()
     {
         try {
-            $parents = $this->page->lists('name', 'id')->toArray();
+            $parents = $this->page->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
@@ -61,7 +73,7 @@ class PageController extends Controller
     {
         try {
             $page = $this->page->where('id', $id)->first();
-            $parents = $this->page->where('id', '!=', $id)->lists('name', 'id')->toArray();
+            $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.edit', compact('parents', 'page'));
         } catch (\Exception $ex) {

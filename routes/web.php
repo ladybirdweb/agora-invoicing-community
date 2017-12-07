@@ -182,7 +182,7 @@
         Route::resource('tax', 'Payment\TaxController');
         Route::post('get-state', 'Payment\TaxController@GetState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@GetTax']);
-       
+
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
         Route::get('tax-delete', 'Payment\TaxController@destroy');
@@ -347,7 +347,6 @@
          * plugins
          */
         Route::get('plugin', 'Common\SettingsController@plugins');
-
 
          Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\SettingsController@getPlugin']);
         // Route::get('getplugin', 'Common\SettingsController@getPlugin');

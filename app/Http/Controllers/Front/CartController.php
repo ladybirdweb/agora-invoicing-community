@@ -652,7 +652,7 @@ class CartController extends Controller
     {
         try {
             if ($iso) {
-                $states = \App\Model\Common\State::where('country_code_char2', $iso)->lists('state_subdivision_name', 'state_subdivision_code')->toArray();
+                $states = \App\Model\Common\State::where('country_code_char2', $iso)->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             } else {
                 $states = [];
             }
@@ -773,7 +773,7 @@ class CartController extends Controller
                     ->whereNotNull('parent')
                     ->where('parent', '!=', 0)
                     ->where('category', 'addon')
-                    ->lists('parent', 'id')
+                    ->pluck('parent', 'id')
                     ->toArray();
             foreach ($parents as $key => $parent) {
                 //dd($key);

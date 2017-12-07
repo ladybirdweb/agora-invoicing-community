@@ -38,7 +38,7 @@ class TemplateController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => ['show']]);
-        $this->middleware('admin', ['except' => ['show']]);
+        // $this->middleware('admin', ['except' => ['show']]);
 
         $template = new Template();
         $this->template = $template;

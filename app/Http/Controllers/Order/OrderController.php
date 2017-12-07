@@ -30,7 +30,7 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $order = new Order();
         $this->order = $order;
@@ -77,6 +77,7 @@ class OrderController extends Controller
         //                            ->withInput();
         //        }
         try {
+            
             $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
@@ -102,7 +103,8 @@ class OrderController extends Controller
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
         //return \Datatable::query($this->order->select('id', 'created_at', 'client',
         //'price_override', 'order_status', 'number', 'serial_key'))
-        return \Datatable::Collection($query->get())
+        return\ DataTables::of($query->get())
+     
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -119,7 +121,16 @@ class OrderController extends Controller
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
                         })
-                        ->showColumns('number', 'price_override', 'order_status')
+                        ->addColumn('number', function ($model) {
+                            return ucfirst($model->number);
+                        })
+                        ->addColumn('price_override', function ($model) {
+                            return ucfirst($model->price_override);
+                        })
+                        ->addColumn('order_status', function ($model) {
+                            return ucfirst($model->order_status);
+                        })
+                        // ->showColumns('number', 'price_override', 'order_status')
                         ->addColumn('ends_at', function ($model) {
                             $end = '--';
                             $ends = $model->subscription()->first();
@@ -145,9 +156,12 @@ class OrderController extends Controller
 
                             return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
-                        ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
-                        ->orderColumns('client', 'date', 'number', 'price_override')
-                        ->make();
+
+                         ->rawColumns(['date', 'client','number','price_override','order_status', 'ends_at','action'])
+                        ->make(true);
+                        // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
+                        // ->orderColumns('client', 'date', 'number', 'price_override')
+                        // ->make();
     }
 
     /**

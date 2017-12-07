@@ -58,7 +58,7 @@
 
                 @if($user=='')
                 <?php
-                $users = \App\User::lists('email');
+                $users = \App\User::pluck('email');
                 ?>
 
                 <div class="col-md-4 form-group">

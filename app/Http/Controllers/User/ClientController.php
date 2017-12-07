@@ -71,15 +71,21 @@ class ClientController extends Controller
         // $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
         //dd($user);
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
-
-        return \Datatable::query($user)
+    return\ DataTables::of($user)
+        
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('first_name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
-                        ->showColumns('email', 'created_at')
+                         ->addColumn('email', function ($model) {
+                            return ($model->email);
+                        })
+                          ->addColumn('created_at', function ($model) {
+                            return ($model->created_at);
+                        })
+                        // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
                                 $email = "<span class='glyphicon glyphicon-envelope' style='color:green' title='verified email'></span>";
@@ -97,10 +103,14 @@ class ClientController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                            // return 'hhhh';
                         })
-                        ->searchColumns('email', 'first_name')
-                        ->orderColumns('email', 'first_name', 'created_at')
-                        ->make();
+                        ->rawColumns(['first_name', 'email','active','created_at', 'action'])
+                        ->make(true);
+
+                        // ->searchColumns('email', 'first_name')
+                        // ->orderColumns('email', 'first_name', 'created_at')
+                        // ->make();
     }
 
     /**
@@ -174,6 +184,7 @@ class ClientController extends Controller
     public function edit($id)
     {
         try {
+
             $user = $this->user->where('id', $id)->first();
             $timezones = new \App\Model\Common\Timezone();
             $timezones = $timezones->pluck('name', 'id')->toArray();
@@ -182,6 +193,7 @@ class ClientController extends Controller
             $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
 
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
+
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));

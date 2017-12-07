@@ -95,7 +95,8 @@ class InvoiceController extends Controller
     {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
-        return \Datatable::Collection($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get())
+
+        return \DataTables::of($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -106,13 +107,22 @@ class InvoiceController extends Controller
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
-                        ->showColumns('number')
+                         ->addColumn('number', function ($model) {
+                            return ucfirst($model->number);
+                        })
+                      
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
                             return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
                         })
-                        ->showColumns('grand_total', 'status')
+                         ->addColumn('grand_total', function ($model) {
+                            return ucfirst($model->number);
+                        })
+                          ->addColumn('status', function ($model) {
+                            return ucfirst($model->status);
+                        })
+                        
                         ->addColumn('action', function ($model) {
                             $action = '';
 
@@ -124,9 +134,13 @@ class InvoiceController extends Controller
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>View</a>"
                                     ."   $action";
                         })
-                        ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
-                        ->orderColumns('date', 'user_id', 'number', 'grand_total', 'status')
-                        ->make();
+
+                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status'])
+                        ->make(true);
+
+                        // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
+                        // ->orderColumns('date', 'user_id', 'number', 'grand_total', 'status')
+                        // ->make();
     }
 
     public function show(Request $request)
@@ -164,8 +178,8 @@ class InvoiceController extends Controller
             } else {
                 $user = '';
             }
-            $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
-            $currency = $this->currency->lists('name', 'code')->toArray();
+            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
+            $currency = $this->currency->pluck('name', 'code')->toArray();
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
@@ -770,7 +784,7 @@ class InvoiceController extends Controller
     {
         try {
             $invoice = $this->invoice->findOrFail($invoiceid);
-            $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
+            $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
             $total = array_sum($payment);
             if ($total < $invoice->grand_total) {
                 $invoice->status = 'pending';
@@ -807,7 +821,7 @@ class InvoiceController extends Controller
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
+            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
             $total_paid = array_sum($all_payments);
             if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';

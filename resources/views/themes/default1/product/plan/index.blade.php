@@ -77,12 +77,16 @@
                 "sSearch"    : "Search: ",
                 "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
             },
+            "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+              }],
     
             columns: [
                 {data: 'name', name: 'name'},
                 {data: 'days', name: 'months'},
                 {data: 'Product', name: 'product'},
-                {data: 'actions', name: 'action'}
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

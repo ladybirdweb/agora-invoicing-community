@@ -108,21 +108,21 @@ class InvoiceController extends Controller
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
                          ->addColumn('number', function ($model) {
-                            return ucfirst($model->number);
-                        })
-                      
+                             return ucfirst($model->number);
+                         })
+
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
                             return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
                         })
                          ->addColumn('grand_total', function ($model) {
-                            return ucfirst($model->number);
-                        })
+                             return ucfirst($model->number);
+                         })
                           ->addColumn('status', function ($model) {
-                            return ucfirst($model->status);
-                        })
-                        
+                              return ucfirst($model->status);
+                          })
+
                         ->addColumn('action', function ($model) {
                             $action = '';
 
@@ -138,7 +138,7 @@ class InvoiceController extends Controller
                          ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status'])
                         ->make(true);
 
-                        // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
+        // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
                         // ->orderColumns('date', 'user_id', 'number', 'grand_total', 'status')
                         // ->make();
     }

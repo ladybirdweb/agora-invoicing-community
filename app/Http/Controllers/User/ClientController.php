@@ -71,8 +71,9 @@ class ClientController extends Controller
         // $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
         //dd($user);
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
-    return\ DataTables::of($user)
-        
+
+        return\ DataTables::of($user)
+
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -80,11 +81,11 @@ class ClientController extends Controller
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
                          ->addColumn('email', function ($model) {
-                            return ($model->email);
-                        })
+                             return $model->email;
+                         })
                           ->addColumn('created_at', function ($model) {
-                            return ($model->created_at);
-                        })
+                              return $model->created_at;
+                          })
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -105,10 +106,10 @@ class ClientController extends Controller
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             // return 'hhhh';
                         })
-                        ->rawColumns(['first_name', 'email','active','created_at', 'action'])
+                        ->rawColumns(['first_name', 'email', 'active', 'created_at', 'action'])
                         ->make(true);
 
-                        // ->searchColumns('email', 'first_name')
+        // ->searchColumns('email', 'first_name')
                         // ->orderColumns('email', 'first_name', 'created_at')
                         // ->make();
     }
@@ -184,7 +185,6 @@ class ClientController extends Controller
     public function edit($id)
     {
         try {
-
             $user = $this->user->where('id', $id)->first();
             $timezones = new \App\Model\Common\Timezone();
             $timezones = $timezones->pluck('name', 'id')->toArray();

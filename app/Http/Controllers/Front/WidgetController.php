@@ -35,14 +35,14 @@ class WidgetController extends Controller
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                           ->addColumn('name', function ($model) {
-                            return ucfirst($model->name);
-                        })
+                              return ucfirst($model->name);
+                          })
                             ->addColumn('type', function ($model) {
-                            return ($model->type);
-                        })
+                                return $model->type;
+                            })
                               ->addColumn('created_at', function ($model) {
-                            return ($model->created_at);
-                        })
+                                  return $model->created_at;
+                              })
                         // ->showColumns('name', 'type', 'created_at')
                         ->addColumn('content', function ($model) {
                             return str_limit($model->content, 10, '...');
@@ -52,7 +52,7 @@ class WidgetController extends Controller
                         })
                         ->rawColumns(['name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);
-                        // ->searchColumns('name', 'content')
+        // ->searchColumns('name', 'content')
                         // ->orderColumns('name')
                         // ->make();
     }

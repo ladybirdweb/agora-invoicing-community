@@ -2,7 +2,7 @@
 
 return [
 
-    /**
+    /*
      *
      * Shared translations.
      *
@@ -10,8 +10,7 @@ return [
     'title'        => 'Установка Laravel',
     'next'         => 'Следующий шаг',
 
-
-    /**
+    /*
      *
      * Home page translations.
      *
@@ -21,8 +20,7 @@ return [
         'message' => 'Добро пожаловать в первоначальную настройку фреймворка Laravel.',
     ],
 
-
-    /**
+    /*
      *
      * Requirements page translations.
      *
@@ -31,8 +29,7 @@ return [
         'title' => 'Необходимые модули',
     ],
 
-
-    /**
+    /*
      *
      * Permissions page translations.
      *
@@ -41,8 +38,7 @@ return [
         'title' => 'Проверка прав на папках',
     ],
 
-
-    /**
+    /*
      *
      * Environment page translations.
      *
@@ -54,8 +50,7 @@ return [
         'errors'  => 'Произошла ошибка при сохранении файла .env, пожалуйста, сохраните его вручную',
     ],
 
-
-    /**
+    /*
      *
      * Final page translations.
      *

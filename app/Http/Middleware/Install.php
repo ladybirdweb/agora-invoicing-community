@@ -2,8 +2,6 @@
 
 namespace App\Http\Middleware;
 
-
-
 use Closure;
 use Redirect;
 
@@ -17,7 +15,6 @@ class Install
      *
      * @return mixed
      */
-   
     public function handle($request, Closure $next)
     {
         dd('hi');
@@ -29,15 +26,7 @@ class Install
 
             return $next($request);
         } else {
-           
-            return redirect ('/install');
+            return redirect('/install');
         }
-        
-
     }
-
-    
-     
-
-
 }

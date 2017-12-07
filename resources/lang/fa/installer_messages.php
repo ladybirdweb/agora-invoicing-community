@@ -2,16 +2,15 @@
 
 return [
 
-    /**
+    /*
      *
      * Shared translations.
      *
      */
     'title' => 'نصب کننده لاراول',
-    'next' => 'قدم بعدی',
+    'next'  => 'قدم بعدی',
 
-
-    /**
+    /*
      *
      * Home page translations.
      *
@@ -21,8 +20,7 @@ return [
         'message' => 'به جادوگر نصب خوش آمدید .',
     ],
 
-
-    /**
+    /*
      *
      * Requirements page translations.
      *
@@ -31,8 +29,7 @@ return [
         'title' => 'نیازمندی ها',
     ],
 
-
-    /**
+    /*
      *
      * Permissions page translations.
      *
@@ -41,28 +38,26 @@ return [
         'title' => 'مجوز های دسترسی',
     ],
 
-
-    /**
+    /*
      *
      * Environment page translations.
      *
      */
     'environment' => [
-        'title' => 'تنظیمات پیکربندی',
-        'save' => 'ذخیره کردن .env',
+        'title'   => 'تنظیمات پیکربندی',
+        'save'    => 'ذخیره کردن .env',
         'success' => 'فایل .env برای شما ذخیره شد.',
-        'errors' => 'ذخیره کردن فایل .env امکان پذیر نیست، لطفا آن را به صورت دستی ایجاد کنید.',
+        'errors'  => 'ذخیره کردن فایل .env امکان پذیر نیست، لطفا آن را به صورت دستی ایجاد کنید.',
     ],
 
-
-    /**
+    /*
      *
      * Final page translations.
      *
      */
     'final' => [
-        'title' => 'تمام شد',
+        'title'    => 'تمام شد',
         'finished' => 'اپلیکیشن با موفقیت نصب شد.',
-        'exit' => 'برای خروج اینجا را کلیک کنید',
+        'exit'     => 'برای خروج اینجا را کلیک کنید',
     ],
 ];

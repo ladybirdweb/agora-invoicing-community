@@ -2,16 +2,15 @@
 
 return [
 
-    /**
+    /*
      *
      * Shared translations.
      *
      */
     'title' => 'Laravel Instalator',
-    'next' => 'Następny krok',
+    'next'  => 'Następny krok',
 
-
-    /**
+    /*
      *
      * Home page translations.
      *
@@ -21,8 +20,7 @@ return [
         'message' => 'Witaj w kreatorze instalacji.',
     ],
 
-
-    /**
+    /*
      *
      * Requirements page translations.
      *
@@ -31,8 +29,7 @@ return [
         'title' => 'Wymagania systemowe ',
     ],
 
-
-    /**
+    /*
      *
      * Permissions page translations.
      *
@@ -41,28 +38,26 @@ return [
         'title' => 'Uprawnienia',
     ],
 
-
-    /**
+    /*
      *
      * Environment page translations.
      *
      */
     'environment' => [
-        'title' => 'Ustawnienia środowiska',
-        'save' => 'Zapisz .env',
+        'title'   => 'Ustawnienia środowiska',
+        'save'    => 'Zapisz .env',
         'success' => 'Plik .env został poprawnie zainstalowany.',
-        'errors' => 'Nie można zapisać pliku .env, Proszę utworzyć go ręcznie.',
+        'errors'  => 'Nie można zapisać pliku .env, Proszę utworzyć go ręcznie.',
     ],
 
-
-    /**
+    /*
      *
      * Final page translations.
      *
      */
     'final' => [
-        'title' => 'Instalacja zakończona',
+        'title'    => 'Instalacja zakończona',
         'finished' => 'Aplikacja została poprawnie zainstalowana.',
-        'exit' => 'Kliknij aby zakończyć',
+        'exit'     => 'Kliknij aby zakończyć',
     ],
 ];

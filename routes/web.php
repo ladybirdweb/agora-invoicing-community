@@ -77,7 +77,8 @@
          */
 
         Route::resource('social-media', 'Common\SocialMediaController');
-        Route::get('get-social-media', 'Common\SocialMediaController@getSocials');
+        Route::get('get-social-media', ['as' => 'get-social-media', 'uses' => 'Common\SocialMediaController@getSocials']);
+        // Route::get('get-social-media', 'Common\SocialMediaController@getSocials');
         Route::get('social-media-delete', 'Common\SocialMediaController@destroy');
         /*
          * Tweeter api
@@ -170,7 +171,8 @@
          */
 
         Route::resource('currency', 'Payment\CurrencyController');
-        Route::get('get-currency', 'Payment\CurrencyController@GetCurrency');
+         Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@GetCurrency']);
+        // Route::get('get-currency', 'Payment\CurrencyController@GetCurrency');
         Route::get('currency-delete', 'Payment\CurrencyController@destroy');
 
         /*
@@ -179,7 +181,10 @@
 
         Route::resource('tax', 'Payment\TaxController');
         Route::post('get-state', 'Payment\TaxController@GetState');
-        Route::get('get-tax', 'Payment\TaxController@GetTax');
+        Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@GetTax']);
+       
+        // Route::get('get-tax', 'Payment\TaxController@GetTax');
+
         Route::get('tax-delete', 'Payment\TaxController@destroy');
         Route::patch('taxes/option', 'Payment\TaxController@options');
         Route::post('taxes/option', 'Payment\TaxController@options');
@@ -207,7 +212,7 @@
 
         Route::resource('orders', 'Order\OrderController');
         Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@GetOrders']);
-        Route::get('get-orders', 'Order\OrderController@GetOrders');
+        // Route::get('get-orders', 'Order\OrderController@GetOrders');
         Route::get('orders-delete', 'Order\OrderController@destroy');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::get('change-domain', 'Order\OrderController@domainChange');
@@ -226,7 +231,8 @@
          */
 
         Route::resource('templates', 'Common\TemplateController');
-        Route::get('get-templates', 'Common\TemplateController@GetTemplates');
+         Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@GetTemplates']);
+        // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
         Route::get('templates-delete', 'Common\TemplateController@destroy');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
         Route::get('testcart', 'Common\TemplateController@cartesting');
@@ -295,7 +301,8 @@
          * Widgets
          */
         Route::resource('widgets', 'Front\WidgetController');
-        Route::get('get-widgets', 'Front\WidgetController@GetPages');
+        Route::get('get-widgets', ['as' => 'get-widgets', 'uses' => 'Front\WidgetController@GetPages']);
+        // Route::get('get-widgets', 'Front\WidgetController@GetPages');
         Route::get('widgets-delete', 'Front\WidgetController@destroy');
 
         /*
@@ -340,7 +347,10 @@
          * plugins
          */
         Route::get('plugin', 'Common\SettingsController@plugins');
-        Route::get('getplugin', 'Common\SettingsController@getPlugin');
+
+
+         Route::get('get-plugin', ['as' => 'get-plugin', 'uses' => 'Common\SettingsController@getPlugin']);
+        // Route::get('getplugin', 'Common\SettingsController@getPlugin');
         Route::post('post-plugin', ['as' => 'post.plugin', 'uses' => 'Common\SettingsController@postPlugins']);
         Route::get('plugin/delete/{slug}', ['as' => 'delete.plugin', 'uses' => 'Common\SettingsController@deletePlugin']);
         Route::get('plugin/status/{slug}', ['as' => 'status.plugin', 'uses' => 'Common\SettingsController@statusPlugin']);

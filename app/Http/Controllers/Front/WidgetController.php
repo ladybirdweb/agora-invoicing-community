@@ -13,7 +13,7 @@ class WidgetController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $widget = new Widgets();
         $this->widget = $widget;
@@ -30,20 +30,31 @@ class WidgetController extends Controller
 
     public function GetPages()
     {
-        return \Datatable::collection($this->widget->get())
+        return \DataTables::of($this->widget->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name', 'type', 'created_at')
+                          ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
+                        })
+                            ->addColumn('type', function ($model) {
+                            return ($model->type);
+                        })
+                              ->addColumn('created_at', function ($model) {
+                            return ($model->created_at);
+                        })
+                        // ->showColumns('name', 'type', 'created_at')
                         ->addColumn('content', function ($model) {
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('widgets/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name', 'content')
-                        ->orderColumns('name')
-                        ->make();
+                        ->rawColumns(['name', 'type', 'created_at', 'content', 'action'])
+                        ->make(true);
+                        // ->searchColumns('name', 'content')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     public function create()

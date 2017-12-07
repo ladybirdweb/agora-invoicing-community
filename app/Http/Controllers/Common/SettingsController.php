@@ -37,8 +37,8 @@ class SettingsController extends Controller
         $plugins = $this->fetchConfig();
 
         //dd($result);
-        return \Datatable::collection(new Collection($plugins))
-                        ->searchColumns('name')
+       return \DataTables::of(new Collection($plugins))
+                        // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
@@ -87,7 +87,8 @@ class SettingsController extends Controller
                         ->addColumn('version', function ($model) {
                             return $model['version'];
                         })
-                        ->make();
+                      ->rawColumns(['name', 'description', 'author', 'website','version'])
+                            ->make(true);
     }
 
     /**

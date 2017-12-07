@@ -22,7 +22,7 @@ class TaxController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'GetState']);
-        $this->middleware('admin', ['except' => 'GetState']);
+        // $this->middleware('admin', ['except' => 'GetState']);
 
         $tax = new Tax();
         $this->tax = $tax;
@@ -52,7 +52,7 @@ class TaxController extends Controller
             if (!$options) {
                 $options = '';
             }
-            $classes = $this->tax_class->lists('name', 'id')->toArray();
+            $classes = $this->tax_class->pluck('name', 'id')->toArray();
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();
             }
@@ -65,14 +65,20 @@ class TaxController extends Controller
 
     public function GetTax()
     {
-        return \Datatable::collection($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
+        return \Datatable::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('tax_classes_id', function ($model) {
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                         })
-                        ->showColumns('name', 'level')
+                        ->addColumn('name', function ($model) {
+                            return ($model->name);
+                        })
+                        ->addColumn('level', function ($model) {
+                            return ($model->level);
+                        })
+                        // ->showColumns('name', 'level')
                         ->addColumn('country', function ($model) {
                             if ($this->country->where('country_code_char2', $model->country)->first()) {
                                 return $this->country->where('country_code_char2', $model->country)->first()->country_name;
@@ -83,13 +89,18 @@ class TaxController extends Controller
                                 return $this->state->where('state_subdivision_code', $model->state)->first()->state_subdivision_name;
                             }
                         })
-                        ->showColumns('rate')
+                        ->addColumn('rate', function ($model) {
+                            return ($model->rate);
+                        })
+                        // ->showColumns('rate')
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
+                        ->rawColumns(['tax_classes_id', 'name',  'level', 'country', 'state','rate','action'])
+                        ->make(true);
+                        // ->searchColumns('name')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     /**

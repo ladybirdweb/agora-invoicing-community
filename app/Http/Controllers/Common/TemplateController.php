@@ -127,20 +127,26 @@ class TemplateController extends Controller
 
     public function GetTemplates()
     {
-        return \Datatable::collection($this->template->select('id', 'name', 'type')->get())
+        
+        return \DataTables::of($this->template->select('id', 'name', 'type')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name')
+                      
+                         ->addColumn('name', function ($model) {
+                            return $model->name;
+                        })
                         ->addColumn('type', function ($model) {
                             return $this->type->where('id', $model->type)->first()->name;
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
+                        ->rawColumns(['name', 'type', 'action'])
+                        ->make(true);
+                        // ->searchColumns('name')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     public function create()

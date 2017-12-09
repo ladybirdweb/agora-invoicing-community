@@ -46,6 +46,7 @@ class DatabaseSeeder extends Seeder
         $this->call('PromotionTableSeeder');
         $this->command->info('Promotion table seeded!');
 
+       
         $this->call('CurrencyTableSeeder');
         $this->command->info('Currency table seeded!');
 
@@ -54,6 +55,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call('GitHubTableSeeder');
         $this->command->info('Github table seeded!');
+           
+
+        $this->call('UserTableSeeder');
+        $this->command->info('User table seeded!');
 
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
@@ -83,7 +88,7 @@ class PlanTableSeeder extends Seeder
             ];
         //var_dump($subcriptions);
         for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['id' => $i + 1, 'name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
+            Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
         }
     }
 }
@@ -200,5 +205,37 @@ class GitHubTableSeeder extends Seeder
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+    }
+}
+
+
+class UserTableSeeder extends Seeder
+{
+public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('users')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        return \App\User::create([
+                    'first_name'      => 'Demo',
+                    'last_name'       => 'Admin',
+                    'user_name'       => 'demo',
+                    'email'           => 'demo@admin.com',
+                    'role'            => 'admin',
+                    'password'        => \Hash::make('password'),
+                    'active'          => 1,
+                    'mobile_verified' => 1,
+                    'currency'        => 'INR',
+                    'company'         =>'ladybird',
+                    'mobile'          => '',
+                    'mobile_code'=>'',
+                    'address'=>'',
+                    'town'=>'',
+                    'state'=>'',
+                    'zip'=>'',
+                    'profile_pic'=>'',
+                    'debit'=>0,
+        ]);
     }
 }

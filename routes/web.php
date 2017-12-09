@@ -21,7 +21,6 @@
         /*
          * Front end
          */
-
         Route::match(['get', 'post'], 'home', 'Front\CartController@ProductList');
 
         Route::get('pricing', 'Front\CartController@Cart');
@@ -93,9 +92,9 @@
     // // 'password' => 'Auth\PasswordController',
     //     ]);
 
-        Route::group([ 'middleware' => 'install'], function () {
+        
         Route::auth();
-        });
+
         Route::get('/', 'HomeController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
@@ -407,4 +406,3 @@
 
         Route::post('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
-    // });

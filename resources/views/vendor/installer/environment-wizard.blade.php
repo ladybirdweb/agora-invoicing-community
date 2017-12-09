@@ -35,6 +35,7 @@
 
         <form method="post" action="{{ route('LaravelInstaller::environmentSaveWizard') }}" class="tabs-wrap">
             <div class="tab" id="tab1content">
+              <!--   dd('rr'); -->
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                 <div class="form-group {{ $errors->has('app_name') ? ' has-error ' : '' }}">
@@ -218,6 +219,19 @@
                         </span>
                     @endif
                 </div>
+
+               
+
+              <!--   <div class="form-group>
+                    <label for="database_password">
+                       DB_INSTALL
+                    </label>
+                    <input type="text" name="database_password" id="database_password" value="0" placeholder="{{ trans('installer_messages.environment.wizard.form.db_password_placeholder') }}" />
+                   
+                </div> -->
+
+                <!--  -->
+
 
                 <div class="buttons">
                     <button class="button" onclick="showApplicationSettings();return false">

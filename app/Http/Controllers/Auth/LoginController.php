@@ -18,6 +18,7 @@ class LoginController extends Controller
     |
     */
 
+
     use AuthenticatesUsers;
 
     /**
@@ -34,6 +35,8 @@ class LoginController extends Controller
      */
     public function __construct()
     {
+        // dd('op');
+        // $this->middleware('install');
         $this->middleware('guest')->except('logout');
     }
 }

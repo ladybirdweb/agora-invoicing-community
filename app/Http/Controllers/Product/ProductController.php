@@ -176,9 +176,9 @@ class ProductController extends Controller
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                    'name'  => 'required|unique:products,name',
-                    'type'  => 'required',
-                    'group' => 'required',
+                    'name'    => 'required|unique:products,name',
+                    'type'    => 'required',
+                    'group'   => 'required',
                     'version' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {

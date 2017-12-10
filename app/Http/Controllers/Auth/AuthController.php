@@ -376,13 +376,14 @@ class AuthController extends Controller
         ]);
 
         try {
+            
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
             $email = $request->input('email');
             $pass = $request->input('password');
             $number = $code.$mobile;
-            // $result = $this->sendOtp($mobile, $code);
+            $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];

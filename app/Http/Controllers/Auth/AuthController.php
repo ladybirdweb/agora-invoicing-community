@@ -376,7 +376,6 @@ class AuthController extends Controller
         ]);
 
         try {
-            
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');

@@ -2,17 +2,16 @@
 
 return [
 
-    /**
+    /*
      *
      * Shared translations.
      *
      */
-    'title' => 'Instalação de Laravel',
-    'next' => 'Próximo Passo',
+    'title'  => 'Instalação de Laravel',
+    'next'   => 'Próximo Passo',
     'finish' => 'Instalar',
 
-
-    /**
+    /*
      *
      * Home page translations.
      *
@@ -22,8 +21,7 @@ return [
         'message' => 'Bem-vindo ao assistente de configuração.',
     ],
 
-
-    /**
+    /*
      *
      * Requirements page translations.
      *
@@ -32,8 +30,7 @@ return [
         'title' => 'Requisitos',
     ],
 
-
-    /**
+    /*
      *
      * Permissions page translations.
      *
@@ -42,28 +39,26 @@ return [
         'title' => 'Permissões',
     ],
 
-
-    /**
+    /*
      *
      * Environment page translations.
      *
      */
     'environment' => [
-        'title' => 'Configurações de Ambiente',
-        'save' => 'Salvar .env',
+        'title'   => 'Configurações de Ambiente',
+        'save'    => 'Salvar .env',
         'success' => 'As configurações de seu arquivo .env foram gravadas.',
-        'errors' => 'Não foi possível gravar o arquivo .env, por favor crie-o manualmente.',
+        'errors'  => 'Não foi possível gravar o arquivo .env, por favor crie-o manualmente.',
     ],
 
-
-    /**
+    /*
      *
      * Final page translations.
      *
      */
     'final' => [
-        'title' => 'Terminado',
+        'title'    => 'Terminado',
         'finished' => 'Aplicação foi instalada com sucesso',
-        'exit' => 'Clique aqui para sair',
+        'exit'     => 'Clique aqui para sair',
     ],
 ];

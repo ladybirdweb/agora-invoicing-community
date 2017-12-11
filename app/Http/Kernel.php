@@ -32,13 +32,13 @@ class Kernel extends HttpKernel
         'web' => [
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            
+
             // \Illu/minate\Session\Middleware\AuthenticateSession::class,
-           
+
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\Install::class
-            
+            \App\Http\Middleware\Install::class,
+
         ],
 
         'api' => [

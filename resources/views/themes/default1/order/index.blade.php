@@ -138,7 +138,7 @@
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-order') !!}',
+            ajax: '{!! route('get-orders') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

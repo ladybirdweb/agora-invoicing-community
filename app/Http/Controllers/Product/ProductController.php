@@ -13,6 +13,7 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
+use App\Model\Product\ProductName;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -80,57 +81,59 @@ class ProductController extends Controller
 
     public function GetProducts()
     {
+        $new_product = ProductName::select('id', 'name')->get();
+        // try
 
-        // try {
-
-        return\ DataTables::of($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+        return\ DataTables::of($new_product)
         // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
-                        })
+                        // ->addColumn('#', function ($model) {
+                        //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        // })
                         ->addColumn('name', function ($model) {
-                            return ucfirst($model->name);
+                           
+                            return '<a href="#">'.ucfirst($model->name).'</a>';
                         })
-                        ->addColumn('type', function ($model) {
-                            //dd($model->type());
-                            if ($this->type->where('id', $model->type)->first()) {
-                                return $this->type->where('id', $model->type)->first()->name;
-                            } else {
-                                return 'Not available';
-                            }
-                        })
-                        ->addColumn('group', function ($model) {
-                            //dd($model->type());
-                            if ($this->group->where('id', $model->group)->first()) {
-                                return $this->group->where('id', $model->group)->first()->name;
-                            } else {
-                                return 'Not available';
-                            }
-                        })
-                        ->addColumn('price', function ($model) {
-                            if ($this->price->where('product_id', $model->id)->first()) {
-                                return $this->price->where('product_id', $model->id)->first()->price;
-                            } else {
-                                return 'Not available';
-                            }
-                        })
-                        ->addColumn('currency', function ($model) {
-                            if ($this->price->where('product_id', $model->id)->first()) {
-                                return $this->price->where('product_id', $model->id)->first()->currency;
-                            } else {
-                                return 'Not available';
-                            }
-                        })
-                        ->addColumn('action', function ($model) {
-                            $url = '';
-                            if ($model->type == 2) {
-                                $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary'>Download</a>";
-                            }
+                        ->rawColumns(['name'])
+                        // ->addColumn('type', function ($model) {
+                        //     //dd($model->type());
+                        //     if ($this->type->where('id', $model->type)->first()) {
+                        //         return $this->type->where('id', $model->type)->first()->name;
+                        //     } else {
+                        //         return 'Not available';
+                        //     }
+                        // })
+                        // ->addColumn('group', function ($model) {
+                        //     //dd($model->type());
+                        //     if ($this->group->where('id', $model->group)->first()) {
+                        //         return $this->group->where('id', $model->group)->first()->name;
+                        //     } else {
+                        //         return 'Not available';
+                        //     }
+                        // })
+                        // ->addColumn('price', function ($model) {
+                        //     if ($this->price->where('product_id', $model->id)->first()) {
+                        //         return $this->price->where('product_id', $model->id)->first()->price;
+                        //     } else {
+                        //         return 'Not available';
+                        //     }
+                        // })
+                        // ->addColumn('currency', function ($model) {
+                        //     if ($this->price->where('product_id', $model->id)->first()) {
+                        //         return $this->price->where('product_id', $model->id)->first()->currency;
+                        //     } else {
+                        //         return 'Not available';
+                        //     }
+                        // })
+                        // ->addColumn('action', function ($model) {
+                        //     $url = '';
+                        //     if ($model->type == 2) {
+                        //         $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary'>Download</a>";
+                        //     }
 
-                            return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
-                        })
+                            // return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
+                        // })
 
-                        ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'action'])
+                        // ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
@@ -179,6 +182,7 @@ class ProductController extends Controller
                     'name'  => 'required|unique:products,name',
                     'type'  => 'required',
                     'group' => 'required',
+                    'version' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
             return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
@@ -485,6 +489,18 @@ class ProductController extends Controller
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+
+
+    public function options(Request $request)
+    {
+    $new_product= new ProductName();
+        $new_product->name=$request->name;
+         $new_product->save();
+        // Category::create($request->all());
+        return back();
+
+    }
+
 
     public function adminDownload($id, $api = false)
     {

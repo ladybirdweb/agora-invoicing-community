@@ -13,6 +13,14 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.*",
+
+
+
+        "thomaswelton/laravel-gravatar": "~1.0",
+                 "darryldecode/cart": "dev-master",
+                 
+
+
         "pacely/mailchimp-apiv3": "dev-master",
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.1",

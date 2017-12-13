@@ -143,6 +143,7 @@
         Route::Post('get-price', 'Product\ProductController@getPrice');
         Route::Post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
+         Route::post('products/option', 'Product\ProductController@options');
         /*
          * Plan
          */

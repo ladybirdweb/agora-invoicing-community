@@ -34,7 +34,8 @@
         @endif
         <div id="response"></div>
         <h4>{{Lang::get('message.products')}}
-            <a href="{{url('products/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+            <a href="#create-product-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-product-option">{{Lang::get('message.create')}}</a></h4>
+            @include('themes.default1.product.product.create-product-option')
     </div>
 
 
@@ -47,11 +48,11 @@
 
                     <thead><tr>
                             <th>Name</th>
-                            <th>Type</th>
+                            <!-- <th>Type</th>
                             <th>Group</th>
                             <th>Price</th>
                             <th>Currency</th>
-                            <th>Action</th>
+                            <th>Action</th> -->
                         </tr></thead>
 
 
@@ -78,12 +79,12 @@
             },
     
             columns: [
-                {data: 'name', name: 'Name'},
-                {data: 'type', name: 'Type'},
-                {data: 'price', name: 'Price'},
-                {data: 'group', name: 'Group'},
-                {data: 'currency', name: 'Currency'},
-                {data: 'actions', name: 'Action'}
+                {data: 'name', name: 'name'},
+                // {data: 'type', name: 'Type'},
+                // {data: 'price', name: 'Price'},
+                // {data: 'group', name: 'Group'},
+                // {data: 'currency', name: 'Currency'},
+                // {data: 'actions', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

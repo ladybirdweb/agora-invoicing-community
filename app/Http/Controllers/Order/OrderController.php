@@ -77,7 +77,8 @@ class OrderController extends Controller
         //                            ->withInput();
         //        }
         try {
-            $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
+            
+            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
             $expiry = $request->input('expiry');
@@ -103,7 +104,7 @@ class OrderController extends Controller
         //return \Datatable::query($this->order->select('id', 'created_at', 'client',
         //'price_override', 'order_status', 'number', 'serial_key'))
         return\ DataTables::of($query->get())
-
+     
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -156,9 +157,9 @@ class OrderController extends Controller
                             return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
 
-                         ->rawColumns(['date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
+                         ->rawColumns(['date', 'client','number','price_override','order_status', 'ends_at','action'])
                         ->make(true);
-        // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
+                        // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
                         // ->orderColumns('client', 'date', 'number', 'price_override')
                         // ->make();
     }
@@ -171,10 +172,10 @@ class OrderController extends Controller
     public function create()
     {
         try {
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.create', compact('clients', 'product', 'subscription', 'promotion'));
         } catch (\Exception $e) {
@@ -247,10 +248,10 @@ class OrderController extends Controller
     {
         try {
             $order = $this->order->where('id', $id)->first();
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.edit', compact('clients', 'product', 'subscription', 'promotion', 'order'));
         } catch (\Exception $e) {

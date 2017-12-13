@@ -166,11 +166,11 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = $this->plan->where('id', $id)->first();
-        $currency = $this->currency->lists('name', 'code')->toArray();
-        $add_price = $this->price->where('plan_id', $id)->lists('add_price', 'currency')->toArray();
-        $renew_price = $this->price->where('plan_id', $id)->lists('renew_price', 'currency')->toArray();
-        $periods = $this->period->lists('name', 'days')->toArray();
-        $products = $this->product->lists('name', 'id')->toArray();
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
+        $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
 
         return view('themes.default1.product.plan.edit', compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
     }

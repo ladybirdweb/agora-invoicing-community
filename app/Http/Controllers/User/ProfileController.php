@@ -18,10 +18,10 @@ class ProfileController extends Controller
         try {
             $user = \Auth::user();
             $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->lists('name', 'id')->toArray();
+            $timezones = $timezones->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.profile', compact('bussinesses', 'user', 'timezones', 'state', 'states'));
         } catch (\Exception $e) {

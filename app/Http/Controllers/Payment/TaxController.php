@@ -73,10 +73,10 @@ class TaxController extends Controller
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                         })
                         ->addColumn('name', function ($model) {
-                            return ($model->name);
+                            return $model->name;
                         })
                         ->addColumn('level', function ($model) {
-                            return ($model->level);
+                            return $model->level;
                         })
                         // ->showColumns('name', 'level')
                         ->addColumn('country', function ($model) {
@@ -90,15 +90,15 @@ class TaxController extends Controller
                             }
                         })
                         ->addColumn('rate', function ($model) {
-                            return ($model->rate);
+                            return $model->rate;
                         })
                         // ->showColumns('rate')
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->rawColumns(['tax_classes_id', 'name',  'level', 'country', 'state','rate','action'])
+                        ->rawColumns(['tax_classes_id', 'name',  'level', 'country', 'state', 'rate', 'action'])
                         ->make(true);
-                        // ->searchColumns('name')
+        // ->searchColumns('name')
                         // ->orderColumns('name')
                         // ->make();
     }

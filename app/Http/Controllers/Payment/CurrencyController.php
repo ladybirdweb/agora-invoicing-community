@@ -32,8 +32,6 @@ class CurrencyController extends Controller
 
     public function GetCurrency()
     {
-
-        
         return \DataTables::of($this->currency->select('name', 'id')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
@@ -106,7 +104,7 @@ class CurrencyController extends Controller
 
                         ->rawColumns(['name', 'base_conversion', 'action'])
                         ->make(true);
-                        // ->searchColumns('name')
+        // ->searchColumns('name')
                         // ->orderColumns('name')
                         // ->make();
     }

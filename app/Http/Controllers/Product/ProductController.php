@@ -11,9 +11,9 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Product\ProductName;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
-use App\Model\Product\ProductName;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -90,6 +90,7 @@ class ProductController extends Controller
                         //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         // })
                         ->addColumn('name', function ($model) {
+
                            
                             return ucfirst($model->name);
                             
@@ -99,6 +100,11 @@ class ProductController extends Controller
                               return '<a href='.url("product/details/$model->id")." class=' btn btn-sm btn-primary '>Manage Plans</a>";
                                })
                         ->rawColumns(['name','Action'])
+
+                            return '<a href="#">'.ucfirst($model->name).'</a>';
+                        })
+                        ->rawColumns(['name'])
+
                         // ->addColumn('type', function ($model) {
                         //     //dd($model->type());
                         //     if ($this->type->where('id', $model->type)->first()) {
@@ -260,9 +266,9 @@ class ProductController extends Controller
     {
         $input = $request->all();
         $v = \Validator::make($input, [
-                    'name'  => 'required|unique:products,name',
-                    'type'  => 'required',
-                    'group' => 'required',
+                    'name'    => 'required|unique:products,name',
+                    'type'    => 'required',
+                    'group'   => 'required',
                     'version' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
@@ -571,17 +577,14 @@ class ProductController extends Controller
         }
     }
 
-
     public function options(Request $request)
     {
-    $new_product= new ProductName();
-        $new_product->name=$request->name;
-         $new_product->save();
+        $new_product = new ProductName();
+        $new_product->name = $request->name;
+        $new_product->save();
         // Category::create($request->all());
         return back();
-
     }
-
 
     public function adminDownload($id, $api = false)
     {

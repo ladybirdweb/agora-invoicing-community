@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class AddStatusToProducts extends Migration
 {
@@ -13,11 +12,10 @@ class AddStatusToProducts extends Migration
      */
     public function up()
     {
-        Schema::table('products', function($table){
-
-         $table->string('status')->default(1);
-    });
-       }
+        Schema::table('products', function ($table) {
+            $table->string('status')->default(1);
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -26,8 +24,8 @@ class AddStatusToProducts extends Migration
      */
     public function down()
     {
-         Schema::table('products', function($table) {
-        $table->dropColumn('status');
-    });
+        Schema::table('products', function ($table) {
+            $table->dropColumn('status');
+        });
     }
 }

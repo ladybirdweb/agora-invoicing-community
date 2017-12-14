@@ -137,6 +137,8 @@
 
         Route::resource('products', 'Product\ProductController');
          Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@GetProducts']);
+          Route::get('get-details', ['as' => 'get-details', 'uses' => 'Product\ProductController@getDetails']);
+         // Route::get('get-details', ['as' => 'get-products', 'uses' => 'Product\ProductController@details']);
 
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy');
@@ -144,6 +146,9 @@
         Route::Post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
          Route::post('products/option', 'Product\ProductController@options');
+          Route::get('product/details/{id}', 'Product\ProductController@details');
+           Route::get('details/{id}/pricing', 'Product\ProductController@pricing');
+
         /*
          * Plan
          */

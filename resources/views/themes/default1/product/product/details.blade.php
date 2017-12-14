@@ -34,8 +34,7 @@
         @endif
         <div id="response"></div>
         <h4>{{Lang::get('message.products')}}
-            <a href="#create-product-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-product-option">{{Lang::get('message.create')}}</a></h4>
-            @include('themes.default1.product.product.create-product-option')
+           <!--  <a href="{{url('products/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a> --></h4>
     </div>
 
 
@@ -47,12 +46,10 @@
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
-                            <th>Name</th>
-                            <!-- <th>Type</th>
-                            <th>Group</th>
-                            <th>Price</th>
-                            <th>Currency</th>-->
-                            <th>Action</th> 
+                            <th>Plans</th>
+                            <!-- <th>Specifications</th> -->
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr></thead>
 
 
@@ -71,7 +68,7 @@
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-products') !!}',
+            ajax: '{!! route('get-details') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -80,11 +77,10 @@
     
             columns: [
                 {data: 'name', name: 'name'},
-                // {data: 'type', name: 'Type'},
-                // {data: 'price', name: 'Price'},
-                // {data: 'group', name: 'Group'},
-                // {data: 'currency', name: 'Currency'},
-                {data: 'Action', name: 'Action'}
+                // {data: 'description', name: 'description'},
+                {data: 'status', name: 'status'},
+               
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

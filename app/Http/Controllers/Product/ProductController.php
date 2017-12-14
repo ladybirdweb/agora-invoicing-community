@@ -91,9 +91,14 @@ class ProductController extends Controller
                         // })
                         ->addColumn('name', function ($model) {
                            
-                            return '<a href="#">'.ucfirst($model->name).'</a>';
-                        })
-                        ->rawColumns(['name'])
+                            return ucfirst($model->name);
+                            
+                       })
+                         ->addColumn('Action', function ($model) {
+                           
+                              return '<a href='.url("product/details/$model->id")." class=' btn btn-sm btn-primary '>Manage Plans</a>";
+                               })
+                        ->rawColumns(['name','Action'])
                         // ->addColumn('type', function ($model) {
                         //     //dd($model->type());
                         //     if ($this->type->where('id', $model->type)->first()) {
@@ -135,6 +140,7 @@ class ProductController extends Controller
 
                         // ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'action'])
                         ->make(true);
+
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
                         // ->make();
@@ -148,6 +154,81 @@ class ProductController extends Controller
      *
      * @return Response
      */
+
+    public function details()
+    {
+           
+
+        {
+        try {
+            return view('themes.default1.product.product.details');
+        } catch (\Exception $e) {
+            return redirect('/products')->with('fails', $e->getMessage());
+        }
+    }
+
+    }
+
+
+    public function getDetails()
+    {
+          $new_product = Product::select('id', 'name','description','status')->get();
+        // try
+
+        return\ DataTables::of($new_product)
+        // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+                        // ->addColumn('#', function ($model) {
+                        //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        // })
+                        ->addColumn('name', function ($model) {
+                           
+                            return ucfirst($model->name);
+                            // "{{url('invoice/generate')}}"
+                        })
+                        ->rawColumns(['name'])
+
+                         ->addColumn('description', function ($model) {
+                           
+                            return ucfirst($model->description);
+                            // "{{url('invoice/generate')}}"
+                        })
+                        // ->rawColumns(['description'])
+
+                        //  ->addColumn('status', function ($model) {
+                           
+                        //     return ($model->status);
+                        //     // "{{url('invoice/generate')}}"
+                        // })
+                         ->addColumn('action', function ($model) {
+                           
+                              return '<a href='.url('details/'.$model->id.'/pricing')." class=' btn btn-sm btn-primary '>Manage Price</a>";
+                            // "{{url('invoice/generate')}}"
+                        })
+                        ->rawColumns(['status','action'])
+                        ->make(true);
+                         }
+                      
+   
+
+            public function pricing()
+    {
+           
+
+        {
+        try {
+            return view('themes.default1.product.product.pricing');
+        } catch (\Exception $e) {
+            return redirect('/products')->with('fails', $e->getMessage());
+        }
+    }
+
+    }
+
+
+
+
+
+
     public function create()
     {
         try {

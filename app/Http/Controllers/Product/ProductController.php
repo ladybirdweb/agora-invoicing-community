@@ -90,19 +90,12 @@ class ProductController extends Controller
                         //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         // })
                         ->addColumn('name', function ($model) {
-
-                           
                             return ucfirst($model->name);
-                            
-                       })
+                        })
                          ->addColumn('Action', function ($model) {
-                           
-                              return '<a href='.url("product/details/$model->id")." class=' btn btn-sm btn-primary '>Manage Plans</a>";
-                               })
-                        ->rawColumns(['name','Action'])
-
-                           
-                       
+                             return '<a href='.url("product/details/$model->id")." class=' btn btn-sm btn-primary '>Manage Plans</a>";
+                         })
+                        ->rawColumns(['name', 'Action'])
 
                         // ->addColumn('type', function ($model) {
                         //     //dd($model->type());
@@ -159,11 +152,8 @@ class ProductController extends Controller
      *
      * @return Response
      */
-
     public function details()
     {
-           
-
         {
         try {
             return view('themes.default1.product.product.details');
@@ -171,13 +161,11 @@ class ProductController extends Controller
             return redirect('/products')->with('fails', $e->getMessage());
         }
     }
-
     }
-
 
     public function getDetails()
     {
-          $new_product = Product::select('id', 'name','status')->get();
+        $new_product = Product::select('id', 'name', 'status')->get();
         // try
 
         return\ DataTables::of($new_product)
@@ -186,41 +174,34 @@ class ProductController extends Controller
                         //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         // })
                         ->addColumn('name', function ($model) {
-                           
                             return ucfirst($model->name);
                             // "{{url('invoice/generate')}}"
                         })
                         ->rawColumns(['name'])
 
                         //  ->addColumn('description', function ($model) {
-                           
+
                         //     return ucfirst($model->description);
                         //     // "{{url('invoice/generate')}}"
                         // })
                         // ->rawColumns(['description'])
 
                          ->addColumn('status', function ($model) {
-                           
-                            return ($model->status ? 'Selling' : 'Not Available');
-                            // {!! $ticket->status ? 'Pending' : 'Answered' !!}
-                        })
+                             return $model->status ? 'Selling' : 'Not Available';
+                             // {!! $ticket->status ? 'Pending' : 'Answered' !!}
+                         })
                         //     // "{{url('invoice/generate')}}"
                         // })
                          ->addColumn('action', function ($model) {
-                           
-                              return '<a href='.url('details/'.$model->id.'/pricing')." class=' btn btn-sm btn-primary '>Manage Price</a>";
-                            // "{{url('invoice/generate')}}"
-                        })
-                        ->rawColumns(['status','action'])
+                             return '<a href='.url('details/'.$model->id.'/pricing')." class=' btn btn-sm btn-primary '>Manage Price</a>";
+                             // "{{url('invoice/generate')}}"
+                         })
+                        ->rawColumns(['status', 'action'])
                         ->make(true);
-                         }
-                      
-   
+    }
 
-            public function pricing()
+    public function pricing()
     {
-           
-
         {
         try {
             return view('themes.default1.product.product.pricing');
@@ -228,13 +209,7 @@ class ProductController extends Controller
             return redirect('/products')->with('fails', $e->getMessage());
         }
     }
-
     }
-
-
-
-
-
 
     public function create()
     {

@@ -149,16 +149,12 @@
           Route::get('product/details/{id}', 'Product\ProductController@details');
            Route::get('details/{id}/pricing', 'Product\ProductController@pricing');
 
-
-
            /*
          * Product
          */
            Route::resource('categories', 'Category\CategoryController');
     Route::get('get-categories', ['as' => 'get-categories', 'uses' => 'Category\CategoryController@getCategory']);
      Route::post('categories/option/{id}', 'Category\CategoryController@options');
-
-
 
         /*
          * Plan

@@ -70,7 +70,10 @@
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
+                                   <!--  $products = ProductName::pluck('name');
+                                  -->
+                                    {!! Form::select('name',$products,null,['class' => 'form-control']) !!}
+                                 
 
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">

@@ -101,9 +101,8 @@ class ProductController extends Controller
                                })
                         ->rawColumns(['name','Action'])
 
-                            return '<a href="#">'.ucfirst($model->name).'</a>';
-                        })
-                        ->rawColumns(['name'])
+                           
+                       
 
                         // ->addColumn('type', function ($model) {
                         //     //dd($model->type());
@@ -178,7 +177,7 @@ class ProductController extends Controller
 
     public function getDetails()
     {
-          $new_product = Product::select('id', 'name','description','status')->get();
+          $new_product = Product::select('id', 'name','status')->get();
         // try
 
         return\ DataTables::of($new_product)
@@ -193,16 +192,18 @@ class ProductController extends Controller
                         })
                         ->rawColumns(['name'])
 
-                         ->addColumn('description', function ($model) {
+                        //  ->addColumn('description', function ($model) {
                            
-                            return ucfirst($model->description);
-                            // "{{url('invoice/generate')}}"
-                        })
+                        //     return ucfirst($model->description);
+                        //     // "{{url('invoice/generate')}}"
+                        // })
                         // ->rawColumns(['description'])
 
-                        //  ->addColumn('status', function ($model) {
+                         ->addColumn('status', function ($model) {
                            
-                        //     return ($model->status);
+                            return ($model->status ? 'Selling' : 'Not Available');
+                            // {!! $ticket->status ? 'Pending' : 'Answered' !!}
+                        })
                         //     // "{{url('invoice/generate')}}"
                         // })
                          ->addColumn('action', function ($model) {

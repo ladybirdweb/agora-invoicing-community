@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\License;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\License\License;
 use Form;
+use Illuminate\Http\Request;
 use Lang;
 
-
 class LicenseController extends Controller
-{   
+{
     /**
      * Display a listing of the resource.
      *
@@ -18,36 +17,30 @@ class LicenseController extends Controller
      */
     public function index()
     {
-         try{
-            $licenses= License::all();
-        return view('themes.default1.product.license.index',compact('licenses'));
+        try {
+            $licenses = License::all();
+
+            return view('themes.default1.product.license.index', compact('licenses'));
+        } catch (\Exception $e) {
+            return redirect('/')->with('fails', $e->getMessage());
         }
-        catch (\Exception $e)
-        {
-            return redirect('/')->with('fails',$e->getMessage());
-        }        }
+    }
 
-
-
-
-        public function getLicense()
+    public function getLicense()
     {
         $new_license = License::select('id', 'name')->get();
         // try
 
         return\ DataTables::of($new_license)
-       
-                        ->addColumn('name', function ($model) {
 
-                           
+                        ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
-                            
-                       })
+                        })
                          ->addColumn('Action', function ($model) {
-                         // 
-                           
-                              // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
-                              
+                             //
+
+                             // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
+
                              return "<a href=#edit-license-option class='btn btn-primary' data-toggle='modal' data-target=#edit-license-option".$model->id.'>'.\Lang::get('message.edit')."</a>
                                  
 
@@ -88,29 +81,14 @@ class LicenseController extends Controller
    
 </div>
 </div>';
+                         })
 
+                        ->rawColumns(['name', 'Action'])
 
-
-
-
-
-                               })
-
-
-                        ->rawColumns(['name','Action'])
-
-                           
-                       
-
-                      
                         ->make(true);
-
-      
     }
-      
 
-
-       public function options(Request $request)
+    public function options(Request $request)
     {
         $new_license = new License();
         $new_license->name = $request->name;
@@ -132,7 +110,8 @@ class LicenseController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -143,7 +122,8 @@ class LicenseController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -154,7 +134,8 @@ class LicenseController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -165,30 +146,32 @@ class LicenseController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-         $this->validate($request, [
-            
+        $this->validate($request, [
+
             'name'            => 'required',
-            
+
         ]);
-          $license=License::find($id);
+        $license = License::find($id);
 
-        $license->name=$request->input('name');
+        $license->name = $request->input('name');
         $license->save();
-         return redirect ('/license')->
-    with('response','Category updated Successfully');    }
 
-    
+        return redirect('/license')->
+    with('response', 'Category updated Successfully');
+    }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

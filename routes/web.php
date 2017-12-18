@@ -149,8 +149,6 @@
           Route::get('product/details/{id}', 'Product\ProductController@details');
            Route::get('details/{id}/pricing', 'Product\ProductController@pricing');
 
-
-
            /*
          * Categories
          */
@@ -179,8 +177,6 @@
      
       Route::post('licenses/option', 'License\LicenseController@options');
        Route::patch('license/{id}', 'License\LicenseController@update');
-
-
 
         /*
          * Plan

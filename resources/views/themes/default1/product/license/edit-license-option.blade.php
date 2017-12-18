@@ -1,25 +1,24 @@
-<div class="modal fade" id="edit-category-option">
+<div class="modal fade" id="edit-license-option">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Edit Category</h4>
+                <h4 class="modal-title">Edit License</h4>
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'categories/option']) !!}
+                {!! Form::open(['url'=>'licenses/option']) !!}
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
-                 @foreach($categories as $category)
                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                       <input type="text" id="edit-category-option" value="{{$category->name}}" class="form-control">
-                        @endforeach
-         <!--   @foreach($categories as $category)
+                       
+            @foreach($licenses as $license)
             
-                    {!! Form::text('name',null,['class' => 'form-control ourItem']) !!}
-                  
-                       @endforeach -->
+                    {!! Form::text('name',$license->name,['class' => 'form-control']) !!}
+                    @endforeach
+
+                       
                 </div>
                 
 
@@ -34,19 +33,17 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
-<!-- <script>
-    $(document).ready(function() {
-        $('.ourItem').each(function() {
-            $(this).click(function(event){
-                var text=$(this).text();
-                 // $('#edit-category-option').val(text);
-                $('#edit-category-option').val(text);
-
-                console.log (text);
-            });
-        });
+<script>
+    // function getState(val) {
 
 
-  
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{{url('get-state')}}",
+    //         data: 'country_id=' + val,
+    //         success: function (data) {
+    //             $("#state-list").html(data);
+    //         }
+    //     });
+    // }
 </script>
- -->

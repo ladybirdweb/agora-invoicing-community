@@ -1,50 +1,44 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\Type;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Category\Category;
+use App\Model\Type\Type;
 use Form;
 use Lang;
 
-
-class CategoryController extends Controller
-{ 
-     // public $category;
-    
-
-    //  public function __construct()
-    // {
-    //     $category = new Category();
-    //     $this->category = $category;
-    // }
+class TypeController extends Controller
+{
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
     public function index()
     {
         try{
-            $categories= Category::all();
-        return view('themes.default1.product.category.index',compact('categories'));
+            $types= Type::all();
+        return view('themes.default1.product.type.index',compact('types'));
         }
         catch (\Exception $e)
         {
             return redirect('/')->with('fails',$e->getMessage());
-        }    
-    }
+        }      }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
 
+         public function getType()
 
-        public function getCategory()
-    {
-        $new_category = Category::select('id', 'name')->get();
+        {
+        $new_type = Type::select('id', 'name')->get();
         // try
 
-        return\ DataTables::of($new_category)
+        return\ DataTables::of($new_type)
        
                         ->addColumn('Name', function ($model) {
 
@@ -58,18 +52,18 @@ class CategoryController extends Controller
                               // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
                               
                               // return '<a href='.('#edit-category-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-category-option">Edit</a>';
-                             return "<a href=#edit-category-option class='btn btn-primary' data-toggle='modal' data-target=#edit-category-option".$model->id.'>'.\Lang::get('message.edit')."</a>
+                             return "<a href=#edit-type-option class='btn btn-primary' data-toggle='modal' data-target=#edit-type-option".$model->id.'>'.\Lang::get('message.edit')."</a>
 
 
 
-                               <div class='modal fade' id=edit-category-option".$model->id.">
+                               <div class='modal fade' id=edit-type-option".$model->id.">
 <div class='modal-dialog'>
     <div class='modal-content'>
         <div class='modal-header'>
             <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-            <h4 class='modal-title'>Edit Currency</h4>
+            <h4 class='modal-title'>Edit Type</h4>
         </div>
-        ".Form::model($model, ['url' => 'category/'.$model->id, 'method' => 'patch'])."
+        ".Form::model($model, ['url' => 'type/'.$model->id, 'method' => 'patch'])."
         <div class='modal-body'>
            
             
@@ -115,34 +109,19 @@ class CategoryController extends Controller
       
     }
 
-
      public function options(Request $request)
     {
-        $new_category = new Category();
-        $new_category->name = $request->name;
-        $new_category->save();
+        $new_type = new Type();
+        $new_type->name = $request->name;
+        $new_type->save();
         // Category::create($request->all());
         return back();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function create()
     {
-        //  try {
-
-        //              $category = $this->category->pluck('name', 'id')->toArray();
-
-        //              return view('themes.default1.product.category.edit-category-option', compact('category'));
-        // } catch (\Exception $e) {
-        //     return redirect()->back()->with('fails', $e->getMessage());
-        // }
+        //
     }
-
-             
 
     /**
      * Store a newly created resource in storage.
@@ -152,7 +131,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-       
+        //
     }
 
     /**
@@ -191,12 +170,12 @@ class CategoryController extends Controller
             'name'            => 'required',
             
         ]);
-          $category=Category::find($id);
+          $type=Type::find($id);
 
-        $category->name=$request->input('name');
-        $category->save();
-         return redirect ('/categories')->
-    with('response','Category updated Successfully');    }
+        $type->name=$request->input('name');
+        $type->save();
+         return redirect ('/type')->
+    with('response','Type updated Successfully');    }
 
     /**
      * Remove the specified resource from storage.
@@ -208,7 +187,4 @@ class CategoryController extends Controller
     {
         //
     }
-
-
-    
 }

@@ -1,75 +1,64 @@
 <?php
 
-namespace App\Http\Controllers\Category;
+namespace App\Http\Controllers\License;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Category\Category;
+use App\Model\License\License;
 use Form;
 use Lang;
 
 
-class CategoryController extends Controller
-{ 
-     // public $category;
-    
-
-    //  public function __construct()
-    // {
-    //     $category = new Category();
-    //     $this->category = $category;
-    // }
+class LicenseController extends Controller
+{   
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
     public function index()
     {
-        try{
-            $categories= Category::all();
-        return view('themes.default1.product.category.index',compact('categories'));
+         try{
+            $licenses= License::all();
+        return view('themes.default1.product.license.index',compact('licenses'));
         }
         catch (\Exception $e)
         {
             return redirect('/')->with('fails',$e->getMessage());
-        }    
-    }
+        }        }
 
 
 
-        public function getCategory()
+
+        public function getLicense()
     {
-        $new_category = Category::select('id', 'name')->get();
+        $new_license = License::select('id', 'name')->get();
         // try
 
-        return\ DataTables::of($new_category)
+        return\ DataTables::of($new_license)
        
-                        ->addColumn('Name', function ($model) {
+                        ->addColumn('name', function ($model) {
 
                            
                             return ucfirst($model->name);
                             
                        })
-                         ->addColumn('action', function ($model) {
+                         ->addColumn('Action', function ($model) {
                          // 
                            
                               // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
                               
-                              // return '<a href='.('#edit-category-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-category-option">Edit</a>';
-                             return "<a href=#edit-category-option class='btn btn-primary' data-toggle='modal' data-target=#edit-category-option".$model->id.'>'.\Lang::get('message.edit')."</a>
+                             return "<a href=#edit-license-option class='btn btn-primary' data-toggle='modal' data-target=#edit-license-option".$model->id.'>'.\Lang::get('message.edit')."</a>
+                                 
 
-
-
-                               <div class='modal fade' id=edit-category-option".$model->id.">
+                                 <div class='modal fade' id=edit-license-option".$model->id.">
 <div class='modal-dialog'>
     <div class='modal-content'>
         <div class='modal-header'>
             <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
             <h4 class='modal-title'>Edit Currency</h4>
         </div>
-        ".Form::model($model, ['url' => 'category/'.$model->id, 'method' => 'patch'])."
+        ".Form::model($model, ['url' => 'license/'.$model->id, 'method' => 'patch'])."
         <div class='modal-body'>
            
             
@@ -100,10 +89,15 @@ class CategoryController extends Controller
 </div>
 </div>';
 
+
+
+
+
+
                                })
 
 
-                        ->rawColumns(['name','action'])
+                        ->rawColumns(['name','Action'])
 
                            
                        
@@ -111,16 +105,16 @@ class CategoryController extends Controller
                       
                         ->make(true);
 
-
       
     }
+      
 
 
-     public function options(Request $request)
+       public function options(Request $request)
     {
-        $new_category = new Category();
-        $new_category->name = $request->name;
-        $new_category->save();
+        $new_license = new License();
+        $new_license->name = $request->name;
+        $new_license->save();
         // Category::create($request->all());
         return back();
     }
@@ -132,17 +126,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        //  try {
-
-        //              $category = $this->category->pluck('name', 'id')->toArray();
-
-        //              return view('themes.default1.product.category.edit-category-option', compact('category'));
-        // } catch (\Exception $e) {
-        //     return redirect()->back()->with('fails', $e->getMessage());
-        // }
+        //
     }
-
-             
 
     /**
      * Store a newly created resource in storage.
@@ -152,7 +137,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-       
+        //
     }
 
     /**
@@ -186,17 +171,19 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $this->validate($request, [
+         $this->validate($request, [
             
             'name'            => 'required',
             
         ]);
-          $category=Category::find($id);
+          $license=License::find($id);
 
-        $category->name=$request->input('name');
-        $category->save();
-         return redirect ('/categories')->
+        $license->name=$request->input('name');
+        $license->save();
+         return redirect ('/license')->
     with('response','Category updated Successfully');    }
+
+    
 
     /**
      * Remove the specified resource from storage.
@@ -208,7 +195,4 @@ class CategoryController extends Controller
     {
         //
     }
-
-
-    
 }

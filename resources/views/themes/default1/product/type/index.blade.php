@@ -2,6 +2,7 @@
 @section('content')
 
 
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -32,11 +33,11 @@
         </div>
         @endif
         <div id="response"></div>
-        <h4>Categories
+        <h4>Types
 
-            <a href="#create-category-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-category-option">{{Lang::get('message.create')}}</a></h4>
-            @include('themes.default1.product.category.create-category-option')
-            @include('themes.default1.product.category.edit-category-option')
+            <a href="#create-type-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-type-option">{{Lang::get('message.create')}}</a></h4>
+            @include('themes.default1.product.type.create-type-option')
+            @include('themes.default1.product.type.edit-type-option')
     </div>
 
 
@@ -49,7 +50,8 @@
 
                     <thead><tr>
                             <th>Name</th>
-                             <th>Action</th> 
+                            
+                            <th>Action</th> 
                         </tr></thead>
 
 
@@ -68,7 +70,7 @@
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-categories') !!}',
+            ajax: '{!! route('get-types') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -76,7 +78,7 @@
             },
     
             columns: [
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 
                 {data: 'action', name: 'Action'}
             ],
@@ -117,9 +119,6 @@
 
     });
 
-     $('body').('click', '.edit', function(){
-        
-        $('#edit-category-option').modal('show')
-    })
+     
 </script>
 @stop

@@ -2,6 +2,7 @@
 @section('content')
 
 
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -32,24 +33,29 @@
         </div>
         @endif
         <div id="response"></div>
-        <h4>Categories
+        <h4>License
 
-            <a href="#create-category-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-category-option">{{Lang::get('message.create')}}</a></h4>
-            @include('themes.default1.product.category.create-category-option')
-            @include('themes.default1.product.category.edit-category-option')
+            <a href="#create-license-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-license-option">{{Lang::get('message.create')}}</a></h4>
+            @include('themes.default1.product.license.create-license-option')
+            @include('themes.default1.product.license.edit-license-option')
     </div>
 
 
 
     <div class="box-body">
         <div class="row">
+            <div class="col-md-12">
+                <button class="btn btn-sm btn-danger" id="delete">{{Lang::get('message.delete')}}</button><img src="{{asset('dist/gif/gifloader.gif')}}" id="gif" style="width: 20px;display:none;">
+
+            </div><br><br>
 
             <div class="col-md-12">
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
                             <th>Name</th>
-                             <th>Action</th> 
+                            
+                            <th>Action</th> 
                         </tr></thead>
 
 
@@ -68,7 +74,7 @@
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-categories') !!}',
+            ajax: '{!! route('get-licenses') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -76,9 +82,9 @@
             },
     
             columns: [
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 
-                {data: 'action', name: 'Action'}
+                {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');
@@ -117,9 +123,6 @@
 
     });
 
-     $('body').('click', '.edit', function(){
-        
-        $('#edit-category-option').modal('show')
-    })
+     
 </script>
 @stop

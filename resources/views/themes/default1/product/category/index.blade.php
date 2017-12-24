@@ -79,6 +79,7 @@
                 {data: 'name', name: 'Name'},
                 
                 {data: 'action', name: 'Action'}
+                
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');
@@ -117,9 +118,9 @@
 
     });
 
-     $('body').('click', '.edit', function(){
+    //  $('body').('click', '.edit', function(){
         
-        $('#edit-category-option').modal('show')
-    })
+    //     $('#edit-category-option').modal('show')
+    // })
 </script>
 @stop

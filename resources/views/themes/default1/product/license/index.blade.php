@@ -44,10 +44,7 @@
 
     <div class="box-body">
         <div class="row">
-            <div class="col-md-12">
-                <button class="btn btn-sm btn-danger" id="delete">{{Lang::get('message.delete')}}</button><img src="{{asset('dist/gif/gifloader.gif')}}" id="gif" style="width: 20px;display:none;">
-
-            </div><br><br>
+           
 
             <div class="col-md-12">
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">

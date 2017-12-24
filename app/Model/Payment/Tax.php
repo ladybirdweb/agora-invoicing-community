@@ -7,10 +7,12 @@ use App\BaseModel;
 class Tax extends BaseModel
 {
     protected $table = 'taxes';
-    protected $fillable = ['level', 'name', 'country', 'state', 'rate', 'active', 'tax_classes_id', 'compound'];
+    protected $fillable = ['product_name_id', 'tax_class_name', 'country', 'state', 'rate', 'start_date', 'end_date','time_zone'];
 
-    //    public function taxClass()
-//    {
-//        return $this->belongsTo('App\Model\Payment\TaxClass');
-//    }
+   public function productName()
+   {
+   return $this ->belongsTo('App\Model\Product\ProductName');
+   }
+   
+
 }

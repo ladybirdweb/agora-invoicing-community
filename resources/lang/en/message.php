@@ -46,6 +46,7 @@ return [
     'timezone'               => 'Timezone',
     'created-successfully'   => 'Created Successfully',
     'ccavanue'               => 'Ccavanue',
+    'gst_id'                 => 'GST_ID', 
     /*
      * Profile Page
      */

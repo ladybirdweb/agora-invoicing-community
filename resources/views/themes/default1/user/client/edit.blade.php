@@ -172,7 +172,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
-                        <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+                        <!-- {!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!} -->
 
                         <select name="state" id="state-list" class="form-control">
 

@@ -45,13 +45,13 @@
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}
                     <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control',onChange=>"getState(this.value);"]) !!}
 
                 </div>
                 <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('state',Lang::get('message.state')) !!}
-                    <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+                    <!-- {!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!} -->
                     <select name="state" id="state-list" class="form-control">
                         <option value="">Select State</option>
                     </select>
@@ -75,18 +75,21 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
+
+    
+{!! Form::close()  !!}
 <script>
-    function getState(val) {
+function getState(val) {
 
 
         $.ajax({
             type: "POST",
             url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+            data: 'country_code_char2=' + val,
             success: function (data) {
                 $("#state-list").html(data);
             }
         });
     }
 </script>
-{!! Form::close()  !!}
+@stop

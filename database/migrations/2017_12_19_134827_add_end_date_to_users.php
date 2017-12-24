@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class AddEndDateToUsers extends Migration
 {
@@ -13,9 +12,10 @@ class AddEndDateToUsers extends Migration
      */
     public function up()
     {
-         Schema::table('taxes', function($table) {
-        $table->datetime('end_date');
-    });    }
+        Schema::table('taxes', function ($table) {
+            $table->datetime('end_date');
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -24,8 +24,8 @@ class AddEndDateToUsers extends Migration
      */
     public function down()
     {
-          Schema::table('taxes', function($table) {
-        $table->dropColumn('end_date');
-    });
+        Schema::table('taxes', function ($table) {
+            $table->dropColumn('end_date');
+        });
     }
 }

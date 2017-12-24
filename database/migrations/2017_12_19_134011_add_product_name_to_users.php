@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class AddProductNameToUsers extends Migration
 {
@@ -13,9 +12,10 @@ class AddProductNameToUsers extends Migration
      */
     public function up()
     {
-        Schema::table('taxes', function($table) {
-        $table->string('product_name');
-    });    }
+        Schema::table('taxes', function ($table) {
+            $table->string('product_name');
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -24,7 +24,8 @@ class AddProductNameToUsers extends Migration
      */
     public function down()
     {
-         Schema::table('taxes', function($table) {
-        $table->dropColumn('taxes');
-    });    }
+        Schema::table('taxes', function ($table) {
+            $table->dropColumn('taxes');
+        });
+    }
 }

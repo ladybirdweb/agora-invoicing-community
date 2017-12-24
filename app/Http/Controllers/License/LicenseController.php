@@ -10,7 +10,6 @@ use Lang;
 
 class LicenseController extends Controller
 {
-   
     public function index()
     {
         try {
@@ -79,19 +78,9 @@ class LicenseController extends Controller
    
 </div>
 </div>';
+                         })
 
- 
-
-
-
-
-                               })
-   
-
-                        ->rawColumns(['name','Action'])
-
-                           
-                       
+                        ->rawColumns(['name', 'Action'])
 
              ->rawColumns(['name', 'Action'])
 

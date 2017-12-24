@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class AddTaxClassNameToUsers extends Migration
 {
@@ -13,9 +12,10 @@ class AddTaxClassNameToUsers extends Migration
      */
     public function up()
     {
-         Schema::table('taxes', function($table) {
-        $table->string('tax_class_name');
-    });    }
+        Schema::table('taxes', function ($table) {
+            $table->string('tax_class_name');
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -24,8 +24,8 @@ class AddTaxClassNameToUsers extends Migration
      */
     public function down()
     {
-         Schema::table('taxes', function($table) {
-        $table->dropColumn('tax_class_name');
-    });
+        Schema::table('taxes', function ($table) {
+            $table->dropColumn('tax_class_name');
+        });
     }
 }

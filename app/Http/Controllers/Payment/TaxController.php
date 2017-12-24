@@ -10,11 +10,9 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\ProductName;
+use Form;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use Form;
-use Lang;
-
 
 class TaxController extends Controller
 {
@@ -38,8 +36,6 @@ class TaxController extends Controller
         $state = new State();
         $this->state = $state;
 
-       
-        
         $tax_option = new TaxOption();
         $this->tax_option = $tax_option;
 
@@ -59,135 +55,95 @@ class TaxController extends Controller
             if (!$options) {
                 $options = '';
             }
-           // $taxes= Tax::all();
+            // $taxes= Tax::all();
             // $taxes =Tax::where('id', $id)->first();
-          $taxes =Tax::all();
-          $products=ProductName::all();
-        
-            $states = \DB::table('states_subdivisions')->where('country_code_char2','IN')->pluck('state_subdivision_name','state_subdivision_id')->toArray();
-            return view('themes.default1.payment.tax.index', compact('taxes', 'products','states'));
+            $taxes = Tax::all();
+            $products = ProductName::all();
+
+            $states = \DB::table('states_subdivisions')->where('country_code_char2', 'IN')->pluck('state_subdivision_name', 'state_subdivision_id')->toArray();
+
+            return view('themes.default1.payment.tax.index', compact('taxes', 'products', 'states'));
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function GetTax()
-    
     {
-        $new_tax = Tax::select('id', 'product_name_id','tax_class_name','rate','start_date','end_date','time_zone')->get();
+        $new_tax = Tax::select('id', 'product_name_id', 'tax_class_name', 'rate', 'start_date', 'end_date', 'time_zone')->get();
         // try
 
         return\ DataTables::of($new_tax)
-       
-                        ->addColumn('tax_name', function ($model) {
 
-                           
+                        ->addColumn('tax_name', function ($model) {
                             return ucfirst($model->tax_class_name);
-                            
-                       })
+                        })
 
                          ->addColumn('product_name', function ($model) {
-
-                    
-                            return ucfirst($model->product_name);
-                            //  if ($this->product_name_id->where('id', $model->product_name)->first()) {
+                             return ucfirst($model->product_name);
+                             //  if ($this->product_name_id->where('id', $model->product_name)->first()) {
                             // return $this->product_name->where('id', $model->product_name_id)->first()->product_name;
                         // }
                         // else {
                         //         return 'Not available';
                         //     }
-
-                            
-                       })
+                         })
 
                        //    ->addColumn('country', function ($model) {
 
-                           
                        //      return ucfirst($model->country);
-                            
+
                        // })
 
                        //     ->addColumn('state', function ($model) {
 
-                           
                        //      return ucfirst($model->state);
-                            
+
                        // })
                             ->addColumn('rate', function ($model) {
-
-                           
-                            return ucfirst($model->rate);
-                            
-                       })
+                                return ucfirst($model->rate);
+                            })
                              ->addColumn('startdate', function ($model) {
-
-                           
-                            return ucfirst($model->start_date);
-                            
-                       })
+                                 return ucfirst($model->start_date);
+                             })
                               ->addColumn('enddate', function ($model) {
-
-                           
-                            return ucfirst($model->end_date);
-                            
-                       })
+                                  return ucfirst($model->end_date);
+                              })
                                ->addColumn('timezone', function ($model) {
-
-                           
-                            return ucfirst($model->time_zone);
-                            
-                       })
-                         ->addColumn('action', function ($model) {
-                         // 
-                           
-                              // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
-                              
-                              return '<a href='.('#edit-tax-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-tax-option" data-name="'.$model->tax_class_name.'"  data-id="'.$model->id.'" data-tax_rate="'.$model->rate.'" data-state="'.$model->state.'" >Edit</a>';
-
-
-                            
-
-
-
-
-
-
-
-
-                              
-
+                                   return ucfirst($model->time_zone);
                                })
+                         ->addColumn('action', function ($model) {
+                             //
 
+                             // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
 
-                        ->rawColumns(['product_name', 'tax_class_name', 'rate', 'start_date', 'end_date','time_zone','action'])
+                             return '<a href='.('#edit-tax-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-tax-option" data-name="'.$model->tax_class_name.'"  data-id="'.$model->id.'" data-tax_rate="'.$model->rate.'" data-state="'.$model->state.'" >Edit</a>';
+                         })
 
-                           
-                       
+                        ->rawColumns(['product_name', 'tax_class_name', 'rate', 'start_date', 'end_date', 'time_zone', 'action'])
 
-                      
                         ->make(true);
-
-
-      
     }
 
-     public function options(Request $request)
+    public function options(Request $request)
     {
-     // dd('ok');
+        // dd('ok');
         $new_tax = new Tax();
         $new_tax->tax_class_name = Input::get('name');
-         $new_tax->product_name_id = Input::get('product');
-         $new_tax->country =Input::get('country');
-          $new_tax->state =Input::get('state');
-           $new_tax->rate = Input::get('rate');
-            $new_tax->start_date = Input::get('sdate');
-            $new_tax->end_date = Input::get('edate');
-            $new_tax->time_zone = Input::get('timezone');
-            $new_tax->save();
+        $new_tax->product_name_id = Input::get('product');
+        $new_tax->country = Input::get('country');
+        $new_tax->state = Input::get('state');
+        $new_tax->rate = Input::get('rate');
+        $new_tax->start_date = Input::get('sdate');
+        $new_tax->end_date = Input::get('edate');
+        $new_tax->time_zone = Input::get('timezone');
+        $new_tax->save();
 
-               return back();
+        return back();
     }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -260,22 +216,21 @@ class TaxController extends Controller
      */
     public function update($id, Request $request)
     {
-       
-        
-          $taxes=Tax::find($id);
+        $taxes = Tax::find($id);
 
-        $taxes->tax_class_name=$request->input('taxname');
-        $taxes->product_name=$request->input('product');
-        $taxes->country=$request->input('country');
-        $taxes->state=$request->input('state');
-        $taxes->rate=$request->input('rate');
-        $taxes->start_date=$request->input('sdate');
-        $taxes->end_date=$request->input('edate');
-        $taxes->time_zone=$request->input('timezone');
+        $taxes->tax_class_name = $request->input('taxname');
+        $taxes->product_name = $request->input('product');
+        $taxes->country = $request->input('country');
+        $taxes->state = $request->input('state');
+        $taxes->rate = $request->input('rate');
+        $taxes->start_date = $request->input('sdate');
+        $taxes->end_date = $request->input('edate');
+        $taxes->time_zone = $request->input('timezone');
         $taxes->save();
-         return redirect ('/tax')->
-    with('response','Category updated Successfully');    }
 
+        return redirect('/tax')->
+    with('response', 'Category updated Successfully');
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -331,8 +286,7 @@ class TaxController extends Controller
     public function GetState(Request $request, $state)
     {
         try {
-           
-            $id= $state;
+            $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)->get();
             // return $states;
             echo '<option value=>Select State</option>';
@@ -341,12 +295,10 @@ class TaxController extends Controller
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
-             return redirect()->back()->with('fails', $ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
-    
-
 
     // public function options(Request $request)
     // {

@@ -157,28 +157,23 @@
      Route::post('categories/option/', 'Category\CategoryController@options');
       Route::patch('category/{id}', 'Category\CategoryController@update');
 
-
        /*
          * Type
          */
            Route::resource('type', 'Type\TypeController');
     Route::get('get-types', ['as' => 'get-types', 'uses' => 'Type\TypeController@getType']);
-     
+
       Route::post('types/option', 'Type\TypeController@options');
        Route::patch('type/{id}', 'Type\TypeController@update');
-
-
-
 
        /*
          * License
          */
            Route::resource('license', 'License\LicenseController');
     Route::get('get-licenses', ['as' => 'get-licenses', 'uses' => 'License\LicenseController@getLicense']);
-     
+
       Route::post('licenses/option', 'License\LicenseController@options');
        Route::patch('license/{id}', 'License\LicenseController@update');
-
 
         /*
          * Plan

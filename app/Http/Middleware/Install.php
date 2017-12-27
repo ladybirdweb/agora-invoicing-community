@@ -20,7 +20,7 @@ class Install
         $env = base_path('.env');
 
         // if (\File::exists($env) && env('DB_INSTALL') == 1) {
-            return $next($request);
+        return $next($request);
         // } else {
         //     return redirect('/install');
         // }

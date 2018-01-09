@@ -45,7 +45,7 @@
 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
+                        <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>   
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
                         <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
                     </ul>
@@ -59,11 +59,19 @@
                                     {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                                 </div>
-
+                              
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
-                                    {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
+                                    
+                                   <select name="type" value="Select a Product" class="form-control">
+                         <option value="">Select Plan Type</option>
+                        @foreach ($types as $key=>$value)
+
+
+                        <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
+                    </select>
 
                                 </div>
 
@@ -72,14 +80,30 @@
                                     {!! Form::label('group',Lang::get('message.group')) !!}
                                    <!--  $products = ProductName::pluck('name');
                                   -->
-                                    {!! Form::select('name',$products,null,['class' => 'form-control']) !!}
+                                  <select name="group" value="Select a Product" class="form-control">
+                         <option value="">Select Product Group</option>
+                        @foreach ($products as $key=>$value)
+
+
+                        <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
+                    </select>
+                                    <!-- {!! Form::select('name',$products,null,['class' => 'form-control']) !!} -->
                                  
 
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['product'=>'Product','addon'=>'Addon','service'=>'Service'],null,['class' => 'form-control']) !!}
+                                    <select name="category" value="Select a Product" class="form-control">
+                         <option value="">Select Category</option>
+                        @foreach ($categories as $key=>$value)
+
+
+                        <option value="{{$key}}">{{$value}}</option>
+                        @endforeach
+                    </select>
+                                   <!--  {!! Form::select('category',['product'=>'Product','addon'=>'Addon','service'=>'Service'],null,['class' => 'form-control']) !!} -->
 
                                 </div>
 
@@ -107,12 +131,7 @@ tinymce.init({
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li>
-                                            <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
-                                                <!-- last name -->
-                                                {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
-
-                                            </div>
+                                           
                                         </li>
                                         <div class="row">
                                             <div class="col-md-5">
@@ -133,12 +152,7 @@ tinymce.init({
                                                     </div>
                                                 </li>
                                                 <li>
-                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('version',Lang::get('message.version')) !!}
-                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
-
-                                                    </div>
+                                                   
                                                 </li>
                                             </div>
                                             <div class="col-md-2">
@@ -174,6 +188,20 @@ tinymce.init({
 
                                             </div>
                                         </li>
+                                         <li>
+                                            <div class="row">
+
+                                              
+
+                                                <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
+                                                    <!-- last name -->
+                                                    {!! Form::label('Status',Lang::get('Status')) !!}
+                                                    <p>{!! Form::checkbox('Status',1) !!}  {{Lang::get('Selling')}}</p>
+
+                                                </div>
+
+                                            </div>
+                                        </li>
 
                                         <li>
                                             <div class="form-group {{ $errors->has('shoping_cart_link') ? 'has-error' : '' }}">
@@ -192,65 +220,14 @@ tinymce.init({
 
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('stock_control') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('stock_control',Lang::get('message.stock_control')) !!}
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <p>{!! Form::checkbox('stock_control',1) !!}     {{Lang::get('message.enable-quantity-in-stock')}}       
-                                                            {!! Form::text('stock_qty',null) !!} </p>
-                                                    </div>
-                                                    <!--                                        <div class="col-md-3">
-                                                                                                {!! Form::text('stock_qty',null,['class'=>'form-control']) !!}
-                                                                                            </div>-->
-
-                                                </div>
-                                        </li>
-                                        <li>
-                                            <div class="row">
-
-                                                <div class="col-md-4 form-group {{ $errors->has('sort_order') ? 'has-error' : '' }}">
-                                                    <!-- first name -->
-                                                    {!! Form::label('sort_order',Lang::get('message.sort_order')) !!}
-                                                    {!! Form::text('sort_order',null,['class'=>'form-control']) !!}
-
-                                                </div>
-
-                                                <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
-                                                    <!-- last name -->
-                                                    {!! Form::label('tax_apply',Lang::get('message.apply_tax')) !!}
-                                                    <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
-
-                                                </div>
-
-                                            </div>
-                                        </li>
+                                    
+                                       
 
 
                                     </ul>
                                 </div>
                                 <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('hidden',Lang::get('message.hidden')) !!}
-                                                <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
-
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('retired','Allow Description') !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
-
-                                            </div>  
-                                        </li>
-
-
-                                    </ul>
+                                   
                                 </div>
 
                             </div>

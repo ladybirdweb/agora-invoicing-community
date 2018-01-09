@@ -12,9 +12,13 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\ProductName;
+use App\Model\Product\ProductPlan;
+use App\Model\Category\Category;
 use App\Model\Product\Subscription;
-use App\Model\Product\Type;
+use App\Model\Product\ProductPricing;
+use App\Model\Type\Type;
 use Illuminate\Http\Request;
+use Exception;
 
 class ProductController extends Controller
 {
@@ -25,6 +29,7 @@ class ProductController extends Controller
     public $currency;
     public $group;
     public $plan;
+
     public $tax;
     public $tax_relation;
     public $tax_class;
@@ -34,7 +39,7 @@ class ProductController extends Controller
         $this->middleware('auth');
         // $this->middleware('admin', ['except' => ['userDownload']]);
 
-        $product = new Product();
+        $product = new ProductName();
         $this->product = $product;
 
         $price = new Price();
@@ -52,11 +57,14 @@ class ProductController extends Controller
         $group = new ProductGroup();
         $this->group = $group;
 
-        $plan = new Plan();
+        $plan = new ProductPlan();
         $this->plan = $plan;
 
         $tax = new Tax();
         $this->tax = $tax;
+
+         $category = new Category();
+        $this->category = $category;
 
         $tax_relation = new TaxProductRelation();
         $this->tax_relation = $tax_relation;
@@ -165,7 +173,7 @@ class ProductController extends Controller
 
     public function getDetails()
     {
-        $new_product = Product::select('id', 'name', 'status')->get();
+        $new_product = ProductPlan::select('id', 'name', 'status')->get();
         // try
 
         return\ DataTables::of($new_product)
@@ -200,11 +208,14 @@ class ProductController extends Controller
                         ->make(true);
     }
 
-    public function pricing()
+    public function pricing($id)
     {
         {
         try {
-            return view('themes.default1.product.product.pricing');
+          
+           $price_lists=ProductPricing::where('product_plan_id','=',$id)->get();
+           // dd($price_lists);
+            return view('themes.default1.product.product.pricing',compact('price_lists'));
         } catch (\Exception $e) {
             return redirect('/products')->with('fails', $e->getMessage());
         }
@@ -220,14 +231,16 @@ class ProductController extends Controller
             $url = $this->GetMyUrl();
             $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/pricing?id='.$i;
-            $type = $this->type->pluck('name', 'id')->toArray();
+            $types = $this->type->pluck('name', 'id')->toArray();
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
             $group = $this->group->pluck('name', 'id')->toArray();
             $products = $this->product->pluck('name', 'id')->toArray();
+            $categories = $this->category->pluck('name', 'id')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
+            
 
-            return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
+            return view('themes.default1.product.product.create', compact('subscription', 'types', 'currency', 'group', 'cartUrl', 'products','categories', 'taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -240,69 +253,99 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $v = \Validator::make($input, [
-                    'name'    => 'required|unique:products,name',
-                    'type'    => 'required',
-                    'group'   => 'required',
-                    'version' => 'required',
-        ]);
-        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-        });
-
-        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-            return $input->type == 2 && $input->file == '' && $input->image == '';
-        });
-        $v->sometimes(['currency', 'price'], 'required', function ($input) {
-            return $input->subscription != 1;
-        });
-        if ($v->fails()) {
-            $currency = $input['currency'];
-
-            return redirect()->back()
-                    ->withErrors($v)
-                    ->withInput()
-                    ->with('currency');
-        }
-
-        try {
-            if ($request->hasFile('image')) {
+    try
+    {
+        $plans = new ProductPlan;
+        $plans->name=$request->get('name');
+        $plans->type_id=$request->input('type');
+        $plans->product_group=$request->input('group');
+        $plans->category_id=$request->input('category');
+        $plans->product_name_id=$request->input('group');
+        $plans->description=$request->input('description');
+        if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
                 $imagedestinationPath = 'dist/product/images';
                 $request->file('image')->move($imagedestinationPath, $image);
-                $this->product->image = $image;
+                $plans->image = $image;
             }
-            if ($request->hasFile('file')) {
+
+
+
+              if ($request->hasFile('file')) {
                 $file = $request->file('file')->getClientOriginalName();
                 $filedestinationPath = storage_path().'/products';
                 $request->file('file')->move($filedestinationPath, $file);
-                $this->product->file = $file;
+                $plans->file = $file;
             }
+
+            $plans->github_owner=$request->input('github_owner');
+            $plans->github_repository_name=$request->input('github_repository');
+             $plans->require_domain=$request->has('require_domain');
+             $plans->status=$request->has('Status');
+
+         
+             $plans->shoping_cart_link=$request->input('shoping_cart_link');
+             $plans->save();
+
+
+
+
+
+
+
+        // $plans->
+        // $v = \Validator::make($input, [
+        //             'name'    => 'required|unique:products,name',
+        //             'type'    => 'required',
+        //             'group'   => 'required',
+        //             // 'version' => 'required',
+        // ]);
+        // $v->sometimes(['file', 'image'], 'required', function ($input) {
+        //     return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+        // });
+
+        // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+        //     return $input->type == 2 && $input->file == '' && $input->image == '';
+        // });
+        // $v->sometimes(['currency', 'price'], 'required', function ($input) {
+        //     return $input->subscription != 1;
+        // });
+        // if ($v->fails()) {
+        //     $currency = $input['currency'];
+
+        //     return redirect()->back()
+        //             ->withErrors($v)
+        //             ->withInput()
+        //             ->with('currency');
+        // }
+
+       
+            
+          
 
             //dd($request->input('currency'));
 
-            $product = $this->product;
-            $product->fill($request->except('image', 'file'))->save();
+            // $plan = $this->plan;
+            // $plan->fill($request->except('image', 'file'))->save();
 
-            $this->updateVersionFromGithub($product->id);
+            // $this->updateVersionFromGithub($product->id);
 
-            $product_id = $product->id;
-            $subscription = $request->input('subscription');
-            $price = $request->input('price');
-            $sales_price = $request->input('sales_price');
-            $currencies = $request->input('currency');
-            if (count($currencies) > 0) {
-                foreach ($currencies as $key => $currency) {
-                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                }
-            }
+            // $product_id = $product->id;
+            // $subscription = $request->input('subscription');
+            // $price = $request->input('price');
+            // $sales_price = $request->input('sales_price');
+            // $currencies = $request->input('currency');
+            // if (count($currencies) > 0) {
+            //     foreach ($currencies as $key => $currency) {
+            //         $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
+            //     }
+            // }
 
-            //add tax class to tax_product_relation table
-            $taxes = $request->input('tax');
-            if ($taxes) {
-                $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
-            }
+            // //add tax class to tax_product_relation table
+            // $taxes = $request->input('tax');
+            // if ($taxes) {
+            //     $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
+            // }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {

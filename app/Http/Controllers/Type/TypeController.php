@@ -46,8 +46,15 @@ class TypeController extends Controller
 
                              // return '<a href='.('#edit-category-option/'.$model->id)." class=' btn btn-sm btn-primary ' .data-toggle='modal' .data-target='#edit-category-option'>Edit</a>";
 
-                             // return '<a href='.('#edit-category-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-category-option">Edit</a>';
+                             // return '<a href='.('#edit-category-option/'.$model->id).' class=" btn btn-sm btn-primary " data-toggle="modal" data-target="#edit-category-option">Delete</a>';
                              return "<a href=#edit-type-option class='btn btn-primary' data-toggle='modal' data-target=#edit-type-option".$model->id.'>'.\Lang::get('message.edit')."</a>
+
+
+                              
+
+
+
+
 
 
 
@@ -88,6 +95,8 @@ class TypeController extends Controller
    
 </div>
 </div>';
+
+  
                          })
 
                         ->rawColumns(['name', 'action'])

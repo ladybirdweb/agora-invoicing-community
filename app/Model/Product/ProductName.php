@@ -13,4 +13,9 @@ class ProductName extends Model
     {
         return $this->hasMany('App\Model\Payment\Tax', 'product_name_id');
     }
+
+    public function plans()
+    {
+    	return $this->hasMany('App\Model\Product\ProductPlan','product_name_id');
+    }
 }

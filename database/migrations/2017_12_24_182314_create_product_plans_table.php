@@ -23,8 +23,7 @@ class CreateProductPlansTable extends Migration
               $table->string('github_repository_name', 225);
               $table->string('image');
               $table->string('file');
-               $table->boolean('status');
-                $table->boolean('require_domain');
+             
             $table->timestamps();
         });
     }

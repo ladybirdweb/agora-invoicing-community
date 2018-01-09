@@ -16,6 +16,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
+use App\Model\Product\ProductPlan;
 use App\Model\Product\Subscription;
 use Config;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class TemplateController extends Controller
     public $price;
     public $subscription;
     public $plan;
+    public $productplan;
     public $licence;
     public $tax_relation;
     public $tax;
@@ -57,6 +59,9 @@ class TemplateController extends Controller
 
         $plan = new Plan();
         $this->plan = $plan;
+
+         $productplan = new ProductPlan();
+        $this->productplan = $productplan;
 
         $licence = new Licence();
         $this->licence = $licence;
@@ -419,7 +424,7 @@ class TemplateController extends Controller
     {
         try {
             $product = $this->product->findOrFail($productid);
-            //dd($product);
+            // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
             //            $price = $controller->cost($productid);
             ////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
@@ -620,6 +625,9 @@ class TemplateController extends Controller
 
         return $form;
     }
+
+
+    
 
     public function prices($id)
     {

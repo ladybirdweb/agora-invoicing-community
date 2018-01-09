@@ -16,6 +16,6 @@ class ProductName extends Model
 
     public function plans()
     {
-    	return $this->hasMany('App\Model\Product\ProductPlan','product_name_id');
+        return $this->hasMany('App\Model\Product\ProductPlan', 'product_name_id');
     }
 }

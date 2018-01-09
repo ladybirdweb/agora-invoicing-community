@@ -312,8 +312,6 @@ class PageController extends Controller
         $products = $product->get()->toArray();
         // dd($products);
 
-       
-       
         // $cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         $trasform = [];
@@ -329,7 +327,7 @@ class PageController extends Controller
             }
             $template = $this->transform('cart', $data, $trasform);
         }
-// dd( $template);
+        // dd( $template);
         return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform'));
     }
 

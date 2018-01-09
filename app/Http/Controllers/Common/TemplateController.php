@@ -60,7 +60,7 @@ class TemplateController extends Controller
         $plan = new Plan();
         $this->plan = $plan;
 
-         $productplan = new ProductPlan();
+        $productplan = new ProductPlan();
         $this->productplan = $productplan;
 
         $licence = new Licence();
@@ -625,9 +625,6 @@ class TemplateController extends Controller
 
         return $form;
     }
-
-
-    
 
     public function prices($id)
     {

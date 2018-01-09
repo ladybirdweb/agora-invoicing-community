@@ -95,8 +95,6 @@ class TypeController extends Controller
    
 </div>
 </div>';
-
-  
                          })
 
                         ->rawColumns(['name', 'action'])

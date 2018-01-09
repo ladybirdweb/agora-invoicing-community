@@ -19,12 +19,11 @@ class CreateProductPlansTable extends Migration
             $table->string('product_group');
             $table->string('description', 2000);
 
-             $table->string('shoping_cart_link');
-             $table->string('github_owner', 225);
-              $table->string('github_repository_name', 225);
-              $table->string('image');
-              $table->string('file');
-             
+            $table->string('shoping_cart_link');
+            $table->string('github_owner', 225);
+            $table->string('github_repository_name', 225);
+            $table->string('image');
+            $table->string('file');
 
             $table->string('shoping_cart_link');
             $table->string('github_owner', 225);

@@ -1,8 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\Schema;
 
 class AddStatusToProductPlans extends Migration
 {
@@ -13,11 +12,11 @@ class AddStatusToProductPlans extends Migration
      */
     public function up()
     {
-         Schema::table('product_plans', function ($table) {
+        Schema::table('product_plans', function ($table) {
             $table->boolean('status')->default(0);
-             $table->boolean('require_domain')->default(0);
-
-        });    }
+            $table->boolean('require_domain')->default(0);
+        });
+    }
 
     /**
      * Reverse the migrations.
@@ -28,6 +27,7 @@ class AddStatusToProductPlans extends Migration
     {
         Schema::table('products', function ($table) {
             $table->dropColumn('status');
-              $table->dropColumn('require_domain');
-        });    }
+            $table->dropColumn('require_domain');
+        });
+    }
 }

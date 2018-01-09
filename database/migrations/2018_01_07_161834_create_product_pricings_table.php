@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProductPricingsTable extends Migration
 {
@@ -15,10 +15,10 @@ class CreateProductPricingsTable extends Migration
     {
         Schema::create('product_pricings', function (Blueprint $table) {
             $table->increments('id');
-             $table->string('currency');
-              $table->string('new_pricing');
-               $table->string('renew_pricing');
-                $table->string('duration');
+            $table->string('currency');
+            $table->string('new_pricing');
+            $table->string('renew_pricing');
+            $table->string('duration');
             $table->timestamps();
         });
     }

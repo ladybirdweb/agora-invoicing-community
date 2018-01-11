@@ -236,7 +236,7 @@ class InvoiceController extends Controller
             //dd($cost);
             if ($code) {
                 $grand_total = $this->checkCode($code, $productid);
-                //dd($grand_total);
+            //dd($grand_total);
             } else {
                 if (!$total) {
                     $grand_total = $cost;

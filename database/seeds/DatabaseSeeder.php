@@ -55,6 +55,9 @@ class DatabaseSeeder extends Seeder
         $this->call('GitHubTableSeeder');
         $this->command->info('Github table seeded!');
 
+        $this->call('UserTableSeeder');
+        $this->command->info('User table seeded!');
+
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
@@ -83,7 +86,7 @@ class PlanTableSeeder extends Seeder
             ];
         //var_dump($subcriptions);
         for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['id' => $i + 1, 'name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
+            Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
         }
     }
 }
@@ -142,10 +145,10 @@ class ProductTableSeeder extends Seeder
 {
     public function run()
     {
-         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('products')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Product::create(['id' => 1, 'name' => 'default', 'description'=>'default', 'type' => 1, 'parent'=> ['1'], 'welcome_email'=>'null', 'require_domain'=>1, 'stock_control'=>1, 'stock_qty' =>0, 'sort_order'=>'1', 'tax_apply'=>1, 'retired'=>1, 'deny_after_subscription'=>1, 'hidden'=>1, 'multiple_qty'=>1, 'auto_terminate'=>1, 'setup_order_placed'=>1, 'setup_first_payment'=>1, 'setup_accept_manually'=>1, 'no_auto_setup'=>1, 'shoping_cart_link'=>'null', 'file'=>'null', 'image'=>'null', 'version'=>'null', 'github_owner'=>'null', 'github_repository'=>'null', 'process_url'=>'null', 'subscription'=>1, 'group' => 1, 'category'=>'null']);
+        Product::create(['id' => 1, 'name' => 'default', 'description'=>'default', 'type' => 1, 'parent'=> ['1'], 'welcome_email'=>'default', 'require_domain'=>1, 'stock_control'=>1, 'stock_qty' =>0, 'sort_order'=>'1', 'tax_apply'=>1, 'retired'=>1, 'deny_after_subscription'=>1, 'hidden'=>1, 'multiple_qty'=>1, 'auto_terminate'=>1,'setup_order_placed'=>1,  'setup_first_payment'=>1, 'setup_accept_manually'=>1, 'no_auto_setup'=>1, 'shoping_cart_link'=>'null', 'file'=>'null', 'image'=>'null', 'version'=>'null', 'github_owner'=>'null', 'github_repository'=>'null', 'process_url'=>'null', 'subscription'=>1, 'group' => 1, 'category'=>'null']);
         // Product::create(['id'=>2, 'name'=>'none1', 'type'=>1, 'group' =>1]);
     }
 }
@@ -200,5 +203,36 @@ class GitHubTableSeeder extends Seeder
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+    }
+}
+
+class UserTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('users')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        return \App\User::create([
+                    'first_name'      => 'Demo',
+                    'last_name'       => 'Admin',
+                    'user_name'       => 'demo',
+                    'email'           => 'demo@admin.com',
+                    'role'            => 'admin',
+                    'password'        => \Hash::make('password'),
+                    'active'          => 1,
+                    'mobile_verified' => 1,
+                    'currency'        => 'INR',
+                    'company'         => 'ladybird',
+                    'mobile'          => '',
+                    'mobile_code'     => '',
+                    'address'         => '',
+                    'town'            => '',
+                    'state'           => '',
+                    'zip'             => '',
+                    'profile_pic'     => '',
+                    'debit'           => 0,
+        ]);
     }
 }

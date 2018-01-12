@@ -491,9 +491,9 @@ class TemplateController extends Controller
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
 
-            $location = \GeoIP::getLocation();
-            $counrty_iso = $location['isoCode'];
-            $state_code = $location['isoCode'].'-'.$location['state'];
+            // $location = \GeoIP::getLocation();
+            // $counrty_iso = $location['isoCode'];
+            // $state_code = $location['isoCode'].'-'.$location['state'];
 
             $geoip_country = '';
             $geoip_state = '';
@@ -504,12 +504,12 @@ class TemplateController extends Controller
             if ($geoip_country == '') {
                 $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($counrty_iso);
             }
-            $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            if ($geoip_state == '') {
-                if (array_key_exists('id', $geoip_state_array)) {
-                    $geoip_state = $geoip_state_array['id'];
-                }
-            }
+            // $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            // if ($geoip_state == '') {
+            //     if (array_key_exists('id', $geoip_state_array)) {
+            //         $geoip_state = $geoip_state_array['id'];
+            //     }
+            // }
 
             //dd($geoip_country);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {

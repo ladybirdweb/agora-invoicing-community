@@ -237,14 +237,16 @@ tinymce.init({
 
                                             </div>
                                         </li>
-                                        <li>
+                                       
+                                          <li>
                                             <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('retired','Allow Description') !!}
                                                 <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
                                             </div>  
-                                        </li>
+                                        </li>  
+                                        
 
 
                                     </ul>

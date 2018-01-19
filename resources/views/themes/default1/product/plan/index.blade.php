@@ -85,7 +85,7 @@
             columns: [
                 {data: 'name', name: 'name'},
                 {data: 'days', name: 'months'},
-                {data: 'Product', name: 'product'},
+                {data: 'product', name: 'product'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {

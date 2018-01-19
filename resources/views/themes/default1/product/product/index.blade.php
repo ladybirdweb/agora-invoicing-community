@@ -78,12 +78,12 @@
             },
     
             columns: [
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
-                {data: 'price', name: 'Price'},
                 {data: 'group', name: 'Group'},
+                {data: 'price', name: 'Price'},
                 {data: 'currency', name: 'Currency'},
-                {data: 'actions', name: 'Action'}
+                {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

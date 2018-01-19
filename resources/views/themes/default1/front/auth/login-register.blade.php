@@ -681,7 +681,7 @@ border-top: none;
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
-           alert('ok');
+           // alert('ok');
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',

@@ -58,7 +58,8 @@ class PlanController extends Controller
         // dd($this->plan->get());
 
         // return \Datatable::collection($this->plan->get())
-        return\ DataTables::of($this->plan->get())
+        $new_plan= Plan::select('id','name','days','product')->get();
+        return\ DataTables::of($new_plan)
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -73,7 +74,7 @@ class PlanController extends Controller
                         })
                         ->addColumn('product', function ($model) {
                             $productid = $model->product;
-                            $product = $this->product->find($productid);
+                            $product = $this->product->where('id', $productid)->first();
                             $response = '';
                             if ($product) {
                                 $response = $product->name;
@@ -81,6 +82,14 @@ class PlanController extends Controller
 
                             return ucfirst($response);
                         })
+                        //  ->addColumn('product', function ($model) {
+                        //     //dd($model->type());
+                        //     if ($this->product->where('id', $model->product)->first()) {
+                        //         return $this->product->where('id', $model->product)->first()->name;
+                        //     } else {
+                        //         return 'Not available';
+                        //     }
+                        // })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
@@ -166,11 +175,11 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = $this->plan->where('id', $id)->first();
-        $currency = $this->currency->lists('name', 'code')->toArray();
-        $add_price = $this->price->where('plan_id', $id)->lists('add_price', 'currency')->toArray();
-        $renew_price = $this->price->where('plan_id', $id)->lists('renew_price', 'currency')->toArray();
-        $periods = $this->period->lists('name', 'days')->toArray();
-        $products = $this->product->lists('name', 'id')->toArray();
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
+        $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
 
         return view('themes.default1.product.plan.edit', compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
     }
@@ -194,9 +203,14 @@ class PlanController extends Controller
         $add_prices = $request->input('add_price');
         $renew_prices = $request->input('renew_price');
         $product = $request->input('product');
+        $period = $request->input('days');
+        // dd($period);
 
         if (count($add_prices) > 0) {
+            // dd(  (count($add_prices) > 0));
             $price = $this->price->where('plan_id', $id)->get();
+            // dd($price);
+            
             if (count($price) > 0) {
                 foreach ($price as $delete) {
                     $delete->delete();
@@ -213,6 +227,7 @@ class PlanController extends Controller
                     'add_price'   => $price,
                     'renew_price' => $renew_price,
                     'product'     => $product,
+
                 ]);
             }
         }

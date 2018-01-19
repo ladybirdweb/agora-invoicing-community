@@ -309,10 +309,11 @@ class PageController extends Controller
         $pages = $this->page->find(1);
         $data = $pages->content;
         $product = new \App\Model\Product\Product();
-        $products = $product->where('id', '!=', 1)->where('hidden', '!=', 1)->get()->toArray();
-        //dd($products);
+        $products = $product->where('id', '!=', 1)->get()->toArray();
+        // dd($products);
         //$cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+        // dd($temp_controller);
         $trasform = [];
         $template = '';
         if (count($products) > 0) {
@@ -323,8 +324,10 @@ class PageController extends Controller
                 $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
                 $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                // dd($trasform[$value['id']]['url']);
             }
             $template = $this->transform('cart', $data, $trasform);
+            // dd($template);
         }
 
         return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform'));

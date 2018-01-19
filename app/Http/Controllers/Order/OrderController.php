@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderRequest;
+use Illuminate\Http\Request;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -13,7 +14,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
-use Illuminate\Http\Request;
+
 
 class OrderController extends Controller
 {
@@ -77,7 +78,7 @@ class OrderController extends Controller
         //                            ->withInput();
         //        }
         try {
-            $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
+            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
             $expiry = $request->input('expiry');
@@ -171,10 +172,10 @@ class OrderController extends Controller
     public function create()
     {
         try {
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.create', compact('clients', 'product', 'subscription', 'promotion'));
         } catch (\Exception $e) {
@@ -247,10 +248,10 @@ class OrderController extends Controller
     {
         try {
             $order = $this->order->where('id', $id)->first();
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.edit', compact('clients', 'product', 'subscription', 'promotion', 'order'));
         } catch (\Exception $e) {

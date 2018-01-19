@@ -287,7 +287,7 @@ class GithubController extends Controller
 
             return $link['header'];
         } catch (Exception $ex) {
-            dd($ex);
+            // dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

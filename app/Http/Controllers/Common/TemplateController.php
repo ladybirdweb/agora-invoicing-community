@@ -282,7 +282,7 @@ class TemplateController extends Controller
             $https['ssl']['verify_peer_name'] = false;
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
             $transport->setUsername('arindam.ladybird@gmail.com');
-            $transport->setPassword('ar@9933385385');
+            $transport->setPassword('ar@#9933385385');
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
 
@@ -418,8 +418,9 @@ class TemplateController extends Controller
     public function checkTax($productid, $price, $cart = 0, $cart1 = 0, $shop = 0)
     {
         try {
+            // dd($productid, $price);
             $product = $this->product->findOrFail($productid);
-            //dd($product);
+            // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
             //            $price = $controller->cost($productid);
             ////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
@@ -607,30 +608,40 @@ class TemplateController extends Controller
 
     public function plans($url, $id)
     {
+        
         $plan = new Plan();
+        // dd($plan);
         $plan_form = 'No subscription';
-        //$plans = $plan->where('product',$id)->lists('name','id')->toArray();
+        $plans = $plan->where('product','=',$id)->pluck('name','id')->toArray();
+        // dd($plans);
         $plans = $this->prices($id);
+        // dd((count($plans) > 0));
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
+            // dd($plan_form);
         }
         $form = \Form::open(['method' => 'get', 'url' => $url]).
-                $plan_form.
-                \Form::hidden('id', $id);
+        $plan_form.
+        \Form::hidden('id', $id);
+        
 
         return $form;
     }
 
     public function prices($id)
     {
+
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
+         // dd($plans);
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 
         foreach ($plans as $value) {
+
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
+          
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30);
             $price[$value->id] = $months.' Month at '.$currency.' '.$cost.'/month';
@@ -642,6 +653,7 @@ class TemplateController extends Controller
 
     public function leastAmount($id)
     {
+        // dd($id);
         $cost = 'Free';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();

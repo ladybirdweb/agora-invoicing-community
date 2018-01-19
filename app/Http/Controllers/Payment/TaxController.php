@@ -152,7 +152,7 @@ class TaxController extends Controller
     {
         try {
             $tax = $this->tax->where('id', $id)->first();
-            $classes = $this->tax_class->lists('name', 'id')->toArray();
+            $classes = $this->tax_class->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
 

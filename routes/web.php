@@ -55,13 +55,13 @@
 
         Route::get('my-invoices', 'Front\ClientController@invoices');
 
-        Route::get('get-my-invoices', 'Front\ClientController@getInvoices');
+        Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
         Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
         Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
         Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient');
 
         Route::get('my-orders', 'Front\ClientController@orders');
-        Route::get('get-my-orders', 'Front\ClientController@getOrders');
+        Route::get('get-my-orders', 'Front\ClientController@getOrders')->name('get-my-orders');
         Route::get('my-subscriptions', 'Front\ClientController@subscriptions');
         Route::get('get-my-subscriptions', 'Front\ClientController@getSubscriptions');
         Route::get('my-invoice/{id}', 'Front\ClientController@getInvoice');
@@ -223,7 +223,7 @@
          */
 
         Route::resource('groups', 'Product\GroupController');
-        Route::get('get-groups', 'Product\GroupController@GetGroups');
+        Route::get('get-groups', 'Product\GroupController@GetGroups')->name('get-groups');
         Route::get('groups-delete', 'Product\GroupController@destroy');
 
         /*

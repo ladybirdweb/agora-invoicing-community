@@ -42,20 +42,18 @@ class CartController extends Controller
 
     public function ProductList(Request $request)
     {
-
         // $location = \GeoIP::getLocation();
-
-        $location = ['ip' => '::1',
-  'isoCode'               => 'IN',
-  'country'               => 'India',
-  'city'                  => 'Bengaluru',
-  'state'                 => 'KA',
-  'postal_code'           => 560076,
-  'lat'                   => 12.9833,
-  'lon'                   => 77.5833,
-  'timezone'              => 'Asia/Kolkata',
-  'continent'             => 'AS',
-  'default'               => false, ];
+        $location = ['ip'   => '::1',
+  'isoCode'                 => 'IN',
+  'country'                 => 'India',
+  'city'                    => 'Bengaluru',
+  'state'                   => 'KA',
+  'postal_code'             => 560076,
+  'lat'                     => 12.9833,
+  'lon'                     => 77.5833,
+  'timezone'                => 'Asia/Kolkata',
+  'continent'               => 'AS',
+  'default'                 => false, ];
 
         if ($location['country'] == 'India') {
             $currency = 'INR';
@@ -90,7 +88,7 @@ class CartController extends Controller
             $plan = '';
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
-                Session::set('plan', $plan);
+                Session::put('plan', $plan);
             }
             $id = $request->input('id');
             //dd($id);
@@ -111,18 +109,24 @@ class CartController extends Controller
     }
 
     public function showCart()
+
     {
         try {
             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
             $cartCollection = Cart::getContent();
+            // dd($cartCollection);
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
-                $cart_currency = $attributes[0]['currency'][0]['code'];
-                $currency = $attributes[0]['currency'][0]['code'];
+                // dd( $attributes[0]);
+                  // dd(['currency'][0]['code']);
+                $cart_currency = $attributes[0]['currency'];
+                // dd( $cart_currency);
+
+                $currency = $attributes[0]['currency'];
                 if (\Auth::user()) {
-                    $cart_currency = $attributes[0]['currency'][0]['code'];
+                    $cart_currency = $attributes[0]['currency'];
                     $user_currency = \Auth::user()->currency;
                     $currency = 'INR';
                     if ($user_currency == 1 || $user_currency == 'USD') {
@@ -138,9 +142,9 @@ class CartController extends Controller
                     }
                 }
             }
-            if ($cart_currency != $currency) {
-                return redirect('show/cart');
-            }
+            // if ($cart_currency != $currency) {
+            //     return redirect('show/cart');
+            // }
             //dd(Cart::getContent());
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
@@ -164,7 +168,18 @@ class CartController extends Controller
             //dd($tax_attribute);
             $product = $this->product->findOrFail($productid);
 
-            $location = \GeoIP::getLocation();
+            // $location = \GeoIP::getLocation();
+            $location = ['ip'   => '::1',
+  'isoCode'                 => 'IN',
+  'country'                 => 'India',
+  'city'                    => 'Bengaluru',
+  'state'                   => 'KA',
+  'postal_code'             => 560076,
+  'lat'                     => 12.9833,
+  'lon'                     => 77.5833,
+  'timezone'                => 'Asia/Kolkata',
+  'continent'               => 'AS',
+  'default'                 => false, ];
             $counrty_iso = $location['isoCode'];
             $state_code = $location['isoCode'].'-'.$location['state'];
             $geoip_country = '';
@@ -581,11 +596,11 @@ class CartController extends Controller
         ]);
 
         $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
+        $set = $put->findOrFail(1);
 
         try {
-            $from = $set->email;
-            $fromname = $set->company;
+            $from = $put->email;
+            $fromname = $put->company;
             $toname = '';
             $to = 'support@ladybirdweb.com';
             $data = '';
@@ -889,7 +904,7 @@ class CartController extends Controller
 
             return self::rounding($cost);
         } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+            // throw new \Exception($ex->getMessage());
         }
     }
 

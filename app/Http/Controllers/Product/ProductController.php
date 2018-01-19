@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+// use Illuminate\Http\Request;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
+// use Input;
+
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxProductRelation;
@@ -13,8 +16,10 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
-use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Input;
+use Illuminate\Http\Request;
+// use Input;
 
 class ProductController extends Controller
 {
@@ -83,8 +88,8 @@ class ProductController extends Controller
     {
 
         // try {
-
-        return\ DataTables::of($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+            $new_product=Product::select('id','name','type','group')->get();
+        return\ DataTables::of($new_product)
         // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
@@ -122,7 +127,7 @@ class ProductController extends Controller
                                 return 'Not available';
                             }
                         })
-                        ->addColumn('action', function ($model) {
+                        ->addColumn('Action', function ($model) {
                             $url = '';
                             if ($model->type == 2) {
                                 $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary'>Download</a>";
@@ -131,7 +136,7 @@ class ProductController extends Controller
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
 
-                        ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'action'])
+                        ->rawColumns(['name', 'type', 'group','price','currency', 'Action'])
                         ->make(true);
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
@@ -153,6 +158,7 @@ class ProductController extends Controller
              * server url
              */
             $url = $this->GetMyUrl();
+            // dd($url);
             $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/pricing?id='.$i;
             $type = $this->type->pluck('name', 'id')->toArray();
@@ -176,6 +182,7 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $input = $request->all();
+        // dd($input);
         $v = \Validator::make($input, [
                     'name'    => 'required|unique:products,name',
                     'type'    => 'required',
@@ -220,7 +227,7 @@ class ProductController extends Controller
             $product = $this->product;
             $product->fill($request->except('image', 'file'))->save();
 
-            $this->updateVersionFromGithub($product->id);
+            $this->updateVersionFromGithub($product->id,$request);
 
             $product_id = $product->id;
             $subscription = $request->input('subscription');
@@ -267,27 +274,33 @@ class ProductController extends Controller
     public function edit($id)
     {
         try {
-            $type = $this->type->lists('name', 'id')->toArray();
-            $subscription = $this->plan->lists('name', 'id')->toArray();
-            $currency = $this->currency->lists('name', 'code')->toArray();
-            $group = $this->group->lists('name', 'id')->toArray();
-            $products = $this->product->lists('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
+            // dd($type);
+            $subscription = $this->plan->pluck('name', 'id')->toArray();
+            $currency = $this->currency->pluck('name', 'code')->toArray();
+            // dd($currency);
+            $group = $this->group->pluck('name', 'id')->toArray();
+            $products = $this->product->pluck('name', 'id')->toArray();
             $url = $this->GetMyUrl();
+            // dd($url);
             $cartUrl = $url.'/cart?id='.$id;
             $product = $this->product->where('id', $id)->first();
+            // dd($product);
             $price = $this->price->where('product_id', $product->id);
+            // dd($price);
             foreach ($currency as $key => $value) {
                 if ($this->price->where('product_id', $product->id)->where('currency', $key)->first()) {
                     $regular[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->price;
                     $sales[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->sales_price;
+                    // dd($sales[$key]);
                 } else {
                     $regular[$key] = '';
                     $sales[$key] = '';
                 }
             }
-            //dd($regular);
-            //dd($this->tax_class);
-            $taxes = $this->tax_class->lists('name', 'id')->toArray();
+            // dd($regular);
+            // dd($this->tax_class);
+            $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             //dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
 //            dd($saved_taxes);
@@ -307,7 +320,7 @@ class ProductController extends Controller
     public function update($id, Request $request)
     {
         $input = $request->all();
-        //dd($input);
+        // dd($input);
         $v = \Validator::make($input, [
                     'name'  => 'required',
                     'type'  => 'required',
@@ -346,7 +359,7 @@ class ProductController extends Controller
                 $product->file = $file;
             }
             $product->fill($request->except('image', 'file'))->save();
-            $this->updateVersionFromGithub($product->id);
+            $this->updateVersionFromGithub($product->id, $request);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
             $cost = $request->input('price');
@@ -379,7 +392,7 @@ class ProductController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -579,12 +592,13 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid)
+    public function updateVersionFromGithub($productid,$request)
     {
         try {
-            if (\Input::has('github_owner') && \Input::has('github_repository')) {
-                $owner = \Input::get('github_owner');
-                $repo = \Input::get('github_repository');
+                    
+            if ($request->has('github_owner') && $request->has('github_repository')) {
+                $owner = $request->input('github_owner');
+                $repo = $request->input('github_repository');
                 $product = $this->product->find($productid);
                 $github_controller = new \App\Http\Controllers\Github\GithubController();
                 $version = $github_controller->findVersion($owner, $repo);
@@ -644,7 +658,7 @@ class ProductController extends Controller
             $price = '';
             if ($check == true) {
                 $plan = new Plan();
-                $plans = $plan->lists('name', 'id')->toArray();
+                $plans = $plan->pluck('name', 'id')->toArray();
                 $script = ''; //$this->getSubscriptionCheckScript();
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>".\Lang::get('message.subscription').'</label>

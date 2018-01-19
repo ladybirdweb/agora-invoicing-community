@@ -298,6 +298,8 @@
                                             </tr>
 
                                             @foreach($currency as $key=>$value)
+
+                                            <!-- dd($currency); -->
                                             <tr>
                                                 <td>
 
@@ -370,22 +372,23 @@
                                                 <?php
                                                 if (count($saved_taxes) > 0) {
                                                     foreach ($saved_taxes as $tax) {
+
                                                         $saved[$tax->tax_class_id] = 'true';
                                                     }
                                                 }
-                                                //dd($saved);
+                                                
                                                 ?>
                                                 @forelse($taxes as $key=>$value)
 
                                                 <div class="col-md-2">
-                                                    @if(count($saved_taxes) > 0)
+                                                    @if(count($saved_taxes) != 0)
                                                     @if(key_exists($key,$saved))
-                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key,$saved[$key]) !!}</b>
+                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '$saved[$key]' ? 'checked' : ''}}></b>
                                                     @else
-                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
                                                     @endif
                                                     @else 
-                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
                                                     @endif
                                                 </div>
                                                 @empty 
@@ -399,7 +402,7 @@
 
                             </table>
                         </div>
-                        
+                       
                            <!-- /.tab-pane -->
                          <div class="tab-pane" id="tab_3">
                             <h3>

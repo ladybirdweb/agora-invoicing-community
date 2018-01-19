@@ -216,7 +216,7 @@ class AuthController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            //dd($type);
+            dd($from, $to, $data, $subject, $replace, $type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
@@ -372,7 +372,7 @@ class AuthController extends Controller
         $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
-            'mobile' => 'required|numeric',
+            //'mobile' => 'required|numeric',
         ]);
 
         try {
@@ -382,8 +382,10 @@ class AuthController extends Controller
             $email = $request->input('email');
             $pass = $request->input('password');
             $number = $code.$mobile;
+
             $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
+            // dd($email, $method, $pass);
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
 

@@ -58,7 +58,8 @@ class PlanController extends Controller
         // dd($this->plan->get());
 
         // return \Datatable::collection($this->plan->get())
-        $new_plan= Plan::select('id','name','days','product')->get();
+        $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
+
         return\ DataTables::of($new_plan)
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
@@ -210,7 +211,7 @@ class PlanController extends Controller
             // dd(  (count($add_prices) > 0));
             $price = $this->price->where('plan_id', $id)->get();
             // dd($price);
-            
+
             if (count($price) > 0) {
                 foreach ($price as $delete) {
                     $delete->delete();

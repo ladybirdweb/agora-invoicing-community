@@ -51,16 +51,17 @@ class ClientController extends Controller
     public function getInvoices()
     {
         // try {
-            $invoices = Invoice::where('user_id', \Auth::user()->id)
+        $invoices = Invoice::where('user_id', \Auth::user()->id)
                     ->select('number', 'created_at', 'grand_total', 'id', 'status');
 
-            return \DataTables::of($invoices)
+        return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
                        ->addColumn('created_at', function ($model) {
                            $date = date_create($model->created_at);
-                           return date_format($date,'l, F j, Y H:m A');
+
+                           return date_format($date, 'l, F j, Y H:m A');
                        })
                             // ->showColumns('created_at')
                             ->addColumn('total', function ($model) {

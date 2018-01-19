@@ -46,11 +46,12 @@ class GroupController extends Controller
 
     public function GetGroups()
     {
-         $product_group=ProductGroup::select('id','name')->get();
+        $product_group = ProductGroup::select('id', 'name')->get();
+
         return\ DataTables::of($product_group)
 
         // return \Datatable::of($this->group->select('id', 'name')->get())
-  
+
                         ->editColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -69,7 +70,7 @@ class GroupController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('groups/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                      ->rawColumns(['name','features', 'action'])
+                      ->rawColumns(['name', 'features', 'action'])
                         ->make(true);
     }
 

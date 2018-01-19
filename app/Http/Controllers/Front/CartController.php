@@ -109,7 +109,6 @@ class CartController extends Controller
     }
 
     public function showCart()
-
     {
         try {
             $currency = 'INR';
@@ -120,7 +119,7 @@ class CartController extends Controller
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 // dd( $attributes[0]);
-                  // dd(['currency'][0]['code']);
+                // dd(['currency'][0]['code']);
                 $cart_currency = $attributes[0]['currency'];
                 // dd( $cart_currency);
 
@@ -170,16 +169,16 @@ class CartController extends Controller
 
             // $location = \GeoIP::getLocation();
             $location = ['ip'   => '::1',
-  'isoCode'                 => 'IN',
-  'country'                 => 'India',
-  'city'                    => 'Bengaluru',
-  'state'                   => 'KA',
-  'postal_code'             => 560076,
-  'lat'                     => 12.9833,
-  'lon'                     => 77.5833,
-  'timezone'                => 'Asia/Kolkata',
-  'continent'               => 'AS',
-  'default'                 => false, ];
+  'isoCode'                     => 'IN',
+  'country'                     => 'India',
+  'city'                        => 'Bengaluru',
+  'state'                       => 'KA',
+  'postal_code'                 => 560076,
+  'lat'                         => 12.9833,
+  'lon'                         => 77.5833,
+  'timezone'                    => 'Asia/Kolkata',
+  'continent'                   => 'AS',
+  'default'                     => false, ];
             $counrty_iso = $location['isoCode'];
             $state_code = $location['isoCode'].'-'.$location['state'];
             $geoip_country = '';

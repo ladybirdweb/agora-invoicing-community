@@ -16,9 +16,9 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
-
-use Illuminate\Support\Facades\Input;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+
 // use Input;
 
 class ProductController extends Controller
@@ -88,7 +88,8 @@ class ProductController extends Controller
     {
 
         // try {
-            $new_product=Product::select('id','name','type','group')->get();
+        $new_product = Product::select('id', 'name', 'type', 'group')->get();
+
         return\ DataTables::of($new_product)
         // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {
@@ -136,7 +137,7 @@ class ProductController extends Controller
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
 
-                        ->rawColumns(['name', 'type', 'group','price','currency', 'Action'])
+                        ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'Action'])
                         ->make(true);
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
@@ -227,7 +228,7 @@ class ProductController extends Controller
             $product = $this->product;
             $product->fill($request->except('image', 'file'))->save();
 
-            $this->updateVersionFromGithub($product->id,$request);
+            $this->updateVersionFromGithub($product->id, $request);
 
             $product_id = $product->id;
             $subscription = $request->input('subscription');
@@ -292,7 +293,7 @@ class ProductController extends Controller
                 if ($this->price->where('product_id', $product->id)->where('currency', $key)->first()) {
                     $regular[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->price;
                     $sales[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->sales_price;
-                    // dd($sales[$key]);
+                // dd($sales[$key]);
                 } else {
                     $regular[$key] = '';
                     $sales[$key] = '';
@@ -592,10 +593,9 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid,$request)
+    public function updateVersionFromGithub($productid, $request)
     {
         try {
-                    
             if ($request->has('github_owner') && $request->has('github_repository')) {
                 $owner = $request->input('github_owner');
                 $repo = $request->input('github_repository');

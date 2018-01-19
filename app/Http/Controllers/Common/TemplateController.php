@@ -608,11 +608,10 @@ class TemplateController extends Controller
 
     public function plans($url, $id)
     {
-        
         $plan = new Plan();
         // dd($plan);
         $plan_form = 'No subscription';
-        $plans = $plan->where('product','=',$id)->pluck('name','id')->toArray();
+        $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         // dd($plans);
         $plans = $this->prices($id);
         // dd((count($plans) > 0));
@@ -623,25 +622,22 @@ class TemplateController extends Controller
         $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
-        
 
         return $form;
     }
 
     public function prices($id)
     {
-
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-         // dd($plans);
+        // dd($plans);
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 
         foreach ($plans as $value) {
-
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
-          
+
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30);
             $price[$value->id] = $months.' Month at '.$currency.' '.$cost.'/month';

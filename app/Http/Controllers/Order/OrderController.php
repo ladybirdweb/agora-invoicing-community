@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderRequest;
-use Illuminate\Http\Request;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -14,7 +13,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
-
+use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {

@@ -55,5 +55,28 @@ main
 
 </div>
 
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+
+        $(document).on("change", "select[name='subscription']", function () {
+              // var value = $(this).text();
+     // var index = $('li').index($(this));
+              // alert($(this).find('option:selected').text());
+              var amount=$(this).find('option:selected').text();
+              var amount= amount.substring(15,20);
+
+
+              // var product_id=$(this).find('option:selected').val();
+              // alert(product_id);
+// $(this).find('option:selected').parents().find('.plan').find('.price').text(amount)
+//           console.log($(this).find('option:selected').parents().find('.plan').find('.price').text(amount));
+
+             // alert(($(this).find('option:selected')).parents().find('.plan').find('.price').text(amount));
+
+                    });
+          
+
+</script>
+
 @stop
 

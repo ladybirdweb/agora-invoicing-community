@@ -282,7 +282,7 @@ class TemplateController extends Controller
             $https['ssl']['verify_peer_name'] = false;
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
             $transport->setUsername('arindam.ladybird@gmail.com');
-            $transport->setPassword('ar@#9933385385');
+            $transport->setPassword('ar@9933385385');
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
 
@@ -420,6 +420,7 @@ class TemplateController extends Controller
         try {
             // dd($productid, $price);
             $product = $this->product->findOrFail($productid);
+
             // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
             //            $price = $controller->cost($productid);
@@ -431,15 +432,20 @@ class TemplateController extends Controller
             $currency = $controller->currency();
             //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
+            // dd($tax_relation);
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
+            // dd($taxes);
             $taxes = $this->tax->where('tax_classes_id', $tax_relation->tax_class_id)->where('active', 1)->orderBy('created_at', 'asc')->get();
+            // dd($taxes);
+
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');
             }
             if ($cart == 1) {
                 $tax_amount = $this->taxProcess($taxes, $price, $cart1, $shop);
+                // dd($tax_amount);
             } else {
                 $rate = '';
                 foreach ($taxes as $tax) {
@@ -471,8 +477,10 @@ class TemplateController extends Controller
                 } else {
                     $rate = $tax->rate;
                 }
+                // dd($rate);
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
+               
             }
             //dd($tax_amount);
             return $tax_amount;
@@ -487,14 +495,31 @@ class TemplateController extends Controller
     {
         try {
             $tax_rule = $this->tax_rule->find(1);
+            // dd($tax_rule);
             $product = $tax_rule->inclusive;
+            // dd($product);
             $shop = $tax_rule->shop_inclusive;
+            // dd($shop);
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
+           // dd($result);
 
             // $location = \GeoIP::getLocation();
-            // $counrty_iso = $location['isoCode'];
-            // $state_code = $location['isoCode'].'-'.$location['state'];
+            $location = ['ip'   => '::1',
+  'isoCode'                 => 'IN',
+  'country'                 => 'India',
+  'city'                    => 'Bengaluru',
+  'state'                   => 'KA',
+  'postal_code'             => 560076,
+  'lat'                     => 12.9833,
+  'lon'                     => 77.5833,
+  'timezone'                => 'Asia/Kolkata',
+  'continent'               => 'AS',
+  'default'                 => false, ];
+            $counrty_iso = $location['isoCode'];
+
+            $state_code = $location['isoCode'].'-'.$location['state'];
+            
 
             $geoip_country = '';
             $geoip_state = '';
@@ -505,17 +530,19 @@ class TemplateController extends Controller
             if ($geoip_country == '') {
                 $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($counrty_iso);
             }
-            // $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            // if ($geoip_state == '') {
-            //     if (array_key_exists('id', $geoip_state_array)) {
-            //         $geoip_state = $geoip_state_array['id'];
-            //     }
-            // }
+            $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            if ($geoip_state == '') {
+                // dd(array_key_exists('id', $geoip_state_array));
+                if (array_key_exists('id', $geoip_state_array)) {
+                    $geoip_state = $geoip_state_array['id'];
+                }
+            }
 
-            //dd($geoip_country);
+            // dd($geoip_country);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
+                
                 if ($product == 1 && $shop == 1 && $cart == 1) {
-                    $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
+                    $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
                 }
                 if ($product == 1 && $shop == 0 && $cart == 0) {
                     $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
@@ -539,7 +566,7 @@ class TemplateController extends Controller
                     $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1 = 0);
                 }
             }
-
+                 
             return $result;
         } catch (\Exception $ex) {
             dd($ex);
@@ -566,6 +593,7 @@ class TemplateController extends Controller
     public function calculateTotal($rate, $price)
     {
         try {
+
             $tax_amount = $price * ($rate / 100);
             $total = $price + $tax_amount;
             //dd($total);
@@ -593,10 +621,13 @@ class TemplateController extends Controller
     public function calculateTotalcart($rate, $price, $cart, $shop)
     {
         try {
+            // dd($rate, $price, $cart, $shop);
+            // dd($cart == 1 && $shop == 1);
             if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
                 $tax_amount = $price * ($rate / 100);
+                // dd($tax_amount);
                 $total = $price + $tax_amount;
-                //dd($total);
+                // dd($total);
                 return $total;
             }
 
@@ -608,12 +639,14 @@ class TemplateController extends Controller
 
     public function plans($url, $id)
     {
+        
         $plan = new Plan();
         // dd($plan);
         $plan_form = 'No subscription';
-        $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
+        $plans = $plan->where('product','=',$id)->pluck('name','id')->toArray();
         // dd($plans);
         $plans = $this->prices($id);
+        // dd($plans);
         // dd((count($plans) > 0));
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
@@ -622,25 +655,29 @@ class TemplateController extends Controller
         $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
+        
 
         return $form;
     }
 
     public function prices($id)
     {
+
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-        // dd($plans);
+         // dd($plans);
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 
         foreach ($plans as $value) {
-            $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
 
+            $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
+          
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
-            $months = round($value->days / 30);
-            $price[$value->id] = $months.' Month at '.$currency.' '.$cost.'/month';
+            $months = round($value->days / 30 /12);
+            // dd($months);
+            $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
         }
         $this->leastAmount($id);
 

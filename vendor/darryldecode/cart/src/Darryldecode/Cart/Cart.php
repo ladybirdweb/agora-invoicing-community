@@ -532,8 +532,10 @@ class Cart
     public function getSubTotal($formatted = true)
     {
         $cart = $this->getContent();
-
+        
+ 
         $sum = $cart->sum(function ($item) {
+
             return $item->getPriceSumWithConditions(false);
         });
 
@@ -601,8 +603,10 @@ class Cart
      * @return CartCollection
      */
     public function getContent()
-    {
+   {
         return (new CartCollection($this->session->get($this->sessionKeyCartItems)));
+   
+    
     }
 
     /**

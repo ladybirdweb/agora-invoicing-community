@@ -216,7 +216,7 @@ class AuthController extends Controller
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
 
-            dd($from, $to, $data, $subject, $replace, $type);
+            //dd($from, $to, $data, $subject, $replace, $type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 

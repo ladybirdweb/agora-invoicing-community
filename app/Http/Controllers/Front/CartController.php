@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
+  use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use Cart;
 use Illuminate\Http\Request;
@@ -30,6 +31,9 @@ class CartController extends Controller
         $product = new Product();
         $this->product = $product;
 
+        $plan_price=new PlanPrice();
+        $this->$plan_price=$plan_price;
+  
         $currency = new Currency();
         $this->currency = $currency;
 
@@ -86,24 +90,23 @@ class CartController extends Controller
     {
         try {
             $plan = '';
+            // dd($request->has('subscription'));
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
+                // dd($plan);
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
-            //dd($id);
-            if (!array_key_exists($id, Cart::getContent()->toArray())) {
+            // dd($id);
+            if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-                //dd($items);
+                // dd($items);
                 Cart::add($items);
             }
 
-            //dd(Cart::getContent());
-            //dd('yes');
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            dd($ex);
-
+            // dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -114,15 +117,13 @@ class CartController extends Controller
             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
+            // dd($attributes);
             $cartCollection = Cart::getContent();
-            // dd($cartCollection);
+            
+       
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
-                // dd( $attributes[0]);
-                // dd(['currency'][0]['code']);
                 $cart_currency = $attributes[0]['currency'];
-                // dd( $cart_currency);
-
                 $currency = $attributes[0]['currency'];
                 if (\Auth::user()) {
                     $cart_currency = $attributes[0]['currency'];
@@ -135,7 +136,7 @@ class CartController extends Controller
                         $id = $item->id;
                         Cart::remove($id);
                         $items = $this->addProduct($id);
-                        //dd($items);
+              
                         Cart::add($items);
                         //
                     }
@@ -422,22 +423,44 @@ class CartController extends Controller
             $currency = $this->currency();
 
             $product = $this->product->where('id', $id)->first();
+            // dd($product);
 
             if ($product) {
                 $actualPrice = $this->cost($product->id);
+
+                
                 $currency = $this->currency();
-                //dd($currency);
+                
                 $productName = $product->name;
                 $planid = 0;
+                // dd($this->checkPlanSession() == true);
                 if ($this->checkPlanSession() == true) {
+                    // dd($planid);
                     $planid = Session::get('plan');
+                    // dd($planid);
                 }
-                /*
-                 * Check the Tax is On
-                 */
-                $isTaxApply = $product->tax_apply;
+                  $isTaxApply = $product->tax_apply;
+                  // dd( $isTaxApply);
 
                 $taxConditions = $this->checkTax($id);
+                // dd($taxConditions);
+
+
+                // $plan=\App\Model\Payment\Plan::where('id','=',$planid)->select('name')->first();
+                // // dd($plan);
+                // $plan_yr=substr(($plan->name),0);
+                // $pln_cost= $this->$plan_price->find('plan_id')->where('id','$plan_yr->id');
+                // dd($pln_cost);
+                // // dd($plan_yr);
+                // $actualPrice =$this->cost($product->id)*$plan_yr;
+                // dd($actualPrice);
+                // // dd($plan_yr );
+                // /*
+                //  * Check the Tax is On
+                //  */
+                // $isTaxApply = $product->tax_apply;
+
+                // $taxConditions = $this->checkTax($id);
 
                 /*
                  * Check if this product allow multiple qty
@@ -551,7 +574,7 @@ class CartController extends Controller
     public function getTaxByPriority($tax_class_id)
     {
         try {
-            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->groupBy('level')->get();
+            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->having('level')->get();
 
             return $taxe_relation;
         } catch (\Exception $ex) {
@@ -733,6 +756,8 @@ class CartController extends Controller
     public static function calculateTax($productid, $price, $cart = 1, $cart1 = 0, $shop = 0)
     {
         try {
+
+
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
             $result = self::rounding($result);
@@ -886,7 +911,7 @@ class CartController extends Controller
                     $currency = 'INR';
                 }
             }
-
+             // dd($currency);
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -896,7 +921,9 @@ class CartController extends Controller
     public function cost($productid, $userid = '', $planid = '')
     {
         try {
+            // dd($productid);
             $cost = $this->planCost($productid, $userid, $planid);
+            // dd($cost);
             if ($cost == 0) {
                 $cost = $this->productCost($productid, $userid);
             }
@@ -929,6 +956,7 @@ class CartController extends Controller
             //}
 
             return $sales;
+
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -947,16 +975,22 @@ class CartController extends Controller
             if ($subscription == true) {
                 $plan = new \App\Model\Payment\Plan();
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
+                // dd($plan);
                 if ($plan) {
                     $currency = $this->currency($userid);
+                    // dd($currency);
                     $price = $plan->planPrice()
                                     ->where('currency', $currency)
                                     ->first()
+
                             ->add_price;
-                    //dd($price*12);
+                            // dd($price);
+                   
                     $days = $plan->days;
-                    $months = $days / 30;
+                    $months = $days / 30 /12;
+                    // dd($months);
                     $cost = round($months) * $price;
+                    // dd($cost);
                 }
             }
 
@@ -1013,7 +1047,7 @@ class CartController extends Controller
                     $reponse = true;
                 }
             }
-
+              // dd($product->subscription == 1);
             return $reponse;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

@@ -25,6 +25,7 @@
         <!-- Web Fonts  -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
 
+
         <!-- Vendor CSS -->
         <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
@@ -40,6 +41,25 @@
         <link rel="stylesheet" href="{{asset('cart/css/theme-shop.css')}}">
         <link rel="stylesheet" href="{{asset('cart/css/theme-animate.css')}}">
 
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/bootstrap/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/font-awesome/css/font-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/animate/animate.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('vendornew/vendor/magnific-popup/magnific-popup.min.css')}}">
+
+        <link rel="{{asset('stylesheet" href="css/theme.css')}}">
+        <link rel="{{asset('stylesheet" href="css/theme-elements.css')}}">
+        <link rel="{{asset('stylesheet" href="css/theme-blog.css')}}">
+        <link rel="{{asset('stylesheet" href="css/theme-shop.css')}}">
+
+        <!-- Skin CSS -->
+        <link rel="stylesheet" href="css/skins/default.css">
+
+        <!-- Theme Custom CSS -->
+        <link rel="stylesheet" href="css/custom.css">
+
         <!-- Skin CSS -->
         <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
 
@@ -47,6 +67,12 @@
         <link rel="stylesheet" href="{{asset('cart/css/custom.css')}}">
 
         <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+
+        <link rel="stylesheet" href="{{asset('cssnew/css/skins/default.css')}}">
+
+        <!-- Theme Custom CSS -->
+        <link rel="stylesheet" href="{{asset('cssnew/css/custom.css')}}">
+
 
         <!-- Head Libs -->
         <script src="{{asset('cart/vendor/modernizr/modernizr.min.js')}}"></script>

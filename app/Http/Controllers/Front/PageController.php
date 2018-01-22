@@ -309,11 +309,6 @@ class PageController extends Controller
         $pages = $this->page->find(1);
         $data = $pages->content;
 
-
-
-
-
-
         $product = new \App\Model\Product\Product();
         $products = $product->where('id', '!=', 1)->get()->toArray();
         // dd($products);
@@ -324,12 +319,11 @@ class PageController extends Controller
         $template = '';
         if (count($products) > 0) {
             foreach ($products as $key => $value) {
-                
                 $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
                 $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-// dd($temp_controller->leastAmount($value['id']), $temp_controller->plans($value['shoping_cart_link'], $value['id']));
+                // dd($temp_controller->leastAmount($value['id']), $temp_controller->plans($value['shoping_cart_link'], $value['id']));
                 $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
                 // dd($trasform[$value['id']]['url']);
             }

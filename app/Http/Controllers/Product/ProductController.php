@@ -698,9 +698,8 @@ class ProductController extends Controller
             $product = new Product();
             $product = $product->find($productid);
             if ($product) {
-                 // dd($product->multiple_qty == 1);
+                // dd($product->multiple_qty == 1);
                 if ($product->multiple_qty == 1) {
-
                     return true;
                 }
             }

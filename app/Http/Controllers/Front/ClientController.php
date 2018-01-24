@@ -58,7 +58,7 @@ class ClientController extends Controller
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
-                       ->addColumn('created_at', function ($model) {
+                       ->addColumn('date', function ($model) {
                            $date = date_create($model->created_at);
 
                            return date_format($date, 'l, F j, Y H:m A');
@@ -67,7 +67,7 @@ class ClientController extends Controller
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->addColumn('action', function ($model) {
+                            ->addColumn('Action', function ($model) {
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
@@ -76,7 +76,7 @@ class ClientController extends Controller
 
                                 return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment.'</p>';
                             })
-                            ->rawColumns(['number', 'created_at', 'total'])
+                            ->rawColumns(['number', 'created_at', 'total','Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         // } catch (Exception $ex) {
@@ -297,7 +297,7 @@ class ClientController extends Controller
                         ->select('number', 'created_at', 'grand_total', 'id', 'status');
             }
 
-            return \Datatable::query($invoices)
+            return \DataTables::of($invoices->get())
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
@@ -327,9 +327,9 @@ class ClientController extends Controller
 
                                 return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
-                            ->searchColumns('number', 'created_at', 'grand_total')
-                            ->orderColumns('number', 'created_at', 'grand_total')
-                            ->make();
+                            ->rawColumns(['number', 'invoice_item','created_at', 'total','status','action'])
+                            
+                            ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -338,7 +338,9 @@ class ClientController extends Controller
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
+            // dd($orderid);
             $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
+            // dd($order);
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             if (count($relation) > 0) {
                 $invoices = $relation;
@@ -348,7 +350,7 @@ class ClientController extends Controller
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
             //dd(\Input::all());
-            return \Datatable::query($payments)
+            return \DataTables::of($payments->get())
                             ->addColumn('#', function ($model) {
                                 if (\Input::get('client') != 'true') {
                                     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
@@ -357,13 +359,13 @@ class ClientController extends Controller
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
                             })
-                            ->showColumns('amount', 'payment_method', 'payment_status', 'created_at')
+                            ->addColumn('amount', 'payment_method', 'payment_status', 'created_at')
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->searchColumns('amount', 'payment_method', 'payment_status')
-                            ->orderColumns('amount', 'payment_method', 'payment_status')
-                            ->make();
+                            ->rawColumns(['number', 'total','payment_method', 'payment_status','created_at'])
+                            
+                            ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

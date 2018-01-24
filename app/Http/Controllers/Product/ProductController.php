@@ -577,6 +577,7 @@ class ProductController extends Controller
     {
         try {
             $id = $request->input('product');
+            // dd($id);
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();
@@ -665,7 +666,7 @@ class ProductController extends Controller
                        '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
                 </div>'.$script;
             } else {
-                $userid = \Input::get('user');
+                $userid = $request->input('user');
                 $price = $controller->productCost($productid, $userid);
             }
             $field .= $this->getDescriptionField($productid);

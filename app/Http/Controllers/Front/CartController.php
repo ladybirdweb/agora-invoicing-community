@@ -98,6 +98,7 @@ class CartController extends Controller
             }
             $id = $request->input('id');
             // dd($id);
+            // dd(Cart::getContent());
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 // dd($items);
@@ -200,14 +201,20 @@ class CartController extends Controller
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);
+                // dd($tax_rule);
                 $product1 = $tax_rule->inclusive;
+                // dd($product1);
                 $shop = $tax_rule->shop_inclusive;
+                // dd($shop);
                 $cart = $tax_rule->cart_inclusive;
+                // dd($product->tax()->first());
                 if ($product->tax()->first()) {
                     $tax_class_id = $product->tax()->first()->tax_class_id;
+                    // dd($tax_class_id);
                     if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
                         if ($product1 == 0) {
                             $taxes = $this->getTaxByPriority($tax_class_id);
+                            // dd($taxes);
                             $rate = 0;
                             foreach ($taxes as $key => $tax) {
                                 if ($tax->country == $geoip_country || $tax->state == $geoip_state || ($tax->country == '' && $tax->state == '')) {
@@ -500,8 +507,10 @@ class CartController extends Controller
     {
         try {
             $licence = $this->licence->where('id', $id)->first();
+            // dd($license);
 
             $isTaxApply = 0;
+            // dd($isTaxApply);
 
             $taxConditions = $this->CheckTax($isTaxApply);
 
@@ -574,8 +583,8 @@ class CartController extends Controller
     public function getTaxByPriority($tax_class_id)
     {
         try {
-            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->having('level')->get();
-
+            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->orderBy('level')->get();
+           // dd($taxe_relation);
             return $taxe_relation;
         } catch (\Exception $ex) {
             dd($ex);
@@ -760,6 +769,7 @@ class CartController extends Controller
 
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
+            // dd($result);
             $result = self::rounding($result);
 
             return $result;

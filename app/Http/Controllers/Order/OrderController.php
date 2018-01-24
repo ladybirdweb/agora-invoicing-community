@@ -104,9 +104,9 @@ class OrderController extends Controller
         //'price_override', 'order_status', 'number', 'serial_key'))
         return\ DataTables::of($query->get())
 
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
-                        })
+                        // ->addColumn('#', function ($model) {
+                        //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        // })
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
@@ -340,9 +340,10 @@ class OrderController extends Controller
         try {
             //dd($request);
             $invoiceid = $request->input('invoiceid');
+            // dd( $invoiceid);
 
             $execute = $this->executeOrder($invoiceid);
-            //dd($execute);
+            // dd($execute);
             if ($execute == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } else {
@@ -368,19 +369,21 @@ class OrderController extends Controller
         try {
             //dd($invoiceid);
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
-            //dd($invoiceid);
+            // dd($invoiceid);
             $user_id = $this->invoice->find($invoiceid)->user_id;
-            //dd($user_id);
+            // dd($user_id);
             if (count($invoice_items) > 0) {
                 // dd($invoice_items);
                 foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
+                        // dd($product);
                         $version = $this->getProductByName($item->product_name)->version;
+                        // dd($version);
                         $price = $item->subtotal;
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
-                        //$plan_id = $this->getPrice($product)->subscription;
+                        // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
 
@@ -396,6 +399,7 @@ class OrderController extends Controller
                             'domain'          => $domain,
                             'number'          => $this->generateNumber(),
                         ]);
+                        // dd($this->addOrderInvoiceRelation($invoiceid, $order->id));
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
                         if ($this->checkOrderCreateSubscription($order->id) == true) {
                             $this->addSubscription($order->id, $plan_id, $version);
@@ -482,7 +486,7 @@ class OrderController extends Controller
     public function getProductByName($name)
     {
         try {
-            //dd($name);
+            // dd($name);
             return $this->product->where('name', $name)->first();
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());

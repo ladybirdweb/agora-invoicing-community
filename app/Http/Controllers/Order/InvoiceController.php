@@ -11,6 +11,7 @@ use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Promotion;
+
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 //use Symfony\Component\HttpFoundation\Request as Requests;
@@ -95,7 +96,7 @@ class InvoiceController extends Controller
     {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
-        $ew_invoice = Invoice::select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get();
+        $new_invoice = Invoice::select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get();
 
         return \DataTables::of($new_invoice)
                         ->addColumn('#', function ($model) {
@@ -136,7 +137,7 @@ class InvoiceController extends Controller
                                     ."   $action";
                         })
 
-                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status'])
+                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status','action'])
                         ->make(true);
 
         // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
@@ -190,37 +191,37 @@ class InvoiceController extends Controller
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        //dd($request->all());
+        // dd($request->all());
         $qty = 1;
-        if (array_key_exists('domain', $request->all())) {
-            $this->validate($request, [
-                'domain' => 'required',
-            ]);
-        }
-        if (array_key_exists('quantity', $request->all())) {
-            $this->validate($request, [
-                'quantity' => 'required|integer',
-            ]);
-            $qty = $request->input('quantity');
-        }
+        // if (array_key_exists('domain', $request->all())) {
+        //     $this->validate($request, [
+        //         'domain' => 'required',
+        //     ]);
+        // }
+        // if (array_key_exists('quantity', $request->all())) {
+        //     $this->validate($request, [
+        //         'quantity' => 'required|integer',
+        //     ]);
+        //     $qty = $request->input('quantity');
+        // }
 
-        $this->validate($request, [
-            'product' => 'required',
-            'plan'    => 'required_if:subscription,true',
-                ], [
-            'plan.required_if' => 'Subscription field is required',
-        ]);
+        // $this->validate($request, [
+        //     'product' => 'required',
+        //     'plan'    => 'required_if:subscription,true',
+        //         ], [
+        //     'plan.required_if' => 'Subscription field is required',
+        // ]);
 
         try {
             if ($user_id == '') {
-                $user_id = \Input::get('user');
+                $user_id = \Request::input('user');
             }
 
-            $productid = Input::get('product');
-            $code = Input::get('code');
-            $total = Input::get('price');
-            $plan = Input::get('plan');
-            $description = Input::get('description');
+            $productid = $request->input('product');
+            $code = $request->input('code');
+            $total = $request->input('price');
+            $plan = $request->input('plan');
+            $description =$request->input('description');
             if ($request->has('domain')) {
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
@@ -229,7 +230,7 @@ class InvoiceController extends Controller
             $currency = $controller->currency($user_id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
-            $product = $this->product->findOrFail($productid);
+            $product = $this->product->find($productid);
             $cost = $controller->cost($productid, $user_id, $plan);
             if ($cost != $total) {
                 $grand_total = $total;
@@ -286,8 +287,8 @@ class InvoiceController extends Controller
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
-            $agent = \Input::get('agent');
-            $client = \Input::get('client');
+            $agent = $request->input('agent');
+            $client =  $request->input('client');
             if ($agent == 1) {
                 $id = \Auth::user()->id;
                 $this->sendMail($id, $invoiceid);
@@ -999,7 +1000,9 @@ class InvoiceController extends Controller
         try {
             $response = false;
             $invoice = $this->invoice->find($invoiceid);
+            // dd($invoice);
             $order = $this->order->where('invoice_id', $invoiceid);
+            // dd($order);
             $order_invoice_relation = $invoice->orderRelation()->first();
             if ($order_invoice_relation) {
                 $response = true;

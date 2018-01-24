@@ -45,8 +45,8 @@
 
                     <thead><tr>
                          <th>Client</th>
-                          <th>Invoice</th>
-                           <th>Number</th>
+                          <th>Invoice Number</th>
+                         
                             <th>Date</th>
                             <th>Total</th>
                             <th>Status</th>
@@ -79,7 +79,7 @@
               }],
            
             columns: [
-                {data: 'user_id', name: 'Client'},
+                {data: 'user_id', name: 'user_id'},
                 {data: 'number', name: 'Invoice'},
                 {data: 'date', name: 'Date'},
                 {data: 'grand_total', name: 'Total'},

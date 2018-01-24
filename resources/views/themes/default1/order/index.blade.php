@@ -115,8 +115,8 @@
 
                     <thead><tr>
                          <th>Date</th>
-                          <th>Client</th>
-                           <th>Name</th>
+                          <th>Client Name</th>
+                           
                             <th>Order No</th>
                             <th>Total</th>
                             
@@ -149,11 +149,14 @@
                 "targets": "_all"
               }],
             columns: [
-                {data: 'first_name', name: 'first_name'},
-                {data: 'email', name: 'Email'},
-                {data: 'created_at', name: 'Registered on'},
-                {data: 'active', name: 'Status'},
-                {data: 'action', name: 'Action'}
+                {data: 'date', name: 'date'},
+                {data: 'client', name: 'client'},
+                {data: 'number', name: 'number'},
+                {data: 'price_override', name: 'price_override'},
+                  {data: 'order_status', name: 'order_status'},
+                  {data: 'ends_at', name: 'ends_at'},
+
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

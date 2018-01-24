@@ -87,7 +87,7 @@ if (count($attributes) > 0) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                
+                                               <!-- dd($cartCollection); -->
                                                 @forelse($cartCollection as $key=>$item)
 
                                                 <tr class="cart_table_item">
@@ -113,8 +113,10 @@ if (count($attributes) > 0) {
                                                         $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
                                                         // dd($multi_product);
                                                         $total = Cart::getSubTotal();
+                                                        // dd($total);
 
                                                         $sum = $item->getPriceSum();
+                                                        // dd($sum);
                                                         $tax = $total-$sum;
                                                         
                                                         ?>
@@ -127,9 +129,9 @@ if (count($attributes) > 0) {
                                                     </td>
 
                                                     <td class="product-price">
-                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small><!-- {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->price,1,1,0)}} -->
+                                                       {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
+                                                          
 
-                                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
                                                         </span>
                                                     </td>
                                                     <td class="product-quantity">
@@ -142,8 +144,9 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                        <span class="amount"><small>{!! $symbol !!}&nbsp;</small><!-- {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
-                                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
+                                                        <!-- <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
+                                                            <!--  {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}} -->
+                                                             {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
                                                         </span>
                                                     </td>
 
@@ -194,8 +197,8 @@ if (count($attributes) > 0) {
                             <table class="cart-totals">
                                 <tbody>
 
-                                      <!-- dd($item->attributes['tax']); -->
-                                    @foreach($item->attributes['tax'] as $attribute)
+                                     
+                                   <!--  @foreach($item->attributes['tax'] as $attribute)
                                    
                                     @if($attribute['name']!='null')
                                     <tr>
@@ -209,14 +212,14 @@ if (count($attributes) > 0) {
 
                                     </tr>
                                     @endif
-                                    @endforeach
+                                    @endforeach -->
 
                                     <tr class="total">
                                         <th>
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
                                         </td>
                                     </tr>
 

@@ -69,9 +69,9 @@ class CheckoutController extends Controller
         $invoiceItem = new InvoiceItem();
         $this->invoiceItem = $invoiceItem;
 
-        $mailchimp = new MailChimpController();
-        $this->mailchimp = $mailchimp;
-    }
+    //     $mailchimp = new MailChimpController();
+    //     $this->mailchimp = $mailchimp;
+     }
 
     public function CheckoutForm(Request $request)
     {
@@ -145,10 +145,14 @@ class CheckoutController extends Controller
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
+            // dd($invoice);
             $items = new \Illuminate\Support\Collection();
+            // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
+
                 $product = $this->product($invoiceid);
+                
             }
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
@@ -268,6 +272,7 @@ class CheckoutController extends Controller
     {
         try {
             $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            // dd($invoice);
             $name = $invoice->product_name;
             $product = $this->product->where('name', $name)->first();
 

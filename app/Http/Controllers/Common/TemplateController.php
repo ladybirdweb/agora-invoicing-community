@@ -155,7 +155,7 @@ class TemplateController extends Controller
             $url = $controller->GetMyUrl();
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/'.$i;
-            $type = $this->type->lists('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
@@ -191,7 +191,7 @@ class TemplateController extends Controller
             $cartUrl = $url.'/'.$i;
             //dd($cartUrl);
             $template = $this->template->where('id', $id)->first();
-            $type = $this->type->lists('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
@@ -420,6 +420,7 @@ class TemplateController extends Controller
         try {
             // dd($productid, $price);
             $product = $this->product->findOrFail($productid);
+            // dd( $product);
 
             // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
@@ -448,14 +449,20 @@ class TemplateController extends Controller
                 // dd($tax_amount);
             } else {
                 $rate = '';
+                // dd($rate);
                 foreach ($taxes as $tax) {
                     if ($tax->compound != 1) {
                         $rate += $tax->rate;
+                        // dd($rate);
                     } else {
                         $rate = $tax->rate;
+                        // dd($rate);
                         $price = $this->calculateTotal($rate, $price);
+                        
                     }
+                    // dd($price);
                     $tax_amount = $this->calculateTotal($rate, $price);
+                    // dd($tax_amount);
                 }
             }
 
@@ -480,6 +487,7 @@ class TemplateController extends Controller
                 // dd($rate);
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
+                
                
             }
             //dd($tax_amount);
@@ -679,6 +687,7 @@ class TemplateController extends Controller
             // dd($months);
             $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
         }
+        // dd($price);
         $this->leastAmount($id);
 
         return $price;
@@ -698,7 +707,9 @@ class TemplateController extends Controller
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
                 $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-                //$price = \App\Http\Controllers\Front\CartController::rounding($price);
+                // dd($price);
+                $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                // dd($price);
             }
             $cost = "$currency $price /mo";
         } else {

@@ -57,7 +57,13 @@
 
         Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
         Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');
-        Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
+
+
+        // Route::get('get-my-invoices/{orderid}/{userid}', ['uses' => 'Front\ClientController@getInvoicesByOrderId', 'as' => 'get-my-invoices']);
+
+        Route::get('get-my-payment/{orderid}/{userid}', ['uses' => 'Front\ClientController@getPaymentByOrderId', 'as' => 'get-my-payment']);
+
+        // Route::get('get-my-payment/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderId');
         Route::get('get-my-payment-client/{orderid}/{userid}', 'Front\ClientController@getPaymentByOrderIdClient');
 
         Route::get('my-orders', 'Front\ClientController@orders');
@@ -138,8 +144,8 @@
 
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy');
-        Route::Post('get-price', 'Product\ProductController@getPrice');
-        Route::Post('get-product-field', 'Product\ProductController@getProductField');
+        Route::post('get-price', 'Product\ProductController@getPrice');
+        Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
         /*
          * Plan

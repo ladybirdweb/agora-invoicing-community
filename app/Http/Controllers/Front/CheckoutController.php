@@ -69,9 +69,9 @@ class CheckoutController extends Controller
         $invoiceItem = new InvoiceItem();
         $this->invoiceItem = $invoiceItem;
 
-    //     $mailchimp = new MailChimpController();
+        //     $mailchimp = new MailChimpController();
     //     $this->mailchimp = $mailchimp;
-     }
+    }
 
     public function CheckoutForm(Request $request)
     {
@@ -152,7 +152,6 @@ class CheckoutController extends Controller
                 $items = $invoice->invoiceItem()->get();
 
                 $product = $this->product($invoiceid);
-                
             }
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));

@@ -35,7 +35,6 @@ class LicenceOrderController extends Controller
 
     public function GetOrders()
     {
-        
         return \Datatable::collection($this->LicencedOrg->get())
                         ->addColumn('organization', function ($model) {
                             $org = $this->org->where('id', $model->organization_id)->first();

@@ -11,7 +11,6 @@ use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Promotion;
-
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 //use Symfony\Component\HttpFoundation\Request as Requests;
@@ -137,7 +136,7 @@ class InvoiceController extends Controller
                                     ."   $action";
                         })
 
-                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status','action'])
+                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
 
         // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
@@ -221,7 +220,7 @@ class InvoiceController extends Controller
             $code = $request->input('code');
             $total = $request->input('price');
             $plan = $request->input('plan');
-            $description =$request->input('description');
+            $description = $request->input('description');
             if ($request->has('domain')) {
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
@@ -288,7 +287,7 @@ class InvoiceController extends Controller
     {
         try {
             $agent = $request->input('agent');
-            $client =  $request->input('client');
+            $client = $request->input('client');
             if ($agent == 1) {
                 $id = \Auth::user()->id;
                 $this->sendMail($id, $invoiceid);

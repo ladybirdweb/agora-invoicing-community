@@ -446,7 +446,7 @@ class TemplateController extends Controller
             }
             if ($cart == 1) {
                 $tax_amount = $this->taxProcess($taxes, $price, $cart1, $shop);
-                // dd($tax_amount);
+            // dd($tax_amount);
             } else {
                 $rate = '';
                 // dd($rate);
@@ -487,8 +487,7 @@ class TemplateController extends Controller
                 // dd($rate);
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
-                
-               
+
             }
             //dd($tax_amount);
             return $tax_amount;
@@ -510,24 +509,23 @@ class TemplateController extends Controller
             // dd($shop);
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
-           // dd($result);
+            // dd($result);
 
             // $location = \GeoIP::getLocation();
             $location = ['ip'   => '::1',
-  'isoCode'                 => 'IN',
-  'country'                 => 'India',
-  'city'                    => 'Bengaluru',
-  'state'                   => 'KA',
-  'postal_code'             => 560076,
-  'lat'                     => 12.9833,
-  'lon'                     => 77.5833,
-  'timezone'                => 'Asia/Kolkata',
-  'continent'               => 'AS',
-  'default'                 => false, ];
+  'isoCode'                     => 'IN',
+  'country'                     => 'India',
+  'city'                        => 'Bengaluru',
+  'state'                       => 'KA',
+  'postal_code'                 => 560076,
+  'lat'                         => 12.9833,
+  'lon'                         => 77.5833,
+  'timezone'                    => 'Asia/Kolkata',
+  'continent'                   => 'AS',
+  'default'                     => false, ];
             $counrty_iso = $location['isoCode'];
 
             $state_code = $location['isoCode'].'-'.$location['state'];
-            
 
             $geoip_country = '';
             $geoip_state = '';
@@ -548,7 +546,6 @@ class TemplateController extends Controller
 
             // dd($geoip_country);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
-                
                 if ($product == 1 && $shop == 1 && $cart == 1) {
                     $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
                 }
@@ -574,7 +571,7 @@ class TemplateController extends Controller
                     $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1 = 0);
                 }
             }
-                 
+
             return $result;
         } catch (\Exception $ex) {
             dd($ex);
@@ -601,7 +598,6 @@ class TemplateController extends Controller
     public function calculateTotal($rate, $price)
     {
         try {
-
             $tax_amount = $price * ($rate / 100);
             $total = $price + $tax_amount;
             //dd($total);
@@ -647,11 +643,10 @@ class TemplateController extends Controller
 
     public function plans($url, $id)
     {
-        
         $plan = new Plan();
         // dd($plan);
         $plan_form = 'No subscription';
-        $plans = $plan->where('product','=',$id)->pluck('name','id')->toArray();
+        $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         // dd($plans);
         $plans = $this->prices($id);
         // dd($plans);
@@ -663,27 +658,24 @@ class TemplateController extends Controller
         $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
-        
 
         return $form;
     }
 
     public function prices($id)
     {
-
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-         // dd($plans);
+        // dd($plans);
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 
         foreach ($plans as $value) {
-
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
-          
+
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
-            $months = round($value->days / 30 /12);
+            $months = round($value->days / 30 / 12);
             // dd($months);
             $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
         }

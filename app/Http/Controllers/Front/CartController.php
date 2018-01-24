@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Currency;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
-  use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use Cart;
 use Illuminate\Http\Request;
@@ -31,9 +31,9 @@ class CartController extends Controller
         $product = new Product();
         $this->product = $product;
 
-        $plan_price=new PlanPrice();
-        $this->$plan_price=$plan_price;
-  
+        $plan_price = new PlanPrice();
+        $this->$plan_price = $plan_price;
+
         $currency = new Currency();
         $this->currency = $currency;
 
@@ -120,8 +120,7 @@ class CartController extends Controller
             $attributes = [];
             // dd($attributes);
             $cartCollection = Cart::getContent();
-            
-       
+
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 $cart_currency = $attributes[0]['currency'];
@@ -137,7 +136,7 @@ class CartController extends Controller
                         $id = $item->id;
                         Cart::remove($id);
                         $items = $this->addProduct($id);
-              
+
                         Cart::add($items);
                         //
                     }
@@ -435,9 +434,8 @@ class CartController extends Controller
             if ($product) {
                 $actualPrice = $this->cost($product->id);
 
-                
                 $currency = $this->currency();
-                
+
                 $productName = $product->name;
                 $planid = 0;
                 // dd($this->checkPlanSession() == true);
@@ -446,12 +444,11 @@ class CartController extends Controller
                     $planid = Session::get('plan');
                     // dd($planid);
                 }
-                  $isTaxApply = $product->tax_apply;
-                  // dd( $isTaxApply);
+                $isTaxApply = $product->tax_apply;
+                // dd( $isTaxApply);
 
                 $taxConditions = $this->checkTax($id);
                 // dd($taxConditions);
-
 
                 // $plan=\App\Model\Payment\Plan::where('id','=',$planid)->select('name')->first();
                 // // dd($plan);
@@ -765,8 +762,6 @@ class CartController extends Controller
     public static function calculateTax($productid, $price, $cart = 1, $cart1 = 0, $shop = 0)
     {
         try {
-
-
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
             // dd($result);
@@ -921,7 +916,7 @@ class CartController extends Controller
                     $currency = 'INR';
                 }
             }
-             // dd($currency);
+            // dd($currency);
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -966,7 +961,6 @@ class CartController extends Controller
             //}
 
             return $sales;
-
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -994,10 +988,10 @@ class CartController extends Controller
                                     ->first()
 
                             ->add_price;
-                            // dd($price);
-                   
+                    // dd($price);
+
                     $days = $plan->days;
-                    $months = $days / 30 /12;
+                    $months = $days / 30 / 12;
                     // dd($months);
                     $cost = round($months) * $price;
                     // dd($cost);
@@ -1057,7 +1051,7 @@ class CartController extends Controller
                     $reponse = true;
                 }
             }
-              // dd($product->subscription == 1);
+            // dd($product->subscription == 1);
             return $reponse;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

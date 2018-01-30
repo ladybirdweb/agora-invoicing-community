@@ -47,17 +47,26 @@ class CartController extends Controller
     public function ProductList(Request $request)
     {
         // $location = \GeoIP::getLocation();
-        $location = ['ip'   => '::1',
-  'isoCode'                 => 'IN',
-  'country'                 => 'India',
-  'city'                    => 'Bengaluru',
-  'state'                   => 'KA',
-  'postal_code'             => 560076,
-  'lat'                     => 12.9833,
-  'lon'                     => 77.5833,
-  'timezone'                => 'Asia/Kolkata',
-  'continent'               => 'AS',
-  'default'                 => false, ];
+  //       $location = ['ip'   => '::1',
+  // 'isoCode'                 => 'IN',
+  // 'country'                 => 'India',
+  // 'city'                    => 'Bengaluru',
+  // 'state'                   => 'KA',
+  // 'postal_code'             => 560076,
+  // 'lat'                     => 12.9833,
+  // 'lon'                     => 77.5833,
+  // 'timezone'                => 'Asia/Kolkata',
+  // 'continent'               => 'AS',
+  // 'default'                 => false, ];
+
+        $location = json_decode(file_get_contents('http://ip-api.com/json'),true);
+
+$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+//$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+$states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+$state_code = $location['countryCode'] . "-" . $location['region'];
+$state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
 
         if ($location['country'] == 'India') {
             $currency = 'INR';
@@ -899,6 +908,7 @@ class CartController extends Controller
             $currency = 'INR';
             if ($this->checkCurrencySession() == true) {
                 $currency = Session::get('currency');
+                // dd($currency);
             }
 
             if (\Auth::user()) {
@@ -951,6 +961,8 @@ class CartController extends Controller
             $product = $this->product->find($productid);
 
             $price = $product->price()->where('currency', $currency)->first();
+            // $price= $this->planPrice->where('currency', $currency)->first();
+            // dd($price);
 
             if ($price) {
                 $sales = $price->sales_price;
@@ -959,7 +971,7 @@ class CartController extends Controller
                 }
             }
             //}
-
+                 
             return $sales;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -971,7 +983,8 @@ class CartController extends Controller
         try {
             $cost = 0;
             $subscription = $this->allowSubscription($productid);
-
+            // dd($subscription);
+             
             if ($this->checkPlanSession() == true) {
                 $planid = Session::get('plan');
             }

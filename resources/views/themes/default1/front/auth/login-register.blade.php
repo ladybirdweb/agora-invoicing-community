@@ -15,23 +15,38 @@ main
 @section('content')
 <?php
 // $location = \GeoIP::getLocation();
-$location=[  "ip" => "::1",
-  "isoCode" => "IN",
-  "country" => "India",
-  "city" => "Bengaluru",
-  "state" => "KA",
-  "postal_code" => 560076,
-  "lat" => 12.9833,
-  "lon" => 77.5833,
-  "timezone" => "Asia/Kolkata",
-  "continent" => "AS",
-  "default" => false];
-$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
+// $location=[  "ip" => "::1",
+//   "isoCode" => "IN",
+//   "country" => "India",
+//   "city" => "Bengaluru",
+//   "state" => "KA",
+//   "postal_code" => 560076,
+//   "lat" => 12.9833,
+//   "lon" => 77.5833,
+//   "timezone" => "Asia/Kolkata",
+//   "continent" => "AS",
+//   "default" => false];
+$location = json_decode(file_get_contents('http://ip-api.com/json'),true);
+
+$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
 //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
 $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-$state_code = $location['isoCode'] . "-" . $location['state'];
+$state_code = $location['countryCode'] . "-" . $location['region'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
+$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+
+
+
+
+
+
+
+// $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
+// //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+// $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+// $state_code = $location['isoCode'] . "-" . $location['state'];
+// $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+// $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
 ?>
 <style>
     .required:after{ 
@@ -443,7 +458,7 @@ border-top: none;
                                                         <div class="form-group">
                                                             <div class="col-md-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
-                                                                {!! Form::text('zip',$location['postal_code'],['class'=>'form-control input-lg', 'id'=>'postal_code']) !!}
+                                                                {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
                                                             </div>
 
                                                             <div class="col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
@@ -626,7 +641,7 @@ border-top: none;
                 "address": $('#address').val(),
                 "city": $('#city').val(),
                 "state": $('#state-list').val(),
-                "zip": $('#postal_code').val(),
+                "zip": $('#zip').val(),
                 "user_name": $('#user_name').val(),
                 "password": $('#password').val(),
                 "password_confirmation": $('#confirm_pass').val(),

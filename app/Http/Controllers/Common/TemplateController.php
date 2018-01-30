@@ -278,16 +278,16 @@ class TemplateController extends Controller
             $fromname = $settings->company;
 
             /*Mail config*/
-            $https['ssl']['verify_peer'] = false;
-            $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            $transport->setUsername('ashutoshpathak177@gmail.com');
-            $transport->setPassword('cleaningoutmycloset');
-            $transport->setStreamOptions($https);
-            $set = new \Swift_Mailer($transport);
+            // $https['ssl']['verify_peer'] = false;
+            // $https['ssl']['verify_peer_name'] = false;
+            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            // $transport->setUsername('ashutoshpathak177@gmail.com');
+            // $transport->setPassword('cleaningoutmycloset');
+            // $transport->setStreamOptions($https);
+            // $set = new \Swift_Mailer($transport);
             
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+            // // // Set the mailer
+            // \Mail::setSwiftMailer($set);
             /*Mail config ends*/
 
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
@@ -420,20 +420,22 @@ class TemplateController extends Controller
         try {
             // dd($productid, $price);
             $product = $this->product->findOrFail($productid);
+
             // dd( $product);
 
             // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
-            //            $price = $controller->cost($productid);
-            ////            $price = $product->price()->where('currency', $currency)->first()->sales_price;
-            ////            if (!$price) {
-            ////                $price = $product->price()->where('currency', $currency)->first()->price;
-            ////            }
-            //
+                      
+            
             $currency = $controller->currency();
+             // $price = $controller->cost($productid);
+             //           $price = $product->price()->where('currency', $currency)->first()->sales_price;
+             //           if (!$price) {
+             //               $price = $product->price()->where('currency', $currency)->first()->price;
+             //           }
             //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
-            // dd($tax_relation);
+            // dd(!$tax_relation);
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
@@ -583,7 +585,9 @@ class TemplateController extends Controller
         try {
             $product = $this->product->findOrFail($productid);
             $controller = new \App\Http\Controllers\Front\CartController();
+            // dd($price);
             $price = $controller->cost($productid);
+            // dd($price);
 
             return $price;
         } catch (\Exception $ex) {
@@ -696,14 +700,16 @@ class TemplateController extends Controller
         if ($plans->count() > 0) {
             foreach ($plans as $value) {
                 $days = $value->min('days');
+
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
+                // dd($price);
                 $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
                 // dd($price);
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            $cost = "$currency $price /mo";
+            $cost = "$currency $price /year";
         } else {
             $price = $cart_controller->productCost($id);
             $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);

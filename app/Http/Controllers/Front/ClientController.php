@@ -139,7 +139,7 @@ class ClientController extends Controller
                             return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Deatails of order'></i></a>"
                                     .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
                         })
-                        ->rawColumns(['id', 'created_at', 'ends_at', 'product','Action'])
+                        ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make(true);
         //        } catch (Exception $ex) {
@@ -328,18 +328,13 @@ class ClientController extends Controller
                                 return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
 
-                            ->rawColumns(['number', 'products','date', 'total','status','action'])
-                            
+                            ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
 
                             ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
 
-
-
                             ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
 
-
                             ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
-
 
                             ->make(true);
         } catch (Exception $ex) {
@@ -404,8 +399,8 @@ class ClientController extends Controller
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['number','total', 'payment_method', 'payment_status','created_at'])
-                            
+                            ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
+
                             ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

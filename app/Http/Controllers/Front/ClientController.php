@@ -76,7 +76,7 @@ class ClientController extends Controller
 
                                 return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment.'</p>';
                             })
-                            ->rawColumns(['number', 'created_at', 'total','Action'])
+                            ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
                             ->make(true);
         // } catch (Exception $ex) {
@@ -327,8 +327,13 @@ class ClientController extends Controller
 
                                 return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
+<<<<<<< HEAD
                             ->rawColumns(['number', 'products','date', 'total','status','action'])
                             
+=======
+                            ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
+
+>>>>>>> origin/ashu-test1
                             ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -363,8 +368,8 @@ class ClientController extends Controller
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['number', 'total','payment_method', 'payment_status','created_at'])
-                            
+                            ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
+
                             ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

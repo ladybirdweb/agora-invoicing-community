@@ -327,13 +327,17 @@ class ClientController extends Controller
 
                                 return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
-<<<<<<< HEAD
+
                             ->rawColumns(['number', 'products','date', 'total','status','action'])
                             
-=======
+
                             ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
 
->>>>>>> origin/ashu-test1
+
+
+                            ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
+
+
                             ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

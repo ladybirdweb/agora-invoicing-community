@@ -278,6 +278,7 @@ class TemplateController extends Controller
             $fromname = $settings->company;
 
             /*Mail config*/
+
             // $https['ssl']['verify_peer'] = false;
             // $https['ssl']['verify_peer_name'] = false;
             // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
@@ -288,6 +289,18 @@ class TemplateController extends Controller
             
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
+
+            $https['ssl']['verify_peer'] = false;
+            $https['ssl']['verify_peer_name'] = false;
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            $transport->setUsername('ashutoshpathak177@gmail.com');
+            $transport->setPassword('cleaningoutmycloset');
+            $transport->setStreamOptions($https);
+            $set = new \Swift_Mailer($transport);
+
+            // // Set the mailer
+            \Mail::setSwiftMailer($set);
+
             /*Mail config ends*/
 
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
@@ -309,7 +322,6 @@ class TemplateController extends Controller
                     }
                 }
             });
-          
 
             return 'success';
         } catch (\Exception $ex) {

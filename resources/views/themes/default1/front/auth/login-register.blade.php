@@ -610,7 +610,7 @@ border-top: none;
         $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
 
         $.ajax({
-          url: '{{url('auth/register')}}',
+          url: '{{url("auth/register")}}',
           type: 'post',
           data: {
                 "first_name": $('#first_name').val(),

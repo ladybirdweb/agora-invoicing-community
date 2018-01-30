@@ -103,7 +103,7 @@ class ClientController extends Controller
                         ->addColumn('id', function ($model) {
                             return $model->id;
                         })
-                        ->addColumn('product', function ($model) {
+                        ->addColumn('product_name', function ($model) {
                             return $model->product()->first()->name;
                         })
 //                          ->addColumn('created_at', function ($model) {
@@ -111,7 +111,7 @@ class ClientController extends Controller
 //                            return date_format($date,'l, F j, Y H:m A');
 //                        })
                         //->showColumns('created_at')
-                        ->addColumn('created_at', function ($model) {
+                        ->addColumn('expiry', function ($model) {
                             $end = '--';
                             if ($model->subscription()->first()) {
                                 if ($end != '0000-00-00 00:00:00' || $end != null) {
@@ -124,7 +124,7 @@ class ClientController extends Controller
                             return $end;
                             //return $end;
                         })
-                        ->addColumn('action', function ($model) {
+                        ->addColumn('Action', function ($model) {
                             $sub = $model->subscription()->first();
                             $order_cont = new \App\Http\Controllers\Order\OrderController();
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
@@ -139,7 +139,7 @@ class ClientController extends Controller
                             return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Deatails of order'></i></a>"
                                     .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
                         })
-                        ->rawColumns(['id', 'created_at', 'ends_at', 'product'])
+                        ->rawColumns(['id', 'created_at', 'ends_at', 'product','Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make(true);
         //        } catch (Exception $ex) {
@@ -301,13 +301,13 @@ class ClientController extends Controller
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
-                            ->addColumn('invoice_item', function ($model) {
+                            ->addColumn('products', function ($model) {
                                 $invoice = $this->invoice->find($model->id);
                                 $products = $invoice->invoiceItem()->pluck('product_name')->toArray();
 
                                 return ucfirst(implode(',', $products));
                             })
-                            ->addColumn('created_at', function ($model) {
+                            ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
 
                                 return date_format($date, 'l, F j, Y H:m A');
@@ -327,7 +327,7 @@ class ClientController extends Controller
 
                                 return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             })
-                            ->rawColumns(['number', 'invoice_item','created_at', 'total','status','action'])
+                            ->rawColumns(['number', 'products','date', 'total','status','action'])
                             
                             ->make(true);
         } catch (Exception $ex) {
@@ -384,17 +384,17 @@ class ClientController extends Controller
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
             //dd(\Input::all());
-            return \Datatable::query($payments)
+            return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
                             })
-                            ->showColumns('amount', 'payment_method', 'payment_status', 'created_at')
+                            ->addColumn('payment_method', 'payment_status', 'created_at')
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->searchColumns('amount', 'payment_method', 'payment_status')
-                            ->orderColumns('amount', 'payment_method', 'payment_status')
-                            ->make();
+                            ->rawColumns(['number','total', 'payment_method', 'payment_status','created_at'])
+                            
+                            ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

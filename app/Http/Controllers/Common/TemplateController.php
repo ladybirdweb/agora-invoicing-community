@@ -280,12 +280,12 @@ class TemplateController extends Controller
             /*Mail config*/
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
-            $transport->setUsername('arindam.ladybird@gmail.com');
-            $transport->setPassword('ar@9933385385');
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            $transport->setUsername('ashutoshpathak177@gmail.com');
+            $transport->setPassword('cleaningoutmycloset');
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
-
+            
             // // Set the mailer
             \Mail::setSwiftMailer($set);
             /*Mail config ends*/
@@ -309,7 +309,7 @@ class TemplateController extends Controller
                     }
                 }
             });
-            dd($data);
+          
 
             return 'success';
         } catch (\Exception $ex) {
@@ -691,8 +691,10 @@ class TemplateController extends Controller
         $cost = 'Free';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
+        // dd($plans);
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
+        // dd($plans->count() > 0);
         if ($plans->count() > 0) {
             foreach ($plans as $value) {
                 $days = $value->min('days');

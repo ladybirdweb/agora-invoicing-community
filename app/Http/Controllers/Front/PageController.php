@@ -312,6 +312,7 @@ class PageController extends Controller
         $product = new \App\Model\Product\Product();
         $products = $product->where('id', '!=', 1)->get()->toArray();
         // dd($products);
+        // dd($products);
         //$cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         // dd($temp_controller);

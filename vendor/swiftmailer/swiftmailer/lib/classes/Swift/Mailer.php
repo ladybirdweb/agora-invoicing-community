@@ -26,6 +26,8 @@ class Swift_Mailer
     public function __construct(Swift_Transport $transport)
     {
         $this->transport = $transport;
+        $data = (array) $this->transport;
+        \Log::info($data);
     }
 
     /**

@@ -231,7 +231,7 @@ class ProductController extends Controller
             $product = $this->product;
             // dd($product);
             $product->fill($request->except('image', 'file'))->save();
-              
+
             $this->updateVersionFromGithub($product->id, $request);
 
             $product_id = $product->id;

@@ -286,7 +286,7 @@ class TemplateController extends Controller
             // $transport->setPassword('cleaningoutmycloset');
             // $transport->setStreamOptions($https);
             // $set = new \Swift_Mailer($transport);
-            
+
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
 
@@ -437,14 +437,13 @@ class TemplateController extends Controller
 
             // dd($product);
             $controller = new \App\Http\Controllers\Front\CartController();
-                      
-            
+
             $currency = $controller->currency();
-             // $price = $controller->cost($productid);
-             //           $price = $product->price()->where('currency', $currency)->first()->sales_price;
-             //           if (!$price) {
-             //               $price = $product->price()->where('currency', $currency)->first()->price;
-             //           }
+            // $price = $controller->cost($productid);
+            //           $price = $product->price()->where('currency', $currency)->first()->sales_price;
+            //           if (!$price) {
+            //               $price = $product->price()->where('currency', $currency)->first()->price;
+            //           }
             //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
             // dd(!$tax_relation);

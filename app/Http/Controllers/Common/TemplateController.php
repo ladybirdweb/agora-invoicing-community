@@ -453,12 +453,11 @@ class TemplateController extends Controller
                 foreach ($taxes as $tax) {
                     if ($tax->compound != 1) {
                         $rate += $tax->rate;
-                        // dd($rate);
+                    // dd($rate);
                     } else {
                         $rate = $tax->rate;
                         // dd($rate);
                         $price = $this->calculateTotal($rate, $price);
-                        
                     }
                     // dd($price);
                     $tax_amount = $this->calculateTotal($rate, $price);
@@ -487,7 +486,6 @@ class TemplateController extends Controller
                 // dd($rate);
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
-
             }
             //dd($tax_amount);
             return $tax_amount;

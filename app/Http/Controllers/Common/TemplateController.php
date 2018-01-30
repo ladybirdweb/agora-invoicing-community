@@ -285,7 +285,7 @@ class TemplateController extends Controller
             $transport->setPassword('cleaningoutmycloset');
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
-            
+
             // // Set the mailer
             \Mail::setSwiftMailer($set);
             /*Mail config ends*/
@@ -309,7 +309,6 @@ class TemplateController extends Controller
                     }
                 }
             });
-          
 
             return 'success';
         } catch (\Exception $ex) {

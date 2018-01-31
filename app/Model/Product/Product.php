@@ -7,8 +7,8 @@ use App\BaseModel;
 class Product extends BaseModel
 {
     protected $table = 'products';
-    protected $guarded = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
-        'stock_control', 'multiple_qty', 'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden',  'auto_terminate',
+    protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
+        'stock_control',  'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden',  'auto_terminate',
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner', 'github_repository',
         'deny_after_subscription', 'version', 'parent', 'subscription', ];
 

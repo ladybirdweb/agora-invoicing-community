@@ -144,6 +144,7 @@ class GithubController extends Controller
         try {
             $url = "https://api.github.com/repos/$owner/$repo/releases/latest";
             $release = $this->github_api->getCurl($url);
+            // dd($release);
 
             return $release;
         } catch (Exception $ex) {
@@ -297,6 +298,8 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
+            // dd(array_key_exists('tag_name', $release));
+          
             if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }

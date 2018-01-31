@@ -185,32 +185,32 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        // $input = $request->all();
-        // // dd($input);
-        // $v = \Validator::make($input, [
-        //             'name'    => 'required|unique:products,name',
-        //             'type'    => 'required',
-        //             'group'   => 'required',
-        //             // 'version' => 'required',
-        // ]);
-        // $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-        //     return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-        // });
+        $input = $request->all();
+        // dd($input);
+        $v = \Validator::make($input, [
+                    'name'    => 'required|unique:products,name',
+                    'type'    => 'required',
+                    'group'   => 'required',
+                    // 'version' => 'required',
+        ]);
+        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+        });
 
-        // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-        //     return $input->type == 2 && $input->file == '' && $input->image == '';
-        // });
-        // $v->sometimes(['currency', 'price'], 'required', function ($input) {
-        //     return $input->subscription != 1;
-        // });
-        // if ($v->fails()) {
-        //     $currency = $input['currency'];
+        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+            return $input->type == 2 && $input->file == '' && $input->image == '';
+        });
+        $v->sometimes(['currency', 'price'], 'required', function ($input) {
+            return $input->subscription != 1;
+        });
+        if ($v->fails()) {
+            $currency = $input['currency'];
 
-        //     return redirect()->back()
-        //             ->withErrors($v)
-        //             ->withInput()
-        //             ->with('currency');
-        // }
+            return redirect()->back()
+                    ->withErrors($v)
+                    ->withInput()
+                    ->with('currency');
+        }
 
         try {
             if ($request->hasFile('image')) {
@@ -232,7 +232,7 @@ class ProductController extends Controller
             // dd($product);
             $product->fill($request->except('image', 'file'))->save();
               
-            $this->updateVersionFromGithub($product->id, $request);
+            $this->updateVersionFromGithub($product->id,$request);
 
             $product_id = $product->id;
 
@@ -336,13 +336,13 @@ class ProductController extends Controller
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-//        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-//            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-//        });
-//
-//        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-//            return $input->type == 2 && $input->file == '' && $input->image == '';
-//        });
+       $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+           return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+       });
+
+       $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+           return $input->type == 2 && $input->file == '' && $input->image == '';
+       });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -367,6 +367,7 @@ class ProductController extends Controller
             }
             $product->fill($request->except('image', 'file'))->save();
             $this->updateVersionFromGithub($product->id, $request);
+
             $product_id = $product->id;
             $subscription = $request->input('subscription');
             $cost = $request->input('price');
@@ -399,7 +400,7 @@ class ProductController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -609,10 +610,13 @@ class ProductController extends Controller
                 $product = $this->product->find($productid);
                 $github_controller = new \App\Http\Controllers\Github\GithubController();
                 $version = $github_controller->findVersion($owner, $repo);
+                // dd($version);
                 $product->version = $version;
+                // dd($product);
                 $product->save();
             }
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

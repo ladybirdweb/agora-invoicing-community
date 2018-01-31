@@ -299,7 +299,7 @@ class GithubController extends Controller
         try {
             $release = $this->latestRelese($owner, $repo);
             // dd(array_key_exists('tag_name', $release));
-          
+
             if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }

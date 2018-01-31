@@ -232,12 +232,9 @@ class ProductController extends Controller
             // dd($product);
             $product->fill($request->except('image', 'file'))->save();
 
-              
-            $this->updateVersionFromGithub($product->id,$request);
-
-
             $this->updateVersionFromGithub($product->id, $request);
 
+            $this->updateVersionFromGithub($product->id, $request);
 
             $product_id = $product->id;
 
@@ -341,13 +338,13 @@ class ProductController extends Controller
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-       $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-           return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-       });
+        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+        });
 
-       $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-           return $input->type == 2 && $input->file == '' && $input->image == '';
-       });
+        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+            return $input->type == 2 && $input->file == '' && $input->image == '';
+        });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -622,6 +619,7 @@ class ProductController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

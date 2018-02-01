@@ -11,13 +11,13 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '1d1b89d124cc9cb8219922c9d5569199' => __DIR__ . '/..' . '/hamcrest/hamcrest-php/hamcrest/Hamcrest.php',
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
-        '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
         '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
-        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
-        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
+        '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+        'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
@@ -72,7 +72,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         ),
         'R' => 
         array (
-            'Ramsey\\Uuid\\' => 12,
             'RachidLaasri\\LaravelInstaller\\' => 30,
         ),
         'P' => 
@@ -92,7 +91,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         ),
         'L' => 
         array (
-            'League\\Fractal\\' => 15,
             'League\\Flysystem\\' => 17,
             'Laravel\\Tinker\\' => 15,
         ),
@@ -109,7 +107,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'F' => 
         array (
             'FontLib\\' => 8,
-            'Faker\\' => 6,
         ),
         'E' => 
         array (
@@ -247,10 +244,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         array (
             0 => __DIR__ . '/..' . '/jeremeamia/SuperClosure/src',
         ),
-        'Ramsey\\Uuid\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/ramsey/uuid/src',
-        ),
         'RachidLaasri\\LaravelInstaller\\' => 
         array (
             0 => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src',
@@ -291,10 +284,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         array (
             0 => __DIR__ . '/..' . '/pacely/mailchimp-apiv3/src',
         ),
-        'League\\Fractal\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/league/fractal/src',
-        ),
         'League\\Flysystem\\' => 
         array (
             0 => __DIR__ . '/..' . '/league/flysystem/src',
@@ -322,10 +311,6 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'FontLib\\' => 
         array (
             0 => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib',
-        ),
-        'Faker\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/fzaninotto/faker/src/Faker',
         ),
         'Egulias\\EmailValidator\\' => 
         array (
@@ -389,26 +374,11 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
                 0 => __DIR__ . '/..' . '/thomaswelton/gravatarlib',
             ),
         ),
-        'S' => 
-        array (
-            'Svg\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/phenx/php-svg-lib/src',
-            ),
-            'Sabberworm\\CSS' => 
-            array (
-                0 => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib',
-            ),
-        ),
         'P' => 
         array (
             'Prophecy\\' => 
             array (
                 0 => __DIR__ . '/..' . '/phpspec/prophecy/src',
-            ),
-            'Parsedown' => 
-            array (
-                0 => __DIR__ . '/..' . '/erusev/parsedown',
             ),
             'PHPExcel' => 
             array (
@@ -535,6 +505,7 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'App\\Http\\Middleware\\Admin' => __DIR__ . '/../..' . '/app/Http/Middleware/Admin.php',
         'App\\Http\\Middleware\\Authenticate' => __DIR__ . '/../..' . '/app/Http/Middleware/Authenticate.php',
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
+        'App\\Http\\Middleware\\Install' => __DIR__ . '/../..' . '/app/Http/Middleware/Install.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',

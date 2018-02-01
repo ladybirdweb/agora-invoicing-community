@@ -9,22 +9,20 @@ class Install
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param \Illuminate\Http\Request $request
+     * @param \Closure                 $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next)
     {
-        $env= base_path('.env');
+        $env = base_path('.env');
 
-
-    // 'driver' => env('DB_INSTALL', '1'),
+        // 'driver' => env('DB_INSTALL', '1'),
         // dd(\File::exists($env) && env('DB_INSTALL')==1);
-        if(\File::exists($env) && env('DB_INSTALL')==1){
-         return $next($request);
-        }
-        else
-        {
+        if (\File::exists($env) && env('DB_INSTALL') == 1) {
+            return $next($request);
+        } else {
             return redirect('/install');
         }
     }

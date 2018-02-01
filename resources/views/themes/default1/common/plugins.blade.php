@@ -101,7 +101,7 @@
         $('#plugin').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-social-media') !!}',
+            ajax: '{!! route('get-plugin') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -114,7 +114,7 @@
 
             columns: [
                
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'description', name: 'Description'},
                 {data: 'author', name: 'Author'},
                 {data: 'website', name: 'Website'},

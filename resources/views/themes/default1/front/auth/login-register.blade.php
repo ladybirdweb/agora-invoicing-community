@@ -322,7 +322,7 @@ border-top: none;
                                         <div class="featured-box featured-box-primary align-left mt-xlg">
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-md">Register An Account</h4>
-                                                <form name="registerForm" id="register-form">
+                                                <form name="registerForm" id="regiser-form">
                                                 <div class="row">
                                                     <div class="form-group">
                                                         <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">

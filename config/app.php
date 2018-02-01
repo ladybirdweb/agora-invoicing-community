@@ -176,7 +176,7 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Illuminate\Support\Facades\Input::class,
+        // Illuminate\Support\Facades\Input::class,
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,

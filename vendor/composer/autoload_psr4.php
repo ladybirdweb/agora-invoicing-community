@@ -32,6 +32,7 @@ return array(
     'Symfony\\Component\\Console\\' => array($vendorDir . '/symfony/console'),
     'SuperClosure\\' => array($vendorDir . '/jeremeamia/SuperClosure/src'),
     'Ramsey\\Uuid\\' => array($vendorDir . '/ramsey/uuid/src'),
+    'RachidLaasri\\LaravelInstaller\\' => array($vendorDir . '/rachidlaasri/laravel-installer/src'),
     'Psy\\' => array($vendorDir . '/psy/psysh/src/Psy'),
     'Psr\\SimpleCache\\' => array($vendorDir . '/psr/simple-cache/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log/Psr/Log'),

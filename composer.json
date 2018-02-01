@@ -6,18 +6,18 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
-         "laravel/framework": "5.5.*",
-        "laravelcollective/html": "5.*",
-       
-        "laravel/tinker": "~1.0",
-        "thomaswelton/laravel-gravatar": "~1.0",
-               "darryldecode/cart": "dev-master",
-               "pingplusplus/pingpp-php": "dev-master",
-               "pacely/mailchimp-apiv3": "dev-master",
-                "chumper/datatable": "dev-develop",
+        "barryvdh/laravel-dompdf": "^0.8.0",
+        "chumper/datatable": "dev-develop",
         "chumper/zipper": "1.0.x",
-         "yajra/laravel-datatables": "^1.0",
-               "barryvdh/laravel-dompdf": "^0.8.0"
+        "darryldecode/cart": "dev-master",
+        "laravel/framework": "5.5.*",
+        "laravel/tinker": "~1.0",
+        "laravelcollective/html": "5.*",
+        "pacely/mailchimp-apiv3": "dev-master",
+        "pingplusplus/pingpp-php": "dev-master",
+        "rachidlaasri/laravel-installer": "^3.2",
+        "thomaswelton/laravel-gravatar": "~1.0",
+        "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

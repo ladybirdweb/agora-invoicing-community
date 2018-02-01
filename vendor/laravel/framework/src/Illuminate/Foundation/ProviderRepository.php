@@ -142,6 +142,7 @@ class ProviderRepository
 
         foreach ($providers as $provider) {
             $instance = $this->createProvider($provider);
+            // dd($instance);
 
             // When recompiling the service manifest, we will spin through each of the
             // providers and check if it's a deferred provider or not. If so we'll

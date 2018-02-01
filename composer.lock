@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "defc6d22f4beb20d9441ea914faced24",
+    "content-hash": "5e49b5a179f54d385d3f3ed576341ea8",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -1823,6 +1823,7 @@
                 "xls",
                 "xlsx"
             ],
+            "abandoned": "phpoffice/phpspreadsheet",
             "time": "2015-05-01T07:00:55+00:00"
         },
         {
@@ -2139,6 +2140,56 @@
                 "shell"
             ],
             "time": "2017-11-16T14:29:51+00:00"
+        },
+        {
+            "name": "rachidlaasri/laravel-installer",
+            "version": "3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/RachidLaasri/LaravelInstaller.git",
+                "reference": "9a7c4bc1df7a393231c56de78238e86cea366d44"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/RachidLaasri/LaravelInstaller/zipball/9a7c4bc1df7a393231c56de78238e86cea366d44",
+                "reference": "9a7c4bc1df7a393231c56de78238e86cea366d44",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "RachidLaasri\\LaravelInstaller\\Providers\\LaravelInstallerServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "RachidLaasri\\LaravelInstaller\\": "src/"
+                },
+                "files": [
+                    "src/Helpers/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rachid Laasri",
+                    "email": "rashidlaasri@gmail.com"
+                },
+                {
+                    "name": "Jeremy Kenedy",
+                    "email": "jeremykenedy@gmail.com"
+                }
+            ],
+            "description": "Laravel web installer",
+            "time": "2018-01-12T01:21:12+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -5247,10 +5298,10 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "chumper/datatable": 20,
         "darryldecode/cart": 20,
-        "pingplusplus/pingpp-php": 20,
         "pacely/mailchimp-apiv3": 20,
-        "chumper/datatable": 20
+        "pingplusplus/pingpp-php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

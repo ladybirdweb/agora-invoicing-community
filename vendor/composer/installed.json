@@ -3970,7 +3970,8 @@
             "spreadsheet",
             "xls",
             "xlsx"
-        ]
+        ],
+        "abandoned": "phpoffice/phpspreadsheet"
     },
     {
         "name": "maatwebsite/excel",
@@ -5417,5 +5418,57 @@
             "mobile payment processing",
             "pingpp"
         ]
+    },
+    {
+        "name": "rachidlaasri/laravel-installer",
+        "version": "3.2.0",
+        "version_normalized": "3.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/RachidLaasri/LaravelInstaller.git",
+            "reference": "9a7c4bc1df7a393231c56de78238e86cea366d44"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/RachidLaasri/LaravelInstaller/zipball/9a7c4bc1df7a393231c56de78238e86cea366d44",
+            "reference": "9a7c4bc1df7a393231c56de78238e86cea366d44",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=7.0.0"
+        },
+        "time": "2018-01-12T01:21:12+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "RachidLaasri\\LaravelInstaller\\Providers\\LaravelInstallerServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "RachidLaasri\\LaravelInstaller\\": "src/"
+            },
+            "files": [
+                "src/Helpers/functions.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Rachid Laasri",
+                "email": "rashidlaasri@gmail.com"
+            },
+            {
+                "name": "Jeremy Kenedy",
+                "email": "jeremykenedy@gmail.com"
+            }
+        ],
+        "description": "Laravel web installer"
     }
 ]

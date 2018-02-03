@@ -8,5 +8,4 @@ class Country extends BaseModel
 {
     protected $table = 'countries';
     protected $primaryKey = 'country_id';
-
 }

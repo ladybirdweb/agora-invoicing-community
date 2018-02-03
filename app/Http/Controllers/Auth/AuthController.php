@@ -119,7 +119,6 @@ class AuthController extends Controller
      */
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
-
         return $request->all();
 
         try {

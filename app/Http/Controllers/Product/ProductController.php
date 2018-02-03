@@ -226,48 +226,38 @@ class ProductController extends Controller
                 $this->product->file = $file;
             }
 
-           
-
             $product = $this->product;
             // dd($request->except('image', 'file'));
             $product->fill($request->except('image', 'file'))->save();
 
-                $owner = $request->input('github_owner');
-                $repo = $request->input('github_repository');
-
-
+            $owner = $request->input('github_owner');
+            $repo = $request->input('github_repository');
 
             // $this->updateVersionFromGithub($product->id, $owner,$repo);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
-          
-            $price = $request->input('price');
-             // $price=
 
+            $price = $request->input('price');
+            // $price=
 
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
             if (count($currencies) > 0) {
-            
                 foreach ($currencies as  $key=>$currency) {
-
                     $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                    
                 }
-               
             }
-          
 
+            $taxes = $request->input('tax');
 
-            $taxes= $request->input('tax');
-
-                          if ($taxes) {
+            if ($taxes) {
                 $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
             dd($e);
+
             return redirect()->with('fails', $e->getMessage());
         }
     }
@@ -614,7 +604,7 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid, $owner,$repo)
+    public function updateVersionFromGithub($productid, $owner, $repo)
     {
         try {
 

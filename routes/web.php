@@ -187,7 +187,7 @@
          */
 
         Route::resource('tax', 'Payment\TaxController');
-        Route::post('get-state', 'Payment\TaxController@GetState');
+        Route::get('get-state/{state}', 'Payment\TaxController@GetState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@GetTax']);
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');

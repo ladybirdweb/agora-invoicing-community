@@ -34,7 +34,7 @@ class SettingsSeeder extends Seeder
             'port'                      => 1,
             'encryption'                => '',
             'email'                     => '', 'password'=>'', 'error_log'=>0, 'error_email'=>0,
-            'invoice'                   => 0, 'download'=>0, 'subscription_over'=>0, 'subscription_going_to_end'=>0, 'forgot_password'=>0, 'order_mail'=>0, 'welcome_mail'=>0, 'invoice_template'=>0, 'driver'=>'',
+            'invoice'                   => 0, 'download'=>0, 'subscription_over'=>0, 'subscription_going_to_end'=>0, 'forgot_password'=>0, 'order_mail'=>0, 'welcome_mail'=>1, 'invoice_template'=>0, 'driver'=>'',
         ]);
     }
 }

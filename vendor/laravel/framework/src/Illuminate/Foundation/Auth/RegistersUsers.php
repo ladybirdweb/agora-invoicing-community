@@ -38,13 +38,13 @@ trait RegistersUsers
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
 
-
+       
     // return $request->all();
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
             $currency = 'INR';
-            $ip = $request->ip();
+            // $ip = $request->ip();
             // $location=[  "ip" => "::1",
             //           "isoCode" => "IN",
             //           "country" => "India",
@@ -86,7 +86,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             $user->role = 'user';
 
             $user->manager = $account_manager;
-            $user->ip = $location['ip'];
+            $user->ip = $location['query'];
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $user->fill($request->except('password'))->save();

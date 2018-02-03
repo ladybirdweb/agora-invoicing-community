@@ -12,7 +12,8 @@ Login
 @section('main-class') 
 main
 @stop
-<?php $location = \GeoIP::getLocation(); ?>
+// <?php $location = \GeoIP::getLocation(); ?>
+
 @section('content')
 <div class="row">
     <div class="col-md-12">

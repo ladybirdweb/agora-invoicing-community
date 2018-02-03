@@ -48,15 +48,17 @@
                     {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                 </div>
-                <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                 <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('state',Lang::get('message.state')) !!}
-                    <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                    <select name="state" id="state-list" class="form-control">
-                        <option value="">Select State</option>
+                 
+
+                    <select name="state"  class="form-control" id="statess">
+                        <option name="state">Please Select Country</option>
                     </select>
 
                 </div>
+
                 <div class="form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
@@ -80,11 +82,14 @@
 
 
         $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+            type: "GET",
+            url: "{{url('get-state')}}/" + val,
             success: function (data) {
-                $("#state-list").html(data);
+                // console.log(data)
+              
+                
+                    $("#statess").html(data);
+                
             }
         });
     }

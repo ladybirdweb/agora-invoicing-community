@@ -226,38 +226,49 @@ class ProductController extends Controller
                 $this->product->file = $file;
             }
 
-            //dd($request->input('currency'));
+           
 
             $product = $this->product;
-            // dd($product);
+            // dd($request->except('image', 'file'));
             $product->fill($request->except('image', 'file'))->save();
 
-            $this->updateVersionFromGithub($product->id, $request);
+                $owner = $request->input('github_owner');
+                $repo = $request->input('github_repository');
 
-            $this->updateVersionFromGithub($product->id, $request);
 
+
+            // $this->updateVersionFromGithub($product->id, $owner,$repo);
             $product_id = $product->id;
-
             $subscription = $request->input('subscription');
-            // dd($subscription);
+          
             $price = $request->input('price');
+             // $price=
+
+
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
             if (count($currencies) > 0) {
-                foreach ($currencies as $key => $currency) {
-                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                }
-            }
+            
+                foreach ($currencies as  $key=>$currency) {
 
-            //add tax class to tax_product_relation table
-            $taxes = $request->input('tax');
-            if ($taxes) {
+                    $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
+                    
+                }
+               
+            }
+          
+
+
+            $taxes= $request->input('tax');
+
+                          if ($taxes) {
                 $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('fails', $e->getMessage());
+            dd($e);
+            return redirect()->with('fails', $e->getMessage());
         }
     }
 
@@ -368,7 +379,7 @@ class ProductController extends Controller
                 $product->file = $file;
             }
             $product->fill($request->except('image', 'file'))->save();
-            $this->updateVersionFromGithub($product->id, $request);
+            // $this->updateVersionFromGithub($product->id, $request);
 
             $product_id = $product->id;
             $subscription = $request->input('subscription');
@@ -603,12 +614,15 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid, $request)
+    public function updateVersionFromGithub($productid, $owner,$repo)
     {
         try {
-            if ($request->has('github_owner') && $request->has('github_repository')) {
-                $owner = $request->input('github_owner');
-                $repo = $request->input('github_repository');
+
+            // if ($request->has('github_owner') && $request->has('github_repository')) {
+
+            if ($owner && $repo) {
+                // $owner = $request->input('github_owner');
+                // $repo = $request->input('github_repository');
                 $product = $this->product->find($productid);
                 $github_controller = new \App\Http\Controllers\Github\GithubController();
                 $version = $github_controller->findVersion($owner, $repo);

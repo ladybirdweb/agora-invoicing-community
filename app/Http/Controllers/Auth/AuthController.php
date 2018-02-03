@@ -119,6 +119,7 @@ class AuthController extends Controller
      */
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
+
         return $request->all();
 
         try {
@@ -206,7 +207,6 @@ class AuthController extends Controller
             $to = $user->email;
             $subject = $template->name;
             $data = $template->data;
-
             $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
             $type = '';
 

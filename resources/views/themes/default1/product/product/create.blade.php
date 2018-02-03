@@ -302,12 +302,12 @@ tinymce.init({
 
                                                 <td>
 
-                                                    {!! Form::text('price[$key]',null) !!}
+                                                    {!! Form::text('price['.$key.']',null) !!}
 
                                                 </td>
                                                 <td>
 
-                                                    {!! Form::text('sales_price[$key]',null) !!}
+                                                    {!! Form::text('sales_price['.$key.']',null) !!}
 
                                                 </td>
                                             </tr>

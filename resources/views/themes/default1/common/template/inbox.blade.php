@@ -94,7 +94,7 @@
               }],
           
             columns: [
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
                 {data: 'action', name: 'Action'}
             ],

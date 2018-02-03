@@ -87,7 +87,7 @@ if (count($attributes) > 0) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                               <!-- dd($cartCollection); -->
+                                              
                                                 @forelse($cartCollection as $key=>$item)
 
                                                 <tr class="cart_table_item">
@@ -118,6 +118,7 @@ if (count($attributes) > 0) {
                                                         $sum = $item->getPriceSum();
                                                         // dd($sum);
                                                         $tax = $total-$sum;
+                                                        // dd($tax);
                                                         
                                                         ?>
 

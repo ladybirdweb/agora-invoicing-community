@@ -453,10 +453,11 @@ class TemplateController extends Controller
             // dd($taxes);
             $taxes = $this->tax->where('tax_classes_id', $tax_relation->tax_class_id)->where('active', 1)->orderBy('created_at', 'asc')->get();
             // dd($taxes);
-
+             // dd(count($taxes) == 0);
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');
             }
+            // dd($cart == 1);
             if ($cart == 1) {
                 $tax_amount = $this->taxProcess($taxes, $price, $cart1, $shop);
             // dd($tax_amount);
@@ -500,7 +501,7 @@ class TemplateController extends Controller
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
-            //dd($tax_amount);
+            // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
             dd($ex);
@@ -512,6 +513,7 @@ class TemplateController extends Controller
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {
+            // dd($rate);
             $tax_rule = $this->tax_rule->find(1);
             // dd($tax_rule);
             $product = $tax_rule->inclusive;
@@ -523,20 +525,29 @@ class TemplateController extends Controller
             // dd($result);
 
             // $location = \GeoIP::getLocation();
-            $location = ['ip'   => '::1',
-  'isoCode'                     => 'IN',
-  'country'                     => 'India',
-  'city'                        => 'Bengaluru',
-  'state'                       => 'KA',
-  'postal_code'                 => 560076,
-  'lat'                         => 12.9833,
-  'lon'                         => 77.5833,
-  'timezone'                    => 'Asia/Kolkata',
-  'continent'                   => 'AS',
-  'default'                     => false, ];
-            $counrty_iso = $location['isoCode'];
+  //           $location = ['ip'   => '::1',
+  // 'isoCode'                     => 'IN',
+  // 'country'                     => 'India',
+  // 'city'                        => 'Bengaluru',
+  // 'state'                       => 'KA',
+  // 'postal_code'                 => 560076,
+  // 'lat'                         => 12.9833,
+  // 'lon'                         => 77.5833,
+  // 'timezone'                    => 'Asia/Kolkata',
+  // 'continent'                   => 'AS',
+  // 'default'                     => false, ];
+  //           $counrty_iso = $location['isoCode'];
 
-            $state_code = $location['isoCode'].'-'.$location['state'];
+  //           $state_code = $location['isoCode'].'-'.$location['state'];
+             $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+
+        $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+        //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+        $state_code = $location['countryCode'].'-'.$location['region'];
+        $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+        $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+         $country_iso = $location['countryCode'];
 
             $geoip_country = '';
             $geoip_state = '';
@@ -545,7 +556,7 @@ class TemplateController extends Controller
                 $geoip_state = \Auth::user()->state;
             }
             if ($geoip_country == '') {
-                $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($counrty_iso);
+                $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
             }
             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
@@ -555,7 +566,7 @@ class TemplateController extends Controller
                 }
             }
 
-            // dd($geoip_country);
+            // dd($product);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
                 if ($product == 1 && $shop == 1 && $cart == 1) {
                     $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
@@ -579,7 +590,7 @@ class TemplateController extends Controller
                     $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1);
                 }
                 if ($product == 0 && $shop == 0 && $cart == 1) {
-                    $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1 = 0);
+                    $result = $this->calculateTotalcart($rate, $price, $cart=1, $shop= 1);
                 }
             }
 
@@ -639,7 +650,7 @@ class TemplateController extends Controller
     {
         try {
             // dd($rate, $price, $cart, $shop);
-            // dd($cart == 1 && $shop == 1);
+            
             if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
                 $tax_amount = $price * ($rate / 100);
                 // dd($tax_amount);

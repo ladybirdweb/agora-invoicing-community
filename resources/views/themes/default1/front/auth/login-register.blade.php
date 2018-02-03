@@ -481,9 +481,9 @@ border-top: none;
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6 pull-right">
-                                                        <!-- <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser(this)"> -->
-                                                        <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
-                                                        </button>
+                                                        <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
+                                                       <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
+                                                        </button> -->
                                                     </div>
                                                 </div>
                                                 </form>
@@ -658,20 +658,30 @@ border-top: none;
             }
           },
           error: function (ex) {
-            var myJSON = JSON.parse(ex.responseText);
-            var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+            var data = JSON.parse(ex.responseText);
+
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
-            for (var key in myJSON)
-            {
-                html += '<li>' + myJSON[key][0] + '</li>'
-            }
-            html += '</ul></div>';
+            var res = "";
+
+                function ash(idx, topic) {
+                   
+                   if(typeof topic==="object"){
+                      $.each(topic, ash);
+                   }
+                   else{
+                     // var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                     res += "<ul style='list-style-type:none'><li><i class='fa fa-ban'></i>&nbsp" + topic + "</li></ul>";
+                   }
+                };
+                 $.each(data, ash);
+                console.log(res)
+                $('#error').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
+              
             $('#error').show();
-            document.getElementById('error').innerHTML = html;
             setTimeout(function(){ 
                 $('#error').hide(); 
-            }, 5000);
+            }, 5000000);
           }
         });
     }

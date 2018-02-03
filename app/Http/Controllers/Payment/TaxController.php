@@ -65,13 +65,15 @@ class TaxController extends Controller
 
     public function GetTax()
     {
-        return \DataTables::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
+        return \DataTables::of($this->tax->select( 'id','name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
+
                         ->addColumn('tax_classes_id', function ($model) {
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                         })
+                       
                         ->addColumn('name', function ($model) {
                             return $model->name;
                         })
@@ -81,7 +83,7 @@ class TaxController extends Controller
                         // ->showColumns('name', 'level')
                         ->addColumn('country', function ($model) {
                             if ($this->country->where('country_code_char2', $model->country)->first()) {
-                                return $this->country->where('country_code_char2', $model->country)->first()->country_name;
+                                return ucfirst ($this->country->where('country_code_char2', $model->country)->first()->country_name);
                             }
                         })
                         ->addColumn('state', function ($model) {
@@ -92,6 +94,7 @@ class TaxController extends Controller
                         ->addColumn('rate', function ($model) {
                             return $model->rate;
                         })
+                        
                         // ->showColumns('rate')
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
@@ -121,6 +124,7 @@ class TaxController extends Controller
     public function store(TaxRequest $request)
     {
         try {
+            // dd('sdc');
             $this->tax->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -151,6 +155,7 @@ class TaxController extends Controller
     public function edit($id)
     {
         try {
+            // dd('asd');
             $tax = $this->tax->where('id', $id)->first();
             $classes = $this->tax_class->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
@@ -236,18 +241,20 @@ class TaxController extends Controller
         }
     }
 
-    public function GetState(Request $request)
-    {
+   public function GetState(Request $request, $state)
+   {
         try {
-            $id = $request->input('country_id');
+            $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)->get();
-            //return $states;
+            // return $states;
             echo '<option value=>Select State</option>';
             foreach ($states as $state) {
                 echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

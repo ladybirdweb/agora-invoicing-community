@@ -24,11 +24,11 @@ class TaxRequest extends Request
     public function rules()
     {
         return [
-            'name'    => 'required',
-            'rate'    => 'required|numeric',
-            'level'   => 'required|integer',
+            'name'      => 'required',
+            'rate'      => 'required|numeric',
+            'level'     => 'required|integer',
             'country'   => 'required',
-            'state'   => 'required',
+            'state'     => 'required',
             // 'country' => 'exists:countries,country_id',
             // 'state'   => 'exists:states,state_subdivision_id',
         ];

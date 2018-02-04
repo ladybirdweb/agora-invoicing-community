@@ -329,13 +329,6 @@ class ClientController extends Controller
                             })
 
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
-
-                            ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
-
-                            ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
-
-                            ->rawColumns(['number', 'invoice_item', 'created_at', 'total', 'status', 'action'])
-
                             ->make(true);
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

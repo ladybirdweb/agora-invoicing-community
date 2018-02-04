@@ -128,8 +128,8 @@
               }],
             columns: [
                 {data: 'number', name: 'number'},
-                {data: 'invoice_item', name: 'invoice_item'},
-                {data: 'created_at', name: 'created_at'},
+                {data: 'products', name: 'invoice_item'},
+                {data: 'date', name: 'created_at'},
                 {data: 'total', name: 'total'},
                   {data: 'status', name: 'status'},
                  

@@ -285,7 +285,7 @@ class ProductController extends Controller
     {
         try {
             $type = $this->type->pluck('name', 'id')->toArray();
-           
+
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
             $group = $this->group->pluck('name', 'id')->toArray();
@@ -298,16 +298,16 @@ class ProductController extends Controller
                 if ($this->price->where('product_id', $product->id)->where('currency', $key)->first()) {
                     $regular[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->price;
                     $sales[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->sales_price;
-                
                 } else {
                     $regular[$key] = '';
                     $sales[$key] = '';
                 }
             }
-           
+
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             //dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
+
             return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -345,7 +345,7 @@ class ProductController extends Controller
         });
         if ($v->fails()) {
             return redirect()->back()->with('errors', $v->errors());
-         }
+        }
 
         try {
             $product = $this->product->where('id', $id)->first();

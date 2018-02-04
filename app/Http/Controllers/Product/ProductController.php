@@ -256,7 +256,7 @@ class ProductController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
-            dd($e);
+            // dd($e);
 
             return redirect()->with('fails', $e->getMessage());
         }
@@ -285,35 +285,29 @@ class ProductController extends Controller
     {
         try {
             $type = $this->type->pluck('name', 'id')->toArray();
-            // dd($type);
+           
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
-            // dd($currency);
             $group = $this->group->pluck('name', 'id')->toArray();
             $products = $this->product->pluck('name', 'id')->toArray();
             $url = $this->GetMyUrl();
-            // dd($url);
             $cartUrl = $url.'/cart?id='.$id;
             $product = $this->product->where('id', $id)->first();
-            // dd($product);
             $price = $this->price->where('product_id', $product->id);
-            // dd($price);
             foreach ($currency as $key => $value) {
                 if ($this->price->where('product_id', $product->id)->where('currency', $key)->first()) {
                     $regular[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->price;
                     $sales[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->sales_price;
-                // dd($sales[$key]);
+                
                 } else {
                     $regular[$key] = '';
                     $sales[$key] = '';
                 }
             }
-            // dd($regular);
-            // dd($this->tax_class);
+           
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
             //dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
-//            dd($saved_taxes);
             return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -351,8 +345,7 @@ class ProductController extends Controller
         });
         if ($v->fails()) {
             return redirect()->back()->with('errors', $v->errors());
-            //dd();
-        }
+         }
 
         try {
             $product = $this->product->where('id', $id)->first();

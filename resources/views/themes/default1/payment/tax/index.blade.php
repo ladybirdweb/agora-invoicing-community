@@ -184,6 +184,7 @@
                 {data: 'name', name: 'Name'},
                 {data: 'level', name: 'Level'},
                 {data: 'country', name: 'Country'},
+                {data: 'state', name: 'State'},
                 {data: 'rate', name: 'Rate (%)'},
                 {data: 'action', name: 'Action'}
             ],

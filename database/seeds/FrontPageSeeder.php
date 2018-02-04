@@ -18,15 +18,22 @@ class FrontPageSeeder extends Seeder
             'slug'          => 'pricing',
             'name'          => 'pricing',
             'parent_page_id'=> 0,
-            'content'       => '<div class="col-md-3 col-sm-6">
-<div class="plan">
-<h3>{{name}}</h3>
-<ul><li><ul><li><strong>{{price}}</strong></li>
-<li>{{feature}}</li>
-</ul></li></ul><br /><ul><li>{{subscription}}</li>
-<li>{{url}}</li>
-</ul></div>
-</div>',
+            'content'       => '<div class="pricing-table princig-table-flat">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="plan">
+                                    <h3>{{name}}<span><small style="font-color:white;!important">{{price}}</small></span></h3>
+                                    <ul>
+                                        <li>{{feature}}</li>
+                                        
+                                        
+                                    </ul><br/>
+                                    <ul>
+                                    <li class="subscription">{{subscription}}</li>
+                                         <li>{{url}}</li> 
+                                         </ul>
+                                </div>
+                            </div>
+                             </div>',
             'url'     => '',
             'type'    => 'cart',
             'publish' => 1,
@@ -34,3 +41,9 @@ class FrontPageSeeder extends Seeder
         ]);
     }
 }
+
+
+
+                        
+
+                  

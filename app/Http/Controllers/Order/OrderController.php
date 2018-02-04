@@ -338,7 +338,6 @@ class OrderController extends Controller
     public function orderExecute(Request $request)
     {
         try {
-            //dd($request);
             $invoiceid = $request->input('invoiceid');
             // dd( $invoiceid);
 

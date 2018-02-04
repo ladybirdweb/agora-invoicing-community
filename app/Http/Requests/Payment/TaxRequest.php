@@ -27,8 +27,10 @@ class TaxRequest extends Request
             'name'    => 'required',
             'rate'    => 'required|numeric',
             'level'   => 'required|integer',
-            'country' => 'exists:countries,id',
-            'state'   => 'exists:states,id',
+            'country'   => 'required',
+            'state'   => 'required',
+            // 'country' => 'exists:countries,country_id',
+            // 'state'   => 'exists:states,state_subdivision_id',
         ];
     }
 }

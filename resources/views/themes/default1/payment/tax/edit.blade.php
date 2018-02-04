@@ -92,7 +92,7 @@
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country']) !!}
 
                     </div>
                     <div class="col-md-3 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -151,22 +151,22 @@
 </div>
 
 </div>
-
+<script>
+    $(document).on("change", "#country", function () {
+                var val= $(this).val();
+          
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-state')}}/" + val,
+            success: function (data) {
+               $("#state-list").html(data);
+                
+            }
+        });
+    }); 
+</script>
 
 {!! Form::close() !!}
 @stop
 
-<script>
-    function getState(val) {
 
-
-        $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
-            success: function (data) {
-                $("#state-list").html(data);
-            }
-        });
-    }
-</script>

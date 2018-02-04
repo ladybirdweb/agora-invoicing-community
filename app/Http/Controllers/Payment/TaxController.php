@@ -124,7 +124,7 @@ class TaxController extends Controller
     public function store(TaxRequest $request)
     {
         try {
-            // dd('sdc');
+          
             $this->tax->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -155,7 +155,7 @@ class TaxController extends Controller
     public function edit($id)
     {
         try {
-            // dd('asd');
+            
             $tax = $this->tax->where('id', $id)->first();
             $classes = $this->tax_class->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
@@ -261,7 +261,7 @@ class TaxController extends Controller
     public function options(Request $request)
     {
         try {
-            //dd($request->all());
+           
             $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);

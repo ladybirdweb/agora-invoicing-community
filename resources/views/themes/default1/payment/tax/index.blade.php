@@ -141,7 +141,7 @@
 
 
             <div class="col-md-12">
-                <table id="templates-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
                          <th>Class Name</th>

@@ -41,9 +41,3 @@ class FrontPageSeeder extends Seeder
         ]);
     }
 }
-
-
-
-                        
-
-                  

@@ -725,9 +725,9 @@ class TemplateController extends Controller
 
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-               
+
                 // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-                
+
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }

@@ -548,9 +548,9 @@ class OrderController extends Controller
 
     public function domainChange(Request $request)
     {
-               // $this->validate($request, [
-               //     'domain' => 'url',
-               // ]);
+        // $this->validate($request, [
+        //     'domain' => 'url',
+        // ]);
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = $this->order->find($id);

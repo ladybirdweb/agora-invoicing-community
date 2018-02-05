@@ -11,15 +11,16 @@ use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use Illuminate\Http\Request;
 
-class TaxController extends Controller {
-
+class TaxController extends Controller
+{
     public $tax;
     public $country;
     public $state;
     public $tax_option;
     public $tax_class;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->middleware('auth', ['except' => 'GetState']);
         // $this->middleware('admin', ['except' => 'GetState']);
 
@@ -44,7 +45,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function index() {
+    public function index()
+    {
         try {
             $options = $this->tax_option->find(1);
             if (!$options) {
@@ -62,13 +64,13 @@ class TaxController extends Controller {
     }
 
     /**
-     * 
      * @return type
      */
-    public function GetTax() {
+    public function GetTax()
+    {
         return \DataTables::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
+                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('tax_classes_id', function ($model) {
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
@@ -96,7 +98,7 @@ class TaxController extends Controller {
 
                         // ->showColumns('rate')
                         ->addColumn('action', function ($model) {
-                            return '<a href=' . url('tax/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->rawColumns(['tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
                         ->make(true);
@@ -107,7 +109,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function create() {
+    public function create()
+    {
         //
     }
 
@@ -116,7 +119,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function store(TaxRequest $request) {
+    public function store(TaxRequest $request)
+    {
         try {
             $this->tax->fill($request->input())->save();
 
@@ -133,7 +137,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function show($id) {
+    public function show($id)
+    {
         //
     }
 
@@ -144,7 +149,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function edit($id) {
+    public function edit($id)
+    {
         try {
             $tax = $this->tax->where('id', $id)->first();
             $classes = $this->tax_class->pluck('name', 'id')->toArray();
@@ -168,10 +174,12 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function update($id, Request $request) {
+    public function update($id, Request $request)
+    {
         try {
             $tax = $this->tax->where('id', $id)->first();
             $tax->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -185,7 +193,8 @@ class TaxController extends Controller {
      *
      * @return Response
      */
-    public function destroy(Request $request) {
+    public function destroy(Request $request)
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
@@ -196,52 +205,53 @@ class TaxController extends Controller {
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.no-record') . '
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.deleted-successfully') . '
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . \Lang::get('message.select-a-row') . '
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.failed') . '
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        ' . $e->getMessage() . '
+                        '.$e->getMessage().'
                 </div>';
         }
     }
 
     /**
-     * 
      * @param Request $request
-     * @param type $state
+     * @param type    $state
+     *
      * @return type
      */
-    public function GetState(Request $request, $state) {
+    public function GetState(Request $request, $state)
+    {
         try {
             $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)->get();
             // return $states;
             echo '<option value=>Select State</option>';
             foreach ($states as $state) {
-                echo '<option value=' . $state->state_subdivision_code . '>' . $state->state_subdivision_name . '</option>';
+                echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
@@ -251,11 +261,12 @@ class TaxController extends Controller {
     }
 
     /**
-     * 
      * @param Request $request
+     *
      * @return type
      */
-    public function options(Request $request) {
+    public function options(Request $request)
+    {
         try {
             $method = $request->method();
             if ($method == 'PATCH') {
@@ -280,5 +291,4 @@ class TaxController extends Controller {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 }

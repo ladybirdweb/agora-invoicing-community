@@ -12,15 +12,14 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
 
-class PlanController extends Controller
-{
+class PlanController extends Controller {
+
     protected $currency;
     protected $price;
     protected $period;
     protected $product;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->middleware('auth');
         // $this->middleware('admin');
         $plan = new Plan();
@@ -42,32 +41,22 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function index()
-    {
+    public function index() {
         return view('themes.default1.product.plan.index');
     }
 
     /**
      * Get plans for chumper datatable.
      */
-    public function GetPlans()
-    {
-
-        //$user = new User;
-        //$user = $this->user->where('role', 'user')->get();
-        // dd($this->plan->get());
-
-        // return \Datatable::collection($this->plan->get())
+    public function GetPlans() {
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
-
         return\ DataTables::of($new_plan)
                         ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' value=" . $model->id . ' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
                         })
-
                         ->addColumn('days', function ($model) {
                             $months = $model->days / 30;
 
@@ -83,24 +72,11 @@ class PlanController extends Controller
 
                             return ucfirst($response);
                         })
-                        //  ->addColumn('product', function ($model) {
-                        //     //dd($model->type());
-                        //     if ($this->product->where('id', $model->product)->first()) {
-                        //         return $this->product->where('id', $model->product)->first()->name;
-                        //     } else {
-                        //         return 'Not available';
-                        //     }
-                        // })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href=' . url('plans/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
                         })
-
-                        ->rawColumns(['name', 'days',  'product', 'action'])
+                        ->rawColumns(['name', 'days', 'product', 'action'])
                         ->make(true);
-
-        // ->searchColumns('name', 'subscription', 'price', 'expiry')
-                        // ->orderColumns('name', 'subscription', 'price', 'expiry')
-                        // ->make();
     }
 
     /**
@@ -108,8 +84,7 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function create()
-    {
+    public function create() {
         $currency = $this->currency->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
@@ -122,13 +97,12 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $this->validate($request, [
-            'name'        => 'required',
-            'days'        => 'required|numeric',
+            'name' => 'required',
+            'days' => 'required|numeric',
             'add_price.*' => 'required',
-            'product'     => 'required',
+            'product' => 'required',
         ]);
 
         $this->plan->fill($request->input())->save();
@@ -142,11 +116,11 @@ class PlanController extends Controller
                     $renew_price = $renew_prices[$key];
                 }
                 $this->price->create([
-                    'plan_id'     => $this->plan->id,
-                    'currency'    => $key,
-                    'add_price'   => $price,
+                    'plan_id' => $this->plan->id,
+                    'currency' => $key,
+                    'add_price' => $price,
                     'renew_price' => $renew_price,
-                    'product'     => $product,
+                    'product' => $product,
                 ]);
             }
         }
@@ -161,8 +135,7 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function show($id)
-    {
+    public function show($id) {
         //
     }
 
@@ -173,8 +146,7 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function edit($id)
-    {
+    public function edit($id) {
         $plan = $this->plan->where('id', $id)->first();
         $currency = $this->currency->pluck('name', 'code')->toArray();
         $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
@@ -192,12 +164,11 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function update($id, Request $request)
-    {
+    public function update($id, Request $request) {
         $this->validate($request, [
-            'name'        => 'required',
+            'name' => 'required',
             'add_price.*' => 'required',
-            'product'     => 'required',
+            'product' => 'required',
         ]);
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();
@@ -205,12 +176,12 @@ class PlanController extends Controller
         $renew_prices = $request->input('renew_price');
         $product = $request->input('product');
         $period = $request->input('days');
-        // dd($period);
+
 
         if (count($add_prices) > 0) {
-            // dd(  (count($add_prices) > 0));
+
             $price = $this->price->where('plan_id', $id)->get();
-            // dd($price);
+
 
             if (count($price) > 0) {
                 foreach ($price as $delete) {
@@ -223,12 +194,11 @@ class PlanController extends Controller
                     $renew_price = $renew_prices[$key];
                 }
                 $this->price->create([
-                    'plan_id'     => $plan->id,
-                    'currency'    => $key,
-                    'add_price'   => $price,
+                    'plan_id' => $plan->id,
+                    'currency' => $key,
+                    'add_price' => $price,
                     'renew_price' => $renew_price,
-                    'product'     => $product,
-
+                    'product' => $product,
                 ]);
             }
         }
@@ -243,8 +213,7 @@ class PlanController extends Controller
      *
      * @return Response
      */
-    public function destroy(Request $request)
-    {
+    public function destroy(Request $request) {
         $ids = $request->input('select');
         if (!empty($ids)) {
             foreach ($ids as $id) {
@@ -254,27 +223,28 @@ class PlanController extends Controller
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        ' . \Lang::get('message.no-record') . '
                 </div>';
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        ' . \Lang::get('message.deleted-successfully') . '
                 </div>';
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>" . \Lang::get('message.alert') . '!</b> ' . \Lang::get('message.success') . '
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        ' . \Lang::get('message.select-a-row') . '
                 </div>';
             //echo \Lang::get('message.select-a-row');
         }
     }
+
 }

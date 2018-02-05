@@ -79,16 +79,11 @@
 </div><!-- /.modal -->  
 <script>
     function getState(val) {
-
-
-        $.ajax({
+      $.ajax({
             type: "GET",
             url: "{{url('get-state')}}/" + val,
             success: function (data) {
-                // console.log(data)
-              
-                
-                    $("#statess").html(data);
+              $("#statess").html(data);
                 
             }
         });

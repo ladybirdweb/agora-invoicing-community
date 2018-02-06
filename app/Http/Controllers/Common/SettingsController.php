@@ -143,7 +143,7 @@ class SettingsController extends Controller
                  */
                 $faveoconfig = config_path().DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$filename.'.php';
                 if ($faveoconfig) {
-                   //copy($config, $faveoconfig);
+                    //copy($config, $faveoconfig);
                     /*
                      * write provider list in app.php line 128
                      */

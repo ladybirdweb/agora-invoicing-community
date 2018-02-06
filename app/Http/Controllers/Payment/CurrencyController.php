@@ -30,7 +30,7 @@ class CurrencyController extends Controller
         return view('themes.default1.payment.currency.index');
     }
 
-    public function GetCurrency()
+    public function getCurrency()
     {
         return \DataTables::of($this->currency->select('name', 'id')->where('id', '!=', 1)->get())
                         ->addColumn('#', function ($model) {

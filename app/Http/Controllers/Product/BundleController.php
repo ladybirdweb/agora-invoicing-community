@@ -44,7 +44,7 @@ class BundleController extends Controller
         }
     }
 
-    public function GetBundles()
+    public function getBundles()
     {
         return \Datatable::collection($this->bundle->select('id', 'name', 'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
                         ->addColumn('#', function ($model) {

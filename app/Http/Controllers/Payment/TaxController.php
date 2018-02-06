@@ -66,7 +66,7 @@ class TaxController extends Controller
     /**
      * @return type
      */
-    public function GetTax()
+    public function getTax()
     {
         return \DataTables::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
                         ->addColumn('#', function ($model) {
@@ -243,7 +243,7 @@ class TaxController extends Controller
      *
      * @return type
      */
-    public function GetState(Request $request, $state)
+    public function getState(Request $request, $state)
     {
         try {
             $id = $state;

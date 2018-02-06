@@ -84,7 +84,7 @@ class ProductController extends Controller
         }
     }
 
-    public function GetProducts()
+    public function getProducts()
     {
 
         // try {
@@ -243,7 +243,7 @@ class ProductController extends Controller
             $sales_price = $request->input('sales_price');
             $currencies = $request->input('currency');
             if (count($currencies) > 0) {
-                foreach ($currencies as  $key=>$currency) {
+                foreach ($currencies as $key => $currency) {
                     $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
                 }
             }
@@ -600,9 +600,7 @@ class ProductController extends Controller
     public function updateVersionFromGithub($productid, $owner, $repo)
     {
         try {
-
-            // if ($request->has('github_owner') && $request->has('github_repository')) {
-
+              // if ($request->has('github_owner') && $request->has('github_repository')) {
             if ($owner && $repo) {
                 // $owner = $request->input('github_owner');
                 // $repo = $request->input('github_repository');

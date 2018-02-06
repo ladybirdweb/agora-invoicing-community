@@ -44,7 +44,7 @@ class GroupController extends Controller
         }
     }
 
-    public function GetGroups()
+    public function getGroups()
     {
         $product_group = ProductGroup::select('id', 'name')->get();
 

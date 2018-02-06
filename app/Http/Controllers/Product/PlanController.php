@@ -49,7 +49,7 @@ class PlanController extends Controller
     /**
      * Get plans for chumper datatable.
      */
-    public function GetPlans()
+    public function getPlans()
     {
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
 

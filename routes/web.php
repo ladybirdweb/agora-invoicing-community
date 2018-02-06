@@ -141,7 +141,7 @@
          */
 
         Route::resource('products', 'Product\ProductController');
-         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@GetProducts']);
+         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
 
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy');
@@ -153,7 +153,7 @@
          */
 
         Route::resource('plans', 'Product\PlanController');
-         Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@GetPlans']);
+         Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@getPlans']);
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
         Route::get('plans-delete', 'Product\PlanController@destroy');
 
@@ -162,7 +162,7 @@
 
 
           Route::resource('addons','Product\AddonController');
-          Route::get('get-addons','Product\AddonController@GetAddons');
+          Route::get('get-addons','Product\AddonController@getAddons');
           Route::get('addons-delete','Product\AddonController@destroy');
          */
         /*
@@ -170,7 +170,7 @@
          */
 
         Route::resource('services', 'Product\ServiceController');
-        Route::get('get-services', 'Product\ServiceController@GetServices');
+        Route::get('get-services', 'Product\ServiceController@getServices');
         Route::get('services-delete', 'Product\ServiceController@destroy');
 
         /*
@@ -178,7 +178,7 @@
          */
 
         Route::resource('currency', 'Payment\CurrencyController');
-         Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@GetCurrency']);
+         Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@getCurrency']);
         // Route::get('get-currency', 'Payment\CurrencyController@GetCurrency');
         Route::get('currency-delete', 'Payment\CurrencyController@destroy');
 
@@ -187,8 +187,8 @@
          */
 
         Route::resource('tax', 'Payment\TaxController');
-        Route::get('get-state/{state}', 'Payment\TaxController@GetState');
-        Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@GetTax']);
+        Route::get('get-state/{state}', 'Payment\TaxController@getState');
+        Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
@@ -201,8 +201,8 @@
          */
 
         Route::resource('promotions', 'Payment\PromotionController');
-        Route::post('get-code', 'Payment\PromotionController@GetCode');
-        Route::get('get-promotions', 'Payment\PromotionController@GetPromotion');
+        Route::post('get-code', 'Payment\PromotionController@getCode');
+        Route::get('get-promotions', 'Payment\PromotionController@getPromotion');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy');
 
         /*
@@ -210,7 +210,7 @@
          */
 
         Route::resource('bundles', 'Product\BundleController');
-        Route::get('get-bundles', 'Product\BundleController@GetBundles');
+        Route::get('get-bundles', 'Product\BundleController@getBundles');
         Route::get('bundles-delete', 'Product\BundleController@destroy');
 
         /*
@@ -230,7 +230,7 @@
          */
 
         Route::resource('groups', 'Product\GroupController');
-        Route::get('get-groups', 'Product\GroupController@GetGroups')->name('get-groups');
+        Route::get('get-groups', 'Product\GroupController@getGroups')->name('get-groups');
         Route::get('groups-delete', 'Product\GroupController@destroy');
 
         /*
@@ -272,7 +272,7 @@
          */
         Route::get('subscriptions', 'Order\SubscriptionController@index');
         Route::get('subscriptions/{id}', 'Order\SubscriptionController@show');
-        Route::get('get-subscriptions', 'Order\SubscriptionController@GetSubscription');
+        Route::get('get-subscriptions', 'Order\SubscriptionController@getSubscription');
 
         /*
          * Licences

@@ -600,7 +600,7 @@ class ProductController extends Controller
     public function updateVersionFromGithub($productid, $owner, $repo)
     {
         try {
-              // if ($request->has('github_owner') && $request->has('github_repository')) {
+            // if ($request->has('github_owner') && $request->has('github_repository')) {
             if ($owner && $repo) {
                 // $owner = $request->input('github_owner');
                 // $repo = $request->input('github_repository');

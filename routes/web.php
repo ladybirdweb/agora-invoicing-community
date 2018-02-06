@@ -22,16 +22,16 @@
          * Front end
          */
 
-        Route::match(['get', 'post'], 'home', 'Front\CartController@ProductList');
+        Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
 
-        Route::get('pricing', 'Front\CartController@Cart');
-        Route::get('cart/remove', 'Front\CartController@CartRemove');
+        Route::get('pricing', 'Front\CartController@cart');
+        Route::get('cart/remove', 'Front\CartController@cartRemove');
         Route::get('update-qty', 'Front\CartController@updateQty');
-        Route::get('cart/addon/{id}', 'Front\CartController@AddAddons');
-        Route::get('cart/clear', 'Front\CartController@ClearCart');
+        Route::get('cart/addon/{id}', 'Front\CartController@addAddons');
+        Route::get('cart/clear', 'Front\CartController@clearCart');
         Route::get('show/cart', 'Front\CartController@showCart');
 
-        Route::get('checkout', 'Front\CheckoutController@CheckoutForm');
+        Route::get('checkout', 'Front\CheckoutController@checkoutForm');
         //Route::get('checkout', 'Front\CheckoutController@CheckoutForm');
         Route::match(['post', 'patch'], 'checkout', 'Front\CheckoutController@postCheckout');
 
@@ -218,7 +218,7 @@
          */
 
         Route::resource('orders', 'Order\OrderController');
-        Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@GetOrders']);
+        Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders']);
         // Route::get('get-orders', 'Order\OrderController@GetOrders');
         Route::get('orders-delete', 'Order\OrderController@destroy');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
@@ -238,7 +238,7 @@
          */
 
         Route::resource('templates', 'Common\TemplateController');
-         Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@GetTemplates']);
+         Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
         // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
         Route::get('templates-delete', 'Common\TemplateController@destroy');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
@@ -250,7 +250,7 @@
 
         Route::get('invoices', 'Order\InvoiceController@index');
         Route::get('invoices/{id}', 'Order\InvoiceController@show');
-        Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@GetInvoices']);
+        Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);
         // Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
         Route::get('pdf', 'Order\InvoiceController@pdf');
         Route::get('invoice-delete', 'Order\InvoiceController@destroy');
@@ -278,37 +278,37 @@
          * Licences
          */
         Route::resource('licences', 'Licence\LicenceController');
-        Route::get('get-licences', 'Licence\LicenceController@GetLicences');
+        Route::get('get-licences', 'Licence\LicenceController@getLicences');
 
         /*
          * Slas
          */
         Route::resource('slas', 'Licence\SlaController');
-        Route::get('get-slas', 'Licence\SlaController@GetSlas');
+        Route::get('get-slas', 'Licence\SlaController@getSlas');
 
         /*
          * Services
          */
 
         Route::resource('services', 'Licence\ServiceController');
-        Route::get('get-services', 'Licence\ServiceController@GetServices');
+        Route::get('get-services', 'Licence\ServiceController@getServices');
 
         /*
          * Pages
          */
         Route::resource('pages', 'Front\PageController');
         Route::get('pages/{slug}', 'Front\PageController@show');
-        Route::get('page/search', 'Front\PageController@Search');
-        Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@GetPages']);
+        Route::get('page/search', 'Front\PageController@search');
+        Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@getPages']);
         // Route::get('get-pages', 'Front\PageController@GetPages');
         Route::get('pages-delete', 'Front\PageController@destroy');
-        Route::get('get-url', 'Front\PageController@Generate');
+        Route::get('get-url', 'Front\PageController@generate');
 
         /*
          * Widgets
          */
         Route::resource('widgets', 'Front\WidgetController');
-        Route::get('get-widgets', ['as' => 'get-widgets', 'uses' => 'Front\WidgetController@GetPages']);
+        Route::get('get-widgets', ['as' => 'get-widgets', 'uses' => 'Front\WidgetController@getPages']);
         // Route::get('get-widgets', 'Front\WidgetController@GetPages');
         Route::get('widgets-delete', 'Front\WidgetController@destroy');
 

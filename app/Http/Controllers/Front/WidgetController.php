@@ -28,7 +28,7 @@ class WidgetController extends Controller
         }
     }
 
-    public function GetPages()
+    public function getPages()
     {
         return \DataTables::of($this->widget->get())
                         ->addColumn('#', function ($model) {

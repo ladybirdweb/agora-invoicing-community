@@ -91,7 +91,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function GetInvoices()
+    public function getInvoices()
     {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
@@ -537,7 +537,6 @@ class InvoiceController extends Controller
     {
         try {
             switch ($type) {
-
                 case 1:
                     $percentage = $price * ($value / 100);
 

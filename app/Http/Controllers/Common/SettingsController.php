@@ -96,7 +96,7 @@ class SettingsController extends Controller
      *
      * @return type
      */
-    public function ReadPlugins()
+    public function readPlugins()
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins';
         $plugins = array_diff(scandir($dir), ['.', '..']);
@@ -143,8 +143,7 @@ class SettingsController extends Controller
                  */
                 $faveoconfig = config_path().DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$filename.'.php';
                 if ($faveoconfig) {
-
-                    //copy($config, $faveoconfig);
+                   //copy($config, $faveoconfig);
                     /*
                      * write provider list in app.php line 128
                      */
@@ -212,7 +211,7 @@ class SettingsController extends Controller
         return rmdir($dir);
     }
 
-    public function ReadConfigs()
+    public function readConfigs()
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
@@ -256,7 +255,7 @@ class SettingsController extends Controller
 
     public function fetchConfig()
     {
-        $configs = $this->ReadConfigs();
+        $configs = $this->readConfigs();
         //dd($configs);
         $plugs = new Plugin();
         $fields = [];

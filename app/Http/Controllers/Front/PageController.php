@@ -28,7 +28,7 @@ class PageController extends Controller
         }
     }
 
-    public function GetPages()
+    public function getPages()
     {
         return \DataTables::of($this->page->get())
                         ->addColumn('#', function ($model) {
@@ -120,24 +120,24 @@ class PageController extends Controller
         }
     }
 
-    public function GetPageUrl($slug)
+    public function getPageUrl($slug)
     {
         $productController = new \App\Http\Controllers\Product\ProductController();
         $url = $productController->GetMyUrl();
-        $segment = $this->Addsegment(['public/pages']);
+        $segment = $this->addSegment(['public/pages']);
         $url = $url.$segment;
 
         $slug = str_slug($slug, '-');
         echo $url.'/'.$slug;
     }
 
-    public function GetSlug($slug)
+    public function getSlug($slug)
     {
         $slug = str_slug($slug, '-');
         echo $slug;
     }
 
-    public function Addsegment($segments = [])
+    public function addSegment($segments = [])
     {
         $segment = '';
         foreach ($segments as $seg) {
@@ -147,18 +147,18 @@ class PageController extends Controller
         return $segment;
     }
 
-    public function Generate(Request $request)
+    public function generate(Request $request)
     {
         // dd($request->all());
         if ($request->has('slug')) {
             $slug = $request->input('slug');
 
-            return $this->GetSlug($slug);
+            return $this->getSlug($slug);
         }
         if ($request->has('url')) {
             $slug = $request->input('url');
 
-            return $this->GetPageUrl($slug);
+            return $this->getPageUrl($slug);
         }
     }
 
@@ -228,11 +228,11 @@ class PageController extends Controller
         }
     }
 
-    public function Search(Request $request)
+    public function search(Request $request)
     {
         try {
             $search = $request->input('q');
-            $model = $this->Result($search, $this->page);
+            $model = $this->result($search, $this->page);
 
             return view('themes.default1.front.page.search', compact('model'));
         } catch (\Exception $ex) {
@@ -240,7 +240,7 @@ class PageController extends Controller
         }
     }
 
-    public function Result($search, $model)
+    public function result($search, $model)
     {
         try {
             $model = $model->where('name', 'like', '%'.$search.'%')->orWhere('content', 'like', '%'.$search.'%')->paginate(10);

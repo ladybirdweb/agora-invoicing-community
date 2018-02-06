@@ -33,7 +33,7 @@ class LicenceController extends Controller
         }
     }
 
-    public function GetLicences()
+    public function getLicences()
     {
         return \Datatable::collection($this->licence->get())
                         ->showColumns('name', 'description', 'number_of_sla', 'price')

@@ -44,7 +44,7 @@ class CartController extends Controller
         $this->tax_option = $tax_option;
     }
 
-    public function ProductList(Request $request)
+    public function productList(Request $request)
     {
         // $location = \GeoIP::getLocation();
         //       $location = ['ip'   => '::1',
@@ -95,7 +95,7 @@ class CartController extends Controller
         }
     }
 
-    public function Cart(Request $request)
+    public function cart(Request $request)
     {
         try {
             $plan = '';
@@ -355,7 +355,7 @@ class CartController extends Controller
         }
     }
 
-    public function CartRemove(Request $request)
+    public function cartRemove(Request $request)
     {
         $id = $request->input('id');
         Cart::remove($id);
@@ -363,7 +363,7 @@ class CartController extends Controller
         return 'success';
     }
 
-    public function ReduseQty(Request $request)
+    public function reduseQty(Request $request)
     {
         $id = $request->input('id');
         Cart::update($id, [
@@ -387,7 +387,7 @@ class CartController extends Controller
         return 'success';
     }
 
-    public function AddAddons($id)
+    public function addAddons($id)
     {
         $addon = $this->addons->where('id', $id)->first();
         $isTaxApply = $addon->tax_addon;
@@ -398,7 +398,7 @@ class CartController extends Controller
         return $items;
     }
 
-    public function GetProductAddons($productId)
+    public function getProductAddons($productId)
     {
         $addons = [];
         if ($this->addonRelation->where('product_id', $productId)->count() > 0) {
@@ -449,7 +449,7 @@ class CartController extends Controller
     /**
      * @return type
      */
-    public function ClearCart()
+    public function clearCart()
     {
         foreach (Cart::getContent() as $item) {
             if (\Session::has('domain'.$item->id)) {
@@ -471,7 +471,7 @@ class CartController extends Controller
      *
      * @return type
      */
-    public function LicenceCart($id)
+    public function licenceCart($id)
     {
         try {
             $licence = $this->licence->where('id', $id)->first();
@@ -498,7 +498,9 @@ class CartController extends Controller
     public function cartUpdate($id, $key, $value)
     {
         try {
-            Cart::update($id, [
+            Cart::update(
+                $id,
+                [
                 $key => $value, // new item name
                     ]
             );

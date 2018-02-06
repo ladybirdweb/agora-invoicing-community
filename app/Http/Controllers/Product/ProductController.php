@@ -462,7 +462,7 @@ class ProductController extends Controller
         }
     }
 
-    public function GetMyUrl()
+    public function getMyUrl()
     {
         $server = new Request();
         $url = $_SERVER['REQUEST_URI'];

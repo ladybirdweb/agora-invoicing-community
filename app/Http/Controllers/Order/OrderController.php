@@ -91,7 +91,7 @@ class OrderController extends Controller
         }
     }
 
-    public function GetOrders(Request $request)
+    public function getOrders(Request $request)
     {
         $order_no = $request->input('order_no');
         $product_id = $request->input('product_id');

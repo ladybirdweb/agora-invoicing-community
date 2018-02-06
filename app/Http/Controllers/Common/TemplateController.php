@@ -125,7 +125,7 @@ class TemplateController extends Controller
         }
     }
 
-    public function GetTemplates()
+    public function getTemplates()
     {
         return \DataTables::of($this->template->select('id', 'name', 'type')->get())
                         ->addColumn('#', function ($model) {

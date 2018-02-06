@@ -73,7 +73,7 @@ class CheckoutController extends Controller
     //     $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm(Request $request)
+    public function checkoutForm(Request $request)
     {
         $currency = 'INR';
         $cart_currency = 'INR';
@@ -122,7 +122,7 @@ class CheckoutController extends Controller
                     ], [
                 'domain.*.required' => 'Please provide Domain name',
                 //'domain.*.url'      => 'Domain name is not valid',
-            ]);
+                       ]);
         }
 
         try {
@@ -177,7 +177,7 @@ class CheckoutController extends Controller
                     ], [
 
                 'payment_gateway.required' => 'Please choose a payment gateway',
-            ]);
+                    ]);
         }
 
         try {
@@ -185,11 +185,9 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
             if ($paynow == false) {
-
-                /*
+                  /*
                  * Do order, invoicing etc
                  */
-
                 $invoice = $invoice_controller->generateInvoice();
                 $status = 'pending';
                 if (!$payment_method) {
@@ -237,8 +235,7 @@ class CheckoutController extends Controller
     public function checkoutAction($invoice)
     {
         try {
-
-            //get elements from invoice
+             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
             $invoice->status = 'success';

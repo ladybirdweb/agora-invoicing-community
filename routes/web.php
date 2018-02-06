@@ -219,7 +219,7 @@
 
         Route::resource('orders', 'Order\OrderController');
         Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders']);
-        // Route::get('get-orders', 'Order\OrderController@GetOrders');
+        // Route::get('get-orders', 'Order\OrderController@getOrders');
         Route::get('orders-delete', 'Order\OrderController@destroy');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::get('change-domain', 'Order\OrderController@domainChange');

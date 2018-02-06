@@ -504,7 +504,7 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            dd($ex);
+            // dd($ex);
 
             throw new \Exception($ex->getMessage());
         }

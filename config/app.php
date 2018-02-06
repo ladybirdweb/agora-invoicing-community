@@ -181,10 +181,14 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+
+          Collective\Html\HtmlServiceProvider::class,
+         Barryvdh\DomPDF\ServiceProvider::class,
         // Illuminate\Support\Facades\Input::class,
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
+
 
     ],
 
@@ -232,12 +236,19 @@ return [
         'Session'      => Illuminate\Support\Facades\Session::class,
         'Storage'      => Illuminate\Support\Facades\Storage::class,
         'URL'          => Illuminate\Support\Facades\URL::class,
+
+        'Form'      => Collective\Html\FormFacade::class,
+        'HTML'      => Collective\Html\HtmlFacade::class,
+        
+
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
         'Input'        => Illuminate\Support\Facades\Input::class,
 
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+          'PDF'   =>      Barryvdh\DomPDF\Facade::class,
+
 
     ],
 

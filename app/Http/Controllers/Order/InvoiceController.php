@@ -20,6 +20,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Input;
 
+
 class InvoiceController extends Controller
 {
     public $invoice;
@@ -35,6 +36,7 @@ class InvoiceController extends Controller
     public $tax;
     public $tax_option;
     public $order;
+
 
     public function __construct()
     {
@@ -671,10 +673,11 @@ class InvoiceController extends Controller
             }
             //return view('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            dd($ex);
+            // dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

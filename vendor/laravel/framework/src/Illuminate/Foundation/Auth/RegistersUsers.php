@@ -180,14 +180,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             } else {
                 throw new NotFoundHttpException();
             }
-            //dd($email);
+            
             $url = 'auth/login';
             $user = $user->where('email', $email)->first();
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                // $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 

@@ -66,7 +66,7 @@
         $('#pages-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-invoices') !!}',
+            ajax: '{!! route('get-pages') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -78,10 +78,10 @@
               }],
           
             columns: [
-                {data: 'user_id', name: 'Client'},
-                {data: 'number', name: 'Url'},
-                {data: 'date', name: 'Created At'},
-                {data: 'grand_total', name: 'Content'},
+                {data: 'name', name: 'name'},
+                {data: 'url', name: 'Url'},
+                {data: 'created_at', name: 'Created At'},
+                {data: 'content', name: 'Content'},
                 
                 {data: 'action', name: 'Action'}
             ],

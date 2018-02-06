@@ -185,7 +185,7 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
             if ($paynow == false) {
-                  /*
+                /*
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
@@ -235,7 +235,7 @@ class CheckoutController extends Controller
     public function checkoutAction($invoice)
     {
         try {
-             //get elements from invoice
+            //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
             $invoice->status = 'success';

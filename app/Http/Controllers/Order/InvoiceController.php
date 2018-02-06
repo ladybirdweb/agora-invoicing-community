@@ -20,7 +20,6 @@ use App\User;
 use Illuminate\Http\Request;
 use Input;
 
-
 class InvoiceController extends Controller
 {
     public $invoice;
@@ -36,7 +35,6 @@ class InvoiceController extends Controller
     public $tax;
     public $tax_option;
     public $order;
-
 
     public function __construct()
     {

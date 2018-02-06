@@ -189,7 +189,6 @@ return [
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
 
-
     ],
 
     /*
@@ -239,7 +238,6 @@ return [
 
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,
-        
 
         'Validator'    => Illuminate\Support\Facades\Validator::class,
         'View'         => Illuminate\Support\Facades\View::class,
@@ -247,8 +245,7 @@ return [
 
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
-          'PDF'   =>      Barryvdh\DomPDF\Facade::class,
-
+          'PDF'        => Barryvdh\DomPDF\Facade::class,
 
     ],
 

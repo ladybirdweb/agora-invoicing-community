@@ -24,7 +24,7 @@ class SettingsSeeder extends Seeder
             'subscription_going_to_end' => 6,
             'forgot_password'           => 5,
             'order_mail'                => 4,
-            'welcome_mail'              => 2,
+            'welcome_mail'              => 1,
             'download'                  => 9,
             'invoice_template'          => 8,
             // 'phone'                     => '',

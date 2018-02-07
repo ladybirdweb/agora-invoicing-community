@@ -176,11 +176,11 @@ class TemplateTypeTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TemplateType::create(['id' => 1, 'name' => 'welcome_mail']);
         TemplateType::create(['id' => 2, 'name' => 'forgot_password']);
-         TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end']);
+        TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end']);
         TemplateType::create(['id' => 5, 'name' => 'subscription_over']);
         TemplateType::create(['id' => 6, 'name' => 'invoice']);
         TemplateType::create(['id' => 7, 'name' => 'order_mail']);
-          TemplateType::create(['id' => 8, 'name' => 'download_mail']);
+        TemplateType::create(['id' => 8, 'name' => 'download_mail']);
         TemplateType::create(['id' => 9, 'name' => 'manager_email']);
     }
 }
@@ -258,10 +258,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-
-
-
-Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation', 'type' => 7, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation', 'type' => 7, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -347,9 +344,7 @@ Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation',
 </table>
 <p>&nbsp;</p>']);
 
-
-
-Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', 'type' => 2, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', 'type' => 2, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -410,8 +405,7 @@ Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', '
 </table>
 <p>&nbsp;</p>']);
 
-
-Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal reminder', 'type' => 4, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal reminder', 'type' => 4, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -496,8 +490,7 @@ Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal re
 </table>
 <p>&nbsp;</p>']);
 
-
-Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expired', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expired', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -582,7 +575,7 @@ Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expir
 </table>
 <p>&nbsp;</p>']);
 
-Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -664,16 +657,13 @@ Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 5, 
 </table>
 <p>&nbsp;</p>']);
 
-
-Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
 <p>This is {{manager_first_name}} {{manager_last_name}}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
 <p>Regards,</p>
 <p>{{manager_first_name}}{{manager_last_name}}</p>
 <p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
-
-
     }
 }
 class GitHubTableSeeder extends Seeder

@@ -13,6 +13,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+      'version' => ' v1.0.6',
 
     /*
     |--------------------------------------------------------------------------
@@ -183,7 +184,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 
           Collective\Html\HtmlServiceProvider::class,
-         Barryvdh\DomPDF\ServiceProvider::class,
+           Barryvdh\DomPDF\ServiceProvider::class,
         // Illuminate\Support\Facades\Input::class,
 
          Yajra\DataTables\HtmlServiceProvider::class,

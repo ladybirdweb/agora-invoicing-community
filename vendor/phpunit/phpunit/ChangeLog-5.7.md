@@ -2,6 +2,14 @@
 
 All notable changes of the PHPUnit 5.7 release series are documented in this file using the [Keep a CHANGELOG](http://keepachangelog.com/) principles.
 
+## [5.7.27] - 2018-02-01
+
+### Fixed
+
+* Fixed [#2236](https://github.com/sebastianbergmann/phpunit/issues/2236): Exceptions in `tearDown()` do not affect `getStatus()`
+* Fixed [#2950](https://github.com/sebastianbergmann/phpunit/issues/2950): Class extending `PHPUnit\Framework\TestSuite` does not extend `PHPUnit\FrameworkTestCase`
+* Fixed [#2972](https://github.com/sebastianbergmann/phpunit/issues/2972): PHPUnit crashes when test suite contains both `.phpt` files and unconventionally named tests
+
 ## [5.7.26] - 2017-12-17
 
 ### Fixed
@@ -203,6 +211,7 @@ All notable changes of the PHPUnit 5.7 release series are documented in this fil
 * The `--tap` and `--log-tap` commandline options have been deprecated
 * The `--self-update` and `--self-upgrade` commandline options have been deprecated (PHAR binary only)
 
+[5.7.27]: https://github.com/sebastianbergmann/phpunit/compare/5.7.26...5.7.27
 [5.7.26]: https://github.com/sebastianbergmann/phpunit/compare/5.7.25...5.7.26
 [5.7.25]: https://github.com/sebastianbergmann/phpunit/compare/5.7.24...5.7.25
 [5.7.24]: https://github.com/sebastianbergmann/phpunit/compare/5.7.23...5.7.24

@@ -50,39 +50,17 @@ class ProcessTest extends TestCase
 
     /**
      * @group legacy
-     * @expectedDeprecation The provided cwd does not exist. Command is currently ran against getcwd(). This behavior is deprecated since version 3.4 and will be removed in 4.0.
+     * @expectedDeprecation The provided cwd does not exist. Command is currently ran against getcwd(). This behavior is deprecated since Symfony 3.4 and will be removed in 4.0.
      */
     public function testInvalidCwd()
     {
         if ('\\' === DIRECTORY_SEPARATOR) {
-            $this->markTestSkipped('Windows handles this automatically.');
+            $this->markTestSkipped('False-positive on Windows/appveyor.');
         }
 
         // Check that it works fine if the CWD exists
         $cmd = new Process('echo test', __DIR__);
         $cmd->run();
-
-        $cmd = new Process('echo test', __DIR__.'/notfound/');
-        $cmd->run();
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Process\Exception\RuntimeException
-     * @expectedExceptionMessage The provided cwd does not exist.
-     */
-    public function testInvalidCwdOnWindows()
-    {
-        if ('\\' !== DIRECTORY_SEPARATOR) {
-            $this->markTestSkipped('Unix handles this automatically.');
-        }
-
-        try {
-            // Check that it works fine if the CWD exists
-            $cmd = new Process('echo test', __DIR__);
-            $cmd->run();
-        } catch (\Exception $e) {
-            $this->fail($e);
-        }
 
         $cmd = new Process('echo test', __DIR__.'/notfound/');
         $cmd->run();
@@ -597,7 +575,7 @@ class ProcessTest extends TestCase
     {
         $process = $this->getProcess('echo foo');
         $process->run();
-        $this->assertTrue(strlen($process->getOutput()) > 0);
+        $this->assertGreaterThan(0, strlen($process->getOutput()));
     }
 
     public function testGetExitCodeIsNullOnStart()
@@ -1446,6 +1424,7 @@ class ProcessTest extends TestCase
     public function testEnvBackupDoesNotDeleteExistingVars()
     {
         putenv('existing_var=foo');
+        $_ENV['existing_var'] = 'foo';
         $process = $this->getProcess('php -r "echo getenv(\'new_test_var\');"');
         $process->setEnv(array('existing_var' => 'bar', 'new_test_var' => 'foo'));
         $process->inheritEnvironmentVariables();
@@ -1455,20 +1434,27 @@ class ProcessTest extends TestCase
         $this->assertSame('foo', $process->getOutput());
         $this->assertSame('foo', getenv('existing_var'));
         $this->assertFalse(getenv('new_test_var'));
+
+        putenv('existing_var');
+        unset($_ENV['existing_var']);
     }
 
     public function testEnvIsInherited()
     {
-        $process = $this->getProcessForCode('echo serialize($_SERVER);', null, array('BAR' => 'BAZ'));
+        $process = $this->getProcessForCode('echo serialize($_SERVER);', null, array('BAR' => 'BAZ', 'EMPTY' => ''));
 
         putenv('FOO=BAR');
+        $_ENV['FOO'] = 'BAR';
 
         $process->run();
 
-        $expected = array('BAR' => 'BAZ', 'FOO' => 'BAR');
+        $expected = array('BAR' => 'BAZ', 'EMPTY' => '', 'FOO' => 'BAR');
         $env = array_intersect_key(unserialize($process->getOutput()), $expected);
 
         $this->assertEquals($expected, $env);
+
+        putenv('FOO');
+        unset($_ENV['FOO']);
     }
 
     /**
@@ -1479,6 +1465,7 @@ class ProcessTest extends TestCase
         $process = $this->getProcessForCode('echo serialize($_SERVER);', null, array('BAR' => 'BAZ'));
 
         putenv('FOO=BAR');
+        $_ENV['FOO'] = 'BAR';
 
         $this->assertSame($process, $process->inheritEnvironmentVariables(false));
         $this->assertFalse($process->areEnvironmentVariablesInherited());
@@ -1490,6 +1477,9 @@ class ProcessTest extends TestCase
         unset($expected['FOO']);
 
         $this->assertSame($expected, $env);
+
+        putenv('FOO');
+        unset($_ENV['FOO']);
     }
 
     public function testGetCommandLine()

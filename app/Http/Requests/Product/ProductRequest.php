@@ -38,10 +38,10 @@ class ProductRequest extends Request
             ];
     }
 
-      public function messages()
+    public function messages()
     {
         return [
-            'price.numeric' => 'Price should be a numeric value',
+            'price.numeric'          => 'Price should be a numeric value',
             'qty.integer'            => 'Quantity should be a integer value',
         ];
     }

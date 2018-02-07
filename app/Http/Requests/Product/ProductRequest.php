@@ -29,12 +29,20 @@ class ProductRequest extends Request
                 'group'             => 'required',
                 'subscription'      => 'required',
                 'currency'          => 'required',
-                'price'             => 'required',
+                'price'             => 'numeric',
                 'file'              => 'required_without_all:github_owner,github_repository|mimes:zip',
                 'image'             => 'required_without_all:github_owner,github_repository|mimes:png',
                 'github_owner'      => 'required_without_all:file,image',
                 'github_repository' => 'required_without_all:file,image|required_if:type,2',
 
             ];
+    }
+
+      public function messages()
+    {
+        return [
+            'price.numeric' => 'Price should be a numeric value',
+            'qty.integer'            => 'Quantity should be a integer value',
+        ];
     }
 }

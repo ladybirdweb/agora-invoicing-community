@@ -191,7 +191,7 @@ class ProductController extends Controller
                     'name'    => 'required|unique:products,name',
                     'type'    => 'required',
                     'group'   => 'required',
-                    // 'version' => 'required',
+                    // 'price' => 'required',
         ]);
         $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
             return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';

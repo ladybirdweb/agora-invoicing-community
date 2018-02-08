@@ -281,23 +281,23 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-        $fields = Setting::where('id', '=', 1)->first();
-        $driver = '';
-        $port = '';
-        $host = '';
-        $enc = '';
-        $email = '';
-        $mail_password = '';
-        $name = '';
-        if ($fields) {
-            $driver = $fields->driver;
-            $port = $fields->port;
-            $host = $fields->host;
-            $enc = $fields->encryption;
-            $email = $fields->email;
-            $mail_password = $fields->password;
-            $name = $fields->company;
-        }
+                $fields =$settings;
+                $driver = '';
+                $port = '';
+                $host = '';
+                $enc = '';
+                $email = '';
+                $mail_password = '';
+                $name = '';
+                if ($fields) {
+                    $driver = $fields->driver;
+                    $port = $fields->port;
+                    $host = $fields->host;
+                    $enc = $fields->encryption;
+                    $email = $fields->email;
+                    $mail_password = $fields->password;
+                    $name = $fields->company;
+                }
 
 
 
@@ -515,7 +515,7 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            // dd($ex);
+            dd($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -536,21 +536,21 @@ class TemplateController extends Controller
             // dd($result);
 
             // $location = \GeoIP::getLocation();
-            //           $location = ['ip'   => '::1',
-            // 'isoCode'                     => 'IN',
-            // 'country'                     => 'India',
-            // 'city'                        => 'Bengaluru',
-            // 'state'                       => 'KA',
-            // 'postal_code'                 => 560076,
-            // 'lat'                         => 12.9833,
-            // 'lon'                         => 77.5833,
-            // 'timezone'                    => 'Asia/Kolkata',
-            // 'continent'                   => 'AS',
-            // 'default'                     => false, ];
-            //           $counrty_iso = $location['isoCode'];
+              if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+            {
+              $ip=$_SERVER['HTTP_CLIENT_IP'];
+            }
+            elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+            {
+              $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+            else
+            {
+              $ip=$_SERVER['REMOTE_ADDR'];
+            }
 
-            //           $state_code = $location['isoCode'].'-'.$location['state'];
-            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+           
+           $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);

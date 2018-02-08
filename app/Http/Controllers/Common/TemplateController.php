@@ -281,25 +281,23 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-        $fields = Setting::where('id', '=', 1)->first();
-        $driver = '';
-        $port = '';
-        $host = '';
-        $enc = '';
-        $email = '';
-        $mail_password = '';
-        $name = '';
-        if ($fields) {
-            $driver = $fields->driver;
-            $port = $fields->port;
-            $host = $fields->host;
-            $enc = $fields->encryption;
-            $email = $fields->email;
-            $mail_password = $fields->password;
-            $name = $fields->company;
-        }
-
-
+            $fields = Setting::where('id', '=', 1)->first();
+            $driver = '';
+            $port = '';
+            $host = '';
+            $enc = '';
+            $email = '';
+            $mail_password = '';
+            $name = '';
+            if ($fields) {
+                $driver = $fields->driver;
+                $port = $fields->port;
+                $host = $fields->host;
+                $enc = $fields->encryption;
+                $email = $fields->email;
+                $mail_password = $fields->password;
+                $name = $fields->company;
+            }
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;

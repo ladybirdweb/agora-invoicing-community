@@ -280,7 +280,8 @@ class TemplateController extends Controller
             /*Mail config*/
 
             // // // Set the mailer
-              $fields = Setting::where('id', '=', 1)->first();
+
+        $fields = Setting::where('id', '=', 1)->first();
         $driver = '';
         $port = '';
         $host = '';
@@ -298,19 +299,11 @@ class TemplateController extends Controller
             $name = $fields->company;
         }
 
-        dd($mail_password);
 
-            // $fields = Setting::where('id', '=', 1)->first();
-            // $email = '';
-            // $mail_password = '';
-            // if ($fields) {
-            //     $email = $fields->email;
-            //     $mail_password = $fields->password;
-            // }
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport($host,  $port,  $enc);
+            $transport = new \Swift_SmtpTransport($host, $port, $enc);
             $transport->setUsername($email);
             $transport->setPassword($mail_password);
             $transport->setStreamOptions($https);

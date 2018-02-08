@@ -140,9 +140,9 @@ $tax=  0;
                                     </th>
                                     <td>
                                         <strong><span class="amount"><small>{!! $symbol !!} </small> 
-                                            
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
                                            
-                                            {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong>
+                                           <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> -->
                                     </td>
                                 </tr>
 
@@ -214,7 +214,8 @@ $tax=  0;
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong>
+                        {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
+                        <!-- <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> -->
                     </td>
                 </tr>
             </tbody>

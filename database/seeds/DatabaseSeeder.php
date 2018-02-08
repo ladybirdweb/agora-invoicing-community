@@ -8,6 +8,7 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
+use App\Model\Payment\Period;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
@@ -30,6 +31,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call('TemplateTypeTableSeeder');
         $this->command->info('Template Type table seeded!');
+
+        $this->call('PeriodTypeTableSeeder');
+        $this->command->info('Period table seeded!');
 
         $this->call('TemplateTableSeeder');
         $this->command->info('Template table seeded!');
@@ -115,7 +119,26 @@ class CurrencyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Doller', 'base_conversion' => '1.0']);
+        Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
+    }
+}
+
+class PeriodTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('periods')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Period::create(['id' => 1 , 'name' => '1 Year', 'days' => '365']);
+        Period::create(['id' => 2 , 'name' => '2 Years', 'days' => '730']);
+        Period::create(['id' => 3 , 'name' => '3 Years', 'days' => '1095']);
+        Period::create(['id' => 4 , 'name' => '4 Years', 'days' => '1460']);
+        Period::create(['id' => 5 , 'name' => '5 Years', 'days' => '1825']);
+        Period::create(['id' => 6 , 'name' => '6 Years', 'days' => '2190']);
+        Period::create(['id' => 7 , 'name' => '7 Years', 'days' => '2555']);
+        Period::create(['id' => 8 , 'name' => '8 Years', 'days' => '2920']);
+        Period::create(['id' => 9 , 'name' => '9 Years', 'days' => '3285']);
     }
 }
 

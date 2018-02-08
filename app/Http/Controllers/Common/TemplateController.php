@@ -279,13 +279,7 @@ class TemplateController extends Controller
 
             /*Mail config*/
 
-            // $https['ssl']['verify_peer'] = false;
-            // $https['ssl']['verify_peer_name'] = false;
-            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            // $transport->setUsername('ashutoshpathak177@gmail.com');
-            // $transport->setPassword('cleaningoutmycloset');
-            // $transport->setStreamOptions($https);
-            // $set = new \Swift_Mailer($transport);
+           
 
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);

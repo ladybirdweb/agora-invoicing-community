@@ -281,7 +281,6 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-
             $fields = Setting::where('id', '=', 1)->first();
             $driver = '';
             $port = '';
@@ -299,7 +298,6 @@ class TemplateController extends Controller
                 $mail_password = $fields->password;
                 $name = $fields->company;
             }
-
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
@@ -551,21 +549,15 @@ class TemplateController extends Controller
 
             //           $state_code = $location['isoCode'].'-'.$location['state'];
 
-            if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
-    {
-      $ip=$_SERVER['HTTP_CLIENT_IP'];
-    }
-    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
-    {
-      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-    }
-    else
-    {
-      $ip=$_SERVER['REMOTE_ADDR'];
-    }
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
 
-   
-   $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
+            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
             // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);

@@ -126,7 +126,16 @@ class AuthController extends Controller
             $country = $request->input('country');
             $currency = 'INR';
             $ip = $request->ip();
-            $location = \GeoIP::getLocation($ip);
+            // $location = \GeoIP::getLocation($ip);
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+
+            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
             if ($country == 'IN') {
                 $currency = 'INR';
             } else {
@@ -382,7 +391,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
             // dd($email, $method, $pass);
             $this->sendActivation($email, $method, $pass);

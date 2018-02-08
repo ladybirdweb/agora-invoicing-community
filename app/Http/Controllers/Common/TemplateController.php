@@ -281,6 +281,7 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
+
                 $fields =$settings;
                 $driver = '';
                 $port = '';
@@ -301,9 +302,10 @@ class TemplateController extends Controller
 
 
 
+
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport($host, $port, $enc);
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
             $transport->setUsername($email);
             $transport->setPassword($mail_password);
             $transport->setStreamOptions($https);
@@ -536,21 +538,33 @@ class TemplateController extends Controller
             // dd($result);
 
             // $location = \GeoIP::getLocation();
-              if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
-            {
-              $ip=$_SERVER['HTTP_CLIENT_IP'];
-            }
-            elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
-            {
-              $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-            }
-            else
-            {
-              $ip=$_SERVER['REMOTE_ADDR'];
+
+            //           $location = ['ip'   => '::1',
+            // 'isoCode'                     => 'IN',
+            // 'country'                     => 'India',
+            // 'city'                        => 'Bengaluru',
+            // 'state'                       => 'KA',
+            // 'postal_code'                 => 560076,
+            // 'lat'                         => 12.9833,
+            // 'lon'                         => 77.5833,
+            // 'timezone'                    => 'Asia/Kolkata',
+            // 'continent'                   => 'AS',
+            // 'default'                     => false, ];
+            //           $counrty_iso = $location['isoCode'];
+
+            //           $state_code = $location['isoCode'].'-'.$location['state'];
+
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
             }
 
-           
-           $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
+            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+            // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);

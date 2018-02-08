@@ -280,23 +280,23 @@ class TemplateController extends Controller
             /*Mail config*/
 
             // // // Set the mailer
-            $fields = Setting::where('id', '=', 1)->first();
-            $driver = '';
-            $port = '';
-            $host = '';
-            $enc = '';
-            $email = '';
-            $mail_password = '';
-            $name = '';
-            if ($fields) {
-                $driver = $fields->driver;
-                $port = $fields->port;
-                $host = $fields->host;
-                $enc = $fields->encryption;
-                $email = $fields->email;
-                $mail_password = $fields->password;
-                $name = $fields->company;
-            }
+            // $fields = Setting::where('id', '=', 1)->first();
+            // $driver = '';
+            // $port = '';
+            // $host = '';
+            // $enc = '';
+            // $email = '';
+            // $mail_password = '';
+            // $name = '';
+           
+            //     $driver = $fields->driver;
+            //     $port = $fields->port;
+            //     $host = $fields->host;
+            //     $enc = $fields->encryption;
+                $email = $settings->email;
+                $mail_password = $settings->password;
+                // $name = $fields->company;
+            
 
             // $fields = Setting::where('id', '=', 1)->first();
             // $email = '';
@@ -308,7 +308,7 @@ class TemplateController extends Controller
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport($host, $port, $enc);
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
             $transport->setUsername($email);
             $transport->setPassword($mail_password);
             $transport->setStreamOptions($https);
@@ -555,7 +555,23 @@ class TemplateController extends Controller
             //           $counrty_iso = $location['isoCode'];
 
             //           $state_code = $location['isoCode'].'-'.$location['state'];
-            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+
+            if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+   
+   $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
+            // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);

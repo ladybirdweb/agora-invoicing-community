@@ -279,8 +279,6 @@ class TemplateController extends Controller
 
             /*Mail config*/
 
-           
-
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
 

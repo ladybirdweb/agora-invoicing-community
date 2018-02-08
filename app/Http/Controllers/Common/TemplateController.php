@@ -108,7 +108,7 @@ class TemplateController extends Controller
         Config::set('mail.password', $password);
         Config::set('mail.username', $email);
         Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => 'arindam.ladybird@gmail.com']);
+        Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
         dump(Config::get('mail'));
@@ -280,31 +280,26 @@ class TemplateController extends Controller
             /*Mail config*/
 
             // // // Set the mailer
-            // $fields = Setting::where('id', '=', 1)->first();
-            // $driver = '';
-            // $port = '';
-            // $host = '';
-            // $enc = '';
-            // $email = '';
-            // $mail_password = '';
-            // $name = '';
-           
-            //     $driver = $fields->driver;
-            //     $port = $fields->port;
-            //     $host = $fields->host;
-            //     $enc = $fields->encryption;
-                $email = $settings->email;
-                $mail_password = $settings->password;
-                // $name = $fields->company;
-            
 
-            // $fields = Setting::where('id', '=', 1)->first();
-            // $email = '';
-            // $mail_password = '';
-            // if ($fields) {
-            //     $email = $fields->email;
-            //     $mail_password = $fields->password;
-            // }
+
+            $fields = Setting::where('id', '=', 1)->first();
+            $driver = '';
+            $port = '';
+            $host = '';
+            $enc = '';
+            $email = '';
+            $mail_password = '';
+            $name = '';
+            if ($fields) {
+                $driver = $fields->driver;
+                $port = $fields->port;
+                $host = $fields->host;
+                $enc = $fields->encryption;
+                $email = $fields->email;
+                $mail_password = $fields->password;
+                $name = $fields->company;
+            }
+
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;

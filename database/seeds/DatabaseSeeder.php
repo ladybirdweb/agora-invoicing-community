@@ -123,7 +123,7 @@ class CurrencyTableSeeder extends Seeder
     }
 }
 
-class PeriodTableSeeder extends Seeder
+class PeriodTypeTableSeeder extends Seeder
 {
     public function run()
     {

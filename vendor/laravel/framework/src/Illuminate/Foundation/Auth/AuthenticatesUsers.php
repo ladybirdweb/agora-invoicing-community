@@ -217,7 +217,7 @@ trait AuthenticatesUsers
     public function logout(Request $request)
     {
         
-        // $this->guard()->logout();
+        $this->guard()->logout();
 
         $request->session()->invalidate();
 

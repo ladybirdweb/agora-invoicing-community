@@ -281,27 +281,23 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-
-                $fields =$settings;
-                $driver = '';
-                $port = '';
-                $host = '';
-                $enc = '';
-                $email = '';
-                $mail_password = '';
-                $name = '';
-                if ($fields) {
-                    $driver = $fields->driver;
-                    $port = $fields->port;
-                    $host = $fields->host;
-                    $enc = $fields->encryption;
-                    $email = $fields->email;
-                    $mail_password = $fields->password;
-                    $name = $fields->company;
-                }
-
-
-
+            $fields = $settings;
+            $driver = '';
+            $port = '';
+            $host = '';
+            $enc = '';
+            $email = '';
+            $mail_password = '';
+            $name = '';
+            if ($fields) {
+                $driver = $fields->driver;
+                $port = $fields->port;
+                $host = $fields->host;
+                $enc = $fields->encryption;
+                $email = $fields->email;
+                $mail_password = $fields->password;
+                $name = $fields->company;
+            }
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
@@ -564,7 +560,6 @@ class TemplateController extends Controller
 
             $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
             // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);

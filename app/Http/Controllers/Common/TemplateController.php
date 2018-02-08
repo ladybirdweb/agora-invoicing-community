@@ -280,19 +280,35 @@ class TemplateController extends Controller
             /*Mail config*/
 
             // // // Set the mailer
-            // \Mail::setSwiftMailer($set);
+              $fields = Setting::where('id', '=', 1)->first();
+                $driver = '';
+                $port = '';
+                $host = '';
+                $enc = '';
+                $email = '';
+                $mail_password = '';
+                $name = '';
+                if ($fields) {
+                    $driver = $fields->driver;
+                    $port = $fields->port;
+                    $host = $fields->host;
+                    $enc = $fields->encryption;
+                    $email = $fields->email;
+                    $mail_password = $fields->password;
+                    $name = $fields->company;
+                }
 
-            $fields = Setting::where('id', '=', 1)->select('email', 'password')->first();
-            $email = '';
-            $mail_password = '';
-            if ($fields) {
-                $email = $fields->email;
-                $mail_password = $fields->password;
-            }
+            // $fields = Setting::where('id', '=', 1)->first();
+            // $email = '';
+            // $mail_password = '';
+            // if ($fields) {
+            //     $email = $fields->email;
+            //     $mail_password = $fields->password;
+            // }
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            $transport = new \Swift_SmtpTransport($host,  $port,  $enc);
             $transport->setUsername($email);
             $transport->setPassword($mail_password);
             $transport->setStreamOptions($https);

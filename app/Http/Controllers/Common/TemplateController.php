@@ -19,7 +19,6 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Config;
 use Illuminate\Http\Request;
- use Illuminate\Support\Facades\Crypt;
 
 class TemplateController extends Controller
 {
@@ -283,15 +282,14 @@ class TemplateController extends Controller
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
 
-       
-            $fields = Setting::where('id','=',1)->select('email','password')->first();
-            $email='';
-            $mail_password ='';
-            if($fields){
-                $email=$fields->email;
-               $mail_password = $fields->password;
+            $fields = Setting::where('id', '=', 1)->select('email', 'password')->first();
+            $email = '';
+            $mail_password = '';
+            if ($fields) {
+                $email = $fields->email;
+                $mail_password = $fields->password;
             }
-        
+
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
             $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');

@@ -103,22 +103,22 @@ if (count($attributes) > 0) {
                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                         $cart_controller = new App\Http\Controllers\Front\CartController();
                                                         $value = $cart_controller->cost($product->id);
-                                                        // dd($value);
+                                                       
                                                         $price += $value;
-                                                        // dd($price);
+                                                    
                                                         if ($product->require_domain == 1) {
                                                             $domain[$key] = $product->id;
 
                                                         }
                                                         $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
-                                                        // dd($multi_product);
+                                                        
                                                         $total = Cart::getSubTotal();
-                                                        // dd($total);
+                                                      
 
                                                         $sum = $item->getPriceSum();
-                                                        // dd($sum);
+                                                    
                                                         $tax = $total-$sum;
-                                                        // dd($tax);
+                                                      
                                                         
                                                         ?>
 
@@ -145,21 +145,14 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                        <!-- <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
-                                                             <!-- {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}} -->
+                                                   
                                                              {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
                                                         </span>
                                                     </td>
 
                                                 </tr>
 
-<!--                                        <tr>
-                                            <td class="actions" colspan="6">
-                                                <div class="actions-continue">
-                                                    <input type="submit" value="Update Cart" name="update_cart" class="btn btn-default">
-                                                </div>
-                                            </td>
-                                        </tr>-->
+
                                                 @endforeach
                                             </tbody>
                                         </table>
@@ -168,7 +161,7 @@ if (count($attributes) > 0) {
                             </div>
                         </li>
                         <?php $addons = \App\Http\Controllers\Front\CartController::addons();
-                        // dd($addons);
+              
                         ?>
                         @if(count($addons)>0)
                         <li>
@@ -199,7 +192,7 @@ if (count($attributes) > 0) {
                                 <tbody>
 
                                      
-                                   <!--  @foreach($item->attributes['tax'] as $attribute)
+                                    @foreach($item->attributes['tax'] as $attribute)
                                    
                                     @if($attribute['name']!='null')
                                     <tr>
@@ -213,7 +206,7 @@ if (count($attributes) > 0) {
 
                                     </tr>
                                     @endif
-                                    @endforeach -->
+                                    @endforeach
 
                                     <tr class="total">
                                         <th>

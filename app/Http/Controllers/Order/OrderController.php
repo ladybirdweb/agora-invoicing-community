@@ -30,7 +30,7 @@ class OrderController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
 
         $order = new Order();
         $this->order = $order;

@@ -731,14 +731,13 @@ class TemplateController extends Controller
 
     public function leastAmount($id)
     {
-        
         $cost = 'Free';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-     
+
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
-     
+
         if ($plans->count() > 0) {
             foreach ($plans as $value) {
                 $days = $value->min('days');

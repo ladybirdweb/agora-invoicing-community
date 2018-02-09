@@ -34,7 +34,7 @@ if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
 // $location = json_decode(file_get_contents('http://ip-api.com/json'),true);
 
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-//$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
 $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
 $state_code = $location['countryCode'] . "-" . $location['region'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);

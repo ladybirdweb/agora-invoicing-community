@@ -303,7 +303,7 @@ class PageController extends Controller
         // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
 
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-        //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
@@ -330,8 +330,7 @@ class PageController extends Controller
 
         $product = new \App\Model\Product\Product();
         $products = $product->where('id', '!=', 1)->get()->toArray();
-        // dd($products);
-        // dd($products);
+       
         //$cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         // dd($temp_controller);

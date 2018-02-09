@@ -562,7 +562,7 @@ class TemplateController extends Controller
             // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['countryCode'].'-'.$location['region'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
@@ -731,14 +731,14 @@ class TemplateController extends Controller
 
     public function leastAmount($id)
     {
-        // dd($id);
+        
         $cost = 'Free';
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-        // dd($plans);
+     
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
-        // dd($plans->count() > 0);
+     
         if ($plans->count() > 0) {
             foreach ($plans as $value) {
                 $days = $value->min('days');

@@ -39,40 +39,43 @@ trait RegistersUsers
     {
 
        
-    // return $request->all();
+
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
             $currency = 'INR';
-            // $ip = $request->ip();
-            // $location=[  "ip" => "::1",
-            //           "isoCode" => "IN",
-            //           "country" => "India",
-            //           "city" => "Bengaluru",
-            //           "state" => "KA",
-            //           "postal_code" => 560076,
-            //           "lat" => 12.9833,
-            //           "lon" => 77.5833,
-            //           "timezone" => "Asia/Kolkata",
-            //           "continent" => "AS",
-            //           "default" => false];
-            $location = json_decode(file_get_contents('http://ip-api.com/json'),true);
+           if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+                {
+                  $ip=$_SERVER['HTTP_CLIENT_IP'];
+                }
+                elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+                {
+                  $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+                }
+                else
+                {
+                  $ip=$_SERVER['REMOTE_ADDR'];
+                }
 
-$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-//$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
-$states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-$state_code = $location['countryCode'] . "-" . $location['region'];
-$state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            // $location = \GeoIP::getLocation($ip);
-            if ($country == 'IN') {
-                $currency = 'INR';
-            } else {
-                $currency = 'USD';
+               
+               $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
+                        // $location = json_decode(file_get_contents('http://ip-api.com/json'),true);
+
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            $state_code = $location['countryCode'] . "-" . $location['region'];
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+                        // $location = \GeoIP::getLocation($ip);
+                        if ($country == 'IN') {
+                            $currency = 'INR';
+                        } else {
+                            $currency = 'USD';
             }
-            if (\Session::has('currency')) {
-                $currency = \Session::get('currency');
-            }
+            // if (\Session::has('currency')) {
+            //     $currency = \Session::get('currency');
+            // }
             // $account_manager = $this->accountManager();
             $account_manager = 1;
             $password = \Hash::make($pass);

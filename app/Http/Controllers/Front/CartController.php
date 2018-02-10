@@ -46,6 +46,7 @@ class CartController extends Controller
 
     public function productList(Request $request)
     {
+
        if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
     {
       $ip=$_SERVER['HTTP_CLIENT_IP'];
@@ -63,6 +64,7 @@ class CartController extends Controller
    {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
    else
     {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
+
 
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
         $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);

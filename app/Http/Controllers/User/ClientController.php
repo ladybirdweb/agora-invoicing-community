@@ -50,7 +50,6 @@ class ClientController extends Controller
         $community = $this->soldEdition('faveo helpdesk community');
         $product_count = $this->productCount();
 
-
         return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count', 'industry', 'company_type', 'company_size'));
     }
 
@@ -68,7 +67,7 @@ class ClientController extends Controller
         $industry = $request->input('industry');
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
-      
+
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
         return\ DataTables::of($user)
@@ -272,9 +271,8 @@ class ClientController extends Controller
 
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '')
     {
-        
         $join = $this->user;
-        
+
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
                     ->orWhere('last_name', 'LIKE', '%'.$name.'%');
@@ -304,7 +302,7 @@ class ClientController extends Controller
             $join = $join->where('company_size', $company_size);
         }
 
-        $join = $join->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified')->orderBy('created_at','desc');
+        $join = $join->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified')->orderBy('created_at', 'desc');
 
         return $join;
     }

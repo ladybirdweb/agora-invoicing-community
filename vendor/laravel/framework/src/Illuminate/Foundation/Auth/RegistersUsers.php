@@ -38,8 +38,7 @@ trait RegistersUsers
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
 
-       
-
+     
         try {
             $pass = $request->input('password');
             $country = $request->input('country');

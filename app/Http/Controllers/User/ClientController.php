@@ -35,6 +35,8 @@ class ClientController extends Controller
      */
     public function index(Request $request)
     {
+
+      
         $name = $request->input('name');
         $username = $request->input('username');
         $company = $request->input('company');

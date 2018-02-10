@@ -69,6 +69,7 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
+        // dd('sad');
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
@@ -127,15 +128,23 @@ class AuthController extends Controller
             $currency = 'INR';
             $ip = $request->ip();
             // $location = \GeoIP::getLocation($ip);
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
+           if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
 
-            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+  if($ip!='::1')
+   {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
+   else
+    {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
             if ($country == 'IN') {
                 $currency = 'INR';
             } else {

@@ -209,7 +209,9 @@
         $('#user-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-clients') !!}',
+             ajax: '{{Url("get-clients?name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry")}}',
+
+    
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -222,9 +224,9 @@
             columns: [
                 {data: 'first_name', name: 'first_name'},
                 {data: 'email', name: 'Email'},
-                {data: 'created_at', name: 'Registered on'},
-                {data: 'active', name: 'Status'},
-                {data: 'action', name: 'Action'}
+                {data: 'created_at', name: 'created_at'},
+                {data: 'active', name: 'active'},
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');

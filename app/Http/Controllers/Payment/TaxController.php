@@ -22,7 +22,7 @@ class TaxController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'GetState']);
-        // $this->middleware('admin', ['except' => 'GetState']);
+        $this->middleware('admin', ['except' => 'GetState']);
 
         $tax = new Tax();
         $this->tax = $tax;

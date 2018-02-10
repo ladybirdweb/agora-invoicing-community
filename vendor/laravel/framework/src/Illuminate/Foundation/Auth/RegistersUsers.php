@@ -58,8 +58,10 @@ trait RegistersUsers
                 }
 
                
-               $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);
-                        // $location = json_decode(file_get_contents('http://ip-api.com/json'),true);
+               if($ip!='::1')
+               {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
+               else
+                {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);

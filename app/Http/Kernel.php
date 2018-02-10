@@ -39,6 +39,9 @@ class Kernel extends HttpKernel
              \App\Http\Middleware\Install::class,
         ],
          'admin' => [\App\Http\Middleware\Admin::class],
+          'guest'      => [\App\Http\Middleware\RedirectIfAuthenticated::class],
+           'auth'       => [\Illuminate\Auth\Middleware\Authenticate::class],
+        'auth.basic' => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
 
         'api' => [
             'throttle:60,1',

@@ -418,7 +418,7 @@ class TemplateController extends Controller
     {
         try {
             $product = $this->product->findOrFail($productid);
-            //dd($product);
+            // dd($product);
             if ($product->tax_apply == 1) {
                 $price = $this->checkTax($product->id, $currency);
             } else {
@@ -427,7 +427,7 @@ class TemplateController extends Controller
                     $price = $product->price()->where('currency', $currency)->first()->price;
                 }
             }
-            //dd($price);
+            // dd($price);
             return $price;
         } catch (\Exception $ex) {
             dd($ex);
@@ -550,16 +550,16 @@ class TemplateController extends Controller
 
             //           $state_code = $location['isoCode'].'-'.$location['state'];
 
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
+            // if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            //     $ip = $_SERVER['HTTP_CLIENT_IP'];
+            // } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            //     $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            // } else {
+            //     $ip = $_SERVER['REMOTE_ADDR'];
+            // }
 
-            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-            // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+            // $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);

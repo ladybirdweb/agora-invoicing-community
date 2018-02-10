@@ -80,13 +80,17 @@
                     <thead><tr>
                          <th>Number</th>
                           <th>Products</th>
-                           <th>Date No</th>
+                           
+                            <th>Date No</th>
                             <th>Total</th>
-                            <th>Status</th>
-                           <th>Action</th>
+                            
+                             <th>Status</th>
+                             
+                            <th>Action</th>
                         </tr></thead>
                      </table>
-                    </div>
+
+ </div>
                 </div>
             </div>
         </div>
@@ -111,10 +115,12 @@
               }],
             columns: [
                 {data: 'number', name: 'number'},
-                {data: 'products', name: 'products'},
-                {data: 'date', name: 'date'},
+                {data: 'products', name: 'invoice_item'},
+                {data: 'date', name: 'created_at'},
                 {data: 'total', name: 'total'},
-                {data: 'status', name: 'status'},
+                  {data: 'status', name: 'status'},
+                 
+
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
@@ -125,17 +131,6 @@
             },
         });
     </script>
-
-
-
-
-
-
-
-
-
-
-
 
 <div class="row">
     <div class="col-md-12">
@@ -163,22 +158,7 @@
                         </tr></thead>
                      </table>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                       
+     
                     </div>
                 </div>
             </div>

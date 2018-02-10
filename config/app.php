@@ -105,10 +105,9 @@ return [
 
 'App\Plugins\Ccavanue\ServiceProvider',
     */
-
-    'key' => env('APP_KEY'),
-
-    'cipher' => 'AES-256-CBC',
+     'key' =>'SomeRandomString',
+    'cipher' => 'AES-128-CBC',
+    // 'cipher' => MCRYPT_RIJNDAEL_128,
 
     /*
     |--------------------------------------------------------------------------

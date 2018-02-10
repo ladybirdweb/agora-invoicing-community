@@ -278,14 +278,16 @@ border-top: none;
                                 <!-- fail message -->
                                 @if(Session::has('fails'))
                                 <div class="alert alert-danger alert-dismissable">
-
+                                    <i class="fa fa-ban"></i>
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     {{Session::get('fails')}}
                                 </div>
                                 @endif
                                 @if (count($errors) > 0)
-                                <div class="alert alert-danger">
+                                <div class="alert alert-danger alert-dismissable">
+                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     <strong>Whoops!</strong> Something went wrong<br><br>
+
                                     <ul>
                                         @foreach ($errors->all() as $error)
                                         <li>{!! $error !!}</li>

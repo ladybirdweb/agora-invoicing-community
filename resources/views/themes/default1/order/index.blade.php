@@ -138,7 +138,9 @@
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-orders') !!}',
+             ajax: '{{Url("get-orders?order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain")}}',
+
+           
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

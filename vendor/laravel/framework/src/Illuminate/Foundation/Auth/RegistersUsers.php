@@ -55,7 +55,6 @@ trait RegistersUsers
                 {
                   $ip=$_SERVER['REMOTE_ADDR'];
                 }
-
                
                if($ip!='::1')
                {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}

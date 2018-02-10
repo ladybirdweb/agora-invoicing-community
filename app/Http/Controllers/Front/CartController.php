@@ -58,15 +58,15 @@ class CartController extends Controller
         // 'timezone'                => 'Asia/Kolkata',
         // 'continent'               => 'AS',
         // 'default'                 => false, ];
-      //       if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      // $ip = $_SERVER['HTTP_CLIENT_IP'];
-      //       } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-      //           $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-      //       } else {
-      //           $ip = $_SERVER['REMOTE_ADDR'];
-      //       }
+        //       if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+        // $ip = $_SERVER['HTTP_CLIENT_IP'];
+        //       } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+        //           $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        //       } else {
+        //           $ip = $_SERVER['REMOTE_ADDR'];
+        //       }
 
-      //   $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+        //   $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
         $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
         $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);

@@ -350,6 +350,7 @@ class OrderController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

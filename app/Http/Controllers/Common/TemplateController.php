@@ -281,34 +281,34 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-            $fields = $settings;
-            $driver = '';
-            $port = '';
-            $host = '';
-            $enc = '';
-            $email = '';
-            $mail_password = '';
-            $name = '';
-            if ($fields) {
-                $driver = $fields->driver;
-                $port = $fields->port;
-                $host = $fields->host;
-                $enc = $fields->encryption;
-                $email = $fields->email;
-                $mail_password = $fields->password;
-                $name = $fields->company;
-            }
+            // $fields = $settings;
+            // $driver = '';
+            // $port = '';
+            // $host = '';
+            // $enc = '';
+            // $email = '';
+            // $mail_password = '';
+            // $name = '';
+            // if ($fields) {
+            //     $driver = $fields->driver;
+            //     $port = $fields->port;
+            //     $host = $fields->host;
+            //     $enc = $fields->encryption;
+            //     $email = $fields->email;
+            //     $mail_password = $fields->password;
+            //     $name = $fields->company;
+            // }
 
-            $https['ssl']['verify_peer'] = false;
-            $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            $transport->setUsername($email);
-            $transport->setPassword($mail_password);
-            $transport->setStreamOptions($https);
-            $set = new \Swift_Mailer($transport);
+            // $https['ssl']['verify_peer'] = false;
+            // $https['ssl']['verify_peer_name'] = false;
+            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            // $transport->setUsername($email);
+            // $transport->setPassword($mail_password);
+            // $transport->setStreamOptions($https);
+            // $set = new \Swift_Mailer($transport);
 
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+            // // // Set the mailer
+            // \Mail::setSwiftMailer($set);
 
             /*Mail config ends*/
 

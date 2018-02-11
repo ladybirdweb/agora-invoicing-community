@@ -80,45 +80,46 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('name','Name') !!}
-                {!! Form::text('name',null,['class' => 'form-control']) !!}
+                {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
 
             </div>
             
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('username','Username') !!}
-                {!! Form::text('username',null,['class' => 'form-control']) !!}
+                {!! Form::text('username',null,['class' => 'form-control','id'=>'username']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('company','Company Name') !!}
-                {!! Form::text('company',null,['class' => 'form-control']) !!}
+                {!! Form::text('company',null,['class' => 'form-control','id'=>'company']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('mobile','Mobile') !!}
-                {!! Form::text('mobile',null,['class' => 'form-control']) !!}
+                {!! Form::text('mobile',null,['class' => 'form-control','id'=>'mobile']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('email','Email') !!}
-                {!! Form::text('email',null,['class' => 'form-control']) !!}
+                {!! Form::text('email',null,['class' => 'form-control','id'=>'email']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
-                {!! Form::select('country',[''=>'select','Countries'=>DB::table('countries')->pluck('country_name','country_code_char2')],null,['class' => 'form-control']) !!}
+                {!! Form::select('country',[''=>'select','Countries'=>DB::table('countries')->pluck('country_name','country_code_char2')->toarray()],null,['class' => 'form-control','id'=>'country']) !!}
 
             </div>
 <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
+
 <?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',]; ?>
-                {!! Form::select('industry',[''=>'select','New'=>DB::table('bussinesses')->pluck('name','short'),'old'=>$old],null,['class' => 'form-control']) !!}
+                {!! Form::select('industry',[''=>'select','New'=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','id'=>'industry']) !!}
 
             </div>
 </div>
@@ -129,13 +130,32 @@
                     {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
                 </div>
                 <div class="col-md-6">
-                    {!! Form::submit('Reset',['class'=>'btn btn-danger']) !!}
+                    {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!}
                 </div>
             </div>
 </div>
+                <script type="text/javascript">
+                    $(function () {
+                    $('#reset').on('click', function () {
+                        $('#country').val('');
+                        $('#industry').val('');
+                         $('#name').val('');
+                          $('#email').val('');
+                           $('#mobile').val('');
+                            $('#username').val('');
+                    //     var uri = window.location.toString();
 
-        
+                    // if (uri.indexOf("?") > 0) {
+                    //     var clean_uri = uri.substring(0, uri.indexOf("?"));
+                     
+                    //     window.history.replaceState({}, document.title, clean_uri);
+                    //      window.location.href = clean_uri;
 
+                    // }
+                          
+                    });
+                });
+                </script>
 
 
         {!! Form::close() !!}
@@ -203,15 +223,18 @@
     </div>
 
 </div>
+
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
+  
         $('#user-table').DataTable({
+   
             processing: true,
             serverSide: true,
-             ajax: '{{Url("get-clients?name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry")}}',
+            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry" ) !!}',
+             
 
-    
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

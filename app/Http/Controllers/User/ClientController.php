@@ -68,6 +68,7 @@ class ClientController extends Controller
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
 
+
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
         return\ DataTables::of($user)
@@ -101,7 +102,7 @@ class ClientController extends Controller
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
-                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".'  <a href='.url('clients-delete/'.$model->id)." class='btn btn-sm btn-primary'>Delete</a>";
                             // return 'hhhh';
                         })
                         ->rawColumns(['first_name', 'email', 'active', 'created_at', 'action'])

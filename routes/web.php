@@ -131,9 +131,10 @@
          */
 
         Route::resource('clients', 'User\ClientController');
-        // Route::get('get-clients/{?name}{?username}{?company}{?mobile}{?email}{?country}{?industry}', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
-        Route::get('get-clients', 'User\ClientController@GetClients');
-        Route::get('clients-delete', 'User\ClientController@destroy');
+      
+        // Route::get('get-clients', 'User\ClientController@GetClients');
+         Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
+        Route::get('clients-delete/{$id}', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 
         /*

@@ -68,7 +68,6 @@ class ClientController extends Controller
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
 
-
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
         return\ DataTables::of($user)

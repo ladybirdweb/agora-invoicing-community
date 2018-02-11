@@ -597,7 +597,7 @@ class TemplateTableSeeder extends Seeder
 </table>
 <p>&nbsp;</p>']);
 
-        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 6, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>

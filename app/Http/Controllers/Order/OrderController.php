@@ -349,6 +349,7 @@ class OrderController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.not-saved-successfully'));
             }
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -714,7 +715,7 @@ class OrderController extends Controller
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        //dd($type);
+        // dd($type);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 

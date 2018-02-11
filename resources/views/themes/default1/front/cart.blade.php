@@ -192,7 +192,7 @@ if (count($attributes) > 0) {
                                 <tbody>
 
                                      
-                                    @foreach($item->attributes['tax'] as $attribute)
+                                   <!--  @foreach($item->attributes['tax'] as $attribute)
                                    
                                     @if($attribute['name']!='null')
                                     <tr>
@@ -207,7 +207,7 @@ if (count($attributes) > 0) {
                                     </tr>
                                     @endif
                                     @endforeach
-
+ -->
                                     <tr class="total">
                                         <th>
                                             <strong>Order Total</strong>

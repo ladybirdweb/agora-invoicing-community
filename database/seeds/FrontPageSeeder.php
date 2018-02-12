@@ -21,19 +21,21 @@ class FrontPageSeeder extends Seeder
             'content'       => '<div class="pricing-table princig-table-flat">
                             <div class="col-md-3 col-sm-6">
                                 <div class="plan">
-                                    <h3>{{name}}<span><small style="font-color:white;!important">{{price}}</small></span></h3>
+                                    <h3>{{name}}<span>{{price}}</span></h3>
                                     <ul>
                                         <li>{{feature}}</li>
-                                        
-                                        
-                                    </ul><br/>
+                                    </ul><br />
                                     <ul>
-                                    <li class="subscription">{{subscription}}</li>
-                                         <li>{{url}}</li> 
-                                         </ul>
+                                       
+                                       <li class="subscription">{{subscription}}</li>
+                                        <li>{{url}}</li> 
+                                    </ul>
                                 </div>
                             </div>
-                             </div>',
+                           
+                         
+                           
+                        </div>',
             'url'     => '',
             'type'    => 'cart',
             'publish' => 1,

@@ -46,12 +46,50 @@ main
                     {{Session::get('fails')}}
                 </div>
                 @endif
-    
-    <!--<div class="col-md-12 col-md-offset-3">-->
+    <div class="row">
+                        <div class="col-md-12">
+                            
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold">Helpdesk Pricing</h4>
+                        </div>
+                    </div>
+    <div class="col-md-12">
         <div class="pricing-table princig-table-flat">
         {!! html_entity_decode($template) !!}
         </div>
-    <!--</div>-->
+    </div>
+    <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+
+
+
+
+  <div class="row">
+                        <div class="col-md-12">
+                            <!-- <hr class="tall mt-none"> -->
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 85px;"><strong><center>ServiceDesk Pricing</center></strong></h4>
+                        </div>
+                    </div>
+  <div class="col-md-12">
+   <div class="pricing-table princig-table-flat">
+        {!! html_entity_decode($servicedesk_template) !!}
+        </div>
+
+</div>
+ <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+
+  <div class="row">
+                        <div class="col-md-12">
+                           <!--  <hr class="tall mt-none"> -->
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 85px;"><strong><center>Services Pricing</center></strong></h4>
+                        </div>
+                    </div>
+<div class="col-md-12">
+   <div class="pricing-table princig-table-flat">
+        {!! html_entity_decode($service_template) !!}
+        </div>
+
+</div>
+
+
 
 </div>
 

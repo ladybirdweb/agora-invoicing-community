@@ -60,12 +60,17 @@
 
                                 </div>
 
-                                <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+
+
+                              
+
+                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
+
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
@@ -76,9 +81,10 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['product'=>'Product','addon'=>'Addon','service'=>'Service'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service'],null,['class' => 'form-control']) !!}
 
                                 </div>
+
 
                             </div>
 

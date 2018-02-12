@@ -332,14 +332,13 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
         $data = $pages->content;
 
         $product = new \App\Model\Product\Product();
-        $helpdesk_products = $product->where('id', '!=', 1)->where('category','=','helpdesk')->get()->toArray();
+        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
 
         //$cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         // dd($temp_controller);
         $trasform = [];
         $template = '';
-
 
         if (count($helpdesk_products) > 0) {
             foreach ($helpdesk_products as $key => $value) {
@@ -354,54 +353,39 @@ if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             // dd($template);
         }
 
+        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
 
-        $sevice_desk_products = $product->where('id', '!=', 1)->where('category','=','servicedesk')->get()->toArray(); 
-      
-       $servicedesk_template = '';
-       $trasform1 = [];
+        $servicedesk_template = '';
+        $trasform1 = [];
         if (count($sevice_desk_products) > 0) {
             foreach ($sevice_desk_products as $key => $value) {
                 $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform1[$value['id']]['name'] = $value['name'];
                 $trasform1[$value['id']]['feature'] = $value['description'];
                 $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-            
+
                 $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $servicedesk_template = $this->transform('cart', $data, $trasform1);
-   
-         
-            
-        } 
-             
+        }
 
+        $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
 
-              $service = $product->where('id', '!=', 1)->where('category','=','service')->get()->toArray(); 
-
-      
-       $service_template = '';
-       $trasform2 = [];
+        $service_template = '';
+        $trasform2 = [];
         if (count($service) > 0) {
             foreach ($service as $key => $value) {
                 $trasform2[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform2[$value['id']]['name'] = $value['name'];
                 $trasform2[$value['id']]['feature'] = $value['description'];
                 $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-            
+
                 $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $service_template = $this->transform('cart', $data, $trasform2);
-   
-         
-            
-        } 
+        }
 
-
-
-
-
-
-        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform','servicedesk_template','trasform1','service_template','trasform2'));
+        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
     }
 
     public function checkConfigKey($config, $transform)

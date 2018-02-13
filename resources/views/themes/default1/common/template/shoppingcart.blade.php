@@ -65,7 +65,7 @@ main
   <div class="row">
                         <div class="col-md-12">
                             <!-- <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 85px;"><strong><center>ServiceDesk Pricing</center></strong></h4>
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;"><strong><center>ServiceDesk Pricing</center></strong></h4>
                         </div>
                     </div>
   <div class="col-md-12">
@@ -79,7 +79,7 @@ main
   <div class="row">
                         <div class="col-md-12">
                            <!--  <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 85px;"><strong><center>Services Pricing</center></strong></h4>
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;"><strong><center>Services Pricing</center></strong></h4>
                         </div>
                     </div>
 <div class="col-md-12">

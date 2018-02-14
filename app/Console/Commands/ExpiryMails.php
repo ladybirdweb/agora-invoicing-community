@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Http\Controllers\Common\CronController;
 use Exception;
+use Illuminate\Console\Command;
+
 class ExpiryMails extends Command
 {
     /**
@@ -38,16 +39,12 @@ class ExpiryMails extends Command
      */
     public function handle()
     {
-    try
-        {
-        $mail= new CronController ;
-        loging('sending-expiry-mail', 'Mail is sent', 'info') ; 
-        $this->info("Mail Sent");
-
-        }
-        catch (Exception $ex){
-        $this->error($ex->getMessage());
-
+        try {
+            $mail = new CronController();
+            loging('sending-expiry-mail', 'Mail is sent', 'info');
+            $this->info('Mail Sent');
+        } catch (Exception $ex) {
+            $this->error($ex->getMessage());
         }
     }
 }

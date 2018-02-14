@@ -70,8 +70,7 @@
 
         <link rel="stylesheet" href="{{asset('cssnew/css/skins/default.css')}}">
 
-        <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="{{asset('cssnew/css/custom.css')}}">
+       
 
 
         <!-- Head Libs -->

@@ -76,8 +76,8 @@ trait RegistersUsers
             // if (\Session::has('currency')) {
             //     $currency = \Session::get('currency');
             // }
-            // $account_manager = $this->accountManager();
-            $account_manager = 1;
+            $account_manager = $this->accountManager();
+            // $account_manager = 1;
             $password = \Hash::make($pass);
             $user->password = $password;
             $user->town="";

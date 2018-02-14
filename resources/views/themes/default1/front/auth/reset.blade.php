@@ -76,7 +76,7 @@ main
                                 
                                 <div class="col-md-12">
                                      <input type="submit" value="Reset Password" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                                    <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
+                                  
                                 </div>
                             </div>
                             </form>

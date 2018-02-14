@@ -138,6 +138,7 @@
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
+              order: [[ 0, "desc" ]],
              ajax: '{{Url("get-orders?order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain")}}',
 
            

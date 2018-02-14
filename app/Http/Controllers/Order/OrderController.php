@@ -100,8 +100,7 @@ class OrderController extends Controller
         $till = $request->input('till');
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
-        //return \Datatable::query($this->order->select('id', 'created_at', 'client',
-        //'price_override', 'order_status', 'number', 'serial_key'))
+       
         return\ DataTables::of($query->get())
 
                         // ->addColumn('#', function ($model) {
@@ -695,6 +694,7 @@ class OrderController extends Controller
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $templates = new \App\Model\Common\Template();
+        // dd($templates);
         $temp_id = $setting->order_mail;
         $template = $templates->where('id', $temp_id)->first();
         $from = $setting->email;

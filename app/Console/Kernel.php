@@ -14,8 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         //
-         'App\Console\Commands\Inspire',
-        \App\Console\Commands\Install::class,
+         'App\Console\Commands\ExpiryMails',
+        // \App\Console\Commands\Install::class,
     ];
 
     /**
@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
+        $schedule->command('mail:expiry')
                  ->hourly();
     }
 

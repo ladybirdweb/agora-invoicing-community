@@ -143,16 +143,7 @@
                           $('#email').val('');
                            $('#mobile').val('');
                             $('#username').val('');
-                    //     var uri = window.location.toString();
-
-                    // if (uri.indexOf("?") > 0) {
-                    //     var clean_uri = uri.substring(0, uri.indexOf("?"));
-                     
-                    //     window.history.replaceState({}, document.title, clean_uri);
-                    //      window.location.href = clean_uri;
-
-                    // }
-                          
+                 
                     });
                 });
                 </script>
@@ -232,8 +223,9 @@
    
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry" ) !!}',
-             
+            order: [[ 0, "desc" ]],
+
+                 ajax: '{{ route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry" ) }}',
 
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
@@ -243,10 +235,11 @@
                 "columnDefs": [{
                 "defaultContent": "-",
                 "targets": "_all"
+
               }],
             columns: [
                 {data: 'first_name', name: 'first_name'},
-                {data: 'email', name: 'Email'},
+                {data: 'email', name: 'email'},
                 {data: 'created_at', name: 'created_at'},
                 {data: 'active', name: 'active'},
                 {data: 'action', name: 'action'}

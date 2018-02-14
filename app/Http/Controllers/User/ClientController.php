@@ -70,8 +70,8 @@ class ClientController extends Controller
 
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
-        return\ DataTables::of($user)
-
+        return\ DataTables::of($user->get())
+       
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -105,11 +105,10 @@ class ClientController extends Controller
                             // return 'hhhh';
                         })
                         ->rawColumns(['first_name', 'email', 'active', 'created_at', 'action'])
+
                         ->make(true);
 
-        // ->searchColumns('email', 'first_name')
-                        // ->orderColumns('email', 'first_name', 'created_at')
-                        // ->make();
+      
     }
 
     /**

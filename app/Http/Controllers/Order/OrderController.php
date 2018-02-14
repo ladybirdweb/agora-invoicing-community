@@ -100,7 +100,7 @@ class OrderController extends Controller
         $till = $request->input('till');
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
-       
+
         return\ DataTables::of($query->get())
 
                         // ->addColumn('#', function ($model) {

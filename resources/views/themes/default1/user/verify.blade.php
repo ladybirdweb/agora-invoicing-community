@@ -23,17 +23,29 @@ main
         $set = new \App\Model\Common\Setting();
         $set = $set->findOrFail(1);
         ?>
-      
-            
-            <div class="container">
 
+
+
+
+
+
+
+
+<div class="container">
+ <div class="row">
+                <div class="col-sm-10" style="float: none;margin: auto">
+                    <div id="alertMessage1"></div>
+                    <div id="error1">
+                    </div>
+                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
+                        <div class="box-content">
                 @if($user)
 
                 @if ($user->active != 1) 
                 <h1>Email Verification</h2>
                     <div class="alert alert-danger alert-dismissable">
                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p>Please verify your Email!!</p>
+                    <p>You have not verified your Email..Click the button below to receive verification link on your registered Email Address!!</p>
                 </div>
                     <div class="well" ng-show="msg1" id="email1"></div>
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
@@ -48,7 +60,7 @@ main
                     <h1>Mobile Verification</h2>
                          <div class="alert alert-danger alert-dismissable">
                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p>Please verify your OTP!!</p>
+                    <p>You have not verified your OTP..Click the button below to receive OTP on your registered Mobile Number!!</p>
                 </div>
                         
                         <div class="well" ng-show="msg2" id="mobile1"></div>
@@ -58,6 +70,10 @@ main
                             <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="mobile" value="{{$user -> mobile}}" id="u_mobile"></div>
                             <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="sendOTP" ng-click="sendOTP()">Send OTP</button></div>
                         </div>
+
+
+
+
                         <div class="row" ng-show="showOTP">
                             <div class="col-sm-2" style="margin: 5px"><label>Enter OTP</label></div>
                             <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control"   ng-model="otp"></div>
@@ -75,6 +91,11 @@ main
 
 
                         </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+       </div>
 
                         <script src="{{asset('cart/vendor/jquery/jquery.min.js')}}"></script>
                         <script src="{{asset('cart/vendor/bootstrap/js/bootstrap.min.js')}}"></script>

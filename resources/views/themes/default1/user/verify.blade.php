@@ -31,6 +31,10 @@ main
 
                 @if ($user->active != 1) 
                 <h1>Email Verification</h2>
+                    <div class="alert alert-danger alert-dismissable">
+                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p>Please verify your Email!!</p>
+                </div>
                     <div class="well" ng-show="msg1" id="email1"></div>
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
                     <div class="row" style="margin-bottom: 10px">
@@ -42,6 +46,11 @@ main
                     @endif
                     @if($user->mobile_verified!=1)
                     <h1>Mobile Verification</h2>
+                         <div class="alert alert-danger alert-dismissable">
+                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p>Please verify your OTP!!</p>
+                </div>
+                        
                         <div class="well" ng-show="msg2" id="mobile1"></div>
                         <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
                         <div class="row" ng-hide="showOTP" style="margin-bottom: 10px">

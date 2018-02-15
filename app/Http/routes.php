@@ -10,8 +10,8 @@
   | and give it the controller to call when that URI is requested.
   |
  */
-
-Route::get('/', 'HomeController@index');
+//Route::group(['middleware' => ['web']], function () {
+ Route::get('/', 'HomeController@index');
 
 /*
  * Front end
@@ -344,7 +344,6 @@ Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 Route::get('renew/{id}', 'Order\RenewController@renewForm');
 Route::post('renew/{id}', 'Order\RenewController@renew');
 Route::post('get-renew-cost', 'Order\RenewController@getCost');
-
 Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
 Route::post('serial', 'HomeController@serial');
@@ -371,7 +370,6 @@ Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');
 Route::get('otp/verify', 'Auth\AuthController@postOtp');
 Route::get('email/verify', 'Auth\AuthController@verifyEmail');
 Route::get('resend_otp', 'Auth\AuthController@retryOTP');
-
 Route::get('verify', function () {
     $user = \Session::get('user');
     if ($user) {
@@ -380,3 +378,8 @@ Route::get('verify', function () {
 
     return redirect('auth/login');
 });
+
+Route::post('download/faveo', 'HomeController@downloadForFaveo');
+Route::get('version/latest', 'HomeController@latestVersion');
+
+//});

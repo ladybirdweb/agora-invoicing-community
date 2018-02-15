@@ -86,11 +86,12 @@ class HomeController extends Controller
     public function versionTest()
     {
         $s = 'eyJpdiI6ImFIVDByR29vVzNpcEExM2UyNDVaWXc9PSIsInZhbHVlIjoiODNJS0MxWXFyVEtrYjhZYXFmUFlvOTJYY09NUHhGYTZBemN2eFMzckZCST0iLCJtYWMiOiI2MDdmZTU5YmRjMjQxOWRlZjE3ODUyMWI0OTk5NDM5ZmQxMWE5ZTUyNzQ3YTMyOGQyYmRmNGVkYWQyNDM5ZTNkIn0=';
-        dd(decrypt($s));
+        // dd(decrypt($s));
         $url = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version';
         $response = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version-result';
         $name = 'faveo helpdesk community';
         $version = $product->version;
+        // dd($version);
 
         return str_replace('v', '', $product->version);
     }
@@ -105,6 +106,7 @@ class HomeController extends Controller
         try {
             $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
             $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
+            \Log::emergency(json_encode(['domain' => $request->input('domain'), 'enc_serial' => $faveo_encrypted_key, 'enc_order' => $faveo_encrypted_order_number]));
             $request_type = $request->input('request_type');
             $faveo_name = $request->input('name');
             $faveo_version = $request->input('version');
@@ -112,7 +114,8 @@ class HomeController extends Controller
             $domain = $this->getDomain($request->input('domain'));
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
-            \Log::emergency(json_encode(['domain'=>$request->input('domain'), 'serial'=>$serial_key, 'order'=>$order_number]));
+            
+            \Log::emergency(json_encode(['domain' => $request->input('domain'), 'serial' => $serial_key, 'order' => $order_number]));
             $result = [];
             if ($request_type == 'install') {
                 $result = $this->verificationResult($order_number, $serial_key, $domain);
@@ -138,7 +141,7 @@ class HomeController extends Controller
             $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
             $domain = $this->getDomain($request->input('domain'));
 
-            return $domain;
+            //return $domain;
             $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             $request_type = $request->input('request_type');
             $faveo_name = $request->input('name');
@@ -273,7 +276,7 @@ class HomeController extends Controller
     {
         try {
             $order = new Order();
-            //            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
+//            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
 
             $this_order = $order->where('number', $faveo_decrypted_order)->first();
             if (!$this_order) {
@@ -328,6 +331,7 @@ class HomeController extends Controller
             $data = $request->input('data');
             $json = self::decryptByFaveoPrivateKey($data);
             $data = json_decode($json);
+            //return $data->url;
 
             $domain = $data->url;
 
@@ -361,7 +365,7 @@ class HomeController extends Controller
 
             return $result;
         } catch (Exception $ex) {
-            $result = ['status' => 'error', 'message' => $ex->getMessage()];
+            $result = ['status' => 'error', 'message' => $ex->getMessage().'  file=> '.$ex->getFile().' Line=>'.$ex->getLine()];
             $result = self::encryptByPublicKey(json_encode($result));
 
             return $result;
@@ -473,5 +477,54 @@ class HomeController extends Controller
         }
 
         return $domain;
+    }
+
+    public function downloadForFaveo(Request $request, Order $order)
+    {
+        try {
+            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
+            $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
+            $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
+            $this_order = $order
+                    ->where('number', $faveo_encrypted_order_number)
+                    //->where('serial_key', $faveo_encrypted_key)
+                    //->where('domain', $faveo_encrypted_domain)
+                    ->first();
+            if ($this_order) {
+                $product_id = $this_order->product;
+                $product_controller = new \App\Http\Controllers\Product\ProductController();
+
+                return $product_controller->adminDownload($product_id, true);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage(), 'line' => $e->getFile()], 500);
+        }
+    }
+
+    public function latestVersion(Request $request, Product $product)
+    {
+        $v = \Validator::make($request->all(), [
+                    'title' => 'required',
+        ]);
+        if ($v->fails()) {
+            $error = $v->errors();
+
+            return response()->json(compact('error'));
+        }
+
+        try {
+            $title = $request->input('title');
+            $product = $product->where('name', $title)->first();
+            if ($product) {
+                $message = ['version' => str_replace('v', '', $product->version)];
+            } else {
+                $message = ['error' => 'product_not_found'];
+            }
+            $message = ['version' => str_replace('v', '', $product->version)];
+        } catch (\Exception $e) {
+            $message = ['error' => $e->getMessage()];
+        }
+
+        return response()->json($message);
     }
 }

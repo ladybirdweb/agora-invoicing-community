@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -19,13 +19,18 @@ use Psy\CodeCleaner\AssignThisVariablePass;
 use Psy\CodeCleaner\CalledClassPass;
 use Psy\CodeCleaner\CallTimePassByReferencePass;
 use Psy\CodeCleaner\ExitPass;
+use Psy\CodeCleaner\FinalClassPass;
+use Psy\CodeCleaner\FunctionContextPass;
 use Psy\CodeCleaner\FunctionReturnInWriteContextPass;
 use Psy\CodeCleaner\ImplicitReturnPass;
 use Psy\CodeCleaner\InstanceOfPass;
 use Psy\CodeCleaner\LeavePsyshAlonePass;
 use Psy\CodeCleaner\LegacyEmptyPass;
+use Psy\CodeCleaner\LoopContextPass;
 use Psy\CodeCleaner\MagicConstantsPass;
 use Psy\CodeCleaner\NamespacePass;
+use Psy\CodeCleaner\PassableByReferencePass;
+use Psy\CodeCleaner\RequirePass;
 use Psy\CodeCleaner\StaticConstructorPass;
 use Psy\CodeCleaner\StrictTypesPass;
 use Psy\CodeCleaner\UseStatementPass;
@@ -48,9 +53,9 @@ class CodeCleaner
     /**
      * CodeCleaner constructor.
      *
-     * @param Parser        $parser    A PhpParser Parser instance. One will be created if not explicitly supplied.
-     * @param Printer       $printer   A PhpParser Printer instance. One will be created if not explicitly supplied.
-     * @param NodeTraverser $traverser A PhpParser NodeTraverser instance. One will be created if not explicitly supplied.
+     * @param Parser        $parser    A PhpParser Parser instance. One will be created if not explicitly supplied
+     * @param Printer       $printer   A PhpParser Printer instance. One will be created if not explicitly supplied
+     * @param NodeTraverser $traverser A PhpParser NodeTraverser instance. One will be created if not explicitly supplied
      */
     public function __construct(Parser $parser = null, Printer $printer = null, NodeTraverser $traverser = null)
     {
@@ -60,7 +65,7 @@ class CodeCleaner
         }
 
         $this->parser    = $parser;
-        $this->printer   = $printer   ?: new Printer();
+        $this->printer   = $printer ?: new Printer();
         $this->traverser = $traverser ?: new NodeTraverser();
 
         foreach ($this->getDefaultPasses() as $pass) {
@@ -76,36 +81,46 @@ class CodeCleaner
     private function getDefaultPasses()
     {
         return array(
+            // Validation passes
             new AbstractClassPass(),
             new AssignThisVariablePass(),
-            new FunctionReturnInWriteContextPass(),
-            new CallTimePassByReferencePass(),
             new CalledClassPass(),
+            new CallTimePassByReferencePass(),
+            new FinalClassPass(),
+            new FunctionContextPass(),
+            new FunctionReturnInWriteContextPass(),
             new InstanceOfPass(),
             new LeavePsyshAlonePass(),
             new LegacyEmptyPass(),
-            new ImplicitReturnPass(),
-            new UseStatementPass(),      // must run before namespace and validation passes
-            new NamespacePass($this),    // must run after the implicit return pass
-            new StrictTypesPass(),
+            new LoopContextPass(),
+            new PassableByReferencePass(),
             new StaticConstructorPass(),
-            new ValidFunctionNamePass(),
+
+            // Rewriting shenanigans
+            new UseStatementPass(),   // must run before the namespace pass
+            new ExitPass(),
+            new ImplicitReturnPass(),
+            new MagicConstantsPass(),
+            new NamespacePass($this), // must run after the implicit return pass
+            new RequirePass(),
+            new StrictTypesPass(),
+
+            // Namespace-aware validation (which depends on aforementioned shenanigans)
             new ValidClassNamePass(),
             new ValidConstantPass(),
-            new MagicConstantsPass(),
-            new ExitPass(),
+            new ValidFunctionNamePass(),
         );
     }
 
     /**
      * Clean the given array of code.
      *
-     * @throws ParseErrorException if the code is invalid PHP, and cannot be coerced into valid PHP.
+     * @throws ParseErrorException if the code is invalid PHP, and cannot be coerced into valid PHP
      *
      * @param array $codeLines
      * @param bool  $requireSemicolons
      *
-     * @return string|false Cleaned PHP code, False if the input is incomplete.
+     * @return string|false Cleaned PHP code, False if the input is incomplete
      */
     public function clean(array $codeLines, $requireSemicolons = false)
     {
@@ -117,7 +132,16 @@ class CodeCleaner
         // Catch fatal errors before they happen
         $stmts = $this->traverser->traverse($stmts);
 
-        return $this->printer->prettyPrint($stmts);
+        // Work around https://github.com/nikic/PHP-Parser/issues/399
+        $oldLocale = setlocale(LC_NUMERIC, 0);
+        setlocale(LC_NUMERIC, 'C');
+
+        $code = $this->printer->prettyPrint($stmts);
+
+        // Now put the locale back
+        setlocale(LC_NUMERIC, $oldLocale);
+
+        return $code;
     }
 
     /**
@@ -147,10 +171,13 @@ class CodeCleaner
      *
      * @see Parser::parse
      *
+     * @throws ParseErrorException for parse errors that can't be resolved by
+     *                             waiting a line to see what comes next
+     *
      * @param string $code
      * @param bool   $requireSemicolons
      *
-     * @return array A set of statements
+     * @return array|false A set of statements, or false if incomplete
      */
     protected function parse($code, $requireSemicolons = false)
     {
@@ -158,6 +185,14 @@ class CodeCleaner
             return $this->parser->parse($code);
         } catch (\PhpParser\Error $e) {
             if ($this->parseErrorIsUnclosedString($e, $code)) {
+                return false;
+            }
+
+            if ($this->parseErrorIsUnterminatedComment($e, $code)) {
+                return false;
+            }
+
+            if ($this->parseErrorIsTrailingComma($e, $code)) {
                 return false;
             }
 
@@ -210,5 +245,15 @@ class CodeCleaner
         }
 
         return true;
+    }
+
+    private function parseErrorIsUnterminatedComment(\PhpParser\Error $e, $code)
+    {
+        return $e->getRawMessage() === 'Unterminated comment';
+    }
+
+    private function parseErrorIsTrailingComma(\PhpParser\Error $e, $code)
+    {
+        return ($e->getRawMessage() === 'A trailing comma is not allowed here') && (substr(rtrim($code), -1) === ',');
     }
 }

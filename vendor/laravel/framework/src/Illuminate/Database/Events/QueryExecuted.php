@@ -26,7 +26,7 @@ class QueryExecuted
     public $time;
 
     /**
-     * The databse connection instance.
+     * The database connection instance.
      *
      * @var \Illuminate\Database\Connection
      */
@@ -45,7 +45,8 @@ class QueryExecuted
      * @param  string  $sql
      * @param  array  $bindings
      * @param  float  $time
-     * @param
+     * @param  string  $connection
+     * @return void
      */
     public function __construct($sql, $bindings, $time, $connection)
     {

@@ -14,13 +14,44 @@ main
 @stop
 @section('content')
 <?php
-$location = \GeoIP::getLocation();
-$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
-//$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
-$states = \App\Model\Common\State::lists('state_subdivision_name', 'state_subdivision_code')->toArray();
-$state_code = $location['isoCode'] . "-" . $location['state'];
+
+if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+    {
+      $ip=$_SERVER['HTTP_CLIENT_IP'];
+    }
+    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+    {
+      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+    else
+    {
+      $ip=$_SERVER['REMOTE_ADDR'];
+    }
+
+  if($ip!='::1')
+   {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
+   else
+    {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
+
+$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+$states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+$state_code = $location['countryCode'] . "-" . $location['region'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
+$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+
+
+
+
+
+
+
+// $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
+// //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
+// $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+// $state_code = $location['isoCode'] . "-" . $location['state'];
+// $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+// $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
 ?>
 <style>
     .required:after{ 
@@ -247,14 +278,16 @@ border-top: none;
                                 <!-- fail message -->
                                 @if(Session::has('fails'))
                                 <div class="alert alert-danger alert-dismissable">
-
+                                    <i class="fa fa-ban"></i>
                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     {{Session::get('fails')}}
                                 </div>
                                 @endif
                                 @if (count($errors) > 0)
-                                <div class="alert alert-danger">
+                                <div class="alert alert-danger alert-dismissable">
+                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                                     <strong>Whoops!</strong> Something went wrong<br><br>
+
                                     <ul>
                                         @foreach ($errors->all() as $error)
                                         <li>{!! $error !!}</li>
@@ -267,7 +300,7 @@ border-top: none;
                                         <div class="featured-box featured-box-primary align-left mt-xlg">
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-md">I'm a Returning Customer</h4>
-                                                {!!  Form::open(['action'=>'Auth\AuthController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
+                                                {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
                                                 <div class="row">
                                                     <div class="form-group  {{ $errors->has('email1') ? 'has-error' : '' }}">
                                                         <div class="col-md-12">
@@ -307,11 +340,12 @@ border-top: none;
                                         <div class="featured-box featured-box-primary align-left mt-xlg">
                                             <div class="box-content">
                                                 <h4 class="heading-primary text-uppercase mb-md">Register An Account</h4>
-                                                <form name="registerForm" id="register-form">
+                                                <form name="registerForm" id="regiser-form">
                                                 <div class="row">
                                                     <div class="form-group">
                                                         <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
-                                                            {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!}
+                                                          <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
+                                                          <label class="required">First Name</label>
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
                                                         </div>
                                                         <div class="form-group">
@@ -345,8 +379,10 @@ border-top: none;
                                                 </div>
                                                 <div class='row'>
                                                     <?php
-                                                    $type = DB::table('company_types')->pluck('name', 'short');
-                                                    $size = DB::table('company_sizes')->pluck('name', 'short');
+                                                    $type = DB::table('company_types')->pluck('name', 'short')->toArray();;
+
+                                                    $size = DB::table('company_sizes')->pluck('name', 'short')->toArray();;
+
                                                     ?>
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
@@ -368,7 +404,7 @@ border-top: none;
                                                         <div class="form-group">
                                                             <div class="col-md-12 {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
-                                                                <?php $countries = \App\Model\Common\Country::lists('nicename', 'country_code_char2')->toArray(); ?>
+                                                                <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
 
                                                             </div>
@@ -429,7 +465,7 @@ border-top: none;
                                                         <div class="form-group">
                                                             <div class="col-md-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
-                                                                {!! Form::text('zip',$location['postal_code'],['class'=>'form-control input-lg', 'id'=>'postal_code']) !!}
+                                                                {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
                                                             </div>
 
                                                             <div class="col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
@@ -463,9 +499,9 @@ border-top: none;
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-6 pull-right">
-                                                        <!-- <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser(this)"> -->
-                                                        <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
-                                                        </button>
+                                                        <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
+                                                       <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
+                                                        </button> -->
                                                     </div>
                                                 </div>
                                                 </form>
@@ -594,8 +630,9 @@ border-top: none;
 
     function registerUser() {
         $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
+
         $.ajax({
-          url: '{{url('auth/register')}}',
+          url: '{{url("auth/register")}}',
           type: 'post',
           data: {
                 "first_name": $('#first_name').val(),
@@ -611,7 +648,7 @@ border-top: none;
                 "address": $('#address').val(),
                 "city": $('#city').val(),
                 "state": $('#state-list').val(),
-                "zip": $('#postal_code').val(),
+                "zip": $('#zip').val(),
                 "user_name": $('#user_name').val(),
                 "password": $('#password').val(),
                 "password_confirmation": $('#confirm_pass').val(),
@@ -639,20 +676,30 @@ border-top: none;
             }
           },
           error: function (ex) {
-            var myJSON = JSON.parse(ex.responseText);
-            var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+            var data = JSON.parse(ex.responseText);
+
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
-            for (var key in myJSON)
-            {
-                html += '<li>' + myJSON[key][0] + '</li>'
-            }
-            html += '</ul></div>';
+            var res = "";
+
+                function ash(idx, topic) {
+                   
+                   if(typeof topic==="object"){
+                      $.each(topic, ash);
+                   }
+                   else{
+                     // var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                     res += "<ul style='list-style-type:none'><li><i class='fa fa-ban'></i>&nbsp" + topic + "</li></ul>";
+                   }
+                };
+                 $.each(data, ash);
+                console.log(res)
+                $('#error').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
+              
             $('#error').show();
-            document.getElementById('error').innerHTML = html;
             setTimeout(function(){ 
                 $('#error').hide(); 
-            }, 5000);
+            }, 5000000);
           }
         });
     }
@@ -666,6 +713,7 @@ border-top: none;
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
+           // alert('ok');
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
@@ -879,7 +927,7 @@ fbq('track', 'CompleteRegistration');
 }
 //]]>
 </script>
->>>>>>> refs/remotes/origin/master
+
 <script type="text/javascript"
   src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>

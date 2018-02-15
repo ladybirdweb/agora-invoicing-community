@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,7 @@
 namespace Psy\CodeCleaner;
 
 use PhpParser\Node\Scalar\LNumber;
-use PhpParser\Node\Stmt\Declare_ as DeclareStmt;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use Psy\Exception\FatalErrorException;
 
@@ -28,6 +28,8 @@ use Psy\Exception\FatalErrorException;
  */
 class StrictTypesPass extends CodeCleanerPass
 {
+    const EXCEPTION_MESSAGE = 'strict_types declaration must have 0 or 1 as its value';
+
     private $strictTypes = false;
 
     /**
@@ -36,7 +38,7 @@ class StrictTypesPass extends CodeCleanerPass
      * Otherwise, apply remembered strict types declaration to to the code until
      * a new declaration is encountered.
      *
-     * @throws FatalErrorException if an invalid `strict_types` declaration is found.
+     * @throws FatalErrorException if an invalid `strict_types` declaration is found
      *
      * @param array $nodes
      */
@@ -49,12 +51,12 @@ class StrictTypesPass extends CodeCleanerPass
         $prependStrictTypes = $this->strictTypes;
 
         foreach ($nodes as $key => $node) {
-            if ($node instanceof DeclareStmt) {
+            if ($node instanceof Declare_) {
                 foreach ($node->declares as $declare) {
                     if ($declare->key === 'strict_types') {
                         $value = $declare->value;
                         if (!$value instanceof LNumber || ($value->value !== 0 && $value->value !== 1)) {
-                            throw new FatalErrorException('strict_types declaration must have 0 or 1 as its value');
+                            throw new FatalErrorException(self::EXCEPTION_MESSAGE, 0, E_ERROR, null, $node->getLine());
                         }
 
                         $this->strictTypes = $value->value === 1;
@@ -65,8 +67,8 @@ class StrictTypesPass extends CodeCleanerPass
 
         if ($prependStrictTypes) {
             $first = reset($nodes);
-            if (!$first instanceof DeclareStmt) {
-                $declare = new DeclareStmt(array(new DeclareDeclare('strict_types', new LNumber(1))));
+            if (!$first instanceof Declare_) {
+                $declare = new Declare_(array(new DeclareDeclare('strict_types', new LNumber(1))));
                 array_unshift($nodes, $declare);
             }
         }

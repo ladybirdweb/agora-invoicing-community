@@ -55,7 +55,7 @@ class PromotionController extends Controller
         }
     }
 
-    public function GetPromotion()
+    public function getPromotion()
     {
         return \Datatable::collection($this->promotion->select('code', 'type', 'id')->get())
                         ->addColumn('#', function ($model) {
@@ -248,7 +248,7 @@ class PromotionController extends Controller
         }
     }
 
-    public function GetCode()
+    public function getCode()
     {
         try {
             $code = str_random(6);
@@ -350,7 +350,6 @@ class PromotionController extends Controller
     {
         try {
             switch ($type) {
-
                 case 1:
                     $percentage = $price * ($value / 100);
 

@@ -39,7 +39,7 @@ class AddonController extends Controller
         }
     }
 
-    public function GetAddons()
+    public function getAddons()
     {
         return \Datatable::collection($this->addon->get())
                         ->addColumn('#', function ($model) {

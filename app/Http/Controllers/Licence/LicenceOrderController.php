@@ -33,7 +33,7 @@ class LicenceOrderController extends Controller
         }
     }
 
-    public function GetOrders()
+    public function getOrders()
     {
         return \Datatable::collection($this->LicencedOrg->get())
                         ->addColumn('organization', function ($model) {

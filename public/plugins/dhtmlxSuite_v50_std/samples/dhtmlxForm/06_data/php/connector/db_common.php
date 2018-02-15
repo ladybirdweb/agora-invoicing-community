@@ -142,7 +142,7 @@ class DataRequestConfig
             $this->sort_by = [];
         } else {
             $order = strtolower($order) == 'asc' ? 'ASC' : 'DESC';
-            $this->sort_by[] = ['name'=>$field, 'direction' => $order];
+            $this->sort_by[] = ['name' => $field, 'direction' => $order];
         }
     }
 
@@ -157,7 +157,7 @@ class DataRequestConfig
     */
     public function set_filter($field, $value, $operation = false)
     {
-        array_push($this->filters, ['name'=>$field, 'value'=>$value, 'operation'=>$operation]);
+        array_push($this->filters, ['name' => $field, 'value' => $value, 'operation' => $operation]);
     }
 
     /*! sets list of used fields
@@ -333,7 +333,7 @@ class DataConfig
             return $key;
         }
         $key = explode('(', $key);
-        $data = ['db_name'=>trim($key[0]), 'name'=>trim($key[0])];
+        $data = ['db_name' => trim($key[0]), 'name' => trim($key[0])];
         if (count($key) > 1) {
             $data['name'] = substr(trim($key[1]), 0, -1);
         }
@@ -353,8 +353,8 @@ class DataConfig
         } else {
             $this->text = [];
             $this->data = [];
-            $this->id = ['name'=>'dhx_auto_id', 'db_name'=>'dhx_auto_id'];
-            $this->relation_id = ['name'=>'', 'db_name'=>''];
+            $this->id = ['name' => 'dhx_auto_id', 'db_name' => 'dhx_auto_id'];
+            $this->relation_id = ['name' => '', 'db_name' => ''];
         }
     }
 
@@ -417,11 +417,11 @@ class DataConfig
         if ($this->is_field($name, $this->text) != -1) {
             throw new Exception('Data field already registered: '.$name);
         }
-        array_push($this->text, ['db_name'=>$name, 'name'=>$aliase]);
+        array_push($this->text, ['db_name' => $name, 'name' => $aliase]);
 
         //adding to list of all fields as well
         if ($this->is_field($name, $this->data) == -1) {
-            array_push($this->data, ['db_name'=>$name, 'name'=>$aliase]);
+            array_push($this->data, ['db_name' => $name, 'name' => $aliase]);
         }
     }
 

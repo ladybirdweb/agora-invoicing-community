@@ -11,22 +11,39 @@
 
 namespace Symfony\Component\Translation\Tests\Writer;
 
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\Translation\Dumper\DumperInterface;
 use Symfony\Component\Translation\MessageCatalogue;
 use Symfony\Component\Translation\Writer\TranslationWriter;
 
-class TranslationWriterTest extends \PHPUnit_Framework_TestCase
+class TranslationWriterTest extends TestCase
 {
+    /**
+     * @group legacy
+     * @expectedDeprecation Method Symfony\Component\Translation\Writer\TranslationWriter::writeTranslations() is deprecated since Symfony 3.4 and will be removed in 4.0. Use write() instead.
+     */
     public function testWriteTranslations()
     {
-        $dumper = $this->getMock('Symfony\Component\Translation\Dumper\DumperInterface');
+        $dumper = $this->getMockBuilder('Symfony\Component\Translation\Dumper\DumperInterface')->getMock();
         $dumper
             ->expects($this->once())
             ->method('dump');
 
         $writer = new TranslationWriter();
         $writer->addDumper('test', $dumper);
-        $writer->writeTranslations(new MessageCatalogue(array()), 'test');
+        $writer->writeTranslations(new MessageCatalogue('en'), 'test');
+    }
+
+    public function testWrite()
+    {
+        $dumper = $this->getMockBuilder('Symfony\Component\Translation\Dumper\DumperInterface')->getMock();
+        $dumper
+            ->expects($this->once())
+            ->method('dump');
+
+        $writer = new TranslationWriter();
+        $writer->addDumper('test', $dumper);
+        $writer->write(new MessageCatalogue(array()), 'test');
     }
 
     public function testDisableBackup()

@@ -7,7 +7,6 @@ use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
-use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
@@ -22,7 +21,7 @@ class PlanController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
         $plan = new Plan();
         $this->plan = $plan;
         $subscription = new Subscription();
@@ -50,18 +49,17 @@ class PlanController extends Controller
     /**
      * Get plans for chumper datatable.
      */
-    public function GetPlans()
+    public function getPlans()
     {
+        $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
 
-        //$user = new User;
-        //$user = $this->user->where('role', 'user')->get();
-        //dd($user);
-
-        return \Datatable::collection($this->plan->get())
+        return\ DataTables::of($new_plan)
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name')
+                        ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
+                        })
                         ->addColumn('days', function ($model) {
                             $months = $model->days / 30;
 
@@ -69,7 +67,7 @@ class PlanController extends Controller
                         })
                         ->addColumn('product', function ($model) {
                             $productid = $model->product;
-                            $product = $this->product->find($productid);
+                            $product = $this->product->where('id', $productid)->first();
                             $response = '';
                             if ($product) {
                                 $response = $product->name;
@@ -80,9 +78,8 @@ class PlanController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name', 'subscription', 'price', 'expiry')
-                        ->orderColumns('name', 'subscription', 'price', 'expiry')
-                        ->make();
+                        ->rawColumns(['name', 'days', 'product', 'action'])
+                        ->make(true);
     }
 
     /**
@@ -92,9 +89,9 @@ class PlanController extends Controller
      */
     public function create()
     {
-        $currency = $this->currency->lists('name', 'code')->toArray();
-        $periods = $this->period->lists('name', 'days')->toArray();
-        $products = $this->product->lists('name', 'id')->toArray();
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
 
         return view('themes.default1.product.plan.create', compact('currency', 'periods', 'products'));
     }
@@ -158,11 +155,11 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = $this->plan->where('id', $id)->first();
-        $currency = $this->currency->lists('name', 'code')->toArray();
-        $add_price = $this->price->where('plan_id', $id)->lists('add_price', 'currency')->toArray();
-        $renew_price = $this->price->where('plan_id', $id)->lists('renew_price', 'currency')->toArray();
-        $periods = $this->period->lists('name', 'days')->toArray();
-        $products = $this->product->lists('name', 'id')->toArray();
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
+        $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
 
         return view('themes.default1.product.plan.edit', compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
     }
@@ -186,9 +183,11 @@ class PlanController extends Controller
         $add_prices = $request->input('add_price');
         $renew_prices = $request->input('renew_price');
         $product = $request->input('product');
+        $period = $request->input('days');
 
         if (count($add_prices) > 0) {
             $price = $this->price->where('plan_id', $id)->get();
+
             if (count($price) > 0) {
                 foreach ($price as $delete) {
                     $delete->delete();

@@ -69,11 +69,11 @@ class CheckoutController extends Controller
         $invoiceItem = new InvoiceItem();
         $this->invoiceItem = $invoiceItem;
 
-        $mailchimp = new MailChimpController();
-        $this->mailchimp = $mailchimp;
+        //     $mailchimp = new MailChimpController();
+    //     $this->mailchimp = $mailchimp;
     }
 
-    public function CheckoutForm(Request $request)
+    public function checkoutForm(Request $request)
     {
         $currency = 'INR';
         $cart_currency = 'INR';
@@ -122,7 +122,7 @@ class CheckoutController extends Controller
                     ], [
                 'domain.*.required' => 'Please provide Domain name',
                 //'domain.*.url'      => 'Domain name is not valid',
-            ]);
+                       ]);
         }
 
         try {
@@ -145,9 +145,12 @@ class CheckoutController extends Controller
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
+            // dd($invoice);
             $items = new \Illuminate\Support\Collection();
+            // dd($items);
             if ($invoice) {
                 $items = $invoice->invoiceItem()->get();
+
                 $product = $this->product($invoiceid);
             }
 
@@ -174,7 +177,7 @@ class CheckoutController extends Controller
                     ], [
 
                 'payment_gateway.required' => 'Please choose a payment gateway',
-            ]);
+                    ]);
         }
 
         try {
@@ -182,11 +185,9 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
             if ($paynow == false) {
-
                 /*
                  * Do order, invoicing etc
                  */
-
                 $invoice = $invoice_controller->generateInvoice();
                 $status = 'pending';
                 if (!$payment_method) {
@@ -217,7 +218,7 @@ class CheckoutController extends Controller
                 $check_product_category = $this->product($invoiceid);
 
                 $url = '';
-                if ($check_product_category->category == 'product') {
+                if ($check_product_category->category ) {
                     $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
                 }
                 \Cart::clear();
@@ -234,7 +235,6 @@ class CheckoutController extends Controller
     public function checkoutAction($invoice)
     {
         try {
-
             //get elements from invoice
             $invoice_number = $invoice->number;
             $invoice_id = $invoice->id;
@@ -249,7 +249,7 @@ class CheckoutController extends Controller
 
             $url = '';
             $check_product_category = $this->product($invoice_id);
-            if ($check_product_category->category == 'product') {
+            if ($check_product_category->category) {
                 $url = url("download/$user_id/$invoice_number");
                 //execute the order
                 $order = new \App\Http\Controllers\Order\OrderController();
@@ -268,6 +268,7 @@ class CheckoutController extends Controller
     {
         try {
             $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
+            // dd($invoice);
             $name = $invoice->product_name;
             $product = $this->product->where('name', $name)->first();
 
@@ -279,108 +280,115 @@ class CheckoutController extends Controller
         }
     }
 
-    //    public function GenerateOrder() {
-//        try {
-//
-//            $products = [];
-//            $items = \Cart::getContent();
-//            foreach ($items as $item) {
-//
-//                //this is product
-//                $id = $item->id;
-//                $this->AddProductToOrder($id);
-//            }
-//        } catch (\Exception $ex) {
-//            dd($ex);
-//            throw new \Exception('Can not Generate Order');
-//        }
-//    }
-//
-//    public function AddProductToOrder($id) {
-//        try {
-//            $cart = \Cart::get($id);
-//            $client = \Auth::user()->id;
-//            $payment_method = \Input::get('payment_gateway');
-//            $promotion_code = '';
-//            $order_status = 'pending';
-//            $serial_key = '';
-//            $product = $id;
-//            $addon = '';
-//            $domain = '';
-//            $price_override = $cart->getPriceSumWithConditions();
-//            $qty = $cart->quantity;
-//
-//            $planid = $this->price->where('product_id', $id)->first()->subscription;
-//
-//            $or = $this->order->create(['client' => $client, 'payment_method' => $payment_method, 'promotion_code' => $promotion_code, 'order_status' => $order_status, 'serial_key' => $serial_key, 'product' => $product, 'addon' => $addon, 'domain' => $domain, 'price_override' => $price_override, 'qty' => $qty]);
-//
-//            $this->AddSubscription($or->id, $planid);
-//        } catch (\Exception $ex) {
-//            dd($ex);
-//            throw new \Exception('Can not Generate Order for Product');
-//        }
-//    }
-//
-//    public function AddSubscription($orderid, $planid) {
-//        try {
-//            $days = $this->plan->where('id', $planid)->first()->days;
-//            //dd($days);
-//            if ($days > 0) {
-//                $dt = \Carbon\Carbon::now();
-//                //dd($dt);
-//                $user_id = \Auth::user()->id;
-//                $ends_at = $dt->addDays($days);
-//            } else {
-//                $ends_at = '';
-//            }
-//            $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
-//        } catch (\Exception $ex) {
-//            dd($ex);
-//            throw new \Exception('Can not Generate Subscription');
-//        }
-//    }
-//
-//    public function GenerateInvoice() {
-//        try {
-//
-//            $user_id = \Auth::user()->id;
-//            $number = rand(11111111, 99999999);
-//            $date = \Carbon\Carbon::now();
-//            $grand_total = \Cart::getSubTotal();
-//
-//            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total]);
-//            foreach (\Cart::getContent() as $cart) {
-//                $this->CreateInvoiceItems($invoice->id, $cart);
-//            }
-//        } catch (\Exception $ex) {
-//            dd($ex);
-//            throw new \Exception('Can not Generate Invoice');
-//        }
-//    }
-//
-//    public function CreateInvoiceItems($invoiceid, $cart) {
-//        try {
-//
-//            $product_name = $cart->name;
-//            $regular_price = $cart->price;
-//            $quantity = $cart->quantity;
-//            $subtotal = $cart->getPriceSumWithConditions();
-//
-//            $tax_name = '';
-//            $tax_percentage = '';
-//
-//            foreach ($cart->attributes['tax'] as $tax) {
-//                //dd($tax['name']);
-//                $tax_name .= $tax['name'] . ',';
-//                $tax_percentage .= $tax['rate'] . ',';
-//            }
-//
-//            //dd($tax_name);
-//
-//            $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
-//        } catch (\Exception $ex) {
-//            dd($ex);
-//            throw new \Exception('Can not create Invoice Items');
-//        }
-//    }
+    public function GenerateOrder()
+    {
+        try {
+            $products = [];
+            $items = \Cart::getContent();
+            foreach ($items as $item) {
+
+               //this is product
+                $id = $item->id;
+                $this->AddProductToOrder($id);
+            }
+        } catch (\Exception $ex) {
+            dd($ex);
+
+            throw new \Exception('Can not Generate Order');
+        }
+    }
+
+    public function AddProductToOrder($id)
+    {
+        try {
+            $cart = \Cart::get($id);
+            $client = \Auth::user()->id;
+            $payment_method = \Input::get('payment_gateway');
+            $promotion_code = '';
+            $order_status = 'pending';
+            $serial_key = '';
+            $product = $id;
+            $addon = '';
+            $domain = '';
+            $price_override = $cart->getPriceSumWithConditions();
+            $qty = $cart->quantity;
+
+            $planid = $this->price->where('product_id', $id)->first()->subscription;
+
+            $or = $this->order->create(['client' => $client, 'payment_method' => $payment_method, 'promotion_code' => $promotion_code, 'order_status' => $order_status, 'serial_key' => $serial_key, 'product' => $product, 'addon' => $addon, 'domain' => $domain, 'price_override' => $price_override, 'qty' => $qty]);
+
+            $this->AddSubscription($or->id, $planid);
+        } catch (\Exception $ex) {
+            dd($ex);
+
+            throw new \Exception('Can not Generate Order for Product');
+        }
+    }
+
+    public function AddSubscription($orderid, $planid)
+    {
+        try {
+            $days = $this->plan->where('id', $planid)->first()->days;
+            //dd($days);
+            if ($days > 0) {
+                $dt = \Carbon\Carbon::now();
+                //dd($dt);
+                $user_id = \Auth::user()->id;
+                $ends_at = $dt->addDays($days);
+            } else {
+                $ends_at = '';
+            }
+            $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
+        } catch (\Exception $ex) {
+            dd($ex);
+
+            throw new \Exception('Can not Generate Subscription');
+        }
+    }
+
+    public function GenerateInvoice()
+    {
+        try {
+            $user_id = \Auth::user()->id;
+            $number = rand(11111111, 99999999);
+            $date = \Carbon\Carbon::now();
+            $grand_total = \Cart::getSubTotal();
+
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total]);
+            foreach (\Cart::getContent() as $cart) {
+                $this->CreateInvoiceItems($invoice->id, $cart);
+            }
+        } catch (\Exception $ex) {
+            dd($ex);
+
+            throw new \Exception('Can not Generate Invoice');
+        }
+    }
+
+    public function CreateInvoiceItems($invoiceid, $cart)
+    {
+        try {
+            $product_name = $cart->name;
+            $regular_price = $cart->price;
+            $quantity = $cart->quantity;
+            $subtotal = $cart->getPriceSumWithConditions();
+
+            $tax_name = '';
+            $tax_percentage = '';
+
+            foreach ($cart->attributes['tax'] as $tax) {
+                //dd($tax['name']);
+                $tax_name .= $tax['name'].',';
+                $tax_percentage .= $tax['rate'].',';
+            }
+
+            //dd($tax_name);
+
+            $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
+        } catch (\Exception $ex) {
+            dd($ex);
+
+            throw new \Exception('Can not create Invoice Items');
+        }
+    }
 }

@@ -35,9 +35,13 @@ class ProcessUtils
      * @param string $argument The argument that will be escaped
      *
      * @return string The escaped argument
+     *
+     * @deprecated since version 3.3, to be removed in 4.0. Use a command line array or give env vars to the `Process::start/run()` method instead.
      */
     public static function escapeArgument($argument)
     {
+        @trigger_error('The '.__METHOD__.'() method is deprecated since Symfony 3.3 and will be removed in 4.0. Use a command line array or give env vars to the Process::start/run() method instead.', E_USER_DEPRECATED);
+
         //Fix for PHP bug #43784 escapeshellarg removes % from given string
         //Fix for PHP bug #49446 escapeshellarg doesn't work on Windows
         //@see https://bugs.php.net/bug.php?id=43784
@@ -71,7 +75,7 @@ class ProcessUtils
             return $escapedArgument;
         }
 
-        return escapeshellarg($argument);
+        return "'".str_replace("'", "'\\''", $argument)."'";
     }
 
     /**
@@ -96,8 +100,17 @@ class ProcessUtils
             if (is_scalar($input)) {
                 return (string) $input;
             }
+            if ($input instanceof Process) {
+                return $input->getIterator($input::ITER_SKIP_ERR);
+            }
+            if ($input instanceof \Iterator) {
+                return $input;
+            }
+            if ($input instanceof \Traversable) {
+                return new \IteratorIterator($input);
+            }
 
-            throw new InvalidArgumentException(sprintf('%s only accepts strings or stream resources.', $caller));
+            throw new InvalidArgumentException(sprintf('%s only accepts strings, Traversable objects or stream resources.', $caller));
         }
 
         return $input;

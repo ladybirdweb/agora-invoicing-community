@@ -7,7 +7,7 @@ use App\BaseModel;
 class ProductGroup extends BaseModel
 {
     protected $table = 'product_groups';
-    protected $fillable = ['name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link'];
+    protected $fillable = ['id', 'name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link'];
 
     public function config()
     {

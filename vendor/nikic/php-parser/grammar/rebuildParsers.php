@@ -124,6 +124,12 @@ function resolveMacros($code) {
                 return '$this->startAttributeStack[#1] + $this->endAttributes';
             }
 
+            if ('stackAttributes' == $name) {
+                assertArgs(1, $args, $name);
+                return '$this->startAttributeStack[' . $args[0] . ']'
+                     . ' + $this->endAttributeStack[' . $args[0] . ']';
+            }
+
             if ('init' == $name) {
                 return '$$ = array(' . implode(', ', $args) . ')';
             }
@@ -199,7 +205,7 @@ function resolveMacros($code) {
                 assertArgs(1, $args, $name);
 
                 return '$attrs = $this->startAttributeStack[#1]; $stmts = ' . $args[0] . '; '
-                . 'if (!empty($attrs[\'comments\']) && isset($stmts[0])) {'
+                . 'if (!empty($attrs[\'comments\'])) {'
                 . '$stmts[0]->setAttribute(\'comments\', '
                 . 'array_merge($attrs[\'comments\'], $stmts[0]->getAttribute(\'comments\', []))); }';
             }

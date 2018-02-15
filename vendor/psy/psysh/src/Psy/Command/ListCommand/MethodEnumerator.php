@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -39,8 +39,9 @@ class MethodEnumerator extends Enumerator
             return;
         }
 
-        $showAll = $input->getOption('all');
-        $methods = $this->prepareMethods($this->getMethods($showAll, $reflector));
+        $showAll   = $input->getOption('all');
+        $noInherit = $input->getOption('no-inherit');
+        $methods   = $this->prepareMethods($this->getMethods($showAll, $reflector, $noInherit));
 
         if (empty($methods)) {
             return;
@@ -55,22 +56,30 @@ class MethodEnumerator extends Enumerator
     /**
      * Get defined methods for the given class or object Reflector.
      *
-     * @param bool       $showAll   Include private and protected methods.
+     * @param bool       $showAll   Include private and protected methods
      * @param \Reflector $reflector
+     * @param bool       $noInherit Exclude inherited methods
      *
      * @return array
      */
-    protected function getMethods($showAll, \Reflector $reflector)
+    protected function getMethods($showAll, \Reflector $reflector, $noInherit = false)
     {
+        $className = $reflector->getName();
+
         $methods = array();
         foreach ($reflector->getMethods() as $name => $method) {
+            if ($noInherit && $method->getDeclaringClass()->getName() !== $className) {
+                continue;
+            }
+
             if ($showAll || $method->isPublic()) {
                 $methods[$method->getName()] = $method;
             }
         }
 
-        // TODO: this should be natcasesort
-        ksort($methods);
+        // @todo switch to ksort after we drop support for 5.3:
+        //     ksort($methods, SORT_NATURAL | SORT_FLAG_CASE);
+        uksort($methods, 'strnatcasecmp');
 
         return $methods;
     }

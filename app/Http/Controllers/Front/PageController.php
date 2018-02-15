@@ -13,7 +13,7 @@ class PageController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -28,28 +28,40 @@ class PageController extends Controller
         }
     }
 
-    public function GetPages()
+    public function getPages()
     {
-        return \Datatable::collection($this->page->get())
+        return \DataTables::of($this->page->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name', 'url', 'created_at')
+                        ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
+                        })
+                        ->addColumn('url', function ($model) {
+                            return $model->url;
+                        })
+                        ->addColumn('created_at', function ($model) {
+                            return $model->created_at;
+                        })
+
                         ->addColumn('content', function ($model) {
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name', 'content')
-                        ->orderColumns('name')
-                        ->make();
+
+                          ->rawColumns(['name', 'url',  'created_at', 'content', 'action'])
+                        ->make(true);
+        // ->searchColumns('name', 'content')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     public function create()
     {
         try {
-            $parents = $this->page->lists('name', 'id')->toArray();
+            $parents = $this->page->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
@@ -61,7 +73,7 @@ class PageController extends Controller
     {
         try {
             $page = $this->page->where('id', $id)->first();
-            $parents = $this->page->where('id', '!=', $id)->lists('name', 'id')->toArray();
+            $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
 
             return view('themes.default1.front.page.edit', compact('parents', 'page'));
         } catch (\Exception $ex) {
@@ -108,24 +120,24 @@ class PageController extends Controller
         }
     }
 
-    public function GetPageUrl($slug)
+    public function getPageUrl($slug)
     {
         $productController = new \App\Http\Controllers\Product\ProductController();
         $url = $productController->GetMyUrl();
-        $segment = $this->Addsegment(['public/pages']);
+        $segment = $this->addSegment(['public/pages']);
         $url = $url.$segment;
 
         $slug = str_slug($slug, '-');
         echo $url.'/'.$slug;
     }
 
-    public function GetSlug($slug)
+    public function getSlug($slug)
     {
         $slug = str_slug($slug, '-');
         echo $slug;
     }
 
-    public function Addsegment($segments = [])
+    public function addSegment($segments = [])
     {
         $segment = '';
         foreach ($segments as $seg) {
@@ -135,18 +147,18 @@ class PageController extends Controller
         return $segment;
     }
 
-    public function Generate(Request $request)
+    public function generate(Request $request)
     {
         // dd($request->all());
         if ($request->has('slug')) {
             $slug = $request->input('slug');
 
-            return $this->GetSlug($slug);
+            return $this->getSlug($slug);
         }
         if ($request->has('url')) {
             $slug = $request->input('url');
 
-            return $this->GetPageUrl($slug);
+            return $this->getPageUrl($slug);
         }
     }
 
@@ -216,11 +228,11 @@ class PageController extends Controller
         }
     }
 
-    public function Search(Request $request)
+    public function search(Request $request)
     {
         try {
             $search = $request->input('q');
-            $model = $this->Result($search, $this->page);
+            $model = $this->result($search, $this->page);
 
             return view('themes.default1.front.page.search', compact('model'));
         } catch (\Exception $ex) {
@@ -228,7 +240,7 @@ class PageController extends Controller
         }
     }
 
-    public function Result($search, $model)
+    public function result($search, $model)
     {
         try {
             $model = $model->where('name', 'like', '%'.$search.'%')->orWhere('content', 'like', '%'.$search.'%')->paginate(10);
@@ -266,7 +278,40 @@ class PageController extends Controller
 
     public function cart()
     {
-        $location = \GeoIP::getLocation();
+        // $location = \GeoIP::getLocation();
+        //       $location = ['ip'   => '::1',
+        // 'isoCode'                 => 'IN',
+        // 'country'                 => 'India',
+        // 'city'                    => 'Bengaluru',
+        // 'state'                   => 'KA',
+        // 'postal_code'             => 560076,
+        // 'lat'                     => 12.9833,
+        // 'lon'                     => 77.5833,
+        // 'timezone'                => 'Asia/Kolkata',
+        // 'continent'               => 'AS',
+        // 'default'                 => false, ];
+if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+} else {
+    $ip = $_SERVER['REMOTE_ADDR'];
+}
+
+        if ($ip != '::1') {
+            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+        } else {
+            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+        }
+        // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+
+        $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+        $state_code = $location['countryCode'].'-'.$location['region'];
+        $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+        $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+
         if ($location['country'] == 'India') {
             $currency = 'INR';
         } else {
@@ -285,26 +330,62 @@ class PageController extends Controller
         }
         $pages = $this->page->find(1);
         $data = $pages->content;
+
         $product = new \App\Model\Product\Product();
-        $products = $product->where('id', '!=', 1)->where('hidden', '!=', 1)->get()->toArray();
-        //dd($products);
+        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
+
         //$cart_controller = new \App\Http\Controllers\Front\CartController();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+        // dd($temp_controller);
         $trasform = [];
         $template = '';
-        if (count($products) > 0) {
-            foreach ($products as $key => $value) {
+
+        if (count($helpdesk_products) > 0) {
+            foreach ($helpdesk_products as $key => $value) {
                 $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
                 $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-
+                // dd($temp_controller->leastAmount($value['id']), $temp_controller->plans($value['shoping_cart_link'], $value['id']));
                 $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
+            // dd($template);
         }
 
-        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform'));
+        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
+
+        $servicedesk_template = '';
+        $trasform1 = [];
+        if (count($sevice_desk_products) > 0) {
+            foreach ($sevice_desk_products as $key => $value) {
+                $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform1[$value['id']]['name'] = $value['name'];
+                $trasform1[$value['id']]['feature'] = $value['description'];
+                $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+
+                $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+            }
+            $servicedesk_template = $this->transform('cart', $data, $trasform1);
+        }
+
+        $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
+
+        $service_template = '';
+        $trasform2 = [];
+        if (count($service) > 0) {
+            foreach ($service as $key => $value) {
+                $trasform2[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform2[$value['id']]['name'] = $value['name'];
+                $trasform2[$value['id']]['feature'] = $value['description'];
+                $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+
+                $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+            }
+            $service_template = $this->transform('cart', $data, $trasform2);
+        }
+
+        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
     }
 
     public function checkConfigKey($config, $transform)

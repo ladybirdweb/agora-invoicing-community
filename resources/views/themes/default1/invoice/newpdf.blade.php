@@ -70,7 +70,7 @@
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th></th>
+                                   
                                         <th>Product</th>
                                         <th>Quantity</th>
                                         <th>Price</th>

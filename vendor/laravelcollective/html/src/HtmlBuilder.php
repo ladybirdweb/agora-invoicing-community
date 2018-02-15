@@ -288,7 +288,7 @@ class HtmlBuilder
     {
         return str_repeat('&nbsp;', $num);
     }
-    
+
     /**
      * Generate an ordered list of items.
      *

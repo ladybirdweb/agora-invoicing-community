@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -129,6 +129,9 @@ class ValidClassNamePassTest extends CodeCleanerTestCase
     {
         $stmts = $this->parse($code);
         $this->traverse($stmts);
+
+        // @todo a better thing to assert here?
+        $this->assertTrue(true);
     }
 
     public function getValid()
@@ -257,6 +260,60 @@ class ValidClassNamePassTest extends CodeCleanerTestCase
                 }
             '),
             array('class A {} class B { function c() { return new A; } }'),
+
+            // recursion
+            array('class A { function a() { A::a(); } }'),
+
+            // conditionally defined classes
+            array('
+                class A {}
+                if (false) {
+                    class A {}
+                }
+            '),
+            array('
+                class A {}
+                if (true) {
+                    class A {}
+                } else if (false) {
+                    class A {}
+                } else {
+                    class A {}
+                }
+            '),
+            // ewww
+            array('
+                class A {}
+                if (true):
+                    class A {}
+                elseif (false):
+                    class A {}
+                else:
+                    class A {}
+                endif;
+            '),
+            array('
+                class A {}
+                while (false) { class A {} }
+            '),
+            array('
+                class A {}
+                do { class A {} } while (false);
+            '),
+            array('
+                class A {}
+                switch (1) {
+                    case 0:
+                        class A {}
+                        break;
+                    case 1:
+                        class A {}
+                        break;
+                    case 2:
+                        class A {}
+                        break;
+                }
+            '),
         );
 
         // Ugh. There's gotta be a better way to test for this.

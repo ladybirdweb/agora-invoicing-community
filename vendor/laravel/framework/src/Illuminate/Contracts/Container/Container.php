@@ -3,8 +3,9 @@
 namespace Illuminate\Contracts\Container;
 
 use Closure;
+use Psr\Container\ContainerInterface;
 
-interface Container
+interface Container extends ContainerInterface
 {
     /**
      * Determine if the given abstract type has been bound.
@@ -85,7 +86,7 @@ interface Container
      *
      * @param  string  $abstract
      * @param  mixed   $instance
-     * @return void
+     * @return mixed
      */
     public function instance($abstract, $instance);
 
@@ -98,10 +99,18 @@ interface Container
     public function when($concrete);
 
     /**
+     * Get a closure to resolve the given type from the container.
+     *
+     * @param  string  $abstract
+     * @return \Closure
+     */
+    public function factory($abstract);
+
+    /**
      * Resolve the given type from the container.
      *
      * @param  string  $abstract
-     * @param  array   $parameters
+     * @param  array  $parameters
      * @return mixed
      */
     public function make($abstract, array $parameters = []);

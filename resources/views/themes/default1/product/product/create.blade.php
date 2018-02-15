@@ -5,7 +5,7 @@
     <div class="box-header">
         @if (count($errors) > 0)
         
-        <div class="alert alert-danger">
+        <div class="alert alert-danger alert-dismissable">
             <strong>Whoops!</strong> There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
@@ -60,12 +60,17 @@
 
                                 </div>
 
-                                <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
+
+
+                              
+
+                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
+
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
@@ -76,9 +81,10 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['product'=>'Product','addon'=>'Addon','service'=>'Service'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service'],null,['class' => 'form-control']) !!}
 
                                 </div>
+
 
                             </div>
 
@@ -107,7 +113,7 @@ tinymce.init({
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
-                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control','multiple']) !!}
+                                                {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>
@@ -237,14 +243,16 @@ tinymce.init({
 
                                             </div>
                                         </li>
-                                        <li>
+                                       
+                                          <li>
                                             <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('retired','Allow Description') !!}
                                                 <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
                                             </div>  
-                                        </li>
+                                        </li>  
+                                        
 
 
                                     </ul>
@@ -300,12 +308,12 @@ tinymce.init({
 
                                                 <td>
 
-                                                    {!! Form::text('price[$key]',null) !!}
+                                                    {!! Form::text('price['.$key.']',null) !!}
 
                                                 </td>
                                                 <td>
 
-                                                    {!! Form::text('sales_price[$key]',null) !!}
+                                                    {!! Form::text('sales_price['.$key.']',null) !!}
 
                                                 </td>
                                             </tr>

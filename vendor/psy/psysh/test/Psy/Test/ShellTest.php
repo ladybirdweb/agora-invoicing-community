@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -18,7 +18,7 @@ use Psy\Shell;
 use Psy\TabCompletion\Matcher\ClassMethodsMatcher;
 use Symfony\Component\Console\Output\StreamOutput;
 
-class ShellTest extends \PHPUnit_Framework_TestCase
+class ShellTest extends \PHPUnit\Framework\TestCase
 {
     private $streams = array();
 
@@ -39,7 +39,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $_e        = 'ignore this';
 
         $shell = new Shell($this->getConfig());
-        $shell->setScopeVariables(compact('one', 'two', 'three', '__psysh__', '_', '_e'));
+        $shell->setScopeVariables(compact('one', 'two', 'three', '__psysh__', '_', '_e', 'this'));
 
         $this->assertNotContains('__psysh__', $shell->getScopeVariableNames());
         $this->assertEquals(array('one', 'two', 'three', '_'), $shell->getScopeVariableNames());
@@ -50,6 +50,12 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
         $shell->setScopeVariables(array());
         $this->assertEquals(array('_'), $shell->getScopeVariableNames());
+
+        $shell->setBoundObject($this);
+        $this->assertEquals(array('_', 'this'), $shell->getScopeVariableNames());
+        $this->assertSame($this, $shell->getScopeVariable('this'));
+        $this->assertEquals(array('_' => null), $shell->getScopeVariables(false));
+        $this->assertEquals(array('_' => null, 'this' => $this), $shell->getScopeVariables());
     }
 
     /**
@@ -145,13 +151,13 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         rewind($stream);
         $streamContents = stream_get_contents($stream);
 
-        $this->assertContains('PHP error:', $streamContents);
-        $this->assertContains('wheee',      $streamContents);
-        $this->assertContains('line 13',    $streamContents);
+        $this->assertContains('PHP Notice:', $streamContents);
+        $this->assertContains('wheee',       $streamContents);
+        $this->assertContains('line 13',     $streamContents);
     }
 
     /**
-     * @expectedException Psy\Exception\ErrorException
+     * @expectedException \Psy\Exception\ErrorException
      */
     public function testNotHandlingErrors()
     {
@@ -194,7 +200,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($shell->hasCode());
         $code = preg_replace('/\s+/', ' ', $code);
         $this->assertNotNull($code);
-        $this->assertEquals('class a { }', $code);
+        $this->assertEquals('class a { } return new \\Psy\\CodeCleaner\\NoReturnValue();', $code);
     }
 
     public function testKeepCodeBufferOpen()
@@ -235,7 +241,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $shell->flushCode();
         $code = '$test()';
         $shell->addCode($code);
-        $shell->flushCode();
+        $this->assertEquals($shell->flushCode(), 'return $test();');
     }
 
     public function testWriteStdout()

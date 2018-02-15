@@ -98,7 +98,7 @@
                                             <table class="table table-responsive">
 
                                                 <tr>
-                                                    <td></td>
+                                                
                                                     <td>Product</td>
                                                     <td>Quantity</td>
                                                     <td>Price</td>

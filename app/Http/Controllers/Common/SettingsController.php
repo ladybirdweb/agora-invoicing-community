@@ -14,7 +14,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
-        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
+        // $this->middleware('admin', ['except' => 'checkPaymentGateway']);
     }
 
     public function settings(Setting $settings)
@@ -37,8 +37,8 @@ class SettingsController extends Controller
         $plugins = $this->fetchConfig();
 
         //dd($result);
-        return \Datatable::collection(new Collection($plugins))
-                        ->searchColumns('name')
+        return \DataTables::of(new Collection($plugins))
+                        // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
@@ -87,7 +87,8 @@ class SettingsController extends Controller
                         ->addColumn('version', function ($model) {
                             return $model['version'];
                         })
-                        ->make();
+                      ->rawColumns(['name', 'description', 'author', 'website', 'version'])
+                            ->make(true);
     }
 
     /**
@@ -95,7 +96,7 @@ class SettingsController extends Controller
      *
      * @return type
      */
-    public function ReadPlugins()
+    public function readPlugins()
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins';
         $plugins = array_diff(scandir($dir), ['.', '..']);
@@ -142,7 +143,6 @@ class SettingsController extends Controller
                  */
                 $faveoconfig = config_path().DIRECTORY_SEPARATOR.'plugins'.DIRECTORY_SEPARATOR.$filename.'.php';
                 if ($faveoconfig) {
-
                     //copy($config, $faveoconfig);
                     /*
                      * write provider list in app.php line 128
@@ -211,7 +211,7 @@ class SettingsController extends Controller
         return rmdir($dir);
     }
 
-    public function ReadConfigs()
+    public function readConfigs()
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
@@ -255,7 +255,7 @@ class SettingsController extends Controller
 
     public function fetchConfig()
     {
-        $configs = $this->ReadConfigs();
+        $configs = $this->readConfigs();
         //dd($configs);
         $plugs = new Plugin();
         $fields = [];

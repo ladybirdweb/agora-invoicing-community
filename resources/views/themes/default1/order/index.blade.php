@@ -19,37 +19,37 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('order_no','Order No:') !!}
-                {!! Form::text('order_no',null,['class' => 'form-control']) !!}
+                {!! Form::text('order_no',null,['class' => 'form-control','id'=>'order_no']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-                {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control']) !!}
+                {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'from']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'till']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('domain','Domain') !!}
-                {!! Form::text('domain',null,['class' => 'form-control']) !!}
+                {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
 
             </div>
 
@@ -58,12 +58,26 @@
                     {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
                 </div>
                 <div class="col-md-6">
-                    {!! Form::submit('Reset',['class'=>'btn btn-danger']) !!}
+                    {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!}
                 </div>
             </div>
 
         </div>
-
+<script type="text/javascript">
+                    $(function () {
+                    $('#reset').on('click', function () {
+                      
+                        $('#order_no').val('');
+                        $('#product_id').val('');
+                        $('#expary').val('');
+                        $('#from').val('');
+                        $('#till').val('');
+                        $('#domain').val('');
+                    
+                          
+                    });
+                });
+                </script>
 
 
         {!! Form::close() !!}
@@ -109,51 +123,64 @@
         <div class="row">
 
             <div class="col-md-12">
-                {!! Datatable::table()
-                ->addColumn('<input type="checkbox" class="checkbox-toggle">','Date','Client Name','Order No.','Total','Status','Expiry Date','Action')
-                ->setUrl("get-orders?order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain") 
-                ->setOrder([1=>'desc'])
-                ->setOptions(
 
-                [
-                "dom" => "Bfrtip",
-                "buttons" => [
-                [
-                "text" => "Delete",
-                "action" => "function ( e, dt, node, config ) {
-                e.preventDefault();
-                var answer = confirm ('Are you sure you want to delete from the database?');
-                if(answer){
-                $.ajax({
-                url: 'orders-delete',
-                type: 'GET',
-                data: $('#check:checked').serialize(),
 
-                beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
+                <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
-                });
-                }
-                }"
-                ]
-                ],
-
-                ])
-                ->render() !!}
-
-            </div>
+                    <thead><tr>
+                         <th>Date</th>
+                          <th>Client Name</th>
+                           
+                            <th>Order No</th>
+                            <th>Total</th>
+                            
+                             <th>Status</th>
+                              <th>Expiry Date</th>
+                            <th>Action</th>
+                        </tr></thead>
+                     </table>
+                </div>
         </div>
 
     </div>
 
 </div>
 
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#order-table').DataTable({
+            processing: true,
+            serverSide: true,
+            order: [[ 0, "desc" ]],
+             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain" ) !!}',
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+              }],
+            columns: [
+                {data: 'date', name: 'date'},
+                {data: 'client', name: 'client'},
+                {data: 'number', name: 'number'},
+                {data: 'price_override', name: 'price_override'},
+                  {data: 'order_status', name: 'order_status'},
+                  {data: 'ends_at', name: 'ends_at'},
+
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    </script>
 
 
 @stop

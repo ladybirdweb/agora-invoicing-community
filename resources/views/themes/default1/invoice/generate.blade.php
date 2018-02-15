@@ -58,7 +58,7 @@
 
                 @if($user=='')
                 <?php
-                $users = \App\User::lists('email');
+                $users = \App\User::pluck('email');
                 ?>
 
                 <div class="col-md-4 form-group">
@@ -197,6 +197,7 @@
             success: function (data) {
                 //var response = JSON.stringify(data.result);
                 for (key in data.result) {
+                   
                     if (key == 'success') {
                         $('#fails').hide();
                         $('#error').hide();

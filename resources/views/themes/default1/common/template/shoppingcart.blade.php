@@ -46,14 +46,75 @@ main
                     {{Session::get('fails')}}
                 </div>
                 @endif
-    
-    <!--<div class="col-md-12 col-md-offset-3">-->
+    <div class="row">
+                        <div class="col-md-12">
+                            
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold">Helpdesk Pricing</h4>
+                        </div>
+                    </div>
+    <div class="col-md-12">
         <div class="pricing-table princig-table-flat">
         {!! html_entity_decode($template) !!}
         </div>
-    <!--</div>-->
+    </div>
+    <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+
+
+
+
+  <div class="row">
+                        <div class="col-md-12">
+                            <!-- <hr class="tall mt-none"> -->
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;"><strong><center>ServiceDesk Pricing</center></strong></h4>
+                        </div>
+                    </div>
+  <div class="col-md-12">
+   <div class="pricing-table princig-table-flat">
+        {!! html_entity_decode($servicedesk_template) !!}
+        </div>
 
 </div>
+ <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+
+  <div class="row">
+                        <div class="col-md-12">
+                           <!--  <hr class="tall mt-none"> -->
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;"><strong><center>Services Pricing</center></strong></h4>
+                        </div>
+                    </div>
+<div class="col-md-12">
+   <div class="pricing-table princig-table-flat">
+        {!! html_entity_decode($service_template) !!}
+        </div>
+
+</div>
+
+
+
+</div>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+
+        $(document).on("change", "select[name='subscription']", function () {
+              // var value = $(this).text();
+     // var index = $('li').index($(this));
+              // alert($(this).find('option:selected').text());
+              var amount=$(this).find('option:selected').text();
+              var amount= amount.substring(15,20);
+
+
+              // var product_id=$(this).find('option:selected').val();
+              // alert(product_id);
+// $(this).find('option:selected').parents().find('.plan').find('.price').text(amount)
+//           console.log($(this).find('option:selected').parents().find('.plan').find('.price').text(amount));
+
+             // alert(($(this).find('option:selected')).parents().find('.plan').find('.price').text(amount));
+
+                    });
+          
+
+</script>
 
 @stop
 

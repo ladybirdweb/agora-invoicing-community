@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -67,24 +67,28 @@ HELP
     }
 
     /**
-     * Obtains the correct trace in the full backtrace.
+     * Obtains the correct stack frame in the full backtrace.
      *
      * @return array
      */
     protected function trace()
     {
-        foreach ($this->backtrace as $i => $backtrace) {
-            if (!isset($backtrace['class'], $backtrace['function'])) {
-                continue;
-            }
-            $correctClass = $backtrace['class'] === 'Psy\Shell';
-            $correctFunction = $backtrace['function'] === 'debug';
-            if ($correctClass && $correctFunction) {
-                return $backtrace;
+        foreach (array_reverse($this->backtrace) as $stackFrame) {
+            if ($this->isDebugCall($stackFrame)) {
+                return $stackFrame;
             }
         }
 
         return end($this->backtrace);
+    }
+
+    private static function isDebugCall(array $stackFrame)
+    {
+        $class    = isset($stackFrame['class']) ? $stackFrame['class'] : null;
+        $function = isset($stackFrame['function']) ? $stackFrame['function'] : null;
+
+        return ($class === null && $function === 'Psy\debug') ||
+            ($class === 'Psy\Shell' && in_array($function, array('__construct', 'debug')));
     }
 
     /**
@@ -94,14 +98,14 @@ HELP
      */
     protected function fileInfo()
     {
-        $backtrace = $this->trace();
-        if (preg_match('/eval\(/', $backtrace['file'])) {
-            preg_match_all('/([^\(]+)\((\d+)/', $backtrace['file'], $matches);
+        $stackFrame = $this->trace();
+        if (preg_match('/eval\(/', $stackFrame['file'])) {
+            preg_match_all('/([^\(]+)\((\d+)/', $stackFrame['file'], $matches);
             $file = $matches[1][0];
             $line = (int) $matches[2][0];
         } else {
-            $file = $backtrace['file'];
-            $line = $backtrace['line'];
+            $file = $stackFrame['file'];
+            $line = $stackFrame['line'];
         }
 
         return compact('file', 'line');
@@ -112,12 +116,37 @@ HELP
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $info = $this->fileInfo();
-        $num = $input->getOption('num');
-        $factory = new ConsoleColorFactory($this->colorMode);
-        $colors = $factory->getConsoleColor();
+        $info        = $this->fileInfo();
+        $num         = $input->getOption('num');
+        $factory     = new ConsoleColorFactory($this->colorMode);
+        $colors      = $factory->getConsoleColor();
         $highlighter = new Highlighter($colors);
-        $contents = file_get_contents($info['file']);
-        $output->page($highlighter->getCodeSnippet($contents, $info['line'], $num, $num), ShellOutput::OUTPUT_RAW);
+        $contents    = file_get_contents($info['file']);
+
+        $output->startPaging();
+        $output->writeln('');
+        $output->writeln(sprintf('From <info>%s:%s</info>:', $this->replaceCwd($info['file']), $info['line']));
+        $output->writeln('');
+        $output->write($highlighter->getCodeSnippet($contents, $info['line'], $num, $num), ShellOutput::OUTPUT_RAW);
+        $output->stopPaging();
+    }
+
+    /**
+     * Replace the given directory from the start of a filepath.
+     *
+     * @param string $file
+     *
+     * @return string
+     */
+    private function replaceCwd($file)
+    {
+        $cwd = getcwd();
+        if ($cwd === false) {
+            return $file;
+        }
+
+        $cwd = rtrim($cwd, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+        return preg_replace('/^' . preg_quote($cwd, '/') . '/', '', $file);
     }
 }

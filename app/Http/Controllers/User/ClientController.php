@@ -19,7 +19,7 @@ class ClientController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
         $user = new User();
         $this->user = $user;
         $activate = new AccountActivate();
@@ -67,19 +67,33 @@ class ClientController extends Controller
         $industry = $request->input('industry');
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
-        //$user = new User;
-        // $user = $this->user->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active')->orderBy('created_at', 'desc');
-        //dd($user);
+
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
-        return \Datatable::query($user)
+        return\ DataTables::of($user->get())
+
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('first_name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
-                        ->showColumns('email', 'created_at')
+                         ->addColumn('email', function ($model) {
+                             return $model->email;
+                         })
+                          ->addColumn('created_at', function ($model) {
+                         $ends = $model->created_at;
+                            if ($ends) {
+                                 $date = date_create($ends);
+                                    $end = date_format($date, 'l, F j, Y H:m A');
+                          }
+                            return $end;
+                              
+                              
+                              
+                            //   return $model->created_at;
+                          })
+                        // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
                                 $email = "<span class='glyphicon glyphicon-envelope' style='color:green' title='verified email'></span>";
@@ -97,10 +111,14 @@ class ClientController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                            // return 'hhhh';
                         })
-                        ->searchColumns('email', 'first_name')
-                        ->orderColumns('email', 'first_name', 'created_at')
-                        ->make();
+                        ->rawColumns(['first_name', 'email',  'created_at', 'active','action'])
+                        ->make(true);
+
+        // ->searchColumns('email', 'first_name')
+                        // ->orderColumns('email', 'first_name', 'created_at')
+                        // ->make();
     }
 
     /**
@@ -111,8 +129,8 @@ class ClientController extends Controller
     public function create()
     {
         $timezones = new \App\Model\Common\Timezone();
-        $timezones = $timezones->lists('name', 'id')->toArray();
-        $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+        $timezones = $timezones->pluck('name', 'id')->toArray();
+        $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
 
         return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers'));
@@ -176,13 +194,14 @@ class ClientController extends Controller
         try {
             $user = $this->user->where('id', $id)->first();
             $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->lists('name', 'id')->toArray();
+            $timezones = $timezones->pluck('name', 'id')->toArray();
 
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
 
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
-            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+
+            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
@@ -262,6 +281,7 @@ class ClientController extends Controller
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '')
     {
         $join = $this->user;
+
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
                     ->orWhere('last_name', 'LIKE', '%'.$name.'%');
@@ -291,7 +311,7 @@ class ClientController extends Controller
             $join = $join->where('company_size', $company_size);
         }
 
-        $join = $join->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified');
+        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified');
 
         return $join;
     }
@@ -299,7 +319,7 @@ class ClientController extends Controller
     public function soldEdition($name)
     {
         $invoice = new \App\Model\Order\InvoiceItem();
-        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->lists('invoice_id');
+        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->pluck('invoice_id');
         $order = new Order();
         $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
 

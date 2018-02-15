@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 //use LinkThrow\Billing\CustomerBillableTrait;
 //use App\Model\Common\Website;
 
-class User extends BaseModel implements AuthenticatableContract, CanResetPasswordContract
+class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable,
         CanResetPassword;
@@ -145,9 +145,9 @@ class User extends BaseModel implements AuthenticatableContract, CanResetPasswor
         $changed = $this->isDirty() ? $this->getDirty() : false;
         parent::save($options);
         $role = $this->role;
-        if ($changed && checkArray('manager', $changed) && $role == 'user') {
-            $auth = new Http\Controllers\Auth\AuthController();
-            $auth->accountManagerMail($this);
-        }
+        // if ($changed && checkArray('manager', $changed) && $role == 'user') {
+        //     $auth = new Http\Controllers\Auth\AuthController();
+        //     $auth->accountManagerMail($this);
+        // }
     }
 }

@@ -129,8 +129,8 @@
 
                     </div>
                     <?php
-                    $type = DB::table('company_types')->pluck('name','short');
-                    $size = DB::table('company_sizes')->pluck('name','short');
+                   $type = DB::table('company_types')->pluck('name','short')->toArray();
+                    $size = DB::table('company_sizes')->pluck('name','short')->toArray();
                     ?>
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
@@ -164,7 +164,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
+                        <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
 
                         {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getCountryAttr(this.value);']) !!}
 
@@ -202,7 +202,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->lists('name','code')],null,['class' => 'form-control','id'=>'currency']) !!}
+                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">

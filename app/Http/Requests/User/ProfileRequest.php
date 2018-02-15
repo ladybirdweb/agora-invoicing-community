@@ -23,7 +23,6 @@ class ProfileRequest extends Request
      */
     public function rules()
     {
-
         if ($this->segment(1) == 'profile') {
             $userid = \Auth::user()->id;
 
@@ -42,23 +41,20 @@ class ProfileRequest extends Request
 
         ];
         }
-        
-        
-     if ($this->segment(1) == 'my-profile') {
+
+        if ($this->segment(1) == 'my-profile') {
             $userid = \Auth::user()->id;
 
             return [
                      'first_name'            => 'required|min:3|max:20',
-                    'last_name'             => 'required|max:20',
+                    'last_name'              => 'required|max:20',
                      'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
-                    'mobile_code'           => 'required|numeric',
-                 
+                    'mobile_code'            => 'required|numeric',
+
                     'zip'                   => 'required|numeric',
-                  
+
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                  
-                   
 
         ];
         }

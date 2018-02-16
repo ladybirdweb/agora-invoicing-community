@@ -32,7 +32,7 @@ class ServiceController extends Controller
         return view('themes.default1.product.addon.index');
     }
 
-    public function GetServices()
+    public function getServices()
     {
         return \Datatable::collection($this->service->get())
                         ->addColumn('#', function ($model) {

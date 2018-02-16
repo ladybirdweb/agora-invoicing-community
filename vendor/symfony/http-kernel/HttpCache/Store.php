@@ -29,8 +29,6 @@ class Store implements StoreInterface
     private $locks;
 
     /**
-     * Constructor.
-     *
      * @param string $root The path to the cache directory
      *
      * @throws \RuntimeException
@@ -62,8 +60,6 @@ class Store implements StoreInterface
     /**
      * Tries to lock the cache for a given Request, without blocking.
      *
-     * @param Request $request A Request instance
-     *
      * @return bool|string true if the lock is acquired, the path to the current lock otherwise
      */
     public function lock(Request $request)
@@ -90,8 +86,6 @@ class Store implements StoreInterface
 
     /**
      * Releases the lock for the given Request.
-     *
-     * @param Request $request A Request instance
      *
      * @return bool False if the lock file does not exist or cannot be unlocked, true otherwise
      */
@@ -133,8 +127,6 @@ class Store implements StoreInterface
     /**
      * Locates a cached Response for the Request provided.
      *
-     * @param Request $request A Request instance
-     *
      * @return Response|null A Response instance, or null if no cache entry was found
      */
     public function lookup(Request $request)
@@ -159,7 +151,7 @@ class Store implements StoreInterface
             return;
         }
 
-        list($req, $headers) = $match;
+        $headers = $match[1];
         if (file_exists($body = $this->getPath($headers['x-content-digest'][0]))) {
             return $this->restoreResponse($headers, $body);
         }
@@ -174,9 +166,6 @@ class Store implements StoreInterface
      *
      * Existing entries are read and any that match the response are removed. This
      * method calls write with the new list of cache entries.
-     *
-     * @param Request  $request  A Request instance
-     * @param Response $response A Response instance
      *
      * @return string The key under which the response is stored
      *
@@ -210,7 +199,7 @@ class Store implements StoreInterface
                 $entry[1]['vary'] = array('');
             }
 
-            if ($vary != $entry[1]['vary'][0] || !$this->requestsMatch($vary, $entry[0], $storedEnv)) {
+            if ($entry[1]['vary'][0] != $vary || !$this->requestsMatch($vary, $entry[0], $storedEnv)) {
                 $entries[] = $entry;
             }
         }
@@ -230,8 +219,6 @@ class Store implements StoreInterface
     /**
      * Returns content digest for $response.
      *
-     * @param Response $response
-     *
      * @return string
      */
     protected function generateContentDigest(Response $response)
@@ -241,8 +228,6 @@ class Store implements StoreInterface
 
     /**
      * Invalidates all cache entries that match the request.
-     *
-     * @param Request $request A Request instance
      *
      * @throws \RuntimeException
      */
@@ -317,14 +302,33 @@ class Store implements StoreInterface
     /**
      * Purges data for the given URL.
      *
+     * This method purges both the HTTP and the HTTPS version of the cache entry.
+     *
+     * @param string $url A URL
+     *
+     * @return bool true if the URL exists with either HTTP or HTTPS scheme and has been purged, false otherwise
+     */
+    public function purge($url)
+    {
+        $http = preg_replace('#^https:#', 'http:', $url);
+        $https = preg_replace('#^http:#', 'https:', $url);
+
+        $purgedHttp = $this->doPurge($http);
+        $purgedHttps = $this->doPurge($https);
+
+        return $purgedHttp || $purgedHttps;
+    }
+
+    /**
+     * Purges data for the given URL.
+     *
      * @param string $url A URL
      *
      * @return bool true if the URL exists and has been purged, false otherwise
      */
-    public function purge($url)
+    private function doPurge($url)
     {
         $key = $this->getCacheKey(Request::create($url));
-
         if (isset($this->locks[$key])) {
             flock($this->locks[$key], LOCK_UN);
             fclose($this->locks[$key]);
@@ -415,8 +419,6 @@ class Store implements StoreInterface
      * headers, use a Vary header to indicate them, and each representation will
      * be stored independently under the same cache key.
      *
-     * @param Request $request A Request instance
-     *
      * @return string A key for the given Request
      */
     protected function generateCacheKey(Request $request)
@@ -426,8 +428,6 @@ class Store implements StoreInterface
 
     /**
      * Returns a cache key for the given Request.
-     *
-     * @param Request $request A Request instance
      *
      * @return string A key for the given Request
      */
@@ -443,8 +443,6 @@ class Store implements StoreInterface
     /**
      * Persists the Request HTTP headers.
      *
-     * @param Request $request A Request instance
-     *
      * @return array An array of HTTP headers
      */
     private function persistRequest(Request $request)
@@ -454,8 +452,6 @@ class Store implements StoreInterface
 
     /**
      * Persists the Response HTTP headers.
-     *
-     * @param Response $response A Response instance
      *
      * @return array An array of HTTP headers
      */

@@ -75,7 +75,7 @@ class ServiceProviderController extends Controller
         }
     }
 
-    public function GetOrders()
+    public function getOrders()
     {
         return \Datatable::collection($this->LicencedOrg->where('organization_id', $this->org->id)->get())
 

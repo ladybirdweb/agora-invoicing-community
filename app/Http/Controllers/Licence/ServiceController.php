@@ -28,7 +28,7 @@ class ServiceController extends Controller
         }
     }
 
-    public function GetServices()
+    public function getServices()
     {
         return \Datatable::collection($this->service->get())
                         ->showColumns('name')

@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -67,7 +67,7 @@ HELP
     /**
      * {@inheritdoc}
      *
-     * @throws InvalidArgumentException if there is no exception to throw.
+     * @throws InvalidArgumentException if there is no exception to throw
      * @throws ThrowUpException         because what else do you expect it to do?
      */
     protected function execute(InputInterface $input, OutputInterface $output)

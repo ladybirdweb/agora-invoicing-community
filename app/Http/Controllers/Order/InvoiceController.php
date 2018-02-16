@@ -39,7 +39,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        //        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $invoice = new Invoice();
         $this->invoice = $invoice;
@@ -91,11 +91,13 @@ class InvoiceController extends Controller
         }
     }
 
-    public function GetInvoices()
+    public function getInvoices()
     {
         //dd($this->invoice->get());
         //$invoice = \DB::table('invoices');
-        return \Datatable::Collection($this->invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get())
+        $new_invoice = Invoice::select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get();
+
+        return \DataTables::of($new_invoice)
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -106,13 +108,22 @@ class InvoiceController extends Controller
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'</a>';
                         })
-                        ->showColumns('number')
+                         ->addColumn('number', function ($model) {
+                             return ucfirst($model->number);
+                         })
+
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
                             return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
                         })
-                        ->showColumns('grand_total', 'status')
+                         ->addColumn('grand_total', function ($model) {
+                             return ucfirst($model->number);
+                         })
+                          ->addColumn('status', function ($model) {
+                              return ucfirst($model->status);
+                          })
+
                         ->addColumn('action', function ($model) {
                             $action = '';
 
@@ -124,9 +135,13 @@ class InvoiceController extends Controller
                             return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>View</a>"
                                     ."   $action";
                         })
-                        ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
-                        ->orderColumns('date', 'user_id', 'number', 'grand_total', 'status')
-                        ->make();
+
+                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status', 'action'])
+                        ->make(true);
+
+        // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')
+                        // ->orderColumns('date', 'user_id', 'number', 'grand_total', 'status')
+                        // ->make();
     }
 
     public function show(Request $request)
@@ -164,8 +179,8 @@ class InvoiceController extends Controller
             } else {
                 $user = '';
             }
-            $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
-            $currency = $this->currency->lists('name', 'code')->toArray();
+            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
+            $currency = $this->currency->pluck('name', 'code')->toArray();
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
@@ -175,37 +190,37 @@ class InvoiceController extends Controller
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        //dd($request->all());
+        // dd($request->all());
         $qty = 1;
-        if (array_key_exists('domain', $request->all())) {
-            $this->validate($request, [
-                'domain' => 'required',
-            ]);
-        }
-        if (array_key_exists('quantity', $request->all())) {
-            $this->validate($request, [
-                'quantity' => 'required|integer',
-            ]);
-            $qty = $request->input('quantity');
-        }
+        // if (array_key_exists('domain', $request->all())) {
+        //     $this->validate($request, [
+        //         'domain' => 'required',
+        //     ]);
+        // }
+        // if (array_key_exists('quantity', $request->all())) {
+        //     $this->validate($request, [
+        //         'quantity' => 'required|integer',
+        //     ]);
+        //     $qty = $request->input('quantity');
+        // }
 
-        $this->validate($request, [
-            'product' => 'required',
-            'plan'    => 'required_if:subscription,true',
-                ], [
-            'plan.required_if' => 'Subscription field is required',
-        ]);
+        // $this->validate($request, [
+        //     'product' => 'required',
+        //     'plan'    => 'required_if:subscription,true',
+        //         ], [
+        //     'plan.required_if' => 'Subscription field is required',
+        // ]);
 
         try {
             if ($user_id == '') {
-                $user_id = \Input::get('user');
+                $user_id = \Request::input('user');
             }
 
-            $productid = Input::get('product');
-            $code = Input::get('code');
-            $total = Input::get('price');
-            $plan = Input::get('plan');
-            $description = Input::get('description');
+            $productid = $request->input('product');
+            $code = $request->input('code');
+            $total = $request->input('price');
+            $plan = $request->input('plan');
+            $description = $request->input('description');
             if ($request->has('domain')) {
                 $domain = $request->input('domain');
                 $this->setDomain($productid, $domain);
@@ -214,7 +229,7 @@ class InvoiceController extends Controller
             $currency = $controller->currency($user_id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
-            $product = $this->product->findOrFail($productid);
+            $product = $this->product->find($productid);
             $cost = $controller->cost($productid, $user_id, $plan);
             if ($cost != $total) {
                 $grand_total = $total;
@@ -271,8 +286,8 @@ class InvoiceController extends Controller
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
-            $agent = \Input::get('agent');
-            $client = \Input::get('client');
+            $agent = $request->input('agent');
+            $client = $request->input('client');
             if ($agent == 1) {
                 $id = \Auth::user()->id;
                 $this->sendMail($id, $invoiceid);
@@ -522,7 +537,6 @@ class InvoiceController extends Controller
     {
         try {
             switch ($type) {
-
                 case 1:
                     $percentage = $price * ($value / 100);
 
@@ -657,10 +671,11 @@ class InvoiceController extends Controller
             }
             //return view('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            dd($ex);
+            // dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -770,7 +785,7 @@ class InvoiceController extends Controller
     {
         try {
             $invoice = $this->invoice->findOrFail($invoiceid);
-            $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
+            $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
             $total = array_sum($payment);
             if ($total < $invoice->grand_total) {
                 $invoice->status = 'pending';
@@ -807,7 +822,7 @@ class InvoiceController extends Controller
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->lists('amount')->toArray();
+            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
             $total_paid = array_sum($all_payments);
             if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';
@@ -984,7 +999,9 @@ class InvoiceController extends Controller
         try {
             $response = false;
             $invoice = $this->invoice->find($invoiceid);
+            // dd($invoice);
             $order = $this->order->where('invoice_id', $invoiceid);
+            // dd($order);
             $order_invoice_relation = $invoice->orderRelation()->first();
             if ($order_invoice_relation) {
                 $response = true;

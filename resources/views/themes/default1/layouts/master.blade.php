@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -37,7 +36,18 @@
         <!-- jQuery 2.1.4 -->
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+<style>
 
+.most-popular {
+   
+  
+    border: 1px solid;
+    padding: 10px;
+    box-shadow: 5px 10px #888888;
+ 
+}
+
+</style>
     </head>
     <?php 
     $set = new \App\Model\Common\Setting();
@@ -181,8 +191,8 @@
                                  <li><a href="{{url('plans')}}"><i class="fa fa-minus-circle"></i>Plans</a></li>
                                 <li><a href="{{url('groups')}}"><i class="fa fa-group"></i>{{Lang::get('message.groups')}}</a></li>
                                 <!--<li><a href="{{url('addons')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.addons')}}</a></li>-->
-                                <li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>
-                                <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
+                                <!--<li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>-->
+                                <!--<li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>-->
                             </ul>
                         </li>
                         <li>

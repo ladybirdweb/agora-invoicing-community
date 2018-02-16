@@ -57,7 +57,7 @@ class SlaController extends Controller
         }
     }
 
-    public function GetSlas()
+    public function getSlas()
     {
         return \Datatable::collection($this->sla->get())
                         ->addColumn('licence_id', function ($model) {

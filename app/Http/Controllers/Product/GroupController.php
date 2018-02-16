@@ -18,7 +18,7 @@ class GroupController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
 
         $group = new ProductGroup();
         $this->group = $group;
@@ -44,14 +44,19 @@ class GroupController extends Controller
         }
     }
 
-    public function GetGroups()
+    public function getGroups()
     {
-        return \Datatable::collection($this->group->select('id', 'name')->where('id', '!=', 1)->get())
-                        ->addColumn('#', function ($model) {
+        $product_group = ProductGroup::select('id', 'name')->get();
+
+        return\ DataTables::of($product_group)
+
+        // return \Datatable::of($this->group->select('id', 'name')->get())
+
+                        ->editColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name')
-                        ->addColumn('features', function ($model) {
+                        // ->showColumns('name')
+                        ->editColumn('features', function ($model) {
                             $features = $this->feature->select('features')->where('group_id', $model->id)->get();
                             //dd($features);
                             $result = [];
@@ -65,9 +70,8 @@ class GroupController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('groups/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
+                      ->rawColumns(['name', 'features', 'action'])
+                        ->make(true);
     }
 
     /**

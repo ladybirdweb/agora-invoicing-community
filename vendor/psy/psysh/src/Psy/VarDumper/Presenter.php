@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -46,10 +46,17 @@ class Presenter
         'index'     => 'number',
     );
 
-    public function __construct(OutputFormatter $formatter)
+    public function __construct(OutputFormatter $formatter, $forceArrayIndexes = false)
     {
-        $this->dumper = new Dumper($formatter);
+        // Work around https://github.com/symfony/symfony/issues/23572
+        $oldLocale = setlocale(LC_NUMERIC, 0);
+        setlocale(LC_NUMERIC, 'C');
+
+        $this->dumper = new Dumper($formatter, $forceArrayIndexes);
         $this->dumper->setStyles($this->styles);
+
+        // Now put the locale back
+        setlocale(LC_NUMERIC, $oldLocale);
 
         $this->cloner = new Cloner();
         $this->cloner->addCasters(array('*' => function ($obj, array $a, Stub $stub, $isNested, $filter = 0) {
@@ -70,7 +77,7 @@ class Presenter
      *
      * @see http://symfony.com/doc/current/components/var_dumper/advanced.html#casters
      *
-     * @param callable[] $casters A map of casters.
+     * @param callable[] $casters A map of casters
      */
     public function addCasters(array $casters)
     {
@@ -108,6 +115,10 @@ class Presenter
             $data = $data->withMaxDepth($depth);
         }
 
+        // Work around https://github.com/symfony/symfony/issues/23572
+        $oldLocale = setlocale(LC_NUMERIC, 0);
+        setlocale(LC_NUMERIC, 'C');
+
         $output = '';
         $this->dumper->dump($data, function ($line, $depth) use (&$output) {
             if ($depth >= 0) {
@@ -117,6 +128,9 @@ class Presenter
                 $output .= str_repeat('  ', $depth) . $line;
             }
         });
+
+        // Now put the locale back
+        setlocale(LC_NUMERIC, $oldLocale);
 
         return OutputFormatter::escape($output);
     }

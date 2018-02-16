@@ -52,7 +52,7 @@ class TaxController extends Controller
             if (!$options) {
                 $options = '';
             }
-            $classes = $this->tax_class->lists('name', 'id')->toArray();
+            $classes = $this->tax_class->pluck('name', 'id')->toArray();
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();
             }
@@ -63,19 +63,28 @@ class TaxController extends Controller
         }
     }
 
-    public function GetTax()
+    /**
+     * @return type
+     */
+    public function getTax()
     {
-        return \Datatable::collection($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
+        return \DataTables::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('tax_classes_id', function ($model) {
                             return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                         })
-                        ->showColumns('name', 'level')
+                        ->addColumn('name', function ($model) {
+                            return $model->name;
+                        })
+                        ->addColumn('level', function ($model) {
+                            return $model->level;
+                        })
+                        // ->showColumns('name', 'level')
                         ->addColumn('country', function ($model) {
                             if ($this->country->where('country_code_char2', $model->country)->first()) {
-                                return $this->country->where('country_code_char2', $model->country)->first()->country_name;
+                                return ucfirst($this->country->where('country_code_char2', $model->country)->first()->country_name);
                             }
                         })
                         ->addColumn('state', function ($model) {
@@ -83,13 +92,16 @@ class TaxController extends Controller
                                 return $this->state->where('state_subdivision_code', $model->state)->first()->state_subdivision_name;
                             }
                         })
-                        ->showColumns('rate')
+                        ->addColumn('rate', function ($model) {
+                            return $model->rate;
+                        })
+
+                        // ->showColumns('rate')
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
+                        ->rawColumns(['tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
+                        ->make(true);
     }
 
     /**
@@ -141,7 +153,7 @@ class TaxController extends Controller
     {
         try {
             $tax = $this->tax->where('id', $id)->first();
-            $classes = $this->tax_class->lists('name', 'id')->toArray();
+            $classes = $this->tax_class->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
 
@@ -225,25 +237,37 @@ class TaxController extends Controller
         }
     }
 
-    public function GetState(Request $request)
+    /**
+     * @param Request $request
+     * @param type    $state
+     *
+     * @return type
+     */
+    public function getState(Request $request, $state)
     {
         try {
-            $id = $request->input('country_id');
+            $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)->get();
-            //return $states;
+            // return $states;
             echo '<option value=>Select State</option>';
             foreach ($states as $state) {
                 echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return type
+     */
     public function options(Request $request)
     {
         try {
-            //dd($request->all());
             $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);
@@ -256,8 +280,8 @@ class TaxController extends Controller
                 $v = \Validator::make($request->all(), ['name' => 'required']);
                 if ($v->fails()) {
                     return redirect()->back()
-                        ->withErrors($v)
-                        ->withInput();
+                                    ->withErrors($v)
+                                    ->withInput();
                 }
                 $this->tax_class->fill($request->input())->save();
             }

@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -136,7 +136,22 @@ class ConfigPaths
     {
         $xdg = new Xdg();
 
-        return $xdg->getRuntimeDir(false) . '/psysh';
+        set_error_handler(array('Psy\Exception\ErrorException', 'throwException'));
+
+        try {
+            // XDG doesn't really work on Windows, sometimes complains about
+            // permissions, sometimes tries to remove non-empty directories.
+            // It's a bit flaky. So we'll give this a shot first...
+            $runtimeDir = $xdg->getRuntimeDir(false);
+        } catch (\Exception $e) {
+            // Well. That didn't work. Fall back to a boring old folder in the
+            // system temp dir.
+            $runtimeDir = sys_get_temp_dir();
+        }
+
+        restore_error_handler();
+
+        return strtr($runtimeDir, '\\', '/') . '/psysh';
     }
 
     private static function getDirNames(array $baseDirs)
@@ -179,5 +194,44 @@ class ConfigPaths
         }
 
         return $files;
+    }
+
+    /**
+     * Ensure that $file exists and is writable, make the parent directory if necessary.
+     *
+     * Generates E_USER_NOTICE error if either $file or its directory is not writable.
+     *
+     * @param string $file
+     *
+     * @return string|false Full path to $file, or false if file is not writable
+     */
+    public static function touchFileWithMkdir($file)
+    {
+        if (file_exists($file)) {
+            if (is_writable($file)) {
+                return $file;
+            }
+
+            trigger_error(sprintf('Writing to %s is not allowed.', $file), E_USER_NOTICE);
+
+            return false;
+        }
+
+        $dir = dirname($file);
+
+        if (!is_dir($dir)) {
+            // Just try making it and see if it works
+            @mkdir($dir, 0700, true);
+        }
+
+        if (!is_dir($dir) || !is_writable($dir)) {
+            trigger_error(sprintf('Writing to %s is not allowed.', $dir), E_USER_NOTICE);
+
+            return false;
+        }
+
+        touch($file);
+
+        return $file;
     }
 }

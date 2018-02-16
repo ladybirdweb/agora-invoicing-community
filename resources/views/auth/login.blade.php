@@ -36,7 +36,7 @@
             @endif
             <p class="login-box-msg">{{Lang::get('message.sign-in-to-start-your-session')}}</p>
             <!-- form open -->
-            {!!  Form::open(['action'=>'Auth\AuthController@postLogin', 'method'=>'post']) !!}
+            {!!  Form::open(['action'=>'Auth\LoginController@login', 'method'=>'post']) !!}
             <!-- Email -->
             <div class="form-group has-feedback {{ $errors->has('email') ? 'has-error' : '' }}">
 

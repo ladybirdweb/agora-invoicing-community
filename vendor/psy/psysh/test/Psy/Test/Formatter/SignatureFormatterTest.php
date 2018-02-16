@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -14,7 +14,7 @@ namespace Psy\Test\Formatter;
 use Psy\Formatter\SignatureFormatter;
 use Psy\Reflection\ReflectionConstant;
 
-class SignatureFormatterTest extends \PHPUnit_Framework_TestCase
+class SignatureFormatterTest extends \PHPUnit\Framework\TestCase
 {
     const FOO = 'foo value';
     private static $bar = 'bar value';
@@ -34,13 +34,6 @@ class SignatureFormatterTest extends \PHPUnit_Framework_TestCase
     public function signatureReflectors()
     {
         return array(
-            array(
-                new \ReflectionClass($this),
-                "class Psy\Test\Formatter\SignatureFormatterTest "
-                . 'extends PHPUnit_Framework_TestCase implements '
-                . 'Countable, PHPUnit_Framework_SelfDescribing, '
-                . 'PHPUnit_Framework_Test',
-            ),
             array(
                 new \ReflectionFunction('implode'),
                 defined('HHVM_VERSION') ? 'function implode($arg1, $arg2 = null)' : 'function implode($glue, $pieces)',
@@ -67,11 +60,11 @@ class SignatureFormatterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException InvalidArgumentException
+     * @expectedException \InvalidArgumentException
      */
     public function testSignatureFormatterThrowsUnknownReflectorExpeption()
     {
-        $refl = $this->getMock('Reflector');
+        $refl = $this->getMockBuilder('Reflector')->getMock();
         SignatureFormatter::format($refl);
     }
 }

@@ -94,7 +94,7 @@ active
                             <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                                 <!-- name -->
                                 {!! Form::label('country',Lang::get('message.country')) !!}
-                                 <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
+                                 <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                             </div>

@@ -24,7 +24,7 @@ class CreateSettingsTable extends Migration
             $table->integer('port');
             $table->string('encryption');
             $table->string('email');
-            $table->string('password');
+            $table->string('password', 255);
             $table->integer('error_log');
             $table->integer('invoice');
             $table->integer('subscription_over');

@@ -1,0 +1,228 @@
+.fc-slideshow {
+	position: relative;
+	width: 338px;
+	height: 338px;
+	border-radius: 50%;
+	margin: 0 auto;
+	-webkit-perspective: 1200px;
+	-moz-perspective: 1200px;
+	perspective: 1200px;
+	top: 6px;
+}
+
+.fc-slideshow nav {
+	top: 0;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+	z-index: 10000;
+	display: none;
+}
+
+.fc-slideshow nav > div {
+	position: absolute;
+	height: 100%;
+	top: 0;
+	width: 50%;
+}
+
+.fc-slideshow nav .fc-left {
+	left: 0;
+}
+
+.fc-slideshow nav .fc-right {
+	right: 0;
+}
+
+.fc-slideshow nav > div span {
+	height: 33%;
+	width: 100%;
+	position: absolute;
+	left: 0;
+}
+
+.fc-slideshow nav > div span:first-child {
+	top: 0;
+}
+
+.fc-slideshow nav > div span:nth-child(2) {
+	top: 33%;
+}
+
+.fc-slideshow nav > div span:nth-child(3) {
+	top: 66%;
+}
+
+.fc-slideshow nav i,
+.no-csstransforms3d .fc-slideshow nav > div span {
+	position: absolute;
+	width: 100%;
+	height: 40px;
+	top: 50%;
+	margin-top: -20px;
+	pointer-events: none;
+	opacity: 0;
+	-webkit-backface-visibility: hidden;
+	-webkit-transition: all 0.2s ease;
+	-moz-backface-visibility: hidden;
+	-moz-transition: all 0.2s ease;
+	backface-visibility: hidden;
+	transition: all 0.2s ease;
+}
+
+/* Some fallbacks */
+.no-csstransforms3d .fc-slideshow nav > div span {
+	z-index: 1000;
+	width: 40px;
+	background: rgba(0,0,0,0);
+}
+
+.no-csstransforms3d .fc-slideshow nav .fc-left span {
+	left: -80px;
+}
+
+.no-csstransforms3d .fc-slideshow nav .fc-right span {
+	right: -80px;
+	left: auto;
+}
+
+.no-csstransforms3d .fc-slideshow nav i {
+	width: 40px;
+	cursor: pointer;
+}
+
+.fc-slideshow nav .fc-left i {
+	-webkit-transform-origin: 100% 50%;
+	-moz-transform-origin: 100% 50%;
+	transform-origin: 100% 50%;
+	text-align: left;
+}
+
+.fc-slideshow nav .fc-right i {
+	-webkit-transform-origin: 0% 50%;
+	-moz-transform-origin: 0% 50%;
+	transform-origin: 0% 50%;
+	text-align: right;
+}
+
+.csstransforms3d .fc-slideshow nav > div span:hover ~ i,
+.no-csstransforms3d .fc-slideshow nav i,
+.no-csstransforms3d .fc-slideshow nav > div span {
+	opacity: 1;
+}
+
+.csstransforms3d .fc-slideshow nav > div span:nth-child(2):hover ~ i{
+	-webkit-transform: rotate(0deg);
+	-moz-transform: rotate(0deg);
+	transform: rotate(0deg);
+}
+
+.csstransforms3d .fc-slideshow nav > .fc-left span:first-child:hover ~ i,
+.csstransforms3d .fc-slideshow nav > .fc-right span:nth-child(3):hover ~ i {
+	-webkit-transform: rotate(45deg);
+	-moz-transform: rotate(45deg);
+	transform: rotate(45deg);
+}
+
+.csstransforms3d .fc-slideshow nav > .fc-right span:first-child:hover ~ i,
+.csstransforms3d .fc-slideshow nav > .fc-left span:nth-child(3):hover ~ i {
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+}
+
+ul.fc-slides {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+ul.fc-slides li {
+	display: none;
+}
+
+.no-js ul.fc-slides li {
+	display: block;
+}
+
+.fc-flip {
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+}
+
+.fc-flip div {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-radius: 50%;
+	top: 0;
+	left: 0;
+	-webkit-transform-style: preserve-3d;
+	-moz-transform-style: preserve-3d;
+	transform-style: preserve-3d;
+	-webkit-backface-visibility: hidden;
+	-moz-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+
+.fc-flip .fc-back {
+	-webkit-transform: rotateY(-180deg);
+	-moz-transform: rotateY(-180deg);
+	transform: rotateY(-180deg);
+}
+
+.fc-slideshow img {
+	border-radius: 50%;
+}
+
+.fc-slideshow h3 {
+	position: absolute;
+	color: #fff;
+	top: 50%;
+	margin-top: 30px;
+	line-height: 50px;
+	height: 50px;
+	left: 80px;
+	right: 80px;
+	background: #ff514c;
+	font-size: 22px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	text-align: center;
+	border-radius: 20% 10% 50% 5% / 25% 10% 30% 75%;
+}
+
+.fc-overlay-light,
+.fc-overlay-dark {
+	opacity: 0;
+}
+
+.fc-overlay-light {
+	background: rgba(255,255,255,1);
+}
+
+.fc-overlay-dark {
+	background: rgba(0,0,0,1);
+}
+
+/* No JS fallback */
+
+.no-js .fc-slideshow {
+	height: auto;
+	box-shadow: none;
+}
+
+.no-js .fc-slideshow h3 {
+	position: relative;
+	width: auto;
+	height: auto;
+	left: auto;
+	right: auto;
+	top: auto;
+	margin: 5px;
+}
+

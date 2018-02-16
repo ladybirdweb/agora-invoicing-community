@@ -308,7 +308,7 @@ class RenewController extends Controller
         try {
             $sub = $this->sub->find($id);
             $userid = $sub->user_id;
-            $plans = $this->plan->lists('name', 'id')->toArray();
+            $plans = $this->plan->pluck('name', 'id')->toArray();
 
             return view('themes.default1.renew.renew', compact('id', 'plans', 'userid'));
         } catch (Exception $ex) {

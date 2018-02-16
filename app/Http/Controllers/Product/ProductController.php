@@ -137,7 +137,7 @@ class ProductController extends Controller
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
 
-                        ->rawColumns(['#','name', 'type', 'group', 'price', 'currency', 'Action'])
+                        ->rawColumns(['#', 'name', 'type', 'group', 'price', 'currency', 'Action'])
                         ->make(true);
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')

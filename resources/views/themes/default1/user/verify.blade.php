@@ -49,6 +49,7 @@ main
                 </div>
                     <div class="well" ng-show="msg1" id="email1"></div>
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
+                     &nbsp &nbsp<label class="required">Email Address</label>
                     <div class="row" style="margin-bottom: 10px">
                         <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="email" value="{{$user -> email}}" id="u_email"></div>
                         <div class="col-sm-4" style="margin: 5px">
@@ -65,8 +66,13 @@ main
                         
                         <div class="well" ng-show="msg2" id="mobile1"></div>
                         <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
+                          &nbsp &nbsp<label class="required">Country code</label> &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp
+                          <label class="required">Mobile Number</label>
                         <div class="row" ng-hide="showOTP" style="margin-bottom: 10px">
-                            <div class="col-sm-1" style="margin: 5px"><input type="text" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code"></div>
+                            <div class="col-sm-2" style="margin: 5px"><input type="text" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code"></div>
+                       
+                       
+                        
                             <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="mobile" value="{{$user -> mobile}}" id="u_mobile"></div>
                             <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="sendOTP" ng-click="sendOTP()">Send OTP</button></div>
                         </div>

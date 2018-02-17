@@ -476,7 +476,7 @@
 		margin-top: 75px;
 	}
 	#footer:after {
-		background: #000 none repeat scroll 0 0;
+	     
 		bottom: -233px;
 		content: "";
 		height: 400px;

@@ -16,8 +16,8 @@
         <meta name="author" content="okler.net">
         <meta name="csrf-token" content="{!! csrf_token() !!}">
         <!-- Favicon -->
-        <link rel="shortcut icon" href="{{asset('dist/img/faveo.png')}}" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="{{asset('dist/img/faveo.png')}}">
+        <link rel="shortcut icon" href="dist/img/faveo.png" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="dist/img/faveo.png">
 
         <!-- Mobile Metas -->
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -27,55 +27,42 @@
 
 
         <!-- Vendor CSS -->
-        <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}">
+        <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/animate/animate.min.css">
+        <link rel="stylesheet" href="css/simple-line-icons/css/simple-line-icons.min.css">
+        <link rel="stylesheet" href="css/owl.carousel/assets/owl.carousel.min.css">
+        <link rel="stylesheet" href="css/owl.carousel/assets/owl.theme.default.min.css">
+        <link rel="stylesheet" href="css/magnific-popup/magnific-popup.min.css">
+
 
         <!-- Theme CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/theme.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-elements.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-blog.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-shop.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-animate.css')}}">
+     <link rel="stylesheet" href="css/theme.css">
+        <link rel="stylesheet" href="css/theme-elements.css">
+        <link rel="stylesheet" href="css/theme-blog.css">
+        <link rel="stylesheet" href="css/theme-shop.css">
 
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/bootstrap/css/bootstrap.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/animate/animate.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('vendornew/vendor/magnific-popup/magnific-popup.min.css')}}">
+        <!-- Current Page CSS -->
+        <link rel="stylesheet" href="css/rs-plugin/css/settings.css">
+        <link rel="stylesheet" href="css/rs-plugin/css/layers.css">
+        <link rel="stylesheet" href="css/rs-plugin/css/navigation.css">
+        <link rel="stylesheet" href="css/nivo-slider/nivo-slider.css">
+        <link rel="stylesheet" href="css/nivo-slider/default/default.css">
 
-        <link rel="{{asset('stylesheet" href="css/theme.css')}}">
-        <link rel="{{asset('stylesheet" href="css/theme-elements.css')}}">
-        <link rel="{{asset('stylesheet" href="css/theme-blog.css')}}">
-        <link rel="{{asset('stylesheet" href="css/theme-shop.css')}}">
+      
+        <link rel="stylesheet" href="css/demos/demo-construction.css">
 
         <!-- Skin CSS -->
-        <link rel="stylesheet" href="css/skins/default.css">
+       <link rel="stylesheet" href="css/skins/default.css">
 
         <!-- Theme Custom CSS -->
         <link rel="stylesheet" href="css/custom.css">
 
-        <!-- Skin CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
-
-        <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/custom.css')}}">
-
-        <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
-
-        <link rel="stylesheet" href="{{asset('cssnew/css/skins/default.css')}}">
-
-        <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="{{asset('cssnew/css/custom.css')}}">
+       
 
 
         <!-- Head Libs -->
-        <script src="{{asset('cart/vendor/modernizr/modernizr.min.js')}}"></script>
+        <script src="css/modernizr/modernizr.min.js"></script>
 
     </head>
     <body>
@@ -86,8 +73,8 @@
         $set = $set->findOrFail(1);
         ?>
         <div class="body">
-            <header id="header" data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
-                <div class="header-body">
+            <header id="header"  data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
+                <div class="header-body" style="padding-bottom: 30px;">
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
@@ -301,11 +288,11 @@
 
             <div role="main" class=@yield('main-class')>
 
-                <section class="page-header">
+                    <section class="section-tertiary" style="height: 76px;background-color:#E9EFF2 !important">
                     <div class="container">
-                        <div class="row">
+                       <div class="row">
                             <div class="col-md-12">
-                                <ul class="breadcrumb">
+                                <ul class="breadcrumb" style="background-color:#E9EFF2 ;margin-top: 15px;">
                                     @yield('breadcrumb')
                                     <!--<li><a href="#">Home</a></li>
                                     <li class="active">Pages</li>-->
@@ -386,7 +373,7 @@
             <footer id="footer">
                 <div class="container">
                     <div class="row">
-                        <div class="footer-ribbon">
+                        <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
                             <span>Get in Touch</span>
                         </div>
                         <div class="col-md-3">
@@ -457,30 +444,30 @@
         </div>
 
         <!-- Vendor -->
-        <script src="{{asset('cart/vendor/jquery/jquery.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/common/common.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.validation/jquery.validation.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.stellar/jquery.stellar.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.gmap/jquery.gmap.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/isotope/jquery.isotope.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/vide/vide.min.js')}}"></script>
+        <script src="css/jquery/jquery.min.js"></script>
+        <script src="css/jquery.appear/jquery.appear.min.js"></script>
+        <script src="css/jquery.easing/jquery.easing.min.js"></script>
+        <script src="css/jquery-cookie/jquery-cookie.min.js"></script>
+        <script src="css/bootstrap/js/bootstrap.min.js"></script>
+        <script src="css/common/common.min.js"></script>
+        <script src="css/jquery.validation/jquery.validation.min.js"></script>
+        <script src="css/jquery.stellar/jquery.stellar.min.js"></script>
+        <script src="css/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
+        <script src="css/jquery.gmap/jquery.gmap.min.js"></script>
+        <script src="css/jquery.lazyload/jquery.lazyload.min.js"></script>
+        <script src="css/isotope/jquery.isotope.min.js"></script>
+        <script src="css/owl.carousel/owl.carousel.min.js"></script>
+        <script src="css/magnific-popup/jquery.magnific-popup.min.js"></script>
+        <script src="css/vide/vide.min.js"></script>
 
         <!-- Theme Base, Components and Settings -->
-        <script src="{{asset('cart/js/theme.js')}}"></script>
+        <script src="js/theme.js"></script>
 
         <!-- Theme Custom -->
-        <script src="{{asset('cart/js/custom.js')}}"></script>
+        <script src="js/custom.js"></script>
 
         <!-- Theme Initialization Files -->
-        <script src="{{asset('cart/js/theme.init.js')}}"></script>
+        <script src="js/theme.init.js"></script>
 
         <script>
                                                                                                         function removeItem(id) {

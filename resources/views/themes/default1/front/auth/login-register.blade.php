@@ -162,7 +162,7 @@ border-top: none;
 
 .wizard .tab-pane {
     position: relative;
-    padding-top: 50px;
+    
 }
 
 .wizard h3 {

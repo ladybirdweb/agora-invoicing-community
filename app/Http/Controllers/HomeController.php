@@ -114,7 +114,7 @@ class HomeController extends Controller
             $domain = $this->getDomain($request->input('domain'));
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
-            
+
             \Log::emergency(json_encode(['domain' => $request->input('domain'), 'serial' => $serial_key, 'order' => $order_number]));
             $result = [];
             if ($request_type == 'install') {

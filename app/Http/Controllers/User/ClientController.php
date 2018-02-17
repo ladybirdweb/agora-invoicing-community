@@ -82,16 +82,15 @@ class ClientController extends Controller
                              return $model->email;
                          })
                           ->addColumn('created_at', function ($model) {
-                         $ends = $model->created_at;
-                            if ($ends) {
-                                 $date = date_create($ends);
-                                    $end = date_format($date, 'l, F j, Y H:m A');
-                          }
-                            return $end;
-                              
-                              
-                              
-                            //   return $model->created_at;
+                              $ends = $model->created_at;
+                              if ($ends) {
+                                  $date = date_create($ends);
+                                  $end = date_format($date, 'l, F j, Y H:m A');
+                              }
+
+                              return $end;
+
+                              //   return $model->created_at;
                           })
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
@@ -113,7 +112,7 @@ class ClientController extends Controller
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             // return 'hhhh';
                         })
-                        ->rawColumns(['first_name', 'email',  'created_at', 'active','action'])
+                        ->rawColumns(['first_name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
 
         // ->searchColumns('email', 'first_name')

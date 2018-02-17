@@ -218,7 +218,7 @@ class CheckoutController extends Controller
                 $check_product_category = $this->product($invoiceid);
 
                 $url = '';
-                if ($check_product_category->category ) {
+                if ($check_product_category->category) {
                     $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
                 }
                 \Cart::clear();

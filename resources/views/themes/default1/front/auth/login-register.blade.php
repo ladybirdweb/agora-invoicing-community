@@ -41,17 +41,6 @@ $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code)
 $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
 
 
-
-
-
-
-
-// $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['isoCode']);
-// //$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['isoCode']);
-// $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-// $state_code = $location['isoCode'] . "-" . $location['state'];
-// $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-// $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['isoCode']);
 ?>
 <style>
     .required:after{ 
@@ -226,7 +215,7 @@ border-top: none;
 
         <section>
             <div class="wizard">
-                <div class="wizard-inner">
+                <div class="wizard-inner" style="display: none">
                     <div class="connecting-line"></div>
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active">
@@ -525,7 +514,7 @@ border-top: none;
                     <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Email and Mobile Verification</h4>
-                            <p>You will be send verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step.</p>
+                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step.</p>
                             <form name="verifyForm" >
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
@@ -598,12 +587,12 @@ border-top: none;
                                     </div>
                                 </div>
                             </form>
-                            <div class="row">
+                           <!--  <div class="row">
                                 <div class="col-md-6">
                                     <h5>Didn't recieve OTP via SMS</h5>
                                     <button type="button" class="btn btn-default mb-xl" data-loading-text="Loading..." name="resendOTP" id="resendOTP" onclick="resendOTP()" style="background: grey; color: white;" ><i class="fa fa-phone" style="font-size: 18px;"></i>&nbsp;&nbsp; Get OTP via Voice </button>
                                 </div>
-                            </div>
+                            </div> -->
                              <div class="row">
                                 <div class="col-md-6">
                                     <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
@@ -659,7 +648,7 @@ border-top: none;
             if(response.type == 'success'){
                 var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage1').html(result);
-                $('.wizard-inner').show();
+                $('.wizard-inner').css('display','block');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
@@ -722,7 +711,7 @@ border-top: none;
                 var result =  '<div class="alert alert-success alert-dismissable"><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage2').html(result);
                 $('#error1').hide();
-                $('.wizard-inner').show();
+                $('.wizard-inner').css('display','block');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
@@ -927,7 +916,6 @@ fbq('track', 'CompleteRegistration');
 }
 //]]>
 </script>
-
 <script type="text/javascript"
   src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
@@ -957,11 +945,11 @@ fbq('track', 'PageView');
     //Initialize tooltips
     $('.nav-tabs > li a[title]').tooltip();
     $('.nav-tabs .active a[href="#step1"]').click(function(){
-         $('.wizard-inner').hide();
+         $('.wizard-inner').css('display','none');
     })
     //Wizard
-    if($('.nav-tabs .active a[href="#step1"]')){
-        $('.wizard-inner').hide();
+    if(!$('.nav-tabs .active a[href="#step1"]')){
+        $('.wizard-inner').css('display','block');
     }
     $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
 
@@ -997,7 +985,7 @@ fbq('track', 'PageView');
         registerForm.elements['terms'].checked = false;
 
         $('.nav-tabs li a[href="#step1"]').tab('show');
-        $('.wizard-inner').hide();
+        $('.wizard-inner').css('display','none');
 
     });
     $(".prev").click(function (e) {
@@ -1005,7 +993,7 @@ fbq('track', 'PageView');
         var $active = $('.wizard .nav-tabs li.active');
         $active.next().removeClass('disabled');
         prevTab($active);
-        $('.wizard-inner').show();
+        $('.wizard-inner').css('display','block');
     });
 });
 

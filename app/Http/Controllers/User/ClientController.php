@@ -85,7 +85,7 @@ class ClientController extends Controller
                               $ends = $model->created_at;
                               if ($ends) {
                                   $date = date_create($ends);
-                                  $end = date_format($date, 'l, F j, Y H:m A');
+                                  $end = date_format($date, 'l, F j, Y H:m');
                               }
 
                               return $end;

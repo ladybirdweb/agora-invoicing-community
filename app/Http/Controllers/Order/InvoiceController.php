@@ -115,7 +115,7 @@ class InvoiceController extends Controller
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
-                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
+                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })
                          ->addColumn('grand_total', function ($model) {
                              return ucfirst($model->number);

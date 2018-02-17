@@ -4502,7 +4502,7 @@ html.boxed .pricing-table .plan, html.boxed .pricing-table h3 {
 	border-radius: 8px;
 	border-right: 1px solid #ECECEC;
 	box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
-	margin-bottom: 20px;
+	margin-bottom: 30px;
 	margin-left: auto;
 	margin-right: auto;
 	margin-top: 20px;
@@ -4723,7 +4723,7 @@ html.boxed .pricing-table .plan, html.boxed .pricing-table h3 {
 
 /* Featured Boxes */
 .featured-boxes .featured-box {
-	margin-bottom: 30px;
+	margin-bottom: 45px;
 	margin-top: 45px;
 }
 

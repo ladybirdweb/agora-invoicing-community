@@ -206,7 +206,7 @@ border-top: none;
    
     border: none ;
     border-top: 0;
-    padding: 15px;
+    /*padding: 15px;*/
 }
 </style>
 

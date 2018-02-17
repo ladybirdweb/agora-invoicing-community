@@ -27,42 +27,42 @@
 
 
         <!-- Vendor CSS -->
-        <link rel="stylesheet" href="css/bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
-        <link rel="stylesheet" href="css/animate/animate.min.css">
-        <link rel="stylesheet" href="css/simple-line-icons/css/simple-line-icons.min.css">
-        <link rel="stylesheet" href="css/owl.carousel/assets/owl.carousel.min.css">
-        <link rel="stylesheet" href="css/owl.carousel/assets/owl.theme.default.min.css">
-        <link rel="stylesheet" href="css/magnific-popup/magnific-popup.min.css">
+        <link rel="stylesheet" href="{{asset('css/bootstrap/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/animate/animate.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/simple-line-icons/css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/magnific-popup/magnific-popup.min.css')}}">
 
 
         <!-- Theme CSS -->
-     <link rel="stylesheet" href="css/theme.css">
-        <link rel="stylesheet" href="css/theme-elements.css">
-        <link rel="stylesheet" href="css/theme-blog.css">
-        <link rel="stylesheet" href="css/theme-shop.css">
+     <link rel="stylesheet" href="{{asset('css/theme.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
 
         <!-- Current Page CSS -->
-        <link rel="stylesheet" href="css/rs-plugin/css/settings.css">
-        <link rel="stylesheet" href="css/rs-plugin/css/layers.css">
-        <link rel="stylesheet" href="css/rs-plugin/css/navigation.css">
-        <link rel="stylesheet" href="css/nivo-slider/nivo-slider.css">
-        <link rel="stylesheet" href="css/nivo-slider/default/default.css">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/settings.css')}}">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/layers.css')}}">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/navigation.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider/nivo-slider.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider/default/default.css')}}">
 
       
-        <link rel="stylesheet" href="css/demos/demo-construction.css">
+        <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
 
         <!-- Skin CSS -->
-       <link rel="stylesheet" href="css/skins/default.css">
+       <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
         <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="css/custom.css">
+        <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
        
 
 
         <!-- Head Libs -->
-        <script src="css/modernizr/modernizr.min.js"></script>
+        <script src="{{asset('css/modernizr/modernizr.min.js')}}"></script>
 
     </head>
     <body>
@@ -370,7 +370,7 @@
 
             </div>
 
-            <footer id="footer">
+            <footer id="footer" style="margin-top:35px;">
                 <div class="container">
                     <div class="row">
                         <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
@@ -444,30 +444,30 @@
         </div>
 
         <!-- Vendor -->
-        <script src="css/jquery/jquery.min.js"></script>
-        <script src="css/jquery.appear/jquery.appear.min.js"></script>
-        <script src="css/jquery.easing/jquery.easing.min.js"></script>
-        <script src="css/jquery-cookie/jquery-cookie.min.js"></script>
-        <script src="css/bootstrap/js/bootstrap.min.js"></script>
-        <script src="css/common/common.min.js"></script>
-        <script src="css/jquery.validation/jquery.validation.min.js"></script>
-        <script src="css/jquery.stellar/jquery.stellar.min.js"></script>
-        <script src="css/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js"></script>
-        <script src="css/jquery.gmap/jquery.gmap.min.js"></script>
-        <script src="css/jquery.lazyload/jquery.lazyload.min.js"></script>
-        <script src="css/isotope/jquery.isotope.min.js"></script>
-        <script src="css/owl.carousel/owl.carousel.min.js"></script>
-        <script src="css/magnific-popup/jquery.magnific-popup.min.js"></script>
-        <script src="css/vide/vide.min.js"></script>
+        <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
+        <script src="{{asset('css/jquery.appear/jquery.appear.min.js')}}"></script>
+        <script src="{{asset('css/jquery.easing/jquery.easing.min.js')}}"></script>
+        <script src="{{asset('css/jquery-cookie/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('css/common/common.min.js')}}"></script>
+        <script src="{{asset('css/jquery.validation/jquery.validation.min.js')}}"></script>
+        <script src="{{asset('css/jquery.stellar/jquery.stellar.min.js')}}"></script>
+        <script src="{{asset('css/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
+        <script src="{{asset('css/jquery.gmap/jquery.gmap.min.js')}}"></script>
+        <script src="{{asset('css/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
+        <script src="{{asset('css/isotope/jquery.isotope.min.js')}}"></script>
+        <script src="{{asset('css/owl.carousel/owl.carousel.min.js')}}"></script>
+        <script src="{{asset('css/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
+        <script src="{{asset('css/vide/vide.min.js')}}"></script>
 
         <!-- Theme Base, Components and Settings -->
-        <script src="js/theme.js"></script>
+        <script src="{{asset('js/theme.js')}}"></script>
 
         <!-- Theme Custom -->
-        <script src="js/custom.js"></script>
+        <script src="{{asset('js/custom.js')}}"></script>
 
         <!-- Theme Initialization Files -->
-        <script src="js/theme.init.js"></script>
+        <script src="{{asset('js/theme.init.js')}}"></script>
 
         <script>
                                                                                                         function removeItem(id) {

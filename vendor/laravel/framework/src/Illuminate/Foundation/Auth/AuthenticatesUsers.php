@@ -54,6 +54,13 @@ trait AuthenticatesUsers
 
          if (!$auth) {
              $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+             if($user==null){
+                return redirect()->back()
+                            ->withInput($request->only('email1', 'remember'))
+                            ->withErrors([
+                                'email1' => 'Invalid Email and/or Password',
+            ]);   
+             }
         if(!Hash::check($password ,$user->password)){
          return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))

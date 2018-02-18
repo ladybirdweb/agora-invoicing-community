@@ -374,9 +374,9 @@
             <footer id="footer" style="margin-top:35px;">
                 <div class="container">
                     <div class="row">
-                        <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
+                        <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
                             <span>Get in Touch</span>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <div class="newsletter">
                                 <h4>Newsletter</h4>

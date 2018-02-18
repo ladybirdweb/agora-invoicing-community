@@ -3648,7 +3648,7 @@ html.dark .text-muted {
 #footer .footer-ribbon {
 	background: #999;
 	position: absolute;
-	margin: 90px 0 0 14px;
+	margin: -90px 0 0 14px !important;
 	padding: 10px 20px 6px 20px;
 }
 

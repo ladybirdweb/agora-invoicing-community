@@ -49,34 +49,25 @@ trait AuthenticatesUsers
         $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $password = $request->input('password1');
         $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
-        //$credentials = $request->only('email', 'password');
-        $auth = \Auth::attempt($credentials, $request->has('remember'));
+        $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+         $auth = \Auth::attempt($credentials, $request->has('remember'));
 
-         if (!$auth) {
-             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
-        if(!Hash::check($password ,$user->password)){
-         return redirect()->back()
-                            ->withInput($request->only('email1', 'remember'))
-                            ->withErrors([
-                                'email1' => 'Invalid Email and/or Password',
-            ]);   
-        }
+        if ($auth) {
 
-        if ($user && (!$user->active || !$user->mobile_verified)) {
-            return redirect('verify')->with('user', $user);
-        }
+             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
+                  return redirect('verify')->with('user', $user);
+                }
+                
+             return redirect()->intended($this->redirectPath());
+            
+           }else{
+
             return redirect()->back()
-                            ->withInput($request->only('email1', 'remember'))
-                            ->withErrors([
-                                'email1' => 'Invalid Email and/or Password',
+                        ->withInput($request->only('email1', 'remember'))
+                        ->withErrors([
+                            'email1' => 'Invalid Email and/or Password',
             ]);
         }
-       
-
-       
-
-            return redirect()->intended($this->redirectPath());
-
     }
 
 

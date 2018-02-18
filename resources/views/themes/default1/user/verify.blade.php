@@ -92,7 +92,7 @@ main
                         @else 
                         <?php $url = url('/'); ?>
                         @endif
-                        <a href="{{$url}}" class="btn btn-info" style="float: right" ng-show="proceedo">Proceed</a>
+                        <a href="{{$url}}" class="btn btn-info"  ng-show="proceedo">Proceed</a>
                         </div>
 
 

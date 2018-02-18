@@ -5,6 +5,10 @@ Agora | Orders
 @section('nav-orders')
 active
 @stop
+@section('breadcrumb')
+<li><a href="{{url('home')}}">Home</a></li>
+<li class="active">Orders</li>
+@stop
 
 @section('content')
 

@@ -41,7 +41,9 @@
         <link rel="stylesheet" href="{{asset('cart/css/theme-animate.css')}}">
 
         <!-- Skin CSS -->
+           <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
         <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
+
 
         <!-- Theme Custom CSS -->
         <link rel="stylesheet" href="{{asset('cart/css/custom.css')}}">
@@ -272,7 +274,7 @@
 
             <div role="main" class=@yield('main-class')>
 
-                <section class="page-header">
+                <section class="page-header" style="background-color:#E9EFF2 !important; border-bottom:5px #E9EFF2 !important;border-top:6px solid #E9EFF2 !important">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-12">
@@ -359,9 +361,9 @@
             <footer id="footer">
                 <div class="container">
                     <div class="row">
-                        <div class="footer-ribbon">
+                        <!-- <div class="footer-ribbon">
                             <span>Get in Touch</span>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <div class="newsletter">
                                 <h4>Newsletter</h4>

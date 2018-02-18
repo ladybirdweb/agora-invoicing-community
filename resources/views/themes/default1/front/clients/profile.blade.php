@@ -5,7 +5,10 @@ Agora | Profile
 @section('nav-profile')
 active
 @stop
-
+@section('breadcrumb')
+<li><a href="{{url('home')}}">Home</a></li>
+<li class="active">Profile</li>
+@stop
 @section('content')
 
 <h2 class="mb-none"> My Profile</h2>

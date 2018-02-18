@@ -49,6 +49,7 @@ trait AuthenticatesUsers
         $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $password = $request->input('password1');
         $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+
         $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
          $auth = \Auth::attempt($credentials, $request->has('remember'));
 
@@ -61,6 +62,7 @@ trait AuthenticatesUsers
              return redirect()->intended($this->redirectPath());
             
            }else{
+
 
             return redirect()->back()
                         ->withInput($request->only('email1', 'remember'))

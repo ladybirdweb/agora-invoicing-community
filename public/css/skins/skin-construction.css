@@ -3702,7 +3702,7 @@ html .featured-box-primary h4 {
 }
 
 html .featured-box-primary .box-content {
-	border-top-color: #e04622;
+	border-top-color: #0088cc !important;
 }
 
 html .featured-box-secondary .icon-featured {

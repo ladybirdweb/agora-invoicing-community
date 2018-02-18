@@ -53,7 +53,8 @@
         <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
 
         <!-- Skin CSS -->
-       <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+        <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+        <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
 
         <!-- Theme Custom CSS -->
         <link rel="stylesheet" href="{{asset('css/custom.css')}}">

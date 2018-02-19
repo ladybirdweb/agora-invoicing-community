@@ -72,8 +72,8 @@ class ClientController extends Controller
 
         return\ DataTables::of($user->get())
 
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('first_name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
@@ -112,7 +112,7 @@ class ClientController extends Controller
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             // return 'hhhh';
                         })
-                        ->rawColumns(['first_name', 'email',  'created_at', 'active', 'action'])
+                        ->rawColumns(['checkbox','first_name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
 
         // ->searchColumns('email', 'first_name')

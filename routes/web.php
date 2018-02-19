@@ -134,7 +134,7 @@
 
         // Route::get('get-clients', 'User\ClientController@GetClients');
          Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
-        Route::get('clients-delete/{$id}', 'User\ClientController@destroy');
+        Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 
         /*
@@ -145,7 +145,7 @@
          Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
 
         // Route::get('get-products', 'Product\ProductController@GetProducts');
-        Route::get('products-delete', 'Product\ProductController@destroy');
+        Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::post('get-price', 'Product\ProductController@getPrice');
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
@@ -156,7 +156,7 @@
         Route::resource('plans', 'Product\PlanController');
          Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@getPlans']);
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
-        Route::get('plans-delete', 'Product\PlanController@destroy');
+        Route::get('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
 
         /*
          * Addons
@@ -181,7 +181,7 @@
         Route::resource('currency', 'Payment\CurrencyController');
          Route::get('get-currency/datatable', ['as' => 'get-currency.datatable', 'uses' => 'Payment\CurrencyController@getCurrency']);
         // Route::get('get-currency', 'Payment\CurrencyController@GetCurrency');
-        Route::get('currency-delete', 'Payment\CurrencyController@destroy');
+        Route::get('currency-delete', 'Payment\CurrencyController@destroy')->name('currency-delete');
 
         /*
          * Tax
@@ -193,7 +193,7 @@
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
-        Route::get('tax-delete', 'Payment\TaxController@destroy');
+        Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
         Route::patch('taxes/option', 'Payment\TaxController@options');
         Route::post('taxes/option', 'Payment\TaxController@options');
 
@@ -219,9 +219,9 @@
          */
 
         Route::resource('orders', 'Order\OrderController');
-         Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders']);
-        // Route::get('get-orders', 'Order\OrderController@getOrders');
-        Route::get('orders-delete', 'Order\OrderController@destroy');
+         // Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders'])->name('get-orders');
+        Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
+        Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::get('change-domain', 'Order\OrderController@domainChange');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
@@ -241,7 +241,7 @@
         Route::resource('templates', 'Common\TemplateController');
          Route::get('get-templates', ['as' => 'get-templates', 'uses' => 'Common\TemplateController@getTemplates']);
         // Route::get('get-templates', 'Common\TemplateController@GetTemplates');
-        Route::get('templates-delete', 'Common\TemplateController@destroy');
+        Route::get('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
         Route::get('testcart', 'Common\TemplateController@cartesting');
 
@@ -254,7 +254,7 @@
         Route::get('get-invoices', ['as' => 'get-invoices', 'uses' => 'Order\InvoiceController@getInvoices']);
         // Route::get('get-invoices', 'Order\InvoiceController@GetInvoices');
         Route::get('pdf', 'Order\InvoiceController@pdf');
-        Route::get('invoice-delete', 'Order\InvoiceController@destroy');
+        Route::get('invoice-delete', 'Order\InvoiceController@destroy')->name('invoice-delete');
         Route::get('invoice/generate', 'Order\InvoiceController@generateById');
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
@@ -265,7 +265,7 @@
 
         Route::get('payment/receive', 'Order\InvoiceController@payment');
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
-        Route::get('payment-delete', 'Order\InvoiceController@deletePayment');
+        Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
         Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
 
         /*
@@ -302,7 +302,7 @@
         Route::get('page/search', 'Front\PageController@search');
         Route::get('get-pages', ['as' => 'get-pages', 'uses' => 'Front\PageController@getPages']);
         // Route::get('get-pages', 'Front\PageController@GetPages');
-        Route::get('pages-delete', 'Front\PageController@destroy');
+        Route::get('pages-delete', 'Front\PageController@destroy')->name('pages-delete');
         Route::get('get-url', 'Front\PageController@generate');
 
         /*

@@ -351,9 +351,9 @@ class ClientController extends Controller
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
             //dd(\Input::all());
             return \DataTables::of($payments->get())
-                            ->addColumn('#', function ($model) {
+                            ->addColumn('checkbox', function ($model) {
                                 if (\Input::get('client') != 'true') {
-                                    return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                                    return "<input type='checkbox' class='payment_checkbox' value=".$model->id.' name=select[] id=check>';
                                 }
                             })
                             ->addColumn('number', function ($model) {
@@ -363,7 +363,7 @@ class ClientController extends Controller
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
+                            ->rawColumns(['checkbox','number', 'total', 'payment_method', 'payment_status', 'created_at'])
 
                             ->make(true);
         } catch (Exception $ex) {

@@ -128,8 +128,8 @@ class TemplateController extends Controller
     public function getTemplates()
     {
         return \DataTables::of($this->template->select('id', 'name', 'type')->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='template_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
 
                          ->addColumn('name', function ($model) {
@@ -141,7 +141,7 @@ class TemplateController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->rawColumns(['name', 'type', 'action'])
+                        ->rawColumns(['checkbox','name', 'type', 'action'])
                         ->make(true);
         // ->searchColumns('name')
                         // ->orderColumns('name')

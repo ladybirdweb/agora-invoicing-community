@@ -54,8 +54,8 @@ class PlanController extends Controller
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
 
         return\ DataTables::of($new_plan)
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='plan_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -78,7 +78,7 @@ class PlanController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->rawColumns(['name', 'days', 'product', 'action'])
+                        ->rawColumns(['checkbox','name', 'days', 'product', 'action'])
                         ->make(true);
     }
 

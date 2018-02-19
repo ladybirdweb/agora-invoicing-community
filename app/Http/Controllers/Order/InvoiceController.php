@@ -98,8 +98,8 @@ class InvoiceController extends Controller
         $new_invoice = Invoice::select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get();
 
         return \DataTables::of($new_invoice)
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='invoice_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
@@ -136,7 +136,7 @@ class InvoiceController extends Controller
                                     ."   $action";
                         })
 
-                         ->rawColumns(['user_id', 'number', 'date', 'grand_total', 'status', 'action'])
+                         ->rawColumns(['checkbox','user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
 
         // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')

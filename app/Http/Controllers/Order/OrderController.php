@@ -104,9 +104,9 @@ class OrderController extends Controller
         //'price_override', 'order_status', 'number', 'serial_key'))
         return\ DataTables::of($query->get())
 
-                        // ->addColumn('#', function ($model) {
-                        //     return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
-                        // })
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
+                        })
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
@@ -156,7 +156,7 @@ class OrderController extends Controller
                             return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
 
-                         ->rawColumns(['date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
+                         ->rawColumns(['checkbox','date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
                         ->make(true);
         // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
                         // ->orderColumns('client', 'date', 'number', 'price_override')
@@ -287,6 +287,7 @@ class OrderController extends Controller
     public function destroy(Request $request)
     {
         try {
+            // dd('df');
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {

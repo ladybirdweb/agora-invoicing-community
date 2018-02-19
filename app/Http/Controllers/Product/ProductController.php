@@ -92,8 +92,8 @@ class ProductController extends Controller
 
         return\ DataTables::of($new_product)
         // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -137,7 +137,7 @@ class ProductController extends Controller
                             return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
                         })
 
-                        ->rawColumns(['name', 'type', 'group', 'price', 'currency', 'Action'])
+                        ->rawColumns(['checkbox','name', 'type', 'group', 'price', 'currency', 'Action'])
                         ->make(true);
         // ->searchColumns('name', 'email')
                         // ->orderColumns('name', 'email')
@@ -412,6 +412,7 @@ class ProductController extends Controller
     public function destroy(Request $request)
     {
         try {
+            // dd('dsf');
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {

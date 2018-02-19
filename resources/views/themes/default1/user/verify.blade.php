@@ -7,7 +7,7 @@ Reset Password
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
-<li class="active">Reset Password</li>
+<li class="active">Verify</li>
 @stop
 @section('main-class') 
 main

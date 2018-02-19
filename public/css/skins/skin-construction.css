@@ -3002,7 +3002,7 @@ html[dir="rtl"] #header .tip.skin:before {
 
 @media (min-width: 992px) {
 	#header .header-nav-main nav > ul > li > a.dropdown-toggle:after {
-		border-color: #e04622 transparent transparent transparent;
+		border-color: #0088cc transparent transparent transparent;
 	}
 
 	html #header .header-nav-main nav > ul > li.active > a.dropdown-toggle:after,

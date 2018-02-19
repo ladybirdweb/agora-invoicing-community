@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Http\Controllers\Common\CronController;
+use Illuminate\Console\Command;
 
 class ExpiryCron extends Command
 {
@@ -37,9 +37,7 @@ class ExpiryCron extends Command
      * @return mixed
      */
     public function handle()
-
     {
-
         $controller = new CronController();
         $controller->eachSubscription();
         $this->info('expiry:notification Cummand Run successfully!');

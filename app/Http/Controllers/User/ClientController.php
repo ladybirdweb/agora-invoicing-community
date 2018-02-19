@@ -112,7 +112,7 @@ class ClientController extends Controller
                                     .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
                             // return 'hhhh';
                         })
-                        ->rawColumns(['checkbox','first_name', 'email',  'created_at', 'active', 'action'])
+                        ->rawColumns(['checkbox', 'first_name', 'email',  'created_at', 'active', 'action'])
                         ->make(true);
 
         // ->searchColumns('email', 'first_name')

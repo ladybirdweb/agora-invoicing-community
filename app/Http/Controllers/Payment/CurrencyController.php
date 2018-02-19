@@ -102,7 +102,7 @@ class CurrencyController extends Controller
 </div>';
                         })
 
-                        ->rawColumns(['checkbox','name', 'base_conversion', 'action'])
+                        ->rawColumns(['checkbox', 'name', 'base_conversion', 'action'])
                         ->make(true);
         // ->searchColumns('name')
                         // ->orderColumns('name')

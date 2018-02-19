@@ -51,7 +51,7 @@ class PageController extends Controller
                             return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
 
-                          ->rawColumns(['checkbox','name', 'url',  'created_at', 'content', 'action'])
+                          ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'content', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')
                         // ->orderColumns('name')

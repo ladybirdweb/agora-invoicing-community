@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         //
          'App\Console\Commands\Inspire',
         \App\Console\Commands\Install::class,
+        'App\Console\Commands\ExpiryCron'
     ];
 
     /**
@@ -29,6 +30,9 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('inspire')
                  ->hourly();
+  
+         $schedule->command('expiry')->hourly();
+                
     }
 
     /**

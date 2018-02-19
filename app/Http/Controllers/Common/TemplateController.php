@@ -141,7 +141,7 @@ class TemplateController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->rawColumns(['checkbox','name', 'type', 'action'])
+                        ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);
         // ->searchColumns('name')
                         // ->orderColumns('name')

@@ -363,7 +363,7 @@ class ClientController extends Controller
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['checkbox','number', 'total', 'payment_method', 'payment_status', 'created_at'])
+                            ->rawColumns(['checkbox', 'number', 'total', 'payment_method', 'payment_status', 'created_at'])
 
                             ->make(true);
         } catch (Exception $ex) {

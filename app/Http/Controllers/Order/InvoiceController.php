@@ -136,7 +136,7 @@ class InvoiceController extends Controller
                                     ."   $action";
                         })
 
-                         ->rawColumns(['checkbox','user_id', 'number', 'date', 'grand_total', 'status', 'action'])
+                         ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
 
         // ->searchColumns('date', 'user_id', 'number', 'grand_total', 'status')

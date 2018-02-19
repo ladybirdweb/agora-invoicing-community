@@ -100,7 +100,7 @@ class TaxController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->rawColumns(['checkbox','tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
+                        ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
                         ->make(true);
     }
 

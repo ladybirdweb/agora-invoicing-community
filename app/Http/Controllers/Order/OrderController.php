@@ -156,7 +156,7 @@ class OrderController extends Controller
                             return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
 
-                         ->rawColumns(['checkbox','date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
+                         ->rawColumns(['checkbox', 'date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
                         ->make(true);
         // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
                         // ->orderColumns('client', 'date', 'number', 'price_override')

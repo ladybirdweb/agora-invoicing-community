@@ -233,6 +233,7 @@
    
             processing: true,
             serverSide: true,
+             stateSave: true,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry" ) !!}',
              

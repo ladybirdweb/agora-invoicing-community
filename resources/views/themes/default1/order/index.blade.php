@@ -153,6 +153,7 @@
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
+             stateSave: true,
             order: [[ 0, "desc" ]],
              ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain" ) !!}',
             "oLanguage": {

@@ -303,6 +303,7 @@ class GithubController extends Controller
 
             return;
         } catch (Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

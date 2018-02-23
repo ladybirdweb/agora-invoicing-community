@@ -102,6 +102,7 @@
         $('#editorder-table').DataTable({
             processing: true,
             serverSide: true,
+             stateSave: true,
                ajax: "{{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}",
            
             "oLanguage": {
@@ -172,6 +173,7 @@
         $('#order1-table').DataTable({
             processing: true,
             serverSide: true,
+             stateSave: true,
      
 
            ajax: "{{Url('get-my-payment/'.$order->id.'/'.$user->id)}}",

@@ -246,14 +246,14 @@ class ProductController extends Controller
             }
 
             $taxes = $request->input('tax');
-
+            // dd($taxes);
             if ($taxes) {
                 $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
-            // dd($e);
+            dd($e);
 
             return redirect()->with('fails', $e->getMessage());
         }
@@ -302,11 +302,13 @@ class ProductController extends Controller
             }
 
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
-            //dd($taxes);
+            // dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
+            // dd($saved_taxes);
 
             return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
         } catch (\Exception $e) {
+            // dd($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -380,9 +382,10 @@ class ProductController extends Controller
             }
             //add tax class to tax_product_relation table
             $taxes = $request->input('tax');
-            //dd($taxes);
+            // dd($taxes);
             if ($taxes) {
                 $saved_taxes = $this->tax_relation->where('product_id', $product_id)->first();
+                // dd($saved_taxes);
                 if ($saved_taxes) {
                     $saved_taxes->tax_class_id = $taxes;
                     $saved_taxes->save();
@@ -390,7 +393,7 @@ class ProductController extends Controller
                     $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
                 }
             }
-
+               // dd('sdg');
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
             dd($e);
@@ -610,6 +613,7 @@ class ProductController extends Controller
                 $product->save();
             }
         } catch (\Exception $ex) {
+            // dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

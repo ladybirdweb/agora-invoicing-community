@@ -456,7 +456,7 @@ trait RegistersUsers
 
     public function accountManager()
     {
-        $manager = '';
+        
         // $users = new User();
         // $account_count = $users->select(\DB::raw("count('manager') as count"), 'manager')
         //         ->whereNotNull('manager')
@@ -473,6 +473,9 @@ trait RegistersUsers
             $randomized = array_rand($managers,2);
         shuffle($randomized);
         $manager = $managers[$randomized[0]];
+        }
+        else{
+            $manager = '';
         }
         
         return $manager;

@@ -102,6 +102,7 @@ return [
     | to a random, 32 character string, otherwise these encrypted strings
 
 'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
 
 'App\Plugins\Ccavanue\ServiceProvider',
     */

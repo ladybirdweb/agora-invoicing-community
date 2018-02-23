@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
 use Exception;
 use Illuminate\Http\Request;
+use App\Model\Product\Subscription;
+use Auth;
 
 class GithubController extends Controller
 {
@@ -40,7 +42,7 @@ class GithubController extends Controller
             $data = ['bio' => 'This is my bio'];
             $data_string = json_encode($data);
             $auth = $this->github_api->postCurl($url, $data_string);
-            dd($auth);
+            // dd($auth);
 
             return $auth;
             //            if($auth!='true'){
@@ -121,7 +123,10 @@ class GithubController extends Controller
     public function listRepositories($owner, $repo)
     {
         try {
+            // $userId = Auth::user()->id;
             $releases = $this->downloadLink($owner, $repo);
+            // $expiry = Subscription::where('user_id',$userId)->where('ends_at','>',$releases['Date']);
+            // dd($expiry);
             if (array_key_exists('Location', $releases)) {
                 $release = $releases['Location'];
             } else {
@@ -280,12 +285,15 @@ class GithubController extends Controller
     public function downloadLink($owner, $repo)
     {
         try {
+            // $rel="https://api.github.com/repos/$owner/$repo/releases";
+            // dd($rel);
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
+            // dd($url);
             if ($repo == 'faveo-helpdesk') {
                 return $array = ['Location' => $url];
             }
             $link = $this->github_api->getCurl1($url);
-
+           
             return $link['header'];
         } catch (Exception $ex) {
             // dd($ex);

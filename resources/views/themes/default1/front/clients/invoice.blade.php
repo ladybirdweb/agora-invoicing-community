@@ -36,6 +36,7 @@ active
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
+            order: [[ 0, "desc" ]],
             ajax: '{!! route('get-my-invoices') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",

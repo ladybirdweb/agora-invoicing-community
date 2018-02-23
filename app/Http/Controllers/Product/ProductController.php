@@ -230,10 +230,8 @@ class ProductController extends Controller
             // dd($request->except('image', 'file'));
             $product->fill($request->except('image', 'file'))->save();
 
-            $owner = $request->input('github_owner');
-            $repo = $request->input('github_repository');
 
-            // $this->updateVersionFromGithub($product->id, $owner,$repo);
+            $this->updateVersionFromGithub($product->id);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
 
@@ -362,7 +360,7 @@ class ProductController extends Controller
                 $product->file = $file;
             }
             $product->fill($request->except('image', 'file'))->save();
-            // $this->updateVersionFromGithub($product->id, $request);
+            $this->updateVersionFromGithub($product->id);
 
             $product_id = $product->id;
             $subscription = $request->input('subscription');
@@ -485,6 +483,7 @@ class ProductController extends Controller
             $type = $product->type;
             $owner = $product->github_owner;
             $repository = $product->github_repository;
+            // dd( $repository);
             $file = $product->file;
 
             if ($type == 2) {
@@ -598,24 +597,20 @@ class ProductController extends Controller
         }
     }
 
-    public function updateVersionFromGithub($productid, $owner, $repo)
+    public function updateVersionFromGithub($productid)
     {
-        try {
-            // if ($request->has('github_owner') && $request->has('github_repository')) {
-            if ($owner && $repo) {
-                // $owner = $request->input('github_owner');
-                // $repo = $request->input('github_repository');
+         try {
+            if (\Input::has('github_owner') && \Input::has('github_repository')) {
+                $owner = \Input::get('github_owner');
+                $repo = \Input::get('github_repository');
                 $product = $this->product->find($productid);
                 $github_controller = new \App\Http\Controllers\Github\GithubController();
                 $version = $github_controller->findVersion($owner, $repo);
                 // dd($version);
                 $product->version = $version;
-                // dd($product);
                 $product->save();
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

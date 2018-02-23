@@ -230,7 +230,6 @@ class ProductController extends Controller
             // dd($request->except('image', 'file'));
             $product->fill($request->except('image', 'file'))->save();
 
-
             $this->updateVersionFromGithub($product->id);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
@@ -599,7 +598,7 @@ class ProductController extends Controller
 
     public function updateVersionFromGithub($productid)
     {
-         try {
+        try {
             if (\Input::has('github_owner') && \Input::has('github_repository')) {
                 $owner = \Input::get('github_owner');
                 $repo = \Input::get('github_repository');

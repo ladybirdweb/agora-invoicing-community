@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Github;
 
 use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
-use Exception;
-use Illuminate\Http\Request;
 use App\Model\Product\Subscription;
 use Auth;
+use Exception;
+use Illuminate\Http\Request;
 
 class GithubController extends Controller
 {
@@ -124,14 +124,11 @@ class GithubController extends Controller
     {
         try {
             $userId = Auth::user()->id;
-            
 
-             $expiry = Subscription::where('user_id',$userId)->where('ends_at', '!=', '0000-00-00 00:00:00')->pluck('ends_at')->toArray();
-           
-            if($expiry){
-                
-            }
-            else{
+            $expiry = Subscription::where('user_id', $userId)->where('ends_at', '!=', '0000-00-00 00:00:00')->pluck('ends_at')->toArray();
+
+            if ($expiry) {
+            } else {
                 $releases = $this->downloadLink($owner, $repo);
             }
             dd($expiry, $userId);
@@ -293,7 +290,7 @@ class GithubController extends Controller
     public function downloadLink($owner, $repo)
     {
         try {
-            $url="https://api.github.com/repos/$owner/$repo/releases";
+            $url = "https://api.github.com/repos/$owner/$repo/releases";
             // dd($rel);
             // $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
             // dd($url);
@@ -302,7 +299,7 @@ class GithubController extends Controller
             }
             $link = $this->github_api->getCurl1($url);
             // dd($link);
-           
+
             return $link['header'];
         } catch (Exception $ex) {
             // dd($ex);

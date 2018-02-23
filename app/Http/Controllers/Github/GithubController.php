@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Github;
 
 use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
-use App\Model\Product\Subscription;
-use Auth;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -42,7 +40,7 @@ class GithubController extends Controller
             $data = ['bio' => 'This is my bio'];
             $data_string = json_encode($data);
             $auth = $this->github_api->postCurl($url, $data_string);
-            // dd($auth);
+            dd($auth);
 
             return $auth;
             //            if($auth!='true'){
@@ -123,15 +121,7 @@ class GithubController extends Controller
     public function listRepositories($owner, $repo)
     {
         try {
-            $userId = Auth::user()->id;
-
-            $expiry = Subscription::where('user_id', $userId)->where('ends_at', '!=', '0000-00-00 00:00:00')->pluck('ends_at')->toArray();
-
-            if ($expiry) {
-            } else {
-                $releases = $this->downloadLink($owner, $repo);
-            }
-            dd($expiry, $userId);
+            $releases = $this->downloadLink($owner, $repo);
             if (array_key_exists('Location', $releases)) {
                 $release = $releases['Location'];
             } else {
@@ -154,7 +144,6 @@ class GithubController extends Controller
         try {
             $url = "https://api.github.com/repos/$owner/$repo/releases/latest";
             $release = $this->github_api->getCurl($url);
-            // dd($release);
 
             return $release;
         } catch (Exception $ex) {
@@ -290,19 +279,15 @@ class GithubController extends Controller
     public function downloadLink($owner, $repo)
     {
         try {
-            $url = "https://api.github.com/repos/$owner/$repo/releases";
-            // dd($rel);
-            // $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
-            // dd($url);
+            $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
             if ($repo == 'faveo-helpdesk') {
                 return $array = ['Location' => $url];
             }
             $link = $this->github_api->getCurl1($url);
-            // dd($link);
 
             return $link['header'];
         } catch (Exception $ex) {
-            // dd($ex);
+            dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -312,8 +297,6 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
-            // dd(array_key_exists('tag_name', $release));
-
             if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }

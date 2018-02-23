@@ -123,10 +123,18 @@ class GithubController extends Controller
     public function listRepositories($owner, $repo)
     {
         try {
-            // $userId = Auth::user()->id;
-            $releases = $this->downloadLink($owner, $repo);
-            // $expiry = Subscription::where('user_id',$userId)->where('ends_at','>',$releases['Date']);
-            // dd($expiry);
+            $userId = Auth::user()->id;
+            
+
+             $expiry = Subscription::where('user_id',$userId)->where('ends_at', '!=', '0000-00-00 00:00:00')->pluck('ends_at')->toArray();
+           
+            if($expiry){
+                
+            }
+            else{
+                $releases = $this->downloadLink($owner, $repo);
+            }
+            dd($expiry, $userId);
             if (array_key_exists('Location', $releases)) {
                 $release = $releases['Location'];
             } else {
@@ -285,14 +293,15 @@ class GithubController extends Controller
     public function downloadLink($owner, $repo)
     {
         try {
-            // $rel="https://api.github.com/repos/$owner/$repo/releases";
+            $url="https://api.github.com/repos/$owner/$repo/releases";
             // dd($rel);
-            $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
+            // $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
             // dd($url);
             if ($repo == 'faveo-helpdesk') {
                 return $array = ['Location' => $url];
             }
             $link = $this->github_api->getCurl1($url);
+            // dd($link);
            
             return $link['header'];
         } catch (Exception $ex) {

@@ -27,13 +27,13 @@
 
 
         <!-- Vendor CSS -->
-        <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/bootstrap/css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/magnific-popup.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/animate/animate.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/simple-line-icons/css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/magnific-popup/magnific-popup.min.css')}}">
 
 
         <!-- Theme CSS -->
@@ -43,17 +43,17 @@
         <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
 
         <!-- Current Page CSS -->
-        <link rel="stylesheet" href="{{asset('css/settings.css')}}">
-        <link rel="stylesheet" href="{{asset('css/layers.css')}}">
-        <link rel="stylesheet" href="{{asset('css/navigation.css')}}">
-        <link rel="stylesheet" href="{{asset('css/nivo-slider.css')}}">
-        <link rel="stylesheet" href="{{asset('css/default.css')}}">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/settings.css')}}">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/layers.css')}}">
+        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/navigation.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider/nivo-slider.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider/default/default.css')}}">
 
       
-        <link rel="stylesheet" href="{{asset('css/demo-construction.css')}}">
+        <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
 
         <!-- Skin CSS -->
-        <link rel="stylesheet" href="{{asset('css/skin-construction.css')}}"> 
+        <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
         <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
 
         <!-- Theme Custom CSS -->
@@ -63,7 +63,7 @@
 
 
         <!-- Head Libs -->
-        <script src="{{asset('js/modernizr.min.js')}}"></script>
+        <script src="{{asset('css/modernizr/modernizr.min.js')}}"></script>
 
     </head>
     <body>
@@ -445,21 +445,21 @@
         </div>
 
         <!-- Vendor -->
-        <script src="{{asset('js/jquery.min.js')}}"></script>
-        <script src="{{asset('js/jquery.appear.min.js')}}"></script>
-        <script src="{{asset('js/jquery.easing.min.js')}}"></script>
-        <script src="{{asset('js/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('js/bootstrap.min.js')}}"></script>
-        <script src="{{asset('js/common.min.js')}}"></script>
-        <script src="{{asset('js/jquery.validation.min.js')}}"></script>
-        <script src="{{asset('js/jquery.stellar.min.js')}}"></script>
-        <script src="{{asset('js/jquery.easy-pie-chart.min.js')}}"></script>
-        <script src="{{asset('js/jquery.gmap.min.js')}}"></script>
-        <script src="{{asset('js/jquery.lazyload.min.js')}}"></script>
-        <script src="{{asset('js/jquery.isotope.min.js')}}"></script>
-        <script src="{{asset('js/owl.carousel.min.js')}}"></script>
-        <script src="{{asset('js/jquery.magnific-popup.min.js')}}"></script>
-        <script src="{{asset('js/vide.min.js')}}"></script>
+        <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
+        <script src="{{asset('css/jquery.appear/jquery.appear.min.js')}}"></script>
+        <script src="{{asset('css/jquery.easing/jquery.easing.min.js')}}"></script>
+        <script src="{{asset('css/jquery-cookie/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('css/common/common.min.js')}}"></script>
+        <script src="{{asset('css/jquery.validation/jquery.validation.min.js')}}"></script>
+        <script src="{{asset('css/jquery.stellar/jquery.stellar.min.js')}}"></script>
+        <script src="{{asset('css/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
+        <script src="{{asset('css/jquery.gmap/jquery.gmap.min.js')}}"></script>
+        <script src="{{asset('css/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
+        <script src="{{asset('css/isotope/jquery.isotope.min.js')}}"></script>
+        <script src="{{asset('css/owl.carousel/owl.carousel.min.js')}}"></script>
+        <script src="{{asset('css/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
+        <script src="{{asset('css/vide/vide.min.js')}}"></script>
 
         <!-- Theme Base, Components and Settings -->
         <script src="{{asset('js/theme.js')}}"></script>
@@ -503,6 +503,7 @@
         </script>
         -->
 <!--Start of Tawk.to Script-->
+<!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
@@ -514,6 +515,7 @@ s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
+<!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
     </body>
 </html>

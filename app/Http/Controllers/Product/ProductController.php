@@ -393,7 +393,7 @@ class ProductController extends Controller
                     $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
                 }
             }
-               // dd('sdg');
+            // dd('sdg');
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
             dd($e);

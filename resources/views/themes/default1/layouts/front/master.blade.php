@@ -27,7 +27,7 @@
 
 
         <!-- Vendor CSS -->
-        <link rel="stylesheet" href="{{asset('css/bootstrap/css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/animate/animate.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/simple-line-icons/css/simple-line-icons.min.css')}}">

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Github;
 
 use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
+use App\Model\Product\Subscription;
+use Auth;
 use Exception;
 use Illuminate\Http\Request;
-use Auth;
-use App\Model\Product\Subscription;
 
 class GithubController extends Controller
 {
@@ -286,24 +286,21 @@ class GithubController extends Controller
                 return $array = ['Location' => $url];
             }
 
+            // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
+            $find_user = Subscription::where('user_id', '=', Auth::user()->id)->where('ends_at', '!=', '0000-00-00 00:00:00')->select('ends_at')->first();
 
-         // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();        
-           $find_user=Subscription::where('user_id','=',Auth::user()->id)->where('ends_at', '!=', '0000-00-00 00:00:00')->select('ends_at')->first();
-
-           $link = $this->github_api->getCurl1($url);
-           $ver=[];
-           foreach ($link['body'] as $key => $value) {
-
-             if( strtotime($value['created_at']) < strtotime($find_user->ends_at) ) {
-                 $ver[$key]=$value['tag_name'];
-           }
-       }
-
-
-            $url="https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/.$ver[0]";
             $link = $this->github_api->getCurl1($url);
-            $user_id=Auth::user()->id;
-            dd($repo,$link,$user_id);
+            $ver = [];
+            foreach ($link['body'] as $key => $value) {
+                if (strtotime($value['created_at']) < strtotime($find_user->ends_at)) {
+                    $ver[$key] = $value['tag_name'];
+                }
+            }
+
+            $url = "https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/.$ver[0]";
+            $link = $this->github_api->getCurl1($url);
+            $user_id = Auth::user()->id;
+            dd($repo, $link, $user_id);
 
             return $link['header'];
         } catch (Exception $ex) {
@@ -323,7 +320,6 @@ class GithubController extends Controller
 
             return;
         } catch (Exception $ex) {
-
             dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

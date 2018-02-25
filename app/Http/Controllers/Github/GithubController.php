@@ -293,17 +293,18 @@ class GithubController extends Controller
 
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
+
             $ver = [];
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($find_user->ends_at)) {
-                    $ver[$key] = $value['tag_name'];
+                    $ver[] = $value['tag_name'];
                 }
             }
-
+ 
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
 
             $link = $this->github_api->getCurl1($url);
-            
+            // dd($link);
 
             return $link['header'];
         } catch (Exception $ex) {

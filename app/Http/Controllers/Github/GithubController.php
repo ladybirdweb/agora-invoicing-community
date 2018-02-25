@@ -281,31 +281,27 @@ class GithubController extends Controller
     public function downloadLink($owner, $repo)
     {
         try {
-            $url = "https://api.github.com/repos/$owner/$repo/releases";
+            // $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $url = "https://api.github.com/repos/$owner/$repo/master";
             if ($repo == 'faveo-helpdesk') {
                 return $array = ['Location' => $url];
             }
 
             // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
             $find_user = Subscription::where('user_id', '=', Auth::user()->id)->where('ends_at', '!=', '0000-00-00 00:00:00')->select('ends_at')->first();
-
-            $link = $this->github_api->getCurl1($url);
             $ver = [];
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($find_user->ends_at)) {
                     $ver[$key] = $value['tag_name'];
                 }
             }
-
-            $url = "https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/.$ver[0]";
+            $url = "https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/".$ver[0];
             $link = $this->github_api->getCurl1($url);
             $user_id = Auth::user()->id;
-            dd($repo, $link, $user_id);
-
+           
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

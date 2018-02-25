@@ -40,6 +40,6 @@ class ExpiryCron extends Command
     {
         $controller = new CronController();
         $controller->eachSubscription();
-        $this->info('expiry:notification Cummand Run successfully!');
+        $this->info('expiry:notification Command Run successfully!');
     }
 }

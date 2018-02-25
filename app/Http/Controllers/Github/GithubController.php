@@ -295,13 +295,14 @@ class GithubController extends Controller
                     $ver[$key] = $value['tag_name'];
                 }
             }
-            $url = "https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/".$ver[0];
+            $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
             $link = $this->github_api->getCurl1($url);
             $user_id = Auth::user()->id;
-           
+
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

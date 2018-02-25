@@ -432,10 +432,8 @@ class CronController extends Controller
 
     public function eachSubscription()
     {
-
-
         $sub = $this->getSubscriptions();
-      
+
         foreach ($sub as $value) {
             $userid = $value->user_id;
             $user = $this->getUserById($userid);
@@ -461,7 +459,7 @@ class CronController extends Controller
         if ($end < date('Y-m-d H:m:i')) {
             $temp_id = $setting->subscription_over;
         }
-        
+
         $template = $templates->where('id', $temp_id)->first();
         $from = $setting->email;
         $to = $user->email;

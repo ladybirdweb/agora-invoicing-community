@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
+use App\Model\Order\Order;
 use App\Model\Payment\Currency;
-use App\Model\Payment\Plan;
 // use Input;
 
+use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxProductRelation;
@@ -18,7 +19,6 @@ use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use App\Model\Order\Order;
 
 // use Input;
 
@@ -69,7 +69,6 @@ class ProductController extends Controller
 
         $tax_class = new TaxClass();
         $this->tax_class = $tax_class;
-      
     }
 
     /**
@@ -479,25 +478,24 @@ class ProductController extends Controller
         return $server;
     }
 
-    public function downloadProduct($id,$invoice_id)
+    public function downloadProduct($id, $invoice_id)
     {
         try {
             $product = $this->product->findOrFail($id);
 
-            
             $type = $product->type;
             $owner = $product->github_owner;
             $repository = $product->github_repository;
-            
+
             $file = $product->file;
-            
-            $order=Order::where('invoice_id','=',$invoice_id)->first();
-            $order_id=$order->id;
+
+            $order = Order::where('invoice_id', '=', $invoice_id)->first();
+            $order_id = $order->id;
 
             if ($type == 2) {
                 if ($owner && $repository) {
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
-                    $relese = $github_controller->listRepositories($owner, $repository,$order_id);
+                    $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                     return ['release'=>$relese, 'type'=>'github'];
                 } elseif ($file) {
@@ -557,8 +555,8 @@ class ProductController extends Controller
                 if ($user->active == 1) {
                     $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
-                    $invoice_id=$invoice->id;
-                    $release = $this->downloadProduct($product_id,$invoice_id);
+                    $invoice_id = $invoice->id;
+                    $release = $this->downloadProduct($product_id, $invoice_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
                         $release = $release['release'];
 

@@ -120,17 +120,16 @@ class GithubController extends Controller
      *
      * @return type
      */
-    public function listRepositories($owner, $repo,$order_id)
+    public function listRepositories($owner, $repo, $order_id)
     {
         try {
-            $releases = $this->downloadLink($owner, $repo,$order_id);
+            $releases = $this->downloadLink($owner, $repo, $order_id);
             if (array_key_exists('Location', $releases)) {
                 $release = $releases['Location'];
             } else {
                 $release = $this->latestRelese($owner, $repo);
-                
             }
-                    
+
             return $release;
 
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
@@ -278,7 +277,7 @@ class GithubController extends Controller
         }
     }
 
-    public function downloadLink($owner, $repo,$order_id)
+    public function downloadLink($owner, $repo, $order_id)
     {
         try {
             // $url = "https://api.github.com/repos/$owner/$repo/releases";
@@ -286,14 +285,13 @@ class GithubController extends Controller
             if ($repo == 'faveo-helpdesk') {
                 return $array = ['Location' => $url];
             }
-           // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
+            // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
             // $user_id = Auth::user()->id;
-             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
+            $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
 
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
 
-            
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
                     $ver[] = $value['tag_name'];

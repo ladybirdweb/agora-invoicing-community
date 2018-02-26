@@ -15,11 +15,11 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use App\Model\Product\ProductUpload;
 
 // use Input;
 
@@ -149,39 +149,37 @@ class ProductController extends Controller
 //        }
     }
 
-
-
     public function getUpload()
     {
-        $new_upload= ProductUpload::select('id','product_id','title','description','version','file')->get();
+        $new_upload = ProductUpload::select('id', 'product_id', 'title', 'description', 'version', 'file')->get();
+
         return \DataTables::of($new_upload)
-        ->addColumn('product_id',function($model){
-           return ucfirst($this->product->where('id',$model->product_id)->first()->name);
+        ->addColumn('product_id', function ($model) {
+            return ucfirst($this->product->where('id', $model->product_id)->first()->name);
         })
 
-        ->addColumn('title',function($model){
+        ->addColumn('title', function ($model) {
             return ucfirst($model->title);
         })
-        ->addColumn('description',function($model){
+        ->addColumn('description', function ($model) {
             return ucfirst($model->description);
         })
-        ->addColumn('version',function($model){
+        ->addColumn('version', function ($model) {
             return $model->version;
         })
-        ->addColumn('file',function($model){
+        ->addColumn('file', function ($model) {
             return $model->file;
         })
-        ->addColumn('action',function($model){
+        ->addColumn('action', function ($model) {
             return '<a href='.url('product/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
         })
-        ->rawcolumns(['product_id','title','description','version','file','action'])
+        ->rawcolumns(['product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
     }
 
-
     public function save(Request $request)
     {
-      dd('ok');
+        dd('ok');
     }
 
     /**

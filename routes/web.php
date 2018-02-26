@@ -149,6 +149,9 @@
         Route::post('get-price', 'Product\ProductController@getPrice');
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
+        Route::get('get-upload', 'Product\ProductController@getUpload')->name('get-upload');
+        Route::post('upload/save', 'Product\ProductController@save');
+
         /*
          * Plan
          */

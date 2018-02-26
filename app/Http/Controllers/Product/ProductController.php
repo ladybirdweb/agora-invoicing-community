@@ -19,6 +19,7 @@ use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use App\Model\Product\ProductUpload;
 
 // use Input;
 
@@ -146,6 +147,41 @@ class ProductController extends Controller
 //        } catch (\Exception $e) {
 //            return redirect()->back()->with('fails', $e->getMessage());
 //        }
+    }
+
+
+
+    public function getUpload()
+    {
+        $new_upload= ProductUpload::select('id','product_id','title','description','version','file')->get();
+        return \DataTables::of($new_upload)
+        ->addColumn('product_id',function($model){
+           return ucfirst($this->product->where('id',$model->product_id)->first()->name);
+        })
+
+        ->addColumn('title',function($model){
+            return ucfirst($model->title);
+        })
+        ->addColumn('description',function($model){
+            return ucfirst($model->description);
+        })
+        ->addColumn('version',function($model){
+            return $model->version;
+        })
+        ->addColumn('file',function($model){
+            return $model->file;
+        })
+        ->addColumn('action',function($model){
+            return '<a href='.url('product/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+        })
+        ->rawcolumns(['product_id','title','description','version','file','action'])
+        ->make(true);
+    }
+
+
+    public function save(Request $request)
+    {
+      dd('ok');
     }
 
     /**

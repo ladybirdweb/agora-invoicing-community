@@ -259,9 +259,86 @@
 
                                     </ul>
                                 </div>
+        <div class="row">
+        <div class="col-md-12">
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title">Upload Files</h3>
+                 
+                 <a href="#create-upload-option" id="create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-upload-option">Add Files</a>
+                            @include('themes.default1.product.product.create-upload-option')
+             
+            </div>
+            <div class="box-body">
+                <div class="row">
+                    <div class="col-md-12">
+                         <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+                    <thead><tr>
+                         <th>Product</th>
+                          <th>Title</th>
+                           
+                            <th>Description</th>
+                            <th>Version</th>
+                            
+                             <th>File</th>
+                             
+                            <th>Action</th>
+                        </tr></thead>
+                     </table>
+
+ </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#upload-table').DataTable({
+            processing: true,
+            serverSide: true,
+             stateSave: true,
+               
+             ajax: '{!! route('get-upload') !!}',
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                "columnDefs": [{
+                "defaultContent": "-",
+                "targets": "_all"
+              }],
+            columns: [
+                {data: 'product', name: 'product'},
+                {data: 'title', name: 'title'},
+                {data: 'description', name: 'description'},
+                {data: 'version', name: 'version'},
+                {data: 'file', name: 'file'},
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+
+     
+    </script>
+
 
                             </div>
                         </div>
+
+
+
+
+
                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">

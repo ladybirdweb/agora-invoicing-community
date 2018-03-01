@@ -644,7 +644,7 @@ class ProductController extends Controller
                 } elseif ($file->file) {
                     // dd($file->file);
                     $relese = storage_path().'\products'.'\\'.$file->file;
-                    dd($relese);
+                    // dd($relese);
                     return $relese;
                 }
             }

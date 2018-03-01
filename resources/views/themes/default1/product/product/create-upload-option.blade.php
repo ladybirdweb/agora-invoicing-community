@@ -7,22 +7,18 @@
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'upload/save']) !!}
+                {!! Form::open(['url'=>'upload/save','files' => true]) !!}
 
-                <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                    <!-- name -->
-                    {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                    {!! Form::text('name',null,['class' => 'form-control']) !!}
-
-                </div>
-                <!-- <div class="form-group">
-                <label> Product  </label>
-               
+                <div class="form-group">
+                    <label> Product Name </label>
+                 
+                      <input type="text" name="product" class="form-control" value="{{$product->name}}" readonly>
+                      
+                      
+                 
                     
-                </div> -->
-
-               
-
+                </div>
+                
                  <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
                    
                     {!! Form::label('Title',Lang::get('Title'),['class'=>'required']) !!}
@@ -46,7 +42,7 @@
                   <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('File',Lang::get('File'),['class'=>'required']) !!}
-                    <input type="File" class="form-control" name="file[]" multiple>
+                    <input type="File" class="form-control" name="file" multiple>
                  </div>
                 
 

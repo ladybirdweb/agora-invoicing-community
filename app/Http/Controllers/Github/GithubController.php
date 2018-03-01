@@ -140,6 +140,27 @@ class GithubController extends Controller
         }
     }
 
+    public function listRepositoriesAdmin($owner, $repo)
+    {
+        try {
+            $releases = $this->downloadLinkAdmin($owner, $repo);
+            if (array_key_exists('Location', $releases)) {
+                $release = $releases['Location'];
+            } else {
+                $release = $this->latestRelese($owner, $repo);
+                //dd($release);
+            }
+            //            dd($release);
+            return $release;
+
+            //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
+        } catch (Exception $ex) {
+            dd($ex);
+
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+
     public function latestRelese($owner, $repo)
     {
         try {
@@ -309,6 +330,24 @@ class GithubController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+     public function downloadLinkAdmin($owner, $repo)
+    {
+        try {
+            $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
+            if ($repo == 'faveo-helpdesk') {
+                return $array = ['Location' => $url];
+            }
+            $link = $this->github_api->getCurl1($url);
+
+            return $link['header'];
+        } catch (Exception $ex) {
+            dd($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
 
     public function findVersion($owner, $repo)
     {

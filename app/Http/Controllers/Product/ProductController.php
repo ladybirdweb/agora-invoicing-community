@@ -35,6 +35,7 @@ class ProductController extends Controller
     public $tax;
     public $tax_relation;
     public $tax_class;
+    public $product_upload;
 
     public function __construct()
     {
@@ -70,6 +71,9 @@ class ProductController extends Controller
 
         $tax_class = new TaxClass();
         $this->tax_class = $tax_class;
+
+        $product_upload = new ProductUpload();
+        $this->product_upload = $product_upload;
     }
 
     /**
@@ -80,7 +84,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-            return view('themes.default1.product.product.index');
+             return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
             return redirect('/')->with('fails', $e->getMessage());
         }
@@ -151,14 +155,13 @@ class ProductController extends Controller
 
 
 
-    public function getUpload()
+    public function getUpload($id)
     {
-        $new_upload= ProductUpload::select('id','product_id','title','description','version','file')->get();
+        $new_upload= ProductUpload::where('product_id','=',$id)->select('id','product_id','title','description','version','file')->get();
         return \DataTables::of($new_upload)
-        ->addColumn('product_id',function($model){
-           return ucfirst($this->product->where('id',$model->product_id)->first()->name);
-        })
-
+        ->addColumn('checkbox', function ($model) {
+         return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
+         })
         ->addColumn('title',function($model){
             return ucfirst($model->title);
         })
@@ -169,19 +172,68 @@ class ProductController extends Controller
             return $model->version;
         })
         ->addColumn('file',function($model){
-            return $model->file;
-        })
+            return $model->file; 
+        }) 
         ->addColumn('action',function($model){
-            return '<a href='.url('product/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
-        })
-        ->rawcolumns(['product_id','title','description','version','file','action'])
+             return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
+        
+         })
+        ->rawcolumns(['checkbox','product_id','title','description','version','file','action'])
         ->make(true);
     }
 
 
     public function save(Request $request)
     {
-      dd('ok');
+        // dd($request->all());
+       try{
+       $product_id=Product::where('name','=',$request->input('product'))->select('id')->first();
+       
+       $this->product_upload->product_id=$product_id->id;
+       $this->product_upload->title=$request->input('title');
+       $this->product_upload->description=$request->input('description');
+       $this->product_upload->version=$request->input('version');
+      
+      // dd($request->hasFi le('file'));
+        if ($request->file)
+        {
+          $file=$request->file('file')->getClientOriginalName();
+        
+          $destination= storage_path().'/products';
+          $request->file('file')->move($destination, $file);
+                $this->product_upload->file = $file;
+        }
+        $this->product_upload->save();
+           return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+       }
+       catch (\Exception $e) {
+            dd($e);
+
+            return redirect()->with('fails', $e->getMessage());
+        }
+       
+    }
+
+    public function uploadUpdate($id, Request $request)
+    {
+         $file_upload = ProductUpload::find($id);
+
+        $file_upload->title = $request->input('title');
+        $file_upload->description = $request->input('description');
+        $file_upload->version = $request->input('version');
+        if ($request->file)
+        {
+          $file=$request->file('file')->getClientOriginalName();
+        
+          $destination= storage_path().'/products';
+          $request->file('file')->move($destination, $file);
+                $file_upload->file = $file;
+        }
+       
+       
+        $file_upload->save();
+
+      return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 
     /**
@@ -369,13 +421,13 @@ class ProductController extends Controller
 //                    'currency.*' => 'required',
 //                    'price.*' => 'required',
         ]);
-        $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-            return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-        });
+        // $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
+        //     return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
+        // });
 
-        $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-            return $input->type == 2 && $input->file == '' && $input->image == '';
-        });
+        // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
+        //     return $input->type == 2 && $input->file == '' && $input->image == '';
+        // });
         $v->sometimes(['currency', 'price'], 'required', function ($input) {
             return $input->subscription != 1;
         });
@@ -449,7 +501,7 @@ class ProductController extends Controller
     public function destroy(Request $request)
     {
         try {
-            // dd('dsf');
+           
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
@@ -500,6 +552,60 @@ class ProductController extends Controller
         }
     }
 
+    public function fileDestroy(Request $request)
+    {
+      try {
+            
+            $ids = $request->input('select');
+            if (!empty($ids)) {
+                foreach ($ids as $id) {
+                    if ($id != 1) {
+                        $product = $this->product_upload->where('id', $id)->first();
+                        if ($product) {
+                            $product->delete();
+                        } else {
+                            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.no-record').'
+                </div>';
+                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                        }
+                        echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.can-not-delete-default').'
+                </div>';
+                    }
+                }
+            } else {
+                echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
+                //echo \Lang::get('message.select-a-row');
+            }
+        } catch (\Exception $e) {
+            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.$e->getMessage().'
+                </div>';
+        }   
+    }
+
     public function getMyUrl()
     {
         $server = new Request();
@@ -518,12 +624,13 @@ class ProductController extends Controller
     {
         try {
             $product = $this->product->findOrFail($id);
-
             $type = $product->type;
             $owner = $product->github_owner;
             $repository = $product->github_repository;
 
-            $file = $product->file;
+            // $file=ProductUpload::where('product_id','=',$id)->select('title','description','version','file')->first()->toArray();
+            $file = $this->product_upload->where('product_id','=',$id)->select('file')->orderBy('created_at', 'desc')->first();
+            // dd($file);
 
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
             $order_id = $order->id;
@@ -534,8 +641,39 @@ class ProductController extends Controller
                     $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                     return ['release'=>$relese, 'type'=>'github'];
-                } elseif ($file) {
-                    $relese = '/home/faveo/products/'.$file;
+                } elseif ($file->file) {
+                    // dd($file->file);
+                    $relese = storage_path().'\products'.'\\'.$file->file;
+                    dd($relese);
+                    return $relese;
+                }
+            }
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+
+     public function downloadProductAdmin($id)
+    {
+        try {
+            $product = $this->product->findOrFail($id);
+            //dd($product);
+            $type = $product->type;
+            $owner = $product->github_owner;
+            $repository = $product->github_repository;
+            $file = $this->product_upload->where('product_id','=',$id)->select('file')->first();
+
+            if ($type == 2) {
+                if ($owner && $repository) {
+                    $github_controller = new \App\Http\Controllers\Github\GithubController();
+                    $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
+
+                    return ['release'=>$relese, 'type'=>'github'];
+                }elseif ($file->file){
+                    $relese = storage_path().'\products'.'\\'.$file->file;
 
                     return $relese;
                 }
@@ -550,7 +688,7 @@ class ProductController extends Controller
     public function adminDownload($id, $api = false)
     {
         try {
-            $release = $this->downloadProduct($id);
+            $release = $this->downloadProductAdmin($id);
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
                 exit;
@@ -595,7 +733,7 @@ class ProductController extends Controller
                     $release = $this->downloadProduct($product_id, $invoice_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
                         $release = $release['release'];
-
+                          
                         return view('themes.default1.front.download', compact('release', 'form'));
                     } else {
                         header('Content-type: Zip');

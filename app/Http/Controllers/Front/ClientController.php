@@ -137,7 +137,9 @@ class ClientController extends Controller
                             }
 
                             return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
-                                    .'&nbsp;<a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
+                                    .'&nbsp;
+
+                                    <a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
                         })
                         ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')

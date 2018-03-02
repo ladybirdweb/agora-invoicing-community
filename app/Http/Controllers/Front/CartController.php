@@ -46,6 +46,7 @@ class CartController extends Controller
 
     public function productList(Request $request)
     {
+        try{
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
             $ip = $_SERVER['HTTP_CLIENT_IP'];
         } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -59,6 +60,12 @@ class CartController extends Controller
         } else {
             $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
         }
+    }
+        catch(\Exception $ex){
+             $location = false;
+             $error = $ex->getMessage();
+         }
+            
 
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
         $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
@@ -695,7 +702,7 @@ class CartController extends Controller
             if ($country) {
                 return $country->country_code_char2;
             } else {
-                return 'US';
+                return '';
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -787,6 +794,9 @@ class CartController extends Controller
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                     //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 }
+                 else {
+                $result = '';
+            }
             }
 
             return $result;

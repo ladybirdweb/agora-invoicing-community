@@ -1,5 +1,37 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#chkYes").click(function () {
+            if ($("#chkYes").is(":checked")) {
+                $("#GST").show();
+                $("#uploads").hide();
+                $("#hide").hide();
+            }
+            else{
+               $("#GST").hide();
+                $("#uploads").hide();
+                $("#hide").hide();
+            } 
+        });
+    });
+
+    $(function () {
+        $("#chkNo").click(function () {
+            if ($("#chkNo").is(":checked")) {
+                $("#GST").hide();
+                $("#uploads").show();
+                $("#hide").show();
+            } else {
+                $("#GST").hide();
+                $("#uploads").hide();
+                $("#hide").hide();
+            } 
+        });
+    });
+</script>
+<scrip
 <div class="box box-primary">
 
     <div class="box-header">
@@ -33,15 +65,9 @@
         <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
     </div>
-
     <div class="box-body">
-
         <div class="row">
-
             <div class="col-md-12">
-
-                
-
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
@@ -51,7 +77,6 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div class="row">
-
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
@@ -86,22 +111,19 @@
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                                     <script>
-    tinymce.init({
-    selector: 'textarea',
-    plugins: "code",
-    toolbar: "code",
-    menubar: "tools"
-});
-</script>
+                                        tinymce.init({
+                                            selector: 'textarea',
+                                            plugins: "code",
+                                            toolbar: "code",
+                                            menubar: "tools"
+                                        });
+                                    </script>
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
 
-
-
-
-                                </div>
-                                <div class="col-md-6">
+                                     </div>
+                                   <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li>
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
@@ -111,51 +133,68 @@
 
                                             </div>
                                         </li>
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                            
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
+                                        <li>
+                                        <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
                                                         <!-- last name -->
-                                                        {!! Form::label('image',Lang::get('message.image')) !!}
-                                                        {!! Form::file('image') !!}
+                                                {!! Form::label('image',Lang::get('message.image')) !!}
+                                                {!! Form::file('image') !!}
 
-                                                    </div>
+                                        </div>
                                                 </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('version',Lang::get('message.version')) !!}
-                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
+                                        <li>
+                                       
+                                            <table class="table table-responsive">
 
-                                                    </div>
-                                                </li>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <p>
-                                                    <b>OR</b>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-5">
+                                             
+                                            <span>Where do you want to retrieve your files from?</span>
+                                             </br>
+                                                <tr>              
+                                                    <td>
+                                                        <label for="chkYes" style="display: block;">
+                                                        <input type="radio" id="chkYes" name="chkTax" />
+                                                        Github
+                                                    </label>
+                                                      <div class="col-md-10" id="GST" style="display:none">
                                                 <li>
                                                     <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
-                                                        {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                            
+                                                        
+                                                        <!-- {!! Form::text('github_owner',null,['class'=>'form-control']) !!} -->
+
+                                                    </div>
+                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                 {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
+                                                     {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                        
 
                                                     </div>  
                                                 </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
+                                            
+                                             <li>
+                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
-                                                        {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
-                                                        {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                        {!! Form::label('version',Lang::get('message.version')) !!}
+                                                         {!! Form::text('version',null,['class'=>'form-control']) !!}
 
-                                                    </div>
-                                                </li>
-                                            </div>
-                                        </div>
 
+                                                      </div>
+                                             </li>
+                                                      </div>
+                                                   </td>
+                                                </tr>
+                                                <tr>
+                                                    <td><label for="chkNo">
+                                                        <input type="radio" id="chkNo" name="chkTax" />
+                                                            Filesystem
+                                                        </label></td>
+                                                </tr>
+                                             </table>
+                                        
+                                        </li>
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -438,21 +477,22 @@
            
 
           {!! Form::close() !!}
-          @if($product->name=='Help Desk Smart' || $product->name=='Faveo helpdesk pro')
-        <div class="row">
+     
+        <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="box">
-            <div class="box-header with-border">
+        <div class="box" id="uploads">
+            <div class="box-header with-border" >
                 <h3 class="box-title">Upload Files</h3>
                  
                  <a href="#create-upload-option" id="create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-upload-option">Add Files</a>
                             @include('themes.default1.product.product.create-upload-option')
+                             @include('themes.default1.product.product.edit-upload-option')
              
             </div>
-            <div id="response"></div>
-            <div class="box-body">
-                <div class="row">
-                    <div class="col-md-12">
+            <!-- <div id="response"></div> -->
+            <div class="box-body" >
+                <div class="row" >
+                    <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                           <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
                     <thead><tr>
@@ -471,10 +511,11 @@
         </div>
     </div>
 </div>
-@endif
 
- @include('themes.default1.product.product.edit-upload-option')
+
+
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#upload-table').DataTable({

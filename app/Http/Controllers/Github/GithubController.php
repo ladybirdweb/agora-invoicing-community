@@ -309,7 +309,7 @@ class GithubController extends Controller
             // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
             // $user_id = Auth::user()->id;
             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
-
+            
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
 
@@ -322,6 +322,7 @@ class GithubController extends Controller
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
 
             $link = $this->github_api->getCurl1($url);
+            dd($link);
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);

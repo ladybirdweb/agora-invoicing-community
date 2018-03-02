@@ -15,11 +15,11 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\Model\Product\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
-use App\Model\Product\ProductUpload;
 
 // use Input;
 
@@ -155,22 +155,30 @@ class ProductController extends Controller
 
 
 
+
     public function getUpload($id)
     {
-        $new_upload= ProductUpload::where('product_id','=',$id)->select('id','product_id','title','description','version','file')->get();
+        $new_upload = ProductUpload::where('product_id','=',$id)->select('id','product_id','title','description','version','file')->get();
         return \DataTables::of($new_upload)
         ->addColumn('checkbox', function ($model) {
          return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
          })
-        ->addColumn('title',function($model){
+       
+        ->addColumn('product_id', function ($model) {
+            return ucfirst($this->product->where('id', $model->product_id)->first()->name);
+        })
+
+        ->addColumn('title', function ($model) {
+
             return ucfirst($model->title);
         })
-        ->addColumn('description',function($model){
+        ->addColumn('description', function ($model) {
             return ucfirst($model->description);
         })
-        ->addColumn('version',function($model){
+        ->addColumn('version', function ($model) {
             return $model->version;
         })
+
         ->addColumn('file',function($model){
             return $model->file; 
         }) 
@@ -182,9 +190,9 @@ class ProductController extends Controller
         ->make(true);
     }
 
-
     public function save(Request $request)
     {
+
         // dd($request->all());
        try{
        $product_id=Product::where('name','=',$request->input('product'))->select('id')->first();
@@ -234,6 +242,9 @@ class ProductController extends Controller
         $file_upload->save();
 
       return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+
+        dd('ok');
+
     }
 
     /**
@@ -644,7 +655,7 @@ class ProductController extends Controller
                 } elseif ($file->file) {
                     // dd($file->file);
                     $relese = storage_path().'\products'.'\\'.$file->file;
-                    // dd($relese);
+                    dd($relese);
                     return $relese;
                 }
             }

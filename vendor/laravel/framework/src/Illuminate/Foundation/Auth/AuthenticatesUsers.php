@@ -24,39 +24,35 @@ trait AuthenticatesUsers
        public function showLoginForm()
     {
         try{
+           $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
+           if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+            {
+              $ip=$_SERVER['HTTP_CLIENT_IP'];
+            }
+            elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+            {
+              $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+            else
+            {
+              $ip=$_SERVER['REMOTE_ADDR'];
+            }
 
-       $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+            if($ip!='::1')
+               {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
+               else
+                {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
 
-       if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
-    {
-      $ip=$_SERVER['HTTP_CLIENT_IP'];
-    }
-    elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
-    {
-      $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-    }
-    else
-    {
-      $ip=$_SERVER['REMOTE_ADDR'];
-    }
-
-  if($ip!='::1')
-   {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
-   else
-    {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
-
-             }catch(\Exception $ex){
-             $location = false;
-             $error = $ex->getMessage();
-            
-            // return redirect()->route('error404', [$error]);
+         }catch(\Exception $ex){
+         $location = false;
+         $error = $ex->getMessage();
+                    
+                    // return redirect()->route('error404', [$error]);
             // return redirect(404)->json(compact('error'));
 
          }
-
-
-
+         
         return view('themes.default1.front.auth.login-register', compact('bussinesses','location'));
 
          

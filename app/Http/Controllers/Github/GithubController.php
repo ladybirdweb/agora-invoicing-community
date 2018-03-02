@@ -309,7 +309,7 @@ class GithubController extends Controller
             // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
             // $user_id = Auth::user()->id;
             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
-            
+
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
 
@@ -323,6 +323,7 @@ class GithubController extends Controller
 
             $link = $this->github_api->getCurl1($url);
             dd($link);
+
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
@@ -331,7 +332,7 @@ class GithubController extends Controller
         }
     }
 
-     public function downloadLinkAdmin($owner, $repo)
+    public function downloadLinkAdmin($owner, $repo)
     {
         try {
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
@@ -347,7 +348,6 @@ class GithubController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function findVersion($owner, $repo)
     {

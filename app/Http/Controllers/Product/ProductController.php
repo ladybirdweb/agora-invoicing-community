@@ -84,7 +84,7 @@ class ProductController extends Controller
     public function index()
     {
         try {
-             return view('themes.default1.product.product.index');
+            return view('themes.default1.product.product.index');
         } catch (\Exception $e) {
             return redirect('/')->with('fails', $e->getMessage());
         }
@@ -153,23 +153,20 @@ class ProductController extends Controller
 //        }
     }
 
-
-
-
     public function getUpload($id)
     {
-        $new_upload = ProductUpload::where('product_id','=',$id)->select('id','product_id','title','description','version','file')->get();
+        $new_upload = ProductUpload::where('product_id', '=', $id)->select('id', 'product_id', 'title', 'description', 'version', 'file')->get();
+
         return \DataTables::of($new_upload)
         ->addColumn('checkbox', function ($model) {
-         return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
-         })
-       
+            return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
+        })
+
         ->addColumn('product_id', function ($model) {
             return ucfirst($this->product->where('id', $model->product_id)->first()->name);
         })
 
         ->addColumn('title', function ($model) {
-
             return ucfirst($model->title);
         })
         ->addColumn('description', function ($model) {
@@ -179,14 +176,13 @@ class ProductController extends Controller
             return $model->version;
         })
 
-        ->addColumn('file',function($model){
-            return $model->file; 
-        }) 
-        ->addColumn('action',function($model){
-             return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
-        
-         })
-        ->rawcolumns(['checkbox','product_id','title','description','version','file','action'])
+        ->addColumn('file', function ($model) {
+            return $model->file;
+        })
+        ->addColumn('action', function ($model) {
+            return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
+        })
+        ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
     }
 
@@ -194,57 +190,52 @@ class ProductController extends Controller
     {
 
         // dd($request->all());
-       try{
-       $product_id=Product::where('name','=',$request->input('product'))->select('id')->first();
-       
-       $this->product_upload->product_id=$product_id->id;
-       $this->product_upload->title=$request->input('title');
-       $this->product_upload->description=$request->input('description');
-       $this->product_upload->version=$request->input('version');
-      
-      // dd($request->hasFi le('file'));
-        if ($request->file)
-        {
-          $file=$request->file('file')->getClientOriginalName();
-        
-          $destination= storage_path().'/products';
-          $request->file('file')->move($destination, $file);
+        try {
+            $product_id = Product::where('name', '=', $request->input('product'))->select('id')->first();
+
+            $this->product_upload->product_id = $product_id->id;
+            $this->product_upload->title = $request->input('title');
+            $this->product_upload->description = $request->input('description');
+            $this->product_upload->version = $request->input('version');
+
+            // dd($request->hasFi le('file'));
+            if ($request->file) {
+                $file = $request->file('file')->getClientOriginalName();
+
+                $destination = storage_path().'/products';
+                $request->file('file')->move($destination, $file);
                 $this->product_upload->file = $file;
-        }
-        $this->product_upload->save();
-           return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-       }
-       catch (\Exception $e) {
+            }
+            $this->product_upload->save();
+
+            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        } catch (\Exception $e) {
             dd($e);
 
             return redirect()->with('fails', $e->getMessage());
         }
-       
     }
 
     public function uploadUpdate($id, Request $request)
     {
-         $file_upload = ProductUpload::find($id);
+        $file_upload = ProductUpload::find($id);
 
         $file_upload->title = $request->input('title');
         $file_upload->description = $request->input('description');
         $file_upload->version = $request->input('version');
-        if ($request->file)
-        {
-          $file=$request->file('file')->getClientOriginalName();
-        
-          $destination= storage_path().'/products';
-          $request->file('file')->move($destination, $file);
-                $file_upload->file = $file;
+        if ($request->file) {
+            $file = $request->file('file')->getClientOriginalName();
+
+            $destination = storage_path().'/products';
+            $request->file('file')->move($destination, $file);
+            $file_upload->file = $file;
         }
-       
-       
+
         $file_upload->save();
 
-      return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
 
         dd('ok');
-
     }
 
     /**
@@ -512,7 +503,6 @@ class ProductController extends Controller
     public function destroy(Request $request)
     {
         try {
-           
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
@@ -565,8 +555,7 @@ class ProductController extends Controller
 
     public function fileDestroy(Request $request)
     {
-      try {
-            
+        try {
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
@@ -614,7 +603,7 @@ class ProductController extends Controller
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
-        }   
+        }
     }
 
     public function getMyUrl()
@@ -640,7 +629,7 @@ class ProductController extends Controller
             $repository = $product->github_repository;
 
             // $file=ProductUpload::where('product_id','=',$id)->select('title','description','version','file')->first()->toArray();
-            $file = $this->product_upload->where('product_id','=',$id)->select('file')->orderBy('created_at', 'desc')->first();
+            $file = $this->product_upload->where('product_id', '=', $id)->select('file')->orderBy('created_at', 'desc')->first();
             // dd($file);
 
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
@@ -656,6 +645,7 @@ class ProductController extends Controller
                     // dd($file->file);
                     $relese = storage_path().'\products'.'\\'.$file->file;
                     dd($relese);
+
                     return $relese;
                 }
             }
@@ -666,8 +656,7 @@ class ProductController extends Controller
         }
     }
 
-
-     public function downloadProductAdmin($id)
+    public function downloadProductAdmin($id)
     {
         try {
             $product = $this->product->findOrFail($id);
@@ -675,7 +664,7 @@ class ProductController extends Controller
             $type = $product->type;
             $owner = $product->github_owner;
             $repository = $product->github_repository;
-            $file = $this->product_upload->where('product_id','=',$id)->select('file')->first();
+            $file = $this->product_upload->where('product_id', '=', $id)->select('file')->first();
 
             if ($type == 2) {
                 if ($owner && $repository) {
@@ -683,7 +672,7 @@ class ProductController extends Controller
                     $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
 
                     return ['release'=>$relese, 'type'=>'github'];
-                }elseif ($file->file){
+                } elseif ($file->file) {
                     $relese = storage_path().'\products'.'\\'.$file->file;
 
                     return $relese;
@@ -744,7 +733,7 @@ class ProductController extends Controller
                     $release = $this->downloadProduct($product_id, $invoice_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
                         $release = $release['release'];
-                          
+
                         return view('themes.default1.front.download', compact('release', 'form'));
                     } else {
                         header('Content-type: Zip');

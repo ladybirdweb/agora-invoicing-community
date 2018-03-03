@@ -323,7 +323,8 @@ class GithubController extends Controller
 
             $link = $this->github_api->getCurl1($url);
             dd($link);
-             return $link['header'];
+
+            return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
 
@@ -352,11 +353,9 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
-             if (array_key_exists('tag_name', $release)) {
+            if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }
-
-        
         } catch (Exception $ex) {
             // dd($ex);
 

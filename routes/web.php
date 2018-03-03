@@ -146,9 +146,15 @@
 
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
+        Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
+
         Route::post('get-price', 'Product\ProductController@getPrice');
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
+        Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
+        Route::post('upload/save', 'Product\ProductController@save');
+        Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
+
         /*
          * Plan
          */
@@ -411,4 +417,8 @@
 
         Route::post('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
+
+        Route::get('404', ['as' => 'error404', function () {
+            return view('errors.404');
+        }]);
     // });

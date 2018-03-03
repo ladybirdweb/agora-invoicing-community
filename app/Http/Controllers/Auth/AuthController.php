@@ -471,6 +471,7 @@ class AuthController extends Controller
             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
 
             return response()->json($response);
+            // return redirect('/login');
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
             if ($ex->getMessage() == 'otp_not_verified') {
@@ -498,6 +499,8 @@ class AuthController extends Controller
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
+
+            return redirect('/login');
         } catch (\Exception $ex) {
             //dd($ex);
             $result = [$ex->getMessage()];

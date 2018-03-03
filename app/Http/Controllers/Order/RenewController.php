@@ -364,8 +364,8 @@ class RenewController extends Controller
 
     public function setSession($sub_id, $planid)
     {
-        Session::set('subscription_id', $sub_id);
-        Session::set('plan_id', $sub_id);
+        Session::put('subscription_id', $sub_id);
+        Session::put('plan_id', $sub_id);
     }
 
     public function removeSession()

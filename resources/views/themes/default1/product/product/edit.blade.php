@@ -1,5 +1,37 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#chkYes").click(function () {
+            if ($("#chkYes").is(":checked")) {
+                $("#git").show();
+                $("#uploads").hide();
+                $("#hide").hide();
+            }
+            else{
+               $("#git").hide();
+                $("#uploads").hide();
+                $("#hide").hide();
+            } 
+        });
+    });
+
+    $(function () {
+        $("#chkNo").click(function () {
+            if ($("#chkNo").is(":checked")) {
+                $("#git").hide();
+                $("#uploads").show();
+                $("#hide").show();
+            } else {
+                $("#git").hide();
+                $("#uploads").hide();
+                $("#hide").hide();
+            } 
+        });
+    });
+</script>
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -29,19 +61,13 @@
                     {{Session::get('fails')}}
                 </div>
                 @endif
-        {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
-        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
+                <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
-    </div>
-
-    <div class="box-body">
-
-        <div class="row">
-
+       </div>
+       <div class="box-body">
+         <div class="row">
             <div class="col-md-12">
-
-                
-
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
@@ -51,7 +77,6 @@
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div class="row">
-
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
@@ -86,22 +111,19 @@
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                                     <script>
-    tinymce.init({
-    selector: 'textarea',
-    plugins: "code",
-    toolbar: "code",
-    menubar: "tools"
-});
-</script>
+                                        tinymce.init({
+                                            selector: 'textarea',
+                                            plugins: "code",
+                                            toolbar: "code",
+                                            menubar: "tools"
+                                        });
+                                    </script>
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
 
-
-
-
-                                </div>
-                                <div class="col-md-6">
+                                     </div>
+                                   <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li>
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
@@ -111,58 +133,63 @@
 
                                             </div>
                                         </li>
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('file') ? 'has-error' : '' }}">
-                                                        <!-- first name -->
-                                                        {!! Form::label('file',Lang::get('message.file')) !!}
-                                                        {!! Form::file('file') !!}
-
-                                                    </div>  
-                                                </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
+                                        <li>
+                                        <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
                                                         <!-- last name -->
-                                                        {!! Form::label('image',Lang::get('message.image')) !!}
-                                                        {!! Form::file('image') !!}
+                                                {!! Form::label('image',Lang::get('message.image')) !!}
+                                                {!! Form::file('image') !!}
 
-                                                    </div>
+                                        </div>
                                                 </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('version',Lang::get('message.version')) !!}
-                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
-
-                                                    </div>
-                                                </li>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <p>
-                                                    <b>OR</b>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-5">
+                                      
+                                       
+                                            <table class="table table-responsive">
+                                              <span>Where do you want to retrieve your files from?</span>
+                                             </br>
+                                                <tr>              
+                                                    <td>
+                                                        <label for="chkYes" style="display: block;">
+                                                        <input type="radio" id="chkYes" name="chkTax" />
+                                                        Github
+                                                    </label>
+                                                      <div class="col-md-10" id="git" style="display:none">
                                                 <li>
                                                     <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
-                                                        {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                         {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
+                                                        
+                                                    </div>
+                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                 {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
+                                                     {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                        
 
                                                     </div>  
                                                 </li>
+                                            
                                                 <li>
-                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
+                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
-                                                        {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
-                                                        {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
+                                                        {!! Form::label('version',Lang::get('message.version')) !!}
+                                                         {!! Form::text('version',null,['class'=>'form-control']) !!}
 
-                                                    </div>
+
+                                                      </div>
                                                 </li>
-                                            </div>
-                                        </div>
-
+                                                      </div>
+                                                   </td>
+                                                 </tr>
+                                                <tr>
+                                                    <td><label for="chkNo">
+                                                        <input type="radio" id="chkNo" name="chkTax" />
+                                                            Filesystem
+                                                        </label>
+                                                    </td>
+                                                </tr>
+                                             </table>
+                                       
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -180,7 +207,7 @@
 
                                             </div>
                                         </li>
-                                    </ul>
+                                   
                                 </div>
 
                             </div>
@@ -260,9 +287,11 @@
                                     </ul>
                                 </div>
 
+
                             </div>
                         </div>
-                        <!-- /.tab-pane -->
+
+                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">
 
@@ -327,9 +356,6 @@
                                     </td>
                                 </tr>
 
-
-
-
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
@@ -352,7 +378,7 @@
 
                                         </div>
                                     </td>
-                                </tr>
+                                 </tr>
 
                                 <tr>
                                     <td><b>{!! Form::label('auto-terminate',Lang::get('message.auto-terminate')) !!}</b></td>
@@ -434,19 +460,159 @@
                     </div>
                     <!-- /.tab-content -->
                 </div>
+                </div>
                 <!-- nav-tabs-custom -->
 
+           
+
+          {!! Form::close() !!}
+     
+        <div class="row" id="hide" style="display:none">
+        <div class="col-md-12">
+        <div class="box" id="uploads">
+            <div class="box-header with-border" >
+                <h3 class="box-title">Upload Files</h3>
+                 
+                 <a href="#create-upload-option" id="create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-upload-option">Add Files</a>
+                            @include('themes.default1.product.product.create-upload-option')
+                             @include('themes.default1.product.product.edit-upload-option')
+             
             </div>
+            <!-- <div id="response"></div> -->
+            <div class="box-body" >
+                <div class="row" >
+                    <div class="col-md-12" >
+                         <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                    <thead><tr>
+                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Version</th>
+                        <th>File</th>
+                        <th>Action</th>
+                        </tr></thead>
+                     </table>
 
-
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
+</div>
+
+
+
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#upload-table').DataTable({
+            processing: true,
+            serverSide: true,
+             stateSave: true,
+               order: [[ 0, "desc" ]],
+               
+             ajax: '{!! route('get-upload',$product->id) !!}',
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+                columnDefs: [
+                { 
+                    targets: 'no-sort', 
+                    orderable: false,
+                    order: []
+                }
+            ],
+            columns: [
+                {data: 'checkbox', name: 'checkbox'},
+                {data: 'title', name: 'title'},
+                {data: 'description', name: 'description'},
+                {data: 'version', name: 'version'},
+                {data: 'file', name: 'file'},
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+        
+          $('#edit-upload-option').on('show.bs.modal', function(e){
+        
+    })
+     function openEditPopup(e){
+         console.log(e)
+         $('#edit-uplaod-option').modal('toggle');
+         var upload_id = $(e).data('id')
+         var title = $(e).data('title')
+        var description = $(e).data('description')
+        var version= $(e).data('version')
+        console.log(title,description,version)
+
+         $("#product-title").val(title)
+        $("#product-description").val(description)
+        $("#product-version").val(version)
+         var url = "{{url('upload/')}}"+"/"+upload_id
+          $("#upload-edit-form").attr('action', url)
+
+
+
+
+     }
+        </script>
+        <script>
+        function checking(e){
+           $('#upload-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+     }
+    
+     $(document).on('click','#bulk_delete',function(){
+      var id=[];
+      if (confirm("Are you sure you want to delete this?"))
+        {
+            $('.upload_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! Url('uploads-delete') !!}",
+                      method:"get",
+                      data: $('#checks:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                  
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+        }  
+
+     });
+   </script>
+
+
+      
+    </div>
+    </div>
+     </div>
 
 </div>
 
 </div>
 
 
-{!! Form::close() !!}
+
 @stop

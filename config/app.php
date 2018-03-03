@@ -103,6 +103,7 @@ return [
 
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
 
 'App\Plugins\Ccavanue\ServiceProvider',
     */

@@ -16,8 +16,8 @@
         <meta name="author" content="okler.net">
         <meta name="csrf-token" content="{!! csrf_token() !!}">
         <!-- Favicon -->
-        <link rel="shortcut icon" href="dist/img/faveo.png" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="dist/img/faveo.png">
+        <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="images/faveo.png">
 
         <!-- Mobile Metas -->
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -29,11 +29,11 @@
         <!-- Vendor CSS -->
         <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
         <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/animate/animate.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/simple-line-icons/css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/magnific-popup/magnific-popup.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/magnific-popup.min.css')}}">
 
 
         <!-- Theme CSS -->
@@ -43,18 +43,18 @@
         <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
 
         <!-- Current Page CSS -->
-        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/settings.css')}}">
-        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/layers.css')}}">
-        <link rel="stylesheet" href="{{asset('css/rs-plugin/css/navigation.css')}}">
-        <link rel="stylesheet" href="{{asset('css/nivo-slider/nivo-slider.css')}}">
-        <link rel="stylesheet" href="{{asset('css/nivo-slider/default/default.css')}}">
+        <link rel="stylesheet" href="{{asset('css/css/settings.css')}}">
+        <link rel="stylesheet" href="{{asset('css/layers.css')}}">
+        <link rel="stylesheet" href="{{asset('css/navigation.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider.css')}}">
+        <link rel="stylesheet" href="{{asset('css/default.css')}}">
 
       
-        <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
+        <link rel="stylesheet" href="{{asset('css/demo-construction.css')}}">
 
         <!-- Skin CSS -->
-        <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
-        <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
+        <link rel="stylesheet" href="{{asset('css/skin-construction.css')}}"> 
+        <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
         <!-- Theme Custom CSS -->
         <link rel="stylesheet" href="{{asset('css/custom.css')}}">
@@ -63,7 +63,7 @@
 
 
         <!-- Head Libs -->
-        <script src="{{asset('css/modernizr/modernizr.min.js')}}"></script>
+        <script src="{{asset('js/modernizr.min.js')}}"></script>
 
     </head>
     <body>
@@ -81,7 +81,7 @@
                             <div class="header-column">
                                 <div class="header-logo">
                                     <a href="{{url('home')}}">
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('cart/img/logo/'.$setting->logo)}}">
+                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
                                     </a>
                                 </div>
                             </div>
@@ -445,21 +445,20 @@
         </div>
 
         <!-- Vendor -->
-        <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
-        <script src="{{asset('css/jquery.appear/jquery.appear.min.js')}}"></script>
-        <script src="{{asset('css/jquery.easing/jquery.easing.min.js')}}"></script>
-        <script src="{{asset('css/jquery-cookie/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
-        <script src="{{asset('css/common/common.min.js')}}"></script>
-        <script src="{{asset('css/jquery.validation/jquery.validation.min.js')}}"></script>
-        <script src="{{asset('css/jquery.stellar/jquery.stellar.min.js')}}"></script>
-        <script src="{{asset('css/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
-        <script src="{{asset('css/jquery.gmap/jquery.gmap.min.js')}}"></script>
-        <script src="{{asset('css/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
-        <script src="{{asset('css/isotope/jquery.isotope.min.js')}}"></script>
-        <script src="{{asset('css/owl.carousel/owl.carousel.min.js')}}"></script>
-        <script src="{{asset('css/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
-        <script src="{{asset('css/vide/vide.min.js')}}"></script>
+        <script src="{{asset('js/jquery.min.js')}}"></script>
+        <script src="{{asset('js/jquery.appear.min.js')}}"></script>
+        <script src="{{asset('js/jquery.easing.min.js')}}"></script>
+        <script src="{{asset('js/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('js/common.min.js')}}"></script>
+        <script src="{{asset('js/jquery.validation.min.js')}}"></script>
+        <script src="{{asset('js/jquery.easy-pie-chart.min.js')}}"></script>
+        <script src="{{asset('js/jquery.gmap.min.js')}}"></script>
+        <script src="{{asset('js/jquery.lazyload.min.js')}}"></script>
+        <script src="{{asset('js/jquery.isotope.min.js')}}"></script>
+        <script src="{{asset('js/owl.carousel.min.js')}}"></script>
+        <script src="{{asset('js/jquery.magnific-popup.min.js')}}"></script>
+        <script src="{{asset('js/vide.min.js')}}"></script>
 
         <!-- Theme Base, Components and Settings -->
         <script src="{{asset('js/theme.js')}}"></script>
@@ -471,24 +470,25 @@
         <script src="{{asset('js/theme.init.js')}}"></script>
 
         <script>
-                                                                                                        function removeItem(id) {
+        
+         function removeItem(id) {
 
-                                                                                                        $.ajax({
-                                                                                                        type: "GET",
-                                                                                                                data:"id=" + id,
-                                                                                                                url: "{{url('cart/remove/')}}",
-                                                                                                                success: function (data) {
-                                                                                                                location.reload();
-                                                                                                                }
-                                                                                                        });
-                                                                                                        }
-                                                                                                $.ajax({
-                                                                                                dataType: "html",
-                                                                                                        url: '{{url('twitter')}}',
-                                                                                                        success: function (returnHTML) {
-                                                                                                        $('#tweets').html(returnHTML);
-                                                                                                        }
-                                                                                                });
+                         $.ajax({
+                        type: "GET",
+                     data:"id=" + id,
+                url: "{{url('cart/remove/')}}",
+                        success: function (data) {
+                            location.reload();
+                                                 }
+                                });
+                                }
+                        $.ajax({
+                        dataType: "html",
+                        url: '{{url('twitter')}}',
+                        success: function (returnHTML) {
+                        $('#tweets').html(returnHTML);
+                                }
+                             });
         </script>
         @yield('script')
         <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.

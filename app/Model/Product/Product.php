@@ -37,6 +37,11 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Payment\TaxProductRelation', 'product_id');
     }
 
+    public function productUpload()
+    {
+        return $this->hasMany('App/Model/Product/ProductUpload');
+    }
+
     public function delete()
     {
         $this->tax()->delete();

@@ -322,15 +322,10 @@ class GithubController extends Controller
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
 
             $link = $this->github_api->getCurl1($url);
-<<<<<<< HEAD
             // dd($link);
              return $link['header'];
-=======
-            dd($link);
 
-            return $link['header'];
->>>>>>> origin/ashu-product-file
-        } catch (Exception $ex) {
+             } catch (Exception $ex) {
             dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

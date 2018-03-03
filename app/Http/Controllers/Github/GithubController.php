@@ -323,9 +323,8 @@ class GithubController extends Controller
 
             $link = $this->github_api->getCurl1($url);
             // dd($link);
-             return $link['header'];
-
-             } catch (Exception $ex) {
+            return $link['header'];
+        } catch (Exception $ex) {
             dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

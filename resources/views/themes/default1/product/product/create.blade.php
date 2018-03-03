@@ -94,12 +94,12 @@
                                     <!-- last name -->
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                                     <script>
-tinymce.init({
-    selector: 'textarea',
-    plugins: "code",
-    toolbar: "code",
-    menubar: "tools"
-});
+                                    tinymce.init({
+                                        selector: 'textarea',
+                                        plugins: "code",
+                                        toolbar: "code",
+                                        menubar: "tools"
+                                    });
                                     </script>
 
 
@@ -117,58 +117,7 @@ tinymce.init({
 
                                             </div>
                                         </li>
-                                        <div class="row">
-                                            <div class="col-md-5">
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('file') ? 'has-error' : '' }}">
-                                                        <!-- first name -->
-                                                        {!! Form::label('file',Lang::get('message.file')) !!}
-                                                        {!! Form::file('file') !!}
-
-                                                    </div>  
-                                                </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('image',Lang::get('message.image')) !!}
-                                                        {!! Form::file('image') !!}
-
-                                                    </div>
-                                                </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('version',Lang::get('message.version')) !!}
-                                                        {!! Form::text('version',null,['class'=>'form-control']) !!}
-
-                                                    </div>
-                                                </li>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <p>
-                                                    <b>OR</b>
-                                                </p>
-                                            </div>
-                                            <div class="col-md-5">
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
-                                                        <!-- first name -->
-                                                        {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
-                                                        {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
-
-                                                    </div>  
-                                                </li>
-                                                <li>
-                                                    <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
-                                                        <!-- last name -->
-                                                        {!! Form::label('github_repository',Lang::get('message.github-repository-name')) !!}
-                                                        {!! Form::text('github_repository',null,['class'=>'form-control']) !!}
-
-                                                    </div>
-                                                </li>
-                                            </div>
-                                        </div>
-
+                           
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->

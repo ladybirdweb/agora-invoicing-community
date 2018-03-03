@@ -5,12 +5,12 @@
     $(function () {
         $("#chkYes").click(function () {
             if ($("#chkYes").is(":checked")) {
-                $("#GST").show();
+                $("#git").show();
                 $("#uploads").hide();
                 $("#hide").hide();
             }
             else{
-               $("#GST").hide();
+               $("#git").hide();
                 $("#uploads").hide();
                 $("#hide").hide();
             } 
@@ -20,18 +20,18 @@
     $(function () {
         $("#chkNo").click(function () {
             if ($("#chkNo").is(":checked")) {
-                $("#GST").hide();
+                $("#git").hide();
                 $("#uploads").show();
                 $("#hide").show();
             } else {
-                $("#GST").hide();
+                $("#git").hide();
                 $("#uploads").hide();
                 $("#hide").hide();
             } 
         });
     });
 </script>
-<scrip
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -61,12 +61,12 @@
                     {{Session::get('fails')}}
                 </div>
                 @endif
-        {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
-        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
+                <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
-    </div>
-    <div class="box-body">
-        <div class="row">
+       </div>
+       <div class="box-body">
+         <div class="row">
             <div class="col-md-12">
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
@@ -141,12 +141,10 @@
 
                                         </div>
                                                 </li>
-                                        <li>
+                                      
                                        
                                             <table class="table table-responsive">
-
-                                             
-                                            <span>Where do you want to retrieve your files from?</span>
+                                              <span>Where do you want to retrieve your files from?</span>
                                              </br>
                                                 <tr>              
                                                     <td>
@@ -154,16 +152,13 @@
                                                         <input type="radio" id="chkYes" name="chkTax" />
                                                         Github
                                                     </label>
-                                                      <div class="col-md-10" id="GST" style="display:none">
+                                                      <div class="col-md-10" id="git" style="display:none">
                                                 <li>
                                                     <div class="form-group {{ $errors->has('github_owner') ? 'has-error' : '' }}">
                                                         <!-- first name -->
                                                         {!! Form::label('github_owner',Lang::get('message.github-owner')) !!}
                                                          {!! Form::text('github_owner',null,['class'=>'form-control']) !!}
-                                                            
                                                         
-                                                        <!-- {!! Form::text('github_owner',null,['class'=>'form-control']) !!} -->
-
                                                     </div>
                                                     <div class="form-group {{ $errors->has('github_repository') ? 'has-error' : '' }}">
                                                         <!-- last name -->
@@ -174,7 +169,7 @@
                                                     </div>  
                                                 </li>
                                             
-                                             <li>
+                                                <li>
                                                     <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                                                         <!-- last name -->
                                                         {!! Form::label('version',Lang::get('message.version')) !!}
@@ -182,19 +177,19 @@
 
 
                                                       </div>
-                                             </li>
+                                                </li>
                                                       </div>
                                                    </td>
-                                                </tr>
+                                                 </tr>
                                                 <tr>
                                                     <td><label for="chkNo">
                                                         <input type="radio" id="chkNo" name="chkTax" />
                                                             Filesystem
-                                                        </label></td>
+                                                        </label>
+                                                    </td>
                                                 </tr>
                                              </table>
-                                        
-                                        </li>
+                                       
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -212,7 +207,7 @@
 
                                             </div>
                                         </li>
-                                    </ul>
+                                   
                                 </div>
 
                             </div>
@@ -296,11 +291,7 @@
                             </div>
                         </div>
 
-
-
-
-
-                        <!-- /.tab-pane -->
+                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">
 
@@ -365,9 +356,6 @@
                                     </td>
                                 </tr>
 
-
-
-
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
@@ -390,7 +378,7 @@
 
                                         </div>
                                     </td>
-                                </tr>
+                                 </tr>
 
                                 <tr>
                                     <td><b>{!! Form::label('auto-terminate',Lang::get('message.auto-terminate')) !!}</b></td>
@@ -472,6 +460,7 @@
                     </div>
                     <!-- /.tab-content -->
                 </div>
+                </div>
                 <!-- nav-tabs-custom -->
 
            
@@ -505,7 +494,7 @@
                         </tr></thead>
                      </table>
 
- </div>
+                    </div>
                 </div>
             </div>
         </div>

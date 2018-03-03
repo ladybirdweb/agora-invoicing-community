@@ -322,7 +322,7 @@ class GithubController extends Controller
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
 
             $link = $this->github_api->getCurl1($url);
-            dd($link);
+            // dd($link);
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex);
@@ -353,13 +353,13 @@ class GithubController extends Controller
     {
         try {
             $release = $this->latestRelese($owner, $repo);
-            if (array_key_exists('tag_name', $release)) {
+             if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }
 
             return;
         } catch (Exception $ex) {
-            dd($ex);
+            // dd($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

@@ -322,7 +322,7 @@ class GithubController extends Controller
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
 
             $link = $this->github_api->getCurl1($url);
-            dd($link);
+            // dd($link);
              return $link['header'];
         } catch (Exception $ex) {
             dd($ex);

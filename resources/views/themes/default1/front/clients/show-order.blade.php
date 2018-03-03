@@ -227,7 +227,7 @@ active
                 {data: 'number', name: 'number'},
                 {data: 'total', name: 'total'},
                 {data: 'payment_method', name: 'payment_method'},
-                {data: 'status', name: 'status'},
+                {data: 'payment_status', name: 'payment_status'},
                 {data: 'created_at', name: 'created_at'},
                 
               

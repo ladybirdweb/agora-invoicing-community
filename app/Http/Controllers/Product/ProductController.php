@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
-    // use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     // use Input;

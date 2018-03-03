@@ -72,23 +72,30 @@ namespace App\Http\Controllers\Product;
             $tax_class = new TaxClass();
             $this->tax_class = $tax_class;
 
+
             $product_upload = new ProductUpload();
             $this->product_upload = $product_upload;
         }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index()
+    {
+        try {
+            return view('themes.default1.product.product.index');
+        } catch (\Exception $e) {
+            return redirect('/')->with('fails', $e->getMessage());
 
+        }
+     }
         /**
          * Display a listing of the resource.
          *
          * @return Response
          */
-        public function index()
-        {
-            try {
-                 return view('themes.default1.product.product.index');
-            } catch (\Exception $e) {
-                return redirect('/')->with('fails', $e->getMessage());
-            }
-        }
+       
 
         public function getProducts()
         {
@@ -155,40 +162,40 @@ namespace App\Http\Controllers\Product;
 
 
 
+    public function getUpload($id)
+    {
+        $new_upload = ProductUpload::where('product_id', '=', $id)->select('id', 'product_id', 'title', 'description', 'version', 'file')->get();
 
-        public function getUpload($id)
-        {
-            $new_upload = ProductUpload::where('product_id','=',$id)->select('id','product_id','title','description','version','file')->get();
-            return \DataTables::of($new_upload)
-            ->addColumn('checkbox', function ($model) {
-             return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
-             })
-           
-            ->addColumn('product_id', function ($model) {
-                return ucfirst($this->product->where('id', $model->product_id)->first()->name);
-            })
+        return \DataTables::of($new_upload)
+        ->addColumn('checkbox', function ($model) {
+            return "<input type='checkbox' class='upload_checkbox' value=".$model->id.' name=select[] id=checks>';
+        })
 
-            ->addColumn('title', function ($model) {
+        ->addColumn('product_id', function ($model) {
+            return ucfirst($this->product->where('id', $model->product_id)->first()->name);
+        })
 
-                return ucfirst($model->title);
-            })
-            ->addColumn('description', function ($model) {
-                return ucfirst($model->description);
-            })
-            ->addColumn('version', function ($model) {
-                return $model->version;
-            })
+        ->addColumn('title', function ($model) {
+            return ucfirst($model->title);
+        })
+        ->addColumn('description', function ($model) {
+            return ucfirst($model->description);
+        })
+        ->addColumn('version', function ($model) {
+            return $model->version;
+        })
 
-            ->addColumn('file',function($model){
-                return $model->file; 
-            }) 
-            ->addColumn('action',function($model){
-                 return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
-            
-             })
-            ->rawcolumns(['checkbox','product_id','title','description','version','file','action'])
-            ->make(true);
-        }
+        ->addColumn('file', function ($model) {
+            return $model->file;
+        })
+        ->addColumn('action', function ($model) {
+            return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
+        })
+        ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
+        ->make(true);
+    }
+
+
 
         public function save(Request $request)
         {
@@ -242,10 +249,17 @@ namespace App\Http\Controllers\Product;
             $file_upload->save();
 
           return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-
-            dd('ok');
-
         }
+            // dd('ok');
+
+        // dd($request->all());
+       
+    
+
+
+        
+    
+
 
         /**
          * Show the form for creating a new resource.
@@ -502,6 +516,7 @@ namespace App\Http\Controllers\Product;
             }
         }
 
+
         /**
          * Remove the specified resource from storage.
          *
@@ -509,129 +524,133 @@ namespace App\Http\Controllers\Product;
          *
          * @return Response
          */
-        public function destroy(Request $request)
-        {
-            try {
-               
-                $ids = $request->input('select');
-                if (!empty($ids)) {
-                    foreach ($ids as $id) {
-                        if ($id != 1) {
-                            $product = $this->product->where('id', $id)->first();
-                            if ($product) {
-                                $product->delete();
-                            } else {
-                                echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.no-record').'
-                    </div>';
-                                //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                            }
-                            echo "<div class='alert alert-success alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.deleted-successfully').'
-                    </div>';
+     public function destroy(Request $request)
+    {
+        try {
+            $ids = $request->input('select');
+            if (!empty($ids)) {
+                foreach ($ids as $id) {
+                    if ($id != 1) {
+                        $product = $this->product->where('id', $id)->first();
+                        if ($product) {
+                            $product->delete();
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.can-not-delete-default').'
-                    </div>';
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.no-record').'
+                </div>';
+                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                         }
+                        echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.can-not-delete-default').'
+                </div>';
                     }
-                } else {
-                    echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.select-a-row').'
-                    </div>';
-                    //echo \Lang::get('message.select-a-row');
                 }
-            } catch (\Exception $e) {
+            } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.$e->getMessage().'
-                    </div>';
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
+                //echo \Lang::get('message.select-a-row');
             }
+        } catch (\Exception $e) {
+            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.$e->getMessage().'
+                </div>';
         }
-
-        public function fileDestroy(Request $request)
-        {
-          try {
-                
-                $ids = $request->input('select');
-                if (!empty($ids)) {
-                    foreach ($ids as $id) {
-                        if ($id != 1) {
-                            $product = $this->product_upload->where('id', $id)->first();
-                            if ($product) {
-                                $product->delete();
-                            } else {
-                                echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.no-record').'
-                    </div>';
-                                //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                            }
-                            echo "<div class='alert alert-success alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.deleted-successfully').'
-                    </div>';
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+       public function fileDestroy(Request $request)
+    {
+        try {
+            $ids = $request->input('select');
+            if (!empty($ids)) {
+                foreach ($ids as $id) {
+                    if ($id != 1) {
+                        $product = $this->product_upload->where('id', $id)->first();
+                        if ($product) {
+                            $product->delete();
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.can-not-delete-default').'
-                    </div>';
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.no-record').'
+                </div>';
+                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                         }
+                        echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.can-not-delete-default').'
+                </div>';
                     }
-                } else {
-                    echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.select-a-row').'
-                    </div>';
-                    //echo \Lang::get('message.select-a-row');
                 }
-            } catch (\Exception $e) {
+            } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
-                        <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.$e->getMessage().'
-                    </div>';
-            }   
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
+                //echo \Lang::get('message.select-a-row');
+            }
+        } catch (\Exception $e) {
+            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.$e->getMessage().'
+                </div>';
         }
+    }
 
-        public function getMyUrl()
-        {
-            $server = new Request();
-            $url = $_SERVER['REQUEST_URI'];
-            $server = parse_url($url);
-            $server['path'] = dirname($server['path']);
-            $server = parse_url($server['path']);
-            $server['path'] = dirname($server['path']);
+    public function getMyUrl()
+    {
+        $server = new Request();
+        $url = $_SERVER['REQUEST_URI'];
+        $server = parse_url($url);
+        $server['path'] = dirname($server['path']);
+        $server = parse_url($server['path']);
+        $server['path'] = dirname($server['path']);
 
-            $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
+        $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
 
-            return $server;
-        }
+        return $server;
+    }
 
-        public function downloadProduct($id, $invoice_id)
+      public function downloadProduct($id, $invoice_id)
         {
             try {
                 $product = $this->product->findOrFail($id);
@@ -639,8 +658,7 @@ namespace App\Http\Controllers\Product;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
 
-                // $file=ProductUpload::where('product_id','=',$id)->select('title','description','version','file')->first()->toArray();
-                $file = $this->product_upload->where('product_id','=',$id)->select('file')->orderBy('created_at', 'desc')->first();
+               $file = $this->product_upload->where('product_id','=',$id)->select('file')->orderBy('created_at', 'desc')->first();
                 // dd($file);
 
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
@@ -659,37 +677,7 @@ namespace App\Http\Controllers\Product;
                         return $relese;
                     }
                 }
-            } catch (\Exception $e) {
-                dd($e->getMessage());
-
-                return redirect()->back()->with('fails', $e->getMessage());
-            }
-        }
-
-
-         public function downloadProductAdmin($id)
-        {
-            try {
-                $product = $this->product->findOrFail($id);
-                //dd($product);
-                $type = $product->type;
-                $owner = $product->github_owner;
-                $repository = $product->github_repository;
-                $file = $this->product_upload->where('product_id','=',$id)->select('file')->first();
-
-                if ($type == 2) {
-                    if ($owner && $repository) {
-                        $github_controller = new \App\Http\Controllers\Github\GithubController();
-                        $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
-
-                        return ['release'=>$relese, 'type'=>'github'];
-                    }elseif ($file->file){
-                        $relese = storage_path().'\products'.'\\'.$file->file;
-
-                        return $relese;
-                    }
-                }
-            } catch (\Exception $e) {
+                } catch (\Exception $e) {
                 dd($e->getMessage());
 
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -722,51 +710,51 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
-
-        public function userDownload($userid, $invoice_number)
-        {
-            try {
-                if (\Auth::user()->role != 'admin') {
-                    if (\Auth::user()->id != $userid) {
-                        throw new \Exception('This user has no permission for this action');
-                    }
+    
+       public function userDownload($userid, $invoice_number)
+       {
+        try {
+            if (\Auth::user()->role != 'admin') {
+                if (\Auth::user()->id != $userid) {
+                    throw new \Exception('This user has no permission for this action');
                 }
-                $user = new \App\User();
-                $user = $user->findOrFail($userid);
-                $invoice = new \App\Model\Order\Invoice();
-                $invoice = $invoice->where('number', $invoice_number)->first();
+            }
+            $user = new \App\User();
+            $user = $user->findOrFail($userid);
+            $invoice = new \App\Model\Order\Invoice();
+            $invoice = $invoice->where('number', $invoice_number)->first();
 
-                if ($user && $invoice) {
-                    if ($user->active == 1) {
-                        $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
-                        $product_id = $order->product;
-                        $invoice_id = $invoice->id;
-                        $release = $this->downloadProduct($product_id, $invoice_id);
-                        if (is_array($release) && array_key_exists('type', $release)) {
-                            $release = $release['release'];
-                              
-                            return view('themes.default1.front.download', compact('release', 'form'));
-                        } else {
-                            header('Content-type: Zip');
-                            header('Content-Description: File Transfer');
-                            header('Content-Disposition: attachment; filename=Faveo.zip');
-                            //header("Content-type: application/zip");
-                            header('Content-Length: '.filesize($release));
-                            //ob_clean();
-                            flush();
-                            readfile("$release");
-                            exit;
-                        }
+            if ($user && $invoice) {
+                if ($user->active == 1) {
+                    $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
+                    $product_id = $order->product;
+                    $invoice_id = $invoice->id;
+                    $release = $this->downloadProduct($product_id,$invoice_id);
+                    if (is_array($release) && array_key_exists('type', $release)) {
+                        $release = $release['release'];
+
+                        return view('themes.default1.front.download', compact('release', 'form'));
                     } else {
-                        return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
+                        header('Content-type: Zip');
+                        header('Content-Description: File Transfer');
+                        header('Content-Disposition: attachment; filename=Faveo.zip');
+                        //header("Content-type: application/zip");
+                        header('Content-Length: '.filesize($release));
+                        //ob_clean();
+                        flush();
+                        readfile("$release");
+                        exit;
                     }
                 } else {
-                    return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
+                    return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
                 }
-            } catch (\Exception $ex) {
-                return redirect('auth/login')->with('fails', $ex->getMessage());
+            } else {
+                return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
+        } catch (\Exception $ex) {
+            return redirect('auth/login')->with('fails', $ex->getMessage());
         }
+    }
 
         public function getPrice(Request $request)
         {

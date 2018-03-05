@@ -23,7 +23,7 @@ class AuthController extends Controller
       |
      */
 
-    use AuthenticatesAndRegistersUsers;
+    // use AuthenticatesAndRegistersUsers;
 
     /* to redirect after login */
 
@@ -51,7 +51,7 @@ class AuthController extends Controller
     public function getLogin()
     {
         try {
-            $bussinesses = \App\Model\Common\Bussiness::lists('name', 'short')->toArray();
+            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.front.auth.login-register', compact('bussinesses'));
         } catch (\Exception $ex) {
@@ -69,6 +69,7 @@ class AuthController extends Controller
      */
     public function postLogin(Request $request)
     {
+        // dd('sad');
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
@@ -119,12 +120,27 @@ class AuthController extends Controller
      */
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
+        return $request->all();
+
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
             $currency = 'INR';
             $ip = $request->ip();
-            $location = \GeoIP::getLocation($ip);
+            // $location = \GeoIP::getLocation($ip);
+           if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+      $ip = $_SERVER['HTTP_CLIENT_IP'];
+           } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+               $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+           } else {
+               $ip = $_SERVER['REMOTE_ADDR'];
+           }
+
+            if ($ip != '::1') {
+                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+            } else {
+                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+            }
             if ($country == 'IN') {
                 $currency = 'INR';
             } else {
@@ -173,12 +189,13 @@ class AuthController extends Controller
     {
         try {
             $user = new User();
+
             $activate_model = new AccountActivate();
             $user = $user->where('email', $email)->first();
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-            //dd($method);
+
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;
@@ -187,31 +204,39 @@ class AuthController extends Controller
                 $activate = $activate_model->create(['email' => $email, 'token' => $token]);
                 $token = $activate->token;
             }
+
             $url = url("activate/$token");
             //check in the settings
             $settings = new \App\Model\Common\Setting();
             $settings = $settings->where('id', 1)->first();
+
             //template
             $template = new \App\Model\Common\Template();
             $temp_id = $settings->where('id', 1)->first()->welcome_mail;
             $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
+            // var_dump($temp_id);
+            //  die();
             $to = $user->email;
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
             $type = '';
+
             if ($template) {
                 $type_id = $template->type;
                 $temp_type = new \App\Model\Common\TemplateType();
                 $type = $temp_type->where('id', $type_id)->first()->name;
             }
-            //dd($type);
+
+            //dd($from, $to, $data, $subject, $replace, $type);
             $templateController = new \App\Http\Controllers\Common\TemplateController();
             $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 
             return $mail;
         } catch (\Exception $ex) {
+            dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -230,8 +255,8 @@ class AuthController extends Controller
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                // $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 
@@ -370,8 +395,10 @@ class AuthController extends Controller
             $email = $request->input('email');
             $pass = $request->input('password');
             $number = $code.$mobile;
+
             $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
+
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
 
@@ -444,6 +471,7 @@ class AuthController extends Controller
             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
 
             return response()->json($response);
+            // return redirect('/login');
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
             if ($ex->getMessage() == 'otp_not_verified') {
@@ -471,6 +499,8 @@ class AuthController extends Controller
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
+
+            return redirect('/login');
         } catch (\Exception $ex) {
             //dd($ex);
             $result = [$ex->getMessage()];

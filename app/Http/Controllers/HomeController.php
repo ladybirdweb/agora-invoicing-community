@@ -86,11 +86,12 @@ class HomeController extends Controller
     public function versionTest()
     {
         $s = 'eyJpdiI6ImFIVDByR29vVzNpcEExM2UyNDVaWXc9PSIsInZhbHVlIjoiODNJS0MxWXFyVEtrYjhZYXFmUFlvOTJYY09NUHhGYTZBemN2eFMzckZCST0iLCJtYWMiOiI2MDdmZTU5YmRjMjQxOWRlZjE3ODUyMWI0OTk5NDM5ZmQxMWE5ZTUyNzQ3YTMyOGQyYmRmNGVkYWQyNDM5ZTNkIn0=';
-        dd(decrypt($s));
+        // dd(decrypt($s));
         $url = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version';
         $response = 'http://localhost/billings/agorainvoicing/agorainvoicing/public/version-result';
         $name = 'faveo helpdesk community';
         $version = $product->version;
+        // dd($version);
 
         return str_replace('v', '', $product->version);
     }
@@ -113,6 +114,7 @@ class HomeController extends Controller
             $domain = $this->getDomain($request->input('domain'));
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
+
             \Log::emergency(json_encode(['domain' => $request->input('domain'), 'serial' => $serial_key, 'order' => $order_number]));
             $result = [];
             if ($request_type == 'install') {

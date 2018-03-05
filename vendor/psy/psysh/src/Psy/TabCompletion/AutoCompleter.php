@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -20,7 +20,7 @@ use Psy\TabCompletion\Matcher\AbstractMatcher;
  */
 class AutoCompleter
 {
-    /** @var Matcher\AbstractMatcher[]  */
+    /** @var Matcher\AbstractMatcher[] */
     protected $matchers;
 
     /**
@@ -52,8 +52,18 @@ class AutoCompleter
      */
     public function processCallback($input, $index, $info = array())
     {
-        $line = substr($info['line_buffer'], 0, $info['end']);
+        // Some (Windows?) systems provide incomplete `readline_info`, so let's
+        // try to work around it.
+        $line = $info['line_buffer'];
+        if (isset($info['end'])) {
+            $line = substr($line, 0, $info['end']);
+        }
+        if ($line === '' && $input !== '') {
+            $line = $input;
+        }
+
         $tokens = token_get_all('<?php ' . $line);
+
         // remove whitespaces
         $tokens = array_filter($tokens, function ($token) {
             return !AbstractMatcher::tokenIs($token, AbstractMatcher::T_WHITESPACE);

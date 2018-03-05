@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,6 +12,7 @@
 namespace Psy\Formatter;
 
 use Psy\Reflection\ReflectionConstant;
+use Psy\Reflection\ReflectionLanguageConstruct;
 use Psy\Util\Json;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 
@@ -27,12 +28,13 @@ class SignatureFormatter implements Formatter
      *
      * @param \Reflector $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     public static function format(\Reflector $reflector)
     {
         switch (true) {
             case $reflector instanceof \ReflectionFunction:
+            case $reflector instanceof ReflectionLanguageConstruct:
                 return self::formatFunction($reflector);
 
             // this case also covers \ReflectionObject:
@@ -58,7 +60,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \Reflector $reflector
      *
-     * @return string Formatted name.
+     * @return string Formatted name
      */
     public static function formatName(\Reflector $reflector)
     {
@@ -72,7 +74,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \Reflector $reflector
      *
-     * @return string Formatted modifiers.
+     * @return string Formatted modifiers
      */
     private static function formatModifiers(\Reflector $reflector)
     {
@@ -86,7 +88,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \ReflectionClass $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     private static function formatClass(\ReflectionClass $reflector)
     {
@@ -127,7 +129,7 @@ class SignatureFormatter implements Formatter
      *
      * @param ReflectionConstant $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     private static function formatConstant(ReflectionConstant $reflector)
     {
@@ -168,7 +170,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \ReflectionProperty $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     private static function formatProperty(\ReflectionProperty $reflector)
     {
@@ -184,7 +186,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \ReflectionFunction $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     private static function formatFunction(\ReflectionFunctionAbstract $reflector)
     {
@@ -201,7 +203,7 @@ class SignatureFormatter implements Formatter
      *
      * @param \ReflectionMethod $reflector
      *
-     * @return string Formatted signature.
+     * @return string Formatted signature
      */
     private static function formatMethod(\ReflectionMethod $reflector)
     {
@@ -252,7 +254,7 @@ class SignatureFormatter implements Formatter
                     $typeStyle = self::getTypeStyle($value);
                     $value     = is_array($value) ? 'array()' : is_null($value) ? 'null' : var_export($value, true);
                 }
-                $default   = sprintf(' = <%s>%s</%s>', $typeStyle, OutputFormatter::escape($value), $typeStyle);
+                $default = sprintf(' = <%s>%s</%s>', $typeStyle, OutputFormatter::escape($value), $typeStyle);
             } else {
                 $default = '';
             }

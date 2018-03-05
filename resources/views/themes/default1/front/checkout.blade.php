@@ -118,7 +118,7 @@ $tax=  0;
                                 </td>
                                 <td class="product-name">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
+                                    <span class="amount"><small>{!! $symbol !!} </small>{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -133,13 +133,18 @@ $tax=  0;
                         <table class="cart-totals">
                             <tbody>
 
-
+                                     
                                 <tr class="total">
                                     <th>
                                         <strong>Order Total</strong>
                                     </th>
                                     <td>
-                                        <strong><span class="amount"><small>{!! $symbol !!} </small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}</span></strong>
+                                        <strong><span class="amount"><small>{!! $symbol !!} </small> 
+                                        
+                        
+                                            <!--{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}-->
+                                           
+                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> 
                                     </td>
                                 </tr>
 
@@ -211,7 +216,9 @@ $tax=  0;
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span></strong>
+                        <!--{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}-->
+                         {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> 
+                        <!-- <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> -->
                     </td>
                 </tr>
             </tbody>

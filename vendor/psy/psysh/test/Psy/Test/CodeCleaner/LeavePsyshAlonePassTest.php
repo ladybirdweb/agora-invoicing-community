@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -24,6 +24,9 @@ class LeavePsyshAlonePassTest extends CodeCleanerTestCase
     {
         $inline = $this->parse('not php at all!', '');
         $this->traverse($inline);
+
+        // @todo a better thing to assert here?
+        $this->assertTrue(true);
     }
 
     /**
@@ -33,6 +36,9 @@ class LeavePsyshAlonePassTest extends CodeCleanerTestCase
     {
         $stmts = $this->parse($code);
         $this->traverse($stmts);
+
+        // @todo a better thing to assert here?
+        $this->assertTrue(true);
     }
 
     public function validStatements()

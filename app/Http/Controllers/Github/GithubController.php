@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Github;
 
 use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
+use App\Model\Product\Subscription;
+use Auth;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -118,10 +120,30 @@ class GithubController extends Controller
      *
      * @return type
      */
-    public function listRepositories($owner, $repo)
+    public function listRepositories($owner, $repo, $order_id)
     {
         try {
-            $releases = $this->downloadLink($owner, $repo);
+            $releases = $this->downloadLink($owner, $repo, $order_id);
+            if (array_key_exists('Location', $releases)) {
+                $release = $releases['Location'];
+            } else {
+                $release = $this->latestRelese($owner, $repo);
+            }
+
+            return $release;
+
+            //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
+        } catch (Exception $ex) {
+            dd($ex);
+
+            return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function listRepositoriesAdmin($owner, $repo)
+    {
+        try {
+            $releases = $this->downloadLinkAdmin($owner, $repo);
             if (array_key_exists('Location', $releases)) {
                 $release = $releases['Location'];
             } else {
@@ -276,7 +298,40 @@ class GithubController extends Controller
         }
     }
 
-    public function downloadLink($owner, $repo)
+    public function downloadLink($owner, $repo, $order_id)
+    {
+        try {
+            // $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
+            if ($repo == 'faveo-helpdesk') {
+                return $array = ['Location' => $url];
+            }
+            // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
+            // $user_id = Auth::user()->id;
+            $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
+
+            $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $link = $this->github_api->getCurl1($url);
+
+            foreach ($link['body'] as $key => $value) {
+                if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
+                    $ver[] = $value['tag_name'];
+                }
+            }
+
+            $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
+
+            $link = $this->github_api->getCurl1($url);
+            // dd($link);
+            return $link['header'];
+        } catch (Exception $ex) {
+            dd($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function downloadLinkAdmin($owner, $repo)
     {
         try {
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
@@ -300,9 +355,9 @@ class GithubController extends Controller
             if (array_key_exists('tag_name', $release)) {
                 return $release['tag_name'];
             }
-
-            return;
         } catch (Exception $ex) {
+            // dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

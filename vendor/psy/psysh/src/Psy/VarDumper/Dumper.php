@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -21,10 +21,24 @@ use Symfony\Component\VarDumper\Dumper\CliDumper;
 class Dumper extends CliDumper
 {
     private $formatter;
+    private $forceArrayIndexes;
 
-    public function __construct(OutputFormatter $formatter)
+    protected static $onlyControlCharsRx = '/^[\x00-\x1F\x7F]+$/';
+    protected static $controlCharsRx     = '/([\x00-\x1F\x7F]+)/';
+    protected static $controlCharsMap    = array(
+        "\0"   => '\0',
+        "\t"   => '\t',
+        "\n"   => '\n',
+        "\v"   => '\v',
+        "\f"   => '\f',
+        "\r"   => '\r',
+        "\033" => '\e',
+    );
+
+    public function __construct(OutputFormatter $formatter, $forceArrayIndexes = false)
     {
         $this->formatter = $formatter;
+        $this->forceArrayIndexes = $forceArrayIndexes;
         parent::__construct();
         $this->setColors(false);
     }
@@ -45,7 +59,7 @@ class Dumper extends CliDumper
      */
     protected function dumpKey(Cursor $cursor)
     {
-        if (Cursor::HASH_INDEXED !== $cursor->hashType) {
+        if ($this->forceArrayIndexes || Cursor::HASH_INDEXED !== $cursor->hashType) {
             parent::dumpKey($cursor);
         }
     }
@@ -55,38 +69,30 @@ class Dumper extends CliDumper
         if ('ref' === $style) {
             $value = strtr($value, '@', '#');
         }
-        $style = $this->styles[$style];
-        $value = "<{$style}>" . $this->formatter->escape($value) . "</{$style}>";
+
+        $styled = '';
+        $map = self::$controlCharsMap;
         $cchr = $this->styles['cchr'];
-        $value = preg_replace_callback(self::$controlCharsRx, function ($c) use ($cchr) {
-            switch ($c[0]) {
-                case "\t":
-                    $c = '\t';
-                    break;
-                case "\n":
-                    $c = '\n';
-                    break;
-                case "\v":
-                    $c = '\v';
-                    break;
-                case "\f":
-                    $c = '\f';
-                    break;
-                case "\r":
-                    $c = '\r';
-                    break;
-                case "\033":
-                    $c = '\e';
-                    break;
-                default:
-                    $c = sprintf('\x%02X', ord($c[0]));
-                    break;
+
+        $chunks = preg_split(self::$controlCharsRx, $value, null, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
+        foreach ($chunks as $chunk) {
+            if (preg_match(self::$onlyControlCharsRx, $chunk)) {
+                $chars = '';
+                $i = 0;
+                do {
+                    $chars .= isset($map[$chunk[$i]]) ? $map[$chunk[$i]] : sprintf('\x%02X', ord($chunk[$i]));
+                } while (isset($chunk[++$i]));
+
+                $chars = $this->formatter->escape($chars);
+                $styled .= "<{$cchr}>{$chars}</{$cchr}>";
+            } else {
+                $styled .= $this->formatter->escape($chunk);
             }
+        }
 
-            return "<{$cchr}>{$c}</{$cchr}>";
-        }, $value);
+        $style = $this->styles[$style];
 
-        return $value;
+        return "<{$style}>{$styled}</{$style}>";
     }
 
     /**

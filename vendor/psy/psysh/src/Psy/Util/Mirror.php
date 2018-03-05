@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -32,10 +32,10 @@ class Mirror
      *
      *    $filter = Mirror::CONSTANT | Mirror::STATIC_PROPERTY
      *
-     * @throws \Psy\Exception\RuntimeException when a $member specified but not present on $value.
-     * @throws \InvalidArgumentException       if $value is something other than an object or class/function name.
+     * @throws \Psy\Exception\RuntimeException when a $member specified but not present on $value
+     * @throws \InvalidArgumentException       if $value is something other than an object or class/function name
      *
-     * @param mixed  $value  Class or function name, or variable instance.
+     * @param mixed  $value  Class or function name, or variable instance
      * @param string $member Optional: property, constant or method name (default: null)
      * @param int    $filter (default: CONSTANT | METHOD | PROPERTY | STATIC_PROPERTY)
      *
@@ -71,7 +71,7 @@ class Mirror
     /**
      * Get a ReflectionClass (or ReflectionObject) if possible.
      *
-     * @throws \InvalidArgumentException if $value is not a class name or instance.
+     * @throws \InvalidArgumentException if $value is not a class name or instance
      *
      * @param mixed $value
      *

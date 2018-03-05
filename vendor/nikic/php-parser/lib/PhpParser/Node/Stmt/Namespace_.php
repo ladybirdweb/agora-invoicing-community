@@ -3,20 +3,17 @@
 namespace PhpParser\Node\Stmt;
 
 use PhpParser\Node;
-use PhpParser\Error;
 
 class Namespace_ extends Node\Stmt
 {
+    /* For use in the "kind" attribute */
+    const KIND_SEMICOLON = 1;
+    const KIND_BRACED = 2;
+
     /** @var null|Node\Name Name */
     public $name;
     /** @var Node[] Statements */
     public $stmts;
-
-    protected static $specialNames = array(
-        'self'   => true,
-        'parent' => true,
-        'static' => true,
-    );
 
     /**
      * Constructs a namespace node.
@@ -29,21 +26,6 @@ class Namespace_ extends Node\Stmt
         parent::__construct($attributes);
         $this->name = $name;
         $this->stmts = $stmts;
-
-        if (isset(self::$specialNames[strtolower($this->name)])) {
-            throw new Error(
-                sprintf('Cannot use \'%s\' as namespace name', $this->name),
-                $this->name->getAttributes()
-            );
-        }
-
-        if (null !== $this->stmts) {
-            foreach ($this->stmts as $stmt) {
-                if ($stmt instanceof self) {
-                    throw new Error('Namespace declarations cannot be nested', $stmt->getAttributes());
-                }
-            }
-        }
     }
 
     public function getSubNodeNames() {

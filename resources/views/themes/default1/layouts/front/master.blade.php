@@ -16,8 +16,8 @@
         <meta name="author" content="okler.net">
         <meta name="csrf-token" content="{!! csrf_token() !!}">
         <!-- Favicon -->
-        <link rel="shortcut icon" href="{{asset('dist/img/faveo.png')}}" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="{{asset('dist/img/faveo.png')}}">
+        <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
+        <link rel="apple-touch-icon" href="images/faveo.png">
 
         <!-- Mobile Metas -->
         <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -25,31 +25,45 @@
         <!-- Web Fonts  -->
         <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
 
+
         <!-- Vendor CSS -->
-        <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('css/magnific-popup.min.css')}}">
+
 
         <!-- Theme CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/theme.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-elements.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-blog.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-shop.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/css/theme-animate.css')}}">
+     <link rel="stylesheet" href="{{asset('css/theme.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
+        <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+
+        <!-- Current Page CSS -->
+        <link rel="stylesheet" href="{{asset('css/css/settings.css')}}">
+        <link rel="stylesheet" href="{{asset('css/layers.css')}}">
+        <link rel="stylesheet" href="{{asset('css/navigation.css')}}">
+        <link rel="stylesheet" href="{{asset('css/nivo-slider.css')}}">
+        <link rel="stylesheet" href="{{asset('css/default.css')}}">
+
+      
+        <link rel="stylesheet" href="{{asset('css/demo-construction.css')}}">
 
         <!-- Skin CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/skins/default.css')}}">
+        <link rel="stylesheet" href="{{asset('css/skin-construction.css')}}"> 
+        <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
         <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="{{asset('cart/css/custom.css')}}">
+        <link rel="stylesheet" href="{{asset('css/custom.css')}}">
 
-        <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+       
+
 
         <!-- Head Libs -->
-        <script src="{{asset('cart/vendor/modernizr/modernizr.min.js')}}"></script>
+        <script src="{{asset('js/modernizr.min.js')}}"></script>
 
     </head>
     <body>
@@ -60,14 +74,14 @@
         $set = $set->findOrFail(1);
         ?>
         <div class="body">
-            <header id="header" data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
-                <div class="header-body">
+            <header id="header"  data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
+                <div class="header-body" style="padding-bottom: 30px;">
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
                                 <div class="header-logo">
                                     <a href="{{url('home')}}">
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('cart/img/logo/'.$setting->logo)}}">
+                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
                                     </a>
                                 </div>
                             </div>
@@ -275,11 +289,11 @@
 
             <div role="main" class=@yield('main-class')>
 
-                <section class="page-header">
+                    <section class="section-tertiary" style="height: 76px;background-color:#E9EFF2 !important">
                     <div class="container">
-                        <div class="row">
+                       <div class="row">
                             <div class="col-md-12">
-                                <ul class="breadcrumb">
+                                <ul class="breadcrumb" style="background-color:#E9EFF2 ;margin-top: 15px;">
                                     @yield('breadcrumb')
                                     <!--<li><a href="#">Home</a></li>
                                     <li class="active">Pages</li>-->
@@ -357,12 +371,12 @@
 
             </div>
 
-            <footer id="footer">
+            <footer id="footer" style="margin-top:35px;">
                 <div class="container">
                     <div class="row">
-                        <div class="footer-ribbon">
+                        <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
                             <span>Get in Touch</span>
-                        </div>
+                        </div> -->
                         <div class="col-md-3">
                             <div class="newsletter">
                                 <h4>Newsletter</h4>
@@ -431,50 +445,50 @@
         </div>
 
         <!-- Vendor -->
-        <script src="{{asset('cart/vendor/jquery/jquery.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/common/common.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.validation/jquery.validation.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.stellar/jquery.stellar.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.gmap/jquery.gmap.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/isotope/jquery.isotope.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/vide/vide.min.js')}}"></script>
+        <script src="{{asset('js/jquery.min.js')}}"></script>
+        <script src="{{asset('js/jquery.appear.min.js')}}"></script>
+        <script src="{{asset('js/jquery.easing.min.js')}}"></script>
+        <script src="{{asset('js/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('js/bootstrap.min.js')}}"></script>
+        <script src="{{asset('js/common.min.js')}}"></script>
+        <script src="{{asset('js/jquery.validation.min.js')}}"></script>
+        <script src="{{asset('js/jquery.easy-pie-chart.min.js')}}"></script>
+        <script src="{{asset('js/jquery.gmap.min.js')}}"></script>
+        <script src="{{asset('js/jquery.lazyload.min.js')}}"></script>
+        <script src="{{asset('js/jquery.isotope.min.js')}}"></script>
+        <script src="{{asset('js/owl.carousel.min.js')}}"></script>
+        <script src="{{asset('js/jquery.magnific-popup.min.js')}}"></script>
+        <script src="{{asset('js/vide.min.js')}}"></script>
 
         <!-- Theme Base, Components and Settings -->
-        <script src="{{asset('cart/js/theme.js')}}"></script>
+        <script src="{{asset('js/theme.js')}}"></script>
 
         <!-- Theme Custom -->
-        <script src="{{asset('cart/js/custom.js')}}"></script>
+        <script src="{{asset('js/custom.js')}}"></script>
 
         <!-- Theme Initialization Files -->
-        <script src="{{asset('cart/js/theme.init.js')}}"></script>
+        <script src="{{asset('js/theme.init.js')}}"></script>
 
         <script>
-                                                                                                        function removeItem(id) {
+        
+         function removeItem(id) {
 
-                                                                                                        $.ajax({
-                                                                                                        type: "GET",
-                                                                                                                data:"id=" + id,
-                                                                                                                url: "{{url('cart/remove/')}}",
-                                                                                                                success: function (data) {
-                                                                                                                location.reload();
-                                                                                                                }
-                                                                                                        });
-                                                                                                        }
-                                                                                                $.ajax({
-                                                                                                dataType: "html",
-                                                                                                        url: '{{url('twitter')}}',
-                                                                                                        success: function (returnHTML) {
-                                                                                                        $('#tweets').html(returnHTML);
-                                                                                                        }
-                                                                                                });
+                         $.ajax({
+                        type: "GET",
+                     data:"id=" + id,
+                url: "{{url('cart/remove/')}}",
+                        success: function (data) {
+                            location.reload();
+                                                 }
+                                });
+                                }
+                        $.ajax({
+                        dataType: "html",
+                        url: '{{url('twitter')}}',
+                        success: function (returnHTML) {
+                        $('#tweets').html(returnHTML);
+                                }
+                             });
         </script>
         @yield('script')
         <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
@@ -489,21 +503,19 @@
         </script>
         -->
 <!--Start of Tawk.to Script-->
+<!--Start of Tawk.to Script-->
 <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-console.log(Tawk_API);
-Tawk_API.onChatEnded = function(){
-    console.log(arguments);
-};
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
 s1.async=true;
-s1.src='https://embed.tawk.to/58c6979d6b2ec15bd9fce55d/default';
+s1.src='https://embed.tawk.to/57236f1bb27b7d1124b56794/default';
 s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
 </script>
+<!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
     </body>
 </html>

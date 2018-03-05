@@ -42,7 +42,7 @@ class SubscriptionController extends Controller
         }
     }
 
-    public function GetSubscription()
+    public function getSubscription()
     {
         //dd($this->invoice->get());
         return \Datatable::collection($this->subscription->get())

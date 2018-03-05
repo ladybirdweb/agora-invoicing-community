@@ -308,7 +308,7 @@ class RenewController extends Controller
         try {
             $sub = $this->sub->find($id);
             $userid = $sub->user_id;
-            $plans = $this->plan->lists('name', 'id')->toArray();
+            $plans = $this->plan->pluck('name', 'id')->toArray();
 
             return view('themes.default1.renew.renew', compact('id', 'plans', 'userid'));
         } catch (Exception $ex) {
@@ -364,8 +364,8 @@ class RenewController extends Controller
 
     public function setSession($sub_id, $planid)
     {
-        Session::set('subscription_id', $sub_id);
-        Session::set('plan_id', $sub_id);
+        Session::put('subscription_id', $sub_id);
+        Session::put('plan_id', $sub_id);
     }
 
     public function removeSession()

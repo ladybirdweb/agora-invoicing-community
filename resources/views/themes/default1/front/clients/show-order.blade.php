@@ -86,7 +86,8 @@ active
             </div> 
         </div>
     </div>
-</div>					
+</div>	
+
 <div class="col-md-12">
 
     <div class="featured-boxes">
@@ -104,16 +105,24 @@ active
                             </h2>
 
                         </section>
-                        <!--<a href="#" class="btn btn-desiable pull-left mb-xl" data-loading-text="Loading...">Invoice</a>--> 
 
-                        {!! Datatable::table()
-                        ->addColumn('Number','Products','Date','Total','Status','Action')
-                        ->setUrl('../get-my-invoices/'.$order->id.'/'.$user->id) 
-                        ->setOptions([
-                        "order"=> [ 1, "desc" ],
-                        ])
-                        ->render() !!}
+                        <table id="showorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
+                    <thead><tr>
+                            <th>Number</th>
+                            <th>Products</th>
+                            
+                            <th>Date</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Action</th>
+
+                        </tr></thead>
+
+
+                </table>
+
+                     
 
                     </div>                             
                 </div>
@@ -122,6 +131,45 @@ active
 
     </div>
 </div>	
+       
+           <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#showorder-table').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{!! Url('get-my-invoices/'.$order->id.'/'.$user->id) !!}',
+             // ajax: {{Url('get-my-invoices/'.$order->id.'/'.$user->id)}}
+             // url('service-desk/problems/attach/existing/'.$ticket->id
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+    
+            columns: [
+                {data: 'number', name: 'number'},
+                {data: 'products', name: 'products'},
+                {data: 'date', name: 'date'},
+                {data: 'total', name: 'total'},
+                {data: 'status', name: 'status'},
+                {data: 'action', name: 'action'}
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    </script>
+
+
+
+
+
+
+
 
 <div class="col-md-12">
 
@@ -136,13 +184,24 @@ active
                             <h2>Payment receipts</h2>
                             <!--<a href="shortcodes-pricing-tables.html"  class="btn btn-primary pull-left mb-xl" data-loading-text="Loading...">Payment</a>--> 
                         </section>
-                       {!! Datatable::table()
-                        ->addColumn('Invoice Number','Total','Method','Status','Created At')
-                        ->setUrl('../get-my-payment-client/'.$order->id.'/'.$user->id) 
-                        ->setOptions([
-                        "order"=> [ 1, "desc" ],
-                        ])
-                        ->render() !!}
+
+                        <table id="showpayment-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+                    <thead><tr>
+                            <th>InvoiceNumber</th>
+                            <th>Total</th>
+                            
+                            <th>Method</th>
+                            
+                            <th>Status</th>
+                            <th>Created At</th>
+
+                        </tr></thead>
+
+
+                </table>
+
+                    
                     </div>                             
                 </div>
             </div>					
@@ -150,6 +209,39 @@ active
 
     </div>
 </div>	
+ <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+<script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript">
+        $('#showpayment-table').DataTable({
+            processing: true,
+            serverSide: true,
+             ajax: '{!! Url('get-my-payment-client/'.$order->id.'/'.$user->id) !!}',
+      
+            "oLanguage": {
+                "sLengthMenu": "_MENU_ Records per page",
+                "sSearch"    : "Search: ",
+                "sProcessing": '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+            },
+    
+            columns: [
+                {data: 'number', name: 'number'},
+                {data: 'total', name: 'total'},
+                {data: 'payment_method', name: 'payment_method'},
+                {data: 'payment_status', name: 'payment_status'},
+                {data: 'created_at', name: 'created_at'},
+                
+              
+                
+               
+            ],
+            "fnDrawCallback": function( oSettings ) {
+                $('.loader').css('display', 'none');
+            },
+            "fnPreDrawCallback": function(oSettings, json) {
+                $('.loader').css('display', 'block');
+            },
+        });
+    </script>
 
 
 

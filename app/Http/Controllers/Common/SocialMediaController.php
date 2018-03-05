@@ -34,17 +34,28 @@ class SocialMediaController extends Controller
         try {
             $social = $this->social->get();
 
-            return \Datatable::collection($social)
+            return \DataTables::of($social)
                             ->addColumn('#', function ($model) {
                                 return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                             })
-                            ->showColumns('name', 'class', 'link')
+                            ->addColumn('name', function ($model) {
+                                return $model->name;
+                            })
+                            ->addColumn('class', function ($model) {
+                                return $model->class;
+                            })
+                            ->addColumn('link', function ($model) {
+                                return $model->link;
+                            })
+                            // ->showColumns('name', 'class', 'link')
                             ->addColumn('action', function ($model) {
                                 return '<a href='.url('social-media/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                             })
-                            ->searchColumns('name')
-                            ->orderColumns('class')
-                            ->make();
+                            ->rawColumns(['name', 'class', 'link', 'action'])
+                            ->make(true);
+            // ->searchColumns('name')
+                            // ->orderColumns('class')
+                            // ->make();
         } catch (Exception $ex) {
             echo $ex->getMessage();
         }

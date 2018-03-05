@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -37,6 +37,6 @@ class ParseErrorException extends \PhpParser\Error implements Exception
      */
     public static function fromParseError(\PhpParser\Error $e)
     {
-        return new self($e->getRawMessage(), $e->getRawLine());
+        return new self($e->getRawMessage(), $e->getStartLine());
     }
 }

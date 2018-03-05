@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Currency;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
@@ -30,6 +31,9 @@ class CartController extends Controller
         $product = new Product();
         $this->product = $product;
 
+        $plan_price = new PlanPrice();
+        $this->$plan_price = $plan_price;
+
         $currency = new Currency();
         $this->currency = $currency;
 
@@ -40,9 +44,33 @@ class CartController extends Controller
         $this->tax_option = $tax_option;
     }
 
-    public function ProductList(Request $request)
+    public function productList(Request $request)
     {
-        $location = \GeoIP::getLocation();
+        try {
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+
+            if ($ip != '::1') {
+                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+            } else {
+                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+            }
+        } catch (\Exception $ex) {
+            $location = false;
+            $error = $ex->getMessage();
+        }
+
+        $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+        $state_code = $location['countryCode'].'-'.$location['region'];
+        $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+        $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
 
         if ($location['country'] == 'India') {
             $currency = 'INR';
@@ -71,28 +99,27 @@ class CartController extends Controller
         }
     }
 
-    public function Cart(Request $request)
+    public function cart(Request $request)
     {
         try {
             $plan = '';
+
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
-                Session::set('plan', $plan);
+
+                Session::put('plan', $plan);
             }
             $id = $request->input('id');
-            //dd($id);
-            if (!array_key_exists($id, Cart::getContent()->toArray())) {
+
+            if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-                //dd($items);
+
                 Cart::add($items);
             }
 
-            //dd(Cart::getContent());
-            //dd('yes');
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            dd($ex);
-
+            // dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -106,10 +133,10 @@ class CartController extends Controller
             $cartCollection = Cart::getContent();
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
-                $cart_currency = $attributes[0]['currency'][0]['code'];
-                $currency = $attributes[0]['currency'][0]['code'];
+                $cart_currency = $attributes[0]['currency'];
+                $currency = $attributes[0]['currency'];
                 if (\Auth::user()) {
-                    $cart_currency = $attributes[0]['currency'][0]['code'];
+                    $cart_currency = $attributes[0]['currency'];
                     $user_currency = \Auth::user()->currency;
                     $currency = 'INR';
                     if ($user_currency == 1 || $user_currency == 'USD') {
@@ -119,15 +146,15 @@ class CartController extends Controller
                         $id = $item->id;
                         Cart::remove($id);
                         $items = $this->addProduct($id);
-                        //dd($items);
+
                         Cart::add($items);
                         //
                     }
                 }
             }
-            if ($cart_currency != $currency) {
-                return redirect('show/cart');
-            }
+            // if ($cart_currency != $currency) {
+            //     return redirect('show/cart');
+            // }
             //dd(Cart::getContent());
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
@@ -148,12 +175,30 @@ class CartController extends Controller
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-            //dd($tax_attribute);
-            $product = $this->product->findOrFail($productid);
 
-            $location = \GeoIP::getLocation();
-            $counrty_iso = $location['isoCode'];
-            $state_code = $location['isoCode'].'-'.$location['state'];
+            $product = $this->product->findOrFail($productid);
+            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+                $ip = $_SERVER['HTTP_CLIENT_IP'];
+            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+            } else {
+                $ip = $_SERVER['REMOTE_ADDR'];
+            }
+
+            if ($ip != '::1') {
+                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
+            } else {
+                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
+            }
+
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+            $country_iso = $location['countryCode'];
+            // $state_code = $location['isoCode'].'-'.$location['state'];
             $geoip_country = '';
             $geoip_state = '';
             if (\Auth::user()) {
@@ -161,7 +206,7 @@ class CartController extends Controller
                 $geoip_state = \Auth::user()->state;
             }
             if ($geoip_country == '') {
-                $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($counrty_iso);
+                $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
             }
             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
@@ -312,7 +357,6 @@ class CartController extends Controller
                         ]);
                     }
                     $currency_attribute = $this->addCurrencyAttributes($id);
-                    //dd($currency_attribute);
                     if ($compound == 1) {
                         return ['conditions' => [$taxCondition1, $taxCondition2], 'attributes' => ['tax' => [['name' => $name1, 'rate' => $rate1], ['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
                     } else {
@@ -327,22 +371,21 @@ class CartController extends Controller
         }
     }
 
-    public function CartRemove(Request $request)
+    public function cartRemove(Request $request)
     {
         $id = $request->input('id');
-        //dd($id);
         Cart::remove($id);
 
         return 'success';
     }
 
-    public function ReduseQty(Request $request)
+    public function reduseQty(Request $request)
     {
         $id = $request->input('id');
         Cart::update($id, [
             'quantity' => -1, // so if the current product has a quantity of 4, it will subtract 1 and will result to 3
         ]);
-        //dd(Cart::getContent());
+
         return 'success';
     }
 
@@ -356,27 +399,22 @@ class CartController extends Controller
                 'value'    => $qty,
             ],
         ]);
-        //dd(Cart::getContent());
+
         return 'success';
     }
 
-    public function AddAddons($id)
+    public function addAddons($id)
     {
         $addon = $this->addons->where('id', $id)->first();
-
         $isTaxApply = $addon->tax_addon;
-
         $taxConditions = $this->CheckTax($isTaxApply);
-
         $items = ['id' => 'addon'.$addon->id, 'name' => $addon->name, 'price' => $addon->selling_price, 'quantity' => 1];
         $items = array_merge($items, $taxConditions);
-
-        //dd($items);
 
         return $items;
     }
 
-    public function GetProductAddons($productId)
+    public function getProductAddons($productId)
     {
         $addons = [];
         if ($this->addonRelation->where('product_id', $productId)->count() > 0) {
@@ -393,23 +431,16 @@ class CartController extends Controller
             $qty = 1;
 
             $currency = $this->currency();
-
             $product = $this->product->where('id', $id)->first();
-
             if ($product) {
                 $actualPrice = $this->cost($product->id);
                 $currency = $this->currency();
-                //dd($currency);
                 $productName = $product->name;
                 $planid = 0;
                 if ($this->checkPlanSession() == true) {
                     $planid = Session::get('plan');
                 }
-                /*
-                 * Check the Tax is On
-                 */
                 $isTaxApply = $product->tax_apply;
-
                 $taxConditions = $this->checkTax($id);
 
                 /*
@@ -431,7 +462,10 @@ class CartController extends Controller
         }
     }
 
-    public function ClearCart()
+    /**
+     * @return type
+     */
+    public function clearCart()
     {
         foreach (Cart::getContent() as $item) {
             if (\Session::has('domain'.$item->id)) {
@@ -446,15 +480,19 @@ class CartController extends Controller
         return redirect('show/cart')->with('warning', 'Your cart is empty! ');
     }
 
-    public function LicenceCart($id)
+    /**
+     * @param type $id
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
+    public function licenceCart($id)
     {
         try {
             $licence = $this->licence->where('id', $id)->first();
-
             $isTaxApply = 0;
-
             $taxConditions = $this->CheckTax($isTaxApply);
-
             $items = ['id' => $licence->id, 'name' => $licence->name, 'price' => $licence->price, 'quantity' => 1, 'attributes' => ['number_of_sla' => $licence->number_of_sla]];
             $items = array_merge($items, $taxConditions);
             Cart::clear();
@@ -468,10 +506,17 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $id
+     * @param type $key
+     * @param type $value
+     */
     public function cartUpdate($id, $key, $value)
     {
         try {
-            Cart::update($id, [
+            Cart::update(
+                $id,
+                [
                 $key => $value, // new item name
                     ]
             );
@@ -479,12 +524,16 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $id
+     *
+     * @return array
+     */
     public function addCurrencyAttributes($id)
     {
         try {
             $currency = $this->currency();
             $product = $this->product->where('id', $id)->first();
-            //dd($product);
             if ($product) {
                 $productCurrency = $this->currency();
                 $currency = $this->currency->where('code', $productCurrency)->get()->toArray();
@@ -497,18 +546,19 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @return type
+     */
     public function addCouponUpdate()
     {
         try {
             $code = \Input::get('coupon');
-            //dd($code);
             $cart = Cart::getContent();
             foreach ($cart as $item) {
                 $id = $item->id;
             }
             $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
             $result = $promo_controller->checkCode($code, $id);
-            //dd($result);
             if ($result == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             }
@@ -521,10 +571,17 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $tax_class_id
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public function getTaxByPriority($tax_class_id)
     {
         try {
-            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->groupBy('level')->get();
+            $taxe_relation = $this->tax->where('tax_classes_id', $tax_class_id)->orderBy('level')->get();
 
             return $taxe_relation;
         } catch (\Exception $ex) {
@@ -534,6 +591,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $price
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public static function rounding($price)
     {
         try {
@@ -550,6 +614,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @return type
+     */
     public function contactUs()
     {
         try {
@@ -559,6 +626,11 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     *
+     * @return type
+     */
     public function postContactUs(Request $request)
     {
         $this->validate($request, [
@@ -568,11 +640,11 @@ class CartController extends Controller
         ]);
 
         $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
+        $set = $put->findOrFail(1);
 
         try {
-            $from = $set->email;
-            $fromname = $set->company;
+            $from = $put->email;
+            $fromname = $put->company;
             $toname = '';
             $to = 'support@ladybirdweb.com';
             $data = '';
@@ -590,6 +662,11 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $slug
+     *
+     * @return type
+     */
     public function addCartBySlug($slug)
     {
         try {
@@ -609,6 +686,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $iso
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public static function findCountryByGeoip($iso)
     {
         try {
@@ -616,13 +700,20 @@ class CartController extends Controller
             if ($country) {
                 return $country->country_code_char2;
             } else {
-                return 'US';
+                return '';
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
+    /**
+     * @param type $code
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public static function getCountryByCode($code)
     {
         try {
@@ -635,11 +726,18 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $iso
+     *
+     * @throws \Exception
+     *
+     * @return array
+     */
     public static function findStateByRegionId($iso)
     {
         try {
             if ($iso) {
-                $states = \App\Model\Common\State::where('country_code_char2', $iso)->lists('state_subdivision_name', 'state_subdivision_code')->toArray();
+                $states = \App\Model\Common\State::where('country_code_char2', $iso)->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             } else {
                 $states = [];
             }
@@ -650,6 +748,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $name
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public static function getTimezoneByName($name)
     {
         try {
@@ -670,6 +775,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $code
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public static function getStateByCode($code)
     {
         try {
@@ -678,7 +790,9 @@ class CartController extends Controller
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                    //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
+                //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
+                } else {
+                    $result = '';
                 }
             }
 
@@ -688,6 +802,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $id
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public static function getStateNameById($id)
     {
         try {
@@ -703,11 +824,21 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $productid
+     * @param type $price
+     * @param type $cart
+     * @param type $cart1
+     * @param type $shop
+     *
+     * @return type
+     */
     public static function calculateTax($productid, $price, $cart = 1, $cart1 = 0, $shop = 0)
     {
         try {
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
+            // dd($result);
             $result = self::rounding($result);
 
             return $result;
@@ -716,6 +847,12 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $rate
+     * @param type $price
+     *
+     * @return type
+     */
     public static function taxValue($rate, $price)
     {
         try {
@@ -729,6 +866,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @return type
+     */
     public static function addons()
     {
         try {
@@ -739,7 +879,6 @@ class CartController extends Controller
                     $cart_productids[] = $key;
                 }
             }
-            //dd($productids);
             $_this = new self();
             $products = $_this->products($cart_productids);
 
@@ -749,6 +888,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $ids
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public function products($ids)
     {
         $parents_string = [];
@@ -760,16 +906,14 @@ class CartController extends Controller
                     ->whereNotNull('parent')
                     ->where('parent', '!=', 0)
                     ->where('category', 'addon')
-                    ->lists('parent', 'id')
+                    ->pluck('parent', 'id')
                     ->toArray();
             foreach ($parents as $key => $parent) {
-                //dd($key);
                 if (is_array($parent)) {
                     $parent = implode(',', $parent);
                 }
                 $parents_string[$key] = $parent;
             }
-            //$parent = [];
             if (count($parents_string) > 0) {
                 foreach ($parents_string as $key => $value) {
                     if (strpos($value, ',') !== false) {
@@ -801,6 +945,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $ids
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public function getProductById($ids)
     {
         try {
@@ -819,6 +970,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $iso
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public static function getMobileCodeByIso($iso)
     {
         try {
@@ -836,12 +994,20 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $userid
+     *
+     * @throws \Exception
+     *
+     * @return string
+     */
     public function currency($userid = '')
     {
         try {
             $currency = 'INR';
             if ($this->checkCurrencySession() == true) {
                 $currency = Session::get('currency');
+                // dd($currency);
             }
 
             if (\Auth::user()) {
@@ -859,13 +1025,20 @@ class CartController extends Controller
                     $currency = 'INR';
                 }
             }
-
+            // dd($currency);
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
+    /**
+     * @param type $productid
+     * @param type $userid
+     * @param type $planid
+     *
+     * @return type
+     */
     public function cost($productid, $userid = '', $planid = '')
     {
         try {
@@ -876,23 +1049,25 @@ class CartController extends Controller
 
             return self::rounding($cost);
         } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+            // throw new \Exception($ex->getMessage());
         }
     }
 
+    /**
+     * @param type $productid
+     * @param type $userid
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public function productCost($productid, $userid = '')
     {
         try {
             $sales = 0;
-            //            $subscription = $this->allowSubscription($productid);
-            //            if ($subscription == false) {
-            //$cost = '';
             $currency = $this->currency($userid);
-
             $product = $this->product->find($productid);
-
             $price = $product->price()->where('currency', $currency)->first();
-
             if ($price) {
                 $sales = $price->sales_price;
                 if ($sales == 0) {
@@ -907,12 +1082,20 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $productid
+     * @param type $userid
+     * @param type $planid
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
     public function planCost($productid, $userid, $planid = '')
     {
         try {
             $cost = 0;
             $subscription = $this->allowSubscription($productid);
-
             if ($this->checkPlanSession() == true) {
                 $planid = Session::get('plan');
             }
@@ -920,15 +1103,15 @@ class CartController extends Controller
             if ($subscription == true) {
                 $plan = new \App\Model\Payment\Plan();
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
+
                 if ($plan) {
                     $currency = $this->currency($userid);
                     $price = $plan->planPrice()
                                     ->where('currency', $currency)
                                     ->first()
                             ->add_price;
-                    //dd($price*12);
                     $days = $plan->days;
-                    $months = $days / 30;
+                    $months = $days / 30 / 12;
                     $cost = round($months) * $price;
                 }
             }
@@ -939,6 +1122,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function removePlanSession()
     {
         try {
@@ -950,6 +1136,11 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @throws \Exception
+     *
+     * @return bool
+     */
     public function checkPlanSession()
     {
         try {
@@ -963,6 +1154,11 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @throws \Exception
+     *
+     * @return bool
+     */
     public function checkCurrencySession()
     {
         try {
@@ -976,6 +1172,13 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param type $productid
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
     public function allowSubscription($productid)
     {
         try {

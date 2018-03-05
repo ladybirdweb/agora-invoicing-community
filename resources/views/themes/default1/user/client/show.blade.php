@@ -318,8 +318,9 @@
                                     <li>
                                         <a href="#">
                                             <strong>{{Lang::get('message.country')}} :</strong> <span class="pull-right">
+                                                {{ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)))}}
                                                
-                                            {{\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)}}
+                                   
                                             
                                             </span>
                                         </a>

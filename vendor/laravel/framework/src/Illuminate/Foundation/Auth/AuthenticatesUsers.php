@@ -4,55 +4,140 @@ namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Lang;
+use Illuminate\Validation\ValidationException;
+
+use App\User;
+use Hash;
+use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+
+use Validator;
 
 trait AuthenticatesUsers
 {
-    use RedirectsUsers;
+    use RedirectsUsers, ThrottlesLogins;
 
     /**
-     * Show the application login form.
+     * Show the application's login form.
      *
      * @return \Illuminate\Http\Response
      */
-    public function getLogin()
+       public function showLoginForm()
     {
-        return $this->showLoginForm();
+        try{
+           $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+
+           if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
+            {
+              $ip=$_SERVER['HTTP_CLIENT_IP'];
+            }
+            elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
+            {
+              $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
+            }
+            else
+            {
+              $ip=$_SERVER['REMOTE_ADDR'];
+            }
+
+            if($ip!='::1')
+               {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
+               else
+                {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
+
+         }catch(\Exception $ex){
+         $location = false;
+         $error = $ex->getMessage();
+                    
+                    // return redirect()->route('error404', [$error]);
+            // return redirect(404)->json(compact('error'));
+
+         }
+         
+        return view('themes.default1.front.auth.login-register', compact('bussinesses','location'));
+
+         
     }
 
-    /**
-     * Show the application login form.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showLoginForm()
-    {
-        $view = property_exists($this, 'loginView')
-                    ? $this->loginView : 'auth.authenticate';
 
-        if (view()->exists($view)) {
-            return view($view);
-        }
 
-        return view('auth.login');
-    }
-
-    /**
+     /**
      * Handle a login request to the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function postLogin(Request $request)
     {
-        return $this->login($request);
+        // dd('akdnj');
+        $this->validate($request, [
+            'email1' => 'required', 'password1' => 'required',
+                ], [
+            'email1.required'    => 'Username/Email is required',
+            'password1.required' => 'Password is required',
+        ]);
+        $usernameinput = $request->input('email1');
+        //$email = $request->input('email');
+        $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+        $password = $request->input('password1');
+        $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+         $auth = \Auth::attempt($credentials, $request->has('remember'));
+
+         if (!$auth) {
+            $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
+           if($user==null){
+
+                  return redirect()->back()
+                            ->withInput($request->only('email1', 'remember'))
+                            ->withErrors([
+                                'email1' => 'Invalid Email and/or Password',
+            ]);  
+            }
+              if(!Hash::check($password ,$user->password)){
+         return redirect()->back()
+                            ->withInput($request->only('email1', 'remember'))
+                            ->withErrors([
+                                'email1' => 'Invalid Email and/or Password',
+            ]);   
+        }
+
+             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
+                  return redirect('verify')->with('user', $user);
+      
+         }
+                
+            
+            
+           }else{
+                 return redirect()->intended($this->redirectPath());
+            
+        }
     }
+
+
+//         /**
+//      * Get the post register / login redirect path.
+//      *
+//      * @return string
+//      */
+//     public function redirectPath()
+//     {  
+
+// dd('op');
+//         if (\Session::has('session-url')) {
+//             $url = \Session::get('session-url');
+
+//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/'.$url;
+//         } else {
+//             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+//         }
+//     }
 
     /**
      * Handle a login request to the application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Http\JsonResponse
      */
     public function login(Request $request)
     {
@@ -61,26 +146,20 @@ trait AuthenticatesUsers
         // If the class is using the ThrottlesLogins trait, we can automatically throttle
         // the login attempts for this application. We'll key this by the username and
         // the IP address of the client making these requests into this application.
-        $throttles = $this->isUsingThrottlesLoginsTrait();
-
-        if ($throttles && $lockedOut = $this->hasTooManyLoginAttempts($request)) {
+        if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
 
             return $this->sendLockoutResponse($request);
         }
 
-        $credentials = $this->getCredentials($request);
-
-        if (Auth::guard($this->getGuard())->attempt($credentials, $request->has('remember'))) {
-            return $this->handleUserWasAuthenticated($request, $throttles);
+        if ($this->attemptLogin($request)) {
+            return $this->sendLoginResponse($request);
         }
 
         // If the login attempt was unsuccessful we will increment the number of attempts
         // to login and redirect the user back to the login form. Of course, when this
         // user surpasses their maximum number of attempts they will get locked out.
-        if ($throttles && ! $lockedOut) {
-            $this->incrementLoginAttempts($request);
-        }
+        $this->incrementLoginAttempts($request);
 
         return $this->sendFailedLoginResponse($request);
     }
@@ -94,55 +173,22 @@ trait AuthenticatesUsers
     protected function validateLogin(Request $request)
     {
         $this->validate($request, [
-            $this->loginUsername() => 'required', 'password' => 'required',
+            $this->username() => 'required|string',
+            'password' => 'required|string',
         ]);
     }
 
     /**
-     * Send the response after the user was authenticated.
+     * Attempt to log the user into the application.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  bool  $throttles
-     * @return \Illuminate\Http\Response
+     * @return bool
      */
-    protected function handleUserWasAuthenticated(Request $request, $throttles)
+    protected function attemptLogin(Request $request)
     {
-        if ($throttles) {
-            $this->clearLoginAttempts($request);
-        }
-
-        if (method_exists($this, 'authenticated')) {
-            return $this->authenticated($request, Auth::guard($this->getGuard())->user());
-        }
-
-        return redirect()->intended($this->redirectPath());
-    }
-
-    /**
-     * Get the failed login response instance.
-     *
-     * @param \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    protected function sendFailedLoginResponse(Request $request)
-    {
-        return redirect()->back()
-            ->withInput($request->only($this->loginUsername(), 'remember'))
-            ->withErrors([
-                $this->loginUsername() => $this->getFailedLoginMessage(),
-            ]);
-    }
-
-    /**
-     * Get the failed login message.
-     *
-     * @return string
-     */
-    protected function getFailedLoginMessage()
-    {
-        return Lang::has('auth.failed')
-                ? Lang::get('auth.failed')
-                : 'These credentials do not match our records.';
+        return $this->guard()->attempt(
+            $this->credentials($request), $request->filled('remember')
+        );
     }
 
     /**
@@ -151,41 +197,52 @@ trait AuthenticatesUsers
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-    protected function getCredentials(Request $request)
+    protected function credentials(Request $request)
     {
-        return $request->only($this->loginUsername(), 'password');
+        return $request->only($this->username(), 'password');
     }
 
     /**
-     * Log the user out of the application.
+     * Send the response after the user was authenticated.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function getLogout()
+    protected function sendLoginResponse(Request $request)
     {
-        return $this->logout();
+        $request->session()->regenerate();
+
+        $this->clearLoginAttempts($request);
+
+        return $this->authenticated($request, $this->guard()->user())
+                ?: redirect()->intended($this->redirectPath());
     }
 
     /**
-     * Log the user out of the application.
+     * The user has been authenticated.
      *
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @param  mixed  $user
+     * @return mixed
      */
-    public function logout()
+    protected function authenticated(Request $request, $user)
     {
-        Auth::guard($this->getGuard())->logout();
-
-        return redirect(property_exists($this, 'redirectAfterLogout') ? $this->redirectAfterLogout : '/');
+        //
     }
 
     /**
-     * Get the guest middleware for the application.
+     * Get the failed login response instance.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
+     *
+     * @throws ValidationException
      */
-    public function guestMiddleware()
+    protected function sendFailedLoginResponse(Request $request)
     {
-        $guard = $this->getGuard();
-
-        return $guard ? 'guest:'.$guard : 'guest';
+        throw ValidationException::withMessages([
+            $this->username() => [trans('auth.failed')],
+        ]);
     }
 
     /**
@@ -193,30 +250,34 @@ trait AuthenticatesUsers
      *
      * @return string
      */
-    public function loginUsername()
+    public function username()
     {
-        return property_exists($this, 'username') ? $this->username : 'email';
+        return 'email';
     }
 
     /**
-     * Determine if the class is using the ThrottlesLogins trait.
+     * Log the user out of the application.
      *
-     * @return bool
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
-    protected function isUsingThrottlesLoginsTrait()
+    public function logout(Request $request)
     {
-        return in_array(
-            ThrottlesLogins::class, class_uses_recursive(static::class)
-        );
+        
+        $this->guard()->logout();
+
+        $request->session()->invalidate();
+
+        return redirect('/');
     }
 
     /**
      * Get the guard to be used during authentication.
      *
-     * @return string|null
+     * @return \Illuminate\Contracts\Auth\StatefulGuard
      */
-    protected function getGuard()
+    protected function guard()
     {
-        return property_exists($this, 'guard') ? $this->guard : null;
+        return Auth::guard();
     }
 }

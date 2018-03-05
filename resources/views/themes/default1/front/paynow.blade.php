@@ -177,7 +177,7 @@ Checkout
             <tbody>
                 <tr class="cart-subtotal">
                     <?php 
-                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->lists('regular_price')->toArray();
+                    $subtotals = App\Model\Order\InvoiceItem::where('invoice_id',$invoice->id)->pluck('regular_price')->toArray();
                     $subtotal = array_sum($subtotals);
                     ?>
                     <th>

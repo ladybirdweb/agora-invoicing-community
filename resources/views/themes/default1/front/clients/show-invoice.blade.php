@@ -164,8 +164,9 @@ active
                         <div class="row no-print">
                             <div class="col-xs-12">	
                                 <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
+                                 @if($item->subtotal!=0)
                             <a href="{{url('paynow/'.$invoice->id)}}"><button class="btn btn-primary" style="margin-right: 5px;"> Pay Now</button></a>
-                      
+                      @endif
                             </div>
                         </div>
                     </section><!-- /.content -->

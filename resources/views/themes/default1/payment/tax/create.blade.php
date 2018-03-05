@@ -44,19 +44,21 @@
                 <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}
-                    <?php $countries = \App\Model\Common\Country::lists('country_name', 'country_code_char2')->toArray(); ?>
+                    <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
                     {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                 </div>
-                <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                 <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('state',Lang::get('message.state')) !!}
-                    <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                    <select name="state" id="state-list" class="form-control">
-                        <option value="">Select State</option>
+                 
+
+                    <select name="state"  class="form-control" id="statess">
+                        <option name="state">Please Select Country</option>
                     </select>
 
                 </div>
+
                 <div class="form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
@@ -77,14 +79,12 @@
 </div><!-- /.modal -->  
 <script>
     function getState(val) {
-
-
-        $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+      $.ajax({
+            type: "GET",
+            url: "{{url('get-state')}}/" + val,
             success: function (data) {
-                $("#state-list").html(data);
+              $("#statess").html(data);
+                
             }
         });
     }

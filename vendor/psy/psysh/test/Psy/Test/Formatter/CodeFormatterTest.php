@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -13,7 +13,7 @@ namespace Psy\Test\Formatter;
 
 use Psy\Formatter\CodeFormatter;
 
-class CodeFormatterTest extends \PHPUnit_Framework_TestCase
+class CodeFormatterTest extends \PHPUnit\Framework\TestCase
 {
     private function ignoreThisMethod($arg)
     {
@@ -38,7 +38,7 @@ EOS;
 
     /**
      * @dataProvider filenames
-     * @expectedException Psy\Exception\RuntimeException
+     * @expectedException \Psy\Exception\RuntimeException
      */
     public function testCodeFormatterThrowsException($filename)
     {
@@ -56,6 +56,10 @@ EOS;
 
     public function filenames()
     {
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('We have issues with PHPUnit mocks on HHVM.');
+        }
+
         return array(array(null), array('not a file'));
     }
 }

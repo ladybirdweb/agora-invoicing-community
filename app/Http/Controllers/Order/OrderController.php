@@ -77,7 +77,7 @@ class OrderController extends Controller
         //                            ->withInput();
         //        }
         try {
-            $products = $this->product->where('id', '!=', 1)->lists('name', 'id')->toArray();
+            $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
             $expiry = $request->input('expiry');
@@ -91,7 +91,7 @@ class OrderController extends Controller
         }
     }
 
-    public function GetOrders(Request $request)
+    public function getOrders(Request $request)
     {
         $order_no = $request->input('order_no');
         $product_id = $request->input('product_id');
@@ -102,9 +102,10 @@ class OrderController extends Controller
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
         //return \Datatable::query($this->order->select('id', 'created_at', 'client',
         //'price_override', 'order_status', 'number', 'serial_key'))
-        return \Datatable::Collection($query->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+        return\ DataTables::of($query->get())
+
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
@@ -119,7 +120,16 @@ class OrderController extends Controller
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
                         })
-                        ->showColumns('number', 'price_override', 'order_status')
+                        ->addColumn('number', function ($model) {
+                            return ucfirst($model->number);
+                        })
+                        ->addColumn('price_override', function ($model) {
+                            return ucfirst($model->price_override);
+                        })
+                        ->addColumn('order_status', function ($model) {
+                            return ucfirst($model->order_status);
+                        })
+                        // ->showColumns('number', 'price_override', 'order_status')
                         ->addColumn('ends_at', function ($model) {
                             $end = '--';
                             $ends = $model->subscription()->first();
@@ -127,7 +137,7 @@ class OrderController extends Controller
                                 if ($ends->ends_at != '0000-00-00 00:00:00') {
                                     $end = $ends->ends_at;
                                     $date = date_create($end);
-                                    $end = date_format($date, 'l, F j, Y H:m A');
+                                    $end = date_format($date, 'l, F j, Y H:m');
                                 }
                             }
 
@@ -145,9 +155,12 @@ class OrderController extends Controller
 
                             return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
                         })
-                        ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
-                        ->orderColumns('client', 'date', 'number', 'price_override')
-                        ->make();
+
+                         ->rawColumns(['checkbox', 'date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
+                        ->make(true);
+        // ->searchColumns('order_status', 'number', 'price_override', 'client', 'ends_at')
+                        // ->orderColumns('client', 'date', 'number', 'price_override')
+                        // ->make();
     }
 
     /**
@@ -158,10 +171,10 @@ class OrderController extends Controller
     public function create()
     {
         try {
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.create', compact('clients', 'product', 'subscription', 'promotion'));
         } catch (\Exception $e) {
@@ -234,10 +247,10 @@ class OrderController extends Controller
     {
         try {
             $order = $this->order->where('id', $id)->first();
-            $clients = $this->user->lists('first_name', 'id')->toArray();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $subscription = $this->subscription->lists('name', 'id')->toArray();
-            $promotion = $this->promotion->lists('code', 'id')->toArray();
+            $clients = $this->user->pluck('first_name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $subscription = $this->subscription->pluck('name', 'id')->toArray();
+            $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
             return view('themes.default1.order.edit', compact('clients', 'product', 'subscription', 'promotion', 'order'));
         } catch (\Exception $e) {
@@ -274,6 +287,7 @@ class OrderController extends Controller
     public function destroy(Request $request)
     {
         try {
+            // dd('df');
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
@@ -325,17 +339,19 @@ class OrderController extends Controller
     public function orderExecute(Request $request)
     {
         try {
-            //dd($request);
             $invoiceid = $request->input('invoiceid');
+            // dd( $invoiceid);
 
             $execute = $this->executeOrder($invoiceid);
-            //dd($execute);
+            // dd($execute);
             if ($execute == 'success') {
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } else {
                 return redirect()->back()->with('fails', \Lang::get('message.not-saved-successfully'));
             }
         } catch (\Exception $ex) {
+            dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -355,19 +371,21 @@ class OrderController extends Controller
         try {
             //dd($invoiceid);
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
-            //dd($invoiceid);
+            // dd($invoiceid);
             $user_id = $this->invoice->find($invoiceid)->user_id;
-            //dd($user_id);
+            // dd($user_id);
             if (count($invoice_items) > 0) {
                 // dd($invoice_items);
                 foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
+                        // dd($product);
                         $version = $this->getProductByName($item->product_name)->version;
+                        // dd($version);
                         $price = $item->subtotal;
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
-                        //$plan_id = $this->getPrice($product)->subscription;
+                        // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
 
@@ -383,6 +401,7 @@ class OrderController extends Controller
                             'domain'          => $domain,
                             'number'          => $this->generateNumber(),
                         ]);
+                        // dd($this->addOrderInvoiceRelation($invoiceid, $order->id));
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
                         if ($this->checkOrderCreateSubscription($order->id) == true) {
                             $this->addSubscription($order->id, $plan_id, $version);
@@ -469,7 +488,7 @@ class OrderController extends Controller
     public function getProductByName($name)
     {
         try {
-            //dd($name);
+            // dd($name);
             return $this->product->where('name', $name)->first();
         } catch (Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -532,9 +551,9 @@ class OrderController extends Controller
 
     public function domainChange(Request $request)
     {
-        //        $this->validate($request, [
-        //            'domain' => 'url',
-        //        ]);
+        // $this->validate($request, [
+        //     'domain' => 'url',
+        // ]);
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = $this->order->find($id);
@@ -698,7 +717,7 @@ class OrderController extends Controller
             $temp_type = new \App\Model\Common\TemplateType();
             $type = $temp_type->where('id', $type_id)->first()->name;
         }
-        //dd($type);
+        // dd($type);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
 

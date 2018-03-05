@@ -15,7 +15,7 @@ class CurrencyController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('admin');
         $currency = new Currency();
         $this->currency = $currency;
     }
@@ -30,13 +30,19 @@ class CurrencyController extends Controller
         return view('themes.default1.payment.currency.index');
     }
 
-    public function GetCurrency()
+    public function getCurrency()
     {
-        return \Datatable::collection($this->currency->select('name', 'id')->where('id', '!=', 1)->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+        return \DataTables::of($this->currency->select('name', 'id')->where('id', '!=', 1)->get())
+                        ->addColumn('checkbox', function ($model) {
+                            return "<input type='checkbox' class='currency_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
-                        ->showColumns('name', 'base_conversion')
+                        ->addColumn('name', function ($model) {
+                            return $model->name;
+                        })
+                        ->addColumn('base_conversion', function ($model) {
+                            return $model->base_conversion;
+                        })
+                        // ->showColumns('name', 'base_conversion')
                         ->addColumn('action', function ($model) {
                             //return "<a href=" . url('products/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
                             //return "<a href=#create class='btn btn-primary pull-right' data-toggle=modal data-target=#edit".$model->id.">".\Lang::get('message.create')."</a>".  include base_path(). '/resources/views/themes/default1/payment/currency/edit.blade.php';
@@ -95,9 +101,12 @@ class CurrencyController extends Controller
 </div>
 </div>';
                         })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
+
+                        ->rawColumns(['checkbox', 'name', 'base_conversion', 'action'])
+                        ->make(true);
+        // ->searchColumns('name')
+                        // ->orderColumns('name')
+                        // ->make();
     }
 
     /**

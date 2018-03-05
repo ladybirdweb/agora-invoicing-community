@@ -3,7 +3,7 @@
 /*
  * This file is part of Psy Shell.
  *
- * (c) 2012-2015 Justin Hileman
+ * (c) 2012-2017 Justin Hileman
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -33,8 +33,8 @@ class MongoClientMatcher extends AbstractContextAwareMatcher
             array_pop($tokens);
         }
         $objectToken = array_pop($tokens);
-        $objectName = str_replace('$', '', $objectToken[1]);
-        $object = $this->getVariable($objectName);
+        $objectName  = str_replace('$', '', $objectToken[1]);
+        $object      = $this->getVariable($objectName);
 
         if (!$object instanceof \MongoClient) {
             return array();
@@ -57,7 +57,7 @@ class MongoClientMatcher extends AbstractContextAwareMatcher
      */
     public function hasMatched(array $tokens)
     {
-        $token = array_pop($tokens);
+        $token     = array_pop($tokens);
         $prevToken = array_pop($tokens);
 
         switch (true) {

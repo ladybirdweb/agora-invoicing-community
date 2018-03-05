@@ -3,12 +3,12 @@
 namespace PhpParser\Builder;
 
 use PhpParser;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 
 class Trait_ extends Declaration
 {
     protected $name;
+    protected $uses = array();
     protected $properties = array();
     protected $methods = array();
 
@@ -35,6 +35,8 @@ class Trait_ extends Declaration
             $this->properties[] = $stmt;
         } else if ($stmt instanceof Stmt\ClassMethod) {
             $this->methods[] = $stmt;
+        } else if ($stmt instanceof Stmt\TraitUse) {
+            $this->uses[] = $stmt;
         } else {
             throw new \LogicException(sprintf('Unexpected node of type "%s"', $stmt->getType()));
         }
@@ -49,7 +51,9 @@ class Trait_ extends Declaration
      */
     public function getNode() {
         return new Stmt\Trait_(
-            $this->name, array_merge($this->properties, $this->methods), $this->attributes
+            $this->name, array(
+                'stmts' => array_merge($this->uses, $this->properties, $this->methods)
+            ), $this->attributes
         );
     }
 }

@@ -40,7 +40,7 @@ use App\Http\Controllers\Controller;
         public function __construct()
         {
             $this->middleware('auth');
-            // $this->middleware('admin', ['except' => ['userDownload']]);
+            $this->middleware('admin', ['except' => ['userDownload']]);
 
             $product = new Product();
             $this->product = $product;
@@ -223,6 +223,7 @@ use App\Http\Controllers\Controller;
 
         public function uploadUpdate($id, Request $request)
         {
+            // return phpinfo();
             $file_upload = ProductUpload::find($id);
 
             $file_upload->title = $request->input('title');
@@ -667,6 +668,36 @@ use App\Http\Controllers\Controller;
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
+
+        public function downloadProductAdmin($id)
+        {
+        try {
+            $product = $this->product->findOrFail($id);
+            //dd($product);
+            $type = $product->type;
+            $owner = $product->github_owner;
+            $repository = $product->github_repository;
+            $file = $this->product_upload->where('product_id', '=', $id)->select('file')->orderBy('created_at', 'desc')->first();
+
+            if ($type == 2) {
+                if ($owner && $repository) {
+                    $github_controller = new \App\Http\Controllers\Github\GithubController();
+                    $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
+
+                    return ['release'=>$relese, 'type'=>'github'];
+                } elseif ($file) {
+                    $relese = '/home/faveo/products/'.$file;
+
+                    return $relese;
+                }
+            }
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+      }
+
 
         public function adminDownload($id, $api = false)
         {

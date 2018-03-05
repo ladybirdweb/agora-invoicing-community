@@ -47,8 +47,7 @@
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Client</th>
                           <th>Invoice Number</th>
-                         
-                            <th>Date</th>
+                           <th>Date</th>
                             <th>Total</th>
                             <th>Status</th>
                             <th>Action</th>

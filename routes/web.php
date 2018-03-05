@@ -155,6 +155,7 @@
         Route::post('upload/save', 'Product\ProductController@save');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
 
+
         /*
          * Plan
          */
@@ -418,7 +419,8 @@
         Route::post('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
 
+
         Route::get('404', ['as' => 'error404', function () {
-            return view('errors.404');
-        }]);
+                return view('errors.404');
+            }]);
     // });

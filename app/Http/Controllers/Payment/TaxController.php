@@ -1,8 +1,8 @@
 <?php
 
-    namespace App\Http\Controllers\Payment;
+namespace App\Http\Controllers\Payment;
 
-    use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
     use App\Http\Requests\Payment\TaxRequest;
     use App\Model\Common\Country;
     use App\Model\Common\State;
@@ -68,7 +68,7 @@
          */
         public function getTax()
         {
-            return \DataTables::of($this->tax->select('id','tax_classes_id','name', 'level', 'country', 'state', 'rate')->get())
+            return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate')->get())
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' value=".$model->id.' name=select[] id=check>';
                             })

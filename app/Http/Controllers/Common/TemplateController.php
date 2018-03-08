@@ -765,12 +765,16 @@ class TemplateController extends Controller
             }
             $cost = "$currency $price /year";
         } else {
-            $price = $cart_controller->productCost($id);
-            $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-            $product_cost = \App\Http\Controllers\Front\CartController::rounding($product_cost);
-            if ($product_cost != 0) {
-                $cost = $currency.' '.$product_cost;
-            }
+            $cost='Free';
+            // dd($cost);
+            // dd($cost);
+            // $price = $cart_controller->productCost($id);
+            // // dd($price);
+            // $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+            // $product_cost = \App\Http\Controllers\Front\CartController::rounding($product_cost);
+            // if ($product_cost != 0) {
+            //     $cost = $currency.' '.$product_cost;
+            // }
         }
 
         return $cost;

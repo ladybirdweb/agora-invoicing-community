@@ -765,7 +765,7 @@ class TemplateController extends Controller
             }
             $cost = "$currency $price /year";
         } else {
-            $cost='Free';
+            $cost = 'Free';
             // dd($cost);
             // dd($cost);
             // $price = $cart_controller->productCost($id);

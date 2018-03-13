@@ -68,40 +68,40 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        return \DataTables::of($this->tax->select('id', 'name', 'level', 'country', 'state', 'rate', 'tax_classes_id')->get())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='tax_checkbox' value=".$model->id.' name=select[] id=check>';
-                        })
-                        ->addColumn('tax_classes_id', function ($model) {
-                            return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
-                        })
-                        ->addColumn('name', function ($model) {
-                            return $model->name;
-                        })
-                        ->addColumn('level', function ($model) {
-                            return $model->level;
-                        })
-                        // ->showColumns('name', 'level')
-                        ->addColumn('country', function ($model) {
-                            if ($this->country->where('country_code_char2', $model->country)->first()) {
-                                return ucfirst($this->country->where('country_code_char2', $model->country)->first()->country_name);
-                            }
-                        })
-                        ->addColumn('state', function ($model) {
-                            if ($this->state->where('state_subdivision_code', $model->state)->first()) {
-                                return $this->state->where('state_subdivision_code', $model->state)->first()->state_subdivision_name;
-                            }
-                        })
-                        ->addColumn('rate', function ($model) {
-                            return $model->rate;
-                        })
+        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate')->get())
+                            ->addColumn('checkbox', function ($model) {
+                                return "<input type='checkbox' class='tax_checkbox' value=".$model->id.' name=select[] id=check>';
+                            })
+                            ->addColumn('tax_classes_id', function ($model) {
+                                return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
+                            })
+                            ->addColumn('name', function ($model) {
+                                return $model->name;
+                            })
+                            ->addColumn('level', function ($model) {
+                                return $model->level;
+                            })
+                            // ->showColumns('name', 'level')
+                            ->addColumn('country', function ($model) {
+                                if ($this->country->where('country_code_char2', $model->country)->first()) {
+                                    return ucfirst($this->country->where('country_code_char2', $model->country)->first()->country_name);
+                                }
+                            })
+                            ->addColumn('state', function ($model) {
+                                if ($this->state->where('state_subdivision_code', $model->state)->first()) {
+                                    return $this->state->where('state_subdivision_code', $model->state)->first()->state_subdivision_name;
+                                }
+                            })
+                            ->addColumn('rate', function ($model) {
+                                return $model->rate;
+                            })
 
-                        // ->showColumns('rate')
-                        ->addColumn('action', function ($model) {
-                            return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
-                        })
-                        ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
-                        ->make(true);
+                            // ->showColumns('rate')
+                            ->addColumn('action', function ($model) {
+                                return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            })
+                            ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
+                            ->make(true);
     }
 
     /**
@@ -204,36 +204,36 @@ class TaxController extends Controller
                         $tax->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.\Lang::get('message.no-record').'
+                    </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.\Lang::get('message.deleted-successfully').'
+                    </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.\Lang::get('message.select-a-row').'
+                    </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
+                        <i class='fa fa-ban'></i>
+                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.$e->getMessage().'
+                    </div>';
         }
     }
 
@@ -280,8 +280,8 @@ class TaxController extends Controller
                 $v = \Validator::make($request->all(), ['name' => 'required']);
                 if ($v->fails()) {
                     return redirect()->back()
-                                    ->withErrors($v)
-                                    ->withInput();
+                                        ->withErrors($v)
+                                        ->withInput();
                 }
                 $this->tax_class->fill($request->input())->save();
             }

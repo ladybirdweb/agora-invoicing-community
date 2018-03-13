@@ -14,7 +14,7 @@ class SettingsController extends Controller
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
-        // $this->middleware('admin', ['except' => 'checkPaymentGateway']);
+        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
     }
 
     public function settings(Setting $settings)

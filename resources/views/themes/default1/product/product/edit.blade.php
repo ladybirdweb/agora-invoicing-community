@@ -558,6 +558,7 @@
         $("#product-description").val(description)
         $("#product-version").val(version)
          var url = "{{url('upload/')}}"+"/"+upload_id
+         
           $("#upload-edit-form").attr('action', url)
 
 

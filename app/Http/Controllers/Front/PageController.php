@@ -13,7 +13,7 @@ class PageController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        // $this->middleware('admin');
+        $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -290,13 +290,13 @@ class PageController extends Controller
         // 'timezone'                => 'Asia/Kolkata',
         // 'continent'               => 'AS',
         // 'default'                 => false, ];
-if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
-} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-} else {
-    $ip = $_SERVER['REMOTE_ADDR'];
-}
+          if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+          $ip = $_SERVER['HTTP_CLIENT_IP'];
+          } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+              $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+          } else {
+              $ip = $_SERVER['REMOTE_ADDR'];
+          }
 
         if ($ip != '::1') {
             $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);

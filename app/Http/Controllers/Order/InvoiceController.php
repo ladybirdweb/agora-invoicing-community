@@ -190,7 +190,6 @@ class InvoiceController extends Controller
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        
         $qty = 1;
         // if (array_key_exists('domain', $request->all())) {
         //     $this->validate($request, [
@@ -234,12 +233,10 @@ class InvoiceController extends Controller
             if ($cost != $total) {
                 $grand_total = $total;
             }
-           
+
             if ($code) {
                 $grand_total = $this->checkCode($code, $productid);
-            
             } else {
-                 
                 if (!$total) {
                     $grand_total = $cost;
                 } else {
@@ -250,7 +247,7 @@ class InvoiceController extends Controller
 
             // dd($grand_total);
             $tax = $this->checkTax($product->id);
-          
+
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
@@ -263,10 +260,9 @@ class InvoiceController extends Controller
 
             //dd('dsjcgv');
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
-            
+
             // dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
-
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
             //            if ($grand_total > 0) {
@@ -282,7 +278,7 @@ class InvoiceController extends Controller
                 $result = ['fails' => \Lang::get('message.can-not-generate-invoice')];
             }
         } catch (\Exception $ex) {
-           var_dump($ex);
+            var_dump($ex);
             // die;
             dd($ex);
             $result = ['fails' => $ex->getMessage()];
@@ -292,7 +288,7 @@ class InvoiceController extends Controller
     }
 
     public function sendmailClientAgent($userid, $invoiceid)
-   {
+    {
         try {
             $agent = \Input::get('agent');
             $client = \Input::get('client');

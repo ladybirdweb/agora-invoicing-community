@@ -658,7 +658,8 @@ use App\Http\Controllers\Controller;
                     } elseif ($file->file) {
                         // dd($file->file);
                         $relese = storage_path().'\products'.'\\'.$file->file;
-
+                        // $relese = '/home/faveo/products/'.$file->file;
+                        // dd($relese);
                         return $relese;
                     }
                 }

@@ -190,7 +190,6 @@ class InvoiceController extends Controller
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        // dd($request->all());
         $qty = 1;
         // if (array_key_exists('domain', $request->all())) {
         //     $this->validate($request, [
@@ -234,10 +233,9 @@ class InvoiceController extends Controller
             if ($cost != $total) {
                 $grand_total = $total;
             }
-            //dd($cost);
+
             if ($code) {
                 $grand_total = $this->checkCode($code, $productid);
-            //dd($grand_total);
             } else {
                 if (!$total) {
                     $grand_total = $cost;
@@ -246,9 +244,10 @@ class InvoiceController extends Controller
                 }
             }
             $grand_total = $qty * $grand_total;
-            //dd($grand_total);
+
+            // dd($grand_total);
             $tax = $this->checkTax($product->id);
-            //dd($tax);
+
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
@@ -258,10 +257,11 @@ class InvoiceController extends Controller
                     $tax_rate .= $value['rate'].',';
                 }
             }
+
             //dd('dsjcgv');
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
 
-            //dd($grand_total);
+            // dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
@@ -269,13 +269,17 @@ class InvoiceController extends Controller
             //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             //            }
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan);
+
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
+
                 $result = ['success' => \Lang::get('message.invoice-generated-successfully')];
             } else {
                 $result = ['fails' => \Lang::get('message.can-not-generate-invoice')];
             }
         } catch (\Exception $ex) {
+            var_dump($ex);
+            // die;
             dd($ex);
             $result = ['fails' => $ex->getMessage()];
         }
@@ -286,8 +290,8 @@ class InvoiceController extends Controller
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
-            $agent = $request->input('agent');
-            $client = $request->input('client');
+            $agent = \Input::get('agent');
+            $client = \Input::get('client');
             if ($agent == 1) {
                 $id = \Auth::user()->id;
                 $this->sendMail($id, $invoiceid);

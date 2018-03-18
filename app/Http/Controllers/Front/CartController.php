@@ -838,7 +838,7 @@ class CartController extends Controller
         try {
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
-            // dd($result);
+            
             $result = self::rounding($result);
 
             return $result;

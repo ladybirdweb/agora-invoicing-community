@@ -140,9 +140,7 @@ class ClientController extends Controller
                                     .'&nbsp;
 
                                     <a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
-
-
-                              })
+                        })
                         ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make(true);
@@ -409,4 +407,3 @@ class ClientController extends Controller
         return view('themes.default1.renew.popup', compact('id'));
     }
 }
-

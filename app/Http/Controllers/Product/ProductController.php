@@ -686,8 +686,9 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
 
                         return ['release'=>$relese, 'type'=>'github'];
-                    } elseif ($file) {
-                        $relese = '/home/faveo/products/'.$file;
+                    } elseif ($file->file) {
+                        $relese = storage_path().'\products'.'\\'.$file->file;
+                        // $relese = '/home/faveo/products/'.$file->file;
 
                         return $relese;
                     }

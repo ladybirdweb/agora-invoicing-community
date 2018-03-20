@@ -791,8 +791,6 @@ class CartController extends Controller
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                } else {
-                    $result = '';
                 }
             }
 

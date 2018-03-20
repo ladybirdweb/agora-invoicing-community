@@ -20,6 +20,8 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\Type;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
+    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+    use RuntimeException;
 
     // use Input;
 
@@ -352,7 +354,9 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                dd($e);
+                // dd($e);
+                Bugsnag::notifyException($e);
+                // Bugsnag::notifyException(new RuntimeException("Test error"));
 
                 return redirect()->with('fails', $e->getMessage());
             }
@@ -495,7 +499,7 @@ use App\Http\Controllers\Controller;
                 // dd('sdg');
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
-                dd($e);
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }

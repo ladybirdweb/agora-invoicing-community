@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-dompdf": "^0.8.1",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "chumper/datatable": "dev-develop",
         "chumper/zipper": "1.0.x",
         "darryldecode/cart": "dev-master",

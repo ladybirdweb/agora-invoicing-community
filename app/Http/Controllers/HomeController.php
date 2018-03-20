@@ -482,11 +482,11 @@ class HomeController extends Controller
     public function downloadForFaveo(Request $request, Order $order)
     {
         try {
-            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
-            $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
-            $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
+            // $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
+            // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
+            // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
             $this_order = $order
-                    ->where('number', $faveo_encrypted_order_number)
+                    ->where('number', $request->input('order_number'))
                     //->where('serial_key', $faveo_encrypted_key)
                     //->where('domain', $faveo_encrypted_domain)
                     ->first();
@@ -494,7 +494,7 @@ class HomeController extends Controller
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
 
-                return $product_controller->adminDownload($product_id, true);
+                return $product_controller->downloadProductAdmin($product_id, true);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'line' => $e->getFile()], 500);

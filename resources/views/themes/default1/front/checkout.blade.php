@@ -20,6 +20,7 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
 }
 $tax=  0;
                 $sum = 0;
+
 ?>
 <div class="row">
 
@@ -118,7 +119,7 @@ $tax=  0;
                                 </td>
                                 <td class="product-name">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
-                                    <!-- <span class="amount"><small>{!! $symbol !!} </small>{{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}</span> -->
+                                   
                                     <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
                                 </td>
                             </tr>
@@ -142,10 +143,19 @@ $tax=  0;
                                     <td>
                                         <strong><span class="amount"><small>{!! $symbol !!} </small> 
                                         
-                        
-                                            <!-- {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}} -->
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}</span>
+                                             @if($attributes[0]['currency'][0]['code'] == "INR")
+
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                            @else
+                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
+                                            @endif
+
+
+
+                                        </span>
                                             <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong>  -->
+
+                                             
                                     </td>
                                 </tr>
 
@@ -198,9 +208,10 @@ $tax=  0;
                         <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
                     </td>
                 </tr>
-
+                 
                 @foreach($item->attributes['tax'] as $attribute)
-                @if($attribute['name']!='null')
+                
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR"))
                 <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
@@ -217,9 +228,14 @@ $tax=  0;
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
-                        <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong>  -->
-                        <!-- <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong> -->
+                         @if($attributes[0]['currency'][0]['code'] == "INR")
+
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                            @else
+                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
+                                            @endif
+
+                       
                     </td>
                 </tr>
             </tbody>

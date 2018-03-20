@@ -790,9 +790,7 @@ class CartController extends Controller
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                } else {
-                    $result = '';
+                    //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 }
             }
 
@@ -838,7 +836,7 @@ class CartController extends Controller
         try {
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
-            // dd($result);
+
             $result = self::rounding($result);
 
             return $result;

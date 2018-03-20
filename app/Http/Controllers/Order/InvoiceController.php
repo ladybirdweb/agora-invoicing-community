@@ -312,12 +312,20 @@ class InvoiceController extends Controller
     public function generateInvoice()
     {
         try {
+            // dd(\Cart::getContent());
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
 
             $user_id = \Auth::user()->id;
-            $grand_total = \Cart::getSubTotal();
+            if (\Auth::user()->currency == 'INR') {
+                $grand_total = \Cart::getSubTotal();
+            } else {
+                foreach (\Cart::getContent() as $cart) {
+                    $grand_total = $cart->price;
+                }
+            }
+            // dd($grand_total);
 
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -353,6 +361,7 @@ class InvoiceController extends Controller
             $planid = 0;
             $product_name = $cart->name;
             $regular_price = $cart->price;
+            // dd($regular_price);
             $quantity = $cart->quantity;
             $domain = $this->domain($cart->id);
             $cart_cont = new \App\Http\Controllers\Front\CartController();
@@ -360,7 +369,12 @@ class InvoiceController extends Controller
                 $planid = \Session::get('plan');
             }
             //dd($quantity);
-            $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
+            $user_currency = \Auth::user()->currency;
+            if ($user_currency == 'INR') {
+                $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
+            } else {
+                $subtotal = $regular_price;
+            }
 
             $tax_name = '';
             $tax_percentage = '';

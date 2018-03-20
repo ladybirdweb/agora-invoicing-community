@@ -470,6 +470,17 @@ class SettingsController extends Controller
         }
     }
 
+    public function settingsBugsnag(Setting $settings)
+    {
+        try {
+            $set = $settings->find(1);
+
+            return view('themes.default1.common.setting.bugsnag', compact('set'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function postSettingsError(Setting $settings, Request $request)
     {
         try {

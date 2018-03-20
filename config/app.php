@@ -13,7 +13,7 @@ return [
     */
 
     'name'      => env('APP_NAME', 'Laravel'),
-      'version' => ' v1.0.9',
+    'version'   => ' v1.0.9',
 
     /*
     |--------------------------------------------------------------------------
@@ -171,6 +171,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
         /*
          * Package Service Providers...

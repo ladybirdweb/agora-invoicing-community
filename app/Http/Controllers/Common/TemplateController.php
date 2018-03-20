@@ -487,7 +487,7 @@ class TemplateController extends Controller
                     // dd($tax_amount);
                 }
             }
-
+            // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
             dd($ex);
@@ -561,7 +561,7 @@ class TemplateController extends Controller
             // $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
             // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
             } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } else {
@@ -602,7 +602,7 @@ class TemplateController extends Controller
             // dd($product);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
                 if ($product == 1 && $shop == 1 && $cart == 1) {
-                    $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
+                    $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
                 }
                 if ($product == 1 && $shop == 0 && $cart == 0) {
                     $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);

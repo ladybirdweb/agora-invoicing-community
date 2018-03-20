@@ -18,7 +18,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Front\CartController;
 use Input;
 
 class InvoiceController extends Controller
@@ -319,17 +318,14 @@ class InvoiceController extends Controller
             $rounding = $rule->rounding;
 
             $user_id = \Auth::user()->id;
-            if(\Auth::user()->currency=="INR"){
-            $grand_total = \Cart::getSubTotal();
-        }
-    else
-    {   
-       foreach (\Cart::getContent() as $cart){
-        $grand_total=$cart->price;
-       }
-        
-    }
-    // dd($grand_total);
+            if (\Auth::user()->currency == 'INR') {
+                $grand_total = \Cart::getSubTotal();
+            } else {
+                foreach (\Cart::getContent() as $cart) {
+                    $grand_total = $cart->price;
+                }
+            }
+            // dd($grand_total);
 
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -374,14 +370,13 @@ class InvoiceController extends Controller
             }
             //dd($quantity);
             $user_currency = \Auth::user()->currency;
-            if ($user_currency=="INR"){
-            $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
-        }
-        else{
-            $subtotal= $regular_price;
-        }
-        
-         $tax_name = '';
+            if ($user_currency == 'INR') {
+                $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
+            } else {
+                $subtotal = $regular_price;
+            }
+
+            $tax_name = '';
             $tax_percentage = '';
 
             foreach ($cart->attributes['tax'] as $tax) {

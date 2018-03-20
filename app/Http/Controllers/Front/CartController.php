@@ -790,7 +790,7 @@ class CartController extends Controller
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
+                    //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 }
             }
 

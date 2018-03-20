@@ -285,7 +285,8 @@ use App\Http\Controllers\Controller;
          * @return Response
          */
         public function store(Request $request)
-        {
+        {   
+          
             $input = $request->all();
             // dd($input);
             $v = \Validator::make($input, [
@@ -661,8 +662,8 @@ use App\Http\Controllers\Controller;
                         return ['release'=>$relese, 'type'=>'github'];
                     } elseif ($file->file) {
                         // dd($file->file);
-                        $relese = storage_path().'\products'.'\\'.$file->file;
-                        // $relese = '/home/faveo/products/'.$file->file;
+                        // $relese = storage_path().'\products'.'\\'.$file->file;
+                        $relese = '/home/faveo/products/'.$file->file;
                         // dd($relese);
                         return $relese;
                     }
@@ -691,8 +692,8 @@ use App\Http\Controllers\Controller;
 
                         return ['release'=>$relese, 'type'=>'github'];
                     } elseif ($file->file) {
-                        $relese = storage_path().'\products'.'\\'.$file->file;
-                        // $relese = '/home/faveo/products/'.$file->file;
+                        // $relese = storage_path().'\products'.'\\'.$file->file;
+                        $relese = '/home/faveo/products/'.$file->file;
 
                         return $relese;
                     }

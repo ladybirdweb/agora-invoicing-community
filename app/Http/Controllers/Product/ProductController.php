@@ -18,9 +18,9 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
+    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
-    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use RuntimeException;
 
     // use Input;

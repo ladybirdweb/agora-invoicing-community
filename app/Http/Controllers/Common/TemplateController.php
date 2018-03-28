@@ -702,7 +702,7 @@ class TemplateController extends Controller
     {
         $plan = new Plan();
         // dd($plan);
-        $plan_form = 'Free';//No Subscription
+        $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         // dd($plans);
         $plans = $this->prices($id);
@@ -735,7 +735,7 @@ class TemplateController extends Controller
             $months = round($value->days / 30 / 12);
             // dd($months);
             // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
-              $price[$value->id] = $currency.' '. $cost;
+            $price[$value->id] = $currency.' '.$cost;
         }
         // dd($price);
         $this->leastAmount($id);
@@ -781,7 +781,7 @@ class TemplateController extends Controller
         return $cost;
     }
 
-     public function leastAmountService($id)
+    public function leastAmountService($id)
     {
         $cost = 'Free';
         $plan = new Plan();
@@ -805,7 +805,6 @@ class TemplateController extends Controller
             $cost = "$currency $price /year";
         } else {
             $price = $cart_controller->productCost($id);
-        
         }
 
         return $price;

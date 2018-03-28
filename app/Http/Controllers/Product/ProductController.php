@@ -670,6 +670,7 @@ use App\Http\Controllers\Controller;
                 }
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }

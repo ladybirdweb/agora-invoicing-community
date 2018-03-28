@@ -701,7 +701,7 @@ class TemplateController extends Controller
     public function plans($url, $id)
     {
         $plan = new Plan();
-        $plan_form = 'Free';//No Subscription
+        $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
         if (count($plans) > 0) {
@@ -719,7 +719,7 @@ class TemplateController extends Controller
     {
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-         $price = [];
+        $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 

@@ -9,10 +9,10 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
-use Bugsnag;
 
 class CartController extends Controller
 {
@@ -606,7 +606,8 @@ class CartController extends Controller
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
-                 $price=str_replace(',', '',$price);
+                $price = str_replace(',', '', $price);
+
                 return round($price);
             } else {
                 return $price;

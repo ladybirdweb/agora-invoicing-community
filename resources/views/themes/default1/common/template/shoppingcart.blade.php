@@ -19,7 +19,9 @@ main
 
 <div class="row">
     @if (count($errors) > 0)
-                <div class="alert alert-danger">
+  </br>
+</br>
+                <div class="alert alert-danger alert-dismissable">
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -30,6 +32,8 @@ main
                 @endif
 
                 @if(Session::has('success'))
+              </br>
+            </br>
                 <div class="alert alert-success alert-dismissable">
                     <i class="fa fa-ban"></i>
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
@@ -39,6 +43,8 @@ main
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
+              </br>
+            </br>
                 <div class="alert alert-danger alert-dismissable">
                     <i class="fa fa-ban"></i>
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.

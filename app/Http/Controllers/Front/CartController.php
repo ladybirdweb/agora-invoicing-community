@@ -476,8 +476,8 @@ class CartController extends Controller
         $renew_control = new \App\Http\Controllers\Order\RenewController();
         $renew_control->removeSession();
         Cart::clear();
-
-        return redirect('show/cart')->with('warning', 'Your cart is empty! ');
+        
+        return redirect('show/cart');
     }
 
     /**

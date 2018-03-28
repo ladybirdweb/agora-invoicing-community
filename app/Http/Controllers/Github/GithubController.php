@@ -297,13 +297,19 @@ class GithubController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    //Github Download for Clients
     public function downloadLink($owner, $repo, $order_id)
     {
         try {
-            // $url = "https://api.github.com/repos/$owner/$repo/releases";
+           // $url = "https://api.github.com/repos/$owner/$repo/releases";
             $url = "https://api.github.com/repos/$owner/$repo/zipball/master";
-            if ($repo == 'faveo-helpdesk') {
+            //For helpdesk-community
+             if ($repo == 'faveo-helpdesk') {
+                return $array = ['Location' => $url];
+            }
+            //For servicedesk-community
+            if($repo =='faveo-servicedesk-community'){
                 return $array = ['Location' => $url];
             }
             // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
@@ -312,7 +318,7 @@ class GithubController extends Controller
 
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
-
+  
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
                     $ver[] = $value['tag_name'];
@@ -330,7 +336,8 @@ class GithubController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    //Github Download for Admin
     public function downloadLinkAdmin($owner, $repo)
     {
         try {

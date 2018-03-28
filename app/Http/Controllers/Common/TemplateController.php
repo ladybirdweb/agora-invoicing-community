@@ -702,7 +702,7 @@ class TemplateController extends Controller
     {
         $plan = new Plan();
         // dd($plan);
-        $plan_form = 'No subscription';
+        $plan_form = 'Free';//No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         // dd($plans);
         $plans = $this->prices($id);
@@ -734,7 +734,8 @@ class TemplateController extends Controller
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30 / 12);
             // dd($months);
-            $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
+            // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
+              $price[$value->id] = $currency.' '. $cost;
         }
         // dd($price);
         $this->leastAmount($id);
@@ -763,7 +764,7 @@ class TemplateController extends Controller
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            $cost = "$currency $price /year";
+            $cost = "$currency $price";
         } else {
             $cost = 'Free';
             // dd($cost);
@@ -778,5 +779,35 @@ class TemplateController extends Controller
         }
 
         return $cost;
+    }
+
+     public function leastAmountService($id)
+    {
+        $cost = 'Free';
+        $plan = new Plan();
+        $plans = $plan->where('product', $id)->get();
+
+        $cart_controller = new \App\Http\Controllers\Front\CartController();
+        $currency = $cart_controller->currency();
+
+        if ($plans->count() > 0) {
+            foreach ($plans as $value) {
+                $days = $value->min('days');
+
+                $month = round($days / 30);
+                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
+
+                // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+
+                $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                // dd($price);
+            }
+            $cost = "$currency $price /year";
+        } else {
+            $price = $cart_controller->productCost($id);
+        
+        }
+
+        return $price;
     }
 }

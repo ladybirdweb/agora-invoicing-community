@@ -192,7 +192,8 @@ use App\Http\Controllers\Controller;
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
         }
-
+        
+        // Save file Info in Modal popup
         public function save(Request $request)
         {
 
@@ -222,7 +223,8 @@ use App\Http\Controllers\Controller;
                 return redirect()->with('fails', $e->getMessage());
             }
         }
-
+        
+        //Update the File Info
         public function uploadUpdate($id, Request $request)
         {
             // return phpinfo();
@@ -275,6 +277,7 @@ use App\Http\Controllers\Controller;
 
                 return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -354,11 +357,8 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                // dd($e);
-                Bugsnag::notifyException($e);
-                // Bugsnag::notifyException(new RuntimeException("Test error"));
-
-                return redirect()->with('fails', $e->getMessage());
+                 Bugsnag::notifyException($e);
+               return redirect()->with('fails', $e->getMessage());
             }
         }
 
@@ -638,7 +638,7 @@ use App\Http\Controllers\Controller;
 
             return $server;
         }
-
+        
         public function downloadProduct($id, $invoice_id)
         {
             try {

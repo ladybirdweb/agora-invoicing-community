@@ -476,7 +476,7 @@ class CartController extends Controller
         $renew_control = new \App\Http\Controllers\Order\RenewController();
         $renew_control->removeSession();
         Cart::clear();
-        
+
         return redirect('show/cart');
     }
 

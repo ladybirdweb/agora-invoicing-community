@@ -88,7 +88,7 @@ class MailChimpController extends Controller
     }
 
     public function addSubscriberByClientPanel(Request $request)
-    { 
+    {
         $this->validate($request, [
             'email' => 'required|email',
         ]);

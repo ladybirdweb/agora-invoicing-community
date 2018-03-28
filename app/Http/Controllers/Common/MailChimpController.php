@@ -242,7 +242,7 @@ class MailChimpController extends Controller
     {
         try {
             $set = $this->mailchimp_set;
-            $lists = $this->lists->lists('name', 'list_id')->toArray();
+            $lists = $this->lists->pluck('name', 'list_id')->toArray();
 
             return view('themes.default1.common.mailchimp.settings', compact('set', 'lists'));
         } catch (Exception $ex) {
@@ -276,7 +276,7 @@ class MailChimpController extends Controller
         try {
             $model = $this->relation;
             $this->addFieldsToAgora();
-            $mailchimp_fields = $this->mailchimp_field_model->where('list_id', $this->list_id)->lists('name', 'tag')->toArray();
+            $mailchimp_fields = $this->mailchimp_field_model->where('list_id', $this->list_id)->pluck('name', 'tag')->toArray();
 
             return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model'));
         } catch (Exception $ex) {

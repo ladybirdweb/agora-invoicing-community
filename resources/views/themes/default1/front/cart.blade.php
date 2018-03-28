@@ -3,6 +3,7 @@
 Cart
 @stop
 @section('page-header')
+<br>
 Cart
 @stop
 @section('breadcrumb')
@@ -37,6 +38,8 @@ if (count($attributes) > 0) {
         @endif
 
         @if(Session::has('success'))
+    </br>
+</br>
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
@@ -50,7 +53,7 @@ if (count($attributes) > 0) {
         </div>
         @endif
 
-
+        
         @if(!Cart::isEmpty())
         <div class="featured-boxes">
             <div class="row">
@@ -268,6 +271,7 @@ if (count($attributes) > 0) {
                 <div class="col-md-12">
                     <div class="featured-box featured-box-primary align-left mt-sm">
                         <div class="box-content">
+
                             <div class="col-md-offset-5">
                                 <p>There are no items in this cart.</p>
                                 <a href="{{url('home')}}" class="btn btn-primary">CONTINUE SHOPPING</a>

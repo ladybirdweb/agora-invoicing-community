@@ -9,6 +9,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -477,7 +478,7 @@ class CartController extends Controller
         $renew_control->removeSession();
         Cart::clear();
 
-        return redirect('show/cart')->with('warning', 'Your cart is empty! ');
+        return redirect('show/cart');
     }
 
     /**
@@ -605,12 +606,15 @@ class CartController extends Controller
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
+                $price = str_replace(',', '', $price);
+
                 return round($price);
             } else {
                 return $price;
             }
         } catch (\Exception $ex) {
-            throw new \Exception('error in get tax priority');
+            Bugsnag::notifyException($ex);
+            // throw new \Exception('error in get tax priority');
         }
     }
 

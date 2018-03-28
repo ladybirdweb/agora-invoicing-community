@@ -21,7 +21,6 @@ use App\Http\Controllers\Controller;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
-    use RuntimeException;
 
     // use Input;
 
@@ -193,6 +192,7 @@ use App\Http\Controllers\Controller;
         ->make(true);
         }
 
+        // Save file Info in Modal popup
         public function save(Request $request)
         {
 
@@ -223,6 +223,7 @@ use App\Http\Controllers\Controller;
             }
         }
 
+        //Update the File Info
         public function uploadUpdate($id, Request $request)
         {
             // return phpinfo();
@@ -275,6 +276,8 @@ use App\Http\Controllers\Controller;
 
                 return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -354,9 +357,7 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                // dd($e);
                 Bugsnag::notifyException($e);
-                // Bugsnag::notifyException(new RuntimeException("Test error"));
 
                 return redirect()->with('fails', $e->getMessage());
             }
@@ -668,7 +669,7 @@ use App\Http\Controllers\Controller;
                     }
                 }
             } catch (\Exception $e) {
-                dd($e->getMessage());
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }

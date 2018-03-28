@@ -422,7 +422,9 @@
                             </ul>
                         </div>
                         <div class="col-md-2">
-                        <a href="#" onclick="window.open('https://www.sitelock.com/verify.php?site=faveohelpdesk.com','SiteLock','width=600,height=600,left=160,top=170');" ><img class="img-responsive" alt="SiteLock" title="SiteLock" src="//shield.sitelock.com/shield/faveohelpdesk.com" /></a>
+                        <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="SiteLock" title="SiteLock" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
+                        <br/>
+                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="SiteLock" title="SiteLock" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
                         </div>
 
                     </div>

@@ -27,17 +27,17 @@ class ProfileRequest extends Request
             $userid = \Auth::user()->id;
 
             return [
-                    'first_name'  => 'required',
-                    'last_name'   => 'required',
-                    'company'     => 'required',
-                    'mobile'      => 'required|numeric',
-                    'mobile_code' => 'required|numeric',
-                    'address'     => 'required',
-                    'zip'         => 'required|numeric',
-                    'user_name'   => 'required|unique:users,user_name,'.$userid,
-                    'bussiness'   => 'required',
-                    //'company_type'     => 'required',
-                    //'company_size'     => 'required',
+                    'first_name'       => 'required',
+                    'last_name'        => 'required',
+                    'company'          => 'required',
+                    'mobile'           => 'required|numeric',
+                    'mobile_code'      => 'required|numeric',
+                    'address'          => 'required',
+                    'zip'              => 'required|numeric',
+                    'user_name'        => 'required|unique:users,user_name,'.$userid,
+                    'bussiness'        => 'required',
+                    'company_type'     => 'required',
+                    'company_size'     => 'required',
 
         ];
         }
@@ -82,8 +82,8 @@ class ProfileRequest extends Request
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
                     'bussiness'             => 'required',
-                    //'company_type'      => 'required',
-                    //'company_size'      => 'required',
+                    'company_type'          => 'required',
+                    'company_size'          => 'required',
 
         ];
         }

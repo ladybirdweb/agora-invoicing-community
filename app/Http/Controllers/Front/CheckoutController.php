@@ -69,8 +69,8 @@ class CheckoutController extends Controller
         $invoiceItem = new InvoiceItem();
         $this->invoiceItem = $invoiceItem;
 
-        $mailchimp = new MailChimpController();
-        $this->mailchimp = $mailchimp;
+        // $mailchimp = new MailChimpController();
+        // $this->mailchimp = $mailchimp;
     }
 
     public function checkoutForm(Request $request)

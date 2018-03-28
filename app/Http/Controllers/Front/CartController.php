@@ -12,6 +12,7 @@ use App\Model\Product\Product;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
+use Bugsnag;
 
 class CartController extends Controller
 {
@@ -605,12 +606,14 @@ class CartController extends Controller
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
+                 $price=str_replace(',', '',$price);
                 return round($price);
             } else {
                 return $price;
             }
         } catch (\Exception $ex) {
-            throw new \Exception('error in get tax priority');
+            Bugsnag::notifyException($ex);
+            // throw new \Exception('error in get tax priority');
         }
     }
 

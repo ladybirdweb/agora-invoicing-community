@@ -701,13 +701,9 @@ class TemplateController extends Controller
     public function plans($url, $id)
     {
         $plan = new Plan();
-        // dd($plan);
         $plan_form = 'Free';//No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
-        // dd($plans);
         $plans = $this->prices($id);
-        // dd($plans);
-        // dd((count($plans) > 0));
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
             // dd($plan_form);
@@ -723,8 +719,7 @@ class TemplateController extends Controller
     {
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-        // dd($plans);
-        $price = [];
+         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 

@@ -668,8 +668,7 @@ use App\Http\Controllers\Controller;
                     }
                 }
             } catch (\Exception $e) {
-                dd($e->getMessage());
-
+                Bugsnag::notifyException($e);
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }

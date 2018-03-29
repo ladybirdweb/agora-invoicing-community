@@ -79,6 +79,12 @@
         Route::patch('my-password', 'Front\ClientController@postPassword');
         Route::get('paynow/{id}', 'Front\CheckoutController@paynow');
 
+        // Get Route For Show Razorpay Payment Form
+        Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
+        // Post Route For Make Razorpay Payment Request
+        Route::post('payment', 'RazorpayController@payment')->name('payment');
+
+
         /*
          * Social Media
          */

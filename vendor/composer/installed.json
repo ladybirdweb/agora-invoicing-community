@@ -5710,5 +5710,115 @@
             "logging",
             "tracking"
         ]
+    },
+    {
+        "name": "rmccue/requests",
+        "version": "v1.6.1",
+        "version_normalized": "1.6.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/rmccue/Requests.git",
+            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/rmccue/Requests/zipball/6aac485666c2955077d77b796bbdd25f0013a4ea",
+            "reference": "6aac485666c2955077d77b796bbdd25f0013a4ea",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.2"
+        },
+        "require-dev": {
+            "satooshi/php-coveralls": "dev-master"
+        },
+        "time": "2014-05-18T04:59:02+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Requests": "library/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "ISC"
+        ],
+        "authors": [
+            {
+                "name": "Ryan McCue",
+                "homepage": "http://ryanmccue.info"
+            }
+        ],
+        "description": "A HTTP library written in PHP, for human beings.",
+        "homepage": "http://github.com/rmccue/Requests",
+        "keywords": [
+            "curl",
+            "fsockopen",
+            "http",
+            "idna",
+            "ipv6",
+            "iri",
+            "sockets"
+        ]
+    },
+    {
+        "name": "razorpay/razorpay",
+        "version": "v2.2.0",
+        "version_normalized": "2.2.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/razorpay/razorpay-php.git",
+            "reference": "cdd7d36b7ff9b4718e896a241e571f252786e871"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/razorpay/razorpay-php/zipball/cdd7d36b7ff9b4718e896a241e571f252786e871",
+            "reference": "cdd7d36b7ff9b4718e896a241e571f252786e871",
+            "shasum": ""
+        },
+        "require": {
+            "ext-json": "*",
+            "php": ">=5.4.0",
+            "rmccue/requests": "v1.6.1"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "^4.8.0",
+            "raveren/kint": "1.*"
+        },
+        "time": "2017-10-23T14:09:12+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Razorpay\\Api\\": "src/",
+                "Razorpay\\Tests\\": "tests/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Abhay Rana",
+                "email": "nemo@razorpay.com",
+                "homepage": "https://captnemo.in",
+                "role": "Developer"
+            },
+            {
+                "name": "Shashank Kumar",
+                "email": "shashank@razorpay.com",
+                "role": "Developer"
+            }
+        ],
+        "description": "Razorpay PHP Client Library",
+        "homepage": "https://docs.razorpay.com",
+        "keywords": [
+            "api",
+            "client",
+            "php",
+            "razorpay"
+        ]
     }
 ]

@@ -171,7 +171,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
-        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        // Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -240,7 +240,7 @@ return [
         'Session'      => Illuminate\Support\Facades\Session::class,
         'Storage'      => Illuminate\Support\Facades\Storage::class,
         'URL'          => Illuminate\Support\Facades\URL::class,
-        'Bugsnag'      => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
+        // 'Bugsnag'      => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
 
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,

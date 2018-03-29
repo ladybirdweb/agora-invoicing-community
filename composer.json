@@ -17,6 +17,7 @@
         "pacely/mailchimp-apiv3": "dev-master",
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.2",
+        "razorpay/razorpay": "^2.2",
         "thomaswelton/laravel-gravatar": "~1.0",
         "yajra/laravel-datatables": "^1.0"
     },

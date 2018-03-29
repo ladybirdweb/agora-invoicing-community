@@ -165,7 +165,7 @@ $tax=  0;
                     </div>
 
                 </div>
-                {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
+                {!! Form::open(['url'=>'payment','method'=>'post']) !!}
                 @if(Cart::getTotal()>0)
                 <h4 class="heading-primary">Payment</h4>
                 <?php 
@@ -186,12 +186,47 @@ $tax=  0;
                 @endif
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary">
-                            Place Order
-                        </button>
+                        <input type="submit" name="submit" value="Pay Now" id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                           
+                        
                     </div>
                 </div>
                 {!! Form::close() !!}
+                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                                             <form name='razorpayform' action="charge.php" method="POST">     
+                                             <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
+                                            <!--<form name='razorpayform' action="verify.php" method="POST">                                -->
+                                            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                                            <input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
+                                           
+                                                
+                                            </form>
+
+
+
+ <script src="https://checkout.razorpay.com/v1/checkout.js"
+                                data-key="{{ Config::get('custom.razor_key') }}"
+                                data-amount="1000"
+                                data-buttontext="Pay 10 INR"
+                                data-name="Laravelcode"
+                                data-description="Order Value"
+                                data-image="yout_logo_url"
+                                data-prefill.name="name"
+                                data-prefill.email="email"
+                                data-theme.color="#ff7529">
+                        </script>
+</script>
+   
+
+
+
+
+
+
+
+
+
+
 
             </div>
         </div>

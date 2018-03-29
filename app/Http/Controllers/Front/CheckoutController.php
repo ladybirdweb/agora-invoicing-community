@@ -17,6 +17,7 @@ use App\Model\Product\Subscription;
 use App\User;
 use Cart;
 use Illuminate\Http\Request;
+use Razorpay\Api\Api;
 
 class CheckoutController extends Controller
 {
@@ -100,10 +101,10 @@ class CheckoutController extends Controller
                 Cart::remove($id);
                 $controller = new CartController();
                 $items = $controller->addProduct($id);
-                //dd($items);
                 Cart::add($items);
                 //
             }
+
             $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
@@ -133,7 +134,7 @@ class CheckoutController extends Controller
                 }
             }
             //$content = Cart::getContent();
-            //dd($content);
+           
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {

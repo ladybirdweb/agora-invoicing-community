@@ -84,7 +84,6 @@
         // Post Route For Make Razorpay Payment Request
         Route::post('payment', 'RazorpayController@payment')->name('payment');
 
-
         /*
          * Social Media
          */

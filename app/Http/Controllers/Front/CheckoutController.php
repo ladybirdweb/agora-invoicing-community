@@ -17,7 +17,6 @@ use App\Model\Product\Subscription;
 use App\User;
 use Cart;
 use Illuminate\Http\Request;
-use Razorpay\Api\Api;
 
 class CheckoutController extends Controller
 {
@@ -134,7 +133,6 @@ class CheckoutController extends Controller
                 }
             }
             //$content = Cart::getContent();
-           
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {

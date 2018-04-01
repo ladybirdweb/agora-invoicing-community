@@ -233,7 +233,7 @@ $tax=  0;
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotal())}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}}
                     </td>
 
                 </tr>

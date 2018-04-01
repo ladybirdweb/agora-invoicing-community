@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use Razorpay\Api\Api;
-use Session;
 use Redirect;
-
 
 class RazorpayController extends Controller
 {    
@@ -30,10 +26,13 @@ class RazorpayController extends Controller
         // $mailchimp = new MailChimpController();
         // $this->mailchimp = $mailchimp;
     }
+    
     public function payWithRazorpay()
-    {      
-         $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
-        // return view('themes.default1.front.checkout',compact('api'));
+    {
+        $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
+
+        return view('themes.default1.front.checkout', compact('api'));
+
     }
 
     public function payment($invoice,Request $request)
@@ -41,13 +40,18 @@ class RazorpayController extends Controller
         
         //Input items of form
         $input = Input::all();
+
         $success = true;
         $error = "Payment Failed";
 
         //get API Configuration 
 
+
+        //get API Configuration
+
         $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
+
        
         if(count($input)  && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
             
@@ -83,8 +87,7 @@ class RazorpayController extends Controller
                 }
                     // $returnValue=$checkout_controller->checkoutAction($invoice);
 
-                    
-                    \Cart::clear();
+                     \Cart::clear();
                      $status = 'success';
                       $message = 'Thank you for your order. Your transaction is successful. We will be processing your order soon.';
 
@@ -95,11 +98,12 @@ class RazorpayController extends Controller
         }
                catch (\Exception $ex) {
               throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
-            }
 
-            // Do something here for store payment details in database...
-        }
-    }
+
+           }
        
+        }
+         
      }
-        
+ }
+

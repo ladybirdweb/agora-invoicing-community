@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Razorpay\Api\Api;
 use Bugsnag;
 
+
 class CheckoutController extends Controller
 {
     public $subscription;
@@ -135,7 +136,6 @@ class CheckoutController extends Controller
                 }
             }
             //$content = Cart::getContent();
-           
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {

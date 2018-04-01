@@ -72,13 +72,13 @@ class RenewController extends Controller
     public function successRenew()
     {
         try {
-              $id = Session::get('subscription_id');
+            $id = Session::get('subscription_id');
 
             $planid = Session::get('plan_id');
-             $plan = $this->plan->find($planid);
+            $plan = $this->plan->find($planid);
             // dd($plan);
             $days = $plan->days;
-           
+
             $sub = $this->sub->find($id);
             $current = $sub->ends_at;
             $ends = $this->getExpiryDate($current, $days);
@@ -343,8 +343,7 @@ class RenewController extends Controller
     }
 
     public function renewByClient($id, Request $request)
-    { 
-
+    {
         $this->validate($request, [
             'plan'           => 'required',
             'payment_method' => 'required',

@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Model\Github\Github;
 use App\Model\Product\Subscription;
 use Auth;
+use Bugsnag;
 use Exception;
 use Illuminate\Http\Request;
-use Bugsnag;
 
 class GithubController extends Controller
 {

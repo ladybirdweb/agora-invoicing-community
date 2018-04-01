@@ -15,6 +15,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
+use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 
@@ -100,10 +101,10 @@ class CheckoutController extends Controller
                 Cart::remove($id);
                 $controller = new CartController();
                 $items = $controller->addProduct($id);
-                //dd($items);
                 Cart::add($items);
                 //
             }
+
             $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
@@ -133,10 +134,11 @@ class CheckoutController extends Controller
                 }
             }
             //$content = Cart::getContent();
-            //dd($content);
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -156,6 +158,8 @@ class CheckoutController extends Controller
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -164,12 +168,13 @@ class CheckoutController extends Controller
     {
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $payment_method = $request->input('payment_gateway');
-        //dd($request->all());
+
         $paynow = false;
         if ($request->input('invoice_id')) {
             $paynow = true;
             //$invoiceid = $request->input('invoice_id');
         }
+
         $cost = $request->input('cost');
         if (\Cart::getSubTotal() > 0 || $cost > 0) {
             $v = $this->validate($request, [
@@ -194,16 +199,31 @@ class CheckoutController extends Controller
                     $payment_method = 'free';
                     $status = 'success';
                 }
+                $invoice_no = $invoice->number;
+
                 $invoiceid = $invoice->id;
+
                 $amount = $invoice->grand_total;
 
                 //dd($payment);
                 $url = '';
                 $cart = Cart::getContent();
+                $invoices = $this->invoice->find($invoiceid);
+                // dd($invoice);
+                $items = new \Illuminate\Support\Collection();
+                // dd($items);
+                if ($invoices) {
+                    $items = $invoice->invoiceItem()->get();
+
+                    $product = $this->product($invoiceid);
+                }
             } else {
+                $items = new \Illuminate\Support\Collection();
                 $cart = [];
                 $invoice_id = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoice_id);
+                $items = $invoice->invoiceItem()->get();
+                $product = $this->product($invoice_id);
                 $amount = $invoice->grand_total;
             }
             //trasfer the control to event if cart price is not equal 0
@@ -211,7 +231,9 @@ class CheckoutController extends Controller
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }
-                \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow'));
+            // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+                // dd('sdfds');
             } else {
                 $action = $this->checkoutAction($invoice);
 
@@ -226,7 +248,7 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -258,7 +280,7 @@ class CheckoutController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -274,7 +296,7 @@ class CheckoutController extends Controller
 
             return $product;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -292,7 +314,7 @@ class CheckoutController extends Controller
                 $this->AddProductToOrder($id);
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order');
         }
@@ -319,7 +341,7 @@ class CheckoutController extends Controller
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order for Product');
         }
@@ -340,7 +362,7 @@ class CheckoutController extends Controller
             }
             $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
         }
@@ -359,7 +381,7 @@ class CheckoutController extends Controller
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
         }
@@ -386,7 +408,7 @@ class CheckoutController extends Controller
 
             $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');
         }

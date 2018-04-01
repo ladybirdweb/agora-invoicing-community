@@ -215,7 +215,7 @@ if (count($attributes) > 0) {
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
                                         </td>
                                     </tr>
 

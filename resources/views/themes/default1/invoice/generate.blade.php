@@ -155,7 +155,13 @@
 <script type='text/javascript'>
     /* attach a submit handler to the form */
     $("#formoid").submit(function (event) {
-        /* stop form from submitting normally */
+
+       //  var domain=$('#domain').val();
+       // if(!domain){
+       //          alert('Please select Domain name');
+       //          return false;
+       //   }
+         /* stop form from submitting normally */
         event.preventDefault();
 
         /* get the action attribute from the <form action=""> element */

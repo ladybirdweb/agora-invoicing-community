@@ -13,6 +13,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -350,7 +351,7 @@ class OrderController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.not-saved-successfully'));
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -369,9 +370,7 @@ class OrderController extends Controller
     public function executeOrder($invoiceid, $order_status = 'executed')
     {
         try {
-            //dd($invoiceid);
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
-            // dd($invoiceid);
             $user_id = $this->invoice->find($invoiceid)->user_id;
             // dd($user_id);
             if (count($invoice_items) > 0) {
@@ -383,6 +382,7 @@ class OrderController extends Controller
                         $version = $this->getProductByName($item->product_name)->version;
                         // dd($version);
                         $price = $item->subtotal;
+
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
                         // $plan_id = $this->getPrice($product)->subscription;
@@ -413,6 +413,8 @@ class OrderController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -423,6 +425,8 @@ class OrderController extends Controller
             $relation = new \App\Model\Order\OrderInvoiceRelation();
             $relation->create(['order_id' => $orderid, 'invoice_id' => $invoiceid]);
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -453,7 +457,8 @@ class OrderController extends Controller
                 $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version]);
             }
         } catch (\Exception $ex) {
-            //dd($ex);
+            Bugsnag::notifyException($ex);
+
             throw new \Exception('Can not Generate Subscription');
         }
     }
@@ -472,6 +477,8 @@ class OrderController extends Controller
         try {
             return $this->price->where('product_id', $product_id)->first();
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -491,6 +498,8 @@ class OrderController extends Controller
             // dd($name);
             return $this->product->where('name', $name)->first();
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -512,6 +521,8 @@ class OrderController extends Controller
 
             return $this->generateSerialKey($product_type);
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -536,6 +547,8 @@ class OrderController extends Controller
                 return $str;
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -573,6 +586,8 @@ class OrderController extends Controller
 
             return redirect()->back()->with('success', "Order $order->number has Deleted Successfully");
         } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -635,6 +650,8 @@ class OrderController extends Controller
 
             return $planid;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -656,6 +673,8 @@ class OrderController extends Controller
 
             return $status;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

@@ -17,6 +17,7 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use Bugsnag;
 use Config;
 use Illuminate\Http\Request;
 
@@ -159,6 +160,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -177,6 +180,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -195,6 +200,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -214,6 +221,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -334,7 +343,7 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
@@ -410,6 +419,8 @@ class TemplateController extends Controller
                             </div>
                         </div>';
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -430,7 +441,7 @@ class TemplateController extends Controller
             // dd($price);
             return $price;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -490,7 +501,7 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -513,7 +524,7 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -629,7 +640,7 @@ class TemplateController extends Controller
 
             return $result;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -646,7 +657,7 @@ class TemplateController extends Controller
 
             return $price;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -660,6 +671,8 @@ class TemplateController extends Controller
             //dd($total);
             return $total;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -675,6 +688,8 @@ class TemplateController extends Controller
 
             return $price;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -694,6 +709,8 @@ class TemplateController extends Controller
 
             return $price;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

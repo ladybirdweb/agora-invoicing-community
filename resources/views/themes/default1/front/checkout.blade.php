@@ -117,7 +117,7 @@ $tax=  0;
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
-                                <td class="product-name">
+                                <td class="product-price">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
                                    
                                     <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
@@ -176,22 +176,32 @@ $tax=  0;
                                                         $tax = $total-$sum;
                 ?>
                 <div class="form-group">
-                    @forelse($gateways as $gateway)
+                   
                     <div class="col-md-6">
-                        {{ucfirst($gateway->from)}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
+                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
-                    @empty
-                    @endforelse
+                    
                 </div>
                 @endif
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">
-                            Place Order
+                            Proceed
                         </button>
                     </div>
                 </div>
                 {!! Form::close() !!}
+                
+
+
+
+
+
+
+
+
+
+
 
             </div>
         </div>
@@ -201,11 +211,17 @@ $tax=  0;
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
+
                     <th>
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small>  @if($attributes[0]['currency'][0]['code'] == "INR")
+
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
+                                            @else
+                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
+                                            @endif
                     </td>
                 </tr>
                  

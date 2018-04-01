@@ -143,15 +143,14 @@ Checkout
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 
                 <h4 class="heading-primary">Payment</h4>
-<?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
+                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
 
                 <div class="form-group">
-                    @forelse($gateways as $gateway)
+                    
                     <div class="col-md-6">
-                        {{$gateway->from}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
+                        {{$gateways}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
-                    @empty
-                    @endforelse
+                    
                     <div class="col-md-6">
                         
                         {!! Form::hidden('invoice_id',$invoice->id) !!}
@@ -162,7 +161,7 @@ Checkout
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">
-                            Place Order
+                            Proceed
                         </button>
                     </div>
                 </div>
@@ -190,7 +189,7 @@ Checkout
 
                 @foreach($items->toArray() as $attribute)
                 
-                @if($attribute['tax_name']!='null,')
+                @if($attribute['tax_name']!='null,' && $symbol == "INR")
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";

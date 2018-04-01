@@ -103,6 +103,13 @@ return [
 
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Razorpay\ServiceProvider',
+'App\Plugins\Razorpay\ServiceProvider',
+'App\Plugins\Paypal\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',//
+'App\Plugins\Paypal\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
 

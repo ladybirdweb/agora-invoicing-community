@@ -359,23 +359,23 @@ class SettingsController extends Controller
         try {
             $plugins = new Plugin();
             $models = [];
-            $gateways = [];
-            $active_plugins = $plugins->where('status', 1)->get();
-            if ($active_plugins->count() > 0) {
-                foreach ($active_plugins as $plugin) {
-                    array_push($models, \DB::table(strtolower($plugin->name)));
-                }
-                if (count($models) > 0) {
-                    foreach ($models as $model) {
-                        if ($model->first()) {
-                            $currencies = explode(',', $model->first()->currencies);
-                            if (in_array($currency, $currencies)) {
-                                array_push($gateways, $model);
-                            }
-                        }
-                    }
-                }
-            }
+            $gateways = 'Razorpay';
+            // $active_plugins = $plugins->where('status', 1)->get();
+            // if ($active_plugins->count() > 0) {
+            //     foreach ($active_plugins as $plugin) {
+            //         array_push($models, \DB::table(strtolower($plugin->name)));
+            //     }
+            //     if (count($models) > 0) {
+            //         foreach ($models as $model) {
+            //             if ($model->first()) {
+            //                 $currencies = explode(',', $model->first()->currencies);
+            //                 if (in_array($currency, $currencies)) {
+            //                     array_push($gateways, $model);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
 
             return $gateways;
         } catch (\Exception $ex) {

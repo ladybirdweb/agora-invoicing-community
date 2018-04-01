@@ -817,9 +817,15 @@ use App\Http\Controllers\Controller;
             }
         }
 
-        public function getProductField($productid)
+        public function getProductField($productid,Request $request)
         {
             try {
+                $this->validate($request,[
+                'domain.*' => 'required',
+                    ], [
+                'domain.*.required' => 'Please provide Domain name',
+                //'domain.*.url'      => 'Domain name is not valid',
+                       ]);
                 $field = '';
                 $product = $this->product->find($productid);
                 if ($product) {

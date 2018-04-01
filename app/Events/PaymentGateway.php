@@ -17,6 +17,7 @@ class PaymentGateway extends Event
      */
     public function __construct($para)
     {
+       
         $this->para = $para;
     }
 
@@ -28,5 +29,5 @@ class PaymentGateway extends Event
     public function broadcastOn()
     {
         return [];
-    }
+    }   
 }

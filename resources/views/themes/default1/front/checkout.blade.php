@@ -117,7 +117,7 @@ $tax=  0;
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
-                                <td class="product-name">
+                                <td class="product-price">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
                                    
                                     <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
@@ -165,7 +165,7 @@ $tax=  0;
                     </div>
 
                 </div>
-                {!! Form::open(['url'=>'payment','method'=>'post']) !!}
+                {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 @if(Cart::getTotal()>0)
                 <h4 class="heading-primary">Payment</h4>
                 <?php 
@@ -176,47 +176,22 @@ $tax=  0;
                                                         $tax = $total-$sum;
                 ?>
                 <div class="form-group">
-                    @forelse($gateways as $gateway)
+                   
                     <div class="col-md-6">
-                        {{ucfirst($gateway->from)}} {!! Form::radio('payment_gateway',strtolower($gateway->from)) !!}<br><br>
+                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
-                    @empty
-                    @endforelse
+                    
                 </div>
                 @endif
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
-                        <input type="submit" name="submit" value="Pay Now" id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
-                           
-                        
+                        <button type="submit" class="btn btn-primary">
+                            Proceed
+                        </button>
                     </div>
                 </div>
                 {!! Form::close() !!}
-                 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-                                             <form name='razorpayform' action="charge.php" method="POST">     
-                                             <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
-                                            <!--<form name='razorpayform' action="verify.php" method="POST">                                -->
-                                            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
-                                            <input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
-                                           
-                                                
-                                            </form>
-
-
-
- <script src="https://checkout.razorpay.com/v1/checkout.js"
-                                data-key="{{ Config::get('custom.razor_key') }}"
-                                data-amount="1000"
-                                data-buttontext="Pay 10 INR"
-                                data-name="Laravelcode"
-                                data-description="Order Value"
-                                data-image="yout_logo_url"
-                                data-prefill.name="name"
-                                data-prefill.email="email"
-                                data-theme.color="#ff7529">
-                        </script>
-</script>
-   
+                
 
 
 
@@ -236,11 +211,17 @@ $tax=  0;
         <table class="cart-totals">
             <tbody>
                 <tr class="cart-subtotal">
+
                     <th>
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small>  @if($attributes[0]['currency'][0]['code'] == "INR")
+
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
+                                            @else
+                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
+                                            @endif
                     </td>
                 </tr>
                  

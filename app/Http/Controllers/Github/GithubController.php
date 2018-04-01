@@ -8,6 +8,7 @@ use App\Model\Product\Subscription;
 use Auth;
 use Exception;
 use Illuminate\Http\Request;
+use Bugsnag;
 
 class GithubController extends Controller
 {
@@ -312,13 +313,10 @@ class GithubController extends Controller
             if ($repo == 'faveo-servicedesk-community') {
                 return $array = ['Location' => $url];
             }
-            // $plan_id=App\Model\Product\Product::where('name','=', $repo)->select('id')->first();
-            // $user_id = Auth::user()->id;
             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
 
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
-
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
                     $ver[] = $value['tag_name'];
@@ -326,12 +324,12 @@ class GithubController extends Controller
             }
 
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
-
+            dd($url);
             $link = $this->github_api->getCurl1($url);
             // dd($link);
             return $link['header'];
         } catch (Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

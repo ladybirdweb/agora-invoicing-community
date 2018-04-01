@@ -26,7 +26,7 @@
                    <div class="form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
-                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','ccavanue'=>'ccAvanue','paypal'=>'Paypal'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
 
                     </div>
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">

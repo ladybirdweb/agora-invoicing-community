@@ -326,6 +326,7 @@ class HomeController extends Controller
 
     public function faveoVerification(Request $request)
     {
+        dd($request->all());
         //H9PQYZMJLSZ8VARH
         try {
             $data = $request->input('data');

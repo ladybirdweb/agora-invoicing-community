@@ -226,6 +226,7 @@ class InvoiceController extends Controller
             }
             $controller = new \App\Http\Controllers\Front\CartController();
             $currency = $controller->currency($user_id);
+           
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $product = $this->product->find($productid);
@@ -259,7 +260,9 @@ class InvoiceController extends Controller
             }
 
             //dd('dsjcgv');
+            if($currency=='INR'){
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
+             }
 
             // dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
@@ -463,8 +466,10 @@ class InvoiceController extends Controller
                     $tax_rate .= $value['rate'].',';
                 }
             }
+            if ($currency='INR'){
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
-            $domain = $this->domain($productid);
+            }
+              $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
                 'product_name'   => $product->name,

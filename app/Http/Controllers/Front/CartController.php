@@ -606,7 +606,7 @@ class CartController extends Controller
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
-                $price = str_replace(',', '', $price);
+                // $price = str_replace(',', '', $price);
 
                 return round($price);
             } else {
@@ -859,7 +859,8 @@ class CartController extends Controller
     {
         try {
             $tax = $price / (($rate / 100) + 1);
-            $result = $price - $tax;
+            // $result = $price - $tax;
+            $result= $price * ($rate / 100);
             $result = self::rounding($result);
 
             return $result;

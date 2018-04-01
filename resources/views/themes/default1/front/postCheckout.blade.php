@@ -13,8 +13,85 @@ Checkout
 @section('content')
 <?php
 
-    $symbol = $invoice->currency;
+    use Razorpay\Api\Api;
+     $merchant_orderid= generateMerchantRandomString();  
+  
+   function generateMerchantRandomString($length = 10) {
+    $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $charactersLength = strlen($characters);
+    $randomString = '';
+    for ($i = 0; $i < $length; $i++) {
+        $randomString .= $characters[rand(0, $charactersLength - 1)];
+    }
+    return $randomString;
+}
 
+    $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
+    $displayCurrency=$invoice->currency;;
+    $symbol = $invoice->currency;
+ if ($symbol !== 'INR')
+{
+    $data['display_currency']  = 'USD';
+    // $data['display_amount']    = $_POST['amount'];
+    
+}
+
+    if ($symbol == 'INR'){
+   
+$orderData = [
+    'receipt'         => 3456,
+    'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
+
+    'currency'        => 'INR',
+    'payment_capture' => 0 // auto capture
+     
+];
+
+
+}
+else
+{
+     $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
+     $exchange = json_decode(file_get_contents($url));
+     $displayAmount =$exchange->quotes->USDINR * $invoice->grand_total ;
+     $orderData = [
+    'receipt'         => 3456,
+    'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
+
+    'currency'        => 'INR',
+    'payment_capture' => 0 // auto capture
+     
+];
+}
+$razorpayOrder = $api->order->create($orderData);
+$razorpayOrderId = $razorpayOrder['id'];
+$_SESSION['razorpay_order_id'] = $razorpayOrderId;
+$displayAmount = $amount = $orderData['amount'];
+
+$data = [
+    "key"               => 'rzp_test_GL0mtsOBCft5Tp',
+    "name"              => 'Faveo Helpdesk',
+    "currency"          => 'INR',
+    "description"       =>  'Order for Invoice No' .-$invoice->number,
+    
+     "notes"             => [
+    "address"           =>  \Auth::user()->address,
+    "email"             =>  \Auth::user()->email,
+    "merchant_order_id" =>  $merchant_orderid,
+    ],
+    "theme"             => [
+    "color"             => "#F37254"
+    ],
+    "order_id"          => $razorpayOrderId,
+];
+
+if ($displayCurrency !== 'INR')
+{
+    $data['display_currency']  = 'USD';
+    $data['display_amount']    =$invoice->grand_total;
+    
+}
+$json = json_encode($data);
 ?>
 <div class="row">
 
@@ -68,6 +145,9 @@ Checkout
                                 <th class="product-name">
                                     Product
                                 </th>
+                                <th class="product-name">
+                                    Invoice No.
+                                </th>
                                 <th class="product-quantity">
                                     Version
                                 </th>
@@ -96,13 +176,17 @@ Checkout
                                     {{$item->product_name}}
                                 </td>
 
-                                <td class="product-quantity">
+                                <td class="product-invoice">
+                                    {{$invoice->number}}
+                                </td>
+                                <td class="product-version">
                                     @if($product->version)
                                     {{$product->version}}
                                     @else 
                                     Not available
                                     @endif
                                 </td>
+                                 
 
                                 <td class="product-quantity">
                                     {{$item->quantity}}
@@ -118,9 +202,26 @@ Checkout
 
 
                     </table>
-                    <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
+                    
                     <div class="col-md-12">
+
+                <div class="form-group">
+                   
+                  
+                   
+                    <div class="col-md-6">
+                        
+                        {!! Form::hidden('invoice_id',$invoice->id) !!}
+                        {!! Form::hidden('cost',$invoice->grand_total) !!}
+                    </div>
+                </div>
+                   </div>
+
+                </div>
+               
+                    <div class="col-md-12">
+                         <hr class="tall">
+                    <h4 class="heading-primary">Cart Totals</h4>
                         <table class="cart-totals">
                             <tbody>
 
@@ -138,39 +239,17 @@ Checkout
                         </table>
                         <hr class="tall">
                     </div>
-
-                </div>
-                {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 
-                <h4 class="heading-primary">Payment</h4>
-                    <?php $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($symbol); ?>
-
-                <div class="form-group">
-                    
-                    <div class="col-md-6">
-                        {{$gateways}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
-                    </div>
-                    
-                    <div class="col-md-6">
-                        
-                        {!! Form::hidden('invoice_id',$invoice->id) !!}
-                        {!! Form::hidden('cost',$invoice->grand_total) !!}
-                    </div>
-                </div>
                 
-                <div class="form-group">
-                    <div class="col-md-6 col-md-offset-4">
-                        <button type="submit" class="btn btn-primary">
-                            Proceed
-                        </button>
-                    </div>
-                </div>
-                {!! Form::close() !!}
+                
+               
+               
 
             </div>
         </div>
     </div>
     <div class="col-md-4">
+         
         <h4 class="heading-primary">Cart Totals</h4>
         <table class="cart-totals">
             <tbody>
@@ -188,31 +267,34 @@ Checkout
                 </tr>
 
                 @foreach($items->toArray() as $attribute)
-                
                 @if($attribute['tax_name']!='null,' && $symbol == "INR")
+
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";
                 if(str_finish($attribute['tax_name'], ',')){
                     $tax_name = str_replace(',','',$attribute['tax_name']);
                 }
+
                 if(str_finish($attribute['tax_percentage'], ',')){
                     $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
                 }
                 ?>
+               
                 <tr class="Taxes">
                     <th>
                         <strong>{{ucfirst($tax_name)}}<span>@</span>{{$tax_percentage}}%</strong>
                     </th>
                     <?php
                     $price = $product->price()->where('currency',$symbol)->first();
+                    // dd($price);
                     $cost = $price->sales_price;
                     if(!$cost){
                         $cost = $price->price;
                     }
                     ?>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$cost)}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],Cart::getSubTotal())}}
                     </td>
 
                 </tr>
@@ -226,9 +308,68 @@ Checkout
                         <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
                     </td>
                 </tr>
+
             </tbody>
+
         </table>
+        <br />
+        <div class="form-group">
+                   <div class="col-md-12" id="not-razor">
+                                                            <input type="submit" name="submit" value="Place Your Order And Pay" id="rzp-button1" class="btn btn-primary " data-loading-text="Loading..." style="width:100%">
+                                                        </div>
+                </div>
     </div>
 </div>
+ <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+                                             <form name='razorpayform' action="{!!url('payment/'.$invoice->id)!!}" method="POST">     
+                                             <!--<button id="rzp-button1" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">Pay Now</button>-->
+                                            <!--<form name='razorpayform' action="verify.php" method="POST">                                -->
+                                            <input type="hidden" name="razorpay_payment_id" id="razorpay_payment_id">
+                                            <input type="hidden" name="razorpay_signature"  id="razorpay_signature" >
+                                            
+                                                
+                                            </form>
+
+ <script>
+
+    // Checkout details as a json
+var options = <?php echo $json; ?>
+
+
+/**
+ * The entire list of Checkout fields is available at
+ * https://docs.razorpay.com/docs/checkout-form#checkout-fields
+ */
+options.handler = function (response){
+    document.getElementById('razorpay_payment_id').value = response.razorpay_payment_id;
+    document.getElementById('razorpay_signature').value = response.razorpay_signature;
+   
+    document.razorpayform.submit();
+};
+
+// Boolean whether to show image inside a white frame. (default: true)
+options.theme.image_padding = false;
+
+options.modal = {
+    ondismiss: function() {
+        console.log("This code runs when the popup is closed");
+    },
+    // Boolean indicating whether pressing escape key 
+    // should close the checkout form. (default: true)
+    escape: true,
+    // Boolean indicating whether clicking translucent blank
+    // space outside checkout form should close the form. (default: false)
+    backdropclose: false
+};
+
+var rzp = new Razorpay(options);
+
+document.getElementById('rzp-button1').onclick = function(e){
+    
+    rzp.open();
+    e.preventDefault();
+}
+</script>
+
 
 @endsection

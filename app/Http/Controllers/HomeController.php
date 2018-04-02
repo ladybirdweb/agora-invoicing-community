@@ -326,8 +326,7 @@ class HomeController extends Controller
 
     public function faveoVerification(Request $request)
     {
-        dd($request->all());
-        //H9PQYZMJLSZ8VARH
+         //H9PQYZMJLSZ8VARH
         try {
             $data = $request->input('data');
             $json = self::decryptByFaveoPrivateKey($data);
@@ -483,11 +482,11 @@ class HomeController extends Controller
     public function downloadForFaveo(Request $request, Order $order)
     {
         try {
-            // $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
+            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
             // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
             $this_order = $order
-                    ->where('number', $request->input('order_number'))
+                    ->where('number', $request->input($faveo_encrypted_order_number ))
                     //->where('serial_key', $faveo_encrypted_key)
                     //->where('domain', $faveo_encrypted_domain)
                     ->first();

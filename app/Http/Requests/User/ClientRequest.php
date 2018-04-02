@@ -34,11 +34,11 @@ class ClientRequest extends Request
 
                         'mobile_code' => 'required|numeric',
 
-                        'address'     => 'required',
-                        'zip'         => 'required',
-                        'timezone_id' => 'required',
-                        'user_name'   => 'required|unique:users,user_name',
-                        'bussiness'   => 'required',
+                        'address'          => 'required',
+                        'zip'              => 'required',
+                        'timezone_id'      => 'required',
+                        'user_name'        => 'required|unique:users,user_name',
+                        'bussiness'        => 'required',
                         'company_type'     => 'required',
                         'company_size'     => 'required',
                     ];
@@ -48,17 +48,17 @@ class ClientRequest extends Request
                 $id = $this->segment(2);
 
                     return [
-                        'first_name'  => 'required',
-                        'last_name'   => 'required',
-                        'email'       => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
-                        'company'     => 'required',
-                        'mobile'      => 'required|numeric',
-                        'mobile_code' => 'required|numeric',
-                        'address'     => 'required',
-                        'zip'         => 'required',
-                        'timezone_id' => 'required',
-                        'user_name'   => 'required|unique:users,user_name,'.$id,
-                        'bussiness'   => 'required',
+                        'first_name'       => 'required',
+                        'last_name'        => 'required',
+                        'email'            => 'required|email|unique:users,email,'.$this->getSegmentFromEnd().',id',
+                        'company'          => 'required',
+                        'mobile'           => 'required|numeric',
+                        'mobile_code'      => 'required|numeric',
+                        'address'          => 'required',
+                        'zip'              => 'required',
+                        'timezone_id'      => 'required',
+                        'user_name'        => 'required|unique:users,user_name,'.$id,
+                        'bussiness'        => 'required',
                         'company_type'     => 'required',
                         'company_size'     => 'required',
                     ];

@@ -294,7 +294,7 @@ $json = json_encode($data);
                     }
                     ?>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],Cart::getSubTotal())}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],Cart::getSubTotalWithoutConditions())}}
                     </td>
 
                 </tr>

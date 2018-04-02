@@ -83,8 +83,8 @@ return [
     27 => 'Barryvdh\\DomPDF\\ServiceProvider',
     28 => 'Yajra\\DataTables\\HtmlServiceProvider',
     29 => 'Yajra\\DataTables\\DataTablesServiceProvider',
-  ),
-  
+  ],
+
   'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager'             => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Factory'           => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
@@ -125,7 +125,7 @@ return [
     'command.route.clear'                                    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.route.list'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.seed'                                           => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
->>>>>>> origin/ashu-product-file
+
     'Illuminate\\Console\\Scheduling\\ScheduleFinishCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleRunCommand'    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.storage.link'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',

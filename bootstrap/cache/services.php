@@ -49,7 +49,7 @@ return [
     44 => 'Yajra\\DataTables\\HtmlServiceProvider',
     45 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ],
-  
+
   'eager' => [
     0  => 'Illuminate\\Auth\\AuthServiceProvider',
     1  => 'Illuminate\\Cookie\\CookieServiceProvider',
@@ -84,7 +84,7 @@ return [
     28 => 'Yajra\\DataTables\\HtmlServiceProvider',
     29 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ],
-  
+
   'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager'             => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Factory'           => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',

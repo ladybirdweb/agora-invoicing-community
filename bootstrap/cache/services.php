@@ -49,7 +49,7 @@ return [
     44 => 'Yajra\\DataTables\\HtmlServiceProvider',
     45 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ],
-  
+
   'eager' => [
     0  => 'Illuminate\\Auth\\AuthServiceProvider',
     1  => 'Illuminate\\Cookie\\CookieServiceProvider',

@@ -805,16 +805,17 @@ use App\Http\Controllers\Controller;
                 throw new \Exception($ex->getMessage());
             }
         }
-
-        public function getProductField($productid, Request $request)
+        
+        
+        public function getProductField($productid)
         {
             try {
-                $this->validate($request, [
-                'domain.*' => 'required',
-                    ], [
-                'domain.*.required' => 'Please provide Domain name',
-                //'domain.*.url'      => 'Domain name is not valid',
-                       ]);
+                // $this->validate($request, [
+                // 'domain.*' => 'required',
+                //     ], [
+                // 'domain.*.required' => 'Please provide Domain name',
+                // //'domain.*.url'      => 'Domain name is not valid',
+                //        ]);
                 $field = '';
                 $product = $this->product->find($productid);
                 if ($product) {

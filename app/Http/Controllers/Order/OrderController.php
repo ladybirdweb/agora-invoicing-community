@@ -376,10 +376,8 @@ class OrderController extends Controller
         try {
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
-            // dd($user_id);
             if (count($invoice_items) > 0) {
-                // dd($invoice_items);
-                foreach ($invoice_items as $item) {
+                 foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
                         $version = $this->getProductByName($item->product_name)->version;
@@ -452,15 +450,12 @@ class OrderController extends Controller
                 $days = $this->plan->where('id', $planid)->first()->days;
                 if ($days > 0) {
                     $dt = \Carbon\Carbon::now();
-                    //dd($dt);
                     $user_id = \Auth::user()->id;
                     $ends_at = $dt->addDays($days);
                 } else {
                     $ends_at = '';
                 }
                 $user_id = $this->order->find($orderid)->client;
-                // dd($orderid);
-                // dd($user_id,$plan_id,$order_id,$ends_at,$version,$product);
                 $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version, 'product_id' =>$product]);
                 // dd($product);
             }

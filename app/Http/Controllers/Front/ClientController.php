@@ -187,14 +187,13 @@ class ClientController extends Controller
                                 }
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
-                            $productCheck=$model->product()->select('github_owner','github_repository')->where('id',$model->product)->first();
+                            $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
 
-                           if(!$productCheck->github_owner=="" && !$productCheck->github_repository==""){
-                             $listUrl=$this->downloadGithubPopup($model->client, $model->invoice()->first()->number, $productid);
-                           }
-                            else{
+                            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+                                $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->number, $productid);
+                            } else {
                                 $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
-                           }
+                            }
 
                             return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i>&nbsp&nbsp $listUrl $url </a>"
                                     .'&nbsp;
@@ -493,8 +492,8 @@ class ClientController extends Controller
         return view('themes.default1.front.clients.download-list', compact('clientid', 'invoiceid', 'productid'));
     }
 
-    public function downloadGithubPopup($clientid,$invoiceid,$productid)
+    public function downloadGithubPopup($clientid, $invoiceid, $productid)
     {
-        return view('themes.default1.front.clients.download-github-list',compact('clientd','invoiceid','productid'));
+        return view('themes.default1.front.clients.download-github-list', compact('clientd', 'invoiceid', 'productid'));
     }
 }

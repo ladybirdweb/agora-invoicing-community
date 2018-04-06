@@ -833,8 +833,6 @@ class InvoiceController extends Controller
     {
         try {
             $invoice = $this->invoice->find($invoiceid);
-            //$user  = $this->user->find($invoice->user_id);
-            //dd($payment_date);
             $invoice_status = 'pending';
 
             $payment = $this->payment->create([

@@ -313,7 +313,7 @@ use App\Http\Controllers\Controller;
                     $request->file('image')->move($imagedestinationPath, $image);
                     $this->product->image = $image;
                 }
-                
+
                 $product = $this->product;
                 $product->fill($request->except('image', 'file'))->save();
 

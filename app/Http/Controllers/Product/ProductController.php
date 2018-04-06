@@ -821,8 +821,8 @@ use App\Http\Controllers\Controller;
         public function getProductField($productid)
         {
             try {
-                 $field = '';
-                 $product = $this->product->find($productid);
+                $field = '';
+                $product = $this->product->find($productid);
                 if ($product) {
                     if ($product->require_domain == 1) {
                         $field .= "<div class='col-md-4 form-group'>

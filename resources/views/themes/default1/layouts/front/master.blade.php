@@ -1,6 +1,7 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
 <!DOCTYPE html>
 <html>
+
     <head><meta http-equiv="Content-Type" content="text/html; charset=gb18030">
 
         <!-- Basic -->
@@ -64,7 +65,7 @@
 
         <!-- Head Libs -->
         <script src="{{asset('js/modernizr.min.js')}}"></script>
-
+   
     </head>
     <body>
 
@@ -519,6 +520,9 @@ s0.parentNode.insertBefore(s1,s0);
 </script>
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
+<script language="JavaScript" type="text/javascript">
+TrustLogo("https://www.faveohelpdesk.com/", "CL1", "none");
+</script>
     </body>
 </html>
 @yield('end')

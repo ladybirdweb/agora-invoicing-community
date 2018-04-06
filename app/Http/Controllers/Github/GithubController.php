@@ -314,30 +314,27 @@ class GithubController extends Controller
                 return $array = ['Location' => $url];
             }
 
-           $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
-           $url = "https://api.github.com/repos/$owner/$repo/releases";
-           $link = $this->github_api->getCurl1($url);
+            $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
+            $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $link = $this->github_api->getCurl1($url);
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
                     $ver[] = $value['tag_name'];
                 }
             }
             //For Satellite Helpdesk
-            if($repo == 'faveo-satellite-helpdesk-advance')
-            {
-
-             $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
+            if ($repo == 'faveo-satellite-helpdesk-advance') {
+                $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
 
-           //For Helpdesk Advanced
-           if($repo == 'Faveo-Helpdesk-Pro'){
-            $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
-        }
-            
-            $link = $this->github_api->getCurl1($url);
-           
-            return $link['header'];
+            //For Helpdesk Advanced
+            if ($repo == 'Faveo-Helpdesk-Pro') {
+                $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
+            }
 
+            $link = $this->github_api->getCurl1($url);
+
+            return $link['header'];
         } catch (Exception $ex) {
             dd($ex->getline());
             Bugsnag::notifyException($ex);

@@ -10,8 +10,8 @@ use App\Model\Order\Payment;
 use App\Model\Product\Subscription;
 use App\Model\Product\ProductUpload;
 use App\User;
-use Exception;
 use Bugsnag;
+use Exception;
 
 class ClientController extends Controller
 {
@@ -55,11 +55,11 @@ class ClientController extends Controller
 
     public function getInvoices()
     {
-      try {
-        $invoices = Invoice::where('user_id', \Auth::user()->id)
+        try {
+            $invoices = Invoice::where('user_id', \Auth::user()->id)
                     ->select('number', 'created_at', 'grand_total', 'id', 'status');
 
-        return \DataTables::of($invoices)
+            return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
@@ -145,6 +145,7 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.order1');
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -155,8 +156,7 @@ class ClientController extends Controller
     public function getOrders()
     {
 
-
-               try{
+      try{
         $orders = Order:: where('client', \Auth::user()->id);
         return \DataTables::of($orders)
                         ->addColumn('id', function ($model) {
@@ -177,7 +177,7 @@ class ClientController extends Controller
                             }
 
                             return $end;
-                          })
+                        })
                         ->addColumn('Action', function ($model) {
                             $sub = $model->subscription()->first();
                             $order=Order::where('id',$model->id)->select('product')->first();
@@ -201,12 +201,14 @@ class ClientController extends Controller
                         ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make(true);
+
                } catch (Exception $ex) {
                 // dd($ex->getline());
                 Bugsnag::notifyException($ex);
            echo $ex->getMessage();
        }
-    }
+
+        } 
 
     public function subscriptions()
     {
@@ -214,6 +216,7 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.subscription');
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -254,6 +257,7 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states', 'bussinesses'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -274,6 +278,7 @@ class ClientController extends Controller
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
             Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -295,6 +300,7 @@ class ClientController extends Controller
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -309,6 +315,7 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -339,6 +346,7 @@ class ClientController extends Controller
             throw new Exception('Sorry! We can not find your order');
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -399,7 +407,8 @@ class ClientController extends Controller
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -436,7 +445,8 @@ class ClientController extends Controller
 
                             ->make(true);
         } catch (Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -466,7 +476,8 @@ class ClientController extends Controller
 
                             ->make(true);
         } catch (Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -18,10 +18,11 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
+    use Bugsnag;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
-    
+
     // use Input;
 
     class ProductController extends Controller
@@ -87,7 +88,8 @@ use App\Http\Controllers\Controller;
             try {
                 return view('themes.default1.product.product.index');
             } catch (\Exception $e) {
-                 Bugsnag::notifyException($e);
+                Bugsnag::notifyException($e);
+
                 return redirect('/')->with('fails', $e->getMessage());
             }
         }
@@ -99,10 +101,10 @@ use App\Http\Controllers\Controller;
          */
         public function getProducts()
         {
-          try {
-            $new_product = Product::select('id', 'name', 'type', 'group')->get();
+            try {
+                $new_product = Product::select('id', 'name', 'type', 'group')->get();
 
-            return\ DataTables::of($new_product)
+                return\ DataTables::of($new_product)
             // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -151,10 +153,11 @@ use App\Http\Controllers\Controller;
 
                             ->rawColumns(['checkbox', 'name', 'type', 'group', 'price', 'currency', 'Action'])
                             ->make(true);
-              } catch (\Exception $e) {
-                 Bugsnag::notifyException($e);
-               return redirect()->back()->with('fails', $e->getMessage());
-           }
+            } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
+                return redirect()->back()->with('fails', $e->getMessage());
+            }
         }
 
         public function getUpload($id)
@@ -193,7 +196,7 @@ use App\Http\Controllers\Controller;
         // Save file Info in Modal popup
         public function save(Request $request)
         {
-         try {
+            try {
                 $product_id = Product::where('name', '=', $request->input('product'))->select('id')->first();
 
                 $this->product_upload->product_id = $product_id->id;
@@ -214,6 +217,7 @@ use App\Http\Controllers\Controller;
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->with('fails', $e->getMessage());
             }
         }
@@ -221,7 +225,7 @@ use App\Http\Controllers\Controller;
         //Update the File Info
         public function uploadUpdate($id, Request $request)
         {
-             $file_upload = ProductUpload::find($id);
+            $file_upload = ProductUpload::find($id);
 
             $file_upload->title = $request->input('title');
             $file_upload->description = $request->input('description');
@@ -233,12 +237,12 @@ use App\Http\Controllers\Controller;
                 $request->file('file')->move($destination, $file);
                 $file_upload->file = $file;
             }
-             $file_upload->save();
+            $file_upload->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         }
 
-         /**
+        /**
          * Show the form for creating a new resource.
          *
          * @return Response
@@ -339,7 +343,7 @@ use App\Http\Controllers\Controller;
                 }
 
                 $taxes = $request->input('tax');
-                 if ($taxes) {
+                if ($taxes) {
                     $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
                 }
 
@@ -484,7 +488,8 @@ use App\Http\Controllers\Controller;
                         $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
                     }
                 }
-                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -646,8 +651,8 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
-                    }
 
+                    } 
                     elseif ($file) {
                         //If the Product is Downloaded from FileSystem
                              $fileName=$file->file;
@@ -688,7 +693,7 @@ use App\Http\Controllers\Controller;
                     }
                 }
             } catch (\Exception $e) {
-                 Bugsnag::notifyException($e);
+                Bugsnag::notifyException($e);
                 dd($e->getMessage());
 
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -717,7 +722,8 @@ use App\Http\Controllers\Controller;
                 if ($api) {
                     return response()->json(['error'=>$e->getMessage()]);
                 }
-                 Bugsnag::notifyException($e);
+                Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -767,7 +773,8 @@ use App\Http\Controllers\Controller;
                     return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
                 }
             } catch (\Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 return redirect('auth/login')->with('fails', $ex->getMessage());
             }
         }
@@ -787,7 +794,7 @@ use App\Http\Controllers\Controller;
 
                 return response()->json($result);
             } catch (\Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
                 $result = ['price' => $ex->getMessage(), 'field' => ''];
 
                 return response()->json($result);
@@ -808,7 +815,8 @@ use App\Http\Controllers\Controller;
                     $product->save();
                 }
             } catch (\Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 throw new \Exception($ex->getMessage());
             }
         }
@@ -835,7 +843,8 @@ use App\Http\Controllers\Controller;
 
                 return $field;
             } catch (\Exception $ex) {
-              Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -855,7 +864,8 @@ use App\Http\Controllers\Controller;
 
                 return $field;
             } catch (\Exception $ex) {
-              Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -884,7 +894,8 @@ use App\Http\Controllers\Controller;
 
                 return response()->json($result);
             } catch (\Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -900,7 +911,8 @@ use App\Http\Controllers\Controller;
                     </div>";
                 }
             } catch (\Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -919,7 +931,7 @@ use App\Http\Controllers\Controller;
 
                 return false;
             } catch (Exception $ex) {
-                 Bugsnag::notifyException($ex);
+                Bugsnag::notifyException($ex);
             }
         }
 

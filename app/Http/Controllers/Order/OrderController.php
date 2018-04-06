@@ -377,7 +377,7 @@ class OrderController extends Controller
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
             if (count($invoice_items) > 0) {
-                 foreach ($invoice_items as $item) {
+                foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
                         $version = $this->getProductByName($item->product_name)->version;

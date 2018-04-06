@@ -805,8 +805,7 @@ use App\Http\Controllers\Controller;
                 throw new \Exception($ex->getMessage());
             }
         }
-        
-        
+
         public function getProductField($productid)
         {
             try {

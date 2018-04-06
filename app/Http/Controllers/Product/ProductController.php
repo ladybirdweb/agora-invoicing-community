@@ -661,14 +661,15 @@ use App\Http\Controllers\Controller;
 
                         return ['release'=>$relese, 'type'=>'github'];
                     } elseif ($file->file) {
-                        // dd($file->file);
-                        // $relese = storage_path().'\products'.'\\'.$file->file;
-                        $relese = '/home/faveo/products/'.$file->file;
+                        dd($file->file);
+                        $relese = storage_path().'\products'.'\\'.$file->file;
+                        // $relese = '/home/faveo/products/'.$file->file;
                         // dd($relese);
                         return $relese;
                     }
                 }
             } catch (\Exception $e) {
+                dd($e);
                 Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -817,17 +818,11 @@ use App\Http\Controllers\Controller;
             }
         }
 
-        public function getProductField($productid, Request $request)
+        public function getProductField($productid)
         {
             try {
-                $this->validate($request, [
-                'domain.*' => 'required',
-                    ], [
-                'domain.*.required' => 'Please provide Domain name',
-                //'domain.*.url'      => 'Domain name is not valid',
-                       ]);
-                $field = '';
-                $product = $this->product->find($productid);
+                 $field = '';
+                 $product = $this->product->find($productid);
                 if ($product) {
                     if ($product->require_domain == 1) {
                         $field .= "<div class='col-md-4 form-group'>

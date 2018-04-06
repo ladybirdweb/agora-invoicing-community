@@ -370,7 +370,7 @@ class OrderController extends Controller
     public function executeOrder($invoiceid, $order_status = 'executed')
     {
         try {
-            $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
+             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
             // dd($user_id);
             if (count($invoice_items) > 0) {
@@ -388,7 +388,7 @@ class OrderController extends Controller
                         // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
-
+                     
                         $order = $this->order->create([
                             'invoice_id'      => $invoiceid,
                             'invoice_item_id' => $item->id,
@@ -444,7 +444,7 @@ class OrderController extends Controller
         try {
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
-                //dd($days);
+                // dd($days);
                 if ($days > 0) {
                     $dt = \Carbon\Carbon::now();
                     //dd($dt);

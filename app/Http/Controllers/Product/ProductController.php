@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
-    use Carbon;
-
     use App\Model\Payment\Plan;
     use App\Model\Payment\Tax;
     use App\Model\Payment\TaxClass;
@@ -630,36 +628,33 @@ use App\Http\Controllers\Controller;
 
             return $server;
         }
-        
+
         /*
         *  Download Files from Filesystem/Github
         */
-        public function downloadProduct($uploadid,$id,$invoice_id,$version_id='')
+        public function downloadProduct($uploadid, $id, $invoice_id, $version_id = '')
         {
-             try {
+            try {
                 $product = $this->product->findOrFail($uploadid);
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
-                $file = $this->product_upload->where('product_id', '=', $uploadid)->where('id',$version_id)->select('file')->first();
-                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
+                $file = $this->product_upload->where('product_id', '=', $uploadid)->where('id', $version_id)->select('file')->first();
+                $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
                 if ($type == 2) {
-                   
                     if ($owner && $repository) {//If the Product is downloaded from Github
                         $github_controller = new \App\Http\Controllers\Github\GithubController();
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
-
-                    } 
-                    elseif ($file) {
+                    } elseif ($file) {
                         //If the Product is Downloaded from FileSystem
-                             $fileName=$file->file;
-                             $relese = storage_path().'/products'.'//'.$fileName;
-                             // dd($relese);
-                            return $relese;
-                       }
+                        $fileName = $file->file;
+                        $relese = storage_path().'/products'.'//'.$fileName;
+                        // dd($relese);
+                        return $relese;
+                    }
                 }
             } catch (\Exception $e) {
                 dd($e);
@@ -728,11 +723,10 @@ use App\Http\Controllers\Controller;
             }
         }
 
-        public function userDownload($uploadid, $userid,$invoice_number,$version_id='')
+        public function userDownload($uploadid, $userid, $invoice_number, $version_id = '')
         {
             try {
-                
-                 if (\Auth::user()->role != 'admin') {
+                if (\Auth::user()->role != 'admin') {
                     if (\Auth::user()->id != $userid) {
                         throw new \Exception('This user has no permission for this action');
                     }
@@ -750,7 +744,7 @@ use App\Http\Controllers\Controller;
                         $invoice_id = $invoice->id;
                         // $productUploadId= $this->product_upload->select('id')->get();
                         // dd($productUploadId);
-                        $release = $this->downloadProduct($uploadid,$userid, $invoice_id,$version_id);
+                        $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                         if (is_array($release) && array_key_exists('type', $release)) {
                             $release = $release['release'];
 

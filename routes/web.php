@@ -144,7 +144,6 @@
         Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 
-
         /*
          * Product
          */

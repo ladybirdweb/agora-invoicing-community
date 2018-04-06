@@ -27,7 +27,7 @@ class Order extends BaseModel
         return $this->hasOne('App\Model\Product\Subscription');
     }
 
-     public function productUpload()
+    public function productUpload()
     {
         return $this->hasMany('App\Model\Product\ProductUpload');
     }

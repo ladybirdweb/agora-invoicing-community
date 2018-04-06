@@ -317,19 +317,18 @@ class GithubController extends Controller
                 }
             }
 
-             //For Satellite Helpdesk
-            if($repo == 'faveo-satellite-helpdesk-advance')
-            {
-
-             $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
+            //For Satellite Helpdesk
+            if ($repo == 'faveo-satellite-helpdesk-advance') {
+                $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
 
             //For Helpdesk Advanced
-           if($repo == 'Faveo-Helpdesk-Pro'){
-               $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
+            if ($repo == 'Faveo-Helpdesk-Pro') {
+                $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
             }
             $link = $this->github_api->getCurl1($url);
-             return $link['header'];
+
+            return $link['header'];
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

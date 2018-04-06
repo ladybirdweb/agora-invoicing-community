@@ -313,18 +313,10 @@ use App\Http\Controllers\Controller;
                     $request->file('image')->move($imagedestinationPath, $image);
                     $this->product->image = $image;
                 }
-                if ($request->hasFile('file')) {
-                    $file = $request->file('file')->getClientOriginalName();
-                    $filedestinationPath = storage_path().'/products';
-                    $request->file('file')->move($filedestinationPath, $file);
-                    $this->product->file = $file;
-                }
-
+                
                 $product = $this->product;
-                // dd($request->except('image', 'file'));
                 $product->fill($request->except('image', 'file'))->save();
 
-                $this->updateVersionFromGithub($product->id);
                 $product_id = $product->id;
                 $subscription = $request->input('subscription');
 

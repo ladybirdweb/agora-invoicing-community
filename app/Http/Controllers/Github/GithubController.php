@@ -46,7 +46,7 @@ class GithubController extends Controller
             dd($auth);
 
             return $auth;
-         } catch (Exception $ex) {
+        } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }

@@ -13,10 +13,10 @@
                     
                     <?php 
                     //All the versions of Uploades Files
-                   $versions = \App\Model\Product\ProductUpload::where('product_id',$productid)->select('id','title','description','version','file','created_at')->get();
+                   $versions = \App\Model\Product\ProductUpload::where('product_id', $productid)->select('id', 'title', 'description', 'version', 'file', 'created_at')->get();
                    //End Date of the Current Product Version
-                   $endDate=  \App\Model\Product\Subscription::select('ends_at')->where('product_id',$productid)->first();
-                  
+                   $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
+
                 ?>
                <head>
                 <style>
@@ -75,7 +75,7 @@
                   @foreach ($versions as $version)
                   <tr style="text-align: center;">
                     <td>
-                      <span><strong><?php echo $version->version;?></strong></span> 
+                      <span><strong><?php echo $version->version; ?></strong></span> 
                     </td>
 
                 <td> <div class="form-group col-md-12 {{ $errors->has('title') ? 'has-error' : '' }}">

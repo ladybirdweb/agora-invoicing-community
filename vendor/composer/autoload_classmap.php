@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddForeignKeyToOrdersTable' => $baseDir . '/database/migrations/2018_04_02_190825_add_foreign_key_to_orders_table.php',
+    'AddForeignKeyToProductUploadsTable' => $baseDir . '/database/migrations/2018_04_02_194107_add_foreign_key_to_product_uploads_table.php',
     'AddForeignKeysToConfigurableOptionsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',
     'AddForeignKeysToGroupFeaturesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_group_features_table.php',
     'AddForeignKeysToInvoiceItemsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_invoice_items_table.php',

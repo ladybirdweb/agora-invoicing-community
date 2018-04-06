@@ -491,6 +491,8 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
     );
 
     public static $classMap = array (
+        'AddForeignKeyToOrdersTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_02_190825_add_foreign_key_to_orders_table.php',
+        'AddForeignKeyToProductUploadsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_02_194107_add_foreign_key_to_product_uploads_table.php',
         'AddForeignKeysToConfigurableOptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',
         'AddForeignKeysToGroupFeaturesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_group_features_table.php',
         'AddForeignKeysToInvoiceItemsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_invoice_items_table.php',

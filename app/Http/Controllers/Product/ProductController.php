@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
-    // use Input;
+    use Carbon;
 
     use App\Model\Payment\Plan;
     use App\Model\Payment\Tax;
@@ -21,8 +21,7 @@ use App\Http\Controllers\Controller;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
-    Use Bugsnag;
-
+    
     // use Input;
 
     class ProductController extends Controller
@@ -626,34 +625,39 @@ use App\Http\Controllers\Controller;
 
             return $server;
         }
-
-        public function downloadProduct($id, $invoice_id)
+        
+        /*
+        *  Download Files from Filesystem/Github
+        */
+        public function downloadProduct($uploadid,$id,$invoice_id,$version_id='')
         {
-            try {
-                $product = $this->product->findOrFail($id);
+             try {
+                $product = $this->product->findOrFail($uploadid);
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
-
-                $file = $this->product_upload->where('product_id', '=', $id)->select('file')->orderBy('created_at', 'desc')->first();
-                // dd($file);
-
-                $order = Order::where('invoice_id', '=', $invoice_id)->first();
+                $file = $this->product_upload->where('product_id', '=', $uploadid)->where('id',$version_id)->select('file')->first();
+                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
-
                 if ($type == 2) {
-                    if ($owner && $repository) {
+                   
+                    if ($owner && $repository) {//If the Product is downloaded from Github
                         $github_controller = new \App\Http\Controllers\Github\GithubController();
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
-                    } elseif ($file->file) {
-                        // $relese = storage_path().'\products'.'\\'.$file->file;
-                        $relese = '/home/faveo/products/'.$file->file;
-                         return $relese;
                     }
+
+                    elseif ($file) {
+                        //If the Product is Downloaded from FileSystem
+                             $fileName=$file->file;
+                             $relese = storage_path().'/products'.'//'.$fileName;
+                             // dd($relese);
+                            return $relese;
+                       }
                 }
             } catch (\Exception $e) {
+                dd($e);
                 Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -718,16 +722,18 @@ use App\Http\Controllers\Controller;
             }
         }
 
-        public function userDownload($userid, $invoice_number)
+        public function userDownload($uploadid, $userid,$invoice_number,$version_id='')
         {
             try {
-                if (\Auth::user()->role != 'admin') {
+                
+                 if (\Auth::user()->role != 'admin') {
                     if (\Auth::user()->id != $userid) {
                         throw new \Exception('This user has no permission for this action');
                     }
                 }
                 $user = new \App\User();
                 $user = $user->findOrFail($userid);
+
                 $invoice = new \App\Model\Order\Invoice();
                 $invoice = $invoice->where('number', $invoice_number)->first();
 
@@ -736,7 +742,9 @@ use App\Http\Controllers\Controller;
                         $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                         $product_id = $order->product;
                         $invoice_id = $invoice->id;
-                        $release = $this->downloadProduct($product_id, $invoice_id);
+                        // $productUploadId= $this->product_upload->select('id')->get();
+                        // dd($productUploadId);
+                        $release = $this->downloadProduct($uploadid,$userid, $invoice_id,$version_id);
                         if (is_array($release) && array_key_exists('type', $release)) {
                             $release = $release['release'];
 

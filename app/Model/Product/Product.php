@@ -39,7 +39,7 @@ class Product extends BaseModel
 
     public function productUpload()
     {
-        return $this->hasMany('App/Model/Product/ProductUpload');
+        return $this->hasMany('App\Model\Product\ProductUpload','product_id');
     }
 
     public function delete()

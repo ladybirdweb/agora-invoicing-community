@@ -8,6 +8,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Product\Subscription;
+use App\Model\Product\ProductUpload;
 use App\User;
 use Exception;
 use Bugsnag;
@@ -38,6 +39,9 @@ class ClientController extends Controller
 
         $payment = new Payment();
         $this->payment = $payment;
+
+        $product_upload = new ProductUpload();
+        $this->product_upload = $product_upload;
     }
 
     public function invoices()
@@ -86,6 +90,55 @@ class ClientController extends Controller
         }
     }
 
+
+     public function getVersionList($productid,$clientid,$invoiceid)
+     {
+        try{
+            
+             $versions = ProductUpload::where('product_id',$productid)->select('id','product_id','version','title','description','file','created_at')->get();
+         
+            // dd($versions);
+             return \DataTables::of($versions) 
+                              
+                               ->addColumn('id', function ($versions) {
+                                return ucfirst($versions->id);
+                            })
+                              ->addColumn('version', function ($versions) {
+                                return ucfirst($versions->version);
+                            })
+                               ->addColumn('title', function ($versions) {
+                                return ucfirst($versions->title);
+                            })
+                                ->addColumn('description', function ($versions) {
+                                return ucfirst($versions->description);
+                            })  
+                                ->addColumn('file', function ($versions) use($clientid,$invoiceid,$productid) {
+                                     // $clientid=\Auth::User()->id;
+                                     $endDate= Subscription::select('ends_at')->where('product_id',$productid)->first();
+
+                                 if($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()){
+                                      return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                                    .'&nbsp;
+
+                                   </p>';
+                                 }
+                                 else{
+                                      $url = '<a href='.url('download/'.$versions->id)." class='btn btn-sm btn-primary readonly>Download</a>";
+                                     return $url;
+                                 }
+                                 
+                            })
+                             
+                             ->rawColumns(['version', 'title', 'description', 'file'])
+                           
+                            ->make(true);
+        }
+        catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+            echo $ex->getMessage();
+        }
+     }
+
     public function orders()
     {
         try {
@@ -95,13 +148,16 @@ class ClientController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /*
+    * Show all the orders for User
+    */ 
     public function getOrders()
     {
+
+
                try{
         $orders = Order:: where('client', \Auth::user()->id);
-        //->select('id','product','created_at')
-
         return \DataTables::of($orders)
                         ->addColumn('id', function ($model) {
                             return $model->id;
@@ -109,11 +165,7 @@ class ClientController extends Controller
                         ->addColumn('product_name', function ($model) {
                             return $model->product()->first()->name;
                         })
-//                          ->addColumn('created_at', function ($model) {
-//                            $date = date_create($model->created_at);
-//                            return date_format($date,'l, F j, Y H:m A');
-//                        })
-                        //->showColumns('created_at')
+                         
                         ->addColumn('expiry', function ($model) {
                             $end = '--';
                             if ($model->subscription()->first()) {
@@ -128,6 +180,8 @@ class ClientController extends Controller
                           })
                         ->addColumn('Action', function ($model) {
                             $sub = $model->subscription()->first();
+                            $order=Order::where('id',$model->id)->select('product')->first();
+                            $productid =$order->product;
                             $order_cont = new \App\Http\Controllers\Order\OrderController();
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = '';
@@ -137,16 +191,18 @@ class ClientController extends Controller
                                 }
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
+                        $listUrl=$this->downloadPopup($model->client,$model->invoice()->first()->number,$productid);
 
-                            return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
+                        return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i>&nbsp&nbsp $listUrl $url </a>"
                                     .'&nbsp;
 
-                                    <a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
+                                   </p>';
                         })
                         ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                         ->make(true);
                } catch (Exception $ex) {
+                // dd($ex->getline());
                 Bugsnag::notifyException($ex);
            echo $ex->getMessage();
        }
@@ -418,5 +474,12 @@ class ClientController extends Controller
     public function renewPopup($id)
     {
         return view('themes.default1.renew.popup', compact('id'));
+    }
+
+     public function downloadPopup($clientid,$invoiceid,$productid)
+    {
+        
+        
+        return view('themes.default1.front.clients.download-list', compact('clientid','invoiceid','productid'));
     }
 }

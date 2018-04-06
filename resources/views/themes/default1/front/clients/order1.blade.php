@@ -45,7 +45,7 @@ active
                 @endif
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-               @include('themes.default1.front.clients.download-list')
+             
                     <thead><tr>
                             <th>Product Name</th>
                             <th>Expiry</th>
@@ -60,6 +60,7 @@ active
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#order-table').DataTable({
+            destroy:true,
             processing: true,
             serverSide: true,
             order: [[ 0, "desc" ]],
@@ -86,23 +87,7 @@ active
             },
         });
     </script>
-    <script>
-        $('#download-list').on('show.bs.modal', function(e){
-        
-    })
-        function openEditPopup(e)
-        {
-             console.log(e)
-            $('#download-list').modal('toggle');
-             var url = "{{url('upload/')}}"+"/"+upload_id
-         
-          $("#upload-edit-form").attr('action', url)
-
-
-        }
-    </script>
-
-
+    
 @stop
 
 

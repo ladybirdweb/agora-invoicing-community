@@ -46,12 +46,7 @@ class GithubController extends Controller
             dd($auth);
 
             return $auth;
-            //            if($auth!='true'){
-//                throw new Exception('can not authenticate with github', 401);
-//            }
-            //$authenticated = json_decode($auth);
-            //dd($authenticated);
-        } catch (Exception $ex) {
+         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -314,7 +309,6 @@ class GithubController extends Controller
                 return $array = ['Location' => $url];
             }
             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
-
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
             foreach ($link['body'] as $key => $value) {
@@ -324,7 +318,6 @@ class GithubController extends Controller
             }
 
             $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
-            dd($url);
             $link = $this->github_api->getCurl1($url);
             // dd($link);
             return $link['header'];

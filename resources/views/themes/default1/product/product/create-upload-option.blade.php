@@ -13,20 +13,13 @@
                     <label> Product Name </label>
                  
                       <input type="text" name="product" class="form-control" value="{{$product->name}}" readonly>
-                      
-                      
-                 
-                    
-                </div>
+                 </div>
                 
                  <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
                    
                     {!! Form::label('Title',Lang::get('Title'),['class'=>'required']) !!}
                     <input type="text" class="form-control" name="title">
                  </div>
-
-
-
                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('Description',Lang::get('Description'),['class'=>'required']) !!}

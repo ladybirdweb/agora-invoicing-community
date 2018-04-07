@@ -1036,7 +1036,7 @@ class CartController extends Controller {
             $product = $this->product->find($productid);
             $price = $product->price()->where('currency', $currency)->first();
             if ($price) {
-                $sales = $price->sales_price;
+                $sales =$price->sales_price;
                 if ($sales == 0) {
                     $sales = $price->price;
                 }

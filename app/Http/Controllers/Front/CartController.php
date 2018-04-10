@@ -506,7 +506,7 @@ class CartController extends Controller {
                     ]
             );
         } catch (\Exception $ex) {
-            
+
         }
     }
 
@@ -528,7 +528,7 @@ class CartController extends Controller {
 
             return $currency;
         } catch (\Exception $ex) {
-            
+
         }
     }
 
@@ -976,7 +976,6 @@ class CartController extends Controller {
             $currency = 'INR';
             if ($this->checkCurrencySession() == true) {
                 $currency = Session::get('currency');
-                
             }
 
             if (\Auth::user()) {
@@ -1036,7 +1035,7 @@ class CartController extends Controller {
             $product = $this->product->find($productid);
             $price = $product->price()->where('currency', $currency)->first();
             if ($price) {
-                $sales =$price->sales_price;
+                $sales = $price->sales_price;
                 if ($sales == 0) {
                     $sales = $price->price;
                 }

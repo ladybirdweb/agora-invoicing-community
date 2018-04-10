@@ -61,6 +61,8 @@ class GithubApiController extends Controller
 
     public function getCurl1($url)
     {
+
+
         if (str_contains($url, ' ')) {
             $url = str_replace(' ', '', $url);
         }
@@ -81,10 +83,13 @@ class GithubApiController extends Controller
         $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         $header = substr($content, 0, $header_size);
         $header = $this->convertHeaderToArray($header, $content);
+
+
+
         $body = substr($content, $header_size);
         curl_close($ch);
-        // dd($body);
-        return ['body' => json_decode($body, true), 'header' => $header];
+      
+        return ['body' => json_decode($body, true),'header'=>$header];
     }
 
     public function convertHeaderToArray($header_text, $response)

@@ -352,9 +352,8 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception('Can not Generate Invoice');
+             Bugsnag::notifyException($ex);
+             throw new \Exception('Can not Generate Invoice');
         }
     }
 
@@ -466,7 +465,7 @@ class InvoiceController extends Controller
                     $tax_rate .= $value['rate'].',';
                 }
             }
-            if ($currency = 'INR') {
+            if ($currency == 'INR') {
                 $subtotal = $this->calculateTotal($tax_rate, $subtotal);
             }
             $domain = $this->domain($productid);

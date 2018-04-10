@@ -79,7 +79,7 @@
         Route::patch('my-password', 'Front\ClientController@postPassword');
         Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
         Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
-         // Route::get('get-versions/{id}', 'Front\ClientController@getVersionList')->name('get-versions');
+        Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
 
         // Get Route For Show Razorpay Payment Form
         Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
@@ -340,8 +340,9 @@
         /*
          * download
          */
-        Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
-        Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
+      Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}',' Product\ProductController@userDo
+            wnload');
+      Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
 
         /*
          * testings

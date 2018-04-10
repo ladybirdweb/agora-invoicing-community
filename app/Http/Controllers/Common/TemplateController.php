@@ -792,7 +792,7 @@ class TemplateController extends Controller
 
         return $cost;
     }
-    
+
     public function leastAmountService($id)
     {
         $cost = 'Free';

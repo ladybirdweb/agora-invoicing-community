@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Requests\User\ProfileRequest;
+use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use App\Model\Product\ProductUpload;
-use App\Model\Github\Github;
 use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Exception;
-use App\Http\Controllers\Github\GithubApiController;
-
-
 
 class ClientController extends Controller
 {
@@ -49,19 +47,16 @@ class ClientController extends Controller
         $this->product_upload = $product_upload;
 
         $product = new Product();
-        $this->product=$product;
-        
+        $this->product = $product;
+
         $github_controller = new GithubApiController();
         $this->github_api = $github_controller;
-
 
         $model = new Github();
         $this->github = $model->firstOrFail();
 
         $this->client_id = $this->github->client_id;
         $this->client_secret = $this->github->client_secret;
-
-
     }
 
     public function invoices()
@@ -109,18 +104,22 @@ class ClientController extends Controller
             echo $ex->getMessage();
         }
     }
-   /**
-    * Get list of all the versions from Filesystem
-    * @param type $productid
-    * @param type $clientid
-    * @param type $invoiceid
-    * @return type
-    */
+
+    /**
+     * Get list of all the versions from Filesystem.
+     *
+     * @param type $productid
+     * @param type $clientid
+     * @param type $invoiceid
+     *
+     * @return type
+     */
     public function getVersionList($productid, $clientid, $invoiceid)
     {
         try {
             $versions = ProductUpload::where('product_id', $productid)->select('id', 'product_id', 'version', 'title', 'description', 'file', 'created_at')->get();
-                  return \DataTables::of($versions)
+
+            return \DataTables::of($versions)
 
                                ->addColumn('id', function ($versions) {
                                    return ucfirst($versions->id);
@@ -144,11 +143,8 @@ class ClientController extends Controller
 
                                    </p>';
                                     } else {
-                                         return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
-
-                                   }
-
-                                         
+                                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                                    }
                                 })
 
                              ->rawColumns(['version', 'title', 'description', 'file'])
@@ -159,76 +155,67 @@ class ClientController extends Controller
             echo $ex->getMessage();
         }
     }
+
     /**
-     * Get list of all the versions from Github
+     * Get list of all the versions from Github.
+     *
      * @param type $productid
      * @param type $clientid
      * @param type $invoiceid
      */
     public function getGithubVersionList($productid, $clientid, $invoiceid)
-    { 
-        try{
-         $products=$this->product::where('id',$productid)->select('name','version','github_owner','github_repository')->get();
-         foreach ($products as $product){
-         $owner = $product->github_owner;
-         $repo = $product->github_repository;
-         }
-         $url = "https://api.github.com/repos/$owner/$repo/releases";
-         $link = $this->github_api->getCurl1($url);
-         $link=$link['body'];
-         // dd($link);
-      
-         return \DataTables::of($link)
+    {
+        try {
+            $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
+            foreach ($products as $product) {
+                $owner = $product->github_owner;
+                $repo = $product->github_repository;
+            }
+            $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $link = $this->github_api->getCurl1($url);
+            $link = $link['body'];
+            // dd($link);
 
-           ->addColumn('version',function($link){
-                  // dd($link['tag_name']);
-            return ucfirst($link['tag_name']);
+            return \DataTables::of($link)
 
-            })
-            ->addColumn('name',function($link){
+           ->addColumn('version', function ($link) {
+               // dd($link['tag_name']);
+               return ucfirst($link['tag_name']);
+           })
+            ->addColumn('name', function ($link) {
                 return ucfirst($link['name']);
             })
-            ->addColumn('description',function($link){
-
-                return (ucfirst($link['body']));
+            ->addColumn('description', function ($link) {
+                return ucfirst($link['body']);
             })
-            ->addColumn('file',function($link) use ($clientid,$invoiceid,$productid){
+            ->addColumn('file', function ($link) use ($clientid,$invoiceid,$productid) {
+                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+                if ($orderEndDate) {
+                    if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+                        $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                  $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
-                  if($orderEndDate){
-
-                if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
-                    $link = $this->github_api->getCurl1( $link['zipball_url']);
-
-                     return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
                                     .'&nbsp;
 
                                    </p>';
+                    } else {
+                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                    }
+                } elseif (!$orderEndDate) {
+                    $link = $this->github_api->getCurl1($link['zipball_url']);
 
+                    return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                                    .'&nbsp;
+
+                                   </p>';
                 }
-                else{
-                                return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
-
-                                   }
-              
-            } 
-            elseif(!$orderEndDate)
-            {
-                $link = $this->github_api->getCurl1( $link['zipball_url']);
-                  return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
-                                    .'&nbsp;
-
-                                   </p>';
-            }
-            
-               
             })
-           ->rawColumns(['version','name','description','file'])
+           ->rawColumns(['version', 'name', 'description', 'file'])
            ->make(true);
-    }catch(Exception $ex){
-               Bugsnag::notifyException($ex);
-               echo $ex->getMessage();
-    }
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+            echo $ex->getMessage();
+        }
     }
 
     public function orders()
@@ -284,9 +271,9 @@ class ClientController extends Controller
                                 //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
                             $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
-                              if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+                            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
                                 $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->number, $productid);
-                                  } else {
+                            } else {
                                 $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                             }
 

@@ -352,8 +352,9 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-             Bugsnag::notifyException($ex);
-             throw new \Exception('Can not Generate Invoice');
+            Bugsnag::notifyException($ex);
+
+            throw new \Exception('Can not Generate Invoice');
         }
     }
 

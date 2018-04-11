@@ -3,21 +3,24 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Requests\User\ProfileRequest;
+use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use App\Model\Product\ProductUpload;
-use App\Model\Github\Github;
 use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Exception;
-use App\Http\Controllers\Github\GithubApiController;
 
-class ClientController extends Controller {
 
+
+
+class ClientController extends Controller
+{
     public $user;
     public $invoice;
     public $order;
@@ -51,7 +54,6 @@ class ClientController extends Controller {
 
         $github_controller = new GithubApiController();
         $this->github_api = $github_controller;
-
 
         $model = new Github();
         $this->github = $model->firstOrFail();
@@ -106,42 +108,54 @@ class ClientController extends Controller {
     }
 
     /**
+
      * Get list of all the versions from Filesystem
      * @param type $productid
      * @param type $clientid
      * @param type $invoiceid
+
+     * Get list of all the versions from Filesystem.
+     *
+     * @param type $productid
+     * @param type $clientid
+     * @param type $invoiceid
+     *
+
      * @return type
      */
     public function getVersionList($productid, $clientid, $invoiceid)
      {
         try {
             $versions = ProductUpload::where('product_id', $productid)->select('id', 'product_id', 'version', 'title', 'description', 'file', 'created_at')->get();
-            return \DataTables::of($versions)
-                            ->addColumn('id', function ($versions) {
-                                return ucfirst($versions->id);
-                            })
-                            ->addColumn('version', function ($versions) {
-                                return ucfirst($versions->version);
-                            })
-                            ->addColumn('title', function ($versions) {
-                                return ucfirst($versions->title);
-                            })
-                            ->addColumn('description', function ($versions) {
-                                return ucfirst($versions->description);
-                            })
-                            ->addColumn('file', function ($versions) use ($clientid, $invoiceid, $productid) {
-                                // $clientid=\Auth::User()->id;
-                                $endDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
 
-                                if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
-                                    return '<p><a href=' . url('download/' . $productid . '/' . $clientid . '/' . $invoiceid . '/' . $versions->id) . " class='btn btn-sm btn-primary'>Download</a>"
-                                            . '&nbsp;
+            return \DataTables::of($versions)
+
+                               ->addColumn('id', function ($versions) {
+                                   return ucfirst($versions->id);
+                               })
+                              ->addColumn('version', function ($versions) {
+                                  return ucfirst($versions->version);
+                              })
+                               ->addColumn('title', function ($versions) {
+                                   return ucfirst($versions->title);
+                               })
+                                ->addColumn('description', function ($versions) {
+                                    return ucfirst($versions->description);
+                                })
+                                ->addColumn('file', function ($versions) use ($clientid,$invoiceid,$productid) {
+                                    // $clientid=\Auth::User()->id;
+                                    $endDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+
+                                    if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
+                                        return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'>Download</a>"
+                                    .'&nbsp;
 
                                    </p>';
-                                } else {
-                                    return '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
-                                }
-                            })
+                                    } else {
+                                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                                    }
+                                })
+                              
                             ->rawColumns(['version', 'title', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
@@ -152,12 +166,17 @@ class ClientController extends Controller {
     }
 
     /**
-     * Get list of all the versions from Github
+     * Get list of all the versions from Github.
+     *
      * @param type $productid
      * @param type $clientid
      * @param type $invoiceid
      */
-    public function getGithubVersionList($productid, $clientid, $invoiceid) 
+
+ 
+
+    public function getGithubVersionList($productid, $clientid, $invoiceid)
+
     {
         try {
             $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
@@ -168,45 +187,44 @@ class ClientController extends Controller {
             $url = "https://api.github.com/repos/$owner/$repo/releases";
             $link = $this->github_api->getCurl1($url);
             $link = $link['body'];
-            $link=(array_slice($link,0,10,true));
-           return \DataTables::of($link)
-                            ->addColumn('version', function($link) {
-                                // dd($link['tag_name']);
-                                return ucfirst($link['tag_name']);
-                            })
-                            ->addColumn('name', function($link) {
-                                return ucfirst($link['name']);
-                            })
-                            ->addColumn('description', function($link) {
+             $link=(array_slice($link,0,10,true));
+             return \DataTables::of($link)
 
-                                return (ucfirst($link['body']));
-                            })
-                            ->addColumn('file', function($link) use ($clientid, $invoiceid, $productid) {
+           ->addColumn('version', function ($link) {
+               // dd($link['tag_name']);
+               return ucfirst($link['tag_name']);
+           })
+            ->addColumn('name', function ($link) {
+                return ucfirst($link['name']);
+            })
+            ->addColumn('description', function ($link) {
+                return ucfirst($link['body']);
+            })
+            ->addColumn('file', function ($link) use ($clientid,$invoiceid,$productid) {
+                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+                if ($orderEndDate) {
+                    if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+                        $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
-                                if ($orderEndDate) {
-
-                                    if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
-                                        $link = $this->github_api->getCurl1($link['zipball_url']);
-
-                                        return '<p><a href=' . $link['header']['Location'] . " class='btn btn-sm btn-primary'>Download </a>"
-                                                . '&nbsp;
+                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                                    .'&nbsp;
 
                                    </p>';
-                                    } else {
-                                        return '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
-                                    }
-                                } elseif (!$orderEndDate) {
-                                    $link = $this->github_api->getCurl1($link['zipball_url']);
-                                    return '<p><a href=' . $link['header']['Location'] . " class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
-                                            . '&nbsp;
+                    } else {
+                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                    }
+                } elseif (!$orderEndDate) {
+                    $link = $this->github_api->getCurl1($link['zipball_url']);
+
+                    return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                                    .'&nbsp;
 
                                    </p>';
-                                }
-                            })
-                            ->rawColumns(['version', 'name', 'description', 'file'])
-                            ->make(true);
-        }  catch (Exception $ex) {
+                }
+            })
+           ->rawColumns(['version', 'name', 'description', 'file'])
+           ->make(true);
+        } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
@@ -270,11 +288,13 @@ class ClientController extends Controller {
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                return '<p><a href=' . url('my-order/' . $model->id) . " class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i>&nbsp&nbsp $listUrl $url </a>"
-                                        . '&nbsp;
+                             
+                              return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i>&nbsp&nbsp $listUrl $url </a>"
+                                    .'&nbsp;
+
 
                                    </p>';
-                            })
+                           })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                             ->make(true);

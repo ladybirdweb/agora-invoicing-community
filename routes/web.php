@@ -148,9 +148,8 @@
          * Product
          */
 
-        Route::resource('products', 'Product\ProductController');
-         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
-
+         Route::resource('products', 'Product\ProductController');
+     Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');

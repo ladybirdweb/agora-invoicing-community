@@ -758,6 +758,7 @@ use App\Http\Controllers\Controller;
                     return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
                 }
             } catch (\Exception $ex) {
+                dd($ex);
                 Bugsnag::notifyException($ex);
 
                 return redirect('auth/login')->with('fails', $ex->getMessage());

@@ -1,4 +1,3 @@
-
 <a onclick="getTables({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#lists">  <i class='fa fa-download' title=Download></i></a>
 <div class="modal fade" id="lists">
     <div class="modal-dialog">
@@ -53,9 +52,26 @@
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
                 <script type="text/javascript">
+    function readmore(){
+                        var maxLength = 300;
+                        $("#github-version-table tbody tr td").each(function(){
+                            console.log($(this));
+                            var myStr = $(this).text();
+                            if($.trim(myStr).length > maxLength){
+                                var newStr = myStr.substring(0, maxLength);
+                                 $(this).empty().html(newStr);
+                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                                $(this).append('<span class="more-text">' + removedStr + '</span>');
+                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                            }
+                          }); 
+    }
     function getTables($productid, $clientid, $invoiceid){
     $('#github-version-table').DataTable({
             destroy: true,
+            "initComplete": function(settings, json) {
+                         readmore();
+            },
             processing: true,
             serverSide: true,
             bDeferRender: true,
@@ -70,21 +86,6 @@
             columnDefs: [
             {
                 
-                    render:function(data){
-                          var maxLength = 300;
-                        $("#github-version-table tbody tr td").each(function(){
-                            console.log($(this));
-                            var myStr = $(this).text();
-                            if($.trim(myStr).length > maxLength){
-                                var newStr = myStr.substring(0, maxLength);
-                                 $(this).empty().html(newStr);
-                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
-                                $(this).append('<span class="more-text">' + removedStr + '</span>');
-                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
-                            }
-                          });
-                        return data;
-                    },
                     targets: 0,
                     orderable: false,
                     searchable: false,
@@ -99,26 +100,18 @@
             ],
             "fnDrawCallback": function(oSettings) {
             $('.loader').css('display', 'none');
+               readmore();
             },
             "fnPreDrawCallback": function(oSettings, json) {
             $('.loader').css('display', 'block');
             },
     });
     }
+
                 </script>
 
 
-
-
-
-
-
-
-
-
-
-
-            </div>
+        </div>
 
 
         </div>
@@ -130,9 +123,9 @@
 
 <script>
     $(document).on('click','#github-version-table tbody tr td .read-more',function(){
-        var hari=$(this).siblings(".more-text").text().replace('read more...','');
-        console.log(hari)
-        $(this).siblings(".more-text").html(hari);
+        var text=$(this).siblings(".more-text").text().replace('read more...','');
+        console.log(text)
+        $(this).siblings(".more-text").html(text);
         $(this).siblings(".more-text").contents().unwrap();
         $(this).remove();
     });

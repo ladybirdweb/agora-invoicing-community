@@ -382,9 +382,8 @@ class OrderController extends Controller
                         $product = $this->getProductByName($item->product_name)->id;
                         $version = $this->getProductByName($item->product_name)->version;
                         if ($version == null) {
-                            $version = $this->product_upload->select('version')->where('title', $item->product_name)->first();
+                            $version = $this->product_upload->select('version')->where('product_id', $product)->first();
                         }
-
                         $price = $item->subtotal;
 
                         $qty = $item->quantity;

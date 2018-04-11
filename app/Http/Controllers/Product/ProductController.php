@@ -251,14 +251,10 @@ use App\Http\Controllers\Controller;
                  * server url
                  */
                 $url = $this->GetMyUrl();
-                // dd($url);
                 $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
-                // dd($i);
                 $cartUrl = $url.'/pricing?id='.$i;
-                // dd($cartUrl);
                 $type = $this->type->pluck('name', 'id')->toArray();
                 $subscription = $this->plan->pluck('name', 'id')->toArray();
-                // dd($subscription);
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();

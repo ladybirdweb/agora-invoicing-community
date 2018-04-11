@@ -148,7 +148,7 @@ class ClientController extends Controller
 
                                    </p>';
                                     } else {
-                                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                                        return  '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
                                     }
                                 })
 
@@ -199,12 +199,12 @@ class ClientController extends Controller
                     if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
                         $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'>Download</a>"
                                     .'&nbsp;
 
                                    </p>';
                     } else {
-                        return  '<button class="btn btn-primary btn-sm disabled">Download</i></button>';
+                        return  '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
                     }
                 } elseif (!$orderEndDate) {
                     $link = $this->github_api->getCurl1($link['zipball_url']);

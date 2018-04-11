@@ -25,23 +25,14 @@
 
                  <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                                    <script>
-                                    tinymce.init({
-                                        selector: 'product-description',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
-                                    });
-                                    </script>
-
+                                   
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
-                                    <textarea class=form-control id= "product-description" name=product-description></textarea>
-                                    <!--  <input type="text" row="10" col="5" id="product-description" class="form-control" name="version"> -->
+                                    <textarea type="text" class="form-control" id= "product-description" name="description"> </textarea>  
                                    <!--  {!! Form::textarea('description',null,['class' => 'form-control','id'=>'product-description']) !!} -->
+                                   
 
-                                </div>
+                  </div>
 
                
                 

@@ -1,18 +1,50 @@
 <a onclick="getTables({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#lists">  <i class='fa fa-download' title=Download></i></a>
+<style>
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #555;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+.tooltip .tooltiptext::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+}
+</style>
 <div class="modal fade" id="lists">
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
-
-
-
-
-            <div class="modal-body" >
+         <div class="modal-body" >
 
                 <?php
                 //All the versions of Uploades Files
-                $versions = \App\Model\Product\ProductUpload::where('product_id', $productid)->select('id', 'title', 'description', 'version', 'file', 'created_at')->get();
-
-                //End Date of the Current Product Version
+                $products = \App\Model\Product\Product::where('id', $productid)->pluck( 'name')->toArray();
+               //End Date of the Current Product Version
                 $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
                 ?>
 
@@ -20,7 +52,10 @@
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Transcation list</h3>
+                               
+                                <h3 class="box-title">Product Versions</h3>
+                              
+
                             </div>
                             <div class="box-body">
 

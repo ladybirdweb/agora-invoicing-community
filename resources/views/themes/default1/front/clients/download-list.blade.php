@@ -9,9 +9,8 @@
             <div class="modal-body" >
 
                 <?php
-                //All the versions of Uploades Files
-                $versions = \App\Model\Product\ProductUpload::where('product_id', $productid)->select('id', 'title', 'description', 'version', 'file', 'created_at')->get();
-
+                //Name of the product
+                $products = \App\Model\Product\Product::where('id', $productid)->pluck( 'name')->toArray();
                 //End Date of the Current Product Version
                 $endDate = \App\Model\Product\Subscription::select('ends_at')->where('product_id', $productid)->first();
                 ?>
@@ -20,7 +19,7 @@
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header with-border">
-                                <h3 class="box-title">Transcation list</h3>
+                                <h3 class="box-title">Product Versions</h3>
                             </div>
                             <div class="box-body">
                                 <div class="row">

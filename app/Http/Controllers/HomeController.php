@@ -386,6 +386,7 @@ class HomeController extends Controller
             if ($order_number && $domain && $serial_key) {
                 $order = $this->verifyOrder($order_number, $serial_key, $domain);
                 if ($order) {
+                    
                     return ['status' => 'success', 'message' => 'this-is-a-valid-request', 'order_number' => $order_number, 'serial' => $serial_key];
                 } else {
                     return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];

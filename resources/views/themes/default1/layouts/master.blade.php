@@ -192,7 +192,7 @@
                                 <li><a href="{{url('groups')}}"><i class="fa fa-group"></i>{{Lang::get('message.groups')}}</a></li>
                                 <!--<li><a href="{{url('addons')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.addons')}}</a></li>-->
                                 <!--<li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>-->
-                                <!--<li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>-->
+                                <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
                             </ul>
                         </li>
                         <li>

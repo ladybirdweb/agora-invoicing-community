@@ -115,7 +115,7 @@
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
 
-                                {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control','multiple'=>true]) !!}
+                                {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control select2','multiple'=>true]) !!}
 
                             </div>
                         </td>

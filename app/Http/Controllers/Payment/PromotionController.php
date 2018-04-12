@@ -57,11 +57,14 @@ class PromotionController extends Controller
 
     public function getPromotion()
     {
-        return \Datatable::collection($this->promotion->select('code', 'type', 'id')->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+        $new_promotion=$this->promotion->select('code', 'type', 'id')->get();
+        return\ DataTables::of($new_promotion)
+                            ->addColumn('checkbox', function ($model) {
+                                return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
+                            })
+                        ->addColumn('code', function ($model) {
+                            return ucfirst($model->code);
                         })
-                        ->showColumns('code')
                         ->addColumn('type', function ($model) {
                             return $this->type->where('id', $model->type)->first()->name;
                         })
@@ -80,9 +83,9 @@ class PromotionController extends Controller
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
-                        ->searchColumns('products')
-                        ->orderColumns('code')
-                        ->make();
+                         ->rawColumns(['checkbox', 'code', 'products', 'action'])
+                        
+                        ->make(true);
     }
 
     /**
@@ -93,8 +96,8 @@ class PromotionController extends Controller
     public function create()
     {
         try {
-            $product = $this->product->lists('name', 'id')->toArray();
-            $type = $this->type->lists('name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
 
             return view('themes.default1.payment.promotion.create', compact('product', 'type'));
         } catch (\Exception $ex) {
@@ -147,8 +150,8 @@ class PromotionController extends Controller
     {
         try {
             $promotion = $this->promotion->where('id', $id)->first();
-            $product = $this->product->lists('name', 'id')->toArray();
-            $type = $this->type->lists('name', 'id')->toArray();
+            $product = $this->product->pluck('name', 'id')->toArray();
+            $type = $this->type->pluck('name', 'id')->toArray();
             //            if ($promotion->start != null) {
             //                $start = $promotion->start;
             //            } else {
@@ -159,7 +162,7 @@ class PromotionController extends Controller
             //            } else {
             //                $expiry = null;
             //            }
-            $selectedProduct = $this->promoRelation->where('promotion_id', $id)->lists('product_id', 'product_id')->toArray();
+            $selectedProduct = $this->promoRelation->where('promotion_id', $id)->pluck('product_id', 'product_id')->toArray();
             //dd($selectedProduct);
             return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {
@@ -284,7 +287,7 @@ class PromotionController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-expired'));
             }
             $value = $this->findCostAfterDiscount($promo->id, $productid);
-            //dd($value);
+            // dd($value);
             //dd($promo->code);
             //return the updated cartcondition
             $coupon = new CartCondition([
@@ -339,6 +342,7 @@ class PromotionController extends Controller
             }
 
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
+            // dd($updated_price);
             //dd([$product_price,$promotion_type,$updated_price]);
             return $updated_price;
         } catch (\Exception $ex) {

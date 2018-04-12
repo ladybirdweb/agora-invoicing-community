@@ -279,7 +279,7 @@ class ClientController extends Controller
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i>&nbsp&nbsp $listUrl $url </a>"
+                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>$listUrl $url </a>"
                                         .'&nbsp;
 
 

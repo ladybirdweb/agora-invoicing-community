@@ -57,7 +57,8 @@ class PromotionController extends Controller
 
     public function getPromotion()
     {
-        $new_promotion=$this->promotion->select('code', 'type', 'id')->get();
+        $new_promotion = $this->promotion->select('code', 'type', 'id')->get();
+
         return\ DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -84,7 +85,7 @@ class PromotionController extends Controller
                             return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
-                        
+
                         ->make(true);
     }
 

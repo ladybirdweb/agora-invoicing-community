@@ -460,8 +460,9 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
-          Bugsnag::notifyException($ex);
-throw new \Exception('Can not Generate Subscription');
+            Bugsnag::notifyException($ex);
+
+            throw new \Exception('Can not Generate Subscription');
         }
     }
 

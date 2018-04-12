@@ -331,7 +331,6 @@ class GithubController extends Controller
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
 
-
             //For Helpdesk Advanced
             if ($repo == 'Faveo-Helpdesk-Pro') {
                 $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];

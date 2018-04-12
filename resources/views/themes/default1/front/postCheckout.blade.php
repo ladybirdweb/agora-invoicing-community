@@ -72,11 +72,22 @@ $data = [
     "key"               => 'rzp_test_GL0mtsOBCft5Tp',
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
+     "prefill"=> [
+        "contact"=>    \Auth::user()->mobile_code .\Auth::user()->mobile,
+        "email"=>      \Auth::user()->email,
+    ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
     
      "notes"             => [
-    "address"           =>  \Auth::user()->address,
-    "email"             =>  \Auth::user()->email,
+    "First Name"         => \Auth::user()->first_name,
+    "Last Name"         =>  \Auth::user()->last_name,
+    "Company Name"      => \Auth::user()->company,
+    "Address"           =>  \Auth::user()->address,
+    "Email"             =>  \Auth::user()->email,
+    "Country"           =>  \Auth::user()->country,
+    "State"             => \Auth::user()->state,
+    "City"              => \Auth::user()->town,
+    "Zip"               => \Auth::user()->zip,
     "merchant_order_id" =>  $merchant_orderid,
     ],
     "theme"             => [

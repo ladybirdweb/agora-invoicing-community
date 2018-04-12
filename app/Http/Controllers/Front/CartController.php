@@ -516,8 +516,7 @@ class CartController extends Controller
     {
         try {
             Cart::update(
-                $id,
-                [
+                    $id, [
                 $key => $value, // new item name
                     ]
             );
@@ -644,11 +643,11 @@ class CartController extends Controller
         ]);
 
         $set = new \App\Model\Common\Setting();
-        $set = $put->findOrFail(1);
+        $set = $set->findOrFail(1);
 
         try {
-            $from = $put->email;
-            $fromname = $put->company;
+            $from = $set->email;
+            $fromname = $set->company;
             $toname = '';
             $to = 'support@ladybirdweb.com';
             $data = '';
@@ -1010,7 +1009,6 @@ class CartController extends Controller
             $currency = 'INR';
             if ($this->checkCurrencySession() == true) {
                 $currency = Session::get('currency');
-                // dd($currency);
             }
 
             if (\Auth::user()) {

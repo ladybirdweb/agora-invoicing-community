@@ -6,5 +6,5 @@ return [
 
     'razor_secret' => '0JRyqIaLXiOnnupjNhbKIG5q', //Shared by Razorpay
 
-    'dispalyCurrency'=> 'USD',
+    'displayCurrency'=> 'USD',
 ];

@@ -100,7 +100,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk'],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -109,18 +109,9 @@
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                                    <script>
-                                        tinymce.init({
-                                            selector: 'textarea',
-                                            plugins: "code",
-                                            toolbar: "code",
-                                            menubar: "tools"
-                                        });
-                                    </script>
-
+                                    
                                     {!! Form::label('description',Lang::get('message.description')) !!}
-                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
+                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
 
                                      </div>
                                    <div class="col-md-6">
@@ -506,6 +497,30 @@
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+<script>
+    $(function(){
+                                    tinymce.init({
+                                        selector: '#product-description',
+                                        plugins: "code",
+                                        toolbar: "code",
+                                        menubar: "tools"
+
+                                    });
+                                     tinymce.init({
+                                            selector: '#textarea1',
+                                            plugins: "code",
+                                            toolbar: "code",
+                                            menubar: "tools"
+                                        });
+                                     tinymce.init({
+                                        selector: '#textarea3',
+                                        plugins: "code",
+                                        toolbar: "code",
+                                        menubar: "tools"
+                                    });
+                                });
+                                    </script>
 <script type="text/javascript">
         $('#upload-table').DataTable({
             processing: true,
@@ -547,15 +562,17 @@
     })
      function openEditPopup(e){
          console.log(e)
+        
          $('#edit-uplaod-option').modal('toggle');
          var upload_id = $(e).data('id')
          var title = $(e).data('title')
-        var description = $(e).data('description')
+        
         var version= $(e).data('version')
         console.log(title,description,version)
 
+        var description = $(e).data('description') 
+        tinymce.get('product-description').setContent(description);
          $("#product-title").val(title)
-        $("#product-description").val(description)
         $("#product-version").val(version)
          var url = "{{url('upload/')}}"+"/"+upload_id
          

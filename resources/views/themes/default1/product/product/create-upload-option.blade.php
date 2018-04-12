@@ -13,26 +13,24 @@
                     <label> Product Name </label>
                  
                       <input type="text" name="product" class="form-control" value="{{$product->name}}" readonly>
-                      
-                      
-                 
-                    
-                </div>
+                 </div>
                 
                  <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
                    
                     {!! Form::label('Title',Lang::get('Title'),['class'=>'required']) !!}
                     <input type="text" class="form-control" name="title">
                  </div>
-
-
-
                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                    <!-- name -->
-                    {!! Form::label('Description',Lang::get('Description'),['class'=>'required']) !!}
-                    <input type="text" class="form-control" name="description">
-                 </div>
-                
+                                    <!-- last name -->
+                                    
+
+                                    {!! Form::label('description',Lang::get('message.description')) !!}
+                                    <textarea class=form-control id= "textarea3" name="description"></textarea>
+                                    <!--  <input type="text" row="10" col="5" id="product-description" class="form-control" name="version"> -->
+                                   <!--  {!! Form::textarea('description',null,['class' => 'form-control','id'=>'product-description']) !!} -->
+
+                                </div>
+
                 <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('Version',Lang::get('Version'),['class'=>'required']) !!}

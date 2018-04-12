@@ -52,7 +52,11 @@
         <script src="{{asset('cart/vendor/modernizr/modernizr.min.js')}}"></script>
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-
+        <style type="text/css">
+             #github-version-table tbody tr td .more-text{
+                display: none;
+            }
+        </style>
     </head>
     <body>
          <?php 

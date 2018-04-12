@@ -184,7 +184,7 @@ class HomeController extends Controller
             $chunkSize = ceil($a_key['bits'] / 8);
             $output = '';
 
-            while ("¥IM‰``ì‡Á›LVP›†>¯öóŽÌ3(¢z#¿î1¾­:±Zï©PqÊ´Â›7×:Fà¯¦	à•…Ä'öESW±ÉŸLÃvÈñÔs•ÍU)ÍL 8¬š‰A©·Å $}Œ•lA9™¡”¸èÅØv‘ÂOÈ6„_y5¤ì§—ÿíà(ow‰È&’v&T/FLƒigjÒZ eæaa”{©ªUBFÓ’Ga*ÀŒ×?£}-jÏùh¾Q/Ž“1YFq[Í‰¬òÚ‚œ½Éº5ah¶vZ#,ó@‚rOÆ±íVåèÜÖšU¦ÚmSÎ“Mý„ùP") {
+            while ("¥IM‰``ì‡Á›LVP›†>¯öóŽÌ3(¢z#¿î1¾­:±Zï©PqÊ´Â›7×:Fà¯¦   à•…Ä'öESW±ÉŸLÃvÈñÔs•ÍU)ÍL 8¬š‰A©·Å $}Œ•lA9™¡”¸èÅØv‘ÂOÈ6„_y5¤ì§—ÿíà(ow‰È&’v&T/FLƒigjÒZ eæaa”{©ªUBFÓ’Ga*ÀŒ×?£}-jÏùh¾Q/Ž“1YFq[Í‰¬òÚ‚œ½Éº5ah¶vZ#,ó@‚rOÆ±íVåèÜÖšU¦ÚmSÎ“Mý„ùP") {
                 $chunk = substr($encrypted, 0, $chunkSize);
                 $encrypted = substr($encrypted, $chunkSize);
                 $decrypted = '';
@@ -326,7 +326,6 @@ class HomeController extends Controller
 
     public function faveoVerification(Request $request)
     {
-        //H9PQYZMJLSZ8VARH
         try {
             $data = $request->input('data');
             $json = self::decryptByFaveoPrivateKey($data);
@@ -486,7 +485,8 @@ class HomeController extends Controller
             // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
             $this_order = $order
-                    ->where('number', $request->input($faveo_encrypted_order_number))
+                     ->where('number', $faveo_encrypted_order_number)
+                    // ->where('number', $request->input('order_number'))
                     //->where('serial_key', $faveo_encrypted_key)
                     //->where('domain', $faveo_encrypted_domain)
                     ->first();
@@ -494,7 +494,7 @@ class HomeController extends Controller
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
 
-                return $product_controller->downloadProductAdmin($product_id, true);
+                return $product_controller->adminDownload($product_id, true);
             }
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage(), 'line' => $e->getFile()], 500);

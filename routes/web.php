@@ -78,6 +78,8 @@
         Route::patch('my-profile', 'Front\ClientController@postProfile');
         Route::patch('my-password', 'Front\ClientController@postPassword');
         Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
+        Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
+        Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
 
         // Get Route For Show Razorpay Payment Form
         Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
@@ -146,9 +148,8 @@
          * Product
          */
 
-        Route::resource('products', 'Product\ProductController');
-         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
-
+         Route::resource('products', 'Product\ProductController');
+     Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
@@ -338,8 +339,8 @@
         /*
          * download
          */
-        Route::get('download/{userid}/{invoice_number}', 'Product\ProductController@userDownload');
-        Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
+      Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
+      Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
 
         /*
          * testings

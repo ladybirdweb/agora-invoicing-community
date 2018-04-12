@@ -36,20 +36,20 @@ return [
     31 => 'Yajra\\DataTables\\FractalServiceProvider',
     32 => 'Darryldecode\\Cart\\CartServiceProvider',
     33 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    34 => 'App\\Plugins\\Paypal\\ServiceProvider',
-    35 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-    36 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
-    37 => 'Laravel\\Tinker\\TinkerServiceProvider',
-    38 => 'App\\Providers\\AppServiceProvider',
-    39 => 'App\\Providers\\AuthServiceProvider',
-    40 => 'App\\Providers\\EventServiceProvider',
-    41 => 'App\\Providers\\RouteServiceProvider',
-    42 => 'Collective\\Html\\HtmlServiceProvider',
-    43 => 'Barryvdh\\DomPDF\\ServiceProvider',
-    44 => 'Yajra\\DataTables\\HtmlServiceProvider',
-    45 => 'Yajra\\DataTables\\DataTablesServiceProvider',
+    34 => 'Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider',
+    35 => 'App\\Plugins\\Paypal\\ServiceProvider',
+    36 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
+    37 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
+    38 => 'Laravel\\Tinker\\TinkerServiceProvider',
+    39 => 'App\\Providers\\AppServiceProvider',
+    40 => 'App\\Providers\\AuthServiceProvider',
+    41 => 'App\\Providers\\EventServiceProvider',
+    42 => 'App\\Providers\\RouteServiceProvider',
+    43 => 'Collective\\Html\\HtmlServiceProvider',
+    44 => 'Barryvdh\\DomPDF\\ServiceProvider',
+    45 => 'Yajra\\DataTables\\HtmlServiceProvider',
+    46 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ],
-
   'eager' => [
     0  => 'Illuminate\\Auth\\AuthServiceProvider',
     1  => 'Illuminate\\Cookie\\CookieServiceProvider',
@@ -61,7 +61,6 @@ return [
     7  => 'Illuminate\\Pagination\\PaginationServiceProvider',
     8  => 'Illuminate\\Session\\SessionServiceProvider',
     9  => 'Illuminate\\View\\ViewServiceProvider',
-
     10 => 'Thomaswelton\\LaravelGravatar\\LaravelGravatarServiceProvider',
     11 => 'Chumper\\Zipper\\ZipperServiceProvider',
     12 => 'RachidLaasri\\LaravelInstaller\\Providers\\LaravelInstallerServiceProvider',
@@ -74,7 +73,6 @@ return [
     19 => 'Barryvdh\\DomPDF\\ServiceProvider',
     20 => 'App\\Plugins\\Paypal\\ServiceProvider',
     21 => 'App\\Plugins\\Ccavanue\\ServiceProvider',
-
     22 => 'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider',
     23 => 'App\\Providers\\AppServiceProvider',
     24 => 'App\\Providers\\AuthServiceProvider',
@@ -84,7 +82,6 @@ return [
     28 => 'Yajra\\DataTables\\HtmlServiceProvider',
     29 => 'Yajra\\DataTables\\DataTablesServiceProvider',
   ],
-
   'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager'             => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
     'Illuminate\\Contracts\\Broadcasting\\Factory'           => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
@@ -125,7 +122,6 @@ return [
     'command.route.clear'                                    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.route.list'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.seed'                                           => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-
     'Illuminate\\Console\\Scheduling\\ScheduleFinishCommand' => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'Illuminate\\Console\\Scheduling\\ScheduleRunCommand'    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.storage.link'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
@@ -188,6 +184,8 @@ return [
     'Collective\\Html\\HtmlBuilder'                          => 'Collective\\Html\\HtmlServiceProvider',
     'Collective\\Html\\FormBuilder'                          => 'Collective\\Html\\HtmlServiceProvider',
     'command.tinker'                                         => 'Laravel\\Tinker\\TinkerServiceProvider',
+    'command.ide-helper.generate'                            => 'Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider',
+    'command.ide-helper.models'                              => 'Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider',
   ],
   'when' => [
     'Illuminate\\Broadcasting\\BroadcastServiceProvider' => [
@@ -217,6 +215,8 @@ return [
     'Collective\\Html\\HtmlServiceProvider' => [
     ],
     'Laravel\\Tinker\\TinkerServiceProvider' => [
+    ],
+    'Barryvdh\\LaravelIdeHelper\\IdeHelperServiceProvider' => [
     ],
   ],
 ];

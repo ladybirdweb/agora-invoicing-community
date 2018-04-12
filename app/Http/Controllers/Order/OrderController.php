@@ -447,6 +447,7 @@ class OrderController extends Controller
         try {
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
+
                 if ($days > 0) {
                     $dt = \Carbon\Carbon::now();
                     $user_id = \Auth::user()->id;
@@ -459,10 +460,8 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
-            dd($ex);
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not Generate Subscription');
+          Bugsnag::notifyException($ex);
+throw new \Exception('Can not Generate Subscription');
         }
     }
 

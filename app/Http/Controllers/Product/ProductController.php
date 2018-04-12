@@ -635,16 +635,16 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
+
                     } elseif ($file) {
                         //If the Product is Downloaded from FileSystem
                         $fileName = $file->file;
                         $relese = storage_path().'/products'.'//'.$fileName;
-                        // dd($relese);
                         return $relese;
                     }
                 }
             } catch (\Exception $e) {
-                dd($e);
+                
                 Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -655,7 +655,6 @@ use App\Http\Controllers\Controller;
         {
             try {
                 $product = $this->product->findOrFail($id);
-                //dd($product);
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
@@ -806,12 +805,6 @@ use App\Http\Controllers\Controller;
         public function getProductField($productid)
         {
             try {
-                // $this->validate($request, [
-                // 'domain.*' => 'required',
-                //     ], [
-                // 'domain.*.required' => 'Please provide Domain name',
-                // //'domain.*.url'      => 'Domain name is not valid',
-                //        ]);
                 $field = '';
                 $product = $this->product->find($productid);
                 if ($product) {

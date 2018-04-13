@@ -20,7 +20,7 @@ return [
     'save'                   => 'Save',
     'city'                   => 'City',
     'state'                  => 'State',
-    'country'                => 'Country', 
+    'country'                => 'Country',
     'update'                 => 'Update',
     'edit'                   => 'Edit',
     'alert'                  => 'Alert',

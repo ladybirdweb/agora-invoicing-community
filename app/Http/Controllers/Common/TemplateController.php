@@ -459,15 +459,8 @@ class TemplateController extends Controller
             $controller = new \App\Http\Controllers\Front\CartController();
 
             $currency = $controller->currency();
-            // $price = $controller->cost($productid);
-            //           $price = $product->price()->where('currency', $currency)->first()->sales_price;
-            //           if (!$price) {
-            //               $price = $product->price()->where('currency', $currency)->first()->price;
-            //           }
-            //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
-            // dd(!$tax_relation);
-            if (!$tax_relation) {
+             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
             // dd($taxes);

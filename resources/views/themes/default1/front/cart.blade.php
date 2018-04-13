@@ -117,7 +117,7 @@ if (count($attributes) > 0) {
                                                         $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
                                                         
                                                         $total = Cart::getSubTotal();
-                                                      
+                                                        
 
                                                         $sum = $item->getPriceSum();
                                                     

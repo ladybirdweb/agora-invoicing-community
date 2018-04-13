@@ -9,6 +9,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use App\Model\Payment\TaxByState;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class CartController extends Controller
     public $addonRelation;
     public $licence;
     public $tax_option;
+    public $tax_by_state;
 
     public function __construct()
     {
@@ -43,6 +45,9 @@ class CartController extends Controller
 
         $tax_option = new TaxOption();
         $this->tax_option = $tax_option;
+
+        $tax_by_state = new TaxByState();
+        $this->tax_by_state = new $tax_by_state;
     }
 
     public function productList(Request $request)
@@ -139,6 +144,8 @@ class CartController extends Controller
                 if (\Auth::user()) {
                     $cart_currency = $attributes[0]['currency'];
                     $user_currency = \Auth::user()->currency;
+                    $user_country = \Auth::user()->country;
+                    $user_state = \Auth::user()->state;
                     $currency = 'INR';
                     if ($user_currency == 1 || $user_currency == 'USD') {
                         $currency = 'USD';
@@ -218,15 +225,28 @@ class CartController extends Controller
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);
-                $product1 = $tax_rule->inclusive;
+                $product1 = $tax_rule->inclusive;//Check product is inclusive or exclusive of taxes
                 $shop = $tax_rule->shop_inclusive;
                 $cart = $tax_rule->cart_inclusive;
-                if ($product->tax()->first()) {
-                    $tax_class_id = $product->tax()->first()->tax_class_id;
-                    if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-                        if ($product1 == 0) {
+                //Check the state of user for calculating GST(cgst,igst,utgst,sgst)
+                $user_state=$this->tax_by_state::where('state_code',$geoip_state)->first();
+                 if ($product->tax()->first()) {//If the product is allowed for tax (Check in tax_product relation table)
+                    $tax_class_id = $product->tax()->first()->tax_class_id;//Get the tax_class_id
+                    if ($this->tax_option->findOrFail(1)->tax_enable == 1) {//If GST is Enabled
+                        if ($product1 == 0) {//If product is exclusive of taxes
                             $taxes = $this->getTaxByPriority($tax_class_id);
-                            $rate = 0;
+                             $rate = 0;
+                             $c_gst=0;
+                             $s_gst=0;
+                             $i_gst=0;
+                             $ut_gst=0;
+                             if($user_state != ''){
+                             $c_gst=$user_state->c_gst;
+                             $s_gst=$user_state->s_gst;
+                             $i_gst=$user_state->i_gst;
+                             $ut_gst=$user_state->ut_gst;
+                         }
+                           
                             foreach ($taxes as $key => $tax) {
                                 if ($tax->country == $geoip_country || $tax->state == $geoip_state || ($tax->country == '' && $tax->state == '')) {
                                     if ($tax->compound == 1) {
@@ -238,13 +258,15 @@ class CartController extends Controller
                                             'value'  => $tax->rate.'%',
                                         ]);
                                     } else {
-                                        $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
+                                        $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate,'c_gst'=>$c_gst,'s_gst'=>$s_gst,'i_gst'=>$i_gst,'ut_gst'=>$ut_gst];
                                         $rate += $tax->rate;
+                                       
                                         $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                                             'name'   => 'no compound',
                                             'type'   => 'tax',
                                             'target' => 'item',
                                             'value'  => $rate.'%',
+
                                         ]);
                                     }
                                 }
@@ -286,9 +308,9 @@ class CartController extends Controller
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
             return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
-        } catch (\Exception $ex) {
-            dd($ex);
 
+        } catch (\Exception $ex) {
+           Bugsnag::notifyException($ex);
             throw new \Exception('Can not check the tax');
         }
     }
@@ -443,7 +465,8 @@ class CartController extends Controller
                 }
                 $isTaxApply = $product->tax_apply;
                 $taxConditions = $this->checkTax($id);
-
+               
+                
                 /*
                  * Check if this product allow multiple qty
                  */

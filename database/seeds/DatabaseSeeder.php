@@ -68,6 +68,7 @@ class DatabaseSeeder extends Seeder
 
         \DB::unprepared(file_get_contents(storage_path('agora.sql')));
         \DB::unprepared(file_get_contents(storage_path('states.sql')));
+        \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
     }
 }
 

@@ -17,6 +17,9 @@ class SettingsSeeder extends Seeder
 
         \App\Model\Common\Setting::create([
             'company'                   => 'Ladybird Web Solution',
+            'city'                      => 'Bangalore',
+            'state'                     => 'Karnataka',
+            'country'                   => 'India',
             'website'                   => 'http://www.ladybirdweb.com',
             'error_log'                 => 1,
             'invoice'                   => 8,

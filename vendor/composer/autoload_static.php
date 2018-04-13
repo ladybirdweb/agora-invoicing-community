@@ -508,6 +508,9 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
     );
 
     public static $classMap = array (
+        'AddCityColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
+        'AddCountryColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
+        'AddForeignKeyToSubscriptionTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_10_115211_add_foreign_key_to_subscription_table.php',
         'AddForeignKeysToConfigurableOptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',
         'AddForeignKeysToGroupFeaturesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_group_features_table.php',
         'AddForeignKeysToInvoiceItemsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_invoice_items_table.php',
@@ -521,6 +524,7 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'AddForeignKeysToPromotionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_promotions_table.php',
         'AddForeignKeysToTaxProductRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_tax_product_relations_table.php',
         'AddForeignKeysToTemplatesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
+        'AddStateColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',
         'App\\Box' => __DIR__ . '/../..' . '/app/Box.php',
         'App\\Commands\\Command' => __DIR__ . '/../..' . '/app/Jobs/Command.php',
@@ -637,6 +641,7 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'App\\Model\\Payment\\Promotion' => __DIR__ . '/../..' . '/app/Model/Payment/Promotion.php',
         'App\\Model\\Payment\\PromotionType' => __DIR__ . '/../..' . '/app/Model/Payment/PromotionType.php',
         'App\\Model\\Payment\\Tax' => __DIR__ . '/../..' . '/app/Model/Payment/Tax.php',
+        'App\\Model\\Payment\\TaxByState' => __DIR__ . '/../..' . '/app/Model/Payment/TaxByState.php',
         'App\\Model\\Payment\\TaxClass' => __DIR__ . '/../..' . '/app/Model/Payment/TaxClass.php',
         'App\\Model\\Payment\\TaxOption' => __DIR__ . '/../..' . '/app/Model/Payment/TaxOption.php',
         'App\\Model\\Payment\\TaxProductRelation' => __DIR__ . '/../..' . '/app/Model/Payment/TaxProductRelation.php',
@@ -837,6 +842,7 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'CreateSocialMediaTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_social_media_table.php',
         'CreateStatesSubdivisionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_states_subdivisions_table.php',
         'CreateSubscriptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_subscriptions_table.php',
+        'CreateTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_062511_create_tax_by_states_table.php',
         'CreateTaxClassesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_tax_classes_table.php',
         'CreateTaxProductRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_tax_product_relations_table.php',
         'CreateTaxRulesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_tax_rules_table.php',

@@ -192,8 +192,8 @@ trait RegistersUsers
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                // $r = $mailchimp->addSubscriber($user->email);
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 

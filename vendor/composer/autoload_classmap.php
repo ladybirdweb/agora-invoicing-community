@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddCityColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
+    'AddCountryColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
+    'AddForeignKeyToSubscriptionTable' => $baseDir . '/database/migrations/2018_04_10_115211_add_foreign_key_to_subscription_table.php',
     'AddForeignKeysToConfigurableOptionsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',
     'AddForeignKeysToGroupFeaturesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_group_features_table.php',
     'AddForeignKeysToInvoiceItemsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_invoice_items_table.php',
@@ -19,6 +22,7 @@ return array(
     'AddForeignKeysToPromotionsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_promotions_table.php',
     'AddForeignKeysToTaxProductRelationsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_tax_product_relations_table.php',
     'AddForeignKeysToTemplatesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
+    'AddStateColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
     'App\\BaseModel' => $baseDir . '/app/BaseModel.php',
     'App\\Box' => $baseDir . '/app/Box.php',
     'App\\Commands\\Command' => $baseDir . '/app/Jobs/Command.php',
@@ -135,6 +139,7 @@ return array(
     'App\\Model\\Payment\\Promotion' => $baseDir . '/app/Model/Payment/Promotion.php',
     'App\\Model\\Payment\\PromotionType' => $baseDir . '/app/Model/Payment/PromotionType.php',
     'App\\Model\\Payment\\Tax' => $baseDir . '/app/Model/Payment/Tax.php',
+    'App\\Model\\Payment\\TaxByState' => $baseDir . '/app/Model/Payment/TaxByState.php',
     'App\\Model\\Payment\\TaxClass' => $baseDir . '/app/Model/Payment/TaxClass.php',
     'App\\Model\\Payment\\TaxOption' => $baseDir . '/app/Model/Payment/TaxOption.php',
     'App\\Model\\Payment\\TaxProductRelation' => $baseDir . '/app/Model/Payment/TaxProductRelation.php',
@@ -335,6 +340,7 @@ return array(
     'CreateSocialMediaTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_social_media_table.php',
     'CreateStatesSubdivisionsTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_states_subdivisions_table.php',
     'CreateSubscriptionsTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_subscriptions_table.php',
+    'CreateTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_062511_create_tax_by_states_table.php',
     'CreateTaxClassesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_tax_classes_table.php',
     'CreateTaxProductRelationsTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_tax_product_relations_table.php',
     'CreateTaxRulesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_tax_rules_table.php',

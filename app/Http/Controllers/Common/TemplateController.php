@@ -460,7 +460,7 @@ class TemplateController extends Controller
 
             $currency = $controller->currency();
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
-             if (!$tax_relation) {
+            if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
             // dd($taxes);

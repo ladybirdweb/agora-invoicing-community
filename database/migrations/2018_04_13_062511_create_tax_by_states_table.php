@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateTaxByStatesTable extends Migration
 {
@@ -14,14 +14,14 @@ class CreateTaxByStatesTable extends Migration
     public function up()
     {
         Schema::create('tax_by_states', function (Blueprint $table) {
-                $table->increments('id');
-                $table->string('state');
-                $table->string('c_gst');
-                $table->string('s_gst');
-                $table->string('i_gst');
-                $table->string('ut_gst');
-              
-                 $table->timestamps();
+            $table->increments('id');
+            $table->string('state');
+            $table->string('c_gst');
+            $table->string('s_gst');
+            $table->string('i_gst');
+            $table->string('ut_gst');
+
+            $table->timestamps();
         });
     }
 

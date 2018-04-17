@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCgstColumnToTaxesTable extends Migration
 {
@@ -13,7 +13,7 @@ class AddCgstColumnToTaxesTable extends Migration
      */
     public function up()
     {
-        Schema::table('taxes',function(Blueprint $table){
+        Schema::table('taxes', function (Blueprint $table) {
             $table->string('c_gst');
             $table->string('s_gst');
             $table->string('i_gst');

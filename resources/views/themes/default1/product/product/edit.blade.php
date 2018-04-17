@@ -400,12 +400,12 @@
                                                 <div class="col-md-2">
                                                     @if(count($saved_taxes) != 0)
                                                     @if(key_exists($key,$saved))
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '$saved[$key]' ? 'checked' : ''}}></b>
+                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '$saved[$key]' ? 'checked' : ''}}></b>
                                                     @else
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
+                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
                                                     @endif
                                                     @else 
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
+                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
                                                     @endif
                                                 </div>
                                                 @empty 

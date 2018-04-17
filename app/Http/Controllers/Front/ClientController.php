@@ -191,7 +191,9 @@ class ClientController extends Controller
                                 return ucfirst($link['body']);
                             })
                             ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
-                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+                                $order = Order::where('invoice_id', '=', $invoiceid)->first();
+                                $order_id = $order->id;
+                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
                                     if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
                                         $link = $this->github_api->getCurl1($link['zipball_url']);
@@ -274,7 +276,7 @@ class ClientController extends Controller
                                 }
                                 $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
                                 if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->number, $productid);
+                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->id, $productid);
                                 } else {
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }

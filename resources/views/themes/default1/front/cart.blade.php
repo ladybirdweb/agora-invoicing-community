@@ -91,7 +91,7 @@ if (count($attributes) > 0) {
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                              
+                                                
                                                 @forelse($cartCollection as $key=>$item)
 
                                                 <tr class="cart_table_item">
@@ -247,6 +247,7 @@ if (count($attributes) > 0) {
                                 {!! Form::close() !!}
                             </div>
                         </div>
+                         </div>
                         <div class=" col-md-6"><br><br><br><br>
                             <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-lg">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
                         </div>
@@ -260,7 +261,7 @@ if (count($attributes) > 0) {
                             <a href="{{url('checkout')}}"><button class="btn btn-primary btn-lg">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                         </div>
-                    </div>
+                   
                 </div>
 
 

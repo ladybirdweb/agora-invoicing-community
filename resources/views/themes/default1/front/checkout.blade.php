@@ -12,6 +12,7 @@ Checkout
 @section('main-class') "main shop" @stop
 @section('content')
 @if (!\Cart::isEmpty())
+
 <?php
 if ($attributes[0]['currency'][0]['symbol'] == '') {
     $symbol = $attributes[0]['currency'][0]['code'];
@@ -142,9 +143,9 @@ $tax=  0;
                                     </th>
                                     <td>
                                         <strong><span class="amount"><small>{!! $symbol !!} </small> 
-                                        
+                                            
                                              @if($attributes[0]['currency'][0]['code'] == "INR")
-
+                                          
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @else
                                              {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
@@ -206,6 +207,7 @@ $tax=  0;
             </div>
         </div>
     </div>
+
     <div class="col-md-4">
         <h4 class="heading-primary">Cart Totals</h4>
         <table class="cart-totals">
@@ -226,17 +228,53 @@ $tax=  0;
                 </tr>
                  
                 @foreach($item->attributes['tax'] as $attribute)
-                
-                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR"))
+                  
+                  
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
+                 @if($attribute['state']==$attribute['origin_state'] && $attribute['rate4']=='NULL'  )
                 <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
+                        <strong>{{$attribute['name1']}}<span>@</span>{{$attribute['rate1']}}%</strong><br/>
+                        <strong>{{$attribute['name2']}}<span>@</span>{{$attribute['rate2']}}%</strong>
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}}
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate2'],Cart::getSubTotalWithoutConditions())}} <br/>
+                       
                     </td>
 
+
                 </tr>
+                @endif
+               
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['rate4']=='NULL')
+               
+                <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name3']}}<span>@</span>{{$attribute['rate3']}}%</strong>
+                    </th>
+                    <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate3'],Cart::getSubTotalWithoutConditions())}} <br/>
+                    </td>
+
+
+                </tr>
+                @endif
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['rate4']!='NULL' )
+              
+                <tr class="Taxes">
+                    <th>
+                       <strong>{{$attribute['name1']}}<span>@</span>{{$attribute['rate1']}}%</strong><br/>
+                        <strong>{{$attribute['name4']}}<span>@</span>{{$attribute['rate4']}}%</strong>
+                    </th>
+                    <td>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate4'],Cart::getSubTotalWithoutConditions())}} <br/>
+                    </td>
+
+
+                </tr>
+                @endif
                 @endif
                 @endforeach
                 <tr class="total">

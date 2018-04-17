@@ -13,6 +13,8 @@ use App\Model\Payment\Currency;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
+use App\Model\Payment\TaxByState;
+use App\Http\Controllers\Front\CartController;
 //use Symfony\Component\HttpFoundation\Request as Requests;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
@@ -35,6 +37,7 @@ class InvoiceController extends Controller
     public $tax;
     public $tax_option;
     public $order;
+    public $cartController;
 
     public function __construct()
     {
@@ -79,6 +82,13 @@ class InvoiceController extends Controller
 
         $order = new Order();
         $this->order = $order;
+
+        $tax_by_state = new TaxByState();
+        $this->tax_by_state = new $tax_by_state;
+
+        $cartController = new CartController();
+        $this->cartController = $cartController;
+
     }
 
     public function index()
@@ -247,7 +257,7 @@ class InvoiceController extends Controller
             $grand_total = $qty * $grand_total;
 
             // dd($grand_total);
-            $tax = $this->checkTax($product->id);
+            $tax = $this->checkTax($product->id,$user_id);
 
             $tax_name = '';
             $tax_rate = '';
@@ -271,7 +281,7 @@ class InvoiceController extends Controller
             //            if ($grand_total > 0) {
             //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             //            }
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan,$user_id);
 
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
@@ -435,7 +445,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '')
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '',$userid='')
     {
         try {
             $discount = '';
@@ -455,7 +465,7 @@ class InvoiceController extends Controller
                 $mode = 'coupon';
                 $discount = $price - $subtotal;
             }
-            $tax = $this->checkTax($product->id);
+            $tax = $this->checkTax($product->id,$userid);
             //dd($tax);
             $tax_name = '';
             $tax_rate = '';
@@ -635,7 +645,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function checkTax($productid)
+    public function checkTax($productid,$userid)
     {
         try {
             //dd($productid);
@@ -657,8 +667,9 @@ class InvoiceController extends Controller
                         if ($tax->compound == 1) {
                             $taxs[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
                         } else {
-                            $rate = '';
-                            $rate += $tax->rate;
+                            
+                            $rate = $this->getRate($taxes,$taxs[0],$userid);
+                             
                             $taxs[$key] = ['name' => $tax->name, 'rate' => $rate];
                         }
                     }
@@ -672,6 +683,46 @@ class InvoiceController extends Controller
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
+
+    public function getRate($taxes,$taxs,$userid)
+    {   
+         $geoip_state = User::where('id',$userid)->select('state')->first()->toArray();
+       
+         $user_state=$this->tax_by_state::where('state_code',$geoip_state)->first();
+         $origin_state=$this->setting->first()->state;//Get the State of origin
+        
+          $rate = 0;
+                             $name1= 'CGST'; $name2='SGST' ; $name3='IGST'; $name4='UTGST';
+                             $c_gst=0; $s_gst=0;  $i_gst=0;$ut_gst=0;
+                             $state_code='';
+                             if($user_state != ''){//Get the CGST,SGST,IGST,STATE_CODE of the user
+                             $c_gst=$user_state->c_gst;
+                             $s_gst=$user_state->s_gst;
+                             $i_gst=$user_state->i_gst;
+                             $ut_gst=$user_state->ut_gst;
+                             $state_code=$user_state->state_code;
+                             foreach ($taxes as $key => $tax) {
+                                $tax_attribute[$key] = ['name' => $tax->name,'name1' => $name1 ,'name2'=> $name2 ,'name3' => $name3 ,'name4' => $name4,'rate' => $tax->rate,'rate1'=>$c_gst,'rate2'=>$s_gst,'rate3'=>$i_gst,'rate4'=>$ut_gst,'state'=>$state_code,'origin_state'=>$origin_state];
+                                        $rate += $tax->rate;
+                                        $rate1 = $c_gst;//cgst
+                                        $rate2 = $s_gst;//sgst
+                                        $rate3 = $i_gst;//igst
+                                        $rate4 = $ut_gst;//utgst
+
+                                         if($state_code == $origin_state){//cgst+igst
+                                             $value  = $rate1 + $rate2 .'%'; 
+                                                }
+                                         if($state_code != $origin_state && $rate4 == 'NULL'){//igst
+                                                $value  = $rate3 .'%'; //IGST
+                                               
+                                        }
+                                        elseif($rate4 != 'NULL'){//utgst+cgst
+                                              $value  = $rate4 + $rate1 . '%';
+                                        }
+                        }
+                        return $value;
+             }
+     }
 
     public function pdf(Request $request)
     {

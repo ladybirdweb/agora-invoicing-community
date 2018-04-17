@@ -282,33 +282,58 @@ $json = json_encode($data);
 
                 <?php 
                 $tax_name = "";
-                $tax_percentage="";
-                if(str_finish($attribute['tax_name'], ',')){
-                    $tax_name = str_replace(',','',$attribute['tax_name']);
-                }
-
-                if(str_finish($attribute['tax_percentage'], ',')){
-                    $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
-                }
-                ?>
-               
+                $content=Cart::getContent();
+               foreach ($content as $key => $item) {
+              $gst_attribute = $item->attributes['tax'];
+              }
+             
+               ?>
+              
+                 @if($gst_attribute[0]['state']==$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']=='NULL'  )
+              
                 <tr class="Taxes">
                     <th>
-                        <strong>{{ucfirst($tax_name)}}<span>@</span>{{$tax_percentage}}%</strong>
+                        <strong>{{$gst_attribute[0]['name1']}}<span>@</span>{{$gst_attribute[0]['rate1']}}%</strong><br/>
+                        <strong>{{$gst_attribute[0]['name2']}}<span>@</span>{{$gst_attribute[0]['rate2']}}%</strong>
                     </th>
-                    <?php
-                    $price = $product->price()->where('currency',$symbol)->first();
-                    // dd($price);
-                    $cost = $price->sales_price;
-                    if(!$cost){
-                        $cost = $price->price;
-                    }
-                    ?>
-                    <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],Cart::getSubTotalWithoutConditions())}}
+                   
+                   <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate2'],Cart::getSubTotalWithoutConditions())}} <br/>
+                       
                     </td>
 
                 </tr>
+                @endif
+
+                  @if ($gst_attribute[0]['state']!=$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']=='NULL')
+               
+                <tr class="Taxes">
+                    <th>
+                        <strong>{{$gst_attribute[0]['name3']}}<span>@</span>{{$gst_attribute[0]['rate3']}}%</strong>
+                    </th>
+                    <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate3'],Cart::getSubTotalWithoutConditions())}} <br/>
+                    </td>
+
+
+                </tr>
+                @endif
+                @if ($gst_attribute[0]['state']!=$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']!='NULL' )
+              
+                <tr class="Taxes">
+                    <th>
+                       <strong>{{$gst_attribute[0]['name1']}}<span>@</span>{{$gst_attribute[0]['rate1']}}%</strong><br/>
+                        <strong>{{$gst_attribute[0]['name4']}}<span>@</span>{{$gst_attribute[0]['rate4']}}%</strong>
+                    </th>
+                    <td>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate4'],Cart::getSubTotalWithoutConditions())}} <br/>
+                    </td>
+
+
+                </tr>
+                @endif
                 @endif
                 @endforeach
                 <tr class="total">

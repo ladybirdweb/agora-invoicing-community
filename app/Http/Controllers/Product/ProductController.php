@@ -276,7 +276,7 @@ use App\Http\Controllers\Controller;
         public function store(Request $request)
         {
             $input = $request->all();
-            // dd($input);
+          
             $v = \Validator::make($input, [
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
@@ -328,13 +328,23 @@ use App\Http\Controllers\Controller;
                 }
 
                 $taxes = $request->input('tax');
+               
                 if ($taxes) {
-                    $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
-                }
 
+                    foreach($taxes as $key=>$value){
+
+                      $newtax=new TaxProductRelation();
+                      $newtax->product_id=$product_id;
+                      $newtax->tax_class_id=$value;
+                      $newtax->save();
+                     }
+                                                 
+                             }
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-            } catch (\Exception $e) {
-                Bugsnag::notifyException($e);
+              }
+                
+            catch (\Exception $e) {
+                 Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
             }

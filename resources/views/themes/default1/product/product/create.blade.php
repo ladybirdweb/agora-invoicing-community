@@ -303,7 +303,7 @@
                                             <div class="row">
                                                 @forelse($taxes as $key=>$value)
                                                 <div class="col-md-2">
-                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                    <b>{{ucfirst($value)}} {!! Form::checkbox('tax[]',$key) !!}</b>
                                                 </div>
                                                 @empty 
                                                 <p>No taxes</p>

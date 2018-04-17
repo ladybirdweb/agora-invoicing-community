@@ -393,20 +393,31 @@
                                                         $saved[$tax->tax_class_id] = 'true';
                                                     }
                                                 }
-                                                
+                                                else{
+                                                    $saved=[];
+                                                }
+                                               
+                                                if (count($saved) > 0) {
+                                               foreach ($saved as $key => $value) {
+                                                // dd($key);
+                                                   $savedkey[]=$key;
+                                               }
+                                               $saved1=$savedkey?$savedkey:[];
+
+                                                   }
+                                                   else{
+                                                    $saved1=[];
+                                                   }
+                                                  
+                                        
                                                 ?>
                                                 @forelse($taxes as $key=>$value)
-
+                                                        
                                                 <div class="col-md-2">
-                                                    @if(count($saved_taxes) != 0)
-                                                    @if(key_exists($key,$saved))
-                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '$saved[$key]' ? 'checked' : ''}}></b>
-                                                    @else
-                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
-                                                    @endif
-                                                    @else 
-                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
-                                                    @endif
+                                                   
+                                                    
+                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax[]" value="{{$key}}" {{in_array($key,$saved1) ? 'checked' :''}}></b>
+                                                   
                                                 </div>
                                                 @empty 
                                                 <p>No taxes</p>

@@ -468,16 +468,16 @@ use App\Http\Controllers\Controller;
                 }
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-                // dd($taxes);
+               
                 if ($taxes) {
-                    $saved_taxes = $this->tax_relation->where('product_id', $product_id)->first();
-                    // dd($saved_taxes);
-                    if ($saved_taxes) {
-                        $saved_taxes->tax_class_id = $taxes;
-                        $saved_taxes->save();
-                    } else {
-                        $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
+                    $this->tax_relation->where('product_id', $product_id)->delete();
+                    foreach ($taxes as $tax) {
+                        $newTax=new TaxProductRelation();
+                        $newTax->product_id = $product_id;
+                        $newTax->tax_class_id = $tax;
+                        $newTax->save();
                     }
+                        
                 }
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

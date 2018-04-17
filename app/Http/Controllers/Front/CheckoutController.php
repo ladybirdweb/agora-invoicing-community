@@ -87,9 +87,9 @@ class CheckoutController extends Controller
         }
         $content = Cart::getContent();
         //dd($content[10]);
-        $attributes=$this->getAttributes($content);
+        $attributes = $this->getAttributes($content);
         $require = [];
-       
+
         //        if ($content->count() == 0) {
         //            return redirect('home');
         //        }
@@ -145,6 +145,7 @@ class CheckoutController extends Controller
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
             }
+
             return $attributes;
             //$attributes[] = $item->attributes;
         }
@@ -224,7 +225,7 @@ class CheckoutController extends Controller
 
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
-                   $attributes=$this->getAttributes($content);
+                    $attributes = $this->getAttributes($content);
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -235,13 +236,13 @@ class CheckoutController extends Controller
                 $product = $this->product($invoice_id);
                 $amount = $invoice->grand_total;
             }
-             
+
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }
-                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow','attributes'));
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
             // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 // dd('sdfds');
             } else {

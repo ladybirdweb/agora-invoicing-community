@@ -224,7 +224,7 @@ class CartController extends Controller
             if ($geoip_country == '') {
                 $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
             }
-             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
                 if (array_key_exists('id', $geoip_state_array)) {
                     $geoip_state = $geoip_state_array['id'];
@@ -245,7 +245,7 @@ class CartController extends Controller
                  
                        if ($tax_enable == 1) {//If GST is Enabled
                         if ($product1 == 0) {//If product is exclusive of taxes
-                             $state_code='';  $c_gst=''; $s_gst='' ;$i_gst='' ;$ut_gst='';
+                             $state_code='';  $c_gst='' ; $s_gst='' ;$i_gst='';$ut_gst='';
                              if($user_state != ''){//Get the CGST,SGST,IGST,STATE_CODE of the user
                              $c_gst=$user_state->c_gst;
                              $s_gst=$user_state->s_gst;

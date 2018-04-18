@@ -15,6 +15,7 @@ use App\Model\Payment\TaxClass;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
+use Exception;
 use Session;
 use App\Model\Payment\TaxProductRelation;
 
@@ -223,7 +224,7 @@ class CartController extends Controller
             if ($geoip_country == '') {
                 $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
             }
-            $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+             $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             if ($geoip_state == '') {
                 if (array_key_exists('id', $geoip_state_array)) {
                     $geoip_state = $geoip_state_array['id'];
@@ -242,66 +243,49 @@ class CartController extends Controller
                 $tax_class_id = TaxProductRelation::where('product_id',$productid)->pluck('tax_class_id')->toArray();
                 if ($tax_class_id) {//If the product is allowed for tax (Check in tax_product relation table)
                  
-                     // $tax_class_id=$product->tax()->select('tax_class_id')->get()->toArray();
-                    // $tax_class_id[] =$product->tax()->get();//Get the tax_class_id
-                    if ($tax_enable == 1) {//If GST is Enabled
+                       if ($tax_enable == 1) {//If GST is Enabled
                         if ($product1 == 0) {//If product is exclusive of taxes
-                             $state_code='';
+                             $state_code='';  $c_gst=''; $s_gst='' ;$i_gst='' ;$ut_gst='';
                              if($user_state != ''){//Get the CGST,SGST,IGST,STATE_CODE of the user
                              $c_gst=$user_state->c_gst;
                              $s_gst=$user_state->s_gst;
                              $i_gst=$user_state->i_gst;
                              $ut_gst=$user_state->ut_gst;
-                             $state_code=$user_state->state_code; 
+                            $state_code=$user_state->state_code; 
                              
-                         
-                          if ($state_code == $origin_state){//If user and origin state are same
-                              $taxClassId= TaxClass::where('name','Intra-State')->pluck('id')->toArray();//Get the class Id on The basis of state
-                            $taxes = $this->getTaxByPriority($taxClassId);
-                              if($this->tax->find('active')==1){//If the Current Class is active
-                            $value  = $c_gst + $s_gst .'%'; }
-                            else{
-                                $value = 0;
+                           if ($state_code == $origin_state){//If user and origin state are same
+                        $taxClassId= TaxClass::where('name','Intra-State')->pluck('id')->toArray();//Get the class Id  of state
+                           $taxes = $this->getTaxByPriority($taxClassId);
+                            $getValue=$this->getValueForSameState($productid,$c_gst,$s_gst,$taxClassId, $taxes);
+                            $value= $getValue['value'];
+                            $otherRate= $getValue['otherRate'];
                                 }
-                           }
-
-                             elseif( $state_code != $origin_state && $ut_gst == 'NULL'){//igst
-                                 $taxClassId= TaxClass::where('name','Inter-State')->pluck('id')->toArray();//Get the class Id on The basis of state
-                                $taxes = $this->getTaxByPriority($taxClassId);
-                                 if($this->tax->find('active')==1){//If the Current Class is active
-                                                $value  = $igst .'%';} //IGST
-                                else{
-                                $value = 0;
-                                }
-                             }
-
-                             elseif($ut_gst != 'NULL'){//utgst+cgst
-                                $taxClassId= TaxClass::where('name','Union Territory')->pluck('id')->toArray();//Get the class Id on The basis of state
-                                 $taxes = $this->getTaxByPriority($taxClassId);
-                                 if($this->tax->find('active')==1){
-                                $value  = $ut_gst + $c_gst . '%';}
-                                else{
-                                $value = 0;
-                                }
-
+                         elseif( $state_code != $origin_state && $ut_gst == 'NULL'){//If user is from other state
+                         $taxClassId= TaxClass::where('name','Inter-State')->pluck('id')->toArray();//Get the class Id  of state
+                           $taxes = $this->getTaxByPriority($taxClassId);
+                            $getValue=$this->getValueForOtherState($productid,$i_gst,$taxClassId, $taxes);
+                             $value= $getValue['value'];
+                             $otherRate= $getValue['otherRate'];
                               }
-                            }
 
-                            else{//If user_state is null(from other country let's say)
-                                  $taxClassId= TaxClass::where('name','Others')->pluck('id')->toArray();//Get the class Id on The basis of state
-                                 $taxes = $this->getTaxByPriority($taxClassId);
-                                 if($this->tax->find('active')==1){
-                                $value  = $ut_gst + $c_gst . '%';}
-                                else{
-                                $value = 0;
-                                }
+                             elseif($state_code != $origin_state && $ut_gst != 'NULL'){//if user from Union Territory
+                        $taxClassId= TaxClass::where('name','Union Territory')->pluck('id')->toArray();//Get the class Id  of state
+                           $taxes = $this->getTaxByPriority($taxClassId);
+                            $getValue=$this->getValueForUnionTerritory($productid,$c_gst,$ut_gst,$taxClassId, $taxes);
+                             $value= $getValue['value'];
+                            $otherRate= $getValue['otherRate'];
+                             }
                             }
-                             
-                         
+                            else{//If user from other Country
+                             $taxClassId= TaxClass::where('name','Others')->pluck('id')->toArray();
+                            $taxes = $this->getTaxByPriority($taxClassId);
+                            $getValue=$this->getValueForOthers($productid,$taxClassId, $taxes);
+                             $value= $getValue['value'];
+                            $otherRate= $getValue['otherRate'];
+                            }
                            
-                             $rate = 0;
-                              foreach ($taxes as $key => $tax) {
-                                if ($tax->country == $geoip_country || $tax->state == $geoip_state || ($tax->country == '' && $tax->state == '')) {
+                           foreach ($taxes as $key => $tax) {
+                               
                                     if ($tax->compound == 1) {
                                         $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
                                         $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
@@ -311,7 +295,7 @@ class CartController extends Controller
                                             'value'  => $tax->rate.'%',
                                         ]);
                                     } else {//All the data attribute that is sent to the checkout Page
-                                        $tax_attribute[$key] = ['name' => $tax->name,'c_gst'=>$c_gst,'s_gst'=>$s_gst,'i_gst'=>$i_gst,'ut_gst'=>$ut_gst,'state'=>$state_code,'origin_state'=>$origin_state,'tax_enable'=>$tax_enable];
+                                        $tax_attribute[$key] = ['name' => $tax->name,'c_gst'=>$c_gst,'s_gst'=>$s_gst,'i_gst'=>$i_gst,'ut_gst'=>$ut_gst,'state'=>$state_code,'origin_state'=>$origin_state,'tax_enable'=>$tax_enable,'otherRate'=>$otherRate];
                                        
                                  $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
 
@@ -321,7 +305,7 @@ class CartController extends Controller
                                             'value' =>$value
                                           ]);
                                     }
-                                }
+                                
                             }
                         } else {
                             if ($product->tax()->first()) {
@@ -358,14 +342,90 @@ class CartController extends Controller
                 }
             }
             $currency_attribute = $this->addCurrencyAttributes($productid);
-            dd($taxCondition, $tax_attribute);
-            return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
+         return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
 
         } catch (\Exception $ex) {
             dd($ex);
              Bugsnag::notifyException($ex);
             throw new \Exception('Can not check the tax');
         }
+    }
+    
+    /**
+     *   Get tax value for Same State
+    * @param type $productid
+    * @param type $c_gst
+    * @param type $s_gst
+    * return type
+    */
+    public function getValueForSameState($productid,$c_gst,$s_gst,$taxClassId, $taxes)
+    {
+        try{
+           $otherRate=$this->otherRate($productid);
+             
+             $value = $taxes->toArray()[0]['active'] ? 
+                  (TaxProductRelation::where('product_id',$productid)->where('tax_class_id',$taxClassId)->count() ?
+                        $c_gst + $s_gst + $otherRate.'%': 0) : 0;
+                        return ['value'=>$value,'otherRate'=>$otherRate];
+            }catch (Exception $ex){
+                Bugsnag::notifyException($ex);
+                return redirect()->back()->with('fails',$ex->getMessage());
+            }
+    }
+
+     /**
+     *   Get tax value for Other States
+    * @param type $productid
+    * @param type $i_gst
+    * return type
+    */
+
+    public function getValueForOtherState($productid,$i_gst,$taxClassId, $taxes)
+    {
+          $otherRate=$this->otherRate($productid);
+           $value = $taxes->toArray()[0]['active'] ?//If the Current Class is active
+              (TaxProductRelation::where('product_id',$productid)->where('tax_class_id',$taxClassId)->count() ?
+                        $igst + $otherRate .'%':0):0; //IGST
+                                                 
+                     return ['value'=>$value,'otherRate'=>$otherRate];
+    }
+     
+     /**
+     *  Get tax value for Union Territory States
+    * @param type $productid
+    * @param type $c_gst
+    * @param type $ut_gst
+    * return type
+    */
+    public function getValueForUnionTerritory($productid,$c_gst,$ut_gst,$taxClassId, $taxes)
+    {
+        $otherRate=$this->otherRate($productid);
+         
+            $value = $taxes->toArray()[0]['active'] ?
+             (TaxProductRelation::where('product_id',$productid)->where('tax_class_id',$taxClassId)->count() ? $ut_gst + $c_gst +$otherRate. '%':0):0;
+                                                
+                 return ['value'=>$value,'otherRate'=>$otherRate];
+    }
+
+    public function otherRate($productid)
+    {
+        
+             $taxClassOther= TaxClass::where('name','Others')->pluck('id')->toArray();
+             $otherRate= TaxProductRelation::where('product_id',$productid)->where('tax_class_id',$taxClassOther)->count() ? Tax::where('tax_classes_id',$taxClassOther)->first()->rate : '';
+
+                return $otherRate;
+    }
+
+    public function getValueForOthers($productid,$taxClassId, $taxes)
+    {
+        $otherRate='';
+       
+             if(TaxProductRelation::where('product_id',$productid)->where('tax_class_id',$taxClassId)->count() != 0)
+                {
+                    $otherRate=Tax::where('tax_classes_id',$taxClassId)->first()->rate;
+                }
+                 $value =$otherRate. '%';
+                return ['value'=>$value,'otherRate'=>$value];
     }
 
     public function checkTaxOld($isTaxApply, $id)

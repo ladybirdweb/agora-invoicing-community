@@ -153,7 +153,6 @@ class ClientController extends Controller
                             ->rawColumns(['version', 'title', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }

@@ -15,7 +15,7 @@
                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
                     <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
                      <select name="name" class="form-control">
-                      <option>NONE</option>
+                      <option>OTHERS</option>
                       <option> CGST + SGST</option>
                       <option>IGST</option>
                       <option>UTGST</option>

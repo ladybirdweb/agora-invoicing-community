@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Payment\TaxRequest;
 use App\Model\Common\Country;
 use App\Model\Common\State;
 use App\Model\Payment\Tax;
@@ -68,7 +67,7 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name',  'country', 'state', 'rate')->get())
+        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'country', 'state', 'rate')->get())
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
@@ -78,7 +77,7 @@ class TaxController extends Controller
                             ->addColumn('name', function ($model) {
                                 return $model->name;
                             })
-                           
+
                             // ->showColumns('name', 'level')
                             ->addColumn('country', function ($model) {
                                 if ($this->country->where('country_code_char2', $model->country)->first()) {
@@ -112,7 +111,6 @@ class TaxController extends Controller
         //
     }
 
-   
     /**
      * Display the specified resource.
      *
@@ -241,12 +239,13 @@ class TaxController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-     /**
+
+    /**
      * Store a newly created resource in storage.
      *
      * @return Response
      */
-   
+
     /**
      * @param Request $request
      *
@@ -255,7 +254,7 @@ class TaxController extends Controller
     public function options(Request $request)
     {
         try {
-             $method = $request->method();
+            $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);
                 if (!$rules) {
@@ -270,19 +269,19 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-               $this->tax_class->fill($request->except('tax-name', 'level','active','country','state','rate'))->save();
+                $this->tax_class->fill($request->except('tax-name', 'level', 'active', 'country', 'state', 'rate'))->save();
             }
             $this->tax->fill($request->except('tax-name', 'name'))->save();
-              $taxClass=TaxClass::orderBy('id','DESC')->first();
-              $tax=Tax::orderBy('id','DESC')->first();
-             $tax->name=$request->input('tax-name');
-             $tax->tax_classes_id= $taxClass->id;
+            $taxClass = TaxClass::orderBy('id', 'DESC')->first();
+            $tax = Tax::orderBy('id', 'DESC')->first();
+            $tax->name = $request->input('tax-name');
+            $tax->tax_classes_id = $taxClass->id;
             $tax->save();
-
 
             return redirect()->back()->with('success', \Lang::get('message.created-successfully'));
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

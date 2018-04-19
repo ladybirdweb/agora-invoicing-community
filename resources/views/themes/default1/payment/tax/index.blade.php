@@ -130,28 +130,8 @@ input:checked + .slider:before {
                                     {{Lang::get('message.exclusive')}}</p>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                {!! Form::label('shop_inclusive',Lang::get('message.display-prices-in-the-shop')) !!}
-                            </td>
-                            <td>
-                                <p>{!! Form::radio('shop_inclusive',1) !!}
-                                    {{Lang::get('message.inclusive')}}</p>
-                                <p>{!! Form::radio('shop_inclusive',0,true) !!}
-                                    {{Lang::get('message.exclusive')}}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {!! Form::label('cart_inclusive',Lang::get('message.display-prices-during-cart-and-checkout')) !!}
-                            </td>
-                            <td>
-                                <p>{!! Form::radio('cart_inclusive',1) !!}
-                                    {{Lang::get('message.inclusive')}}</p>
-                                <p>{!! Form::radio('cart_inclusive',0,true) !!}
-                                    {{Lang::get('message.exclusive')}}</p>
-                            </td>
-                        </tr>
+                       
+                       
                         <tr>
                             <td>
                                 {!! Form::label('rounding',Lang::get('message.rounding')) !!}
@@ -167,32 +147,14 @@ input:checked + .slider:before {
                         </tr>
                         <tr>
                             <td></td>
-                            <td>{!! Form::submit('save',['class'=>'btn btn-primary']) !!}</td>
+                            <td>{!! Form::submit('Save',['class'=>'btn btn-primary']) !!}</td>
 
                         </tr>
                     </table>
 
                     {!! Form::close() !!}
 
-                    <div class="box">
-                        <div class="box-header">
-                            Classes
-                        </div>
-                        <div class="box-body">
-
-                            @forelse($classes as $key=>$value)
-                            <div class="col-md-2">
-                                <a href="#create" data-toggle="modal" data-target="#create{{$key}}">{{ucfirst($value)}}</a>
-                            </div>
-                            @include('themes.default1.payment.tax.create')
-                            @empty 
-                            <div class="col-md-2">
-                                <a href="#create" data-toggle="modal" data-target="#create-tax-option">Add Class</a>
-                            </div>
-
-                            @endforelse
-                        </div>
-                    </div>
+                   
 
 
                 </div>
@@ -206,8 +168,7 @@ input:checked + .slider:before {
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Class Name</th>
                               <th>Name</th>
-                               <th>Level</th>
-                               <th>Country</th>
+                                 <th>Country</th>
                               <th>State</th>
                                <th>Rate (%)</th>
                                <th>Action</th>
@@ -246,7 +207,6 @@ input:checked + .slider:before {
                     {data: 'checkbox', name: 'checkbox'},
                     {data: 'tax_classes_id', name: 'tax_classes_id'},
                     {data: 'name', name: 'name'},
-                    {data: 'level', name: 'level'},
                     {data: 'country', name: 'country'},
                     {data: 'state', name: 'state'},
                     {data: 'rate', name: 'rate'},

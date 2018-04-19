@@ -11,10 +11,71 @@
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
-                    {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                    {!! Form::text('name',null,['class' => 'form-control']) !!}
+                    {!! Form::label('name',Lang::get('Tax Class Name'),['class'=>'required']) !!}
+                    <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
+                      <select name="name" class="form-control">
+                      <option>Others</option>
+                      <option>Intra State GST</option>
+                      <option>Inter State GST</option>
+                      <option>Union Territory</option>
+  
+                      </select>
+                </div>
+                
+                
+                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                    <!-- name -->
+                    
+                    {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
+                    {!! Form::text('tax-name',null,['class' => 'form-control']) !!}
+                  
+                </div>
+
+                
+                 <div class="form-group">
+                    <!-- name -->
+                    {!! Form::label('status',Lang::get('message.status')) !!}
+                    
+                </div>
+
+                 <div class="row">
+                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('active',Lang::get('message.active')) !!}
+                        {!! Form::radio('active',1,true) !!}
+
+                    </div>
+                    <div class="col-md-3 form-group {{ $errors->has('active') ? 'has-error' : '' }}">
+                        <!-- name -->
+                        {!! Form::label('active',Lang::get('message.inactive')) !!}
+                        {!! Form::radio('active',0) !!}
+
+                    </div>
+                </div>
+                  <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                    <!-- name -->
+                    {!! Form::label('country',Lang::get('message.country')) !!}
+                    <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
+                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
 
                 </div>
+                  <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                    <!-- name -->
+                    {!! Form::label('state',Lang::get('message.state')) !!}
+                 
+
+                    <select name="state"  class="form-control" id="statess">
+                        <option name="state">Please Select Country</option>
+                    </select>
+
+                </div>
+                 <div class="form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
+                    <!-- name -->
+                    {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
+                    {!! Form::text('rate',null,['class' => 'form-control']) !!}
+
+                </div>
+                  
                 
 
 
@@ -29,15 +90,14 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
 <script>
+  <script>
     function getState(val) {
-
-
-        $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
-            data: 'country_id=' + val,
+      $.ajax({
+            type: "GET",
+            url: "{{url('get-state')}}/" + val,
             success: function (data) {
-                $("#state-list").html(data);
+              $("#statess").html(data);
+                
             }
         });
     }

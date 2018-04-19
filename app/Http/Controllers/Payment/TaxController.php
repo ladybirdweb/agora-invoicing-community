@@ -68,7 +68,7 @@ class TaxController extends Controller
      */
     public function getTax()
     {
-        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate')->get())
+        return \DataTables::of($this->tax->select('id', 'tax_classes_id', 'name',  'country', 'state', 'rate')->get())
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='tax_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
@@ -78,9 +78,7 @@ class TaxController extends Controller
                             ->addColumn('name', function ($model) {
                                 return $model->name;
                             })
-                            ->addColumn('level', function ($model) {
-                                return $model->level;
-                            })
+                           
                             // ->showColumns('name', 'level')
                             ->addColumn('country', function ($model) {
                                 if ($this->country->where('country_code_char2', $model->country)->first()) {
@@ -100,7 +98,7 @@ class TaxController extends Controller
                             ->addColumn('action', function ($model) {
                                 return '<a href='.url('tax/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
                             })
-                            ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'level', 'country', 'state', 'rate', 'action'])
+                            ->rawColumns(['checkbox', 'tax_classes_id', 'name', 'country', 'state', 'rate', 'action'])
                             ->make(true);
     }
 
@@ -114,22 +112,7 @@ class TaxController extends Controller
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @return Response
-     */
-    public function store(TaxRequest $request)
-    {
-        try {
-            $this->tax->fill($request->input())->save();
-
-            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
+   
     /**
      * Display the specified resource.
      *
@@ -156,7 +139,6 @@ class TaxController extends Controller
             $classes = $this->tax_class->pluck('name', 'id')->toArray();
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
-
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();
             }
@@ -259,7 +241,12 @@ class TaxController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+     /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+   
     /**
      * @param Request $request
      *
@@ -268,7 +255,7 @@ class TaxController extends Controller
     public function options(Request $request)
     {
         try {
-            $method = $request->method();
+             $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);
                 if (!$rules) {
@@ -283,11 +270,19 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-                $this->tax_class->fill($request->input())->save();
+               $this->tax_class->fill($request->except('tax-name', 'level','active','country','state','rate'))->save();
             }
+            $this->tax->fill($request->except('tax-name', 'name'))->save();
+              $taxClass=TaxClass::orderBy('id','DESC')->first();
+              $tax=Tax::orderBy('id','DESC')->first();
+             $tax->name=$request->input('tax-name');
+             $tax->tax_classes_id= $taxClass->id;
+            $tax->save();
+
 
             return redirect()->back()->with('success', \Lang::get('message.created-successfully'));
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

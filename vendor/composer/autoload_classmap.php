@@ -24,6 +24,7 @@ return array(
     'AddForeignKeysToPromotionsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_promotions_table.php',
     'AddForeignKeysToTaxProductRelationsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_tax_product_relations_table.php',
     'AddForeignKeysToTemplatesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
+    'AddGstNoColumnToTaxRulesTable' => $baseDir . '/database/migrations/2018_04_19_132715_add_Gst_No_column_to_tax_rules_table.php',
     'AddStateCodeColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
     'AddStateColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
     'App\\BaseModel' => $baseDir . '/app/BaseModel.php',

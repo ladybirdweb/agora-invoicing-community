@@ -11,27 +11,30 @@
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
-                    {!! Form::label('name',Lang::get('Tax Class Name'),['class'=>'required']) !!}
+                    {!! Form::label('name',Lang::get('Tax Type'),['class'=>'required']) !!}
+                    <?php
+                    $taxType = \App\Model\Payment\TaxOption::where('id', '1')->pluck('tax_enable')->toArray();
+                    ?>
                     <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
-                      <select name="name" class="form-control">
-                      <option>Others</option>
-                      <option>Intra State GST</option>
-                      <option>Inter State GST</option>
-                      <option>Union Territory</option>
-  
+                      <select name="name" id="gst" class="form-control">
+                      <option value="others">Others</option>
+                       @if($taxType[0]==1)
+                      <option value="Intra State GST">Intra State GST</option>
+                      <option value="Inter State GST">Inter State GST</option>
+                      <option value="Union Territory GST">Union Territory GST</option>
+                        @endif
                       </select>
                 </div>
                 
-                
+                {!! Form::open(['url'=>'tax']) !!}
                  <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
                     
                     {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
                     {!! Form::text('tax-name',null,['class' => 'form-control']) !!}
-                  
+                   
                 </div>
-
-                
+           
                  <div class="form-group">
                     <!-- name -->
                     {!! Form::label('status',Lang::get('message.status')) !!}
@@ -55,11 +58,18 @@
                   <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}
-                    <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                    {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+                    <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); 
+
+
+                    ?>
+                      {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
+
+                      <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],['IN'],['class' => 'form-control hide','onChange'=>'getState(this.value);','id'=>'countrynotvisible','disabled'=>'disabled'])!!} -->
+                     <input type='text' name="country1" id= "countrynotvisible" class="form-control hide" value="IN" readonly>
+                   
 
                 </div>
-                  <div class="form-group {{ $errors->has('state') ? 'has-error' : '' }}">
+                  <div class="form-group showwhengst {{ $errors->has('state') ? 'has-error' : '' }}" style="display:block">
                     <!-- name -->
                     {!! Form::label('state',Lang::get('message.state')) !!}
                  
@@ -69,7 +79,7 @@
                     </select>
 
                 </div>
-                 <div class="form-group {{ $errors->has('rate') ? 'has-error' : '' }}">
+                 <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
                     {!! Form::text('rate',null,['class' => 'form-control']) !!}
@@ -82,7 +92,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
             {!! Form::close()  !!}
             <!-- /Form -->
@@ -90,7 +100,7 @@
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->  
 <script>
-  <script>
+  
     function getState(val) {
       $.ajax({
             type: "GET",
@@ -101,5 +111,24 @@
             }
         });
     }
+
+   $(document).ready(function(){
+    $('#gst').on('change', function() {
+            if ( this.value != 'others')
+      {
+         $(document).find('.showwhengst').hide();
+         $(document).find('#countryvisible').addClass('hide');
+         $(document).find('#countrynotvisible').removeClass('hide');
+
+         
+      }
+      else
+        {
+             $(document).find('.showwhengst').show();
+             $(document).find('#countrynotvisible').addClass('hide');
+             $(document).find('#countryvisible').removeClass('hide');
+        }
+    });
+});
 </script>
 {!! Form::close()  !!}

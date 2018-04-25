@@ -17,7 +17,7 @@
                     ?>
                     <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
                       <select name="name" id="gst" class="form-control">
-                      <option value="others">Others</option>
+                      <option value="Others">Others</option>
                        @if($taxType[0]==1)
                       <option value="Intra State GST">Intra State GST</option>
                       <option value="Inter State GST">Inter State GST</option>
@@ -114,7 +114,7 @@
 
    $(document).ready(function(){
     $('#gst').on('change', function() {
-            if ( this.value != 'others')
+            if ( this.value != 'Others')
       {
          $(document).find('.showwhengst').hide();
          $(document).find('#countryvisible').addClass('hide');

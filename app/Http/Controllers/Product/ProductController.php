@@ -13,6 +13,7 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\Price;
     use App\Model\Product\Product;
     use App\Model\Product\ProductGroup;
+    use App\Model\Payment\Period;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
@@ -64,6 +65,9 @@ use App\Http\Controllers\Controller;
 
             $tax = new Tax();
             $this->tax = $tax;
+
+             $period = new Period();
+            $this->period = $period;
 
             $tax_relation = new TaxProductRelation();
             $this->tax_relation = $tax_relation;
@@ -258,9 +262,10 @@ use App\Http\Controllers\Controller;
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
-                $taxes = $this->tax_class->pluck('name', 'id')->toArray();
-
-                return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
+                 $periods = $this->period->pluck('name', 'days')->toArray();
+                $taxes = $this->tax->pluck('name', 'id')->toArray();
+                // dd($taxes);
+                return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods','currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -276,7 +281,7 @@ use App\Http\Controllers\Controller;
         public function store(Request $request)
         {
             $input = $request->all();
-
+             // dd($input);
             $v = \Validator::make($input, [
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
@@ -312,6 +317,7 @@ use App\Http\Controllers\Controller;
 
                 $product = $this->product;
                 $product->fill($request->except('image', 'file'))->save();
+                // Product::where('id',$product->id)->update(['name'=>$request->names]);
 
                 $product_id = $product->id;
                 $subscription = $request->input('subscription');
@@ -321,16 +327,17 @@ use App\Http\Controllers\Controller;
 
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-                if (count($currencies) > 0) {
-                    foreach ($currencies as $key => $currency) {
-                        $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                    }
-                }
+                // if (count($currencies) > 0) {
+                //     foreach ($currencies as $key => $currency) {
+                //         $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
+                //     }
+                // }
 
                 $taxes = $request->input('tax');
+                // dd($taxes);
 
                 if ($taxes) {
-                    foreach ($taxes as $key=>$value) {
+                      foreach ($taxes as $key=>$value) {
                         $newtax = new TaxProductRelation();
                         $newtax->product_id = $product_id;
                         $newtax->tax_class_id = $value;
@@ -340,6 +347,7 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
+                dd($e);
                 Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
@@ -374,6 +382,7 @@ use App\Http\Controllers\Controller;
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
+                 $periods = $this->period->pluck('name', 'days')->toArray();
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
@@ -388,12 +397,12 @@ use App\Http\Controllers\Controller;
                     }
                 }
 
-                $taxes = $this->tax_class->pluck('name', 'id')->toArray();
+                $taxes = $this->tax->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 // dd($saved_taxes);
 
-                return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
+                return view('themes.default1.product.product.edit', compact('product','periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
             } catch (\Exception $e) {
                 // dd($e);
                 return redirect()->back()->with('fails', $e->getMessage());

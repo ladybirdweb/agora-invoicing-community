@@ -1,11 +1,18 @@
-@extends('themes.default1.layouts.master')
-@section('content')
-<div class="box box-primary">
+<div class="modal fade" id="create-plan-option">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Create Plans</h4>
+            </div>
+            <div class="modal-body">
+
+
 
     <div class="content-header">
         {!! Form::open(['url'=>'plans','method'=>'post']) !!}
-        <h4>{{Lang::get('message.plan')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
-
+      <!--   <h4>{{Lang::get('message.plan')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4> -->
+    <!--  <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button> -->
     </div>
 
     <div class="box-body">
@@ -57,19 +64,20 @@
                         {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control']) !!}
 
                     </div>
-
-                   <div class="col-md-4 form-group {{ $errors->has('days') ? 'has-error' : '' }}">
+                      <div class="col-md-4 form-group {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
                         {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control']) !!}
 
                     </div>
 
+                  
+
                     <div class="col-md-12">
                         <table class="table table-responsive">
-                            <tr>
+                           
                                 <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                <td>
+                                
 
                                     <table class="table table-responsive">
                                         <tr>
@@ -108,17 +116,16 @@
 
                                     </table>
 
-                                </td>
-                            </tr>
+                             <div class="modal-footer">
+                <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+            </div>
                         </table>
+                      
                     </div>
-                    
-                    <div class="col-md-6 form-group {{ $errors->has('allow_tax') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('allow_tax','Allow Tax') !!}
-                        {!! Form::checkbox('allow_tax',1) !!}
 
-                    </div>
+                    
+                    
 
 
                 </div>
@@ -133,8 +140,11 @@
 
     </div>
 
+
+</div>
+</div>
+</div>
 </div>
 
 
 {!! Form::close() !!}
-@stop

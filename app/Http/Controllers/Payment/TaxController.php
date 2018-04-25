@@ -78,7 +78,7 @@ class TaxController extends Controller
                                 return ucfirst($this->tax_class->where('id', $model->tax_classes_id)->first()->name);
                             })
                             ->addColumn('name', function ($model) {
-                                return $model->name;
+                                return ucfirst($model->name);
                             })
                            
                             // ->showColumns('name', 'level')
@@ -206,10 +206,44 @@ class TaxController extends Controller
     public function update($id, Request $request)
     {
         try {
-            dd($request->all());
-          
+            
+
+             $defaultValue=['Others','Intra State GST','Inter State GST','Union Territory GST'];
+
+            if($request->tax_classes_id == 0){
+                $taxClassesName='Others';
+             }
+             elseif($request->tax_classes_id == 1){
+                 $taxClassesName='Intra State GST';
+             }
+             elseif($request->tax_classes_id == 2){
+                 $taxClassesName='Inter State GST';
+             }
+             else{
+                 $taxClassesName='Union Territory GST';
+             }
+
+             $TaxClass=TaxClass::where('name',$taxClassesName)->first();
+             if($TaxClass == null){
+              $TaxClass=$this->tax_class->create(['name'=>$taxClassesName]);
+             }
+             $taxId=$TaxClass->id;
+
             $tax = $this->tax->where('id', $id)->first();
-            $tax->fill($request->input())->save();
+            // dd($tax);
+            $tax->fill($request->except('tax_classes_id'))->save();
+
+            $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId]);
+            if($taxClassesName !='Others'){
+                $country ='IN';
+                $state ='';
+                $rate ='';
+                 $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId,'country'=>$country,'state'=>$state,'rate'=>$rate]);
+            }
+
+            
+
+            // $tax->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

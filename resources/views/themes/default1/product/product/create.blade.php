@@ -1,5 +1,8 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+<head>
+    <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
+</head>
 <div class="box box-primary">
 
     <div class="box-header">
@@ -47,7 +50,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
+                        <!-- <li><a href="#tab_3" data-toggle="tab">Plans</a></li> -->
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -234,45 +237,7 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                    <td>
-
-                                        <table class="table table-responsive">
-                                            <tr>
-                                                <th></th>
-                                                <th>{{Lang::get('message.regular-price')}}</th>
-                                                <th>{{Lang::get('message.sales-price')}}</th>
-                                            </tr>
-                                            
-                                            @foreach($currency as $key=>$value)
-                                            
-                                            <tr>
-                                                <td>
-
-                                                    <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
-                                                    <p>{{$value}}</p>
-
-                                                </td>
-
-                                                <td>
-
-                                                    {!! Form::text('price['.$key.']',null) !!}
-
-                                                </td>
-                                                <td>
-
-                                                    {!! Form::text('sales_price['.$key.']',null) !!}
-
-                                                </td>
-                                            </tr>
-                                            @endforeach
-
-
-                                        </table>
-
-                                    </td>
-                                </tr>
+                               
 
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
@@ -301,45 +266,65 @@
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                @forelse($taxes as $key=>$value)
-                                                <div class="col-md-2">
-                                                    <b>{{ucfirst($value)}} {!! Form::checkbox('tax[]',$key) !!}</b>
+                                                <div class="col-md-2" >
+                                                     
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
+                                                       <option></option>
+                                                       @foreach($taxes as $key => $value)
+                                                        <option value="{{$key}}">{{$value}}</option> 
+                                                        @endforeach
+                                                    </select>
+                                                  <!--  {!! Form::select('tax[]',[''=>'Select a Tax','Tax Names'=>$taxes],$key,['class' => 'form-control  ' ,'id'=>'editTax','multiple'=>true]) !!}</b> -->
                                                 </div>
-                                                @empty 
-                                                <p>No taxes</p>
-                                                @endforelse
                                             </div>
 
                                         </div>
                                     </td>
+                                   
+                                    
+                                </tr>
+                                <tr>
+                               
                                 </tr>
 
                             </table>
-                        </div>
 
-                        <!-- /.tab-pane -->
+                       
 
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_3">
-                            <h3>
-                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
-                            </h3>
-                            
-                        </div>
-                    </div>
-                    <!-- /.tab-content -->
-                </div>
-                <!-- nav-tabs-custom -->
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-</div>
-
-
+                                                <!-- <div class="col-md-2" style="width:800px;">
+                                                   {!! Form::select('tax[]',[''=>'Select a Tax','Tax Names'=>$taxes],$key,['id' => 'js-example-basic-single','class' => 'form-control select2 ' ,'multiple'=>true]) !!}</b>
+                                                </div> -->
+                             
 {!! Form::close() !!}
+
+ 
+                                        
+                              <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+                           
+                                      @include('themes.default1.product.plan.create') 
+                                  
+                                    </div>
+
+
+
+@stop
+ @section('icheck')
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <!-- <script type="text/javascript">
+        $("#editTax").select2();
+    </script> -->
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+    $("#Tax").select2({
+        placeholder: 'Select Taxes',
+        tags:true
+    });
+});
+</script>
 @stop

@@ -72,8 +72,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
-                    </ul>
+                        </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div class="row">
@@ -306,47 +305,7 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                    <td>
-
-                                        <table class="table table-responsive">
-                                            <tr>
-                                                <th></th>
-                                                <th>{{Lang::get('message.regular-price')}}</th>
-                                                <th>{{Lang::get('message.sales-price')}}</th>
-                                            </tr>
-
-                                            @foreach($currency as $key=>$value)
-
-                                            <!-- dd($currency); -->
-                                            <tr>
-                                                <td>
-
-                                                    <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
-                                                    <p>{{$value}}</p>
-
-                                                </td>
-
-                                                <td>
-
-                                                    {!! Form::text('price['.$key.']',$regular[$key]) !!}
-
-                                                </td>
-                                                <td>
-
-                                                    {!! Form::text('sales_price['.$key.']',$sales[$key]) !!}
-
-                                                </td>
-                                            </tr>
-                                            @endforeach
-
-
-                                        </table>
-
-                                    </td>
-                                </tr>
-
+                               
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
@@ -411,17 +370,20 @@
                                                   
                                         
                                                 ?>
-                                                @forelse($taxes as $key=>$value)
+                                                
                                                         
                                                 <div class="col-md-2">
-                                                   
+                                                   <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
+                                                       <option></option>
+                                                       @foreach($taxes as $key => $value)
+                                                        <option value="{{$key}}">{{$value}}</option> 
+                                                        @endforeach
+                                                    </select>
                                                     
-                                                    <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax[]" value="{{$key}}" {{in_array($key,$saved1) ? 'checked' :''}}></b>
+                                                    <!-- <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax[]" value="{{$key}}" {{in_array($key,$saved1) ? 'checked' :''}}></b> -->
                                                    
                                                 </div>
-                                                @empty 
-                                                <p>No taxes</p>
-                                                @endforelse
+                                               
                                             </div>
 
                                         </div>
@@ -429,13 +391,16 @@
                                 </tr>
 
                             </table>
-                        </div>
-                       
-                           <!-- /.tab-pane -->
-                         <div class="tab-pane" id="tab_3">
-                            <h3>
-                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
-                            </h3>
+                      
+                <!-- nav-tabs-custom -->
+
+           
+
+          {!! Form::close() !!}
+
+           <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+                           
+                            @include('themes.default1.product.plan.create') 
                             @if($product->plan())
                             <table class="table table-responsive">
                                 
@@ -456,18 +421,16 @@
                                
                             </table>
                             @endif
-                        </div>
+                              </div>
+                       
+                           <!-- /.tab-pane -->
+                        
 
                         <!-- /.tab-pane -->
                     </div>
                     <!-- /.tab-content -->
                 </div>
                 </div>
-                <!-- nav-tabs-custom -->
-
-           
-
-          {!! Form::close() !!}
      
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
@@ -641,7 +604,21 @@
 </div>
 
 </div>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
+
+
+<script>
+    $(document).ready(function() {
+    $("#editTax").select2({
+        placeholder: 'Select Taxes',
+        tags:true
+    });
+});
+</script>
 
 
 @stop

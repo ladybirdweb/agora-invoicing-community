@@ -296,9 +296,9 @@ class PromotionController extends Controller
                 'target' => 'item',
                 'value'  => $value,
             ]);
-            
+
             $items = \Cart::getContent();
-             
+
             foreach ($items as $item) {
                 if (count($item->conditions) == 2 || count($item->conditions) == 1) {
                     \Cart::addItemCondition($productid, $coupon);
@@ -330,9 +330,8 @@ class PromotionController extends Controller
                 $planid = \Session::get('plan');
             }
             if ($product->subscription != 1) {
-                $planId = Plan::where('product',$productid)->pluck('id')->first();
-             $product_price = PlanPrice::where('plan_id',$planId)->where('currency',$currency)->pluck('add_price')->first();
-
+                $planId = Plan::where('product', $productid)->pluck('id')->first();
+                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
             } else {
                 $product_price = $control->planCost($planid, $userid);
             }

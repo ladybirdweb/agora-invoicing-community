@@ -198,42 +198,35 @@ class TaxController extends Controller
     public function update($id, Request $request)
     {
         try {
+            $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
 
+            if ($request->tax_classes_id == 0) {
+                $taxClassesName = 'Others';
+            } elseif ($request->tax_classes_id == 1) {
+                $taxClassesName = 'Intra State GST';
+            } elseif ($request->tax_classes_id == 2) {
+                $taxClassesName = 'Inter State GST';
+            } else {
+                $taxClassesName = 'Union Territory GST';
+            }
 
-             $defaultValue=['Others','Intra State GST','Inter State GST','Union Territory GST'];
-
-            if($request->tax_classes_id == 0){
-                $taxClassesName='Others';
-             }
-             elseif($request->tax_classes_id == 1){
-                 $taxClassesName='Intra State GST';
-             }
-             elseif($request->tax_classes_id == 2){
-                 $taxClassesName='Inter State GST';
-             }
-             else{
-                 $taxClassesName='Union Territory GST';
-             }
-
-             $TaxClass=TaxClass::where('name',$taxClassesName)->first();
-             if($TaxClass == null){
-              $TaxClass=$this->tax_class->create(['name'=>$taxClassesName]);
-             }
-             $taxId=$TaxClass->id;
+            $TaxClass = TaxClass::where('name', $taxClassesName)->first();
+            if ($TaxClass == null) {
+                $TaxClass = $this->tax_class->create(['name'=>$taxClassesName]);
+            }
+            $taxId = $TaxClass->id;
 
             $tax = $this->tax->where('id', $id)->first();
             // dd($tax);
             $tax->fill($request->except('tax_classes_id'))->save();
 
             $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId]);
-            if($taxClassesName !='Others'){
-                $country ='IN';
-                $state ='';
-                $rate ='';
-                 $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId,'country'=>$country,'state'=>$state,'rate'=>$rate]);
+            if ($taxClassesName != 'Others') {
+                $country = 'IN';
+                $state = '';
+                $rate = '';
+                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId, 'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
             }
-
-            
 
             // $tax->fill($request->input())->save();
 

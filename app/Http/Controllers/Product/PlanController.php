@@ -103,7 +103,7 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-         $this->validate($request, [
+        $this->validate($request, [
             'name'        => 'required',
             'days'        => 'required|numeric',
             'add_price.*' => 'required',

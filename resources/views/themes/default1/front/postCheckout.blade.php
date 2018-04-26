@@ -276,65 +276,95 @@ $json = json_encode($data);
                         <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-
-                @foreach($items->toArray() as $attribute)
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
-
-                <?php 
-                $tax_name = "";
-                $content=Cart::getContent();
-               foreach ($content as $key => $item) {
-              $gst_attribute = $item->attributes['tax'];
-              }
-             
-               ?>
-              
-                 @if($gst_attribute[0]['state']==$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']=='NULL'  )
-              
+                
+                 @foreach($attributes[0]['tax'] as $attribute)
+                  
+                  
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
+                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL')
                 <tr class="Taxes">
                     <th>
-                        <strong>{{$gst_attribute[0]['name1']}}<span>@</span>{{$gst_attribute[0]['rate1']}}%</strong><br/>
-                        <strong>{{$gst_attribute[0]['name2']}}<span>@</span>{{$gst_attribute[0]['rate2']}}%</strong>
+                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
+                        <strong>SGST<span>@</span>{{$attribute['s_gst']}}%</strong><br/>
+                       
                     </th>
-                   
-                   <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate2'],Cart::getSubTotalWithoutConditions())}} <br/>
+                    <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                       
                        
                     </td>
 
+
                 </tr>
                 @endif
-
-                  @if ($gst_attribute[0]['state']!=$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']=='NULL')
+               
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL')
                
                 <tr class="Taxes">
                     <th>
-                        <strong>{{$gst_attribute[0]['name3']}}<span>@</span>{{$gst_attribute[0]['rate3']}}%</strong>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
+                     
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate3'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                      
                     </td>
 
 
                 </tr>
                 @endif
-                @if ($gst_attribute[0]['state']!=$gst_attribute[0]['origin_state'] && $gst_attribute[0]['rate4']!='NULL' )
+
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' )
               
                 <tr class="Taxes">
                     <th>
-                       <strong>{{$gst_attribute[0]['name1']}}<span>@</span>{{$gst_attribute[0]['rate1']}}%</strong><br/>
-                        <strong>{{$gst_attribute[0]['name4']}}<span>@</span>{{$gst_attribute[0]['rate4']}}%</strong>
+                       <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
+                        <strong>UTGST<span>@</span>{{$attribute['c_gst']}}%</strong>
+                       
                     </th>
                     <td>
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($gst_attribute[0]['rate4'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate4'],Cart::getSubTotalWithoutConditions())}} <br/>
+                       
                     </td>
 
 
                 </tr>
                 @endif
                 @endif
+
+                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0))
+                 <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         
+                       
+                    </td>
+                  </tr>
+                 @endif
+           
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1))
+                  <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                      
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
+                         
+                       
+                    </td>
+                  </tr>
+                 @endif
                 @endforeach
                 <tr class="total">
                     <th>

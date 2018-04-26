@@ -376,7 +376,7 @@
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
-                                                        <option value="{{$key}}">{{$value}}</option> 
+                                                        <option value={{$key}}>{{$value}}</option> 
                                                         @endforeach
                                                     </select>
                                                     

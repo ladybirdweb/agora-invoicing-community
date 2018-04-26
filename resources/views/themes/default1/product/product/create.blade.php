@@ -271,10 +271,10 @@
                                                     <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
-                                                        <option value="{{$key}}">{{$value}}</option> 
+                                                        <option value={{$key}}>{{$value}}</option> 
                                                         @endforeach
                                                     </select>
-                                                  <!--  {!! Form::select('tax[]',[''=>'Select a Tax','Tax Names'=>$taxes],$key,['class' => 'form-control  ' ,'id'=>'editTax','multiple'=>true]) !!}</b> -->
+                                                
                                                 </div>
                                             </div>
 
@@ -291,9 +291,6 @@
 
                        
 
-                                                <!-- <div class="col-md-2" style="width:800px;">
-                                                   {!! Form::select('tax[]',[''=>'Select a Tax','Tax Names'=>$taxes],$key,['id' => 'js-example-basic-single','class' => 'form-control select2 ' ,'multiple'=>true]) !!}</b>
-                                                </div> -->
                              
 {!! Form::close() !!}
 

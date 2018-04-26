@@ -93,7 +93,7 @@
                          <input type='text' name="country1" id= "country2" class="form-control country1" value="IN" disabled>
                          @else
                         
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country']) !!}
+                        {!! Form::select('country',[''=>'Any Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country']) !!}
                         @endif
 
 
@@ -116,7 +116,7 @@
                             @if(count($state)>0)
                             <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
-                            <option value="">Select State</option>
+                            <option value="">Any State</option>
                             @if(count($states)>0)
                             @foreach($states as $key=>$value)
                             <option value="{{$key}}">{{$value}}</option>

@@ -100,6 +100,7 @@
                                         <th>Price</th>
                                         <th>Taxes</th>
                                         <th>Tax Rates</th>
+                                        <th>Discount</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
@@ -130,6 +131,12 @@
                                                 <li>No Tax Rates</li>
                                                 @endif
                                             </ul>
+                                        </td>
+                                        <?php
+                                        $data=($item->discount)?$item->discount:'No discounts';
+                                        ?>
+                                        <td>
+                                            {{$data}}
                                         </td>
                                         <td>{{$item->subtotal}}</td>
                                     </tr>
@@ -167,7 +174,7 @@
                                     @if($tax_name[$i]!='null')
                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
+                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
                                         </th>
                                         <td>
                                             <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}

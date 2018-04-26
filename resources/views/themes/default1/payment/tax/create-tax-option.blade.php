@@ -62,7 +62,7 @@
 
 
                     ?>
-                      {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
+                      {!! Form::select('country',[''=>'Any Country','Select a Country'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
 
                       <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],['IN'],['class' => 'form-control hide','onChange'=>'getState(this.value);','id'=>'countrynotvisible','disabled'=>'disabled'])!!} -->
                      <input type='text' name="country1" id= "countrynotvisible" class="form-control hide" value="IN" readonly>
@@ -75,7 +75,7 @@
                  
 
                     <select name="state"  class="form-control" id="statess">
-                        <option name="state">Please Select Country</option>
+                        <option name="state">Any State</option>
                     </select>
 
                 </div>

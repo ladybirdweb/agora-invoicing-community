@@ -263,7 +263,7 @@ use App\Http\Controllers\Controller;
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
                  $periods = $this->period->pluck('name', 'days')->toArray();
-                $taxes = $this->tax->pluck('name', 'id')->toArray();
+                $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods','currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
@@ -397,7 +397,7 @@ use App\Http\Controllers\Controller;
                     }
                 }
 
-                $taxes = $this->tax->pluck('name', 'id')->toArray();
+                $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 // dd($saved_taxes);
@@ -477,7 +477,7 @@ use App\Http\Controllers\Controller;
                 }
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-
+                  // dd($taxes);
                 if ($taxes) {
                     $this->tax_relation->where('product_id', $product_id)->delete();
                     foreach ($taxes as $tax) {

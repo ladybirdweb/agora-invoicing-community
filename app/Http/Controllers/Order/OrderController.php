@@ -388,6 +388,7 @@ class OrderController extends Controller
 
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
+
                         // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
@@ -445,6 +446,7 @@ class OrderController extends Controller
     public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
+            // dd($orderid, $planid, $version, $product);
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
 
@@ -460,6 +462,7 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');

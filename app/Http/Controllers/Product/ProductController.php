@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
+    use App\Model\Payment\Period;
     use App\Model\Payment\Plan;
     use App\Model\Payment\Tax;
     use App\Model\Payment\TaxClass;
@@ -13,7 +14,6 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\Price;
     use App\Model\Product\Product;
     use App\Model\Product\ProductGroup;
-    use App\Model\Payment\Period;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
@@ -66,7 +66,7 @@ use App\Http\Controllers\Controller;
             $tax = new Tax();
             $this->tax = $tax;
 
-             $period = new Period();
+            $period = new Period();
             $this->period = $period;
 
             $tax_relation = new TaxProductRelation();
@@ -262,10 +262,10 @@ use App\Http\Controllers\Controller;
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
-                 $periods = $this->period->pluck('name', 'days')->toArray();
+                $periods = $this->period->pluck('name', 'days')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
-                return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods','currency', 'group', 'cartUrl', 'products', 'taxes'));
+                return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -281,7 +281,7 @@ use App\Http\Controllers\Controller;
         public function store(Request $request)
         {
             $input = $request->all();
-             // dd($input);
+            // dd($input);
             $v = \Validator::make($input, [
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
@@ -337,7 +337,7 @@ use App\Http\Controllers\Controller;
                 // dd($taxes);
 
                 if ($taxes) {
-                      foreach ($taxes as $key=>$value) {
+                    foreach ($taxes as $key=>$value) {
                         $newtax = new TaxProductRelation();
                         $newtax->product_id = $product_id;
                         $newtax->tax_class_id = $value;
@@ -382,7 +382,7 @@ use App\Http\Controllers\Controller;
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
-                 $periods = $this->period->pluck('name', 'days')->toArray();
+                $periods = $this->period->pluck('name', 'days')->toArray();
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
@@ -402,7 +402,10 @@ use App\Http\Controllers\Controller;
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
+
                 return view('themes.default1.product.product.edit', compact('product','periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes','savedTaxes'));
+
+
             } catch (\Exception $e) {
                 // dd($e);
                 return redirect()->back()->with('fails', $e->getMessage());
@@ -477,7 +480,7 @@ use App\Http\Controllers\Controller;
                 }
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-                  // dd($taxes);
+                // dd($taxes);
                 if ($taxes) {
                     $this->tax_relation->where('product_id', $product_id)->delete();
                     foreach ($taxes as $tax) {

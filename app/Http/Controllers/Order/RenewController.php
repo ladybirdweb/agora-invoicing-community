@@ -179,7 +179,7 @@ class RenewController extends Controller
             if ($cost != '') {
                 $product_cost = $this->planCost($planid, $user->id);
             }
-            $cost = $this->tax($product, $product_cost,$user->id);
+            $cost = $this->tax($product, $product_cost, $user->id);
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -193,7 +193,7 @@ class RenewController extends Controller
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $code, $product_cost, $currency, $qty = 1);
-            
+
             return $items;
         } catch (Exception $ex) {
             dd($ex);
@@ -256,19 +256,18 @@ class RenewController extends Controller
         }
     }
 
-    public function tax($product, $cost,$userid)
+    public function tax($product, $cost, $userid)
     {
         try {
             $controller = new InvoiceController();
-            $tax = $controller->checkTax($product->id,$userid);
+            $tax = $controller->checkTax($product->id, $userid);
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
-                
+
                     //dd($value);
-                    $tax_name .= $tax[0].',';
-                    $tax_rate .= $tax[1].',';
-                
+                $tax_name .= $tax[0].',';
+                $tax_rate .= $tax[1].',';
             }
             //dd('dsjcgv');
             $grand_total = $controller->calculateTotal($tax_rate, $cost);

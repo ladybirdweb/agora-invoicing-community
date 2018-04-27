@@ -62,7 +62,7 @@
                 </div>
                 @endif
                 {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
-                <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
        </div>
        <div class="box-body">
@@ -374,13 +374,15 @@
                                                         
                                                 <div class="col-md-2">
                                                    <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
-                                                       <option></option>
-                                                       @foreach($taxes as $key => $value)
-                                                        <option value={{$key}}>{{$value}}</option> 
-                                                        @endforeach
+                                                      
+                                                       @foreach($taxes as $taxkey => $taxvalue)
+                                                  
+                                                        <option value={{$taxkey}} <?php echo (in_array($taxkey, $savedTaxes)) ?  "selected" : "" ;  ?>>{{$taxvalue}}</option> 
+                                                        
+                                                       @endforeach
                                                     </select>
                                                     
-                                                    <!-- <b>{{ucfirst($value)}}  <input type="checkbox"  name="tax[]" value="{{$key}}" {{in_array($key,$saved1) ? 'checked' :''}}></b> -->
+                                                   
                                                    
                                                 </div>
                                                
@@ -416,7 +418,7 @@
                                     $months = $product->plan()->days / 30;
                                     ?>
                                     <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
+                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
                                 </tr>
                                
                             </table>

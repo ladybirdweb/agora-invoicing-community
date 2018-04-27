@@ -34,7 +34,7 @@
         </div>
         @endif
         {!! Form::open(['url'=>'products','method'=>'post','files' => true]) !!}
-        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
@@ -268,7 +268,7 @@
                                             <div class="row">
                                                 <div class="col-md-2" >
                                                      
-                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px; color:black;" class="select2" multiple="true">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
                                                         <option value={{$key}}>{{$value}}</option> 
@@ -296,7 +296,7 @@
 
  
                                         
-                              <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+                              <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add new</a> </h3>
                            
                                       @include('themes.default1.product.plan.create') 
                                   

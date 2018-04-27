@@ -678,8 +678,7 @@ class InvoiceController extends Controller
                     
                 }
             }
-            //dd($taxs);
-            return $taxs;
+             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
 

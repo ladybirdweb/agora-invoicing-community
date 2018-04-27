@@ -250,7 +250,7 @@ class CartController extends Controller
                             $s_gst = '';
                             $i_gst = '';
                             $ut_gst = '';
-                            $value='';   $rate = '' ;
+                            $value='';   $rate = '' ; $status =1;
                             if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user
                               
                                 $c_gst = $user_state->c_gst;
@@ -264,29 +264,48 @@ class CartController extends Controller
 
                            $taxes = $this->getTaxByPriority($taxClassId);
                                     $value = $this->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
+                                    if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                      } 
                                      elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
                          $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
                            $taxes = $this->getTaxByPriority($taxClassId);
                                     $value = $this->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
-                                    // dd($value);
+                                     if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                       } 
                                       elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
                         $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
                            $taxes = $this->getTaxByPriority($taxClassId);
-                                    $value = $this->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
+                             $value = $this->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
+                              if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                     }
                             } else {//If user from other Country
                                 $taxClassId = Tax::where('state', $geoip_state)->pluck('tax_classes_id')->first();
                                  if($taxClassId){ //if state equals the user State
                                 $taxes = $this->getTaxByPriority($taxClassId);
                                 $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+                                 if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                 $rate = $value;
                                 }
-                                else{//if Tax is selected for Any State
+                                else{//if Tax is selected for Any Country Any State
                                  $taxClassId =  Tax::where('country','')->where('state', 'Any State')->pluck('tax_classes_id')->first();
                                  $taxes = $this->getTaxByPriority($taxClassId);
                                   $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+                                   if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                   $rate = $value;
                                 }
                             }
@@ -300,7 +319,7 @@ class CartController extends Controller
                                             'value'  => $tax->rate.'%',
                                         ]);
                                 } else {//All the data attribute that is sent to the checkout Page if tax_compound=0
-                                    $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst, 's_gst'=>$s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state, 'tax_enable'=>$tax_enable,'rate'=>$rate];
+                                    $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst, 's_gst'=>$s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state, 'tax_enable'=>$tax_enable,'rate'=>$rate,'status'=>$status];
 
                                     $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
 
@@ -323,22 +342,23 @@ class CartController extends Controller
                             }
                         }
                     } else {
-                        // dd('dff');
-                        // if ($product->tax()->first()) {
-                        //      $taxClassId = Tax::where('state', $geoip_state)->pluck('tax_classes_id')->first();
-                        //     dd($tax_class_id);
+                             $status =1;
                             if ($this->tax_option->findOrFail(1)->tax_enable == 0) {
-                                $taxClassId =  Tax::where('state', 'Any State')->pluck('tax_classes_id')->first();
+                                $taxClassId =  Tax::where('country','')->where('state', 'Any State')->pluck('tax_classes_id')->first();
                                  $taxes = $this->getTaxByPriority($taxClassId);
                                   $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+                                   if ($value == '')
+                                    {
+                                        $status = 0 ;
+                                    }
                                   $rate = $value;
                                 foreach ($taxes as $key => $tax) {
-                                    $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate,'tax_enable'=>0];
+                                    $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate,'tax_enable'=>0,'status' => $status];
                                     $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
                                             'name'   => $tax->name,
                                             'type'   => 'tax',
                                             'target' => 'item',
-                                            'value'  => $tax->rate.'%',
+                                            'value'  => $rate,
                                         ]);
                                 }
                             }
@@ -357,13 +377,11 @@ class CartController extends Controller
                 }
             }
             $currency_attribute = $this->addCurrencyAttributes($productid);
-        
+           // dd($taxCondition,$tax_attribute);
             return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
-           
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not check the tax');
+           Bugsnag::notifyException($ex);
+          throw new \Exception('Can not check the tax');
         }
     }
 
@@ -378,7 +396,7 @@ class CartController extends Controller
     public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
     {
         try {
-            // $otherRate = $this->otherRate($productid);
+            $value='';
              $value = $taxes->toArray()[0]['active'] ?
                   (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
                         $c_gst + $s_gst .'%' : 0) : 0;
@@ -400,7 +418,7 @@ class CartController extends Controller
     public function getValueForOtherState($productid, $i_gst, $taxClassId, $taxes)
     {
 
-        // dd($productid, $i_gst, $taxClassId, $taxes);
+        $value='' ;
         $value = $taxes->toArray()[0]['active'] ? //If the Current Class is active
               (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
                         $i_gst .'%' : 0) : 0; //IGST
@@ -418,6 +436,7 @@ class CartController extends Controller
      */
     public function getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes)
     {
+        $value='';
           $value = $taxes->toArray()[0]['active'] ?
              (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst + $otherRate.'%' : 0):0;
 
@@ -433,13 +452,20 @@ class CartController extends Controller
     }
 
     public function getValueForOthers($productid, $taxClassId, $taxes)
-    {
-        $otherRate = '';
-            if (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() != 0) {
-            $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-        }
-        $value = $otherRate.'%';
-       return $value;
+    {  
+        $otherRate = 0;
+         $status= $taxes->toArray()[0]['active'];
+         if($status && (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() > 0 )){
+           $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
+         }
+         
+           
+           // $value= $taxes->toArray()[0]['active'] ? 
+           //  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() != 0) ?
+           //  $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
+        
+        $value = $otherRate;
+         return $value;
     }
 
     public function checkTaxOld($isTaxApply, $id)
@@ -731,7 +757,7 @@ class CartController extends Controller
     {
         try {
             $taxe_relation = $this->tax->where('tax_classes_id', $taxClassId)->get();
-            return $taxe_relation;
+             return $taxe_relation;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

@@ -146,10 +146,10 @@ use App\Http\Controllers\Controller;
                             ->addColumn('Action', function ($model) {
                                 $url = '';
                                 if ($model->type == 2) {
-                                    $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary'>Download</a>";
+                                    $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
                                 }
 
-                                return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
+                                return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
                             })
 
                             ->rawColumns(['checkbox', 'name', 'type', 'group', 'price', 'currency', 'Action'])
@@ -400,9 +400,9 @@ use App\Http\Controllers\Controller;
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
-                // dd($saved_taxes);
+                $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-                return view('themes.default1.product.product.edit', compact('product','periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
+                return view('themes.default1.product.product.edit', compact('product','periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes','savedTaxes'));
             } catch (\Exception $e) {
                 // dd($e);
                 return redirect()->back()->with('fails', $e->getMessage());

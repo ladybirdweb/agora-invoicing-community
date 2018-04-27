@@ -52,7 +52,7 @@
             <span class="info-box-icon bg-yellow"><i class="fa fa-tags"></i></span>
 
             <div class="info-box-content">
-                <span class="info-box-text">Productc/Services Registered</span>
+                <span class="info-box-text">Products/Services Registered</span>
                 <span class="info-box-number">{{$product_count}}</span>
             </div>
             <!-- /.info-box-content -->
@@ -127,10 +127,12 @@
 
             <div class="col-md-4 col-md-offset-4">
                 <div class="col-md-6">
-                    {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
+                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
+                     <button name="Search" type="submit" id="reset" class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
                 </div>
                 <div class="col-md-6">
-                    {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!}
+                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
+                    <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
                 </div>
             </div>
 </div>
@@ -168,7 +170,7 @@
     <div class="box-header">
 
         <h4>{{Lang::get('message.users')}}
-            <a href="{{url('clients/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+            <a href="{{url('clients/create')}}" class="btn btn-primary btn-sm pull-right   "><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
     @if (count($errors) > 0)

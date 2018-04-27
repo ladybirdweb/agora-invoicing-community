@@ -276,12 +276,12 @@ $json = json_encode($data);
                         <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-                
+                @if ($attributes != null)
                  @foreach($attributes[0]['tax'] as $attribute)
                   
                   
                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
-                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL')
+                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
                 <tr class="Taxes">
                     <th>
                         <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
@@ -299,7 +299,7 @@ $json = json_encode($data);
                 </tr>
                 @endif
                
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL')
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
                
                 <tr class="Taxes">
                     <th>
@@ -315,7 +315,7 @@ $json = json_encode($data);
                 </tr>
                 @endif
 
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' )
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' && $attribute['status'] ==1)
               
                 <tr class="Taxes">
                     <th>
@@ -334,7 +334,7 @@ $json = json_encode($data);
                 @endif
                 @endif
 
-                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0))
+                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
                  <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
@@ -350,7 +350,7 @@ $json = json_encode($data);
                   </tr>
                  @endif
            
-                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1))
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
                   <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
@@ -366,6 +366,7 @@ $json = json_encode($data);
                   </tr>
                  @endif
                 @endforeach
+                @endif
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>

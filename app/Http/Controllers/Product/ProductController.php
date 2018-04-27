@@ -402,10 +402,7 @@ use App\Http\Controllers\Controller;
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-
-                return view('themes.default1.product.product.edit', compact('product','periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes','savedTaxes'));
-
-
+                return view('themes.default1.product.product.edit', compact('product', 'periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
             } catch (\Exception $e) {
                 // dd($e);
                 return redirect()->back()->with('fails', $e->getMessage());

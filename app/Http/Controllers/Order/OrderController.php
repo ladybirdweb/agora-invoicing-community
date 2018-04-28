@@ -443,7 +443,7 @@ class OrderController extends Controller
      *
      * @throws \Exception
      */
-    public function addSubscription($orderid, $planid, $version='', $product)
+    public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
 

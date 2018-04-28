@@ -260,7 +260,7 @@ class InvoiceController extends Controller
 
             // dd($grand_total);
             $tax = $this->checkTax($product->id, $user_id);
-         
+
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
@@ -466,12 +466,12 @@ class InvoiceController extends Controller
             }
             $tax = $this->checkTax($product->id, $userid);
             // dd($tax);
-             $tax_name = '';
+            $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
 
                     //dd($value);
-               $tax_name = $tax[0];
+                $tax_name = $tax[0];
                 $tax_rate = $tax[1];
             }
 
@@ -663,10 +663,9 @@ class InvoiceController extends Controller
                     $rate = $this->getRate($productid, $taxs[0], $userid);
                     // dd($rate);
                     $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
-                     
                 }
             }
-           
+
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);

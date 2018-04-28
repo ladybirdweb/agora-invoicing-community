@@ -236,7 +236,7 @@ class CheckoutController extends Controller
                 $product = $this->product($invoice_id);
                 $amount = $invoice->grand_total;
                 $content = Cart::getContent();
-                 $attributes = $this->getAttributes($content);
+                $attributes = $this->getAttributes($content);
             }
 
             //trasfer the control to event if cart price is not equal 0

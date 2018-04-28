@@ -186,7 +186,7 @@ Checkout
                         <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-
+                 
                 @foreach($items->toArray() as $attribute)
                 
                 @if($attribute['tax_name']!='null,' && $symbol == "INR")
@@ -200,22 +200,8 @@ Checkout
                     $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
                 }
                 ?>
-                <tr class="Taxes">
-                    <th>
-                        <strong>{{ucfirst($tax_name)}}<span>@</span>{{$tax_percentage}}%</strong>
-                    </th>
-                    <?php
-                    $price = $product->price()->where('currency',$symbol)->first();
-                    $cost = $price->sales_price;
-                    if(!$cost){
-                        $cost = $price->price;
-                    }
-                    ?>
-                    <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$cost)}}
-                    </td>
 
-                </tr>
+               
                 @endif
                 @endforeach
                 <tr class="total">

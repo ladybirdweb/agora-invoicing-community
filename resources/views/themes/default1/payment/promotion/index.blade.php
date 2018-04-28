@@ -34,7 +34,7 @@
         @endif
         <div id="response"></div>
         <h4>{{Lang::get('message.promotions')}}
-            <a href="{{url('promotions/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+            <a href="{{url('promotions/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
 
@@ -45,7 +45,7 @@
 
             <div class="col-md-12">
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Code</th>
@@ -106,6 +106,44 @@
 @stop
 
 @section('icheck')
+<script>
+     function checking(e){
+          
+          $('#plan-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+     }
+     
+
+     $(document).on('click','#bulk_delete',function(){
+      var id=[];
+      if (confirm("Are you sure you want to delete this?"))
+        {
+            $('.promotion_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! route('promotions-delete') !!}",
+                      method:"get",
+                      data: $('#check:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+        }  
+
+     });
+</script>
 <script>
     $(function () {
 

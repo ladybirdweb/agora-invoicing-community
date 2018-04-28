@@ -76,7 +76,7 @@ class PlanController extends Controller
                             return ucfirst($response);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'action'])
                         ->make(true);

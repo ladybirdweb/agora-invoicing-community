@@ -39,7 +39,7 @@
         @endif
         {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
 
-        <h4>{{Lang::get('message.client')}}	{!! Form::submit(Lang::get('message.update'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.client')}}<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
     </div>
 

@@ -217,7 +217,7 @@
         Route::resource('promotions', 'Payment\PromotionController');
         Route::post('get-code', 'Payment\PromotionController@getCode');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
-        Route::get('promotions-delete', 'Payment\PromotionController@destroy');
+        Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
         /*
          * Bundle

@@ -8,7 +8,7 @@
     <div class="box-header">
 
         <h4>{{Lang::get('message.plans')}}
-        <a href="{{url('plans/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+        <a href="{{url('plans/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
     @if (count($errors) > 0)
@@ -49,7 +49,7 @@
             <div class="col-md-12">
 
                     <table id="plan-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                              <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>

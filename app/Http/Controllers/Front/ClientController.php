@@ -487,7 +487,7 @@ class ClientController extends Controller
                                     $url = 'my-invoice';
                                 }
 
-                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
                             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);

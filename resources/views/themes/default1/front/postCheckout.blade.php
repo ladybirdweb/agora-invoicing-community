@@ -320,12 +320,12 @@ $json = json_encode($data);
                 <tr class="Taxes">
                     <th>
                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
-                        <strong>UTGST<span>@</span>{{$attribute['c_gst']}}%</strong>
+                        <strong>UTGST<span>@</span>{{$attribute['ut_gst']}}%</strong>
                        
                     </th>
                     <td>
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate1'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate4'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
                        
                     </td>
 

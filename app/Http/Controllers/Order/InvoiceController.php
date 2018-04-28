@@ -141,10 +141,10 @@ class InvoiceController extends Controller
 
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
-                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>Execute Order</a>";
+                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-tasks' style='color:white;'> </i>&nbsp;&nbsp; Execute Order</a>";
                             }
 
-                            return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary'>View</a>"
+                            return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>"
                                     ."   $action";
                         })
 
@@ -260,14 +260,14 @@ class InvoiceController extends Controller
 
             // dd($grand_total);
             $tax = $this->checkTax($product->id, $user_id);
-            // dd($tax);
+         
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
 
                     //dd($value);
-                $tax_name .= $tax[0].',';
-                $tax_rate .= $tax[1].',';
+                $tax_name = $tax[0];
+                $tax_rate = $tax[1];
             }
 
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
@@ -465,14 +465,14 @@ class InvoiceController extends Controller
                 $discount = $price - $subtotal;
             }
             $tax = $this->checkTax($product->id, $userid);
-            //dd($tax);
-            $tax_name = '';
+            // dd($tax);
+             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
 
                     //dd($value);
-                $tax_name .= $tax[0].',';
-                $tax_rate .= $tax[1].',';
+               $tax_name = $tax[0];
+                $tax_rate = $tax[1];
             }
 
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
@@ -662,12 +662,11 @@ class InvoiceController extends Controller
 
                     $rate = $this->getRate($productid, $taxs[0], $userid);
                     // dd($rate);
-                    $taxs = ([$rate['taxs']['0']['name'], $rate['value']]);
-                    //  dd($taxs);
-                            // $taxs[$key] = ['name' => $tax->name, 'rate' => $rate];
+                    $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
+                     
                 }
             }
-            //dd($taxs);
+           
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
@@ -734,7 +733,7 @@ class InvoiceController extends Controller
         }
 
         foreach ($taxes as $key => $tax) {
-            $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $tax->rate, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
+            $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
             $rate += $tax->rate;
 
             $tax_value = $value;

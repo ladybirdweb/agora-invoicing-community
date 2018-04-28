@@ -55,10 +55,12 @@
 
             <div class="col-md-4 col-md-offset-4">
                 <div class="col-md-6">
-                    {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
+                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
+                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
                 </div>
                 <div class="col-md-6">
-                    {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!}
+                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
+                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
                 </div>
             </div>
 
@@ -126,7 +128,7 @@
 
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                 <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Date</th>

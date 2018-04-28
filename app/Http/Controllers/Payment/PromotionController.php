@@ -61,7 +61,7 @@ class PromotionController extends Controller
 
         return\ DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
-                                return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
+                                return "<input type='checkbox' class='promotion_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
                         ->addColumn('code', function ($model) {
                             return ucfirst($model->code);
@@ -82,7 +82,7 @@ class PromotionController extends Controller
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 

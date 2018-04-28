@@ -108,8 +108,8 @@ class ClientController extends Controller
                             return $email.'&nbsp;&nbsp;'.$mobile;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>"
-                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>"
+                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
                             // return 'hhhh';
                         })
                         ->rawColumns(['checkbox', 'first_name', 'email',  'created_at', 'active', 'action'])

@@ -1108,7 +1108,7 @@ class CartController extends Controller
 
             return $parent_products;
         } catch (\Exception $ex) {
-          Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }

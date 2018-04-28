@@ -8,9 +8,9 @@
     <div class="box-header">
 
         <h4>{{Lang::get('message.plans')}}
-        <a href="{{url('plans/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+        <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
-
+       @include('themes.default1.product.plan.create') 
     @if (count($errors) > 0)
     <div class="alert alert-danger">
         <strong>Whoops!</strong> There were some problems with your input.<br><br>

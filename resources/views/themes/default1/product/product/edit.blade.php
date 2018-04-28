@@ -206,31 +206,11 @@
 
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('stock_control') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('stock_control',Lang::get('message.stock_control')) !!}
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        {!! Form::hidden('stock_control', 0) !!}
-                                                        <p>{!! Form::checkbox('stock_control',1) !!}     {{Lang::get('message.enable-quantity-in-stock')}}       
-                                                            {!! Form::text('stock_qty',null) !!} </p>
-                                                    </div>
-                                                    <!--                                        <div class="col-md-3">
-                                                                                                {!! Form::text('stock_qty',null,['class'=>'form-control']) !!}
-                                                                                            </div>-->
-
-                                                </div>
-                                        </li>
+                                        
                                         <li>
                                             <div class="row">
 
-                                                <div class="col-md-4 form-group {{ $errors->has('sort_order') ? 'has-error' : '' }}">
-                                                    <!-- first name -->
-                                                    {!! Form::label('sort_order',Lang::get('message.sort_order')) !!}
-                                                    {!! Form::text('sort_order',null,['class'=>'form-control']) !!}
-
-                                                </div>
+                                              
 
                                                 <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
                                                     <!-- last name -->
@@ -239,17 +219,7 @@
                                                     <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
 
                                                 </div>
-
-                                            </div>
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
+                                                <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
                                                 {!! Form::hidden('hidden', 0) !!}
@@ -262,20 +232,14 @@
                                                 <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('retired','Description') !!}
-                                                {!! Form::hidden('retired', 0) !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
-                                            </div>  
+                                            </div>
                                         </li>
-                                        
+
 
                                     </ul>
                                 </div>
+                                
 
 
                             </div>
@@ -330,16 +294,7 @@
                                     </td>
                                  </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('auto-terminate',Lang::get('message.auto-terminate')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('auto_terminate') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::text('auto_terminate',null) !!} {{Lang::get('message.enter-the-number-of-days-after-activation-to-automatically-terminate')}}</p>
-
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
                                     <td>

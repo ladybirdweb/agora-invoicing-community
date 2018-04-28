@@ -43,7 +43,10 @@ class PlanController extends Controller
      */
     public function index()
     {
-        return view('themes.default1.product.plan.index');
+          $currency = $this->currency->pluck('name', 'code')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
+        return view('themes.default1.product.plan.index',compact('currency', 'periods', 'products'));
     }
 
     /**
@@ -92,6 +95,7 @@ class PlanController extends Controller
         $currency = $this->currency->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
+
 
         return view('themes.default1.product.plan.create', compact('currency', 'periods', 'products'));
     }
@@ -142,7 +146,7 @@ class PlanController extends Controller
      */
     public function show($id)
     {
-        //
+        
     }
 
     /**

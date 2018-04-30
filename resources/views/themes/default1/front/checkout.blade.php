@@ -122,7 +122,7 @@ $tax=  0;
                                 <td class="product-price">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
                                    
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span>
+                                    <span class="amount"><small>{!! $symbol !!} </small>  {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -224,7 +224,8 @@ $tax=  0;
 
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
                                             @else
-                                             {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}
+                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
+                                            <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
                                             @endif
                     </td>
                 </tr>
@@ -306,11 +307,12 @@ $tax=  0;
 
                   <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong><br/>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
                        
                          
                     </th>
                     <td>
+
                       
                          <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
                          
@@ -329,7 +331,7 @@ $tax=  0;
                            
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @else
-                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotal())}}
+                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @endif
 
                        

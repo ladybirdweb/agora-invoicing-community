@@ -465,7 +465,6 @@ class TemplateController extends Controller
             }
             // dd($taxes);
             $taxes = $this->tax->where('tax_classes_id', $tax_relation->tax_class_id)->where('active', 1)->orderBy('created_at', 'asc')->get();
-            // dd($taxes);
             // dd(count($taxes) == 0);
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');

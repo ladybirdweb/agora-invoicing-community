@@ -365,8 +365,7 @@ class CartController extends Controller
           
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
-            // dd($taxCondition,$tax_attribute);
-            return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
+             return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
             dd($ex);
             Bugsnag::notifyException($ex);
@@ -440,7 +439,7 @@ class CartController extends Controller
         // $otherRate = TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassOther)->count() ? Tax::where('tax_classes_id', $taxClassOther)->first()->rate : '';
         $otherRate = '';
 
-        return $otherRate;
+        return $otherRate.'%';
     }
 
     public function getValueForOthers($productid, $taxClassId, $taxes)
@@ -455,7 +454,7 @@ class CartController extends Controller
         //  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() != 0) ?
         //  $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
 
-        $value = $otherRate;
+        $value = $otherRate.'%';
 
         return $value;
     }

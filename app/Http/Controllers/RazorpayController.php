@@ -72,7 +72,6 @@ class RazorpayController extends Controller
                     // $invoiceid = $request->input('orderNo');
                     // dd( $invoiceid);
                     // $invoice = $invoice->findOrFail($invoiceid);
- $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                 } else {
                     $control->successRenew();

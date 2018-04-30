@@ -491,7 +491,8 @@ class InvoiceController extends Controller
                 'domain'         => $domain,
                 'plan_id'        => $planid,
             ]);
-                 return $items;
+
+            return $items;
         } catch (\Exception $ex) {
             dd($ex);
 
@@ -662,12 +663,11 @@ class InvoiceController extends Controller
                     $rate = $this->getRate($productid, $taxs[0], $userid);
                     // dd($rate);
                     $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
-                }
-                else{
-                    $taxs=([$taxs[0]['name'],$taxs[0]['rate']]);
+                } else {
+                    $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }
-                  // dd($taxs);
+            // dd($taxs);
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
@@ -727,29 +727,26 @@ class InvoiceController extends Controller
                 $rate = $value;
             } else {//if Tax is selected for Any State Any Country
                 $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
-                 if($taxClassId){
-                $taxes = $cartController->getTaxByPriority($taxClassId);
-                $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
-                $rate = $value;
-            }
-             else
-            {
-             $taxes = [0];
-              }
+                if ($taxClassId) {
+                    $taxes = $cartController->getTaxByPriority($taxClassId);
+                    $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
+                    $rate = $value;
+                } else {
+                    $taxes = [0];
+                }
             }
         }
 
         foreach ($taxes as $key => $tax) {
-             if($taxes[0]){
-            $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
-            $rate += $tax->rate;
+            if ($taxes[0]) {
+                $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
+                $rate += $tax->rate;
 
-            $tax_value = $value;
-        }
-        else{
-              $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
-        $tax_value = '0%';
-        }
+                $tax_value = $value;
+            } else {
+                $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
+                $tax_value = '0%';
+            }
         }
 
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];

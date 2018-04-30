@@ -340,7 +340,7 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-                $this->tax_class->fill($request->except('tax-name', 'level', 'active', 'country', 'country1',  'rate'))->save();
+                $this->tax_class->fill($request->except('tax-name', 'level', 'active', 'country', 'country1', 'rate'))->save();
                 $country = ($request->input('rate')) ? $request->input('country') : $request->input('country1');
 
                 $this->tax->fill($request->except('tax-name', 'name', 'country'))->save();

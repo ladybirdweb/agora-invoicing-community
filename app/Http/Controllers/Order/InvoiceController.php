@@ -664,6 +664,7 @@ class InvoiceController extends Controller
                     // dd($rate);
                     $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
                 } else {
+                    dd('dsf');
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }

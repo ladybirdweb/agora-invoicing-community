@@ -242,9 +242,9 @@ class CartController extends Controller
                 $origin_state = $this->setting->first()->state; //Get the State of origin
                 $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
                 if ($tax_class_id) {//If the product is allowed for tax (Check in tax_product relation table)
-
+                   if ($tax_enable == 1) {//If GST is Enabled
                     if ($product1 == 0) {//If product is exclusive of taxes
-                             if ($tax_enable == 1) {//If GST is Enabled
+                             
                              $state_code = '';
                                  $c_gst = '';
                                  $s_gst = '';
@@ -334,34 +334,58 @@ class CartController extends Controller
                                  }
                              }
                     }
-                } else {//If Tax enable is 0
-                    $status = 1;
+                else {//If Tax enable is 0
+                     $status = 1;
                     if ($this->tax_option->findOrFail(1)->tax_enable == 0) {
-                        $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
-                        $taxes = $this->getTaxByPriority($taxClassId);
+                        $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();//In case of India when other tax is available and tax is not enabled
+                        if($taxClassId){
+                          $taxes = $this->getTaxByPriority($taxClassId);
                         $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
-                        if ($value == '') {
+                        if ($value == 0) {
                             $status = 0;
                         }
                         $rate = $value;
                         foreach ($taxes as $key => $tax) {
-                            $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate, 'tax_enable'=>0, 'status' => $status];
+                            $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $value, 'tax_enable'=>0, 'status' => $status];
                             $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
 
                                             'name'   => $tax->name,
                                             'type'   => 'tax',
                                             'target' => 'item',
-                                            'value'  => $tax->rate,
+                                            'value'  => $value,
                                         ]);
                         }
+                    }
+                    else{//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
+                          $taxClassId = Tax::where('state', $geoip_state)->pluck('tax_classes_id')->first();
+                                     if ($taxClassId) { //if state equals the user State
+                                         $taxes = $this->getTaxByPriority($taxClassId);
+                                         $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+                                         if ($value == '') {
+                                             $status = 0;
+                                         }
+                                         $rate = $value;
+                                     }
+                                      foreach ($taxes as $key => $tax) {
+                            $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $value, 'tax_enable'=>0, 'status' => $status];
+                            $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
+
+                                            'name'   => $tax->name,
+                                            'type'   => 'tax',
+                                            'target' => 'item',
+                                            'value'  => $value,
+                                        ]);
+                        }
+                    }
                     }
                 }
             }
 
             $currency_attribute = $this->addCurrencyAttributes($productid);
-
+              // dd($taxCondition,$tax_attribute);
              return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
-        } catch (\Exception $ex) {
+        } 
+    }catch (\Exception $ex) {
             dd($ex);
             Bugsnag::notifyException($ex);
 
@@ -434,7 +458,7 @@ class CartController extends Controller
         // $otherRate = TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassOther)->count() ? Tax::where('tax_classes_id', $taxClassOther)->first()->rate : '';
         $otherRate = '';
 
-        return $otherRate.'%';
+        return $otherRate ;
     }
 
     public function getValueForOthers($productid, $taxClassId, $taxes)

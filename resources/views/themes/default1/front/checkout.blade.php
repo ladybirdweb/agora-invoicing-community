@@ -320,6 +320,24 @@ $tax=  0;
                     </td>
                   </tr>
                  @endif
+                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+
+                  <tr class="Taxes">
+                  
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         
+                       
+                    </td>
+                  
+                  </tr>
+                 @endif
                 @endforeach
                 <tr class="total">
                     <th>

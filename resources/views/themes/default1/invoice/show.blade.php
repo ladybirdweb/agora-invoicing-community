@@ -43,6 +43,8 @@
             <div class="col-md-12">
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
+                <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
+
                 <!-- Main content -->
                 <section class="invoice">
                     <!-- title row -->
@@ -84,6 +86,11 @@
                         </div><!-- /.col -->
                         <div class="col-sm-4 invoice-col">
                             <b>Invoice   #{{$invoice->number}}</b><br/>
+                            <br/>
+
+                        </div><!-- /.col -->
+                         <div class="col-sm-4 invoice-col">
+                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b><br/>
                             <br/>
 
                         </div><!-- /.col -->

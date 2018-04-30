@@ -382,10 +382,12 @@ class CartController extends Controller
             }
 
             $currency_attribute = $this->addCurrencyAttributes($productid);
+
               // dd($taxCondition,$tax_attribute);
              return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } 
     }catch (\Exception $ex) {
+
             dd($ex);
             Bugsnag::notifyException($ex);
 

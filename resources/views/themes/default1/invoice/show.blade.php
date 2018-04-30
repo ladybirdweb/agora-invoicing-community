@@ -160,10 +160,10 @@
                                     $tax_percentage = [];
                                     foreach ($invoiceItems as $key => $item) {
                                         if (str_finish(',', $item->tax_name)) {
-                                            $name = substr_replace($item->tax_name, '', -1);
+                                            $name = $item->tax_name;
                                         }
                                         if (str_finish(',', $item->tax_percentage)) {
-                                            $rate = substr_replace($item->tax_percentage, '', -1);
+                                            $rate = $item->tax_percentage;
                                         }
                                         $tax_name = explode(',', $name);
                                         $tax_percentage = explode(',', $rate);
@@ -174,10 +174,10 @@
                                     @if($tax_name[$i]!='null')
                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
+                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
+                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
                                         </td>
 
                                     </tr>

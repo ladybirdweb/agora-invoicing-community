@@ -297,6 +297,7 @@ class CartController extends Controller
                                          $rate = $value;
                                      } else {//if Tax is selected for Any Country Any State
                                          $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
+                                         if($taxClassId){
                                          $taxes = $this->getTaxByPriority($taxClassId);
                                          $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
                                          if ($value == '') {
@@ -304,19 +305,17 @@ class CartController extends Controller
                                          }
                                          $rate = $value;
                                      }
+                                     else
+                                     {
+                                        $taxes = [0];
+                                        }
+                                     }
                                  }
                                  foreach ($taxes as $key => $tax) {
-                                     if ($tax->compound == 1) {
-                                         $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
-                                         $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
-                                            'name'   => $tax->name,
-                                            'type'   => 'tax',
-                                            'target' => 'item',
-                                            'value'  => $tax->rate.'%',
-                                        ]);
-                                     } else {//All the data attribute that is sent to the checkout Page if tax_compound=0
-
-                                         $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst, 's_gst'=>$s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state, 'tax_enable'=>$tax_enable, 'rate'=>$rate, 'status'=>$status];
+                                               
+                                    //All the da a attribute that is sent to the checkout Page if tax_compound=0
+                                           if($taxes[0]){
+                                              $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst, 's_gst'=>$s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state, 'tax_enable'=>$tax_enable, 'rate'=>$value, 'status'=>$status];
 
                                          $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
 
@@ -325,6 +324,18 @@ class CartController extends Controller
                                             'target' => 'item',
                                             'value'  => $value,
                                           ]);
+                                     }
+                                     else{
+                                        $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
+                                        $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
+                                           'name'   => 'null',
+                                           'type'   => 'tax',
+                                           'target' => 'item',
+                                           'value'  => '0%',
+                                         ]);
+
+
+                                     }
                                      }
                                  }
                              }
@@ -351,24 +362,15 @@ class CartController extends Controller
                         }
                     }
                 }
-            } else {
-                if ($product->tax()->first()) {
-                    $tax_class_id = $product->tax()->first()->tax_class_id;
-                    if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-                        $taxes = $this->getTaxByPriority($tax_class_id);
-                        foreach ($taxes as $key => $tax) {
-                            $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
-                        }
-                    }
-                }
-            }
+          
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
             // dd($taxCondition,$tax_attribute);
             return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
-
+         
             throw new \Exception('Can not check the tax');
         }
     }
@@ -623,6 +625,7 @@ class CartController extends Controller
                 return $items;
             }
         } catch (\Exception $e) {
+           dd($e);
             Bugsnag::notifyException($e);
         }
     }

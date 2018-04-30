@@ -87,30 +87,9 @@ class CheckoutController extends Controller
         }
         $content = Cart::getContent();
         //dd($content[10]);
+        $attributes = $this->getAttributes($content);
         $require = [];
-        foreach ($content as $key => $item) {
-            $attributes[] = $item->attributes;
-            $cart_currency = $attributes[0]['currency'][0]['code'];
-            $user_currency = \Auth::user()->currency;
-            $currency = 'INR';
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-            if ($cart_currency != $currency) {
-                $id = $item->id;
-                Cart::remove($id);
-                $controller = new CartController();
-                $items = $controller->addProduct($id);
-                Cart::add($items);
-                //
-            }
 
-            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-            if ($require_domain == 1) {
-                $require[$key] = $item->id;
-            }
-            //$attributes[] = $item->attributes;
-        }
         //        if ($content->count() == 0) {
         //            return redirect('home');
         //        }
@@ -140,6 +119,35 @@ class CheckoutController extends Controller
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getAttributes($content)
+    {
+        foreach ($content as $key => $item) {
+            $attributes[] = $item->attributes;
+            $cart_currency = $attributes[0]['currency'][0]['code'];
+            $user_currency = \Auth::user()->currency;
+            $currency = 'INR';
+            if ($user_currency == 1 || $user_currency == 'USD') {
+                $currency = 'USD';
+            }
+            if ($cart_currency != $currency) {
+                $id = $item->id;
+                Cart::remove($id);
+                $controller = new CartController();
+                $items = $controller->addProduct($id);
+                Cart::add($items);
+                //
+            }
+
+            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+            if ($require_domain == 1) {
+                $require[$key] = $item->id;
+            }
+
+            return $attributes;
+            //$attributes[] = $item->attributes;
         }
     }
 
@@ -216,6 +224,8 @@ class CheckoutController extends Controller
                     $items = $invoice->invoiceItem()->get();
 
                     $product = $this->product($invoiceid);
+                    $content = Cart::getContent();
+                    $attributes = $this->getAttributes($content);
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -225,13 +235,16 @@ class CheckoutController extends Controller
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoice_id);
                 $amount = $invoice->grand_total;
+                $content = Cart::getContent();
+                $attributes = $this->getAttributes($content);
             }
+
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }
-                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow'));
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
             // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 // dd('sdfds');
             } else {

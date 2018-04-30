@@ -179,8 +179,7 @@ class RenewController extends Controller
             if ($cost != '') {
                 $product_cost = $this->planCost($planid, $user->id);
             }
-            //dd($cost);
-            $cost = $this->tax($product, $product_cost);
+            $cost = $this->tax($product, $product_cost, $user->id);
             $currency = $this->getUserCurrencyById($user->id);
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -257,20 +256,18 @@ class RenewController extends Controller
         }
     }
 
-    public function tax($product, $cost)
+    public function tax($product, $cost, $userid)
     {
         try {
             $controller = new InvoiceController();
-            $tax = $controller->checkTax($product->id);
-            //dd($tax);
+            $tax = $controller->checkTax($product->id, $userid);
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
-                foreach ($tax as $key => $value) {
+
                     //dd($value);
-                    $tax_name .= $value['name'].',';
-                    $tax_rate .= $value['rate'].',';
-                }
+                $tax_name .= $tax[0].',';
+                $tax_rate .= $tax[1].',';
             }
             //dd('dsjcgv');
             $grand_total = $controller->calculateTotal($tax_rate, $cost);

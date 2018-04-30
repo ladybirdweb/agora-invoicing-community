@@ -508,7 +508,9 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
     );
 
     public static $classMap = array (
+        'AddCgstColumnToTaxesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
         'AddCityColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
+        'AddCountryColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130442_add_country_columns_to_tax_by_states_table.php',
         'AddCountryColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
         'AddForeignKeyToSubscriptionTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_10_115211_add_foreign_key_to_subscription_table.php',
         'AddForeignKeysToConfigurableOptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',
@@ -524,6 +526,8 @@ class ComposerStaticInit332574ee72772ac0009a994cbe3ef4b4
         'AddForeignKeysToPromotionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_promotions_table.php',
         'AddForeignKeysToTaxProductRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_tax_product_relations_table.php',
         'AddForeignKeysToTemplatesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
+        'AddGstNoColumnToTaxRulesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_19_132715_add_Gst_No_column_to_tax_rules_table.php',
+        'AddStateCodeColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
         'AddStateColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',
         'App\\Box' => __DIR__ . '/../..' . '/app/Box.php',

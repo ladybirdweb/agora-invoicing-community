@@ -153,7 +153,6 @@ class ClientController extends Controller
                             ->rawColumns(['version', 'title', 'description', 'file'])
                             ->make(true);
         } catch (Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
@@ -191,12 +190,14 @@ class ClientController extends Controller
                                 return ucfirst($link['body']);
                             })
                             ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
-                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+                                $order = Order::where('invoice_id', '=', $invoiceid)->first();
+                                $order_id = $order->id;
+                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
                                     if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
                                         $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'>Download</a>"
+                                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
                                                 .'&nbsp;
 
                                    </p>';
@@ -206,7 +207,7 @@ class ClientController extends Controller
                                 } elseif (!$orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                                    return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download' title='Details of order'></i>&nbsp&nbsp  </a>"
+                                    return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'>Download  </a>"
                                             .'&nbsp;
 
                                    </p>';
@@ -274,7 +275,7 @@ class ClientController extends Controller
                                 }
                                 $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
                                 if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->number, $productid);
+                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->id, $productid);
                                 } else {
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
@@ -486,7 +487,7 @@ class ClientController extends Controller
                                     $url = 'my-invoice';
                                 }
 
-                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
                             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);

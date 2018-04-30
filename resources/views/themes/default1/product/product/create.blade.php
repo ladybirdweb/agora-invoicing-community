@@ -1,5 +1,8 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+<head>
+    <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
+</head>
 <div class="box box-primary">
 
     <div class="box-header">
@@ -31,7 +34,7 @@
         </div>
         @endif
         {!! Form::open(['url'=>'products','method'=>'post','files' => true]) !!}
-        <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
@@ -47,7 +50,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
+                        <!-- <li><a href="#tab_3" data-toggle="tab">Plans</a></li> -->
                     </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
@@ -144,30 +147,11 @@
 
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('stock_control') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('stock_control',Lang::get('message.stock_control')) !!}
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <p>{!! Form::checkbox('stock_control',1) !!}     {{Lang::get('message.enable-quantity-in-stock')}}       
-                                                            {!! Form::text('stock_qty',null) !!} </p>
-                                                    </div>
-                                                    <!--                                        <div class="col-md-3">
-                                                                                                {!! Form::text('stock_qty',null,['class'=>'form-control']) !!}
-                                                                                            </div>-->
-
-                                                </div>
-                                        </li>
+                                       
                                         <li>
                                             <div class="row">
 
-                                                <div class="col-md-4 form-group {{ $errors->has('sort_order') ? 'has-error' : '' }}">
-                                                    <!-- first name -->
-                                                    {!! Form::label('sort_order',Lang::get('message.sort_order')) !!}
-                                                    {!! Form::text('sort_order',null,['class'=>'form-control']) !!}
-
-                                                </div>
+                                                
 
                                                 <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
                                                     <!-- last name -->
@@ -193,14 +177,7 @@
                                             </div>
                                         </li>
                                        
-                                          <li>
-                                            <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('retired','Allow Description') !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
-
-                                            </div>  
-                                        </li>  
+                                         
                                         
 
 
@@ -234,45 +211,7 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                    <td>
-
-                                        <table class="table table-responsive">
-                                            <tr>
-                                                <th></th>
-                                                <th>{{Lang::get('message.regular-price')}}</th>
-                                                <th>{{Lang::get('message.sales-price')}}</th>
-                                            </tr>
-                                            
-                                            @foreach($currency as $key=>$value)
-                                            
-                                            <tr>
-                                                <td>
-
-                                                    <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
-                                                    <p>{{$value}}</p>
-
-                                                </td>
-
-                                                <td>
-
-                                                    {!! Form::text('price['.$key.']',null) !!}
-
-                                                </td>
-                                                <td>
-
-                                                    {!! Form::text('sales_price['.$key.']',null) !!}
-
-                                                </td>
-                                            </tr>
-                                            @endforeach
-
-
-                                        </table>
-
-                                    </td>
-                                </tr>
+                               
 
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
@@ -285,61 +224,69 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('auto-terminate',Lang::get('message.auto-terminate')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('auto_terminate') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::text('auto_terminate',null) !!} {{Lang::get('message.enter-the-number-of-days-after-activation-to-automatically-terminate')}}</p>
-
-                                        </div>
-                                    </td>
-                                </tr>
+                               
 
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('taxes') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                @forelse($taxes as $key=>$value)
-                                                <div class="col-md-2">
-                                                    <b>{{ucfirst($value)}} {!! Form::radio('tax',$key) !!}</b>
+                                                <div class="col-md-2" >
+                                                     
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px; color:black;" class="select2" multiple="true">
+                                                       <option></option>
+                                                       @foreach($taxes as $key => $value)
+                                                        <option value={{$key}}>{{$value}}</option> 
+                                                        @endforeach
+                                                    </select>
+                                                
                                                 </div>
-                                                @empty 
-                                                <p>No taxes</p>
-                                                @endforelse
                                             </div>
 
                                         </div>
                                     </td>
+                                   
+                                    
+                                </tr>
+                                <tr>
+                               
                                 </tr>
 
                             </table>
-                        </div>
 
-                        <!-- /.tab-pane -->
+                       
 
-                        <!-- /.tab-pane -->
-                        <div class="tab-pane" id="tab_3">
-                            <h3>
-                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
-                            </h3>
-                            
-                        </div>
-                    </div>
-                    <!-- /.tab-content -->
-                </div>
-                <!-- nav-tabs-custom -->
-
-            </div>
-
-
-        </div>
-
-    </div>
-
-</div>
-
-
+                             
 {!! Form::close() !!}
+
+ 
+                                        
+                              <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add new</a> </h3>
+                           
+                                      @include('themes.default1.product.plan.create') 
+                                  
+                                    </div>
+
+
+
+@stop
+ @section('icheck')
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <!-- <script type="text/javascript">
+        $("#editTax").select2();
+    </script> -->
+<link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+
+
+
+<script>
+    $(document).ready(function() {
+    $("#Tax").select2({
+        placeholder: 'Select Taxes',
+        tags:true
+    });
+});
+</script>
 @stop

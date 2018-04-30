@@ -202,11 +202,12 @@
         Route::resource('tax', 'Payment\TaxController');
         Route::get('get-state/{state}', 'Payment\TaxController@getState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
+        Route::get('get-taxtable', ['as' => 'get-taxtable', 'uses' => 'Payment\TaxController@getTaxTable']);
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
         Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
-        Route::patch('taxes/option', 'Payment\TaxController@options');
+        Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
         Route::post('taxes/option', 'Payment\TaxController@options');
 
         /*
@@ -216,7 +217,7 @@
         Route::resource('promotions', 'Payment\PromotionController');
         Route::post('get-code', 'Payment\PromotionController@getCode');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
-        Route::get('promotions-delete', 'Payment\PromotionController@destroy');
+        Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
         /*
          * Bundle

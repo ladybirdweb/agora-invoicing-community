@@ -1,56 +1,26 @@
 @extends('themes.default1.layouts.master')
 @section('content')
     <style>
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
 
-.switch input {display:none;}
 
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
+.btn-default.btn-on-1.active{background-color: #006FFC;color: white;}
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
+.btn-default.btn-off-1.active{background-color: #DA4F49;color: white;}
+.btn-default.btn-on-2.active{background-color: #006FFC;color: white;}
 
-input:checked + .slider {
-  background-color: #2196F3;
-}
+.btn-default.btn-off-2.active{background-color: #DA4F49;color: white;}
+.btn-default.btn-on-3.active{background-color: #006FFC;color: white;}
 
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
+.btn-default.btn-off-3.active{background-color: #DA4F49;color: white;}
 
 /* Rounded sliders */
 
 </style>
+<head>
+  <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  </head>
     <div class="box box-primary">
 
         <div class="box-header">
@@ -85,7 +55,8 @@ input:checked + .slider:before {
             <h4>{{Lang::get('message.tax')}}
                 <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
                 <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
-                <a href="#create-tax-option" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-tax-option">{{Lang::get('message.create')}}</a>
+               
+                <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
             </h4>
             @include('themes.default1.payment.tax.create-tax-option')
 
@@ -109,90 +80,74 @@ input:checked + .slider:before {
                             </td>
                             <td>
                                 <label class="switch">
-                                     {!! Form::hidden('tax_enable',0) !!}
-                                 <p>{!! Form::checkbox('tax_enable',1) !!}
-                                  <span class="slider"></span>
-                                </label>
-
-                               <!--  {!! Form::hidden('tax_enable',0) !!}
-                                <p>{!! Form::checkbox('tax_enable',1) !!} -->
-                                    <!-- {{Lang::get('message.tick-this-box-to-enable-tax-support')}}</p> -->
+                                     <!-- {!! Form::hidden('tax_enable',0) !!} -->
+                                 <!-- {!! Form::checkbox('tax_enable',1) !!} -->
+                                 <!-- <input id="toggle-event" type="checkbox" data-toggle="toggle" name="tax_enable"> -->
+                                <div class="btn-group"  data-toggle="buttons" >
+                                    <label class="btn btn-default btn-on-1 btn-sm ">
+                                    <input type="radio" id="chkYes" value="1" name="tax_enable" onchange="getTaxValue(this)">ENABLED</label>
+                                    <label class="btn btn-default btn-off-1 btn-sm  ">
+                                    <input type="radio" id="chkNo" value="0" name="tax_enable" onchange="getTaxValue(this)">DISABLED</label>
+                                    <span class="slider"></span>
+                                  </div>
+                                    
+                              </label>
+                               
                             </td>
                         </tr>
+
+                        <tr class="form-group gstshow hide">
+                             
+                                 <td>
+                                    {!! Form::label('GSTIN',Lang::get('GSTIN')) !!}
+                                </td>
+
+                                 <td>
+                                     <input type='text' name="Gst_no"  class="form-control col-md-6" value="{{$gstNo->Gst_No}}" style="width:140px">
+                                 </td>
+                          
+                        </tr>
+
                         <tr>
                             <td>
                                 {!! Form::label('inclusive',Lang::get('message.prices-entered-with-tax')) !!}
                             </td>
                             <td>
-                                <p>{!! Form::radio('inclusive',1) !!}
-                                    {{Lang::get('message.inclusive')}}</p>
-                                <p>{!! Form::radio('inclusive',0,true) !!}
-                                    {{Lang::get('message.exclusive')}}</p>
+                           
+                                      <div class="btn-group"  data-toggle="buttons">
+                                    <label class="btn btn-default btn-on-2 btn-sm ">
+                                    <input type="radio" id="chkYes" value="1" name="inclusive">INCLUSIVE</label>
+                                    <label class="btn btn-default btn-off-2 btn-sm">
+                                    <input type="radio" id="chkNo" value="0" name="inclusive">EXCLUSIVE</label>
+                                    <span class="slider"></span>
+                                  </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                {!! Form::label('shop_inclusive',Lang::get('message.display-prices-in-the-shop')) !!}
-                            </td>
-                            <td>
-                                <p>{!! Form::radio('shop_inclusive',1) !!}
-                                    {{Lang::get('message.inclusive')}}</p>
-                                <p>{!! Form::radio('shop_inclusive',0,true) !!}
-                                    {{Lang::get('message.exclusive')}}</p>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                {!! Form::label('cart_inclusive',Lang::get('message.display-prices-during-cart-and-checkout')) !!}
-                            </td>
-                            <td>
-                                <p>{!! Form::radio('cart_inclusive',1) !!}
-                                    {{Lang::get('message.inclusive')}}</p>
-                                <p>{!! Form::radio('cart_inclusive',0,true) !!}
-                                    {{Lang::get('message.exclusive')}}</p>
-                            </td>
-                        </tr>
+                       
+                       
                         <tr>
                             <td>
                                 {!! Form::label('rounding',Lang::get('message.rounding')) !!}
                             </td>
                             <td>
-                                <label class="switch">
-                                {!! Form::hidden('rounding',0) !!}
-                                <p>{!! Form::checkbox('rounding',1) !!}
-                                     <span class="slider"></span>
-                                 </label>
-                                   </p>
-                            </td>
+                                    <div class="btn-group"  data-toggle="buttons">
+                                    <label class="btn btn-default btn-on-3 btn-sm ">
+                                    <input type="radio" id="chkYes" value="1" name="rounding">ENABLED</label>
+                                    <label class="btn btn-default btn-off-3 btn-sm">
+                                    <input type="radio" id="chkNo" value="0" name="rounding">DISABLED</label>
+                                    <span class="slider"></span>
+                                  </div>                            </td>
                         </tr>
                         <tr>
-                            <td></td>
-                            <td>{!! Form::submit('save',['class'=>'btn btn-primary']) !!}</td>
-
+                            <td>
+                             <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button></td>
+                           
                         </tr>
                     </table>
 
                     {!! Form::close() !!}
 
-                    <div class="box">
-                        <div class="box-header">
-                            Classes
-                        </div>
-                        <div class="box-body">
-
-                            @forelse($classes as $key=>$value)
-                            <div class="col-md-2">
-                                <a href="#create" data-toggle="modal" data-target="#create{{$key}}">{{ucfirst($value)}}</a>
-                            </div>
-                            @include('themes.default1.payment.tax.create')
-                            @empty 
-                            <div class="col-md-2">
-                                <a href="#create" data-toggle="modal" data-target="#create-tax-option">Add Class</a>
-                            </div>
-
-                            @endforelse
-                        </div>
-                    </div>
+                   
 
 
                 </div>
@@ -201,12 +156,11 @@ input:checked + .slider:before {
 
                 <div class="col-md-12">
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-                             <th>Class Name</th>
+                             <th>Tax Type</th>
                               <th>Name</th>
-                               <th>Level</th>
                                <th>Country</th>
                               <th>State</th>
                                <th>Rate (%)</th>
@@ -225,6 +179,53 @@ input:checked + .slider:before {
     <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
     <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript">
+      var btn = {{($options->tax_enable)}};
+     if(btn== '1'){
+$('.btn-on-1').addClass('active');
+$('.gstshow').removeClass("hide");
+
+     }
+     else{
+$('.btn-off-1').addClass('active');
+// $('.gstshow').addClass('hide');
+// $('.gstshow').removeAttribute("style");
+     }
+    var btn1 = {{($options->inclusive)}};
+     if(btn1== '1'){
+$('.btn-on-2').addClass('active');
+// $('.gstshow').removeClass("hide");
+
+     }
+     else{
+$('.btn-off-2').addClass('active');
+// $('.gstshow').addClass('hide');
+// $('.gstshow').removeAttribute("style");
+     }
+       var btn2 = {{($options->rounding)}};
+     if(btn2== '1'){
+$('.btn-on-3').addClass('active');
+// $('.gstshow').removeClass("hide");
+
+     }
+     else{
+$('.btn-off-3').addClass('active');
+// $('.gstshow').addClass('hide');
+// $('.gstshow').removeAttribute("style");
+     }
+
+
+   function getTaxValue(x){
+      console.log($(x))
+        if($(x).val()==1){
+              $('.gstshow').removeClass("hide");
+        }
+        else{
+               $('.gstshow').addClass("hide");
+        }
+   }
+     // $('#chkYes').click
+
+
             $('#tax-table').DataTable({
                 processing: true,
                 serverSide: true,
@@ -246,7 +247,6 @@ input:checked + .slider:before {
                     {data: 'checkbox', name: 'checkbox'},
                     {data: 'tax_classes_id', name: 'tax_classes_id'},
                     {data: 'name', name: 'name'},
-                    {data: 'level', name: 'level'},
                     {data: 'country', name: 'country'},
                     {data: 'state', name: 'state'},
                     {data: 'rate', name: 'rate'},
@@ -260,14 +260,18 @@ input:checked + .slider:before {
                 },
             });
         </script>
+   
+   
+      
+
 
 
     @stop
 
     @section('icheck')
     <script>
-        function checking(e){
-              
+
+       function checking(e){
               $('#tax-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
          }
          
@@ -302,5 +306,11 @@ input:checked + .slider:before {
             }  
 
          });
+
+
+
+       
     </script>
+   
     @stop
+   

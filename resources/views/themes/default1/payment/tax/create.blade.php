@@ -13,8 +13,14 @@
                     <!-- name -->
                     {!! Form::hidden('tax_classes_id',$key) !!}
                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                    {!! Form::text('name',null,['class' => 'form-control']) !!}
-
+                    <!-- {!! Form::text('name',null,['class' => 'form-control']) !!} -->
+                     <select name="name" class="form-control">
+                      <option>OTHERS</option>
+                      <option> CGST + SGST</option>
+                      <option>IGST</option>
+                      <option>UTGST</option>
+  
+                      </select>
                 </div>
                 <div class="form-group {{ $errors->has('level') ? 'has-error' : '' }}">
                     <!-- name -->
@@ -41,6 +47,7 @@
 
                     </div>
                 </div>
+                
                 <div class="form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('country',Lang::get('message.country')) !!}

@@ -154,11 +154,11 @@ class OrderController extends Controller
                             $url = '';
                             if ($status == 'success') {
                                 if ($sub) {
-                                    $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary'>Renew</a>";
+                                    $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh' style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
                                 }
                             }
 
-                            return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
+                            return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
                         })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
@@ -388,6 +388,7 @@ class OrderController extends Controller
 
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
+
                         // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
@@ -445,6 +446,8 @@ class OrderController extends Controller
     public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
+
+            // dd($orderid, $planid, $version, $product);
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
 
@@ -460,6 +463,7 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');

@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class TaxByState extends Model
 {
     protected $table = 'tax_by_states';
-    protected $fillable = ['state', 'c_gst', 's_gst', 'i_gst', 'ut_gst'];
+    protected $fillable = ['country', 'state_code', 'state', 'c_gst', 's_gst', 'i_gst', 'ut_gst'];
 }

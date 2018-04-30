@@ -61,7 +61,7 @@ class PromotionController extends Controller
 
         return\ DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
-                                return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
+                                return "<input type='checkbox' class='promotion_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
                         ->addColumn('code', function ($model) {
                             return ucfirst($model->code);
@@ -82,7 +82,7 @@ class PromotionController extends Controller
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 
@@ -288,7 +288,6 @@ class PromotionController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-expired'));
             }
             $value = $this->findCostAfterDiscount($promo->id, $productid);
-            // dd($value);
             //dd($promo->code);
             //return the updated cartcondition
             $coupon = new CartCondition([
@@ -331,10 +330,8 @@ class PromotionController extends Controller
                 $planid = \Session::get('plan');
             }
             if ($product->subscription != 1) {
-                $product_price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (!$product_price) {
-                    $product_price = $product->price()->where('currency', $currency)->first()->price;
-                }
+                $planId = Plan::where('product', $productid)->pluck('id')->first();
+                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
             } else {
                 $product_price = $control->planCost($planid, $userid);
             }
@@ -358,9 +355,9 @@ class PromotionController extends Controller
                 case 1:
                     $percentage = $price * ($value / 100);
 
-                    return '-'.$percentage;
+                    return  $price - $percentage;
                 case 2:
-                    return '-'.$value;
+                    return $price - $value;
                 case 3:
                     \Cart::update($productid, [
                         'price' => $value,

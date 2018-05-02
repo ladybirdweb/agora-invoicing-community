@@ -55,14 +55,14 @@
             <h4>{{Lang::get('message.tax')}}
                 <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
                 <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
-               
+                
                 <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
             </h4>
             @include('themes.default1.payment.tax.create-tax-option')
 
         </div>
 
-
+      
 
         <div class="box-body">
             <div class="row">
@@ -97,7 +97,7 @@
                         </tr>
 
                         <tr class="form-group gstshow hide">
-                             
+                              
                                  <td>
                                     {!! Form::label('GSTIN',Lang::get('GSTIN')) !!}
                                 </td>

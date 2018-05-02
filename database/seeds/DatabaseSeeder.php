@@ -11,6 +11,7 @@ use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
+use App\Model\Payment\TaxOption;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -51,6 +52,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call('CurrencyTableSeeder');
         $this->command->info('Currency table seeded!');
+
+        $this->call('TaxOptionTableSeeder');
+        $this->command->info('Tax Option Table seeded');
 
         $this->call('ProductTableSeeder');
         $this->command->info('Product table seeded!');
@@ -120,6 +124,17 @@ class CurrencyTableSeeder extends Seeder
         \DB::table('currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
+    }
+}
+
+class TaxOptionTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('tax_rules')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        TaxOption::create(['id' => 1, 'tax_enable' => 0, 'inclusive' => 0, 'rounding' => 1]);
     }
 }
 

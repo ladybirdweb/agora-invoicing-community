@@ -8,10 +8,10 @@ use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
+use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
-use App\Model\Payment\TaxOption;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 

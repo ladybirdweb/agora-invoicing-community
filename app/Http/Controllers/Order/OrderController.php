@@ -446,7 +446,7 @@ class OrderController extends Controller
     public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
-            if($version == null){
+            if ($version == null) {
                 $version = '';
             }
             // dd($orderid, $planid, $version, $product);

@@ -335,12 +335,11 @@ class GithubController extends Controller
             if ($repo == 'Faveo-Helpdesk-Pro') {
                 $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
             }
-             //For Service Desk Advance
-              if ($repo == 'faveo-service-desk-pro') {
+            //For Service Desk Advance
+            if ($repo == 'faveo-service-desk-pro') {
                 dd('dfd');
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
             }
-
 
             $link = $this->github_api->getCurl1($url);
 

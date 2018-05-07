@@ -1,237 +1,215 @@
-<?php
+-- phpMyAdmin SQL Dump
+-- version 4.0.10.14
+-- http://www.phpmyadmin.net
+--
+-- Host: localhost:3306
+-- Generation Time: Jun 10, 2017 at 08:00 AM
+-- Server version: 5.5.54-38.6-log
+-- PHP Version: 5.4.31
 
-use App\Model\Common\Template;
-use App\Model\Common\TemplateType;
-use App\Model\Github\Github;
-use App\Model\Payment\Currency;
-use App\Model\Payment\Period;
-use App\Model\Payment\Plan;
-use App\Model\Payment\Promotion;
-use App\Model\Payment\PromotionType;
-use App\Model\Product\Product;
-use App\Model\Product\ProductGroup;
-use App\Model\Product\Type;
-use App\Model\Payment\TaxOption;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Seeder;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+SET time_zone = "+00:00";
 
-class DatabaseSeeder extends Seeder
-{
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
-    {
-        //Model::unguard();
 
-        $this->call('PlanTableSeeder');
-        $this->command->info('Plan table seeded!');
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
 
-        $this->call('TemplateTypeTableSeeder');
-        $this->command->info('Template Type table seeded!');
+--
+-- Database: `installer`
+--
 
-        $this->call('PeriodTypeTableSeeder');
-        $this->command->info('Period table seeded!');
 
-        $this->call('TemplateTableSeeder');
-        $this->command->info('Template table seeded!');
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `user_name` varchar(255)  NOT NULL,
+  `first_name` varchar(255)  NOT NULL,
+  `last_name` varchar(255)  NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(60) NOT NULL,
+  `company` varchar(255) NOT NULL,
+  `company_type` varchar(255)  NOT NULL,
+  `company_size` varchar(255)  NOT NULL,
+  `bussiness` varchar(255) NOT NULL,
+  `mobile` varchar(255)  NOT NULL,
+  `mobile_code` varchar(255)  NOT NULL,
+  `address` varchar(255)  NOT NULL,
+  `town` varchar(255)  NOT NULL,
+  `state` varchar(255)  NOT NULL,
+  `zip` varchar(255)  NOT NULL,
+  `profile_pic` varchar(255) DEFAULT NULL,
+  `active` int(11)  NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `currency` varchar(255)  NOT NULL,
+  `debit` decimal(10,0)	  DEFAULT NULL,
+  `timezone_id` int(11)  NOT NULL,
+  `remember_token` varchar(100) DEFAULT NULL,
+   `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `country` varchar(255) NOT NULL,
+  `ip` varchar(255) DEFAULT NULL,
+  `mobile_verified` int(11)  NOT NULL,
+  `position` varchar(255) DEFAULT NULL,
+  `skype` varchar(255) DEFAULT NULL,
+  `manager` int(11)  DEFAULT NULL,
+ 
+  PRIMARY KEY (`id`)
+)  ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-        $this->call('GroupTableSeeder');
-        $this->command->info('Product Group table seeded!');
 
-        $this->call('ProductTypesTableSeeder');
-        $this->command->info('Product Types table seeded!');
+--
+-- Dumping data for table `labels`
+--
 
-        $this->call('PromotionTypeTableSeeder');
-        $this->command->info('Promotion Types table seeded!');
+INSERT INTO `users` (`id`, `user_name`, `first_name`, `last_name`, `email`, `password`,`company`,`company_type`
+	,`company_size`,`bussiness`,`mobile`,`mobile_code`,`address`,`town`,`state`,`zip`,`profile_pic`
+	,`active`,`role`,`currency`,`debit`,`timezone_id`,`remember_token`, `created_at`, `updated_at`,`country`,`ip`,
+	`mobile_verified`,`position`,`skype`,`manager`) VALUES
+(1, 'demo', 'Demo', 'admin', 'demo@admin.com', '$2y$10$EceQcMGzqFS8fC2Ks7TOLOt0a.NQOh69xMQO18vlo5dCt1CCpqc96'  , 'ladybird' , 'privately-held', 
+  '2-10', 'aviation_aerospace', '9999999999', '91', 'Nearest Place Around', 'Mumbai','IN-KA','123456', '', 
+  '1', 'admin', 'INR', '0', '79', '','2017-03-29 22:41:17', '2017-03-29 22:41:17', 'IN' , '106.51.140.178', '1','','','0'),
+(2, 'rico', 'Rico', 'Vanderval', 'faveomails@gmail.com','$2y$10$EceQcMGzqFS8fC2Ks7TOLOt0a.NQOh69xMQO18vlo5dCt1CCpqc96'  , 'MydemoCompany' , 'privately-held', 
+	'2-10', 'aviation_aerospace', 'rico', '91', 'Nearest Place Around', 'Mumbai','IN-MH','123456', '', 
+	'1', 'user', 'INR', '0', '79', '','2017-03-29 22:41:17', '2017-03-29 22:41:17', 'IN' , '106.51.140.178', '1','','','0'),
+(3, 'aniel', 'Aniel', 'Simmons', 'sunny_2693@yahoo.com','$2y$10$EceQcMGzqFS8fC2Ks7TOLOt0a.NQOh69xMQO18vlo5dCt1CCpqc96'  , 'MydemoCompany1' , 'privately-held', 
+	'2-10', 'aviation_aerospace', '1111111111', '51', 'Nearest Place Around', 'Sydney','AU-QL','123456', '', 
+	'1', 'user', 'USD', '0', '79', '', '2017-03-29 22:41:17', '2017-03-29 22:41:17','AU' , '106.51.140.178', '1','','','0');
 
-        $this->call('PromotionTableSeeder');
-        $this->command->info('Promotion table seeded!');
 
-        $this->call('CurrencyTableSeeder');
-        $this->command->info('Currency table seeded!');
 
-        $this->call('TaxOptionTableSeeder');
-        $this->command->info('Tax Option Table seeded');
 
-        $this->call('ProductTableSeeder');
-        $this->command->info('Product table seeded!');
 
-        $this->call('GitHubTableSeeder');
-        $this->command->info('Github table seeded!');
+CREATE TABLE IF NOT EXISTS `tax_by_states` (
+  `id` smallint(5) unsigned NOT NULL,
+  `country` varchar(200)  DEFAULT NULL,
+  `state_code` varchar(200)  DEFAULT NULL,
+  `state` varchar(200)  DEFAULT NULL,
+  `c_gst` varchar(80) DEFAULT NULL,
+  `s_gst` varchar(80)  DEFAULT NULL,
+  `i_gst` varchar(50) DEFAULT NULL,
+  `ut_gst` varchar(50)  DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-        $this->call('UserTableSeeder');
-        $this->command->info('User table seeded!');
 
-        $this->call(CompanySize::class);
-        $this->call(CompanyType::class);
-        $this->call(SettingsSeeder::class);
-        $this->call(FrontPageSeeder::class);
+INSERT INTO `tax_by_states` (`id`,`country`,`state_code`, `state`, `c_gst`, `s_gst` ,`i_gst` , `ut_gst`,`created_at`, `updated_at`) VALUES
+(1, 'IN','IN-AN','Andaman Nicobar Islands', '9', 'NULL', '18','9','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'IN','IN-AP','Andhra Pradesh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, 'IN','IN-AR','Arunachal Pradesh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, 'IN','IN-AS','Assam', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(5, 'IN','IN-BR','Bihar', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(6, 'IN','IN-CH','Chandigarh', '9', 'NULL', '18','9','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(7, 'IN','IN-CT','Chhattisgarh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(8, 'IN','IN-DN','Dadra and Nagar Haveli', '9', 'NULL', '18','9','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(9, 'IN','IN-DD','Daman and Diu', '9', 'NULL', '18','9','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(10,'IN','IN-DL', 'Delhi', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(11, 'IN','IN-GA','Goa', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(12, 'IN','IN-GJ','Gujarat', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(13, 'IN','IN-HR','Haryana', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(14, 'IN','IN-HP','Himachal pradesh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(15, 'IN','IN-JK','Jammu and Kashmir', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(16, 'IN','IN-JH','Jharkand', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(17, 'IN','IN-KA','Karnataka', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(18, 'IN','IN-KL','Kerala', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(19, 'IN','IN-LD','Lakshadweep', '9', 'NULL', '18','9','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(20, 'IN','IN-MP','Madhya Pradesh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(21, 'IN','IN-MH','Maharashtra', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(22, 'IN','IN-MN','Manipur', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(23, 'IN','IN-ML','Megalaya', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(24, 'IN','IN-MZ','Mizoram', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(25, 'IN','IN-NL','Nagaland', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(26, 'IN','IN-OR','Orissa', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(27, 'IN','IN-OR','Orissa', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(28, 'IN','IN-PY','Pondichery', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(29, 'IN','IN-PB','Punjab', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(30, 'IN','IN-RJ','Rajastan', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(31, 'IN','IN-SK','Sikkim', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(32, 'IN','IN-TN','Tamilnadu', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(33, 'IN','','Telangana', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(34, 'IN','IN-TR','Tripura', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(35, 'IN','IN-UP','Uttar Pradesh', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(36, 'IN','IN-UL','Uttaranchal', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(37, 'IN','IN-WB','West Bengal', '9', '9', '18','NULL','2018-04-13 12:53:58','2018-04-13 12:53:58');
 
-        \DB::unprepared(file_get_contents(storage_path('agora.sql')));
-        \DB::unprepared(file_get_contents(storage_path('states.sql')));
-        \DB::unprepared(file_get_contents(storage_path('taxrates.sql')));
-        // \DB::unprepared(file_get_contents(storage_path('dummy-data.sql')));
-    }
-}
 
-class PlanTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('plans')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $subcriptions = [
-            0 => ['name' => 'no subcription', 'days' => 0],
-            1 => ['name' => 'one week', 'days' => 7],
-            2 => ['name' => 'one month', 'days' => 30],
-            3 => ['name' => 'three months', 'days' => 90],
-            4 => ['name' => 'six months', 'days' => 180],
-            5 => ['name' => 'one year', 'days' => 365],
-            6 => ['name' => 'three year', 'days' => 1095],
-            ];
-        //var_dump($subcriptions);
-        for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
-        }
-    }
-}
+CREATE TABLE IF NOT EXISTS `currencies` (
+  `id` smallint(5) unsigned NOT NULL,
+  `code` varchar(200)  DEFAULT NULL,
+  `symbol` varchar(200)  DEFAULT NULL,
+  `name` varchar(200)  DEFAULT NULL,
+  `base_conversion` varchar(80) DEFAULT NULL,
+  `created_at` varchar(80)  DEFAULT NULL,
+  `updated_at` varchar(50) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-class ProductTypesTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('product_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $types = [
-            1 => ['name' => 'download'],
-            0 => ['name' => 'SaaS'],
-            ];
-        //var_dump($subcriptions);
-        for ($i = 0; $i < count($types); $i++) {
-            Type::create(['id' => $i + 1, 'name' => $types[$i]['name'], 'description'=>'null']);
-        }
-    }
-}
-class CurrencyTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('currencies')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
-    }
-}
+INSERT INTO `currencies` (`id`,`code`,`symbol`, `name`, `base_conversion`,`created_at`, `updated_at`) VALUES
+(1, 'USD','$','US Dollar', '1.0','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'INR','Rs','Indian Rupee', '1,0', '2018-04-13 12:53:58','2018-04-13 12:53:58');
 
-class TaxOptionTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('tax_rules')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        TaxOption::create(['id' => 1, 'tax_enable' => 0, 'inclusive' => 0, 'rounding' => 1]);
-    }
-}
 
-class PeriodTypeTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('periods')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Period::create(['id' => 1, 'name' => '1 Year', 'days' => '365']);
-        Period::create(['id' => 2, 'name' => '2 Years', 'days' => '730']);
-        Period::create(['id' => 3, 'name' => '3 Years', 'days' => '1095']);
-        Period::create(['id' => 4, 'name' => '4 Years', 'days' => '1460']);
-        Period::create(['id' => 5, 'name' => '5 Years', 'days' => '1825']);
-        Period::create(['id' => 6, 'name' => '6 Years', 'days' => '2190']);
-        Period::create(['id' => 7, 'name' => '7 Years', 'days' => '2555']);
-        Period::create(['id' => 8, 'name' => '8 Years', 'days' => '2920']);
-        Period::create(['id' => 9, 'name' => '9 Years', 'days' => '3285']);
-    }
-}
 
-class GroupTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('product_groups')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ProductGroup::create(['id' => 1, 'name' => 'none', 'headline' => 'none', 'tagline' => 'none', 'available_payment'=>'null', 'hidden' => 0, 'cart_link' => 'none']);
-    }
-}
 
-class PromotionTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('promotions')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Promotion::create(['id' => 1, 'code' => 'none', 'type' => 1, 'uses' => 0, 'value' => 'none', 'start' => '1000-01-01 00:00:00', 'expiry' => '1000-01-01 00:00:00']);
-    }
-}
+CREATE TABLE IF NOT EXISTS `tax_rules` (
+  `id` smallint(5) unsigned NOT NULL,
+  `tax_enable` int(11)  DEFAULT NULL,
+  `inclusive` int(11)  DEFAULT NULL,
+  `rounding` int(11)  DEFAULT NULL,
+  `created_at` varchar(80)  DEFAULT NULL,
+  `updated_at` varchar(50) DEFAULT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-class ProductTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('products')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Product::create(['id' => 1, 'name' => 'default', 'type' => 1, 'group' => 1]);
-        // Product::create(['id'=>2, 'name'=>'none1', 'type'=>1, 'group' =>1]);
-    }
-}
+INSERT INTO `tax_rules` (`id`,`tax_enable`,`inclusive`, `rounding`, `created_at`, `updated_at`) VALUES
+(1, '1','0','1', '2018-04-13 12:53:58','2018-04-13 12:53:58');
 
-class PromotionTypeTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('promotion_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        PromotionType::create(['id' => 1, 'name' => 'Percentage']);
-        PromotionType::create(['id' => 2, 'name' => 'Fixed Amount']);
-        PromotionType::create(['id' => 3, 'name' => 'Price Override']);
-        PromotionType::create(['id' => 4, 'name' => 'Free Setup']);
-    }
-}
 
-class TemplateTypeTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('template_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        TemplateType::create(['id' => 1, 'name' => 'welcome_mail']);
-        TemplateType::create(['id' => 2, 'name' => 'forgot_password']);
-        TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end']);
-        TemplateType::create(['id' => 5, 'name' => 'subscription_over']);
-        TemplateType::create(['id' => 6, 'name' => 'invoice']);
-        TemplateType::create(['id' => 7, 'name' => 'order_mail']);
-        TemplateType::create(['id' => 8, 'name' => 'download_mail']);
-        TemplateType::create(['id' => 9, 'name' => 'manager_email']);
-    }
-}
 
-class TemplateTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('templates')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Template::create(['id' => 2, 'name' => '[Faveo Helpdesk] Verify your email address', 'type' => 1, 'url'=>'null', 'data' => '<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+
+INSERT INTO `products` (`id`,`name`,`type`,`group`, `created_at`, `updated_at`) VALUES
+(1, 'default','2','1','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+INSERT INTO `periods` (`id`,`name`,`days`, `created_at`, `updated_at`) VALUES
+(1, '1 months','30','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, '1 year','365','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, '2 year','730','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, '3 year','1095','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(5, '4 year','1460','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+INSERT INTO `product_groups` (`id`,`name`,`headline`,`tagline`,`available_payment`,`hidden`,`cart_link`, `created_at`, `updated_at`) VALUES
+(1, 'none','none','none','none',0,'none','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+INSERT INTO `product_types` (`id`,`name`,`description`, `created_at`, `updated_at`) VALUES
+(1, 'Saas','','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'Download','', '2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+INSERT INTO `promotion_types` (`id`,`name`,`created_at`, `updated_at`) VALUES
+(1, 'Percentage','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'Fixed Amount', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, 'Price Override','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, 'Free Setup', '2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+INSERT INTO `template_types` (`id`,`name`,`created_at`, `updated_at`) VALUES
+(1, 'welcome_mail','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'forgot_password', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, 'subscription_going_to_end','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, 'subscription_over', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(5, 'invoice', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(6, 'order_mail', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(7, 'download_mail', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(8, 'manager_email', '2018-04-13 12:53:58','2018-04-13 12:53:58');
+ 
+
+ INSERT INTO `templates` (`id`,`name`,`type`,`url`,`data`,`created_at`, `updated_at`) VALUES
+(1, '[Faveo Helpdesk] Verify your email address','1','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -295,9 +273,9 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>','2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 4, 'name' => '[Faveo Helpdesk] Purchase confirmation', 'type' => 7, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+(4, '[Faveo Helpdesk] Purchase confirmation','7','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -381,9 +359,10 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 5, 'name' => '[Faveo Helpdesk] Reset your password', 'type' => 2, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+
+(5, '[Faveo Helpdesk] Reset your password','2','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -442,9 +421,10 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>','2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 6, 'name' => '[Faveo Helpdesk] Consolidated renewal reminder', 'type' => 4, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+
+(6, '[Faveo Helpdesk] Consolidated renewal reminder', '4','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -527,9 +507,10 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>','2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 7, 'name' => '[Faveo Helpdesk] URGENT: Order has expired', 'type' => 5, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+
+(7, '[Faveo Helpdesk] URGENT: Order has expired','5','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -612,9 +593,10 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 8, 'name' => '[Faveo Helpdesk] Invoice', 'type' => 6, 'url'=>'null', 'data' =>'<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
+
+(8, '[Faveo Helpdesk] Invoice','6','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
 <td style="width: 30px;">&nbsp;</td>
@@ -694,55 +676,82 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>']);
+<p>&nbsp;</p>', '2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
-        Template::create(['id' => 9, 'name' => '[Faveo Helpdesk] Your New Account Manager', 'type' => 9, 'url'=>'null', 'data' =>'<p>Dear {{name}},</p>
+
+(9, '[Faveo Helpdesk] Your New Account Manager','9','null','<p>Dear {{name}},</p>
 <p>This is {{manager_first_name}} {{manager_last_name}}.</p>
 <p>From now onwards I will be your one point of contact. I will followup with you as well as with our team. Please feel free to get in touch with me anytime if you have any issues with regards to your account. You can also add me on Skype. My ID is mentioned in my signature. It is a pleasure to have you on board and I look forward to effective conversations with you in future.</p>
 <p>Hope you have a great day.</p>
 <p>Regards,</p>
 <p>{{manager_first_name}}{{manager_last_name}}</p>
-<p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
-    }
-}
-class GitHubTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('githubs')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
-    }
-}
+<p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>', '2018-04-13 12:53:58','2018-04-13 12:53:58');
 
-class UserTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('users')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        return \App\User::create([
-                    'first_name'      => 'Demo',
-                    'last_name'       => 'Admin',
-                    'user_name'       => 'demo',
-                    'email'           => 'demo@admin.com',
-                    'role'            => 'admin',
-                    'password'        => \Hash::make('password'),
-                    'active'          => 1,
-                    'mobile_verified' => 1,
-                    'currency'        => 'INR',
-                    'company'         => 'ladybird',
-                    'mobile'          => '',
-                    'mobile_code'     => '',
-                    'address'         => '',
-                    'town'            => '',
-                    'state'           => '',
-                    'zip'             => '',
-                    'profile_pic'     => '',
-                    'debit'           => 0,
-        ]);
-    }
-}
+INSERT INTO `githubs` (`id`,`client_id`,`client_secret`,`username`,`password`,`created_at`, `updated_at`) VALUES
+(1, '','','','','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+
+INSERT INTO `tax_classes` (`id`,`name`,`created_at`, `updated_at`) VALUES
+(1, 'Intra State GST','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'Inter State GST','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, 'Union Territory GST','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, 'Others','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+INSERT INTO `taxes` (`id`,`tax_classes_id`,`level`,`active`,`name`,`country`,`state`,`rate`,`compound`,`created_at`, `updated_at`) VALUES
+(1, '1','0','1','CGST+SGST','IN','Any State','','0','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, '2','0','1','IGST','IN','Any State','','0','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, '3','0','1','CGST+UTGST','IN','Any State','','0','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, '4','0','1','Others','AU','AU-QLD','20','0','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+INSERT INTO `frontend_pages` (`id`,`parent_page_id`,`slug`,`name`,`content`,`url`,`type`,`publish`,`hidden`,`created_at`, `updated_at`) VALUES
+(1, '0','pricing','pricing','<div class="pricing-table princig-table-flat">
+                            <div class="col-md-3 col-sm-6">
+                                <div class="plan">
+                                    <h3>{{name}}<span>{{price}}</span></h3>
+                                    <ul>
+                                        <li>{{feature}}</li>
+                                    </ul><br />
+                                    <ul>
+                                       
+                                       <li class="subscription">{{subscription}}</li>
+                                        <li>{{url}}</li> 
+                                    </ul>
+                                </div>
+                            </div>
+               </div>','','cart','1','1','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+INSERT INTO `settings` (`id`,`company`,`website`,`city`,`state`,`country`,`error_log`,`invoice`,`subscription_over`,`subscription_going_to_end`,`forgot_password`,`order_mail`,`welcome_mail`,`download`,`invoice_template`,`created_at`, `updated_at`) VALUES
+(1, 'Ladybird Web Solution','http://www.ladybirdweb.com','Bangalore','IN-KA','IN','1','8','7','6','5','4','2','9','8','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+INSERT INTO `company_types` (`id`,`name`,`short`,`created_at`, `updated_at`) VALUES
+(1, 'Public Company','public-company','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, 'Self Employed','self-employed','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, 'Non Profit','non-profit','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, 'Privately Held','privately held','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(5, 'Partnership','partnership','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+INSERT INTO `company_sizes` (`id`,`name`,`short`,`created_at`, `updated_at`) VALUES
+(1, 'Myself only','myself-only','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(2, '2-10','2-10','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(3, '11-50','11-50','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(4, '51-200','51-200','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(5, '201-500','201-500','2018-04-13 12:53:58','2018-04-13 12:53:58')
+(6, '501-1000','501-1000','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(7, '1001-5000','1001-5000','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(8, '5001-10000','5001-10000','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+(9, '10001+','10001','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
+
+
+
+

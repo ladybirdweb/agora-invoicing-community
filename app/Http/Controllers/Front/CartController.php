@@ -262,6 +262,7 @@ class CartController extends Controller
                             $ut_gst = $user_state->ut_gst;
                             $state_code = $user_state->state_code;
                             if ($state_code == $origin_state) {//If user and origin state are same
+                               
                                      $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
                               if($taxClassId){
                                $taxes = $this->getTaxByPriority($taxClassId);
@@ -275,7 +276,7 @@ class CartController extends Controller
                                     $taxes = [0];
                                 }
                             } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
-                         $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
+                                $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
                          if($taxClassId){
                            $taxes = $this->getTaxByPriority($taxClassId);
                                 $value = $this->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
@@ -303,7 +304,7 @@ class CartController extends Controller
 
                             $taxClassId = Tax::where('state', $geoip_state)->orWhere('country',$geoip_country)->pluck('tax_classes_id')->first();
 
-                             if ($taxClassId) { //if state equals the user State or countryequals user country
+                             if ($taxClassId) { //if state equals the user State or country equals user country
                                 $taxes = $this->getTaxByPriority($taxClassId);
                                 $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
                                 if ($value == '') {
@@ -860,7 +861,7 @@ class CartController extends Controller
             $from = $set->email;
             $fromname = $set->company;
             $toname = '';
-            $to = 'support@ladybirdweb.com';
+            $to = 'support@faveohelpdesk.com';
             $data = '';
             $data .= 'Name: '.$request->input('name').'<br/s>';
             $data .= 'Email: '.$request->input('email').'<br/>';

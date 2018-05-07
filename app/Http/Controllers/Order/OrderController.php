@@ -446,7 +446,9 @@ class OrderController extends Controller
     public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
-
+            if($version == null){
+                $version = '';
+            }
             // dd($orderid, $planid, $version, $product);
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;

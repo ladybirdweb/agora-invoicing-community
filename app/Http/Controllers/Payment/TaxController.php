@@ -251,12 +251,11 @@ class TaxController extends Controller
             if (!empty($ids)) {
                 foreach ($ids as $id) {
                     $tax = $this->tax->where('id', $id)->first();
-                    $taxClassId= $tax->tax_classes_id;
-                    $taxClass= $this->tax_class->where('id',$taxClassId)->first();
+                    $taxClassId = $tax->tax_classes_id;
+                    $taxClass = $this->tax_class->where('id', $taxClassId)->first();
                     if ($tax) {
                         $taxClass->delete();
                         $tax->delete();
-
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
@@ -329,7 +328,7 @@ class TaxController extends Controller
     public function options(Request $request)
     {
         try {
-              $method = $request->method();
+            $method = $request->method();
             if ($method == 'PATCH') {
                 $rules = $this->tax_option->find(1);
                 if (!$rules) {

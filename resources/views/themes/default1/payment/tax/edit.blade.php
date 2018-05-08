@@ -98,9 +98,9 @@
 
 
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control country hide','id'=>'country']) !!}
+                       <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control country hide','id'=>'country']) !!}
 
-
+ -->
                          <input type='text' name="country1" id= "country1" class="form-control country1 hide" value="IN" disabled>
 
 

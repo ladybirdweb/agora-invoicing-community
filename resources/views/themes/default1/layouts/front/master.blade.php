@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html>
 
-    <head><meta http-equiv="Content-Type" content="text/html; charset=gb18030">
+    <head>
+         <meta charset="utf-8">
+         <meta http-equiv="Content-Type" content="text/html; charset=gb18030">
 
         <!-- Basic -->
         

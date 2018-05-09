@@ -308,7 +308,7 @@ trait RegistersUsers
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
-            // $result = $this->sendOtp($mobile, $code);
+            $result = $this->sendOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number];
 
             return response()->json($response);

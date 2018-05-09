@@ -449,7 +449,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            // $result = $this->sendOtp($mobile, $code);
+            $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);

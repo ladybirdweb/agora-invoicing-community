@@ -46,7 +46,7 @@ active
                                                 Status: {{$order->order_status}}
                                             </td>
                                         </tr>
-                                        </tbody>
+                                       
                                     </table>  
                                 </div>
 
@@ -78,15 +78,17 @@ active
 
                                             </tbody></table>
                                     </div>
-                                </div></div>
+                                </div>
+                            </div>
 
-                    </div>
+                   
                     <div class="control-sidebar-bg"></div>
                 </div><!-- ./wrapper -->
             </div> 
         </div>
     </div>
 </div>	
+</div>
 
 <div class="col-md-12">
 
@@ -100,7 +102,7 @@ active
                         <section class="content-header">
 
                             <h2>
-                                Transcation list
+                                Transaction list
 
                             </h2>
 

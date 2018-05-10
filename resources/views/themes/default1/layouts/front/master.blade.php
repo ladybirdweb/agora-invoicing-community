@@ -1,78 +1,71 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
 <!DOCTYPE html>
 <html>
+<style>
 
+
+.page-header-light .breadcrumb {
+    text-align: right;
+    float: right;
+    margin-top: 15px!important;
+    margin-right: 15px!important;
+}
+</style>
     <head>
-         <meta charset="utf-8">
-         <meta http-equiv="Content-Type" content="text/html; charset=gb18030">
+  
+          <!-- Basic -->
+          <meta charset="utf-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+  
+          <title>@yield('title')</title>  
+  
+          <meta name="keywords" content="HTML5 Template" />
+          <meta name="description" content="Register, signup here to start using Faveo Helpdesk or signin to your existing account">
+          <meta name="author" content="okler.net">
+  
+          <!-- Favicon -->
+          <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+          <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  
+          <!-- Mobile Metas -->
+          <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+  
+          <!-- Web Fonts  -->
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+  
+          <!-- Vendor CSS -->
+          <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
+  
+          <!-- Theme CSS -->
+          <link rel="stylesheet" href="{{asset('css/theme.css')}}">
+          <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
+          <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
+          <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+          
+          <!-- Demo CSS -->
+          <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
+  
+          <!-- Skin CSS -->
+          <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
-        <!-- Basic -->
-        
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">   
-
-        <title>
-            @yield('title')
-        </title>    
-
-        <meta name="keywords" content="HTML5 Template" />
-        <meta name="description" content="Porto - Responsive HTML5 Template">
-        <meta name="author" content="okler.net">
-        <meta name="csrf-token" content="{!! csrf_token() !!}">
-        <!-- Favicon -->
-        <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="images/faveo.png">
-
-        <!-- Mobile Metas -->
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-        <!-- Web Fonts  -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
-
-
-        <!-- Vendor CSS -->
-        <link rel="stylesheet" href="{{asset('css/bootstrap.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/animate.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('css/magnific-popup.min.css')}}">
-
-
-        <!-- Theme CSS -->
-     <link rel="stylesheet" href="{{asset('css/theme.css')}}">
-        <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
-        <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
-        <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
-
-        <!-- Current Page CSS -->
-        <link rel="stylesheet" href="{{asset('css/css/settings.css')}}">
-        <link rel="stylesheet" href="{{asset('css/layers.css')}}">
-        <link rel="stylesheet" href="{{asset('css/navigation.css')}}">
-        <link rel="stylesheet" href="{{asset('css/nivo-slider.css')}}">
-        <link rel="stylesheet" href="{{asset('css/default.css')}}">
-
-      
-        <link rel="stylesheet" href="{{asset('css/demo-construction.css')}}">
-
-        <!-- Skin CSS -->
-        <link rel="stylesheet" href="{{asset('css/skin-construction.css')}}"> 
-        <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
-
-        <!-- Theme Custom CSS -->
-        <link rel="stylesheet" href="{{asset('css/custom.css')}}">
-
-       
-
-
-        <!-- Head Libs -->
-        <script src="{{asset('js/modernizr.min.js')}}"></script>
-        <script type="text/javascript"> //<![CDATA[ 
-        var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
-        document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
-        //]]>
-       </script>    
-    </head>
+  
+          <!-- Theme Custom CSS -->
+          <link rel="stylesheet" href="{{asset('css/custom.css')}}">
+  
+          <!-- Head Libs -->
+          <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
+          
+          <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
+    
+  
+      </head>
     <body>
 
         <?php
@@ -82,7 +75,7 @@
         ?>
         <div class="body">
             <header id="header"  data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
-                <div class="header-body" style="padding-bottom: 30px;">
+                <div class="header-body">
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
@@ -94,16 +87,17 @@
                             </div>
                             <div class="header-column">
                                 <div class="header-row">
-                                    <div class="header-search hidden-xs">
-                                        {!! Form::open(['url'=>'page/search','method'=>'get']) !!}
-                                        <div class="input-group">
-                                            <input type="text" class="form-control" name="q" id="q" placeholder="Search..." required>
-                                            <span class="input-group-btn">
-                                                <button class="btn btn-default" type="submit"><i class="fa fa-search"></i></button>
-                                            </span>
-                                        </div>
-                                        {!! Form::close() !!}
-                                    </div>
+                                    <nav class="header-nav-top">
+                                          <ul class="nav nav-pills">
+                                              <li class="nav-item d-none d-sm-block">
+                                                  <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> support@faveohelpdesk.com</a>
+                                              </li>
+                                              
+                                              <li class="nav-item">
+                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i> +91 80 3075 2618</span>
+                                              </li>
+                                          </ul>
+                                      </nav>
                                     <!--                                    <nav class="header-nav-top">
                                                                             <ul class="nav nav-pills">
                                                                                 <li class="hidden-xs">
@@ -296,22 +290,27 @@
 
             <div role="main" class=@yield('main-class')>
 
-                    <section class="section-tertiary" style="height: 76px;background-color:#E9EFF2 !important">
+                    <section class="page-header page-header-light page-header-more-padding">
                     <div class="container">
-                       <div class="row">
-                            <div class="col-md-12">
-                                <ul class="breadcrumb" style="background-color:#E9EFF2 ;margin-top: 15px;">
-                                    @yield('breadcrumb')
+                         <div class="row align-items-center">
+                            <div class="col-lg-6">
+                              
+                                    @yield('page-heading')
                                     <!--<li><a href="#">Home</a></li>
                                     <li class="active">Pages</li>-->
-                                </ul>
+                               
                             </div>
+                            <div class="col-lg-6">
+                                  <ul class="breadcrumb">
+                                        @yield('breadcrumb')
+                                  </ul>
+                              </div>
                         </div>
-                        <div class="row">
+                       <!--  <div class="row">
                             <div class="col-md-12">
                                 <h1>@yield('page-heading')</h1>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                 </section>
 
@@ -378,7 +377,7 @@
 
             </div>
 
-            <footer id="footer" style="margin-top:35px;">
+            <footer id="footer" >
                 <div class="container">
                     <div class="row">
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
@@ -408,7 +407,7 @@
                         <div class="col-md-3">
                             <h4>Latest Tweets</h4>
                             <div id="tweets" class="twitter">
-
+                            <p>Please wait...</p>
                             </div>
                         </div>
                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer')->take(1)->get(); ?>

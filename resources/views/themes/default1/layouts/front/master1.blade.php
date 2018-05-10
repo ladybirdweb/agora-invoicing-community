@@ -42,6 +42,8 @@
   
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+
   
           <!-- Theme Custom CSS -->
           <link rel="stylesheet" href="{{asset('css/custom.css')}}">
@@ -62,7 +64,7 @@
   
           <div class="body">
               <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}">
-                  <div class="header-body"  style="padding-bottom: 30px;">
+                  <div class="header-body" >
                       <div class="header-container container">
                           <div class="header-row">
                               <div class="header-column">
@@ -393,60 +395,64 @@
                                   </div>
               
                                   <div class="alert alert-danger d-none" id="newsletterError"></div>
-              
-                                  <form id="newsletterForm" action="php/newsletter-subscribe.php" method="POST">
-                                      <div class="input-group">
+                                   {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                     <div class="input-group">
                                           <input class="form-control form-control-sm" placeholder="Email Address" name="newsletterEmail" id="newsletterEmail" type="text">
                                           <span class="input-group-append">
                                               <button class="btn btn-light" type="submit">Go!</button>
                                           </span>
                                       </div>
+                                        {!! Form::close() !!}
                                   </form>
                               </div>
                           </div>
                           <div class="col-lg-3">
                               <h4>Latest Tweets</h4>
-                              <div id="tweet" class="twitter" data-plugin-tweets data-plugin-options="{'username': '', 'count': 2}">
+                              <div id="tweets" class="twitter" data-plugin-tweets data-plugin-options="{'username': '', 'count': 2}">
                                   <p>Please wait...</p>
                               </div>
                           </div>
+                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer')->take(1)->get(); ?>
+                         @foreach($widgets as $widget)
                           <div class="col-md-3">
                               <div class="contact-details">
-                                  <h4>Contact Us</h4>
-                                  <div><strong>Phone: +</strong>91 80 3075 2618</div>
-  <div><strong>Email:</strong> <a href="mailto:support@ladybirdweb.com">support@ladybirdweb.com</a></div>
+                                  <h4>{{ucfirst($widget->name)}}</h4>
+                                {!! $widget->content !!}
+                                 
+  
   <p>&nbsp;</p>
   <p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
                               </div>
                           </div>
+                           @endforeach
                           <div class="col-lg-2">
                               
                               <h4>Follow Us</h4>
                               <ul class="social-icons">
-                              <li class="social-icons-facebook"><a href="https://www.facebook.com/faveohelpdesk" target="_blank" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
-                              <li class="social-icons-linkedin"><a href="https://www.linkedin.com/groups/8429668" target="_blank" title="Linkedin"><i class="fab fa-linkedin-in"></i></a></li>
-                              <li class="social-icons-twitter"><a href="https://twitter.com/faveohelpdesk" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                                              </ul>
-                                                              
+                                @foreach($social as $media)
+                                <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                @endforeach
+                            </ul>
+                          </div>
+                           <div class="col-md-2">                                    
                                                              
   <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&amp;v_shortname=CL1&amp;v_search=https://www.billing.faveohelpdesk.com/&amp;x=6&amp;y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png"></a>
                           <br/> <br/>
   <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif"></a>
                          
-                          
+                          </div>
                           </div>
                           
                       </div>
-                  </div>
+                 
                   <div class="footer-copyright">
                       <div class="container">
                           <div class="row">
                               
-                              <div class="col-lg-12">
-                                  
-                                  <p>Copyright © 2018 · <a href="https://www.faveohelpdesk.com" target="_blank">Ladybird Web Solution Pvt Ltd</a>. All Rights Reserved.Powered by 
-                                      <a href="http://www.ladybirdweb.com/" target="_blank"><img src="img/Ladybird1.png" alt="Ladybird"></a></p>
-                              </div>
+                             <div class="col-md-12">
+                                <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
+                                    <a href="http://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                            </div>
                               
                           </div>
                       </div>

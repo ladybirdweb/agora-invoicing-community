@@ -2,11 +2,15 @@
 @section('title')
 forgot password
 @stop
+@section('page-heading')
+ <h1>Forgot Password? <span>Reset it Now</span></h1>
+@stop
 @section('page-header')
 Forgot Password
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
+<li><a href="{{url('login')}}">Login</a></li>
 <li class="active">Forgot Password</li>
 @stop
 @section('main-class') 
@@ -23,6 +27,7 @@ main
                     @if(Session::has('success'))
                     <div class="alert alert-success alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        <strong><i class="fa fa-thumbs-up"></i> Well done!</strong>
                         {{Session::get('success')}}
                     </div>
                     @endif
@@ -35,8 +40,9 @@ main
                     </div>
                     @endif
                     @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> Something went wrong<br><br>
+                    <div class="alert alert-danger" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="fa fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
                         <ul>
                             @foreach ($errors->all() as $error)
                             <li>{!! $error !!}</li>
@@ -46,30 +52,25 @@ main
                     @endif
                     <div class="featured-box featured-box-primary align-left mt-xlg">
                         <div class="box-content">
-                            <h4 class="heading-primary mb-md">Forgot Password</h4>
+                          
                             {!!  Form::open(['url'=>'password/email', 'method'=>'post']) !!}
-                            <div class="row">
+                         <p>Lost your password? Please enter your email address. You will receive a link to create a new password via email.</p>
+                            <div class="form-row">
                                 <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
                                     <div class="col-md-12">
-                                        <!--<label>Username or E-mail Address</label>-->
+                                        <label>Email Address <span style="color: red">*</span></label>
                                         <!--<input type="text" value="" class="form-control input-lg">-->
-                                        {!! Form::text('email',null,['placeholder'=>Lang::get('message.email'),'class' => 'form-control input-lg']) !!}
+                                        {!! Form::text('email',null,['class' => 'form-control input-lg']) !!}
                                     </div>
                                 </div>
-                                <!--                                <div class="row">
-                                                                    <div class="form-group">
-                                                                        <div class="col-md-12">
-                                                                            <a href="{{url('auth/login')}}">{{Lang::get('message.login')}}</a>
-                                                                        </div>
-                                
-                                                                    </div>
-                                                                </div>-->
+                               
                             </div>
-
-                            <div class="row">
+                            <div class="clear"></div>
+                         <div class="form-group col">
+                             <!-- <a class="pt-left back-login" href="page-login.html">Click here to login</a> -->
 
                                 <div class="col-md-6">
-                                    <a href="{{url('auth/login')}}" class="pull-left mb-xl">{{Lang::get('message.login')}}</a>
+                                    <a href="{{url('auth/login')}}" class="pull-left mb-xl">Click Here To Login</a>
                                 </div>
                                 <div class="col-md-6">
                                     <input type="submit" value="Retrieve Password" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">

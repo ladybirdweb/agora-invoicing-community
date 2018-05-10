@@ -131,7 +131,7 @@ trait SendsPasswordResetEmails {
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
         return redirect()->back()->with('success', "Reset instructions have been mailed to $to
-Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
+        Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
     }
 
     /**

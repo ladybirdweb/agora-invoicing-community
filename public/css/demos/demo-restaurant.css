@@ -1,18 +1,23 @@
 /* Header */
-#header .header-btn-collapse-nav {
-	margin-top: 18px;
-}
-
 @media (min-width: 992px) {
 	#header .header-nav-main {
 		margin: 6px 0 0;
+	}
+	#header .header-nav-main nav > ul > li > a.active {
+		color: #CCC !important;
+		background: transparent !important;
+	}
+	#header .header-nav-main nav > ul > li:hover > a.active, #header .header-nav-main nav > ul > li.open > a.active {
+		color: #FFF !important;
+		background: #CCC !important;
 	}
 }
 /* Custom Icon */
 .thumb-info .thumb-info-custom-icon {
 	width: auto;
 	margin: -30px auto 0;
-	transform: none !important;
+	-webkit-transform: none !important;
+					transform: none !important;
 }
 
 /* Custom Divider */
@@ -95,6 +100,10 @@
 	background: #F4f4f4;
 	margin: 0 !important;
 	padding: 14px !important;
+}
+
+.thumb-info .thumb-info-caption {
+	padding: 0;
 }
 
 /* Thumb Info Custom Blog */

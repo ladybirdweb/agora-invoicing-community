@@ -1,6 +1,6 @@
 /********************************************
- * REVOLUTION 5.2.6 EXTENSION - PARALLAX
- * @version: 2.2.0 (16.11.2016)
+ * REVOLUTION 5.4.6.4 EXTENSION - PARALLAX
+ * @version: 2.2.3 (17.05.2017)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
@@ -10,8 +10,8 @@ var _R = jQuery.fn.revolution,
 	_ISM = _R.is_mobile(),
 	extension = {	alias:"Parallax Min JS",
 					name:"revolution.extensions.parallax.min.js",
-					min_core: "5.3",
-					version:"2.2.0"
+					min_core: "5.4.5",
+					version:"2.2.3"
 			  };
 
 jQuery.extend(true,_R, {	
@@ -314,7 +314,7 @@ jQuery.extend(true,_R, {
 
 
 	//	-	SET POST OF SCROLL PARALLAX	-
-	scrollHandling : function(opt,fromMouse) {	
+	scrollHandling : function(opt,fromMouse,speedoverwrite) {	
 		opt.lastwindowheight = opt.lastwindowheight || window.innerHeight;
 		opt.conh = opt.conh===0 || opt.conh===undefined ? opt.infullscreenmode ? opt.minHeight : opt.c.height() : opt.conh;
 		if (opt.lastscrolltop==window.scrollY && !opt.duringslidechange && !fromMouse) return false;		
@@ -361,17 +361,20 @@ jQuery.extend(true,_R, {
 						if (_.pcontainers[i].length>0) {
 							var pc = _.pcontainers[i],
 								pl = _.pcontainer_depths[i]/100,						
-								offsv = Math.round((proc * -(pl*opt.conh)*10))/10 || 0;										
+								offsv = Math.round((proc * -(pl*opt.conh)*10))/10 || 0,
+								s = speedoverwrite!==undefined ? speedoverwrite :  _.speedls/1000 || 0;
 							pc.data('parallaxoffset',offsv);		
-							punchgs.TweenLite.set(pc,{overwrite:"auto",force3D:"auto",y:offsv})
+							punchgs.TweenLite.to(pc,s,{overwrite:"auto",force3D:"auto",y:offsv})
 						}
 					}											
 			if (_.bgcontainers)
 				for (var i=0;i<_.bgcontainers.length;i++) {
 					var t = _.bgcontainers[i],
 						l = _.bgcontainer_depths[i],			
-						offsv =	proc * -(l*opt.conh) || 0;					
-					punchgs.TweenLite.set(t,{position:"absolute",top:"0px",left:"0px",backfaceVisibility:"hidden",force3D:"true",y:offsv+"px"});											
+						offsv =	proc * -(l*opt.conh) || 0,
+						s = speedoverwrite!==undefined ? speedoverwrite : _.speedbg/1000 || 0;	
+
+					punchgs.TweenLite.to(t,s,{position:"absolute",top:"0px",left:"0px",backfaceVisibility:"hidden",force3D:"true",y:offsv+"px"});											
 				}							
 		}
 
@@ -383,7 +386,7 @@ jQuery.extend(true,_R, {
 			_fproc = _fproc<0 ? 0 : _fproc;			
 			if (_s.layers!==false) {									
 				var fadelevel = 1 - (_fproc *_s.multiplicator_layers),
-					seo = { backfaceVisibility:"hidden",force3D:"true"};
+					seo = { backfaceVisibility:"hidden",force3D:"true",z:0.001,perspective:600};
 				if (_s.direction=="top" && proc>=0) fadelevel=1;
 				if (_s.direction=="bottom" && proc<=0) fadelevel=1;
 				fadelevel = fadelevel>1 ? 1 : fadelevel < 0 ? 0 : fadelevel;	
@@ -391,6 +394,12 @@ jQuery.extend(true,_R, {
 
 				if (_s.fade==="on")
 					seo.opacity = fadelevel;
+
+				if (_s.scale==="on") {					
+					var scalelevel = (fadelevel);
+					seo.scale = 1+(1-scalelevel);	
+					
+				}
 
 				if (_s.blur==="on") {					
 					var blurlevel = (1-fadelevel) * _s.maxblur;
@@ -417,6 +426,12 @@ jQuery.extend(true,_R, {
 
 				if (_s.fade==="on")
 					seo.opacity = fadelevel;
+
+				if (_s.scale==="on") {					
+					var scalelevel = fadelevel;
+					//seo.scale = scalelevel;
+					punchgs.TweenLite.set(jQuery('.tp-kbimg-wrap'),{transformOrigin:"50% 50%",scale:scalelevel,force3D:true})
+				}
 
 				if (_s.blur==="on") {					
 					var blurlevel = (1-fadelevel) * _s.maxblur;

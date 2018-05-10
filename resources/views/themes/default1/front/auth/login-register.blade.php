@@ -1,9 +1,12 @@
-@extends('themes.default1.layouts.front.master1')
+@extends('themes.default1.layouts.front.master')
 @section('title')
 Login | Register | Faveo Helpdesk
 @stop
 @section('page-header')
 Login | Register
+@stop
+@section('page-heading')
+ <h1>Login <span>Sign in or register to use Faveo</span></h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -49,132 +52,16 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         padding-left:5px;
     }
 
-    .wizard {
-        margin: 20px auto;
-        background: #fff;
-    }
+   
 
-    .wizard .nav-tabs {
-        position: relative;
-        margin: 40px auto;
-        margin-bottom: 0;
-        border-bottom-color: #e0e0e0;
-    }
 
-    .wizard > div.wizard-inner {
-        position: relative;
-    }
-
-.connecting-line {
-    height: 2px;
-    background: #e0e0e0;
-    position: absolute;
-    width: 70%;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: 37%;
-    z-index: 1;
-}
-
-.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
-    color: #555555;
-    cursor: default;
-    border: 0;
-    border-bottom-color: transparent;
-    
-}
-.wizard .nav-tabs > li{
-    margin-bottom: 0px;
-}
-p.round-tab {
-    width: 70px;
-    height: 70px;
-    line-height: 70px;
-    display: inline-block;
-    border-radius: 100px;
-    background: #fff;
-    border: 2px solid #e0e0e0;
-    z-index: 2;
-    position: absolute;
-    left: 0;
-    text-align: center;
-    font-size: 25px;
-}
-p.round-tab i{
-    color:#555555;
-}
-.wizard li.active p.round-tab {
-    background: #fff;
-    border: 2px solid #5bc0de;
-    
-}
-.wizard li.active p.round-tab i{
-    color: #5bc0de;
-}
 
 p.round-tab:hover {
     color: #333;
     border: 2px solid #333;
 }
 
-.wizard .nav-tabs > li {
-    width: 33.333%;
-}
 
-.wizard li:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 0;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 5px solid transparent;
-    border-bottom-color: #5bc0de;
-    transition: 0.1s ease-in-out;
-}
-
-.wizard li.active:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 1;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 10px solid transparent;
-    border-bottom-color: #5bc0de;
-}
-
-.wizard .nav-tabs > li a {
-    width: 70px;
-    height: 70px;
-    margin: 20px auto;
-    border-radius: 100%;
-    padding: 0;
-    border-left: none;
-border-right: none;
-border-top: none;
-}
-
-    .wizard .nav-tabs > li a:hover {
-        background: transparent;
-    }
-
-.wizard .tab-pane {
-    position: relative;
-    
-}
-
-.wizard h3 {
-    margin-top: 0;
-}
-
-@media( max-width : 585px ) {
-
-    .wizard {
-        width: 90%;
-        height: auto !important;
-    }
 
     p.round-tab {
         font-size: 16px;
@@ -215,38 +102,7 @@ border-top: none;
 
         <section>
             <div class="wizard">
-                <div class="wizard-inner" style="display: none">
-                    <div class="connecting-line"></div>
-                        <ul class="nav nav-tabs" role="tablist">
-                            <li role="presentation" class="active">
-                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Contact Information">
-                                    <p class="round-tab">
-                                        <i class="fa fa-user"></i>
-                                    </p>
-                                    
-                                </a>
-                                <p style="font-size: 17px;margin-left: 122px;">Contact Information</p>
-                            </li>
-                            <li role="presentation" class="disabled" >
-                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Identity Verification">
-                                    <p class="round-tab">
-                                        <i class="fa fa-exclamation-triangle"></i>
-                                    </p>
-                                    
-                                </a>
-                                <p style="font-size: 17px;margin-left: 120px;">Identity Verification</p>
-                            </li>
-                            <li role="presentation" class="disabled">
-                                <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
-                                    <p class="round-tab">
-                                        <i class="fa fa-check"></i>
-                                    </p>
-                                    
-                                </a>
-                                <p style="font-size: 17px;margin-left: 150px;">Confirmation</p>
-                            </li>
-                        </ul>
-                    </div>
+                
                     <div class="row tab-content">
                         <div class="col-md-12 tab-pane active" id="step1">
                             <div class="featured-boxes">
@@ -266,16 +122,19 @@ border-top: none;
                                 @endif
                                 <!-- fail message -->
                                 @if(Session::has('fails'))
-                                <div class="alert alert-danger alert-dismissable">
-                                    <i class="fa fa-ban"></i>
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    {{Session::get('fails')}}
+                                <div class="alert alert-danger alert-dismissable" role="alert">
+                                    
+                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                      <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                                   <ul>
+                                  <li>  {{Session::get('fails')}} </li>
+                                </ul>
                                 </div>
                                 @endif
                                 @if (count($errors) > 0)
-                                <div class="alert alert-danger alert-dismissable">
-                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    <strong>Whoops!</strong> Something went wrong<br><br>
+                                   <div class="alert alert-danger alert-dismissable" role="alert">
+                                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                   <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
 
                                     <ul>
                                         @foreach ($errors->all() as $error)

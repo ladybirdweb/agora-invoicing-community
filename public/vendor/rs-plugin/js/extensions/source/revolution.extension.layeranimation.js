@@ -1,6 +1,6 @@
 /************************************************
- * REVOLUTION 5.3 EXTENSION - LAYER ANIMATION
- * @version: 3.5.1 (09.12.2016)
+ * REVOLUTION 5.4.6.4 EXTENSION - LAYER ANIMATION
+ * @version: 3.6.5 (08.03.2018)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 ************************************************/
@@ -9,10 +9,11 @@
 
 var _R = jQuery.fn.revolution,
 	_ISM = _R.is_mobile(),
+	_ANDROID = _R.is_android(),
 	extension = {	alias:"LayerAnimation Min JS",
 					name:"revolution.extensions.layeranimation.min.js",
-					min_core: "5.3.1",
-					version:"3.5.1"
+					min_core: "5.4.6.4",
+					version:"3.6.5"
 			  };
 	
 
@@ -24,7 +25,9 @@ jQuery.extend(true,_R, {
 	updateMarkup : function(layer,o) {		
 				
 		var d = jQuery(layer).data();
-		if (d.start!==undefined && !d.frames_added && d.frames===undefined) {			
+
+		if (d.start!==undefined && !d.frames_added && d.frames===undefined) {		
+			
 			var frames = new Array(),			
 				oin = getAnimDatas(newAnimObject(),d.transform_in,undefined, false),
 				oout = getAnimDatas(newAnimObject(),d.transform_out,undefined, false),
@@ -48,6 +51,18 @@ jQuery.extend(true,_R, {
 			d.hoverframeindex = -1;			
 			if (d.frames!==undefined) {
 				for (var i=0;i<d.frames.length;i++) {
+					// CHECK FOR BLOCK SFX ANIMATION
+					if (d.frames[i].sfx_effect!==undefined && d.frames[i].sfx_effect.indexOf('block')>=0) {
+						if (i===0) {
+							d.frames[i].from = "o:0";
+							d.frames[i].to = "o:1";
+						} else {
+							d.frames[i].to = "o:0";
+						}
+
+						d._sfx = "block";
+					}
+					
 					if (d.frames[0].from===undefined) d.frames[0].from = "o:inherit";
 					
 					if (d.frames[0].delay===0) d.frames[0].delay=20;
@@ -59,13 +74,16 @@ jQuery.extend(true,_R, {
 						d.outframeindex = i;
 					
 					if (d.frames[i].split!==undefined && d.frames[i].split.match(/chars|words|lines/g)) 
-						d.splittext = true;				
+						d.splittext = true;									
 				}		
+			
 			}
+
 			d.outframeindex  = d.outframeindex===-1 ? d.hoverframeindex === -1 ? d.frames.length-1 : d.frames.length -2 : d.outframeindex; // CHECK LATER !!!
-			d.frames_added = true;
-								
-		}						
+			d.frames_added = true;	
+			
+		}		
+
 	},
 
 	// MAKE SURE THE ANIMATION ENDS WITH A CLEANING ON MOZ TRANSFORMS
@@ -81,8 +99,9 @@ jQuery.extend(true,_R, {
 		 	if (opt.sliderType!=="carousel" || 
 		 		(opt.sliderType==="carousel" && opt.carousel.showLayersAllTime==="on" && _nc.closest('li').hasClass("active-revslide")) ||
 		 		(opt.sliderType==="carousel" && opt.carousel.showLayersAllTime!=="on" && _nc.closest('li').hasClass("active-revslide"))
-		 		)
-				_R.playVideo(_nc,opt);	
+		 		) 
+		 		_R.playVideo(_nc,opt);		
+		 		
 
 			_R.toggleState(_nc.data('videotoggledby'));
 			if ( an || ap=="1sttime") {
@@ -157,7 +176,7 @@ jQuery.extend(true,_R, {
 			opt.c.append('<div class="hglayerinfo"></div>')
 			hg.append('<div class="tlhg"></div>');
 		}
-		
+				
 		// PREPARE THE LAYERS
 		if (index!==undefined && opt.layers[index])
 			jQuery.each(opt.layers[index], function(i,a) { 
@@ -172,12 +191,18 @@ jQuery.extend(true,_R, {
 		if (opt.layers["static"])
 			jQuery.each(opt.layers["static"], function(i,a) { 
 				var _t = jQuery(this),
-					_ = _t.data();				
+					_ = _t.data();
+				
 				if (_.hoveredstatus!==true && _.inhoveroutanimation!==true) {
-					_R.updateMarkup(this,opt);
+					_R.updateMarkup(this,opt);					
 					_R.prepareSingleCaption({caption:_t, opt:opt, offsetx:base_offsetx, offsety:base_offsety, index:i, recall:recall,  preset:preset});
-					if (!preset || startSlideAnimAt===0)  _R.buildFullTimeLine({caption:_t, opt:opt, offsetx:base_offsetx, offsety:base_offsety, index:i, recall:recall,  preset:preset, regenerate: startSlideAnimAt===0});
-					if (recall && opt.sliderType==="carousel" && opt.carousel.showLayersAllTime==="on") _R.animcompleted(_t,opt);	    
+					
+					if ((!preset || startSlideAnimAt===0) &&  _.veryfirstststic !==true)  {					
+						_R.buildFullTimeLine({caption:_t, opt:opt, offsetx:base_offsetx, offsety:base_offsety, index:i, recall:recall,  preset:preset, regenerate: startSlideAnimAt===0});
+						_.veryfirstststic = true;
+					}
+					if (recall && opt.sliderType==="carousel" && opt.carousel.showLayersAllTime==="on") _R.animcompleted(_t,opt);
+					
 				} else {					
 					_R.prepareSingleCaption({caption:_t, opt:opt, offsetx:base_offsetx, offsety:base_offsety, index:i, recall:recall,  preset:preset});
 				}
@@ -186,7 +211,8 @@ jQuery.extend(true,_R, {
 		
 		// RECALCULATE HEIGHTS OF SLIDE IF ROW EXIST
 		var _actli = opt.nextSlide === -1 || opt.nextSlide===undefined ? 0 : opt.nextSlide;
-		_actli = _actli>opt.rowzones.length ? opt.rowzones.length : _actli;	
+		if (opt.rowzones!==undefined) 
+			_actli = _actli>opt.rowzones.length ? opt.rowzones.length : _actli;	
 		if (opt.rowzones!=undefined && opt.rowzones.length>0 && opt.rowzones[_actli]!=undefined && _actli>=0 && _actli<=opt.rowzones.length && opt.rowzones[_actli].length>0) 			
 			_R.setSize(opt);
 		
@@ -202,7 +228,7 @@ jQuery.extend(true,_R, {
 							if (o.triggerstate=="keep" && _.triggerstate==="on")
 								_R.playAnimationFrame({caption:o.layer,opt:opt,frame:"frame_0", triggerdirection:"in", triggerframein:"frame_0", triggerframeout:"frame_999"});							
 							else 
-								o.timeline.restart(0);						
+								o.timeline.restart();						
 						}															
 					});
 				if (opt.timelines.staticlayers) 				
@@ -332,6 +358,8 @@ jQuery.extend(true,_R, {
 
 		
 		_._lig = _._lig===undefined ? _nc.hasClass("rev_layer_in_group") ? _nc.closest('.rev_group') : _nc.hasClass("rev_layer_in_column") ?_nc.closest('.rev_column_inner')  : _nc.hasClass("rev_column_inner") ?  _nc.closest(".rev_row") : "none" :  _._lig,			
+		_._column = _._column===undefined ? _nc.hasClass("rev_column_inner") ? _nc.closest(".rev_column") : "none" : _._column,
+		_._row = _._row===undefined ? _nc.hasClass("rev_column_inner") ? _nc.closest(".rev_row") : "none" : _._row,		
 		_._ingroup = _._ingroup===undefined ? !_nc.hasClass('rev_group') && _nc.closest('.rev_group') ? true : false :_._ingroup;
 		_._isgroup = _._isgroup===undefined ? _nc.hasClass("rev_group") ? true  : false : _._isgroup;
 		_._nctype = _.type || "none";
@@ -480,11 +508,11 @@ jQuery.extend(true,_R, {
 
 			
 			if (_._ingroup && _._nctype!=="row") {				
-				if (ww!==undefined && !jQuery.isNumeric(ww) && ww.indexOf("%")>0)
+				if (ww!==undefined && !jQuery.isNumeric(ww) && jQuery.type(ww)==="string" && ww.indexOf("%")>0)
 					punchgs.TweenLite.set([_._lw,_._pw,_._mw],{minWidth:ww});						
 				
 
-				if (hh!==undefined && !jQuery.isNumeric(hh) && hh.indexOf("%")>0)
+				if (hh!==undefined && !jQuery.isNumeric(hh) && jQuery.type(hh)==="string" && hh.indexOf("%")>0)
 					punchgs.TweenLite.set([_._lw,_._pw,_._mw],{minHeight:hh});						
 			}
 			
@@ -528,7 +556,7 @@ jQuery.extend(true,_R, {
 			
 			var asprat = _.aspectratio;
 			if (asprat!=undefined && asprat.split(":").length>1) 			
-				_R.prepareCoveredVideo(asprat,opt,_nc);
+				_R.prepareCoveredVideo(opt,_nc);
 
 			var im = _nc.find('iframe') ? _nc.find('iframe') : im = _nc.find(tag),
 				html5vid = _nc.find('iframe') ? false : true,				
@@ -544,12 +572,26 @@ jQuery.extend(true,_R, {
 			var ww =  makeArray(_nc.data('videowidth'),opt)[opt.curWinRange] || makeArray(_nc.data('videowidth'),opt) || "auto",
 				hh =  makeArray(_nc.data('videoheight'),opt)[opt.curWinRange] || makeArray(_nc.data('videoheight'),opt) || "auto";
 				
-			if (!jQuery.isNumeric(ww) && ww.indexOf("%")>0) {
+			/*if (!jQuery.isNumeric(ww) && ww.indexOf("%")>0) {
 				hh = (parseFloat(hh)*opt.bh)+"px";
 			} else {
 				ww = (parseFloat(ww)*opt.bw)+"px";
 				hh = (parseFloat(hh)*opt.bh)+"px";
+			}*/
+
+
+			if (ww==="auto" || (!jQuery.isNumeric(ww) && ww.indexOf("%")>0)) {
+				ww = ww==="auto" ? "auto" : _._ba==="grid" ? opt.gridwidth[opt.curWinRange]*opt.bw : _._gw;
+			} else {
+				ww = (parseFloat(ww)*opt.bw)+"px";
 			}
+
+			if (hh==="auto" || (!jQuery.isNumeric(hh) && hh.indexOf("%")>0)) {
+				hh = hh==="auto" ? "auto" : _._ba==="grid" ? opt.gridheight[opt.curWinRange]*opt.bw : _._gh;				
+			} else {
+				hh = (parseFloat(hh)*opt.bh)+"px";
+			}
+
 									
 			// READ AND WRITE CSS SETTINGS OF IFRAME AND VIDEO FOR RESIZING ELEMENST ON DEMAND			
 			_.cssobj = _.cssobj===undefined ? getcssParams(_nc,0) : _.cssobj;
@@ -629,7 +671,14 @@ jQuery.extend(true,_R, {
 			obj.offsetx=0;
 			obj.offsety=0;
 		}
-			
+		
+		// BLOCK ANIMATION ON LAYERS
+		if (_._sfx==="block") 
+			if (_._bmask === undefined) {
+				_._bmask = jQuery('<div class="tp-blockmask"></div>');
+				_._mw.append(_._bmask);
+			}
+				
 			
 		_.arrobj = new Object();
 		_.arrobj.voa = makeArray(_.voffset,opt)[opt.curWinRange] || makeArray(_.voffset,opt)[0];
@@ -695,6 +744,7 @@ jQuery.extend(true,_R, {
 				
 		var tpcapindex = _nc.css("z-Index");
 		
+
 		
 		// SET TOP/LEFT POSITION OF LAYER
 		if (_._nctype!=="row" && _._nctype!=="column") 			
@@ -726,6 +776,15 @@ jQuery.extend(true,_R, {
 
 		// LOOP ANIMATION WIDTH/HEIGHT 
 		if (_.loopanimation=="on") punchgs.TweenLite.set(_._lw,{minWidth:_.eow,minHeight:_.eoh});
+
+		//Preset Position of BG 
+		if (_._nctype==="column") {			
+			var tempy = _nc[0]._gsTransform !==undefined ? _nc[0]._gsTransform.y : 0,
+				pT = parseInt(_._column[0].style.paddingTop,0);			
+			punchgs.TweenLite.set(_nc,{y:0});					
+			punchgs.TweenLite.set(_._cbgc_man,{y:parseInt(( pT+_._column.offset().top-_nc.offset().top),0)});
+			punchgs.TweenLite.set(_nc,{y:tempy});			
+		}
 
 		// ELEMENT IN GROUPS WITH % WIDTH AND HEIGHT SHOULD EXTEND PARRENT SIZES				
 		if (_._ingroup && _._nctype!=="row") {					
@@ -838,8 +897,12 @@ jQuery.extend(true,_R, {
 							
 		// PRESET SVG STYLE
 		$svg.svg = _.svg_src!=undefined ? _nc.find('svg') : false;				
-		if ($svg.svg) _.idlesvg = setSVGAnimObject(_.svg_idle,newSVGHoverAnimObject());	
+		if ($svg.svg) {
+			_.idlesvg = setSVGAnimObject(_.svg_idle,newSVGHoverAnimObject());				
+			punchgs.TweenLite.set($svg.svg,_.idlesvg.anim);
+		}
 		
+
 		// HOVER ANIMATION
 		if (_.hoverframeindex!==-1 && _.hoverframeindex!==undefined) {						
 				  	
@@ -847,6 +910,7 @@ jQuery.extend(true,_R, {
 
 				_nc.addClass("rs-hover-ready");		  						
 				_.hovertimelines = {};
+				
 				_.hoveranim = getAnimDatas($hover,_.frames[_.hoverframeindex].to);
 				_.hoveranim = convertHoverStyle(_.hoveranim,_.frames[_.hoverframeindex].style);			
 				
@@ -855,13 +919,16 @@ jQuery.extend(true,_R, {
 					var $svghover = setSVGAnimObject(_.svg_hover,newSVGHoverAnimObject());					
 					if (_.hoveranim.anim.color!=undefined) {
 						$svghover.anim.fill = _.hoveranim.anim.color;	
-						_.idlesvg.anim.fill = $svg.svg.css("color");
+
+						_.idlesvg.anim.css.fill = $svg.svg.css("fill");
+						
 					}
 
 
 						
 					_.hoversvg = $svghover;
 				}
+
 				_nc.hover(function(e) {					
 
 				 	var obj = {caption:jQuery(e.currentTarget), opt:opt, firstframe : "frame_0", lastframe:"frame_999"},
@@ -871,20 +938,20 @@ jQuery.extend(true,_R, {
 				 		frame = _.frames[_.hoverframeindex],				 		
 				 		animended = true;
 				 					 	
-				 	_.forcehover = frame.force;				 
-				 	
-				 	if (animended) {					 		
+				 	_.forcehover = frame.force;	
+				
+				 	if (animended) {					 						 		
 					 	_.hovertimelines.item = punchgs.TweenLite.to(nc,frame.speed/1000,_.hoveranim.anim);					 	
 					 	if (_.hoverzIndex || (_.hoveranim.anim && _.hoveranim.anim.zIndex)) {
 							_.basiczindex = _.basiczindex===undefined ? _.cssobj.zIndex : _.basiczindex;
 							_.hoverzIndex = _.hoverzIndex===undefined ? _.hoveranim.anim.zIndex : _.hoverzIndex;			
 							_.inhoverinanimation = true;		
 							if (frame.speed===0) _.inhoverinanimation= false;
+
 					 		_.hovertimelines.pwhoveranim = punchgs.TweenLite.to(_._pw,frame.speed/1000,{overwrite:"auto",zIndex:_.hoverzIndex});
-					 		_.hovertimelines.pwhoveranim.eventCallback("onComplete",function(_) {
-					 			
-				 			_.inhoverinanimation=false;;
-				 		},[_])
+					 		_.hovertimelines.pwhoveranim.eventCallback("onComplete",function(_) {					 			
+				 				_.inhoverinanimation=false;;
+				 			},[_])
 					 	}
 					 	if ($svg.svg)  					 		
 					 		_.hovertimelines.svghoveranim = punchgs.TweenLite.to([$svg.svg, $svg.svg.find('path')],frame.speed/1000,_.hoversvg.anim);							 	
@@ -907,6 +974,7 @@ jQuery.extend(true,_R, {
 				 		_.hovertimelines.item.pause();
 				 		_.hovertimelines.item = punchgs.TweenLite.to(nc,frame.speed/1000,jQuery.extend(true,{},_._gsTransformTo));
 				 	
+
 				 		if (frame.speed==0) _.inhoveroutanimation= false;				 		
 				 		_.hovertimelines.item.eventCallback("onComplete",function(_) {
 				 	
@@ -951,7 +1019,7 @@ jQuery.extend(true,_R, {
 					_nc_timeline.addPause("slide_"+_nc_tl_obj.lastslide+"_pause");
 					_nc_timeline.addLabel("slide_"+_nc_tl_obj.lastslide,"+=0.005");
 				}
-
+				
 				if (!jQuery.isNumeric(mdelay)) {
 					_nc_timeline.addLabel("pause_"+frame_index,"+=0.01");
 					_nc_timeline.addPause("pause_"+frame_index);								
@@ -995,8 +1063,12 @@ jQuery.extend(true,_R, {
 			tweens =  {},
 			_nc_tl_obj = opt.timelines[_._slideid]["layers"][_._id],
 			verylastframe = _.frames.length-1,
-			$split = _.frames[frame_index].split;
+			$split = _.frames[frame_index].split,
+			$splitdir = _.frames[frame_index].split_direction,
+			$sfx = _.frames[frame_index].sfx_effect,
+			$splitnow = false;
 
+		$splitdir = $splitdir === undefined ? "forward" : $splitdir; 
 		
 		if (_.hoverframeindex!==-1 &&  _.hoverframeindex==verylastframe) verylastframe=verylastframe-1;
 		
@@ -1006,28 +1078,33 @@ jQuery.extend(true,_R, {
 		
 		if (timeline.vars.id===undefined)
 			timeline.vars.id=Math.round(Math.random()*100000);
-		if (_._nctype==="column") {
-	  		timeline.add(punchgs.TweenLite.set(_._cbgc_man,{display:"block"}),label);
-	  		timeline.add(punchgs.TweenLite.set(_._cbgc_auto,{display:"none"}),label);
+		if (_._nctype==="column") {						
+	  		timeline.add(punchgs.TweenLite.set(_._cbgc_man,{visibility:"visible"}),label);
+	  		timeline.add(punchgs.TweenLite.set(_._cbgc_auto,{visibility:"hidden"}),label);
+	  		
+	  		
 	  	}
 
-		if (_.mySplitText === undefined && _.splittext) {
+		if (_.splittext && frame_index===0) {
+			if (_.mySplitText !== undefined) _.mySplitText.revert();
 			var splittarget = _nc.find('a').length>0 ? _nc.find('a') : _nc;			
-			_.mySplitText = new punchgs.SplitText(splittarget,{type:"chars,words,lines",charsClass:"tp-splitted tp-charsplit",wordsClass:"tp-splitted tp-wordsplit",linesClass:"tp-splitted tp-linesplit"});
+			_.mySplitText = new punchgs.SplitText(splittarget,{type:"chars,words,lines",charsClass:"tp-splitted tp-charsplit",wordsClass:"tp-splitted tp-wordsplit",linesClass:"tp-splitted tp-linesplit"});			
+
 			_nc.addClass("splitted");				
 		}
-
-		if ( _.mySplitText !==undefined && $split && $split.match(/chars|words|lines/g)) animobject = _.mySplitText[$split];
+		
+		if ( _.mySplitText !==undefined && $split && $split.match(/chars|words|lines/g)) {
+			animobject = _.mySplitText[$split];
+			$splitnow = true;
+		}
 
 		
 		// ANIMATE THE FRAME
 		
-		var $to = frame_index!==_.outframeindex ? getAnimDatas(newAnimObject(),_.frames[frame_index].to) : _.frames[frame_index].to !==undefined && _.frames[frame_index].to.match(/auto:auto/g)===null ? getAnimDatas(newEndAnimObject(),_.frames[frame_index].to,opt.sdir==1) : getAnimDatas(newEndAnimObject(),_.frames[_.inframeindex].from,opt.sdir==0),					
-			$from =  _.frames[frame_index].from !==undefined ? getAnimDatas($to,_.frames[_.inframeindex].from,opt.sdir==1) : undefined, 		// ANIMATE FROM THE VERY FIRST SETTING, OR FROM PREVIOUS SETTING 				
+		var $to = frame_index!==_.outframeindex ? getAnimDatas(newAnimObject(),_.frames[frame_index].to,undefined,$splitnow,animobject.length-1) : _.frames[frame_index].to !==undefined && _.frames[frame_index].to.match(/auto:auto/g)===null ? getAnimDatas(newEndAnimObject(),_.frames[frame_index].to,opt.sdir==1,$splitnow,(animobject.length-1)) : getAnimDatas(newEndAnimObject(),_.frames[_.inframeindex].from,opt.sdir==0,$splitnow,(animobject.length-1)),					
+			$from =  _.frames[frame_index].from !==undefined ? getAnimDatas($to,_.frames[_.inframeindex].from,opt.sdir==1,$splitnow,animobject.length-1) : undefined, 		// ANIMATE FROM THE VERY FIRST SETTING, OR FROM PREVIOUS SETTING 				
 			$elemdelay = _.frames[frame_index].splitdelay,
 			$mask_from,$mask_to;
-
-
 
 		if (frame_index===0 && !obj.fromcurrentstate) 
 			$mask_from = getMaskDatas(_.frames[frame_index].mask);
@@ -1051,9 +1128,7 @@ jQuery.extend(true,_R, {
 	  		$to.anim.y = $to.anim.y * opt.bw || getBorderDirections($to.anim.y,opt,_.eow,_.eoh,_.calcy,_.calcx, "vertical" );
 
 	  		
-	  	} 
-
-	  	
+	  	} 		
 		
 		// FIX VISIBLE IFRAME BUG IN SAFARI
 		if (_nc.data('iframes')) timeline.add(punchgs.TweenLite.set(_nc.find('iframe'),{autoAlpha:1}),label+"+=0.001");
@@ -1102,17 +1177,128 @@ jQuery.extend(true,_R, {
 			$to.anim.immediateRender = true;				
 		}
 		
+		// SPECIAL EFFECT LAYER ANIMATIONS
+		var $sfx_blockdelay = -1;
+			
+
+		//Boxed Mask Animation 0 or 999 Frame				
+		if ((frame_index===0 && !obj.fromcurrentstate && _._bmask!==undefined && $sfx!==undefined && $sfx.indexOf("block")>=0) ||
+			(frame_index===_.outframeindex && !obj.fromcurrentstate && _._bmask!==undefined && $sfx!==undefined && $sfx.indexOf("block")>=0)) {
+			var $sfx_speed = frame_index===0 ? ($from.speed/1000)/2 : ($to.speed/1000)/2,
+				$sfx_ft = [{scaleY:1,scaleX:0,transformOrigin:"0% 50%"},{scaleY:1,scaleX:1,ease:$to.anim.ease}],								
+				$sfx_t =  {scaleY:1,scaleX:0,transformOrigin:"100% 50%",ease:$to.anim.ease};			
+			
+			$sfx_blockdelay = $elemdelay === undefined ? $sfx_speed : $elemdelay + $sfx_speed;
+														
+			switch ($sfx) {			
+				case "blocktoleft":
+				case "blockfromright":				
+					$sfx_ft[0].transformOrigin = "100% 50%";
+					$sfx_t.transformOrigin = "0% 50%";
+				break;
+
+				case "blockfromtop":
+				case "blocktobottom":
+					$sfx_ft = [{scaleX:1,scaleY:0,transformOrigin:"50% 0%"},{scaleX:1,scaleY:1,ease:$to.anim.ease}];
+					$sfx_t =  {scaleX:1,scaleY:0,transformOrigin:"50% 100%",ease:$to.anim.ease};
+				break;
+
+				case "blocktotop":
+				case "blockfrombottom":
+					$sfx_ft = [{scaleX:1,scaleY:0,transformOrigin:"50% 100%"},{scaleX:1,scaleY:1,ease:$to.anim.ease}];
+					$sfx_t =  {scaleX:1,scaleY:0,transformOrigin:"50% 0%",ease:$to.anim.ease};
+				break;
+			}
+			$sfx_ft[0].background = _.frames[frame_index].sfxcolor;
+
+			timeline.add(tweens.mask.fromTo(_._bmask,$sfx_speed, $sfx_ft[0], $sfx_ft[1],$elemdelay),label);
+			timeline.add(tweens.mask.to(_._bmask,$sfx_speed,$sfx_t,$sfx_blockdelay),label);			
+		} 
 
 
-	
-		if (frame_index===0 && !obj.fromcurrentstate) {				
-			timeline.add(tweens.content.staggerFromTo(animobject,$from.speed/1000,$from.anim,$to.anim,$elemdelay),label);												
+	 	
+		if ($splitnow)
+			var ri = getSplitTextDirs(animobject.length-1, $splitdir);
+
+		if (frame_index===0 && !obj.fromcurrentstate) {							
+			if (_._sfx_in==="block") 				
+				timeline.add(tweens.content.staggerFromTo(animobject,0.05,{x:0,y:0,autoAlpha:0},{x:0,y:0,autoAlpha:1,delay:$sfx_blockdelay}),label);
+			else {						
+				if ($splitnow && ri!==undefined) {
+
+					var cycles = {from:getCycles($from.anim), to:getCycles($to.anim)};
+
+					for (var si in animobject) {	
+						var $fanim = jQuery.extend({},$from.anim),
+							$tanim = jQuery.extend({},$to.anim);						
+						for (var k in cycles.from) {
+							$fanim[k] = parseInt(cycles.from[k].values[cycles.from[k].index],0);														
+							cycles.from[k].index = cycles.from[k].index < cycles.from[k].len ?  cycles.from[k].index+1 : 0;
+						}
+						$tanim.ease = $fanim.ease;
+						if (_.frames[frame_index].color!==undefined) {					
+							$fanim.color = _.frames[frame_index].color;
+							$tanim.color = _.cssobj.styleProps.color;						
+						}
+
+						if (_.frames[frame_index].bgcolor!==undefined) {					
+							$fanim.backgroundColor = _.frames[frame_index].bgcolor;
+							$tanim.backgroundColor = _.cssobj.styleProps["background-color"];
+											
+						}
+						timeline.add(tweens.content.fromTo(animobject[ri[si]],$from.speed/1000,$fanim,$tanim,$elemdelay*si),label);								
+					}
+				} else {
+					if (_.frames[frame_index].color!==undefined) {					
+						$from.anim.color = _.frames[frame_index].color;
+						$to.anim.color = _.cssobj.styleProps.color;						
+					}
+
+					if (_.frames[frame_index].bgcolor!==undefined) {					
+						$from.anim.backgroundColor = _.frames[frame_index].bgcolor;
+						$to.anim.backgroundColor = _.cssobj.styleProps["background-color"];
+										
+					}
+					timeline.add(tweens.content.staggerFromTo(animobject,$from.speed/1000,$from.anim,$to.anim,$elemdelay),label);
+				}
+				
+				
+			}
 		} else {
-			timeline.add(tweens.content.staggerTo(animobject,$to.speed/1000,$to.anim,$elemdelay),label);
+			if (_._sfx_out==="block" && frame_index===_.outframeindex)	{		
+				timeline.add(tweens.content.staggerTo(animobject,0.001,{autoAlpha:0,delay:$sfx_blockdelay}),label);
+				timeline.add(tweens.content.staggerTo(animobject,((($to.speed/1000)/2)-0.001),{x:0,delay:$sfx_blockdelay}),label+"+=0.001");				
+			} else
+				if ($splitnow && ri!==undefined) {
+
+					var cycles = {to:getCycles($to.anim)};
+
+					for (var si in animobject) {							
+						var	$tanim = jQuery.extend({},$to.anim);
+						for (var k in cycles.to) {
+							$tanim[k] = parseInt(cycles.to[k].values[cycles.to[k].index],0);														
+							cycles.to[k].index = cycles.to[k].index < cycles.to[k].len ?  cycles.to[k].index+1 : 0;
+						}
+						if (_.frames[frame_index].color!==undefined) 					
+							$tanim.color = _.frames[frame_index].color;						
+					
+						if (_.frames[frame_index].bgcolor!==undefined)										
+							$tanim.backgroundColor = _.frames[frame_index].bgcolor;						
+						
+						timeline.add(tweens.content.to(animobject[ri[si]],$to.speed/1000,$tanim,$elemdelay*si),label);								
+					}
+				} else {
+					if (_.frames[frame_index].color!==undefined) 					
+						$to.anim.color = _.frames[frame_index].color;						
+					
+					if (_.frames[frame_index].bgcolor!==undefined)										
+						$to.anim.backgroundColor = _.frames[frame_index].bgcolor;						
+					
+					timeline.add(tweens.content.staggerTo(animobject,$to.speed/1000,$to.anim,$elemdelay),label);
+				}
 		}
-		
-		
-		
+
+				
 		if ($mask_to!==undefined && $mask_to!==false && (frame_index!==0 || !obj.ignorefirstframe)) {			
 			$mask_to.anim.ease = $mask_to.anim.ease === undefined || $mask_to.anim.ease==="inherit" ? _.frames[0].ease : $mask_to.anim.ease;
 			$mask_to.anim.overflow = "hidden";
@@ -1134,9 +1320,6 @@ jQuery.extend(true,_R, {
 		} else
 		if (frame_index===0) 
 			timeline.add(tweens.mask.set(_._mw,{overflow:"visible"}),label);
-		
-
-
 
 		
 		if ($mask_from!==undefined && $mask_to!==undefined && $mask_from!==false && $mask_to!==false) 			
@@ -1156,105 +1339,17 @@ jQuery.extend(true,_R, {
 		
 		
 		// ON START
-		tweens.content.eventCallback("onStart",function(frame_index,ncobj,pw,_,tl,toanim,_nc,ust){		
-
-			var data={};
-			data.layer = _nc;
-			data.eventtype = frame_index===0 ? "enterstage" : frame_index===_.outframeindex ? "leavestage" : "framestarted";
-			data.layertype = _nc.data('layertype');
-			_.active = true;
-			//_nc.data('active',true);
-									
-			//_.idleanimadded = false;
-			data.frame_index = frame_index;			
-			data.layersettings = _nc.data();			  	
-			opt.c.trigger("revolution.layeraction",[data]);
-			if (_.loopanimation=="on") callCaptionLoops(_._lw,opt.bw);		
-
-			if (data.eventtype==="enterstage") {
-				_.animdirection="in";
-				_.visibleelement=true;
-				_R.toggleState(_.layertoggledby);
-			}
-			if (ncobj.dchildren!=="none" && ncobj.dchildren!==undefined && ncobj.dchildren.length>0) {								
-				if (frame_index===0)
-					for (var q=0;q<ncobj.dchildren.length;q++) {							
-						jQuery(ncobj.dchildren[q]).data('timeline').play(0);						
-					}
-				else
-				if (frame_index===_.outframeindex)
-					for (var q=0;q<ncobj.dchildren.length;q++) {				
-							_R.endMoveCaption({caption:jQuery(ncobj.dchildren[q]), opt:opt, checkchildrens:true});
-					}						
-			}		
-			punchgs.TweenLite.set(pw,{visibility:"visible"});			
-			_.current_frame = frame_index;
-			_.current_timeline = tl;
-			_.current_timeline_time = tl.time();
-			if (ust) _.static_layer_timeline_time = _.current_timeline_time;
-			_.last_frame_started = frame_index;
-			
-						
-		},[frame_index,_nc_tl_obj,_._pw,_,timeline,$to.anim,_nc,obj.updateStaticTimeline]);
+		tweens.content.eventCallback("onStart",tweenOnStart,[frame_index,_nc_tl_obj,_._pw,_,timeline,$to.anim,_nc,obj.updateStaticTimeline,opt]);
 		
-
+		
 
 		// ON UPDATE
-		tweens.content.eventCallback("onUpdate",function(label,id,pw,_,tl,frame_index,toanim,ust) {	
-			
-			if (_._nctype==="column") setColumnBgDimension(_nc,opt);
-			punchgs.TweenLite.set(pw,{visibility:"visible"});				
-			_.current_frame = frame_index;
-			_.current_timeline = tl;
-			_.current_timeline_time = tl.time();
-			if (ust) _.static_layer_timeline_time = _.current_timeline_time;
-			
-			if (_.hoveranim !== undefined && _._gsTransformTo===false) {					
-				_._gsTransformTo = toanim;									
-				if (_._gsTransformTo && _._gsTransformTo.startAt) delete _._gsTransformTo.startAt;
-				
-				if (_.cssobj.styleProps.css===undefined)
-			 		_._gsTransformTo = jQuery.extend(true,{},_.cssobj.styleProps,_._gsTransformTo);					
-			 	else
-			 		_._gsTransformTo = jQuery.extend(true,{},_.cssobj.styleProps.css,_._gsTransformTo);					
-			}
-				
-			_.visibleelement=true;	
-			
-		},[label,_._id,_._pw,_,timeline,frame_index,jQuery.extend(true,{},$to.anim),obj.updateStaticTimeline]);
+		tweens.content.eventCallback("onUpdate",tweenOnUpdate,[label,_._id,_._pw,_,timeline,frame_index,jQuery.extend(true,{},$to.anim),obj.updateStaticTimeline,_nc,opt]);
 		
 
+		
 		// ON COMPLETE
-		tweens.content.eventCallback("onComplete",function(frame_index,frame_max,verylastframe,pw,_,tl,ust) {										
-			var data={};					
-			data.layer = _nc;
-			data.eventtype = frame_index===0 ? "enteredstage" : frame_index===frame_max-1 || frame_index===verylastframe ? "leftstage" : "frameended";
-			data.layertype = _nc.data('layertype');
-			data.layersettings = _nc.data();	
-
-			opt.c.trigger("revolution.layeraction",[data]);			  	
-			if (data.eventtype!=="leftstage") _R.animcompleted(_nc,opt);
-			if (data.eventtype==="leftstage") 
-				if (_R.stopVideo) _R.stopVideo(_nc,opt);
-			
-			if (_._nctype==="column") {
-				punchgs.TweenLite.set(_._cbgc_man,{display:"none"});
-				punchgs.TweenLite.set(_._cbgc_auto,{display:"block"});
-			}				
-			if (data.eventtype === "leftstage") {							
-				_.active = false;
-				punchgs.TweenLite.set(pw,{visibility:"hidden",overwrite:"auto"});				
-				_.animdirection="out";
-				_.visibleelement=false;
-				_R.unToggleState(_.layertoggledby);
-			}
-			_.current_frame = frame_index;
-			_.current_timeline = tl;
-			_.current_timeline_time = tl.time();
-			if (ust) _.static_layer_timeline_time = _.current_timeline_time;
-			
-			
-		},[frame_index,_.frames.length,verylastframe,_._pw,_,timeline,obj.updateStaticTimeline]);
+		tweens.content.eventCallback("onComplete",tweenOnComplete,[frame_index,_.frames.length,verylastframe,_._pw,_,timeline,obj.updateStaticTimeline,_nc,opt]);
 
 		
 		return timeline;
@@ -1332,6 +1427,7 @@ jQuery.extend(true,_R, {
 	//	REMOVE THE CAPTIONS //
 	/////////////////////////
 	removeTheCaptions : function(actli,opt) {	
+
 		if (_R.compare_version(extension).check==="stop") return false;	
 		var removetime = 0,
 			index = actli.data('index'),	
@@ -1376,6 +1472,106 @@ jQuery.extend(true,_R, {
 						-	HELPER FUNCTIONS FOR LAYER TRANSFORMS -
 **********************************************************************************************/
 
+
+var tweenOnStart = function(frame_index,ncobj,pw,_,tl,toanim,_nc,ust,opt){		
+			
+	var data={};
+	data.layer = _nc;
+	data.eventtype = frame_index===0 ? "enterstage" : frame_index===_.outframeindex ? "leavestage" : "framestarted";
+	data.layertype = _nc.data('layertype');
+	_.active = true;
+	//_nc.data('active',true);
+							
+	//_.idleanimadded = false;
+	data.frame_index = frame_index;			
+	data.layersettings = _nc.data();			  	
+	opt.c.trigger("revolution.layeraction",[data]);
+	if (_.loopanimation=="on") callCaptionLoops(_._lw,opt.bw);		
+
+	if (data.eventtype==="enterstage") {
+		_.animdirection="in";
+		_.visibleelement=true;
+		_R.toggleState(_.layertoggledby);
+	}
+	if (ncobj.dchildren!=="none" && ncobj.dchildren!==undefined && ncobj.dchildren.length>0) {								
+		if (frame_index===0)
+			for (var q=0;q<ncobj.dchildren.length;q++) {							
+				jQuery(ncobj.dchildren[q]).data('timeline').play(0);						
+			}
+		else
+		if (frame_index===_.outframeindex)
+			for (var q=0;q<ncobj.dchildren.length;q++) {				
+					_R.endMoveCaption({caption:jQuery(ncobj.dchildren[q]), opt:opt, checkchildrens:true});
+			}						
+	}		
+	punchgs.TweenLite.set(pw,{visibility:"visible"});			
+	_.current_frame = frame_index;
+	_.current_timeline = tl;
+	_.current_timeline_time = tl.time();
+	if (ust) _.static_layer_timeline_time = _.current_timeline_time;
+	_.last_frame_started = frame_index;
+	
+				
+}
+
+var tweenOnUpdate = function(label,id,pw,_,tl,frame_index,toanim,ust,_nc,opt) {				
+	if (_._nctype==="column") setColumnBgDimension(_nc,opt);
+	punchgs.TweenLite.set(pw,{visibility:"visible"});				
+	_.current_frame = frame_index;
+	_.current_timeline = tl;
+	_.current_timeline_time = tl.time();
+	if (ust) _.static_layer_timeline_time = _.current_timeline_time;
+	
+	if (_.hoveranim !== undefined && _._gsTransformTo===false) {					
+		_._gsTransformTo = toanim;									
+		if (_._gsTransformTo && _._gsTransformTo.startAt) delete _._gsTransformTo.startAt;
+		
+		if (_.cssobj.styleProps.css===undefined)
+	 		_._gsTransformTo = jQuery.extend(true,{},_.cssobj.styleProps,_._gsTransformTo);					
+	 	else
+	 		_._gsTransformTo = jQuery.extend(true,{},_.cssobj.styleProps.css,_._gsTransformTo);					
+	}
+		
+	_.visibleelement=true;	
+	
+}
+
+var tweenOnComplete = function(frame_index,frame_max,verylastframe,pw,_,tl,ust,_nc,opt) {										
+	var data={};					
+	data.layer = _nc;
+	
+	data.eventtype = frame_index===0 ? "enteredstage" : frame_index===frame_max-1 || frame_index===verylastframe ? "leftstage" : "frameended";
+	data.layertype = _nc.data('layertype');
+	data.layersettings = _nc.data();	
+
+	opt.c.trigger("revolution.layeraction",[data]);			  	
+	if (data.eventtype!=="leftstage") _R.animcompleted(_nc,opt);
+	if (data.eventtype==="leftstage") 
+		if (_R.stopVideo) _R.stopVideo(_nc,opt);
+	
+	if (_._nctype==="column") {
+		punchgs.TweenLite.to(_._cbgc_man,0.01,{visibility:"hidden"});
+		punchgs.TweenLite.to(_._cbgc_auto,0.01,{visibility:"visible"});				
+	}
+	if (data.eventtype === "leftstage") {							
+		_.active = false;
+		punchgs.TweenLite.set(pw,{visibility:"hidden",overwrite:"auto"});				
+		_.animdirection="out";
+		_.visibleelement=false;
+		_R.unToggleState(_.layertoggledby);
+		//RESET VIDEO AFTER REMOVING LAYER
+		if (_._nctype==="video" && _R.resetVideo) setTimeout(function() {			
+			_R.resetVideo(_nc,opt);			
+		},100);
+	}
+	_.current_frame = frame_index;
+	_.current_timeline = tl;
+	_.current_timeline_time = tl.time();
+	if (ust) _.static_layer_timeline_time = _.current_timeline_time;
+	
+	
+}
+
 //////////////////////////////////////////////
 //	-	GET TIMELINE INFOS FROM CAPTION	-  //
 /////////////////////////////////////////////
@@ -1404,6 +1600,85 @@ var getTLInfos = function(obj) {
 }
 
 
+
+//////////////////////////////////////////////
+//	-	GET SPLITTEXT DIRECTION ARRAY	-  //
+/////////////////////////////////////////////
+
+var shuffleArray = function(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+  return array;
+}
+
+var getSplitTextDirs = function(alen,d) {
+	var ri = new Array();
+
+	switch (d) {
+		case "forward":
+		case "random":
+			for (var si=0;si<=alen;si++) { ri.push(si);}
+			if (d==="random") ri = shuffleArray(ri);
+		break;
+		case "backward":
+			for (var si=0;si<=alen;si++)	{ ri.push(alen-si); }							
+		break;
+		case "middletoedge":
+			var cc = Math.ceil(alen/2),
+				mm = cc-1,
+				pp = cc+1;							
+			ri.push(cc);														
+			for (var si=0;si<cc;si++) {
+				if (mm>=0) ri.push(mm);
+				if (pp<=alen) ri.push(pp);
+				mm--;
+				pp++;
+			}																	
+		break;
+		case "edgetomiddle":
+			var mm = alen,
+				pp = 0;														
+			for (var si=0;si<=Math.floor(alen/2);si++) {
+				ri.push(mm);
+				if (pp<mm) ri.push(pp);
+				mm--;
+				pp++;
+			}																						
+		break;		
+	}
+	
+	return ri;
+}
+
+
+//////////////////////////////////////////////
+//	-	GET SPLITTEXT CYCLES ANIMATION	-  //
+/////////////////////////////////////////////
+var getCycles = function(anim) {
+ 	var _ = {};					  	
+	for (var a in anim) {
+		if (typeof anim[a] === "string" && anim[a].indexOf("|")>=0) {
+			if (_[a]===undefined) _[a] = {index:0};
+			_[a].values = ((anim[a].replace("[","")).replace("]","")).split("|");
+			_[a].len = _[a].values.length-1; 			
+		}								
+	}	
+	return _;	
+}		
+
+
 /////////////////////////////////////
 //	-	CREATE ANIMATION OBJECT	-  //
 /////////////////////////////////////
@@ -1415,7 +1690,7 @@ var newAnimObject = function(a) {
 	a.anim.z = a.anim.z===undefined ? 0 : a.anim.z;
 	a.anim.rotationX = a.anim.rotationX===undefined ? 0 : a.anim.rotationX;
 	a.anim.rotationY = a.anim.rotationY===undefined ? 0 : a.anim.rotationY;
-	a.anim.rotationZ = a.anim.rotationZ===undefined ? 0	: a.anim.rotationZ;
+	a.anim.rotationZ = a.anim.rotationZ===undefined ? 0	: a.anim.rotationZ;	
 	a.anim.scaleX = a.anim.scaleX===undefined ? 1 : a.anim.scaleX;
 	a.anim.scaleY = a.anim.scaleY===undefined ? 1 : a.anim.scaleY;
 	a.anim.skewX = a.anim.skewX===undefined ? 0 : a.anim.skewX;
@@ -1430,8 +1705,8 @@ var newAnimObject = function(a) {
 	a.anim.visibility = a.anim.visibility===undefined ? "visible" : a.anim.visibility;
 	a.anim.overwrite = a.anim.overwrite===undefined ? "auto"  : a.anim.overwrite;
 	a.speed = a.speed===undefined ? 0.3 : a.speed;
-	a.filter = a.filter===undefined ? "blur(0px) grayscale(0px)" : a.filter;
-	a["-webkit-filter"] = a["-webkit-filter"]===undefined ? "blur(0px) grayscale(0px)" : a["-webkit-filter"];
+	a.filter = a.filter===undefined ? "blur(0px) grayscale(0%) brightness(100%)" : a.filter;
+	a["-webkit-filter"] = a["-webkit-filter"]===undefined ? "blur(0px) grayscale(0%) brightness(100%)" : a["-webkit-filter"];
 
 
 	return a;
@@ -1461,7 +1736,7 @@ var setSVGAnimObject = function(data,a) {
 			if (w=="sda") a.anim.strokeDasharray=v;
 			if (w=="sdo") a.anim.strokeDashoffset=v;
 		});
-
+	
 	return a;
 }
 
@@ -1483,20 +1758,31 @@ var newHoverAnimObject = function() {
 	return a;
 }
 
-var animDataTranslator = function(val,defval) {
-
+var animDataTranslator = function(val,defval,$split,$splitamount,ext) {	
+	ext = ext===undefined ? "" : ext;
 	if (jQuery.isNumeric(parseFloat(val))) {				
-		return parseFloat(val);
+		return parseFloat(val)+ext;
 	} else 
 	if (val===undefined || val==="inherit") {				
-		return defval;
+		return defval+"ext";
 	} else 
 	if (val.split("{").length>1) {
 		var min = val.split(","),
 			max = parseFloat(min[1].split("}")[0]);
 		min = parseFloat(min[0].split("{")[1]);
-		val = Math.random()*(max-min) + min;		
-	}	
+		
+		if ($split!==undefined && $splitamount!==undefined) {
+
+			val=="["+(parseInt(Math.random()*(max-min),0) + parseInt(min,0))+"ext";
+			for (var i=0;i<$splitamount;i++) {
+				val = val+"|"+(parseInt(Math.random()*(max-min),0) + parseInt(min,0))+ext;
+			}
+			val = val+"]";
+		} else {
+			val = Math.random()*(max-min) + min;		
+		}
+	}		
+	
 	return val;	
 }	
 
@@ -1524,24 +1810,26 @@ var getBorderDirections = function (x,o,w,h,top,left,direction) {
 ///////////////////////////////////////////////////
 // ANALYSE AND READ OUT DATAS FROM HTML CAPTIONS //
 ///////////////////////////////////////////////////
-var getAnimDatas = function(frm,data,reversed) {		
+var getAnimDatas = function(frm,data,reversed,$split,$splitamount) {		
+	
 	var o = new Object();
 	o = jQuery.extend(true,{},o, frm);
 	if (data === undefined) 
 		return o;		
-
-
+	
 	var customarray = data.split(';'),
 		tmpf="";
 	
+	
+
 	if (customarray)	
 		jQuery.each(customarray,function(index,pa) {
 			var p = pa.split(":")
 			var w = p[0],
-				v = p[1];				
+				v = p[1];		
 			
 			
-			if (reversed && v!=undefined && v.length>0 && v.match(/\(R\)/)) {							
+			if (reversed && reversed!=="none" && v!=undefined && v.length>0 && v.match(/\(R\)/)) {							
 				v = v.replace("(R)","");
 				v = v==="right" ? "left" : v==="left" ? "right" : v==="top" ? "bottom" : v==="bottom" ? "top" : v;	
 				if (v[0]==="[" && v[1]==="-") v = v.replace("[-","[");
@@ -1552,40 +1840,42 @@ var getAnimDatas = function(frm,data,reversed) {
 				else
 				if (v[0].match(/[1-9]/)) v="-"+v;											
 			}
-			
+
 			if (v!=undefined) {
 				v = v.replace(/\(R\)/,'');
-				if (w=="rotationX" || w=="rX") o.anim.rotationX = animDataTranslator(v,o.anim.rotationX)+"deg";			
-				if (w=="rotationY" || w=="rY") o.anim.rotationY = animDataTranslator(v,o.anim.rotationY)+"deg";
-				if (w=="rotationZ" || w=="rZ") o.anim.rotation = animDataTranslator(v,o.anim.rotationZ)+"deg";					
-				if (w=="scaleX" || w=="sX") o.anim.scaleX = animDataTranslator(v,o.anim.scaleX);
-				if (w=="scaleY" || w=="sY") o.anim.scaleY = animDataTranslator(v,o.anim.scaleY);
-				if (w=="opacity" || w=="o") o.anim.opacity = animDataTranslator(v,o.anim.opacity);
+
+				
+				if (w=="rotationX" || w=="rX") o.anim.rotationX = animDataTranslator(v,o.anim.rotationX,$split,$splitamount,"deg");
+				if (w=="rotationY" || w=="rY") o.anim.rotationY = animDataTranslator(v,o.anim.rotationY,$split,$splitamount,"deg");
+				if (w=="rotationZ" || w=="rZ") o.anim.rotation = animDataTranslator(v,o.anim.rotationZ,$split,$splitamount,"deg");					
+				if (w=="scaleX" || w=="sX") o.anim.scaleX = animDataTranslator(v,o.anim.scaleX,$split,$splitamount);
+				if (w=="scaleY" || w=="sY") o.anim.scaleY = animDataTranslator(v,o.anim.scaleY,$split,$splitamount);
+				if (w=="opacity" || w=="o") o.anim.opacity = animDataTranslator(v,o.anim.opacity,$split,$splitamount);
+				//if (w=="letterspacing" || w=="ls") o.anim.letterSpacing = animDataTranslator(v,o.anim.letterSpacing);
 				if (w=="fb") tmpf = tmpf==="" ? 'blur('+parseInt(v,0)+'px)' : tmpf+" "+'blur('+parseInt(v,0)+'px)';
 				if (w=="fg") tmpf = tmpf==="" ? 'grayscale('+parseInt(v,0)+'%)' : tmpf+" "+'grayscale('+parseInt(v,0)+'%)';
+				if (w=="fbr") tmpf = tmpf==="" ? 'brightness('+parseInt(v,0)+'%)' : tmpf+" "+'brightness('+parseInt(v,0)+'%)';
 								
 				if (o.anim.opacity===0) o.anim.autoAlpha = 0;
 
 				o.anim.opacity = o.anim.opacity == 0 ? 0.0001 : o.anim.opacity;
 
-				if (w=="skewX" || w=="skX") o.anim.skewX = animDataTranslator(v,o.anim.skewX);
-				if (w=="skewY" || w=="skY") o.anim.skewY = animDataTranslator(v,o.anim.skewY);
-				if (w=="x") o.anim.x = animDataTranslator(v,o.anim.x);
-				if (w=="y") o.anim.y = animDataTranslator(v,o.anim.y);
-				if (w=="z") o.anim.z = animDataTranslator(v,o.anim.z);
+				if (w=="skewX" || w=="skX") o.anim.skewX = animDataTranslator(v,o.anim.skewX,$split,$splitamount);
+				if (w=="skewY" || w=="skY") o.anim.skewY = animDataTranslator(v,o.anim.skewY,$split,$splitamount);
+				if (w=="x") o.anim.x = animDataTranslator(v,o.anim.x,$split,$splitamount);
+				if (w=="y") o.anim.y = animDataTranslator(v,o.anim.y,$split,$splitamount);
+				if (w=="z") o.anim.z = animDataTranslator(v,o.anim.z,$split,$splitamount);
 				if (w=="transformOrigin" || w=="tO") o.anim.transformOrigin = v.toString();
 				if (w=="transformPerspective" || w=="tP") o.anim.transformPerspective=parseInt(v,0);
 				if (w=="speed" || w=="s") o.speed = parseFloat(v);	
 				
 				//if (w=="ease" || w=="e") o.anim.ease = v;				
-			}
-
+			}			
 		})	
 	if (tmpf!=="") {
 		o.anim['-webkit-filter'] = tmpf;
 		o.anim['filter'] = tmpf;
 	}
-
 	
 	return o;
 }
@@ -1681,8 +1971,10 @@ var convertHoverStyle = function(t,s) {
 	if (sp)
 		jQuery.each(sp,function(key,cont){
 			var attr = cont.split(":");
-			if (attr[0].length>0)
+			if (attr[0].length>0) {
+				if (attr[0]==="background-color" && attr[1].indexOf("gradient")>=0) attr[0]="background";				
 				t.anim[attr[0]] = attr[1];		
+			}
 		})				
 	return t;
 
@@ -1761,7 +2053,7 @@ var getcssParams = function(nc,level) {
 		}
 		
 		obj.maxWidth = nc.data('width')===undefined ? parseInt(nc.css('maxWidth'),0) || "none" : nc.data('width');
-		obj.maxHeight = nc.data('height')===undefined ? parseInt(nc.css('maxHeight'),0) || "none" : nc.data('height');
+		obj.maxHeight = jQuery.inArray(nc.data('type'),["column","row"])!==-1 ? "none" : nc.data('height')===undefined ? parseInt(nc.css('maxHeight'),0) || "none" : nc.data('height');
 		
 		obj.wan = nc.data('wan')===undefined ? parseInt(nc.css('-webkit-transition'),0) || "none" : nc.data('wan');
 		obj.moan = nc.data('moan')===undefined ? parseInt(nc.css('-moz-animation-transition'),0) || "none" : nc.data('moan');
@@ -1774,7 +2066,9 @@ var getcssParams = function(nc,level) {
 						borderTopRightRadius : nc[0].style.borderTopRightRadius,
 						borderBottomRightRadius : nc[0].style.borderBottomRightRadius,
 						borderBottomLeftRadius : nc[0].style.borderBottomLeftRadius,
-						"background-color" : nc[0].style["background-color"],
+						"background" : nc[0].style["background"],
+						"boxShadow" : nc[0].style["boxShadow"],						
+						"background-color" : nc[0].style["background-color"],						
 						"border-top-color" : nc[0].style["border-top-color"],
 						"border-bottom-color" : nc[0].style["border-bottom-color"],
 						"border-right-color" : nc[0].style["border-right-color"],
@@ -1792,6 +2086,8 @@ var getcssParams = function(nc,level) {
 						"font-style" : nc[0].style["font-style"]
 					};
 	
+	if (obj.styleProps.background==="" || obj.styleProps.background===undefined || obj.styleProps.background === obj.styleProps["background-color"])
+		delete obj.styleProps.background;
 	if (obj.styleProps.color=="") 
 		obj.styleProps.color = nc.css("color");		
 
@@ -1824,6 +2120,7 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 	
 	var _=nc.data();
 
+
 	_ = _===undefined ? {} : _;
 
 	try{
@@ -1850,7 +2147,27 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 	// IE8 FIX FOR AUTO LINEHEIGHT
 	if (obj.lineHeight=="auto") obj.lineHeight = obj.fontSize+4;
 
-						
+	var objmargins = {  Top: obj.marginTop,
+			 			Bottom: obj.marginBottom,
+			 			Left: obj.marginLeft,
+			 			Right: obj.marginRight
+			 		  }
+	if (_._nctype==="column") {
+		punchgs.TweenLite.set(_._column,{
+											paddingTop: Math.round((obj.marginTop * bh)) + "px",
+											paddingBottom: Math.round((obj.marginBottom * bh)) + "px",
+											paddingLeft: Math.round((obj.marginLeft* bw)) + "px",
+											paddingRight: Math.round((obj.marginRight * bw)) + "px"});
+		objmargins = {  Top: 0,
+			 			Bottom: 0,
+			 			Left: 0,
+			 			Right: 0
+			 		  }
+		
+	}
+
+
+
 	if (!nc.hasClass("tp-splitted")) {
 
 		nc.css("-webkit-transition", "none");
@@ -1871,10 +2188,10 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 			 paddingBottom: Math.round((obj.paddingBottom * bh)) + "px",
 			 paddingLeft: Math.round((obj.paddingLeft* bw)) + "px",
 			 paddingRight: Math.round((obj.paddingRight * bw)) + "px",
-			 marginTop: (obj.marginTop * bh) + "px",
-			 marginBottom: (obj.marginBottom * bh) + "px",
-			 marginLeft: (obj.marginLeft * bw) + "px",
-			 marginRight: (obj.marginRight * bw) + "px",			 
+			 marginTop: (objmargins.Top * bh) + "px",
+			 marginBottom: (objmargins.Bottom * bh) + "px",
+			 marginLeft: (objmargins.Left * bw) + "px",
+			 marginRight: (objmargins.Right * bw) + "px",			 
 			 borderTopWidth: Math.round(obj.borderTopWidth * bh) + "px",
 			 borderBottomWidth: Math.round(obj.borderBottomWidth * bh) + "px",
 			 borderLeftWidth: Math.round(obj.borderLeftWidth * bw) + "px",
@@ -1902,10 +2219,10 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 			minh=minh===undefined ? 0 : minh;
 			maxw=maxw===undefined ? "none" : maxw;
 			maxh=maxh===undefined ? "none" : maxh;
-			
 
 			
 			if (_._isgroup) {
+
 				
 				if (minw==="#1/1#")  minw = maxw = winw;
 				if (minw==="#1/2#")  minw = maxw = winw / 2;
@@ -1932,6 +2249,7 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 				_._grouph = minh;
 			}
 
+
 			punchgs.TweenLite.set(nc,{
 				 maxWidth:maxw,
 				 maxHeight:maxh,
@@ -1955,7 +2273,8 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 			
 		}
 
-		if (_._nctype==="column") {						
+		if (_._nctype==="column") {
+
 			if (_._column_bg_set===undefined) {
 				_._column_bg_set = nc.css('backgroundColor');			
 				_._column_bg_image = nc.css('backgroundImage');
@@ -1972,12 +2291,14 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 				});
 			}
 
+
 			setTimeout(function() {
 				setColumnBgDimension(nc,opt);
 			},1);
+
 			
 			// DYNAMIC HEIGHT AUTO CALCULATED BY BROWSER 
-			if (_._cbgc_auto) {		
+			if (_._cbgc_auto && _._cbgc_auto.length>0) {		
 				_._cbgc_auto[0].style.backgroundSize = _._column_bg_image_size;
 				if (jQuery.isArray(obj.marginLeft)) {						
 					punchgs.TweenLite.set(_._cbgc_auto,{						
@@ -2023,10 +2344,10 @@ var calcCaptionResponsive = function(nc,opt,level,responsive) {
 
 var setColumnBgDimension = function(nc,opt) {
 	// DYNAMIC HEIGHT BASED ON ROW HEIGHT
-	var _ = nc.data();
-	if (_._cbgc_man) {						
+	var _ = nc.data();	
+	if (_._cbgc_man && _._cbgc_man.length>0) {						
+
 		
-			
 		var _l,_t,_b,_r,_h,_o;
 
 		if (!jQuery.isArray(_.cssobj.marginLeft)) {			
@@ -2040,11 +2361,10 @@ var setColumnBgDimension = function(nc,opt) {
 			_b = (_.cssobj.marginBottom[opt.curWinRange] * opt.bh);
 			_r = (_.cssobj.marginRight[opt.curWinRange] * opt.bw);
 		}				
-		_h = _._row.hasClass("rev_break_columns") ? "100%" : (_._row.outerHeight() - (_t+_b))+"px";		
-		
+		_h = _._row.hasClass("rev_break_columns") ? "100%" : (_._row.height() - (_t+_b))+"px";		
 
-		
 		_._cbgc_man[0].style.backgroundSize = _._column_bg_image_size;
+		
 		punchgs.TweenLite.set(_._cbgc_man,{						
 			width:"100%",
 			height:_h,

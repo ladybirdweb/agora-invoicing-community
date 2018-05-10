@@ -1,7 +1,7 @@
 /*
 Name: 			Shortcodes - Carousels - Examples
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	4.5.0
+Theme Version:	6.2.0
 */
 
 (function( $ ) {
@@ -33,7 +33,8 @@ Theme Version:	4.5.0
 		navText: [],
 		margin: 10,
 		autoWidth: false,
-		items: 6
+		items: 6,
+		rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
 	});
 
 	/*
@@ -54,7 +55,8 @@ Theme Version:	4.5.0
 			600:{
 				items:4
 			}
-		}
-	})
+		},
+		rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
+	});
 
 }).apply( this, [ jQuery ]);

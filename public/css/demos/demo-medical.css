@@ -8,8 +8,17 @@
 	margin-bottom: 20px;
 }
 
+@media (min-width: 992px) {
+	#header .header-nav-main nav > ul > li > a.active {
+		background: transparent !important;
+	}
+	#header .header-nav-main nav > ul > li:hover > a.active, #header .header-nav-main nav > ul > li.open > a.active {
+		color: #FFF !important;
+	}
+}
 .box-shadow-custom {
-	box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33);
+	-webkit-box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33);
+					box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33);
 }
 
 .custom-button {
@@ -20,6 +29,7 @@
 .header-top-custom {
 	padding: 0 !important;
 	background: #dbe6ef;
+	min-height: 0 !important;
 }
 .header-top-custom .header-nav-top .nav > li > span, .header-top-custom .header-nav-top .nav > li a {
 	color: #8ea0ae !important;
@@ -64,10 +74,7 @@
 	background: #fff;
 	border-radius: 100%;
 	-webkit-transform: translateX(-50%) translateY(-50%);
-	-moz-transform: translateX(-50%) translateY(-50%);
-	-ms-transform: translateX(-50%) translateY(-50%);
-	-o-transform: translateX(-50%) translateY(-50%);
-	transform: translateX(-50%) translateY(-50%);
+					transform: translateX(-50%) translateY(-50%);
 }
 
 .medical-schedules {
@@ -85,13 +92,11 @@
 	display: inline-block;
 }
 .medical-schedules .box-one, .medical-schedules .box-two, .medical-schedules .box-three, .medical-schedules .box-four {
+	cursor: pointer;
 	height: 94px;
 	position: relative;
 	-webkit-animation-duration: 0.6s;
-	-moz-animation-duration: 0.6s;
-	-ms-animation-duration: 0.6s;
-	-o-animation-duration: 0.6s;
-	animation-duration: 0.6s;
+					animation-duration: 0.6s;
 }
 .medical-schedules .box-one {
 	z-index: 4;
@@ -134,14 +139,10 @@
 .medical-schedules .box-two:hover .expanded-info .info, .medical-schedules .box-three:hover .expanded-info .info {
 	opacity: 1;
 	-webkit-transform: translateY(0%);
-	-moz-transform: translateY(0%);
-	-ms-transform: translateY(0%);
-	-o-transform: translateY(0%);
-	transform: translateY(0%);
+					transform: translateY(0%);
 }
 .medical-schedules .box-two:hover i, .medical-schedules .box-three:hover i {
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .medical-schedules .box-two .expanded-info, .medical-schedules .box-three .expanded-info {
@@ -150,33 +151,27 @@
 	left: 0;
 	bottom: 99%;
 	width: 100%;
-	box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.2);
+					box-shadow: 0 -12px 30px rgba(0, 0, 0, 0.2);
 	z-index: -1;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .medical-schedules .box-two .expanded-info .info, .medical-schedules .box-three .expanded-info .info {
 	opacity: 0;
 	-webkit-transform: translateY(-40%);
-	-moz-transform: translateY(-40%);
-	-ms-transform: translateY(-40%);
-	-o-transform: translateY(-40%);
-	transform: translateY(-40%);
+					transform: translateY(-40%);
 }
 .medical-schedules .box-two .expanded-info .info:nth-child(1), .medical-schedules .box-three .expanded-info .info:nth-child(1) {
 	-webkit-transition: all 0.3s ease 0.4s;
-	-moz-transition: all 0.3s ease 0.4s;
 	transition: all 0.3s ease 0.4s;
 }
 .medical-schedules .box-two .expanded-info .info:nth-child(2), .medical-schedules .box-three .expanded-info .info:nth-child(2) {
 	-webkit-transition: all 0.3s ease 0.5s;
-	-moz-transition: all 0.3s ease 0.5s;
 	transition: all 0.3s ease 0.5s;
 }
 .medical-schedules .box-two .expanded-info .info:nth-child(3), .medical-schedules .box-three .expanded-info .info:nth-child(3) {
 	-webkit-transition: all 0.3s ease 0.6s;
-	-moz-transition: all 0.3s ease 0.6s;
 	transition: all 0.3s ease 0.6s;
 }
 .medical-schedules .box-two i, .medical-schedules .box-three i {
@@ -185,36 +180,23 @@
 	right: -30px;
 	font-size: 1.44em;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .medical-schedules .box-two:hover i {
 	-webkit-transform: translateY(-50%) translateX(50%);
-	-moz-transform: translateY(-50%) translateX(50%);
-	-ms-transform: translateY(-50%) translateX(50%);
-	-o-transform: translateY(-50%) translateX(50%);
-	transform: translateY(-50%) translateX(50%);
+					transform: translateY(-50%) translateX(50%);
 }
 .medical-schedules .box-two i {
 	-webkit-transform: translateY(-50%) translateX(0%);
-	-moz-transform: translateY(-50%) translateX(0%);
-	-ms-transform: translateY(-50%) translateX(0%);
-	-o-transform: translateY(-50%) translateX(0%);
-	transform: translateY(-50%) translateX(0%);
+					transform: translateY(-50%) translateX(0%);
 }
 .medical-schedules .box-three:hover i {
 	-webkit-transform: translateY(-50%) rotate(-90deg);
-	-moz-transform: translateY(-50%) rotate(-90deg);
-	-ms-transform: translateY(-50%) rotate(-90deg);
-	-o-transform: translateY(-50%) rotate(-90deg);
-	transform: translateY(-50%) rotate(-90deg);
+					transform: translateY(-50%) rotate(-90deg);
 }
 .medical-schedules .box-three i {
 	-webkit-transform: translateY(-50%) rotate(0deg);
-	-moz-transform: translateY(-50%) rotate(0deg);
-	-ms-transform: translateY(-50%) rotate(0deg);
-	-o-transform: translateY(-50%) rotate(0deg);
-	transform: translateY(-50%) rotate(0deg);
+					transform: translateY(-50%) rotate(0deg);
 }
 .medical-schedules .box-four label {
 	display: block;
@@ -258,6 +240,10 @@
 	color: #fff;
 }
 
+.feature-box.feature-box-style-2 .feature-box-icon {
+	top: 3px;
+}
+
 .team .thumb-info:hover .thumb-info-caption {
 	background: #008fe2;
 }
@@ -270,7 +256,6 @@
 	display: block;
 	background: #fff;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .team .thumb-info .thumb-info-caption .custom-thumb-info-title span {
@@ -289,38 +274,35 @@
 	font-size: 1.9em !important;
 	color: #28292d;
 	-webkit-transform: translateY(-50%);
-	-moz-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	-o-transform: translateY(-50%);
-	transform: translateY(-50%);
+					transform: translateY(-50%);
 }
 .team .owl-carousel.nav-bottom .owl-nav {
 	position: absolute;
 	top: -60px;
 	right: 10px;
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-prev, .team .owl-carousel.nav-bottom .owl-nav .owl-next {
+.team .owl-carousel.nav-bottom .owl-nav button.owl-prev, .team .owl-carousel.nav-bottom .owl-nav button.owl-next {
 	border: none !important;
 	font-size: 2em;
 	padding: 0;
-	width: initial;
-	height: initial;
+	width: auto;
+	height: auto;
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-prev:active, .team .owl-carousel.nav-bottom .owl-nav .owl-next:active {
-	background-color: initial;
+.team .owl-carousel.nav-bottom .owl-nav button.owl-prev:active, .team .owl-carousel.nav-bottom .owl-nav button.owl-next:active {
+	background-color: none;
 	border-color: transparent;
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-prev {
+.team .owl-carousel.nav-bottom .owl-nav button.owl-prev {
 	color: #0092e3;
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-prev::before {
+.team .owl-carousel.nav-bottom .owl-nav button.owl-prev::before {
 	font-family: simple-line-icons;
 	content: "\e07a";
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-next {
+.team .owl-carousel.nav-bottom .owl-nav button.owl-next {
 	color: #2d529f;
 }
-.team .owl-carousel.nav-bottom .owl-nav .owl-next::before {
+.team .owl-carousel.nav-bottom .owl-nav button.owl-next::before {
 	font-family: simple-line-icons;
 	content: "\e079";
 }
@@ -330,7 +312,6 @@
 	color: #777;
 	margin: 0 0 35px;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .thumb-info-side-image-custom .thumb-info-side-image-wrapper {
@@ -351,7 +332,8 @@
 	line-height: 24px;
 }
 .thumb-info-side-image-custom:hover {
-	box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33) !important;
+	-webkit-box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33) !important;
+					box-shadow: 10px 10px 74px -15px rgba(0, 0, 0, 0.33) !important;
 }
 .thumb-info-side-image-custom.thumb-info-side-image-custom-highlight .thumb-info-side-image-wrapper {
 	margin: 0 0 10px 0;
@@ -423,10 +405,7 @@
 	border-radius: 100%;
 	padding: 25px;
 	-webkit-transform: translateX(-50%) translateY(-50%);
-	-moz-transform: translateX(-50%) translateY(-50%);
-	-ms-transform: translateX(-50%) translateY(-50%);
-	-o-transform: translateX(-50%) translateY(-50%);
-	transform: translateX(-50%) translateY(-50%);
+					transform: translateX(-50%) translateY(-50%);
 }
 .testimonial blockquote::before, .testimonial blockquote::after {
 	color: #fff !important;
@@ -452,10 +431,7 @@
 	left: 50%;
 	border-top: 2px solid #80c9f2;
 	-webkit-transform: translateX(-50%) translateY(-50%);
-	-moz-transform: translateX(-50%) translateY(-50%);
-	-ms-transform: translateX(-50%) translateY(-50%);
-	-o-transform: translateX(-50%) translateY(-50%);
-	transform: translateX(-50%) translateY(-50%);
+					transform: translateX(-50%) translateY(-50%);
 }
 
 #footer {
@@ -486,7 +462,8 @@
 
 .social-icons li {
 	border-radius: 0;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+					box-shadow: none;
 }
 .social-icons li:hover a {
 	opacity: 0.8;

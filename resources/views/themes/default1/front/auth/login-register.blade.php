@@ -52,40 +52,30 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         padding-left:5px;
     }
 
-   
+    
+    
 
 
 
-p.round-tab:hover {
-    color: #333;
-    border: 2px solid #333;
+
+
+}
+
+.wizard-inner
+{
+    display:none;
 }
 
 
 
-    p.round-tab {
-        font-size: 16px;
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-    }
 
-    .wizard .nav-tabs > li a {
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-    }
 
-    .wizard li.active:after {
-        content: " ";
-        position: absolute;
-        left: 35%;
-    }
     
 }
 
 .nav-tabs{
       border-bottom: none;
+      margin: -5px;
 }
 .tab-content {
     border-radius: 0px;
@@ -97,12 +87,41 @@ p.round-tab:hover {
 }
 </style>
 
+
 <div class="row">
     <div class="col-md-12">
 
         <section>
             <div class="wizard">
-                
+                <div class="wizard-inner" style="display: none">
+                    
+                        <ul class="nav nav-tabs" role="tablist" style=" margin: -5px!important;">
+                            <li role="presentation" class="active">
+                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
+                                   
+                                    
+                                </a>
+                                <p style="display: none">Contact Information</p>
+                            </li>
+                            <li role="presentation" class="disabled" >
+                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
+                                   
+                                    
+                                </a>
+                                <p style="display: none">Identity Verification</p>
+                            </li>
+                             <li role="presentation" class="disabled">
+                                <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
+                                    <p class="round-tab">
+                                        <i class="fa fa-check"></i>
+                                    </p>
+                                    
+                                </a>
+                                <p style="display: none">Confirmation</p>
+                            </li>
+                           
+                        </ul>
+                    </div>
                     <div class="row tab-content">
                         <div class="col-md-12 tab-pane active" id="step1">
                             <div class="featured-boxes">
@@ -144,39 +163,41 @@ p.round-tab:hover {
                                 </div>
                                 @endif
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="featured-box featured-box-primary align-left mt-xlg">
+                                   <div class="col-sm-6">
+                                        <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
-                                                <h4 class="heading-primary text-uppercase mb-md">I'm a Returning Customer</h4>
+                                                <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
                                                 {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
-                                                <div class="row">
-                                                    <div class="form-group  {{ $errors->has('email1') ? 'has-error' : '' }}">
-                                                        <div class="col-md-12">
+                                                 <div class="form-row">
+                                                    <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
+                                                       
                                                             <label class="required">Username or E-mail Address</label>
                                                             {!! Form::text('email1',null,['class' => 'form-control input-lg']) !!}
 
-                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group {{ $errors->has('password1') ? 'has-error' : '' }}">
-                                                        <div class="col-md-12">
+                                                <div class="form-row">
+                                                    <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
+                                                        
                                                             <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password1',['class' => 'form-control input-lg']) !!}
                                                             <!--<input type="password" value="" class="form-control input-lg">-->
-                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <span class="remember-box checkbox">
-                                                            <label for="rememberme">
-                                                                <input type="checkbox" id="rememberme" name="remember">Remember Me
+                                                 <div class="form-row">
+                                                    <div class="form-group col-lg-6">
+                                                        <div class="form-check form-check-inline">
+                                                       
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="rememberme" name="remember">Remember Me
                                                             </label>
-                                                        </span>
+                                                        
                                                     </div>
-                                                    <div class="col-md-12">
+                                                    </div>
+                                                     <div class="form-group col-lg-6">
                                                         <input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
                                                     </div>
                                                 </div>
@@ -185,45 +206,46 @@ p.round-tab:hover {
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <div class="featured-box featured-box-primary align-left mt-xlg">
+                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
-                                                <h4 class="heading-primary text-uppercase mb-md">Register An Account</h4>
+                                               <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
                                                 <form name="registerForm" id="regiser-form">
                                                 <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
+                                                   
+                                                        <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
                                                           <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
                                                           <label class="required">First Name</label>
+                                                          
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
+                                                           </div>
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
                                                                 {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
-                                                            </div>
+                                                            
                                                         </div>
-                                                    </div>
+                                                    
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-12 {{ $errors->has('email') ? 'has-error' : '' }}">
+                                                 <div class="form-row">
+                                                    
+                                                        <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
                                                         </div>
 
-                                                    </div>
+                                                    
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('company') ? 'has-error' : '' }}">
+                                                   
+                                                        <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
                                                         </div>
-                                                        <div class="col-md-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
+                                                        <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
                                                         </div>
-                                                    </div>
+                                                    
                                                 </div>
                                                 <div class='row'>
                                                     <?php
@@ -245,52 +267,41 @@ p.round-tab:hover {
 
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-
-
-                                                        <div class="form-group">
-                                                            <div class="col-md-12 {{ $errors->has('country') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                      <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
 
                                                             </div>
-
-                                                        </div>
+                                                 </div>
+                                                <div class="form-row">
+                                                    <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                                        <label class="required">Mobile</label>
+                                                        {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
+                                                           <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
+                                                        {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
                                                     </div>
+                                                   
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                                                        <label class="required">Country code</label>
-                                                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                                                        {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                                                    </div>
-                                                    <div class="col-md-8 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                                                        <!-- mobile -->
-                                                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                                                        {!! Form::text('mobile',null,['class' => 'form-control input-lg', 'id'=>'mobilenum']) !!}
-
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-12 {{ $errors->has('address') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                   
+                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
                                                             <label class="required">Address</label>
                                                             {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
 
-                                                        </div>
+                                                      
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('town') ? 'has-error' : '' }}">
+                                                  <div class="form-row">
+                                                    
+                                                        <div class="form-group col-lg-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                                             <label>City/Town</label>
                                                             {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
                                                         </div>
 
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('state') ? 'has-error' : '' }}">
                                                                 {!! Form::label('state',Lang::get('message.state')) !!}
                                                                 <?php
                                                                 $value = "";
@@ -305,48 +316,47 @@ p.round-tab:hover {
                                                                 {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
 
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                        
+                                                   
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                    
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
                                                                 {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
                                                             </div>
 
-                                                            <div class="col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
+                                                            <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
                                                                 <label class="required">User Name/E-mail Id</label>
                                                                 {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                       
+                                                    
                                                 </div>
-                                                <div class="row">
-                                                    <div class="fo
-                                                    rm-group">
-                                                        <div class="col-md-6 {{ $errors->has('password') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                   
+                                              <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
                                                         </div>
-                                                        <div class="col-md-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+                                                        <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
                                                         </div>
-                                                    </div>
+                                                   
                                                 </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                               <div class="form-row">
+                                                    <div class="form-group col-lg-6">
                                                         <label>
                                                             <input type="checkbox" name="terms" id="terms"> {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 pull-right">
+                                                <div class="form-row">
+                                                    <div class="form-group col-lg-6 pull-right">
                                                         <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
                                                        <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
                                                         </button> -->
@@ -363,49 +373,55 @@ p.round-tab:hover {
                         <div class="col-md-12 tab-pane" id="step2">
 
         <div class="featured-boxes">
+
             
                         <!-- fail message -->
             <div class="row">
-                <div class="col-sm-10" style="float: none;margin: auto">
+                <div class="col-lg-6 offset-lg-3">
                     <div id="alertMessage1"></div>
                     <div id="error1">
                     </div>
-                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
+                   <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">Email and Mobile Verification</h4>
-                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step.</p>
-                            <form name="verifyForm" >
+                          
+                            <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
+                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email and Mobile</h4>
+                                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step. Click next to continue</p>
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <div class="col-md-12 ">
-                                            <label class="required">Email Address</label>
-                                            <input class="form-control input-lg" name="verify_email" id="verify_email" type="email">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 form-group ">
-                                        <label class="required">Country code</label>
-                                        <input id="mobile_code_hidden" name="mobile_code" type="hidden">
-                                        <input class="form-control input-lg"  id="verify_country_code" name="verify_country_code" type="text">
-                                    </div>
-                                    <div class="col-md-8 form-group ">
-                                        <!-- mobile -->
-                                        <label for="mobile" class="required">Mobile</label>
-                                        <input class="form-control input-lg" name="verify_number" type="text" id="verify_number">
+                                <div class="form-row">
+                                                        <div class="form-group col">
+                                                            <label>Email</label>
+                                                            <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                                        </div>
+                                                    </div>
 
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6" style="float: right;">
-                                        <!-- <input type="button" value="Verify" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="sendOtp" id="sendOtp" onclick="sendOTP()"> -->
-                                        <button type="button" class="btn btn-primary mb-xl next-step" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+
+                                                     
+                                            
+
+                                                     <div class="form-row">
+                                                        <div class="form-group col-lg-12">
+                                                        <input id="mobile_code_hidden" name="mobile_code" type="hidden">
+                                                         <input class="form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                                          <label for="mobile" class="required">Mobile</label><br/>
+                                                          
+                                                       <input class="form-control input-lg phone" class="phone" name="verify_number" type="text" id="verify_number">
+  
+                                                      </div>
+                                                  </div>
+
+                                                    <div class="form-row">
+                                                        <div class="form-group col">
+                                                       
+                                             <button type="button" class="btn btn-primary mb-xl next-step" name="sendOtp" id="sendOtp" onclick="sendOTP()">
                                             Send
-                                        </button>
-                                    </div>
-                                </div>
+                                             </button>
+                                                        </div>
+                                                    </div>
+                               
+                                
+                               
                             </form>
                         </div>
                     </div>
@@ -570,7 +586,7 @@ p.round-tab:hover {
                 var result =  '<div class="alert alert-success alert-dismissable"><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                 $('#alertMessage2').html(result);
                 $('#error1').hide();
-                $('.wizard-inner').css('display','block');
+                $('.wizard-inner').css('display','none');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
@@ -596,6 +612,9 @@ p.round-tab:hover {
           }
         });
     }
+
+
+   
 
     function verifyBySendOtp() {
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
@@ -881,7 +900,7 @@ function prevTab(elem) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
-    var telInput = $('#mobile');
+    var telInput = $('#mobilenum');
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -911,6 +930,30 @@ function prevTab(elem) {
     });
 
 </script>
+<script>
+              $(".phone").intlTelInput({
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: "body",
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        geoIpLookup: function(callback) {
+          $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+            var countryCode = (resp && resp.country) ? resp.country : "";
+            callback(countryCode);
+          });
+        },
+        // hiddenInput: "full_number",
+        initialCountry: "auto",
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript: "js/intl/js/utils.js"
+      });
+        </script>
 <noscript>
  <img height="1" width="1" 
 src="https://www.facebook.com/tr?id=308328899511239&ev=PageView

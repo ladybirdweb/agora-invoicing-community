@@ -121,7 +121,7 @@ class AuthController extends Controller
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
         return $request->all();
-        
+
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
@@ -259,7 +259,7 @@ class AuthController extends Controller
                 $zoho = $this->reqFields($user, $email);
 
                 $auth = '5930375bef3fe5e0a2b35945cbf3a644';
-                
+
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
                 $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;

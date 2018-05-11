@@ -1,16 +1,7 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
 <!DOCTYPE html>
 <html>
-<style>
 
-
-.page-header-light .breadcrumb {
-    text-align: right;
-    float: right;
-    margin-top: 15px!important;
-    margin-right: 15px!important;
-}
-</style>
     <head>
   
           <!-- Basic -->
@@ -53,7 +44,7 @@
   
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
-          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
 
   
           <!-- Theme Custom CSS -->
@@ -61,6 +52,7 @@
   
           <!-- Head Libs -->
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
+
           
           <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
     
@@ -74,19 +66,22 @@
         $set = $set->findOrFail(1);
         ?>
         <div class="body">
-            <header id="header"  data-plugin-options='{"stickyEnabled": true, "stickyEnableOnBoxed": true, "stickyEnableOnMobile": true, "stickyStartAt": 57, "stickySetTop": "-57px", "stickyChangeLogo": true}'>
+            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}">
+        <div class="header-body">
                 <div class="header-body">
                     <div class="header-container container">
                         <div class="header-row">
                             <div class="header-column">
+                                <div class="header-row">
                                 <div class="header-logo">
                                     <a href="{{url('home')}}">
                                         <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
                                     </a>
                                 </div>
+                              </div>
                             </div>
-                            <div class="header-column">
-                                <div class="header-row">
+                             <div class="header-column justify-content-end">
+                                <div class="header-row pt-3">
                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
                                               <li class="nav-item d-none d-sm-block">
@@ -125,8 +120,8 @@
                                             <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                             @endforeach
                                         </ul>
-                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1 collapse">
-                                            <nav>
+                                       <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
+                                            <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
                                                     <li class="dropdown">
                                                         <a  href="{{url('home')}}">
@@ -208,8 +203,8 @@
                                                     @endif
 
                                                     <li class="dropdown dropdown-mega dropdown-mega-shop" id="headerShop">
-                                                        <a class="dropdown-toggle" href="{{url('show/cart')}}">
-                                                            <i class="fa fa-user"></i> Cart ({{Cart::getTotalQuantity()}})
+                                                        <a class="dropdown-item dropdown-toggle" href="{{url('show/cart')}}">
+                                                            <i class="fa fa-user mr-1"></i> Cart ({{Cart::getTotalQuantity()}})
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             <li>
@@ -377,7 +372,7 @@
 
             </div>
 
-            <footer id="footer" >
+            <footer id="footer">
                 <div class="container">
                     <div class="row">
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
@@ -388,11 +383,11 @@
                                 <h4>Newsletter</h4>
                                 <p>Keep up on our always evolving product features and technology. Enter your e-mail and subscribe to our newsletter.</p>
 
-                                <div class="alert alert-success hidden" id="newsletterSuccess">
+                                <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
 
-                                <div class="alert alert-danger hidden" id="newsletterError"></div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
 
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
@@ -453,31 +448,35 @@
         </div>
 
         <!-- Vendor -->
-        <script src="{{asset('js/jquery.min.js')}}"></script>
-        <script src="{{asset('js/jquery.appear.min.js')}}"></script>
-        <script src="{{asset('js/jquery.easing.min.js')}}"></script>
-        <script src="{{asset('js/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('js/bootstrap.min.js')}}"></script>
-        <script src="{{asset('js/common.min.js')}}"></script>
-        <script src="{{asset('js/jquery.validation.min.js')}}"></script>
-        <script src="{{asset('js/jquery.easy-pie-chart.min.js')}}"></script>
-        <script src="{{asset('js/jquery.gmap.min.js')}}"></script>
-        <script src="{{asset('js/jquery.lazyload.min.js')}}"></script>
-        <script src="{{asset('js/jquery.isotope.min.js')}}"></script>
-        <script src="{{asset('js/owl.carousel.min.js')}}"></script>
-        <script src="{{asset('js/jquery.magnific-popup.min.js')}}"></script>
-        <script src="{{asset('js/vide.min.js')}}"></script>
-
-        <!-- Theme Base, Components and Settings -->
-        <script src="{{asset('js/theme.js')}}"></script>
-
-        <!-- Theme Custom -->
-        <script src="{{asset('js/custom.js')}}"></script>
-
-        <!-- Theme Initialization Files -->
-        <script src="{{asset('js/theme.init.js')}}"></script>
+       
+        <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
+          <script src="{{asset('vendor/popper/umd/popper.min.js')}}"></script>
+          <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+          <script src="{{asset('vendor/common/common.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.validation/jquery.validation.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.gmap/jquery.gmap.min.js')}}"></script>
+          <script src="{{asset('vendor/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
+          <script src="{{asset('vendor/isotope/jquery.isotope.min.js')}}"></script>
+          <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
+          <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
+          <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
+          
+          <!-- Theme Base, Components and Settings -->
+          <script src="{{asset('js/theme.js')}}"></script>
+          
+          <!-- Theme Custom -->
+          <script src="{{asset('js/custom.js')}}"></script>
+          
+          <!-- Theme Initialization Files -->
+          <script src="{{asset('js/theme.init.js')}}"></script>
+          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
 
         <script>
+        
         
          function removeItem(id) {
 

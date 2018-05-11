@@ -121,7 +121,7 @@ class AuthController extends Controller
     public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
     {
         return $request->all();
-
+        
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
@@ -449,7 +449,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);

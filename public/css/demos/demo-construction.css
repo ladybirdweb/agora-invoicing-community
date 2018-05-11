@@ -471,7 +471,7 @@
 
 @media (min-width: 992px) {
 	#footer {
-		margin-top: 0;
+		margin-top: 0px;
 	}
 	#footer .logo {
 		margin-top: 75px;

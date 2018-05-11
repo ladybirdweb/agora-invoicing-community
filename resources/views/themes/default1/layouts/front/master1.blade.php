@@ -42,7 +42,7 @@
   
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
-          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
 
   
           <!-- Theme Custom CSS -->
@@ -302,7 +302,7 @@
                                                               </div>
                                                                  </div>
                                                   <div class="form-row">
-                                                                                       <div class="form-group col-lg-12">
+                                                       <div class="form-group col-lg-12">
                                                           
                                                           <label for="mobile" class="required">Mobile</label><br/>
                                                           
@@ -525,3 +525,24 @@
   
       </body>
   </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

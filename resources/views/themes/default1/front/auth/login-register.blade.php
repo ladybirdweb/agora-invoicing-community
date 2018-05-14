@@ -112,9 +112,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                             </li>
                              <li role="presentation" class="disabled">
                                 <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
-                                    <p class="round-tab">
-                                        <i class="fa fa-check"></i>
-                                    </p>
+                                 
                                     
                                 </a>
                                 <p style="display: none">Confirmation</p>
@@ -434,13 +432,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         <div class="featured-boxes">
                         <!-- fail message -->
             <div class="row">
-                <div class="col-sm-10" style="float: none;margin: auto">
+                <div class="col-lg-6 offset-lg-3">
                     <div id="error2">
                     </div>
                     <div id="alertMessage2" class="-text" ></div>
-                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
+                   <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">Confirmation</h4>
+                            <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
                             <!-- <div class="row verify">
                                 <div class="col-md-12">
                                     <label>
@@ -449,18 +447,32 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                             </div> -->
                             <form name="verify_otp_form">
+                                   <label for="mobile" class="required">Enter OTP</label><br/>
                                 <div class="row verify">
-                                    <div class="col-md-4 form-group ">
+                                    <div class="form-group col-lg-6">
+                                        
                                         <input type="hidden" name="user_id" id="hidden_user_id"/>
-                                        <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" placeholder="Enter OTP">
+                                        <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" >
                                     </div>
-                                    <div class="col-md-2 form-group ">
-                                        <!-- <input type="button" class="btn btn-primary mb-xl" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-top: 6px;"> -->
-                                        <button type="button" class="btn btn-primary mb-xl" name="verifyOtp" id="verifyOtp" onclick="verifyBySendOtp()" style="margin-top: 6px;">
-                                            Verify OTP
-                                        </button>
-                                    </div>
+
+
+                                        
+                                              <div class="form-group col-lg-2">
+                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-right:-7px;">
+                                                        Verify OTP
+                                                 </button>
+                                                 </div>
+                                                     <div class="form-group col-lg-2">
+                                                        <a  class="btn btn-danger float-right mb-5" name="resendOTP" onclick="resendOTP()" id="resendOTP" ng-click="resendOTP()" style="margin-right:-55px; background: grey; color:white;">Resend OTP</a>
+                                                         </div>  
+                                                       
+                                                            
+                                                       
+
+
+                                   
                                 </div>
+                             
                             </form>
                            <!--  <div class="row">
                                 <div class="col-md-6">

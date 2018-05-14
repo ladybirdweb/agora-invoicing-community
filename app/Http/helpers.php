@@ -29,3 +29,13 @@ function mime($type)
         return 'image';
     }
 }
+
+function isInstall()
+{
+    $check = false;
+    $env   = base_path('.env');
+    if (\File::exists($env) && env('DB_INSTALL') == 1) {
+        $check = true;
+    }
+    return $check;
+}

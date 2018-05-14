@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
           //  \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
              \App\Http\Middleware\Install::class,
+             \App\Http\Middleware\IsInstalled::class,
         ],
          'admin'        => [\App\Http\Middleware\Admin::class],
           'guest'       => [\App\Http\Middleware\RedirectIfAuthenticated::class],

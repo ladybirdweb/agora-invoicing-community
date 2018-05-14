@@ -1,6 +1,9 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-reset password
+Email/Mobile Verification | Faveo Helpdesk
+@stop
+@section('page-heading')
+ <h1>Email/Mobile Verification</h1>
 @stop
 @section('page-header')
 Reset Password
@@ -32,59 +35,81 @@ main
 
 
 <div class="container">
- <div class="row">
-                <div class="col-sm-10" style="float: none;margin: auto">
+    <div class="row">
+ <div class="col-lg-6 offset-lg-3">
+               
                     <div id="alertMessage1"></div>
                     <div id="error1">
                     </div>
-                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
-                        <div class="box-content" style="margin-top:65px;">
+                       <div class="alert alert-danger alert-dismissable">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Your Email is not Verified..!!
+                   <ul>
+                   <li>Click the button to resend Verification Email</li>
+                                            
+                     </ul>
+                </div>
+                  <div class="featured-box featured-box-primary text-left mt-5">
+                        <div class="box-content">
                 @if($user)
 
                 @if ($user->active != 1) 
-                <h1>Email Verification</h2>
-                    <div class="alert alert-danger alert-dismissable">
-                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p>You have not verified your Email..Click the button below to receive verification link on your registered Email Address!!</p>
-                </div>
-                    <div class="well" ng-show="msg1" id="email1"></div>
+              
+                 
+
+                  
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
-                     &nbsp &nbsp<label class="required">Email Address</label>
-                    <div class="row" style="margin-bottom: 10px">
-                        <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="email" value="{{$user -> email}}" id="u_email"></div>
-                        <div class="col-sm-4" style="margin: 5px">
-                            <button class="btn btn-info" id="sendEmail" ng-click="sendEmail()">Send Email</button>
+                     &nbsp &nbsp <label for="mobile" class="required">Email</label><br/>
+                   
+                       <input type="text" class="form-control input-lg" name="email" value="{{$user -> email}}" id="u_email">
+                       <div class="clear"></div>
+                       <div class="form-group col">
+                            <button class="btn btn-primary float-right mb-5" style="margin-top:15px ; margin-right: -15px;" id="sendEmail" ng-click="sendEmail()">Send Email</button>
                         </div>
-                    </div>
+                   
                     @endif
                     @if($user->mobile_verified!=1)
-                    <h1>Mobile Verification</h2>
-                         <div class="alert alert-danger alert-dismissable">
+                    
+                       <!--   <div class="alert alert-danger alert-dismissable">
                          <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <p>You have not verified your OTP..Click the button below to receive OTP on your registered Mobile Number!!</p>
-                </div>
+                </div> -->
                         
-                        <div class="well" ng-show="msg2" id="mobile1"></div>
+                       
                         <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
-                          &nbsp &nbsp<label class="required">Country code</label> &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp
-                          <label class="required">Mobile Number</label>
-                        <div class="row" ng-hide="showOTP" style="margin-bottom: 10px">
-                            <div class="col-sm-2" style="margin: 5px"><input type="text" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code"></div>
+                            <div class="form-group col-lg-12">
+                          
+                        <div class="row" ng-hide="showOTP">
+                             <input type="hidden" class="form-control" name="code" value="{{$user -> mobile_code}}" id="u_code">
+                             <label for="mobile" class="required">Mobile</label><br/>
+                          
+                         
+                           <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user-> mobile}}" id="u_mobile">
+                           <div class="clear"></div>
+                      
+                            <div class="form-group col" ><button class="btn btn-primary float-right mb-5" id="sendOTP" ng-click="sendOTP()" data-loading-text="Loading..." style="margin-top:15px ; margin-right: -15px;">Send OTP</button></div>
                        
+                       </div>
                        
-                        
-                            <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control" name="mobile" value="{{$user -> mobile}}" id="u_mobile"></div>
-                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="sendOTP" ng-click="sendOTP()">Send OTP</button></div>
-                        </div>
+                    </div>
 
 
 
 
                         <div class="row" ng-show="showOTP">
-                            <div class="col-sm-2" style="margin: 5px"><label>Enter OTP</label></div>
-                            <div class="col-sm-4" style="margin: 5px"><input type="text" class="form-control"   ng-model="otp"></div>
-                            <div class="col-sm-4" style="margin: 5px"><button class="btn btn-info" id="verifyOTP" ng-click="submitOTP(otp)">Verify OTP</button><a  ng-click="resendOTP()" style="margin-left: 5px;line-height: 2.5;cursor: pointer">Resend OTP</a></div>
+                               <label for="mobile" class="required">Enter OTP</label><br/>
+                                 <div class="row verify">
+                                     
+                            <div class="form-group col-lg-6" ><input type="text" class="form-control input-lg"   ng-model="otp"></div>
+                              <div class="form-group col-lg-2"><button class="btn btn-primary float-right mb-5" id="verifyOTP" ng-click="submitOTP(otp)" style="margin-right:-28px";>Verify OTP</button></div>
+
+                                                       <div class="form-group col-lg-2">
+                                                       
+
+                              <a class="btn btn-danger float-right mb-5" ng-click="resendOTP()" style="background: grey; color:white;">Resend OTP</a>
+                          </div>
                         </div>
+                    </div>
                         @endif
                         @endif
                         @if($user->role=='user')
@@ -92,13 +117,14 @@ main
                         @else 
                         <?php $url = url('/'); ?>
                         @endif
-                        <a href="{{$url}}" class="btn btn-info"  ng-show="proceedo">Proceed</a>
+                        <a href="{{$url}}"   ng-show="proceedo">Click here to login</a>
                         </div>
 
 
                         </div>
-                         </div>
+                        
                     </div>
+                </div>
                 </div>
             </div>
        </div>
@@ -197,6 +223,32 @@ main
                                     }
                                 })
                         </script>
+                        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+                       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+                      <script type="text/javascript">
+              $(".phonecode").intlTelInput({
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: "body",
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        geoIpLookup: function(callback) {
+          $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+            var countryCode = (resp && resp.country) ? resp.country : "";
+            callback(countryCode);
+          });
+        },
+        // hiddenInput: "full_number",
+        initialCountry: "auto",
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript: "js/intl/js/utils.js"
+      });
+        </script>
                      
                         </html>
                         @stop

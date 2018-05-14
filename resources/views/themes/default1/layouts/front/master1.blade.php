@@ -1,4 +1,4 @@
-  <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
+<?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
   <!DOCTYPE html>
   <html><head>
   

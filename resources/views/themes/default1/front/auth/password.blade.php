@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-forgot password
+Forgot Paswword| Faveo Helpdesk
 @stop
 @section('page-heading')
  <h1>Forgot Password? <span>Reset it Now</span></h1>

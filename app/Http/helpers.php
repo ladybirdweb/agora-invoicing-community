@@ -33,9 +33,10 @@ function mime($type)
 function isInstall()
 {
     $check = false;
-    $env   = base_path('.env');
+    $env = base_path('.env');
     if (\File::exists($env) && env('DB_INSTALL') == 1) {
         $check = true;
     }
+
     return $check;
 }

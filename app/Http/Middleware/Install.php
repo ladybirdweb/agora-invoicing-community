@@ -21,22 +21,14 @@ class Install
         // 'driver' => env('DB_INSTALL', '1'),
         // dd(\File::exists($env) && env('DB_INSTALL')==1);
         if (\File::exists($env) && env('DB_INSTALL') == 1) {
-            
-      
             return $next($request);
         } else {
             return redirect()->route('LaravelInstaller::welcome');
         }
-
-          
     }
 
-
-     public function alreadyInstalled()
+    public function alreadyInstalled()
     {
         return file_exists(storage_path('installed'));
     }
-
-
-    }
-
+}

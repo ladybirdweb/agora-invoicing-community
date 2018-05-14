@@ -477,7 +477,7 @@ class AuthController extends Controller
             $number = $code.$mobile;
             $result = $this->sendOtp($mobile, $code);
             // dd($result);
-             $array = json_decode($result, true);
+            $array = json_decode($result, true);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
 
             return response()->json($response);
@@ -501,8 +501,6 @@ class AuthController extends Controller
 
     public function postOtp(Request $request)
     {
-
-
         $this->validate($request, [
             'otp' => 'required|numeric',
         ]);
@@ -526,7 +524,7 @@ class AuthController extends Controller
                 $user->save();
             }
             $check = $this->checkVerify($user);
-             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'<strong><i class="far fa-thumbs-up"></i> Well done!</strong>'.'Mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'<strong><i class="far fa-thumbs-up"></i> Well done!</strong>'.'Mobile verified'];
 
             return response()->json($response);
             // return redirect('/login');

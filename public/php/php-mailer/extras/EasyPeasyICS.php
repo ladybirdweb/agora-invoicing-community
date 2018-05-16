@@ -1,6 +1,7 @@
 <?php
 /**
  * EasyPeasyICS Simple ICS/vCal data generator.
+ *
  * @author Marcus Bointon <phpmailer@synchromedia.co.uk>
  * @author Manuel Reinhard <manu@sprain.ch>
  *
@@ -13,56 +14,60 @@
 
 /**
  * Class EasyPeasyICS.
- * Simple ICS data generator
- * @package phpmailer
- * @subpackage easypeasyics
+ * Simple ICS data generator.
  */
 class EasyPeasyICS
 {
     /**
-     * The name of the calendar
+     * The name of the calendar.
+     *
      * @var string
      */
     protected $calendarName;
     /**
-     * The array of events to add to this calendar
+     * The array of events to add to this calendar.
+     *
      * @var array
      */
-    protected $events = array();
+    protected $events = [];
 
     /**
-     * Constructor
+     * Constructor.
+     *
      * @param string $calendarName
      */
-    public function __construct($calendarName = "")
+    public function __construct($calendarName = '')
     {
         $this->calendarName = $calendarName;
     }
 
     /**
      * Add an event to this calendar.
-     * @param string $start The start date and time as a unix timestamp
-     * @param string $end The end date and time as a unix timestamp
-     * @param string $summary A summary or title for the event
+     *
+     * @param string $start       The start date and time as a unix timestamp
+     * @param string $end         The end date and time as a unix timestamp
+     * @param string $summary     A summary or title for the event
      * @param string $description A description of the event
-     * @param string $url A URL for the event
-     * @param string $uid A unique identifier for the event - generated automatically if not provided
+     * @param string $url         A URL for the event
+     * @param string $uid         A unique identifier for the event - generated automatically if not provided
+     *
      * @return array An array of event details, including any generated UID
      */
     public function addEvent($start, $end, $summary = '', $description = '', $url = '', $uid = '')
     {
         if (empty($uid)) {
-            $uid = md5(uniqid(mt_rand(), true)) . '@EasyPeasyICS';
+            $uid = md5(uniqid(mt_rand(), true)).'@EasyPeasyICS';
         }
-        $event = array(
-            'start' => gmdate('Ymd', $start) . 'T' . gmdate('His', $start) . 'Z',
-            'end' => gmdate('Ymd', $end) . 'T' . gmdate('His', $end) . 'Z',
-            'summary' => $summary,
+        $event = [
+            'start'       => gmdate('Ymd', $start).'T'.gmdate('His', $start).'Z',
+            'end'         => gmdate('Ymd', $end).'T'.gmdate('His', $end).'Z',
+            'summary'     => $summary,
             'description' => $description,
-            'url' => $url,
-            'uid' => $uid
-        );
+            'url'         => $url,
+            'uid'         => $uid,
+        ];
         $this->events[] = $event;
+
         return $event;
     }
 
@@ -79,11 +84,12 @@ class EasyPeasyICS
      */
     public function clearEvents()
     {
-        $this->events = array();
+        $this->events = [];
     }
 
     /**
      * Get the name of the calendar.
+     *
      * @return string
      */
     public function getName()
@@ -93,6 +99,7 @@ class EasyPeasyICS
 
     /**
      * Set the name of the calendar.
+     *
      * @param $name
      */
     public function setName($name)
@@ -102,7 +109,9 @@ class EasyPeasyICS
 
     /**
      * Render and optionally output a vcal string.
+     *
      * @param bool $output Whether to output the calendar data directly (the default).
+     *
      * @return string The complete rendered vlal
      */
     public function render($output = true)
@@ -111,20 +120,20 @@ class EasyPeasyICS
         $ics = 'BEGIN:VCALENDAR
 METHOD:PUBLISH
 VERSION:2.0
-X-WR-CALNAME:' . $this->calendarName . '
+X-WR-CALNAME:'.$this->calendarName.'
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN';
 
         //Add events
         foreach ($this->events as $event) {
             $ics .= '
 BEGIN:VEVENT
-UID:' . $event['uid'] . '
-DTSTAMP:' . gmdate('Ymd') . 'T' . gmdate('His') . 'Z
-DTSTART:' . $event['start'] . '
-DTEND:' . $event['end'] . '
-SUMMARY:' . str_replace("\n", "\\n", $event['summary']) . '
-DESCRIPTION:' . str_replace("\n", "\\n", $event['description']) . '
-URL;VALUE=URI:' . $event['url'] . '
+UID:'.$event['uid'].'
+DTSTAMP:'.gmdate('Ymd').'T'.gmdate('His').'Z
+DTSTART:'.$event['start'].'
+DTEND:'.$event['end'].'
+SUMMARY:'.str_replace("\n", '\\n', $event['summary']).'
+DESCRIPTION:'.str_replace("\n", '\\n', $event['description']).'
+URL;VALUE=URI:'.$event['url'].'
 END:VEVENT';
         }
 
@@ -140,9 +149,10 @@ END:VCALENDAR';
                 $filename = '"'.$filename.'"';
             }
             header('Content-type: text/calendar; charset=utf-8');
-            header('Content-Disposition: inline; filename=' . $filename . '.ics');
+            header('Content-Disposition: inline; filename='.$filename.'.ics');
             echo $ics;
         }
+
         return $ics;
     }
 }

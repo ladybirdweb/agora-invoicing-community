@@ -1,8 +1,8 @@
 <?php
 session_start();
-$_SESSION = array();
+$_SESSION = [];
 
-include("simple-php-captcha.php");
+include 'simple-php-captcha.php';
 $_SESSION['captcha'] = simple_php_captcha();
 
 ?>
@@ -61,7 +61,7 @@ print_r($_SESSION['captcha']);
 
     <p>
         <?php
-        echo '<img src="' . $_SESSION['captcha']['image_src'] . '" alt="CAPTCHA code">';
+        echo '<img src="'.$_SESSION['captcha']['image_src'].'" alt="CAPTCHA code">';
 
         ?>
     </p>

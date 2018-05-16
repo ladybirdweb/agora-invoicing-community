@@ -9,8 +9,9 @@
  * @copyright  Copyright © 2010, Mike Cochrane, Nick Pope
  * @license    http://www.apache.org/licenses/LICENSE-2.0  Apache License v2.0
  */
-
-if (!defined('E_DEPRECATED')) define('E_DEPRECATED', 8192);
+if (!defined('E_DEPRECATED')) {
+    define('E_DEPRECATED', 8192);
+}
 error_reporting(E_ALL | E_STRICT | E_DEPRECATED);
 
 $ROOT = dirname(dirname(__FILE__));
@@ -21,22 +22,24 @@ require_once $ROOT.'/lib/Twitter/HitHighlighter.php';
 
 $browser = (PHP_SAPI != 'cli');
 
-function print_array(array $a) {
-  $p = print_r($a, true);
-  $p = str_replace('  ', ' ', $p);
-  echo preg_replace(array(
+function print_array(array $a)
+{
+    $p = print_r($a, true);
+    $p = str_replace('  ', ' ', $p);
+    echo preg_replace([
     '!^Array\s+\(\s+!',
     '!=> Array\s+\(!',
     '!  (\[\d|\))!',
     '!\s+\)\s*$!',
-  ), array(
+  ], [
     '  ', '=> (', '\1', '',
-  ), $p);
+  ], $p);
 }
 
 $tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
 
-if ($browser) echo <<<EOHTML
+if ($browser) {
+    echo <<<'EOHTML'
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en-GB" xml:lang="en-GB" xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -77,74 +80,90 @@ body {
 </head>
 <body>
 EOHTML;
+}
 
-if ($browser) echo '<h1>';
+if ($browser) {
+    echo '<h1>';
+}
 echo 'Twitter Text (PHP Edition) Library » Examples';
-if ($browser) echo '</h1>';
-else echo PHP_EOL, '============================================', PHP_EOL;
+if ($browser) {
+    echo '</h1>';
+} else {
+    echo PHP_EOL, '============================================', PHP_EOL;
+}
 echo PHP_EOL;
 
-if ($browser) echo '<h2>';
+if ($browser) {
+    echo '<h2>';
+}
 echo 'Extraction Examples';
-if ($browser) echo '</h2>';
-else echo PHP_EOL, '-------------------', PHP_EOL;
+if ($browser) {
+    echo '</h2>';
+} else {
+    echo PHP_EOL, '-------------------', PHP_EOL;
+}
 echo PHP_EOL;
 
-$code = <<<EOPHP
+$code = <<<'EOPHP'
 <?php
-\$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
-\$data = Twitter_Extractor::create(\$tweet)
+$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
+$data = Twitter_Extractor::create($tweet)
   ->extract();
-print_r(\$data);
+print_r($data);
 EOPHP;
 if ($browser) {
-  echo '<h3>Source</h3>', PHP_EOL;
-  echo '<pre class="source">';
-  highlight_string($code);
-  echo '</pre>', PHP_EOL;
+    echo '<h3>Source</h3>', PHP_EOL;
+    echo '<pre class="source">';
+    highlight_string($code);
+    echo '</pre>', PHP_EOL;
 } else {
-  echo 'Source:', PHP_EOL, PHP_EOL;
-  echo $code;
-  echo PHP_EOL, PHP_EOL;
+    echo 'Source:', PHP_EOL, PHP_EOL;
+    echo $code;
+    echo PHP_EOL, PHP_EOL;
 }
 
 $data = Twitter_Extractor::create($tweet)
   ->extract();
 
 if ($browser) {
-  echo '<h3>Output</h3>', PHP_EOL;
-  echo '<pre class="output">';
-  print_array($data);
-  echo '</pre>', PHP_EOL;
+    echo '<h3>Output</h3>', PHP_EOL;
+    echo '<pre class="output">';
+    print_array($data);
+    echo '</pre>', PHP_EOL;
 } else {
-  echo 'Output:', PHP_EOL, PHP_EOL;
-  print_array($data);
-  echo PHP_EOL, PHP_EOL;
+    echo 'Output:', PHP_EOL, PHP_EOL;
+    print_array($data);
+    echo PHP_EOL, PHP_EOL;
 }
 
-if ($browser) echo '<h2>';
+if ($browser) {
+    echo '<h2>';
+}
 echo 'Autolink Examples';
-if ($browser) echo '</h2>';
-else echo PHP_EOL, '-----------------', PHP_EOL;
+if ($browser) {
+    echo '</h2>';
+} else {
+    echo PHP_EOL, '-----------------', PHP_EOL;
+}
 echo PHP_EOL;
 
-$code = <<<EOPHP
+$code = <<<'EOPHP'
 <?php
-\$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
-\$html = Twitter_Autolink::create(\$tweet)
+$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
+$html = Twitter_Autolink::create($tweet)
   ->setNoFollow(false)
   ->addLinks();
-echo \$html;
+echo $html;
 EOPHP;
 if ($browser) {
-  echo '<h3>Source</h3>', PHP_EOL;
-  echo '<pre class="source">';
-  highlight_string($code);
-  echo '</pre>', PHP_EOL;
+    echo '<h3>Source</h3>', PHP_EOL;
+    echo '<pre class="source">';
+    highlight_string($code);
+    echo '</pre>', PHP_EOL;
 } else {
-  echo 'Source:', PHP_EOL, PHP_EOL;
-  echo $code;
-  echo PHP_EOL, PHP_EOL;
+    echo 'Source:', PHP_EOL, PHP_EOL;
+    echo $code;
+    echo PHP_EOL, PHP_EOL;
 }
 
 $html = Twitter_Autolink::create($tweet)
@@ -152,78 +171,85 @@ $html = Twitter_Autolink::create($tweet)
   ->addLinks();
 
 if ($browser) {
-  echo '<h3>Markup</h3>', PHP_EOL;
-  echo '<pre class="markup"><code>';
-  echo htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false);
-  echo '</code></pre>', PHP_EOL;
+    echo '<h3>Markup</h3>', PHP_EOL;
+    echo '<pre class="markup"><code>';
+    echo htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false);
+    echo '</code></pre>', PHP_EOL;
 } else {
-  echo 'Markup:', PHP_EOL, PHP_EOL;
-  echo wordwrap(htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false));
-  echo PHP_EOL, PHP_EOL;
+    echo 'Markup:', PHP_EOL, PHP_EOL;
+    echo wordwrap(htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false));
+    echo PHP_EOL, PHP_EOL;
 }
 
 if ($browser) {
-  echo '<h3>Output</h3>', PHP_EOL;
-  echo '<div class="output">';
-  echo $html;
-  echo '</div>', PHP_EOL;
+    echo '<h3>Output</h3>', PHP_EOL;
+    echo '<div class="output">';
+    echo $html;
+    echo '</div>', PHP_EOL;
 } else {
-  echo 'Output:', PHP_EOL, PHP_EOL;
-  echo wordwrap($html);
-  echo PHP_EOL, PHP_EOL;
+    echo 'Output:', PHP_EOL, PHP_EOL;
+    echo wordwrap($html);
+    echo PHP_EOL, PHP_EOL;
 }
 
-if ($browser) echo '<h2>';
+if ($browser) {
+    echo '<h2>';
+}
 echo 'Hit Highlighter Examples';
-if ($browser) echo '</h2>';
-else echo PHP_EOL, '------------------------', PHP_EOL;
+if ($browser) {
+    echo '</h2>';
+} else {
+    echo PHP_EOL, '------------------------', PHP_EOL;
+}
 echo PHP_EOL;
 
-$code = <<<EOPHP
+$code = <<<'EOPHP'
 <?php
-\$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
-\$hits  = array(array(70, 77), array(101, 108));
-\$html = Twitter_HitHighlighter::create(\$tweet)
-  ->addHitHighlighting(\$hits);
-echo \$html;
+$tweet = 'Tweet mentioning @mikenz and referring to his list @mikeNZ/sports and website http://mikenz.geek.nz #awesome';
+$hits  = array(array(70, 77), array(101, 108));
+$html = Twitter_HitHighlighter::create($tweet)
+  ->addHitHighlighting($hits);
+echo $html;
 EOPHP;
 if ($browser) {
-  echo '<h3>Source</h3>', PHP_EOL;
-  echo '<pre class="source">';
-  highlight_string($code);
-  echo '</pre>', PHP_EOL;
+    echo '<h3>Source</h3>', PHP_EOL;
+    echo '<pre class="source">';
+    highlight_string($code);
+    echo '</pre>', PHP_EOL;
 } else {
-  echo 'Source:', PHP_EOL, PHP_EOL;
-  echo $code;
-  echo PHP_EOL, PHP_EOL;
+    echo 'Source:', PHP_EOL, PHP_EOL;
+    echo $code;
+    echo PHP_EOL, PHP_EOL;
 }
 
 $html = Twitter_HitHighlighter::create($tweet)
-  ->addHitHighlighting(array(array(70, 77), array(101, 108)));
+  ->addHitHighlighting([[70, 77], [101, 108]]);
 
 if ($browser) {
-  echo '<h3>Markup</h3>', PHP_EOL;
-  echo '<pre class="markup"><code>';
-  echo htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false);
-  echo '</code></pre>', PHP_EOL;
+    echo '<h3>Markup</h3>', PHP_EOL;
+    echo '<pre class="markup"><code>';
+    echo htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false);
+    echo '</code></pre>', PHP_EOL;
 } else {
-  echo 'Markup:', PHP_EOL, PHP_EOL;
-  echo wordwrap(htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false));
-  echo PHP_EOL, PHP_EOL;
+    echo 'Markup:', PHP_EOL, PHP_EOL;
+    echo wordwrap(htmlspecialchars($html, ENT_QUOTES, 'UTF-8', false));
+    echo PHP_EOL, PHP_EOL;
 }
 
 if ($browser) {
-  echo '<h3>Output</h3>', PHP_EOL;
-  echo '<div class="output">';
-  echo $html;
-  echo '</div>', PHP_EOL;
+    echo '<h3>Output</h3>', PHP_EOL;
+    echo '<div class="output">';
+    echo $html;
+    echo '</div>', PHP_EOL;
 } else {
-  echo 'Output:', PHP_EOL, PHP_EOL;
-  echo wordwrap($html);
-  echo PHP_EOL, PHP_EOL;
+    echo 'Output:', PHP_EOL, PHP_EOL;
+    echo wordwrap($html);
+    echo PHP_EOL, PHP_EOL;
 }
 
-if ($browser) echo <<<EOHTML
+if ($browser) {
+    echo <<<'EOHTML'
 </body>
 </html>
 EOHTML;
+}

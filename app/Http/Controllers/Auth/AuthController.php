@@ -478,9 +478,8 @@ class AuthController extends Controller
             $result = $this->sendOtp($mobile, $code);
             // dd($result);
 
-             $array = json_decode($result, true);
+            $array = json_decode($result, true);
             $response = ['type' => 'success', 'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
-
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -527,7 +526,7 @@ class AuthController extends Controller
             }
             $check = $this->checkVerify($user);
 
-             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified'];
 
             return response()->json($response);
             // return redirect('/login');

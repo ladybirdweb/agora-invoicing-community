@@ -1,0 +1,758 @@
+//COMMON IMPORTS
+@import "../config/imports";
+
+// RTL
+@include if-rtl() {
+	.btn-icon {
+		i {
+			margin-left: 0;
+			margin-right: 10px;
+		}
+	}
+}
+
+// Header
+#header {
+	&.header-narrow {
+		.header-body {
+			padding-bottom: 20px;
+		}
+		.header-nav-main {
+	    	margin: 0;
+	    }
+	    .header-top.header-top-style-3 {
+	    	margin-bottom: 20px;
+	    }
+	}
+}
+
+@media (min-width: 992px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								background: transparent !important;
+							}
+						}
+						&:hover, &.open {
+							> a {
+								&.active {
+									color: #FFF !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Custom Box Shadow
+.box-shadow-custom {
+	box-shadow: 10px 10px 74px -15px rgba(0,0,0,0.33);
+}
+
+// Custom Read More Button
+.custom-button {
+	border-radius: 30px !important;
+	padding: 10px 30px;
+}
+
+// Header Top Custom
+.header-top-custom {
+	padding: 0 !important;
+	background: #dbe6ef;
+	min-height: 0 !important;
+
+	.header-nav-top {
+		.nav {
+			> li {
+				> span, a {
+					color: #8ea0ae !important;
+				}
+
+				span {
+					.icons {
+						color: #4c4c4c !important;
+					}
+				}
+
+				&:nth-child(2) {
+					span {
+						border-left: 1px solid #d1dee9;
+						border-right: 1px solid #d1dee9;    
+					}
+				}
+			}   
+		}
+	} 
+}
+
+// Rev Slider Dark Transparent Image Overlay
+.rev_slider {
+	.slotholder:after {
+		width: 100%;
+		height: 100%;
+		content: "";
+		position: absolute;
+		#{$left}: 0;
+		top: 0;
+		pointer-events: none;    
+		background: rgba(0, 0, 0, 0.25);
+	}
+}
+
+// Custom Tp Bullets - Rev Slider
+.tp-bullets {
+	.tp-bullet {
+		background: rgba(255,255,255,0.3);
+		border-radius: 100%;
+		border: 2px solid #fff;
+		opacity: 0.7;
+		padding: 7px;
+
+		&.selected {
+			opacity: 1 !important;
+
+			&::after {
+				content: '';
+				display: block;
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 6px;
+				height: 6px;
+				background: #fff;
+				border-radius: 100%;
+				transform: translateX(-50%) translateY(-50%);
+			}
+		}
+	}
+}
+
+// Custom Medical Schedules
+.medical-schedules {
+	margin: -47px 0 0 0;
+	
+	h4 {
+		line-height: 23px;
+		padding-top: 4px;
+	}
+
+	h4, h5, a, i {
+		color: #fff !important;
+	}
+
+	h5 {
+		position: relative;
+		display: inline-block;
+	}
+
+	.box-one, .box-two, .box-three, .box-four {
+		cursor: pointer;
+		height: 94px;
+		position: relative;
+		animation-duration: 0.6s;
+	}
+
+	.box-one {
+		z-index: 4;
+	}
+
+	.box-two {
+		z-index: 3;
+	}
+
+	.box-three {
+		z-index: 2;
+		&:hover {
+			z-index: 10;
+		}
+	}
+
+	.box-four {
+		z-index: 1;
+	}
+
+	.box-one {
+		&::after {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 0;
+			#{$right}: -40px;
+			width: 0;
+			height: 0;
+			border-top: 47px solid transparent;
+			border-bottom: 47px solid transparent;
+			border-left: 40px solid #008fe2;
+			z-index: 5;
+			@include if-rtl() {
+				transform: rotate(180deg);
+			}
+		}
+	}
+
+	.box-two, .box-three {
+		padding: side-values(38px 38px 38px 70px);
+
+		a {
+			text-decoration: none;
+		}
+
+		&:hover {
+			.expanded-info {
+				opacity: 1;
+				z-index: 1;
+
+				.info {
+					opacity: 1;
+					transform: translateY(0%);
+				}
+			}
+
+			i {
+				transition: all 0.3s ease;
+			}
+		}
+
+		.expanded-info {
+			opacity: 0;
+			position: absolute;
+			#{$left}: 0;
+			bottom: 99%;
+			width: 100%;
+			box-shadow: 0 -12px 30px rgba(0,0,0,0.2);
+			z-index: -1;
+			transition: all 0.3s ease;
+
+			.info {
+				opacity: 0;
+				transform: translateY(-40%);
+
+				&:nth-child(1) {
+					transition: all 0.3s ease 0.4s;
+				}
+
+				&:nth-child(2) {
+					transition: all 0.3s ease 0.5s;
+				}
+
+				&:nth-child(3) {
+					transition: all 0.3s ease 0.6s;
+				}
+			}
+		}
+
+		i {
+			position: absolute;
+			top: 50%;
+			#{$right}: -30px;
+			font-size: 1.44em;
+			transition: all 0.3s ease;
+		}
+	}
+
+	.box-two {
+		&:hover {
+			i {
+				@include if-ltr() {
+					transform: translateY(-50%) translateX(50%);
+				}
+				@include if-rtl() {
+					transform: translateY(-50%) translateX(-50%) rotate(180deg);
+				}
+			}
+		}
+
+		i {
+			@include if-ltr() {
+				transform: translateY(-50%) translateX(0%);
+			}
+			@include if-rtl() {
+				transform: translateY(-50%) translateX(0%) rotate(180deg);
+			}
+			
+		}
+	}
+
+	.box-three {
+		&:hover {
+			i {
+				transform: translateY(-50%) rotate(-90deg);
+			}
+		}
+
+		i {
+			@include if-ltr() {
+				transform: translateY(-50%) rotate(0deg);
+			}
+			@include if-rtl() {
+				transform: translateY(-50%) rotate(-180deg);
+			}
+		}
+	}
+
+	.box-four {
+		label {
+			display: block;
+			margin: -3px 0 0;
+			opacity: 0.5;
+		}
+
+		strong {
+			font-size: 1.6em;
+		}
+
+		.feature-box {
+			padding: 23.7px;
+		}
+
+		.feature-box-icon {
+			margin-top: 5px;
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	.medical-schedules {
+		h4 {
+			margin-top: 10px !important;
+		}
+
+		.box-one {
+			&::after {
+				content: none;
+			}
+		}
+
+		.box-two, .box-three {
+			padding: 38px 38px 38px 38px;
+		}
+	}
+}
+
+// Custom Info
+.custom-info {
+	span {
+		&:nth-child(1) {
+			display: inline-block;
+			color: #90c9ea;
+			min-width: 68px;
+			margin-#{$right}: 10px;
+
+			&::after {
+				content: ':';
+				display: block;
+				float: $right;
+				color: #fff;
+			}
+		}
+
+		&:nth-child(2) {
+			color: #fff;
+		}
+	}
+}
+
+// Feature Box
+.feature-box.feature-box-style-2 {
+	.feature-box-icon {
+		top: 3px;
+	}
+}
+
+// Team Thumb Info
+.team {
+	.thumb-info {
+		&:hover {
+			.thumb-info-caption {
+				background: #008fe2;
+
+				span, i {
+					color: #fff !important;
+				}
+			}
+		}
+
+		.thumb-info-caption {
+			position: relative;
+			padding: 10px 0;
+			display: block;
+			background: #fff;
+			transition: all 0.3s ease;
+
+			// Custom Thumb Info Title
+			.custom-thumb-info-title {
+				span {
+					display: block;
+
+					&:nth-child(1) {
+						color: #8e8e8e;
+					}
+
+					&:nth-child(2) {
+						color: #28292d;
+					}
+				}
+
+				i {
+					position: absolute;
+					top: 50%;
+					#{$right}: 20px;
+					font-size: 1.9em !important;
+					color: #28292d;
+					transform: translateY(-50%);
+					@include if-rtl() {
+						transform: translateY(-50%) rotate(180deg);
+					}
+				}
+			}
+		}
+	}
+
+	.owl-carousel.nav-bottom {
+		.owl-nav {
+			position: absolute;
+			top: -60px;
+			#{$right}: 10px;
+
+			button.owl-prev, button.owl-next {
+				border: none !important;
+				font-size: 2em;
+				padding: 0;
+				width: auto;
+				height: auto;
+				@include if-rtl() {
+					transform: rotate(180deg);
+				}
+
+				&:active {
+					background-color: none;
+					border-color: transparent;
+				}
+			}
+
+			button.owl-prev {
+				color: #0092e3;
+
+				&::before {
+					font-family: simple-line-icons;
+					content: "\e07a";
+				}
+			}
+
+			button.owl-next {
+				color: #2d529f;
+
+				&::before {
+					font-family: simple-line-icons;
+					content: "\e079";
+				}
+			}
+		}   
+	}
+}
+
+// Thumb Info Side Image Custom - Resources
+.thumb-info-side-image-custom {
+	border: 0 none;
+	color: #777;
+	margin: 0 0 35px;
+	transition: all 0.3s ease;
+
+	.thumb-info-side-image-wrapper {
+		padding: 0;
+		margin-#{$right}: 30px;
+	}
+
+	.thumb-info-caption {
+		text-align: $left;
+		
+		h4 {
+			margin: 30px 0 0;
+			padding: 0;
+		}
+		
+		p {
+			margin: 0;
+			padding: 0;
+			font-size: 15px;
+			line-height: 24px;
+		}
+	}
+
+	&:hover {
+		box-shadow: 10px 10px 74px -15px rgba(0,0,0,0.33) !important;
+	}
+
+	&.thumb-info-side-image-custom-highlight {
+		.thumb-info-side-image-wrapper {
+			margin: 0 0 10px 0;
+			padding: 0;
+		}
+		
+		.thumb-info-caption {
+			padding: 0 10px;
+			display: block;
+			clear: both;
+			
+			h4 {
+				margin: 3px 0 0;
+				padding: 0;
+			}
+			
+			p {
+				margin: 0;
+				padding: 0;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.thumb-info-side-image-custom {
+		&.thumb-info-side-image-custom-highlight {
+			.thumb-info-side-image-wrapper {
+				width: 100%;
+			}
+		}
+	}
+}
+
+// Custom content grid - Insurance
+.content-grid {
+	.content-grid-item {
+		min-height: 150px;
+		border: 1px solid #e4e4e4;
+		border-#{$left}: none;
+
+		&:first-child {
+			border-#{$left}: 1px solid #e4e4e4;
+		}
+
+		&::before, &::after {
+			content: none;
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	.content-grid {
+		.content-grid-item {
+			&:nth-child(4) {
+				border-#{$left}: 1px solid #e4e4e4;
+			}
+
+			&:nth-child(4), &:nth-child(5), &:nth-child(6) {
+				border-top: 0;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.content-grid {
+		.content-grid-item {
+			border-top: 0;
+			border-#{$left}: 1px solid #e4e4e4;
+
+			&:first-child {
+				border-top: 1px solid #e4e4e4;
+			}
+		}
+	}
+}
+
+// Testimonial
+.testimonial {
+	.testimonial-quote {
+		display: inline-block;
+		position: relative;
+		color: #fff;
+		font-size: 50px;
+		line-height: 1;
+		font-family: Georgia, serif;
+
+		&::before {
+			content: '';
+			display: block;
+			position: absolute;
+			top: 25%;
+			left: 50%;
+			border: 1px solid #fff;
+			border-radius: 100%;
+			padding: 25px;
+			transform: translateX(-50%) translateY(-50%);
+		}
+	}
+
+	blockquote {
+		&::before, &::after {
+			color: #fff !important;
+			font-size: 40px !important;
+		}
+
+		p {
+			color: #fff !important;
+			font-family: $font-primary;
+			font-size: 15px;
+			line-height: 1.6;
+		}
+	}
+
+	.testimonial-author {
+		p {
+			strong {
+				position: relative;
+				display: inline-block;
+				color: #fff !important;
+
+				&::before {
+					content: '';
+					display: block;
+					position: absolute;
+					width: 35%;
+					top: 0;
+					left: 50%;
+					border-top: 2px solid #80c9f2;
+					transform: translateX(-50%) translateY(-50%);
+				}
+			}
+		}
+	}
+}
+
+// Footer
+#footer {
+	background: #34383d;
+	border: none;
+
+	p, a, strong {
+		color: #95989c;
+	}
+
+	a {
+		strong {
+			display: block;
+			font-size: 30px;
+			line-height: 1;
+		}
+		
+		label {
+			color: #fff !important;
+		}   
+	}
+	
+	.custom-info {
+		span {
+			&:nth-child(1) {
+				color: #95989c;
+			}
+		}
+	}
+
+	// Footer Copyright
+	.footer-copyright {
+		background: #34383d;
+		border-top: 1px solid #53585e;
+		
+		p {
+			color: #95989c;
+		}
+	}
+}
+
+// Social Icons
+.social-icons {
+	li {
+		border-radius: 0;
+		box-shadow: none;
+
+		&:hover {
+			a {
+				opacity: 0.8;
+			}
+		}
+
+		a {
+			color: #FFF !important;
+			border-radius: 0;
+		}
+
+		&.social-icons-twitter {
+			a {
+				background: #1aa9e1;
+			}
+		}
+		&.social-icons-facebook {
+			a {
+				background: #3b5a9a;
+			}
+		}
+		&.social-icons-linkedin {
+			a {
+				background: #0073b2;
+			}
+		}
+		&.social-icons-rss {
+			a {
+				background: #ff8201;
+			}
+		}
+		&.social-icons-googleplus {
+			a {
+				background: #dd4b39;
+			}
+		}
+		&.social-icons-pinterest {
+			a {
+				background: #cc2127;
+			}
+		}
+		&.social-icons-youtube {
+			a {
+				background: #c3191e;
+			}
+		}
+		&.social-icons-instagram {
+			a {
+				background: #7c4a3a;
+			}
+		}
+		&.social-icons-skype {
+			a {
+				background: #00b0f6;
+			}
+		}
+		&.social-icons-email {
+			a {
+				background: #dd4b39;
+			}
+		}
+		&.social-icons-vk {
+			a {
+				background: #6383a8;
+			}
+		}
+		&.social-icons-xing {
+			a {
+				background: #1a7576;
+			}
+		}
+		&.social-icons-tumblr {
+			a {
+				background: #304e6c;
+			}
+		}
+		&.social-icons-reddit {
+			a {
+				background: #ff4107;
+			}
+		}
+	}
+}

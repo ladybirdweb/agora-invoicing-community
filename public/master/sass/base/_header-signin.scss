@@ -1,0 +1,132 @@
+/* Mega Menu (Signin/SignUp) */
+#header .header-nav-main nav > ul > li.dropdown-mega.dropdown-mega-signin {
+	label {
+		font-size: 0.9rem;
+		color: #777;
+	}
+	.dropdown-menu {
+		width: 40%;
+		#{$right}: 15px;
+		#{$left}: auto;
+		border-radius: corner-values(6px 0 6px 6px);
+		&, a {
+			padding: 0;
+			transform: translate3d(0, 2px, 0);
+		}
+	}
+	.fa-user {
+		margin-#{$right}: 5px;
+	}
+	.dropdown-mega-sub-title {
+		margin-bottom: 10px;
+		display: block;
+	}
+	.sign-up-info, .log-in-info {
+		text-align: center;
+		display: block;
+	    font-size: 0.9rem;
+	}
+	&.signin {
+		.signin-form {
+			display: block;
+		}
+		.signup-form, .recover-form {
+			display: none;
+		}
+	}
+	&.signup {
+		.signin-form {
+			display: none;
+		}
+		.signup-form {
+			display: block;
+		}
+		.recover-form {
+			display: none;
+		}
+	}
+	&.recover {
+		.signin-form, .signup-form {
+			display: none;
+		}
+		.recover-form {
+			display: block;
+			p {
+				font-size: 0.9rem;
+			}
+		}
+	}
+	&.logged {
+		.user-avatar {
+			.img-thumbnail {
+				img {
+					max-width: 55px;
+				}
+				float: $left;
+				margin-#{$right}: 15px;
+			}
+			strong {
+				display: block;
+				padding-top: 7px;
+			}
+			span {
+				display: block;
+				font-size: 12px;
+			}
+			p {
+				margin: side-values(0 0 0 25px);
+				text-align: $left;
+			}
+		}
+		.list-account-options {
+			list-style: none;
+			margin: 6px 0 0;
+			padding: 0;
+			a:hover {
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+
+	#header .header-nav-main nav > ul > li.dropdown-mega.dropdown-mega-signin {
+		margin-#{$right}: 0;
+		.dropdown-toggle {
+			display: none;
+		}
+		.dropdown-menu {
+			display: block !important;
+			margin: 0 !important;
+			padding: side-values(0 10px 0 10px);
+			width: 100%;
+			#{$right}: 0;
+			.dropdown-mega-sub-title {
+				font-size: 14px;
+				font-weight: 600;
+				text-transform: uppercase;
+				padding-top: 5px;
+				padding-bottom: 0;
+			}
+		}
+		&.logged {
+			.dropdown-toggle {
+				display: none;
+			}
+			.dropdown-mega-content {
+				margin: 15px 0 !important;
+			}
+			.list-account-options {
+				margin: 15px 0 0 0 !important;
+				> li {
+					> a {
+						line-height: 35px;
+					}
+				}
+			}
+		}
+	}	
+
+}

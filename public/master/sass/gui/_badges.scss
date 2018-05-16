@@ -1,0 +1,28 @@
+/* Labels */
+@each $state in $states {
+	.badge-#{nth($state,1)} {
+		background-color: #{nth($state,2)};
+		color: #{nth($state,3)};
+	}
+}
+
+.badge {
+	&.badge-xs {
+		padding: 0.3em 0.5em;
+	}
+	&.badge-sm {
+		padding: 0.5em 0.8em;
+	}
+	&.badge-md {
+		padding: 1em 1.6em;
+		font-size: 85%;
+	}
+	&.badge-lg {
+		padding: 1.5em 2em;
+		font-size: 90%;
+	}
+	&.badge-xl {
+		padding: 2em 2.5em;
+		font-size: 100%;
+	}
+}

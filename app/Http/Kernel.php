@@ -29,20 +29,23 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+             \App\Http\Middleware\Install::class,
             \App\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             // \Illuminate\Session\Middleware\StartSession::class,
             // \Illuminate\Session\Middleware\AuthenticateSession::class,
             // \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-          //  \App\Http\Middleware\VerifyCsrfToken::class,
+           // \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-             \App\Http\Middleware\Install::class,
-             \App\Http\Middleware\IsInstalled::class,
+           
+             // \App\Http\Middleware\IsInstalled::class,
+             
         ],
          'admin'        => [\App\Http\Middleware\Admin::class],
           'guest'       => [\App\Http\Middleware\RedirectIfAuthenticated::class],
            'auth'       => [\Illuminate\Auth\Middleware\Authenticate::class],
         'auth.basic'    => [\Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class],
+     
 
         'api' => [
             'throttle:60,1',
@@ -64,5 +67,6 @@ class Kernel extends HttpKernel
         'can'        => \Illuminate\Auth\Middleware\Authorize::class,
         'guest'      => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'install'    => \App\Http\Middleware\Install::class,
     ];
 }

@@ -1,0 +1,2452 @@
+@import "for";
+@import "mixins";
+
+// Basic
+a {
+	color: @color-primary;
+	&:hover {
+		color: lighten(@color-primary, 5%);
+	}
+	&:focus {
+		color: lighten(@color-primary, 5%);
+	}
+	&:active {
+		color: darken(@color-primary, 5%);
+	}
+}
+
+// Font Colors
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.heading-@{name},
+		.lnk-@{name},
+		.text-color-@{name},
+		.text-@{name} {
+			color: @color !important;
+		}
+
+		.heading.heading-@{name} {
+			h1, h2, h3, h4, h5, h6 {
+				border-color: @color;
+			}
+		}
+	}
+}
+
+// Background Colors
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.background-color-@{name} {
+			background-color: @color !important;
+		}
+	}
+}
+
+// Alternative Font
+.alternative-font {
+	color: @color-primary;
+}
+
+// Blockquote
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.blockquote-@{name} {
+			border-color: @color !important;
+		}
+	}
+}
+
+// Drop Caps
+p.drop-caps {
+	&:first-letter {
+		color: @color-primary;
+	}
+	&.drop-caps-style-2:first-letter {
+		background-color: @color-primary;
+	}
+}
+
+// Nav
+.nav-pills > li.active > a,
+.nav-pills .nav-link.active {
+	background-color: @color-primary;
+	&:hover, &:focus {
+		background-color: @color-primary;
+	}
+}
+
+.nav-active-style-1 {
+	> li {
+		> a {
+			&:hover,
+			&:focus,
+			&.active {
+				border-bottom-color: @color-primary;
+			}
+		}
+	}
+}
+
+// Nav Pills
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.nav-pills-@{name} {
+			a {
+				color: @color;
+				&:hover {
+					color: lighten(@color, 5%);
+				}
+				&:focus {
+					color: lighten(@color, 5%);
+				}
+				&:active {
+					color: darken(@color, 5%);
+				}
+			}
+			.nav-link.active,
+			> li.active > a {
+				background-color: @color;
+				&:hover, &:focus {
+					background-color: @color;
+				}
+			}
+		}
+	}
+}
+
+// Sort
+.sort-source-wrapper .nav > li.active > a {
+	color: @color-primary;
+	&:hover, &:focus {
+		color: @color-primary;
+	}
+}
+
+.sort-source {
+	 &.sort-source-style-2 {
+		 > li {
+			&.active {
+				> a {
+					&:after {
+						border-top-color: @color-primary;
+					}
+				}
+			}
+		 }
+	 }
+}
+
+// Badges
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.badge-@{name} {
+			background-color: @color;
+		}
+	}
+}
+
+// Buttons
+.btn-link {
+	color: @color-primary;
+	&:hover {
+		color: lighten(@color-primary, 5%);
+	}
+	&:active {
+		color: darken(@color-primary, 5%);
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.btn-@{name} {
+			.buttonBackground(@color, @color-inverse);
+		}
+
+		.btn-@{name}-scale-2 {
+			.buttonBackground(darken(@color, 10%), @color-inverse);
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.btn-outline {
+			&.btn-@{name} {
+				.buttonOutlineBackground(@color, @color-inverse);
+			}
+		}
+	}
+}
+
+// Pagination
+.pagination {
+	> li > a,
+	> li > span,
+	> li > a:hover,
+	> li > span:hover,
+	> li > a:focus,
+	> li > span:focus {
+		color: @color-primary;
+	}
+	> .active > a,
+	> .active > span,
+	> .active > a:hover,
+	> .active > span:hover,
+	> .active > a:focus,
+	> .active > span:focus,
+	.page-item.active .page-link {
+		background-color: @color-primary !important;
+		border-color: @color-primary;
+	}
+}
+
+body.dark .pagination {
+	> li > a,
+	> li > span,
+	> li > a:hover,
+	> li > span:hover,
+	> li > a:focus,
+	> li > span:focus {
+		color: @color-primary;
+	}
+	> .active > a,
+	> .active > span,
+	> .active > a:hover,
+	> .active > span:hover,
+	> .active > a:focus,
+	> .active > span:focus {
+		background-color: @color-primary;
+		border-color: @color-primary;
+	}
+}
+
+.pagination > .active > a,
+body.dark .pagination > .active > a {
+	border-color: @color-primary @color-primary darken(@color-primary, 10%);
+	.buttonBackground(@color-primary);
+}
+
+// Alerts
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.alert-@{name} {
+			background-color: @color;
+			border-color: darken(@color, 3%);
+			color: @color-inverse;
+
+			.alert-link {
+				color: @color-inverse;
+			}
+		}
+	}
+}
+
+// Progress Bar
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.progress-bar-@{name} {
+			background-color: @color;
+		}
+	}
+}
+
+// Sections
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		section.section-@{name} {
+			background-color: @color !important;
+			border-color: darken(@color, 5%) !important;
+
+			h1, h2, h3, h4, h5, h6 {
+				color: @color-inverse;
+			}
+
+			p {
+				color: darken(@color-inverse, 10%);
+			}
+		}
+
+		section.section-@{name}-scale-2 {
+			background-color: darken(@color, 10%) !important;
+			border-color: darken(@color, 15%) !important;
+
+			.sort-source {
+				 &.sort-source-style-2 {
+					 > li {
+						&.active {
+							> a {
+								&:after {
+									border-top-color: darken(@color, 10%);
+								}
+							}
+						}
+					 }
+				 }
+			}
+		}
+	}
+}
+
+html {
+	.for(@color-background-scale); .-each(@value) {
+		@index:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		section.section-default-scale-@{index} {
+			background-color: @color !important;
+			border-top-color: darken(@color, 3%) !important;
+		}
+	}
+}
+
+html.dark {
+	.for(@color-background-scale-dark); .-each(@value) {
+		@index:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		section.section-default-scale-@{index} {
+			background-color: @color !important;
+			border-top-color: darken(@color, 3%) !important;
+		}
+	}
+}
+
+
+// Page Header
+section.page-header {
+	h1 {
+		border-bottom-color: @color-primary;
+	}
+
+	&.custom-product {
+		background-color: darken(@color-primary, 5%);
+		border-top-color: darken(@color-primary, 2%);
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.page-header-color.page-header-@{name} {
+			background-color: @color;
+			border-bottom-color: @color;
+			color: @color-inverse;
+			h1 {
+				color: @color-inverse;
+				span {
+					color: @color-inverse;
+				}
+			}
+			a {
+				color: @color-inverse;
+			}
+			.breadcrumb > .active {
+				color: @color-inverse;
+			}
+		}
+	}
+}
+
+// Toggle
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.toggle-@{name} {
+			.toggle {
+				label {
+					color: @color;
+					border-left-color: @color;
+					border-right-color: @color;
+				}
+				&.active > label {
+					background-color: @color;
+					border-color: @color;
+					color: @color-inverse;
+				}
+			}
+			&.toggle-simple .toggle > label:after {
+				background-color: @color;
+			}
+		}
+	}
+}
+
+// Thumb
+.thumb-info {
+	.thumb-info-type {
+		background-color: @color-primary;
+	}
+	.thumb-info-action-icon {
+		background-color: @color-primary;
+	}
+}
+
+.thumb-info-social-icons a {
+	background-color: @color-primary;
+}
+
+.thumbnail .zoom {
+	background-color: @color-primary;
+}
+
+.img-thumbnail .zoom {
+	background-color: @color-primary;
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.thumb-info .thumb-info-action-icon-@{name} {
+			background-color: @color;
+			i {
+				color: @color-inverse;
+			}
+		}
+	}
+}
+
+.thumb-info-ribbon {
+	background: @color-primary;
+	&:before {
+		border-right-color: darken(@color-primary, 15%);
+		border-left-color: darken(@color-primary, 15%);
+	}
+}
+
+// Inverted
+.inverted {
+	background-color: @color-primary;
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.inverted-@{name} {
+			background-color: @color;
+		}
+	}
+}
+
+// Carousel
+.owl-carousel .owl-dots .owl-dot.active span,
+.owl-carousel .owl-dots .owl-dot:hover span {
+	background-color: darken(@color-primary, 6%);
+}
+
+.owl-carousel.show-nav-title .owl-nav button[class*="owl-"] {
+	color: @color-primary;
+	&:hover,
+	&.hover {
+		color: @color-primary;
+	}
+}
+
+.owl-carousel .owl-nav button[class*="owl-"] {
+
+	background-color: @color-primary;
+	border-color: @color-primary @color-primary darken(@color-primary, 10%);
+	color: contrast(@color-primary, #777, #FFF);
+
+	&:hover,
+	&.hover {
+		background-color: lighten(@color-primary, 7.5%);
+		border-color: lighten(@color-primary, 10%) lighten(@color-primary, 10%) @color-primary;
+		color: contrast(@color-primary, #777, #FFF);
+	}
+
+	&:active,
+	&.active {
+		background-color: darken(@color-primary, 7.5%);
+		background-image: none;
+		border-color: darken(@color-primary, 10%) darken(@color-primary, 10%) darken(@color-primary, 20%);
+	}
+
+}
+
+.owl-carousel {
+	&.nav-style-1 {
+		.owl-nav {
+			.owl-next,
+			.owl-prev {
+				&:hover,
+				&:active {
+					color: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+// Tabs
+html body,
+html.dark body {
+	.tabs {
+		.nav-tabs {
+			.nav-link, .nav-link:hover {
+				color: @color-primary;
+			}
+
+			.nav-link:hover,
+			.nav-link:focus {
+				border-top-color: @color-primary;
+			}
+
+			li.active .nav-link {
+				border-top-color: @color-primary;
+				color: @color-primary;
+			}
+			&.nav-justified {
+				.nav-link:hover,
+				.nav-link:focus {
+					border-top-color: @color-primary;
+				}
+			}
+		}
+		&.tabs-bottom {
+			.nav-tabs {
+				li .nav-link:hover,
+				li.active .nav-link,
+				li.active .nav-link:hover,
+				li.active .nav-link:focus {
+					border-bottom-color: @color-primary;
+				}
+			}
+		}
+		&.tabs-vertical.tabs-left {
+			.nav-tabs {
+				li .nav-link:hover,
+				li.active .nav-link,
+				li.active .nav-link:hover,
+				li.active .nav-link:focus {
+					border-left-color: @color-primary;
+				}
+			}
+		}
+		&.tabs-vertical.tabs-right {
+			.nav-tabs {
+				li .nav-link:hover,
+				li.active .nav-link,
+				li.active .nav-link:hover,
+				li.active .nav-link:focus {
+					border-right-color: @color-primary;
+				}
+			}
+		}
+		&.tabs-simple {
+			.nav-tabs {
+				> li.active .nav-link,
+				> li.active .nav-link:focus,
+				> li .nav-link:hover,
+				> li.active .nav-link:hover {
+					border-top-color: @color-primary;
+					color: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+html body,
+html.dark body {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.tabs-@{name} {
+			.nav-tabs {
+				&,
+				&.nav-justified {
+					li {
+						.nav-link {
+							&,
+							&:hover {
+								color: @color;
+							}
+
+							&:hover {
+								border-top-color: @color;
+							}
+						}
+
+						&.active {
+							.nav-link,
+							.nav-link:hover,
+							.nav-link:focus {
+								border-top-color: @color;
+								color: @color;
+							}
+						}
+					}
+				}
+			}
+
+			&.tabs-bottom {
+				.nav-tabs {
+					&,
+					&.nav-justified {
+						li {
+							.nav-link {
+								&:hover {
+									border-bottom-color: @color;
+								}
+							}
+
+							&.active {
+								.nav-link,
+								.nav-link:hover,
+								.nav-link:focus {
+									border-bottom-color: @color;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			&.tabs-vertical {
+				&.tabs-left {
+					li {
+						.nav-link {
+							&:hover {
+								border-left-color: @color;
+							}
+						}
+
+						&.active {
+							.nav-link,
+							.nav-link:hover,
+							.nav-link:focus {
+								border-left-color: @color;
+							}
+						}
+					}
+				}
+
+				&.tabs-right {
+					li {
+						.nav-link {
+							&:hover {
+								border-right-color: @color;
+							}
+						}
+
+						&.active {
+							.nav-link,
+							.nav-link:hover,
+							.nav-link:focus {
+								border-right-color: @color;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+html[dir="rtl"] {
+	.tabs {
+		&.tabs-vertical.tabs-left {
+			.nav-tabs {
+				li .nav-link:hover,
+				li.active .nav-link,
+				li.active .nav-link:hover,
+				li.active .nav-link:focus {
+					border-right-color: @color-primary;
+					border-left-color: transparent;
+				}
+			}
+		}
+		&.tabs-vertical.tabs-right {
+			.nav-tabs {
+				li .nav-link:hover,
+				li.active .nav-link,
+				li.active .nav-link:hover,
+				li.active .nav-link:focus {
+					border-right-color: transparent;
+					border-left-color: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+// Lists
+.list {
+	&.list-icons {
+		li {
+			&, a:first-child {
+				> .fa:first-child,
+				> .fas:first-child,
+				> .far:first-child,
+				> .fal:first-child,
+				> .fab:first-child,
+				> .icons:first-child {
+					color: @color-primary;
+					border-color: @color-primary;
+				}
+			}
+		}
+		&.list-icons-style-3 {
+			li {
+				&, a:first-child {
+					> .fa:first-child,
+					> .fas:first-child,
+					> .far:first-child,
+					> .fal:first-child,
+					> .fab:first-child,
+					> .icons:first-child {
+						background-color: @color-primary;
+					}
+				}
+			}
+		}
+	}
+	&.list-ordened {
+		li {
+			&:before {
+				color: @color-primary;
+				border-color: @color-primary;
+			}
+		}
+		&.list-ordened-style-3 {
+			li {
+				&:before {
+					background-color: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.list-@{name} {
+			&.list-icons {
+				li {
+					&, a:first-child {
+						> .fa:first-child,
+						> .fas:first-child,
+						> .far:first-child,
+						> .fal:first-child,
+						> .fab:first-child,
+						> .icons:first-child {
+							color: @color;
+							border-color: @color;
+						}
+					}
+				}
+				&.list-icons-style-3 {
+					li {
+						&, a:first-child {
+							> .fa:first-child,
+							> .fas:first-child,
+							> .far:first-child,
+							> .fal:first-child,
+							> .fab:first-child,
+							> .icons:first-child {
+								background-color: @color;
+								color: @color-inverse;
+							}
+						}
+					}
+				}
+			}
+			&.list-ordened {
+				li {
+					&:before {
+						color: @color;
+					}
+				}
+				&.list-ordened-style-3 {
+					li {
+						&:before {
+							background-color: @color;
+							color: @color-inverse;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Parallax
+.parallax blockquote i.fa-quote-left {
+	color: @color-primary;
+}
+
+// Video
+section.video blockquote i.fa-quote-left {
+	color: @color-primary;
+}
+
+// Accordion
+.accordion {
+	.card-header a {
+		color: @color-primary;
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.accordion {
+			&.accordion-@{name} {
+				.card-header {
+					background-color: @color !important;
+					a {
+						color: @color-inverse;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Dividers
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.divider {
+			&.divider-@{name} {
+				.fa, .fas, .far, .fal, .fab, .icons {
+					color: @color;
+				}
+				&.divider-small {
+					hr {
+						background: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.divider {
+			&.divider-style-2 {
+				&.divider-@{name} {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						background: @color;
+						color: @color-inverse;
+					}
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.divider {
+			&.divider-style-3 {
+				&.divider-@{name} {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						border-color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Header Tip
+#header {
+
+	.tip {
+		background: @color-primary;
+		color: @color-primary-inverse;
+		&:before {
+			border-right-color: @color-primary;
+			border-left-color: transparent;
+		}
+	}
+
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		#header {
+
+			.tip-@{name} {
+				background: @color !important;
+				color: @color-inverse !important;
+				&:before {
+					border-right-color: @color !important;
+				}
+			}
+
+		}
+	}
+}
+
+html[dir="rtl"] {
+	#header {
+
+		.tip {
+			&:before {
+				border-left-color: @color-primary;
+			}
+
+			&.skin {
+				&:before {
+					border-left-color: @color-primary;
+				}
+			}
+		}
+
+	}
+
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		#header {
+
+			.tip-@{name} {
+				&:before {
+					border-left-color: @color !important;
+					border-right-color: transparent !important;
+				}
+			}
+
+		}
+	}
+}
+
+// Header Button Collapse
+#header {
+
+	.header-btn-collapse-nav {
+		background: @color-primary;
+	}
+
+}
+
+// Header Nav Main
+@media (min-width: 992px) {
+	#header {
+
+		// Header Nav Main
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							color: @color-primary;
+							&.dropdown-toggle {
+								&:after {
+									border-color: @color-primary transparent transparent transparent;
+								}
+							}
+							&.active {
+								background: @color-primary;
+							}
+						}
+						&.open, &:hover {
+							> a {
+								background: @color-primary;
+							}
+						}
+						&.dropdown {
+							.dropdown-menu {
+								border-top-color: @color-primary;
+								li {
+									&.dropdown-submenu {
+										> a {
+											&:after {
+												border-color: transparent transparent transparent @color-primary;
+											}
+										}
+									}
+								}
+							}
+
+							&.open, &:hover {
+								> a {
+									&:before {
+										border-bottom-color: @color-primary;
+									}
+								}
+							}
+						}
+						.dropdown-menu {
+							border-top-color: @color-primary;
+							li {
+								&.dropdown-submenu {
+									&.dropdown-reverse {
+										> a {
+											&:after {
+												border-color: transparent @color-primary transparent transparent !important;
+											}
+										}
+									}
+								}
+							}
+						}
+
+						&.dropdown-mega-signin {
+							.dropdown-menu {
+								border-top-color: @color-primary;
+								li {
+									a {
+										color: @color-primary;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		.header-nav {
+
+			// Header Nav Stripe
+			&.header-nav-stripe {
+				nav {
+					> ul {
+						> li {
+							> a {
+								&.active {
+									color: @color-primary;
+									&.dropdown-toggle:after {
+										border-color: @color-primary transparent transparent transparent;
+									}
+								}
+							}
+							&:hover, 
+							&.open {
+								> a {
+									background-color: @color-primary;
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Header Nav Top Line
+			&.header-nav-top-line {
+				nav {
+					> ul {
+						li {
+							> a {
+								&.active {
+									color: @color-primary;
+									&:before {
+										background: @color-primary;
+									}
+									&.dropdown-toggle {
+										&:after {
+											border-color: @color-primary transparent transparent transparent;
+										}
+									}
+								}
+							}
+							&:hover {
+								> a {
+									color: @color-primary;
+									&:before {
+										background: @color-primary;
+									}
+									&.dropdown-toggle {
+										&:after {
+											border-color: @color-primary transparent transparent transparent;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// Header Nav Dark Dropdown
+			&.header-nav-dark-dropdown {
+				nav {
+					> ul {
+						li {
+							> a {
+								&.active {
+									color: @color-primary;
+									&.dropdown-toggle:after {
+										border-color: @color-primary transparent transparent transparent;
+									}
+								}
+							}
+							&:hover {
+								> a {
+									color: @color-primary;
+
+									&.dropdown-toggle {
+										&:after {
+											border-color: @color-primary transparent transparent transparent;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	html {
+		&.side-header {
+			#header {
+				.header-nav-main {
+					nav > ul > {
+						li.dropdown {
+							&.open > .dropdown-menu,
+							&:hover > .dropdown-menu {
+								border-left-color: @color-primary;
+							}
+							> a.dropdown-toggle {
+								&:after {
+									border-color: transparent transparent transparent @color-primary;
+								}
+							}	
+							&.active, &:hover {
+								> a.dropdown-toggle {
+									&:after {
+										border-color: transparent transparent transparent @color-primary-inverse;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		&.side-header-right {
+			#header {
+				.header-nav-main {
+					nav > ul > {
+						li.dropdown {
+							&.open > .dropdown-menu,
+							&:hover > .dropdown-menu {
+								border-right-color: @color-primary;
+							}
+							> a.dropdown-toggle {
+								&:after {
+									border-color: transparent @color-primary transparent transparent;
+								}
+							}
+							&.active, &:hover {
+								> a.dropdown-toggle {
+									&:after {
+										border-color: transparent @color-primary-inverse transparent transparent;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+// Header Nav Main Colors
+@media (min-width: 992px) {
+
+	html {
+		.for(@colors-list); .-each(@value) {
+			@name:  extract(@value, 1);
+			@color:  extract(@value, 2);
+			@color-inverse:  extract(@value, 3);
+
+			#header {
+
+				// Header Nav Main
+				.header-nav-main {
+					nav {
+						> ul {
+							> li {
+								> a {
+									&.active {
+										&.dropdown-toggle {
+											&:after {
+												border-color: @color transparent transparent transparent;
+											}
+										}
+									}
+								}
+								&:hover {
+									> a {
+										&.dropdown-toggle {
+											&:after {
+												border-color: @color transparent transparent transparent;
+											}
+										}
+									}
+								}
+								&.dropdown-full-color.dropdown-@{name} {
+									> a {
+										&.active {
+											background: @color;
+											color: @color-inverse;
+										}
+									}
+									&:hover {
+										> a {
+											background: @color;
+											color: @color-inverse;
+										}
+									}
+									a {
+										color: @color;
+										&:focus, &:hover {
+											background: @color;
+											color: @color-inverse;
+										}
+										&:after {
+											border-color: @color transparent transparent transparent;
+										}
+									}
+									.dropdown-menu {
+										border-top-color: @color;
+										background-color: @color;
+										li {
+											a {
+												color: @color-inverse;
+												border-bottom-color: lighten(@color, 5%);
+											}
+											&:hover {
+												> a {
+													background: lighten(@color, 5%);
+												}
+											}
+											&.dropdown-submenu {
+												> a {
+													&:after {
+														border-color: transparent transparent transparent @color-inverse;
+													}
+												}
+											}
+										}
+									}
+
+									&.open, &:hover {
+										> a {
+											&:before {
+												border-bottom-color: @color;
+											}
+										}
+									}
+								}
+								&.dropdown-full-color.dropdown-mega.dropdown-@{name} {
+									.dropdown-mega-sub-title {
+										color: @color-inverse;
+										opacity: 0.70;
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
+			
+		}
+	}
+
+	html[dir="rtl"] {
+		#header {
+
+			// Header Nav Main
+			.header-nav-main {
+				nav {
+					> ul {
+						> li {
+							&.dropdown {
+								.dropdown-menu {
+									li {
+										&.dropdown-submenu {
+											> a {
+												&:after {
+													border-color: transparent @color-primary transparent transparent;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}
+	}
+}
+
+// Header Nav Main Mobile
+@media (max-width: 991px) {
+
+	#header {
+
+		// Header Nav Main
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							color: @color-primary;
+							&:active {
+								color: @color-primary;
+							}
+							&.active {
+								background: @color-primary;
+								&:focus, &:hover {
+									background: @color-primary;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+}
+
+// Header Nav Main Mobile Colors
+@media (max-width: 991px) {
+	html {
+		.for(@colors-list); .-each(@value) {
+			@name:  extract(@value, 1);
+			@color:  extract(@value, 2);
+			@color-inverse:  extract(@value, 3);
+
+			#header {
+
+				// Header Nav Main
+				.header-nav-main {
+					nav {
+						> ul {
+							> li {
+								&.dropdown-full-color.dropdown-@{name} {
+									> a {
+										color: @color;
+										&.active {
+											background: @color;
+											color: @color-inverse;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+
+			}
+			
+		}
+	}
+}
+
+// Header Top
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		#header {
+
+			// Header Nav Main
+			.header-top.header-top-@{name} {
+				background: @color;
+				border-top-color: darken(@color, 5%);
+				.header-nav-top {
+					ul {
+						> li {
+							&.open {
+								> a {
+									background: lighten(@color, 5%);
+								}
+							}
+							&, &.open {
+								> a:hover, > a:focus {
+									background: lighten(@color, 5%);
+								}
+							}
+						}
+					}
+				}
+				.dropdown-menu {
+					background: lighten(@color, 5%);
+					border-color: lighten(@color, 5%);
+					a:hover, a:focus {
+						background: lighten(@color, 10%) !important;
+					}
+				}
+			}
+
+		}
+		
+	}
+}
+
+// Header Navbar
+@media (min-width: 992px) {
+	html {
+		.for(@colors-list); .-each(@value) {
+			@name:  extract(@value, 1);
+			@color:  extract(@value, 2);
+			@color-inverse:  extract(@value, 3);
+
+			#header {
+
+				.header-nav-bar-@{name} {
+					background: @color !important;
+					color: @color-inverse !important;
+				}
+
+			}
+		}
+	}
+}
+
+// Header Nav Main Light
+@media (min-width: 992px) {
+	#header {
+
+		.header-nav-main.header-nav-main-light {
+			nav {
+				> ul {
+					> li {
+						&.open, &:hover {
+							> a {
+								color: @color-primary;
+
+								&.dropdown-toggle {
+									&:after {
+										border-color: @color-primary transparent transparent transparent;
+									}
+								}
+							}
+						}
+
+						> a {
+							&.active {
+								color: @color-primary;
+
+								&.dropdown-toggle {
+									&:after {
+										border-color: @color-primary transparent transparent transparent;
+									}
+								}
+							}	
+						}
+						
+					}
+				}
+			}
+		}
+
+	}
+}
+
+// Transparent Headers
+@media (min-width: 992px) {
+
+	// Transparent
+	html {
+
+		&:not(.sticky-header-active) {
+			#header {
+				&.header-transparent:not(.header-transparent-not-fixed) {
+					.header-nav-main {
+						nav {
+							> ul {
+								> li {
+									> a {
+										&.active {
+											color: @color-primary;
+											&.dropdown-toggle:after {
+												border-color: @color-primary transparent transparent transparent;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	// Semi Transparent
+	html {
+
+		#header {
+			&.header-semi-transparent {
+				.header-nav-main {
+					nav {
+						> ul {
+							> li {
+								> a {
+									&.active {
+										color: @color-primary;
+										&.dropdown-toggle:after {
+											border-color: @color-primary transparent transparent transparent;
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	// Semi Transparent Light
+	html {
+
+		&:not(.sticky-header-active) {
+			#header {
+				&.header-semi-transparent-light {
+					.header-nav-main {
+						nav {
+							> ul {
+								> li {
+									> a {
+										&.active {
+											color: @color-primary;
+											&.dropdown-toggle:after {
+												border-color: @color-primary transparent transparent transparent;
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+	}
+}
+
+// Testimonial
+.testimonial {
+	blockquote {
+		background: lighten(@color-primary, 5%);
+	}
+
+	.testimonial-arrow-down {
+		border-top-color: lighten(@color-primary, 5%);
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.testimonial-@{name} {
+			blockquote {
+				background: lighten(@color, 5%);
+			}
+
+			.testimonial-arrow-down {
+				border-top-color: lighten(@color, 5%);
+			}
+		}
+
+	}
+}
+
+// Circular Bar
+.circular-bar.only-icon {
+	.fa, .fas, .far, .fal, .fab, .icons {
+		color: @color-primary;
+	}
+}
+
+// Counters
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.counters {
+			.counter-@{name} {
+				.fa, .fas, .far, .fal, .fab, .icons, strong {
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+// Icons
+.icon-featured {
+	background-color: @color-primary;
+}
+
+// Featured Box
+.featured-box-primary {
+	.icon-featured {
+		background-color: @color-primary;
+		&:after {
+			border-color:  @color-primary;
+		}		
+	}
+	h4 {
+		color: @color-primary;
+	}
+	.box-content {
+		border-top-color: @color-primary;
+	}
+}
+
+// Featured Box - Colors
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.featured-box-@{name} {
+			.icon-featured {
+				background-color: @color;
+			}
+			h4 {
+				color: @color;
+			}
+			.box-content {
+				border-top-color: @color;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.featured-boxes-style-3 {
+			.featured-box.featured-box-@{name} {
+				.icon-featured {
+					border-color: @color;
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.featured-boxes-style-4 {
+			.featured-box.featured-box-@{name} {
+				.icon-featured {
+					border-color: @color;
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.featured-boxes-style-5 {
+			.featured-box.featured-box-@{name} {
+				.icon-featured {
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.featured-boxes-style-6 {
+			.featured-box.featured-box-@{name} {
+				.icon-featured {
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.featured-boxes-style-8 {
+			.featured-box.featured-box-@{name} {
+				.icon-featured {
+					color: @color;
+				}
+			}
+		}
+	}
+}
+
+// Featured Box - Effects
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.featured-box-effect-2.featured-box-@{name} {
+			.icon-featured:after {
+				box-shadow: 0 0 0 3px @color;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.featured-box-effect-3.featured-box-@{name} {
+			.icon-featured:after {
+				box-shadow: 0 0 0 10px @color;
+			}
+			&:hover {
+				.icon-featured {
+					background: @color !important;
+				}
+			}
+		}
+	}
+}
+
+// Feature Box
+.feature-box {
+	.feature-box-icon {
+		background-color: @color-primary;
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			.feature-box-icon {
+				background-color: @color;
+			}
+		}
+	}
+}
+
+.feature-box {
+	&.feature-box-style-2 {
+		.feature-box-icon {
+			.fa, .fas, .far, .fal, .fab, .icons {
+				color: @color-primary;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			&.feature-box-style-2 {
+				.feature-box-icon {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+.feature-box {
+	&.feature-box-style-3 {
+		.feature-box-icon {
+			border-color: @color-primary;
+			.fa, .fas, .far, .fal, .fab, .icons {
+				color: @color-primary;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			&.feature-box-style-3 {
+				.feature-box-icon {
+					border-color: @color;
+					.fa, .fas, .far, .fal, .fab, .icons {
+						color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+.feature-box {
+	&.feature-box-style-4 {
+		.feature-box-icon {
+			.fa, .fas, .far, .fal, .fab, .icons {
+				color: @color-primary;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			&.feature-box-style-4 {
+				.feature-box-icon {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+.feature-box {
+	&.feature-box-style-5 {
+		.feature-box-icon {
+			.fa, .fas, .far, .fal, .fab, .icons {
+				color: @color-primary;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			&.feature-box-style-5 {
+				.feature-box-icon {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.feature-box-@{name} {
+			&.feature-box-style-6 {
+				.feature-box-icon {
+					.fa, .fas, .far, .fal, .fab, .icons {
+						color: @color;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Featured Boxes Full
+html {
+	.for(@colors-scale-list); .-each(@value) {
+		@index:  extract(@value, 1);
+		@color:  extract(@value, 2);
+
+		.featured-boxes-full-scale {
+			> .featured-box-full-primary:nth-child(@{index}) {
+				background-color: @color;
+			}
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.featured-boxes-full {
+			.featured-box-full-@{name} {
+				background-color: @color;
+				color: @color-inverse;
+			}
+		}
+	}
+}
+
+// Pricing Tables
+.pricing-table {
+	.most-popular {
+		border-color: @color-primary;
+		h3 {
+			background-color: @color-primary;
+		}
+	}
+
+	&.princig-table-flat {
+		.plan {
+			h3 {
+				background-color: @color-primary;
+				span {
+					background: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+// Call to Action
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+		.call-to-action {
+			&.featured {
+				&.featured-@{name} {
+					border-top-color: @color;
+				}
+			}
+			&.call-to-action-@{name} {
+				background: @color;
+			}
+			&.with-full-borders-@{name} {
+				border-color: @color;
+			}
+			&.call-to-action-@{name} {
+				background: @color;
+				h3, p {
+					color: @color-inverse;
+				}
+			}
+		}
+	}
+}
+
+// Timeline
+section.timeline .timeline-box.left:before,
+section.timeline .timeline-box.right:before {
+	background: @color-primary;
+	box-shadow: 0 0 0 3px #FFF, 0 0 0 6px @color-primary;
+}
+
+// History
+ul.history li .featured-box .box-content {
+	border-top-color: @color-primary;
+}
+
+// Blog
+.recent-posts .date, article.post .post-date {
+	.month {
+		background-color: @color-primary;
+	}
+	.day {
+		color: @color-primary;
+	}
+}
+
+// Home
+.slider .tp-bannertimer {
+	background-color: @color-primary;
+}
+
+.home-concept strong {
+	color: @color-primary;
+}
+
+// Home Intro
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.home-intro-@{name} {
+			background: @color;
+		}
+		
+	}
+}
+
+.home-intro p em {
+	color: lighten(@color-primary, 10%);
+}
+
+// Hover Effects
+.hover-effect-1 {
+	&:hover {
+		a {
+			color: @color-primary !important;
+		}
+	}
+}
+
+// Slider
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		.slider-container {
+			.tp-caption-overlay-@{name} {
+				background: @color;
+			}
+			.tp-caption-overlay-opacity-@{name} {
+				background: fade(@color, 40%);
+			}
+		}
+		
+	}
+}
+
+// Arrows
+.tparrows {
+	&.tparrows-carousel {
+		&.tp-leftarrow, &.tp-rightarrow {
+			.buttonBackground(@color-primary);
+		}
+	}
+}
+
+// Shop
+.shop {
+	.products .product .onsale {
+		background-color: @color-primary;
+		border-bottom-color: darken(@color-primary, 8%);
+	}
+
+	.star-rating span,
+	.cart-totals tr.total .amount {
+		color: @color-primary;
+	}
+}
+
+// Footer
+#footer {
+	.footer-ribbon {
+		background: @color-primary;
+	}
+
+	.footer-ribbon:before {
+		border-right-color: darken(@color-primary, 15%);
+		border-left-color: darken(@color-primary, 15%);
+	}
+
+	&.light {
+		h1,
+		h2,
+		h3,
+		h4,
+		a {
+			color: @color-primary;
+		}
+	}
+
+	&.color {
+		background: @color-primary;
+		border-top-color: @color-primary;
+		.footer-ribbon {
+			background: darken(@color-primary, 10%);
+		}
+
+		.footer-ribbon:before {
+			border-right-color: darken(@color-primary, 25%);
+		}
+		.footer-copyright {
+			background: darken(@color-primary, 5%);	
+			border-top-color: darken(@color-primary, 5%);
+		}
+	}
+}
+
+html {
+	.for(@colors-list); .-each(@value) {
+		@name:  extract(@value, 1);
+		@color:  extract(@value, 2);
+		@color-inverse:  extract(@value, 3);
+
+		#footer {
+			&.color-@{name} {
+				background: @color;
+				border-top-color: @color;
+				.footer-ribbon {
+					background: darken(@color, 10%);
+				}
+
+				.footer-ribbon:before {
+					border-right-color: darken(@color, 25%);
+				}
+				.footer-copyright {
+					background: darken(@color, 5%);	
+					border-top-color: darken(@color, 5%);
+				}
+			}
+		}
+	}
+}
+
+// Font Awesome
+.sample-icon-list {
+	.sample-icon a {
+		&:hover {
+			background-color: @color-primary;
+		}
+	}
+}
+
+// Boxed
+html.boxed .body {
+	border-top-color: @color-primary;
+}
+
+// Border Radius
+& when (@border-radius = 0) {
+
+	// Bootstrap
+	.rounded,
+	.img-thumbnail,
+	.img-thumbnail img,
+	code,
+	pre,
+	.form-control,
+	.form-control-sm,
+	.form-control-sm .form-control,
+	.form-control-lg,
+	.form-control-lg .form-control,
+	.form-control-sm, .input-group-sm > .form-control,
+	.input-group-sm > .input-group-addon,
+	.input-group-sm > .input-group-btn > .btn,
+	.form-control-lg, .input-group-lg > .form-control,
+	.input-group-lg > .input-group-addon,
+	.input-group-lg > .input-group-btn > .btn,
+	.invalid-tooltip,
+	.btn,
+	.btn-group-4 > .btn,
+	.btn-sm,
+	.btn-group-2 > .btn,
+	.btn-xs,
+	.btn-group-1 > .btn,
+	.btn-lg,
+	.btn-group-lg > .btn,
+	.btn-sm,
+	.btn-group-sm > .btn,
+	.dropdown-menu,
+	.input-group-4 > .form-control,
+	.input-group-4 > .input-group-addon,
+	.input-group-4 > .input-group-btn > .btn,
+	.input-group-2 > .form-control,
+	.input-group-2 > .input-group-addon,
+	.input-group-2 > .input-group-btn > .btn,
+	.input-group-addon,
+	.input-group-addon.form-control-sm,
+	.input-group-addon.form-control-lg,
+	.nav-tabs > li > a,
+	.nav-tabs.nav-justified > li > a,
+	.nav-pills > li > a,
+	.nav-tabs-justified > li > a,
+	.navbar,
+	.navbar-toggle,
+	.navbar-toggle .icon-bar,
+	.breadcrumb,
+	.pagination,
+	.pager li > a,
+	.pager li > span,
+	.label,
+	.badge,
+	.container .jumbotron,
+	.container-fluid .jumbotron,
+	.thumbnail,
+	.alert,
+	.progress,
+	.card,
+	.accordion .card,
+	.well,
+	.well-lg,
+	.well-sm,
+	.modal-content,
+	.tooltip-inner,
+	.popover,
+	.popover-title,
+	.carousel-indicators li,
+	.pagination > li:first-child > a,
+	.pagination > li:first-child > span,
+	.pagination-lg > li:first-child > a,
+	.pagination-lg > li:first-child > span,
+	.pagination > li:last-child > a,
+	.pagination > li:last-child > span,
+	.pagination-lg > li:last-child > a,
+	.pagination-lg > li:last-child > span,
+	#header .header-search .form-control,
+	#header .header-nav-main nav > ul > li > a,
+	#header .header-nav-main nav > ul > li.dropdown .dropdown-menu,
+	#header .header-nav-main nav > ul > li.dropdown .dropdown-menu li.dropdown-submenu > .dropdown-menu,
+	#header .header-nav-main nav > ul > li.dropdown-mega > .dropdown-menu,
+	#header .header-nav-main nav > ul > li.dropdown-mega .dropdown-mega-sub-nav > li > a,
+	#header.header-transparent .header-nav-main,
+	#header.header-semi-transparent .header-nav-main,
+	#header.header-semi-transparent-light .header-nav-main,
+	#header .header-nav-main nav > ul > li.dropdown-mega.dropdown-mega-signin .dropdown-menu,
+	#header .header-nav-main nav > ul > li.dropdown.open > a,
+	#header .header-nav-main nav > ul > li.dropdown:hover > a,
+	#header .header-nav-top .dropdown-menu,
+	.slider-container .tparrows,
+	.nivo-slider .theme-default .nivoSlider,
+	.nivo-slider .theme-default .nivoSlider img,
+	.home-intro-compact,
+	html.dark #header,
+	html.boxed .body,
+	blockquote.with-borders,
+	p.drop-caps.drop-caps-style-2:first-child:first-letter,
+	.btn-3d,
+	select,
+	.captcha-refresh,
+	.featured-icon,
+	.accordion .card-header,
+	.tabs,
+	.nav-tabs li a,
+	.tab-content,
+	.tabs.tabs-bottom .tab-content,
+	.tabs.tabs-bottom .nav-tabs li a,
+	.tabs-left .tab-content,
+	.tabs-left .nav-tabs > li:first-child a,
+	.tabs-left .nav-tabs > li:last-child a,
+	.tabs-right .tab-content,
+	.tabs-right .nav-tabs > li:first-child a,
+	.tabs-right .nav-tabs > li:last-child a,
+	.nav-tabs.nav-justified li:first-child a,
+	.nav-tabs.nav-justified li:first-child a:hover,
+	.nav-tabs.nav-justified li:last-child a,
+	.nav-pills .nav-link,
+	.nav-tabs.nav-justified li:last-child a:hover,
+	.tabs.tabs-bottom .nav.nav-tabs.nav-justified li:first-child a,
+	.tabs.tabs-bottom .nav.nav-tabs.nav-justified li:last-child a,
+	.tabs-navigation,
+	.tabs-navigation .nav-tabs > li:first-child a,
+	.tabs-navigation .nav-tabs > li:last-child a,
+	.nav-pills .nav-link,
+	.navbar-toggler,
+	.card,
+	.card-header:first-child,
+	.card-footer:last-child,
+	.card-img,
+	.badge,
+	.badge-pill,
+	.jumbotron,
+	.alert,
+	.progress,
+	.modal-content,
+	.tooltip-inner,
+	.popover,
+	.rounded,
+	.toggle > label,
+	.toggle.toggle-simple .toggle > label,
+	.toggle.toggle-simple .toggle > label:after,
+	.owl-carousel .owl-nav button[class*="owl-"],
+	.owl-carousel.rounded-nav .owl-nav button[class*="owl-"],
+	.owl-carousel.rounded-nav .owl-nav button[class*="owl-"]:hover,
+	.owl-carousel.full-width .owl-nav button.owl-prev,
+	.owl-carousel.big-nav .owl-nav button.owl-prev,
+	.owl-carousel.full-width .owl-nav button.owl-next,
+	.owl-carousel.big-nav .owl-nav button.owl-next,
+	.embed-responsive.embed-responsive-borders,
+	.pricing-table h3,
+	.pricing-table .plan,
+	.featured-box,
+	.featured-box .box-content,
+	.thumb-info,
+	.thumb-info .thumb-info-wrapper,
+	.thumb-info .thumb-info-wrapper:after,
+	.thumb-info .thumb-info-type,
+	.thumb-info img,
+	section.timeline .timeline-date,
+	section.timeline .timeline-box,
+	.testimonial blockquote,
+	.testimonial.testimonial-style-2 blockquote,
+	.testimonial.testimonial-style-3 blockquote,
+	.testimonial.testimonial-style-4,
+	.testimonial.testimonial-style-4 blockquote,
+	.testimonial.testimonial-style-5 blockquote,
+	.testimonial.testimonial-style-6 blockquote,
+	.container .call-to-action,
+	.progress,
+	.progress.progress-border-radius,
+	.progress.progress-border-radius .progress-bar,
+	.progress-bar,
+	.progress-bar-tooltip,
+	.counters.with-borders .counter,
+	html .scroll-to-top,
+	.google-map.small,
+	.google-map-borders,
+	article.post .post-date .month,
+	article.post .post-date .day,
+	article .post-video,
+	article .post-audio,
+	ul.comments .comment-block,
+	.recent-posts .date .month,
+	#header nav.mega-menu .mega-menu-shop .dropdown-menu,
+	.shop ul.products .product .add-to-cart-product,
+	.product-info,
+	.product-info img,
+	.product-info + .product-info,
+	.img-thumbnail.img-thumbnail-hover-icon:before,
+	.product-thumb-info {
+		border-radius: 0;
+	}
+
+	@media (min-width: 992px) {
+		#header nav.mega-menu ul.nav-main li.mega-menu-item ul.sub-menu a,
+		#header nav.mega-menu ul.nav-main li.mega-menu-fullwidth ul.dropdown-menu,
+		#header.flat-menu nav.mega-menu ul.nav-main li.mega-menu-fullwidth ul.dropdown-menu,
+		#header.flat-menu nav ul.nav-main li a,
+		html.boxed #header.flat-menu .header-top {
+			border-radius: 0;
+		}
+	}
+
+	@media (min-width: 768px) {
+		.nav-tabs.nav-justified > li > a,
+		.nav-tabs-justified > li > a,
+		.navbar {
+			border-radius: 0;
+		}
+	}
+
+	@media (max-width: 575px) {
+		.tabs .nav.nav-tabs.nav-justified li:first-child a,
+		.tabs .nav.nav-tabs.nav-justified li:first-child a:hover,
+		.tabs.tabs-bottom .nav.nav-tabs.nav-justified li:last-child a,
+		.tabs.tabs-bottom .nav.nav-tabs.nav-justified li:last-child a:hover {
+			border-radius: 0;
+		}
+	}
+
+}

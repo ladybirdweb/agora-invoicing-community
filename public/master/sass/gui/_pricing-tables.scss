@@ -1,0 +1,239 @@
+/* Pricing Tables */
+.pricing-table {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+
+	ul {
+		list-style: none;
+		margin: 20px 0 0 0;
+		padding: 0;
+	}
+	li {
+		border-top: 1px solid #ddd;
+		padding: 10px 0;
+		color: #777;
+	}
+	h3 {
+		background-color: #eee;
+		border-radius: corner-values(2px 2px 0 0);
+		font-size: 1.3em;
+		font-weight: normal;
+		margin: -20px -20px 50px -20px;
+		padding: 20px;
+		.desc {
+			font-size: 0.7em;
+			margin-bottom: 0;
+			padding-bottom: 0;
+			color: #777;
+			font-style: normal;
+			text-transform: none;
+			display: block;
+		}
+		span {
+			background: #FFF;
+			border: 5px solid #FFF;
+			border-radius: 100px;
+			box-shadow: 0 5px 20px #ddd inset, 0 3px 0 #999 inset;
+			color: $color-font-default;
+			display: block;
+			font: bold 25px / 92px Georgia, Serif;
+			height: 100px;
+			margin: 20px auto -65px;
+			width: 100px;
+		}
+	}
+	.most-popular {
+		border: 3px solid #CCC;
+		box-shadow: 11px 0 10px -10px rgba(0, 0, 0, 0.1), -11px 0 10px -10px rgba(0, 0, 0, 0.1);
+		padding: 30px 20px;
+		top: -10px;
+		z-index: 2;
+		h3 {
+			.desc {
+				color: #FFF;
+			}
+			background-color: #666;
+			color: #FFF;
+			padding-top: 30px;
+		}
+	}
+	.plan-ribbon-wrapper {
+		height: 88px;
+		overflow: hidden;
+		position: absolute;
+		#{$right}: -3px;
+		top: -5px;
+		width: 85px;
+	}
+
+	.plan-ribbon {
+		@include if-ltr {
+			transform: rotate(45deg);
+		}
+		@include if-rtl {
+			transform: rotate(-45deg);
+		}
+		background-image: linear-gradient(to top, #bfdc7a, #8ebf45);
+		background-color: #bfdc7a;
+		box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+		color: #333;
+		font-size: 14px;
+		#{$left}: -5px;
+		padding: 7px 0;
+		position: relative;
+		text-align: center;
+		text-shadow: rgba(255, 255, 255, 0.5) 0 1px 0;
+		top: 15px;
+		width: 120px;
+		&:before {
+			#{$left}: 0;
+			border-#{$left}: 3px solid transparent;
+			border-#{$right}: 3px solid transparent;
+			bottom: -3px;
+			content: "";
+			position: absolute;
+		}
+		&:after {
+			border-#{$left}: 3px solid transparent;
+			border-#{$right}: 3px solid transparent;
+			bottom: -3px;
+			content: "";
+			position: absolute;
+			#{$right}: 0;
+		}
+	}
+	[class*="col-lg-"] {
+		padding-#{$left}: 0;
+		padding-#{$right}: 0;
+	}
+	.plan {
+		background: #FFF;
+		border: 1px solid #ddd;
+		border-radius: 5px;
+		color: #333;
+		margin-bottom: 35px;
+		margin-#{$right}: 0;
+		padding: 20px;
+		position: relative;
+	}
+	.btn {
+		margin-top: 5px;
+	}
+
+	&.pricing-table-sm {
+		h3 {
+			.desc {
+				font-size: 0.7em;
+			}
+			span {
+				border: 3px solid #FFF;
+				box-shadow: 0 5px 20px #ddd inset, 0 3px 0 #999 inset;
+				font: bold 19px/65px Georgia,serif;
+				height: 70px;
+				margin: 10px auto -65px;
+				width: 70px;
+			}
+		}
+		.most-popular {
+			padding-bottom: 30px;
+		}
+	}
+
+	&.princig-table-flat {
+		.plan {
+			padding-left: 0;
+			padding-right: 0;
+			margin: -1px;
+			h3 {
+				padding-left: 0;
+				padding-right: 0;
+				margin: -20px 0 0;
+				.desc {
+					color: #FFF;
+				}
+				background-color: #666;
+				color: #FFF;
+				padding-top: 30px;
+				text-shadow: 0 1px #555;
+				span {
+					border-radius: 0;
+					border: 0;
+					background: #666;
+					color: #FFF;
+					font-family: $font-primary;
+					font-size: 600;
+					box-shadow: none;
+					width: 100%;
+					font-size: 1.5em;
+					height: auto;
+					line-height: 38px;
+					margin: 0;
+				}
+			}
+			ul {
+				margin-top: 0;
+				margin-bottom: -15px;
+				li {
+					padding: 8px 0;
+				}
+			}
+			&.most-popular {
+				ul {
+					li {
+						padding: 10px 0;
+					}
+				}
+			}
+		}
+	}
+
+	&.spaced {
+		[class*="col-lg-"] {
+			padding-#{$left}: 2px;
+			padding-#{$right}: 2px;
+		}
+	}
+
+	&.no-borders {
+		.plan {
+			border: 0 !important;
+		}
+	}
+}
+
+/* Pricing Tables Boxed */
+html.boxed .pricing-table {
+	.plan, h3 {
+		border-radius: 0;
+	}
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+
+	/* Pricing Tables */
+	.pricing-table {
+		margin-#{$left}: 0;
+		.plan {
+			margin-#{$right}: 0;
+		}
+	}
+
+	html.boxed .pricing-table {
+		margin-#{$left}: 0;
+	}
+
+}
+
+@media (max-width: 575px) {
+
+	/* Pricing Tables */
+	.pricing-table {
+		.most-popular {
+			top: 0;
+		}
+	}
+
+}
+	

@@ -1,9 +1,12 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Checkout
+Checkout | Faveo Helpdesk
 @stop
 @section('page-header')
 Checkout
+@stop
+@section('page-heading')
+ <h1>Checkout</h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -24,20 +27,22 @@ $tax=  0;
                 $sum = 0;
 
 ?>
+<div class="container">
 <div class="row">
 
-    <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                        Review & Payment
-                    </a>
-                </h4>
+    <div class="col-lg-8">
+         <div class="card card-default" style="margin-bottom: 40px;">
+             <div class="card-header">
+              <h4 class="card-title m-0">
+                           
+                        Review &amp; Payment
+                                            
+               </h4>
+                
             </div>
 
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
@@ -57,7 +62,8 @@ $tax=  0;
                 @endif
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -131,46 +137,18 @@ $tax=  0;
 
 
                     </table>
-                    <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
+                    
+                  
                     <div class="col-md-12">
-                        <table class="cart-totals">
-                            <tbody>
-
-                                     
-                                <tr class="total">
-                                    <th>
-                                        <strong>Order Total</strong>
-                                    </th>
-                                    <td>
-                                        <strong><span class="amount"><small>{!! $symbol !!} </small> 
-                                            
-                                             @if($attributes[0]['currency'][0]['code'] == "INR")
-                                          
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
-                                            @else
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
-                                            <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
-                                            @endif
-
-
-
-                                        </span>
-                                            <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}}</span></strong>  -->
-
-                                             
-                                    </td>
-                                </tr>
-
-                            </tbody>
-                        </table>
+                       
                         <hr class="tall">
                     </div>
 
                 </div>
+                <h4 class="heading-primary">Payment</h4>
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 @if(Cart::getTotal()>0)
-                <h4 class="heading-primary">Payment</h4>
+                
                 <?php 
                 
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
@@ -179,13 +157,15 @@ $tax=  0;
                                                         $tax = $total-$sum;
                 ?>
                 <div class="form-group">
-                   
+                   <div class="form-row">
                     <div class="col-md-6">
-                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                        {!! Form::checkbox('payment_gateway',strtolower($gateways)) !!}&nbsp; &nbsp; {{ucfirst($gateways)}}<br><br>
                     </div>
+                </div>
                     
                 </div>
                 @endif
+
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">
@@ -196,21 +176,11 @@ $tax=  0;
                 {!! Form::close() !!}
                 
 
-
-
-
-
-
-
-
-
-
-
-            </div>
+           </div>
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-lg-4">
         <h4 class="heading-primary">Cart Totals</h4>
         <table class="cart-totals">
             <tbody>
@@ -358,6 +328,7 @@ $tax=  0;
             </tbody>
         </table>
     </div>
+</div>
 </div>
 @else 
 <div class="row">

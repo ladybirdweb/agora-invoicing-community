@@ -1,0 +1,53 @@
+/* Dropdowns */
+.dropdown {
+
+	&.dropdown-style-1 {
+		.dropdown-toggle {
+		    display: flex;
+		    align-items: center;
+		    padding: 1rem 1.1rem;
+		    background: #FFF;
+		    border-radius: 0;
+		    border-right: 1px solid #ededed;
+		    min-width: 230px;
+		    font-weight: bold;
+		    text-decoration: none;
+			&:after {
+				content: '\f107';
+			    position: absolute;
+			    right: 1.1rem;
+			    top: 50%;
+			    font-family: 'Font Awesome 5 Free';
+			    font-weight: bold;
+			    transform: translate3d(0, -50%, 0);
+			    border: 0;
+			    margin: 0;
+			    width: 10px;
+			    height: 10px;
+			    line-height: 10px;
+			}
+		    > i {
+		    	display: none;
+		    }
+		}
+
+		.dropdown-menu {
+		    width: 100%;
+		    border-radius: 0;
+		    margin-top: -1px;
+		    border-color: #ededed;
+		    .dropdown-item {
+		    	font-size: 14px;
+		    	padding-right: 1.1rem;
+		    	padding-left: 1.1rem;
+		    }
+		}
+	}
+
+	&.dropdown-corner-left-fix {
+		.dropdown-menu {
+			margin-#{$left}: -5px; 
+		}
+	}
+
+}

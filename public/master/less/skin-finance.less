@@ -1,0 +1,138 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #6a80a9;
+
+@color-secondary: #25272c;
+
+@color-tertiary: #e5edf1;
+
+@color-quaternary: #172536;
+
+@import "skin";
+
+/*
+* Header
+*/
+#header {
+	.header-nav-main {
+		&.custom-header-nav-main-dark-style {
+			nav {
+				> ul {
+					> li {
+						&, &:hover {
+							> a {
+								&.active {
+									color: @color-primary;
+								}
+
+								&:after {
+									border-color: @color-primary transparent transparent transparent !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&:not(.active) {
+								color: #2e353e;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+.custom-toll-free {
+	* {
+		-webkit-transition: ease color 300ms;
+		-moz-transition: ease color 300ms;
+		-ms-transition: ease color 300ms;
+		-o-transition: ease color 300ms;
+		transition: ease color 300ms;
+	}
+	
+	&:hover {
+		* {
+			color: @color-primary;
+		}	
+	}
+}
+
+/*
+* Custom Bottom Bar
+*/
+.custom-bottom-bar {
+	&:before {
+		border-color: @color-primary;
+	}
+}
+
+/*
+* Custom Hover
+*/
+.custom-primary-hover {
+	&:hover {
+		color: @color-primary !important;
+	}
+}
+
+/*
+* Company Timeline
+*/
+.custom-timeline {
+	.custom-timeline-box {
+		&:before {
+			background-color: @color-primary;
+    		box-shadow: 0 0 0 3px #FFF, 0 0 0 6px @color-primary;
+		}
+	}
+}
+
+/*
+* Custom Button
+*/
+.custom-btn-style-4 {
+	&:hover {
+		color: @color-primary;
+	}
+}
+
+/*
+* Social Icons Color
+*/
+.social-icons.custom-style-1 {
+	li {
+		a {
+			color: @color-primary !important;
+		}
+	}
+}
+
+/*
+* Custom Pagination Style
+*/
+.custom-pagination-style-1 {
+	> li {
+		&:hover {
+			> a {
+				background: @color-primary;
+			    border-color: @color-primary @color-primary @color-primary;
+			}
+		}
+	}
+}

@@ -44,6 +44,7 @@
   
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+           <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
           <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
 
   
@@ -54,7 +55,7 @@
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
 
           
-          <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
+         
     
   
       </head>
@@ -124,13 +125,13 @@
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
                                                     <li class="dropdown">
-                                                        <a  href="{{url('home')}}">
+                                                        <a  class="nav-link" href="{{url('home')}}">
                                                             pricing
                                                         </a>
 
                                                     </li>
-                                                    <li class="dropdown">
-                                                        <a  href="{{url('contact-us')}}">
+                                                    <li class="dropdown dropdown-mega">
+                                                        <a class="nav-link" href="{{url('contact-us')}}">
                                                             contact us
                                                         </a>
 
@@ -181,23 +182,23 @@
 
                                                     @if(!Auth::user())
                                                     <li class="dropdown">
-                                                        <a  href="{{url('auth/login')}}">
+                                                        <a  class="nav-link"  href="{{url('auth/login')}}">
                                                             Login
                                                         </a>
                                                     </li>
 
                                                     @else 
                                                     <li class="dropdown">
-                                                        <a class="dropdown-toggle" href="#">
+                                                        <a class="nav-link" class="dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             @if(Auth::user()->role=='admin')
-                                                            <li><a href="{{url('/')}}">My Account</a></li>
+                                                            <li><a class="nav-link" href="{{url('/')}}">My Account</a></li>
                                                             @else 
-                                                            <li><a href="{{url('my-invoices')}}">My Account</a></li>
+                                                            <li><a class="nav-link" href="{{url('my-invoices')}}">My Account</a></li>
                                                             @endif
-                                                            <li><a href="{{url('auth/logout')}}">Logout</a></li>
+                                                            <li><a class="nav-link" href="{{url('auth/logout')}}">Logout</a></li>
                                                         </ul>
                                                     </li>
                                                     @endif
@@ -401,7 +402,7 @@
                         </div>
                         <div class="col-md-3">
                             <h4>Latest Tweets</h4>
-                            <div id="tweets" class="twitter">
+                            <div id="tweets" class="twitter" >
                             <p>Please wait...</p>
                             </div>
                         </div>
@@ -476,7 +477,19 @@
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
 
         <script>
-        
+         
+    
+                         $.ajax({
+                          type: 'GET',
+                           url: "{{route('twitter')}}",
+                           dataType: "html",
+                             success: function (returnHTML) {
+                                   $('#tweets').html(returnHTML);
+                                    
+                                }
+                          });
+                      
+
         
          function removeItem(id) {
 
@@ -489,13 +502,8 @@
                                                  }
                                 });
                                 }
-                        $.ajax({
-                        dataType: "html",
-                        url: '{{url('twitter')}}',
-                        success: function (returnHTML) {
-                        $('#tweets').html(returnHTML);
-                                }
-                             });
+
+
         </script>
         @yield('script')
         <!-- Google Analytics: Change UA-XXXXX-X to be your site's ID. Go to http://www.google.com/analytics/ for more information.
@@ -511,7 +519,7 @@
         -->
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
 (function(){
 var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
@@ -521,12 +529,14 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
-</script>
+</script> -->
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
 <script language="JavaScript" type="text/javascript">
 TrustLogo("https://www.faveohelpdesk.com/", "CL1", "none");
+
 </script>
+
     </body>
 </html>
 @yield('end')

@@ -1,9 +1,12 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-pricing
+Pricing | Faveo Helpdesk
 @stop
 @section('page-header')
 Pricing
+@stop
+@section('page-heading')
+ <h1>Pricing</h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -22,7 +25,8 @@ main
   </br>
 </br>
                 <div class="alert alert-danger alert-dismissable">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>

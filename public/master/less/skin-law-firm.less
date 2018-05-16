@@ -1,0 +1,34 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #CFA968;
+
+@color-secondary: #EAD9BB;
+
+@color-tertiary: #775926;
+
+@color-quaternary: #313234;
+
+@import "skin";
+
+@media(min-width: 992px) {
+	#header {
+		.header-nav {
+			// Header Nav Stripe
+			&.header-nav-stripe {
+				nav {
+					> ul {
+						> li {
+							&:hover, &.open {
+								> a, > a.active {
+									color: @color-primary;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

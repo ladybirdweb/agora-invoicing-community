@@ -1,0 +1,128 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #ffd93e;
+
+@color-secondary: #ecf1f7;
+
+@color-tertiary: #403f3d;
+
+@color-quaternary: #1f1e1c;
+
+@color-dark: #2e353e;
+
+@import "skin";
+
+/*
+* Menu
+*/
+#header {
+	&.header-floating {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&:after {
+							    background: @color-primary;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Owl Carousel
+*/
+.owl-carousel {
+	&.custom-dots-style-1 {
+		.owl-dots {
+			button.owl-dot {
+				&.active, &:hover {
+					span {
+						border-color: @color-primary;
+
+						&:before {
+						    color: @color-primary;
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Timeline
+*/
+section.custom-timeline {
+    .timeline-box {
+    	&.right {
+    		&:before {
+			    box-shadow: 0 0 0 3px @color-secondary, 0 0 0 6px @color-dark !important;
+    		}
+
+    		&:after {
+    			background: @color-primary;
+    		}
+    	}
+    }
+}
+
+/*
+* Portfolio
+*/
+.custom-nav-sort {
+	&.nav {
+		> li {
+			&.active, &:hover {
+				> a {
+					background: @color-primary;
+					border-color: @color-primary;
+				}
+			}
+		}
+	}
+}
+
+.custom-thumb-info-1 {
+	.thumb-info-wrapper {
+		&:after {
+		    background: @color-primary;
+		}
+	}
+}
+
+/*
+* Testimonial
+*/
+.custom-testimonial-style-1 {
+	.testimonial-author {
+		&:before {
+			border-color: fade(contrast(@color-primary, #777, #FFF), 30%);
+		}
+	}
+}
+
+/*
+* Say Hello
+*/
+.custom-feature-box {
+	&:hover {
+		.custom-feature-box-icon {
+			background: @color-primary;
+		}
+	}
+}
+
+.custom-form-style {
+	.form-control-custom {
+		.form-control {
+			border-color: fade(contrast(@color-primary, #777, #FFF), 30%);
+		}
+	}
+}

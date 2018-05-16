@@ -1,0 +1,246 @@
+/* Section Featured */
+section {
+	&.section {
+		background: #f4f4f4;
+		border-top: 5px solid #f1f1f1;
+		margin: 30px 0;
+		padding: 50px 0;
+
+		&.section-height-1 {
+			padding: 0.7692307692rem 0;
+		}
+		&.section-height-2 {
+			padding: 2.3076923077rem 0;
+		}
+		&.section-height-3 {
+			padding: 4.6153846154rem 0;
+		}
+		&.section-height-4 {
+			padding: 6.9230769231rem 0;
+		}
+		&.section-height-5 {
+			padding: 9.2307692308rem 0;
+		}
+
+		&.section-no-background {
+			background: transparent;
+			border-top-color: transparent;
+		}
+
+		&.section-center {
+			text-align: center;
+		}
+
+		&.section-text-light {
+			h1, h2, h3, h4, h5, h6 {
+				color: #FFF;
+			}
+
+			p {
+				color: darken(#FFF, 10%);
+			}
+		}
+
+		&.section-background {
+			background-repeat: repeat;
+			border: 0;
+		}
+
+		&.section-overlay {
+			position: relative;
+			&:before {
+				content: "";
+				display: block;
+				background: url("../img/video-overlay.png") repeat scroll 0 0 transparent;
+				bottom: 0;
+				height: 100%;
+				left: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 100%;
+			}
+		}
+
+		&.section-overlay-opacity {
+			position: relative;
+			&:before {
+				content: "";
+				display: block;
+				background: rgba(0,0,0,0.5);
+				bottom: 0;
+				height: 100%;
+				left: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 100%;
+			}
+			&.section-overlay-opacity-scale-1 {
+				&:before {
+					background: rgba(0,0,0,0.1);
+				}
+			}
+			&.section-overlay-opacity-scale-2 {
+				&:before {
+					background: rgba(0,0,0,0.2);
+				}
+			}
+			&.section-overlay-opacity-scale-3 {
+				&:before {
+					background: rgba(0,0,0,0.3);
+				}
+			}
+			&.section-overlay-opacity-scale-4 {
+				&:before {
+					background: rgba(0,0,0,0.4);
+				}
+			}
+			&.section-overlay-opacity-scale-5 {
+				&:before {
+					background: rgba(0,0,0,0.5);
+				}
+			}
+			&.section-overlay-opacity-scale-6 {
+				&:before {
+					background: rgba(0,0,0,0.6);
+				}
+			}
+			&.section-overlay-opacity-scale-7 {
+				&:before {
+					background: rgba(0,0,0,0.7);
+				}
+			}
+			&.section-overlay-opacity-scale-8 {
+				&:before {
+					background: rgba(0,0,0,0.8);
+				}
+			}
+			&.section-overlay-opacity-scale-9 {
+				&:before {
+					background: rgba(0,0,0,0.9);
+				}
+			}
+		}
+
+		&.section-overlay-opacity-light {
+			&:before {
+				background: rgba(255,255,255,0.5);
+			}
+			&.section-overlay-opacity-light-scale-1 {
+				&:before {
+					background: rgba(255,255,255,0.1);
+				}
+			}
+			&.section-overlay-opacity-light-scale-2 {
+				&:before {
+					background: rgba(255,255,255,0.2);
+				}
+			}
+			&.section-overlay-opacity-light-scale-3 {
+				&:before {
+					background: rgba(255,255,255,0.3);
+				}
+			}
+			&.section-overlay-opacity-light-scale-4 {
+				&:before {
+					background: rgba(255,255,255,0.4);
+				}
+			}
+			&.section-overlay-opacity-light-scale-5 {
+				&:before {
+					background: rgba(255,255,255,0.5);
+				}
+			}
+			&.section-overlay-opacity-light-scale-6 {
+				&:before {
+					background: rgba(255,255,255,0.6);
+				}
+			}
+			&.section-overlay-opacity-light-scale-7 {
+				&:before {
+					background: rgba(255,255,255,0.7);
+				}
+			}
+			&.section-overlay-opacity-light-scale-8 {
+				&:before {
+					background: rgba(255,255,255,0.8);
+				}
+			}
+			&.section-overlay-opacity-light-scale-9 {
+				&:before {
+					background: rgba(255,255,255,0.9);
+				}
+			}
+		}
+
+		&.section-default-scale-lighten {
+			background-color: #fcfcfc !important;
+			border-top-color: #fcfcfc !important;
+		}
+
+		&.section-video {
+			background: none !important;
+			border: 0;
+		}
+
+		&.section-parallax {
+			background-color: transparent;
+			background-position: 50% 50%;
+			background-repeat: repeat;
+			background-attachment: fixed;
+			border: 0;
+			&.parallax-disabled {
+				background-attachment: scroll !important;
+				background-position: 50% 50% !important;
+			}
+		}
+
+		&.section-no-border {
+			border: 0;
+		}
+
+		&.section-with-divider {
+			margin: 56px 0 35px;
+			.divider {
+				margin: -56px 0 44px;
+			}
+		}
+
+		&.section-footer {
+			margin-bottom: -50px;
+		}
+
+		&.section-with-mockup {
+			margin-top: 120px;
+		}
+
+		&.section-front {
+			position: relative;
+			z-index: 1;
+		}
+
+	}
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+	.container-fluid > .row > .p-0 {
+		section.section {
+			margin-bottom: 0;
+			margin-top: 0;
+		}
+		&:first-child {
+			section.section {
+				margin-bottom: 0;
+				margin-top: 30px;
+			}
+		}
+		&:last-child {
+			section.section {
+				margin-bottom: 30px;
+				margin-top: 0;
+			}
+		}
+	}
+}

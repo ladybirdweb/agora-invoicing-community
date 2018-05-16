@@ -422,7 +422,7 @@ class AuthController extends Controller
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
-            $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number];
 
             return response()->json($response);
@@ -449,7 +449,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
@@ -478,7 +478,7 @@ class AuthController extends Controller
             $result = $this->sendOtp($mobile, $code);
             // dd($result);
              $array = json_decode($result, true);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
+            $response = ['type' => 'success', 'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -515,7 +515,7 @@ class AuthController extends Controller
             $verify = $this->verifyOtp($mobile, $code, $otp);
             $array = json_decode($verify, true);
             if ($array['type'] == 'error') {
-                throw new \Exception($array['message']);
+                throw new \Exception('otp_not_verified');
             }
 
             $user = User::find($userid);
@@ -526,14 +526,14 @@ class AuthController extends Controller
                 $user->save();
             }
             $check = $this->checkVerify($user);
-             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'<strong><i class="far fa-thumbs-up"></i> Well done!</strong>'.'Mobile verified'];
+             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified'];
 
             return response()->json($response);
             // return redirect('/login');
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
             if ($ex->getMessage() == 'otp_not_verified') {
-                $result = ['OTP Not Verified!'];
+                $errors = ['OTP Not Verified!'];
             }
 
             return response()->json(compact('result'), 500);

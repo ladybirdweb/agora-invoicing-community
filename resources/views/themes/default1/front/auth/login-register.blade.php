@@ -404,7 +404,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                          <input class="form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
                                                           <label for="mobile" class="required">Mobile</label><br/>
                                                           
-                                                       <input class="form-control input-lg phone" class="phone" name="verify_number" type="text" id="verify_number">
+                                                       <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
   
                                                       </div>
                                                   </div>
@@ -458,7 +458,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                         
                                               <div class="form-group col-lg-2">
-                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-right:-7px;">
+                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-right:-22px;">
                                                         Verify OTP
                                                  </button>
                                                  </div>

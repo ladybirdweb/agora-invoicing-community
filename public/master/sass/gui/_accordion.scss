@@ -1,0 +1,82 @@
+/* Accordion */
+.accordion {
+	.card {
+		margin-top: 5px;
+		&:first-child {
+			margin-top: 0;
+		}
+	}
+	.card-title {
+		font-size: 16px;
+	}
+	.card-header {
+		padding: 0;
+		border-radius: 3px;
+		border-bottom: 0;
+		a {
+			display: block;
+			padding: 10px 20px;
+			&:hover, &:focus {
+				text-decoration: none;
+			}
+			[class^="icon-"] {
+				margin-#{$right}: 4px;
+				position: relative;
+				top: 1px;
+			}
+			.fa, .fas, .far, .fal, .fab, .icons {
+				display: inline-block;
+				margin-right: 5px;
+				position: relative;
+				top: -1px;
+			}
+		}
+	}
+	&.accordion-sm {
+		.card-header {
+			a {
+				padding: 5px 15px;
+				font-size: 0.9em;
+			}
+		}
+		.card-body {
+			font-size: 0.9em;
+		}
+	}
+	&.accordion-lg {
+		.card-header {
+			a {
+				padding: 15px 15px;
+				font-size: 1em;
+				font-weight: 600;
+			}
+		}
+	}
+	&.without-bg {
+		.card-default {
+			background: transparent !important;
+			> .card-header {
+				background: transparent !important;
+			}
+		}
+		.card-body {
+			padding-top: 0;
+			padding-bottom: 0;
+		}
+	}
+	&.without-borders {
+		.card {
+			border: 0;
+			box-shadow: none;
+			border-bottom: 1px solid #DDD;
+			border-radius: 0;
+		}
+		.card-header a {
+			padding-left: 0;
+			padding-right: 0;
+		}
+		.card-body {
+			padding: 0;
+		}
+	}
+}

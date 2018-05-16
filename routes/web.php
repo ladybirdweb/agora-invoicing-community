@@ -97,7 +97,7 @@
         /*
          * Tweeter api
          */
-        Route::get('twitter', 'Common\SocialMediaController@getTweets');
+        Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
         /*
          * Authentication
@@ -215,7 +215,7 @@
          */
 
         Route::resource('promotions', 'Payment\PromotionController');
-        Route::post('get-code', 'Payment\PromotionController@getCode');
+        Route::get('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 

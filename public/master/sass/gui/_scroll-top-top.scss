@@ -1,0 +1,52 @@
+/* Scroll to Top */
+html {
+	.scroll-to-top {
+		transition: opacity 0.3s;
+		background: #404040;
+		border-radius: 7px 7px 0 0;
+		bottom: 0;
+		color: #FFF;
+		display: block;
+		height: 9px;
+		opacity: 0;
+		padding: 13px 10px 35px;
+		position: fixed;
+		#{$right}: 10px;
+		text-align: center;
+		text-decoration: none;
+		min-width: 49px;
+		z-index: 1040;
+		&:hover {
+			opacity: 1;
+		}
+		&.visible {
+			opacity: 0.75;
+		}
+		span {
+			display: inline-block;
+			padding: 0 5px;
+		}
+	}
+
+	&.lightbox-opened {
+		.scroll-to-top {
+			#{$right}: 27px;
+		}
+	}
+
+	&.ie11 {
+		.scroll-to-top {
+			#{$right}: 25px;
+		}
+	}
+
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+
+	html .scroll-to-top.hidden-mobile {
+		display: none !important;
+	}	
+
+}

@@ -75,9 +75,7 @@ main
                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                      <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Your Email And Mobile are not Verified..!!
                    <ul>
-                   <li>
-                    Click the button to resend OTP and Verification Email
-                    </li>
+                   <li>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step. Click Next to continue</li>
                                             
                      </ul>
                 </div>
@@ -90,7 +88,7 @@ main
                 @if($user)
 
                 @if ($user->active != 1 && $user->mobile_verified == 1) 
-                       
+              
                  
 
                   
@@ -153,8 +151,6 @@ main
                         @endif
 
                          @if($user->mobile_verified ==0 && $user->active == 0)
-                         <h4 class="heading-primary text-uppercase mb-md">Confirm Email and Mobile</h4>
-                                            <p> You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step. </p>
                           <div class="row">
                            <div class="form-group col-lg-12 email-mobile">
                            <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">

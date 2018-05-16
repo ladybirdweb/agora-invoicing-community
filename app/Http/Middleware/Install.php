@@ -23,6 +23,7 @@ class Install
         // dd(\File::exists($env) && env('DB_INSTALL')==1);
         if (\File::exists($env) && env('DB_INSTALL') == 1) {
 
+
              return $next($request);
         }
         //  else {

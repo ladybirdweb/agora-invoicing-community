@@ -102,7 +102,6 @@ class EnvironmentController extends Controller
         // }
 
         $results = $this->EnvironmentManager->saveFileWizard($request);
-        // dd($results);
         $response = $this->migrateAndSeed($request);
      
         return redirect()->route('LaravelInstaller::final')
@@ -167,7 +166,6 @@ class EnvironmentController extends Controller
         }
         }
         catch(Exception $e){
-            dd($e);
             return $this->response($e->getMessage());
         }
 

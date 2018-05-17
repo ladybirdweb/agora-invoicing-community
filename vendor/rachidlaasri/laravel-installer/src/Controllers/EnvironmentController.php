@@ -102,6 +102,7 @@ class EnvironmentController extends Controller
         // }
 
         $results = $this->EnvironmentManager->saveFileWizard($request);
+        // dd($results);
         $response = $this->migrateAndSeed($request);
      
         return redirect()->route('LaravelInstaller::final')

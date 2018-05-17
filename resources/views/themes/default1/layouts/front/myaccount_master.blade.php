@@ -4,55 +4,62 @@
     <head>
 
         <!-- Basic -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">	
-
-        <title>
-            @yield('title')
-        </title>	
-
-        <meta name="keywords" content="HTML5 Template" />
-        <meta name="description" content="Porto - Responsive HTML5 Template">
-        <meta name="author" content="okler.net">
-
-        <!-- Favicon -->
-        <link rel="shortcut icon" href="{{asset('dist/img/faveo.png')}}" type="image/x-icon" />
-        <link rel="apple-touch-icon" href="{{asset('dist/img/faveo.png')}}">
-
-        <!-- Mobile Metas -->
-        <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-        <!-- Web Fonts  -->
-        <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
-
-        <!-- Vendor CSS -->
-       <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
+       <meta charset="utf-8">
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+  
+          <title>@yield('title')</title>  
+  
+          <meta name="keywords" content="HTML5 Template" />
+          <meta name="description" content="Register, signup here to start using Faveo Helpdesk or signin to your existing account">
+          <meta name="author" content="okler.net">
+  
+          <!-- Favicon -->
+          <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+          <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+  
+          <!-- Mobile Metas -->
+          <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
+  
+          <!-- Web Fonts  -->
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800%7CShadows+Into+Light" rel="stylesheet" type="text/css">
+  
+          <!-- Vendor CSS -->
+          <!-- <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}"> -->
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-          <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}">
-  
+          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
 
-     <!-- Theme CSS -->
+           <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
+      <!--   <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
+        <link rel="stylesheet" href="{{asset('cart/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
+        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
+        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}"> -->
+  
+          <!-- Theme CSS -->
           <link rel="stylesheet" href="{{asset('css/theme.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
-       
-            <!-- Demo CSS -->
+          
+          <!-- Demo CSS -->
           <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
-
-         <!-- Skin CSS -->
+  
+          <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+           <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
 
-
-        <!-- Theme Custom CSS -->
-        <   <link rel="stylesheet" href="{{asset('css/custom.css')}}">
-        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
-        <!-- Head Libs -->
+  
+          <!-- Theme Custom CSS -->
+          <link rel="stylesheet" href="{{asset('css/custom.css')}}">
+  
+          <!-- Head Libs -->
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
+
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
         <style type="text/css">

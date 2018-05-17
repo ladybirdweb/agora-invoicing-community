@@ -276,20 +276,20 @@ main
                                             $('#alertMessage2').html(result);
                                             $("#verifyOtp").html("Verify OTP");
                                         },
-                                        error: function (ex) {
-                                            var myJSON = JSON.parse(ex.responseText);
-                                            var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                                        error: function (data) {
+                                             var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.result+' <br><ul>';
                                             $("#verifyOtp").html("Verify OTP");
-                                            for (var key in myJSON)
+                                              for (var key in data.responseJSON.errors)
                                             {
-                                                html += '<li>' + myJSON[key][0] + '</li>'
+                                                html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
                                             }
                                             html += '</ul></div>';
-                                            $('#alertMessage2').hide(); 
-                                            $('#error2').show();
-                                            document.getElementById('error2').innerHTML = html;
+                                           $('#alertMessage1').hide(); 
+                                             $('#alertMessage2').hide();
+                                            $('#error1').show();
+                                             document.getElementById('error1').innerHTML = html;
                                             setTimeout(function(){ 
-                                                $('#error2').hide(); 
+                                                $('#error1').hide(); 
                                             }, 5000);
                                         }
                                     });
@@ -432,6 +432,7 @@ main
                        
                                $scope.sendOTPmail=function(){
                                         $("#sendOtpmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                                       
                                         var data = {
                                             "email": $('#u_email').val(),
                                             "mobile": $('#u_mobile').val(),

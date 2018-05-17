@@ -532,7 +532,7 @@ class AuthController extends Controller
             // return redirect('/login');
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-            if ($ex->getMessage() == 'otp_not_verified') {
+            if ($ex->getMessage() == 'OTP Not Verified!') {
                 $errors = ['OTP Not Verified!'];
             }
 

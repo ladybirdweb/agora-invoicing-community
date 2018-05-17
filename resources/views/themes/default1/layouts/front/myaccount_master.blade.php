@@ -1,10 +1,11 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first(); ?>
 <!DOCTYPE html>
 <html>
-    <head>
 
-        <!-- Basic -->
-       <meta charset="utf-8">
+    <head>
+  
+          <!-- Basic -->
+          <meta charset="utf-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">  
   
           <title>@yield('title')</title>  
@@ -25,19 +26,13 @@
   
           <!-- Vendor CSS -->
           <!-- <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
-
-           <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
-      <!--   <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
+        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}">
   
           <!-- Theme CSS -->
           <link rel="stylesheet" href="{{asset('css/theme.css')}}">
@@ -60,14 +55,13 @@
           <!-- Head Libs -->
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
 
-        <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+           <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-        <style type="text/css">
-             #github-version-table tbody tr td .more-text{
-                display: none;
-            }
-        </style>
-    </head>
+         
+    
+  
+      </head>
+
     <body>
          <?php 
         $domain=[];
@@ -76,7 +70,7 @@
         ?>
 
         <div class="body">
-            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}">
+            <header id="header" data-plugin-options="{'stickyEnabled': true, 'stickyEnableOnBoxed': true, 'stickyEnableOnMobile': true, 'stickyStartAt': 55, 'stickySetTop': '-55px', 'stickyChangeLogo': true}" style="margin-bottom:-4px;">
         <div class="header-body">
                 <div class="header-body">
                     <div class="header-container container">
@@ -92,7 +86,7 @@
                             </div>
                              <div class="header-column justify-content-end">
                                 <div class="header-row pt-3">
-                                    <nav class="header-nav-top">
+                                    <nav class="header-nav-top" style="margin-left:650px;margin-top:10px;">
                                           <ul class="nav nav-pills">
                                               <li class="nav-item d-none d-sm-block">
                                                   <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> support@faveohelpdesk.com</a>
@@ -384,7 +378,7 @@
 
             </div>
 
-                        <footer id="footer">
+            <footer id="footer">
                 <div class="container">
                     <div class="row">
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
@@ -395,11 +389,11 @@
                                 <h4>Newsletter</h4>
                                 <p>Keep up on our always evolving product features and technology. Enter your e-mail and subscribe to our newsletter.</p>
 
-                                <div class="alert alert-success d-none" id="newsletterSuccess">
+                               <!--  <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
 
-                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div> -->
 
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
@@ -413,7 +407,7 @@
                         </div>
                         <div class="col-md-3">
                             <h4>Latest Tweets</h4>
-                            <div id="tweets" class="twitter">
+                            <div id="tweets" class="twitter" >
                             <p>Please wait...</p>
                             </div>
                         </div>

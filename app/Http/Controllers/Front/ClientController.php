@@ -12,10 +12,10 @@ use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
-use Hash;
 use App\User;
 use Bugsnag;
 use Exception;
+use Hash;
 
 class ClientController extends Controller
 {

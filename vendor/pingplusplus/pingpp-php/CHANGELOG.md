@@ -1,21 +1,37 @@
 # ChangeLog
 
-# 2.2.3
+## 2.4.2
+2018-01-10
+#### 修改
+- 移除 transfer、batch transfer 的 cancel 接口
+- 示例：新增 charge 渠道 alipay_scan、wx_pub_scan、cb_alipay、cb_wx、cb_wx_pub、cb_wx_pub_qr、cb_wx_pub_scan
+- 示例：移除 order pay balance_amount 字段
+
+## 2.4.1
+2017-12-05
+#### 新增
+- 合并账户系统接口
+
+---
+## 2.2.3
 2017-06-15
 #### 修改
 - 新增线下渠道 isv_scan、isv_qr、isv_wap
 - 新增 charge reverse 接口
 
-# 2.2.2
+---
+## 2.2.2
 2017-04-25
 #### 修改
-独立各个渠道文件并单独说明，提高 SDK 接入体验
+- 独立各个渠道文件并单独说明，提高 SDK 接入体验
 
-# 2.2.1
+---
+## 2.2.1
 2016-12-29
 #### 新增
 - batch_transfer 接口支持 cancel 操作（unionpay适用）
 
+---
 ## 2.2.0
 2016-12-16
 #### 新增
@@ -26,6 +42,7 @@
 #### 修改
 - 删除 Customer、Card、CardInfo、Source、Token、SmsCode
 
+---
 ## 2.1.5
 #### 新增
 - transfer 更新接口

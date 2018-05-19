@@ -12,7 +12,7 @@
 */
 
 // Route::get('/', function () {
-// 	dd('ok');
+//  dd('ok');
 //     return view('welcome');
 // });
 // Route::group(['middleware' => ['web']], function () {

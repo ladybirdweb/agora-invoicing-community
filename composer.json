@@ -42,6 +42,11 @@
         }
     },
     "scripts": {
+        "filter-test":"php vendor/phpunit/phpunit/phpunit --colors=always --filter",
+        "all-test":"php vendor/phpunit/phpunit/phpunit",
+        "all-unit-test":"php vendor/phpunit/phpunit/phpunit --testsuite unit",
+        "backend-test":"php vendor/phpunit/phpunit/phpunit --colors=always --testsuite backend",
+        "group-test":"php vendor/phpunit/phpunit/phpunit --colors=always --group",
         "post-root-package-install": [
             "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],

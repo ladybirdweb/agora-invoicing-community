@@ -69,7 +69,6 @@ trait AuthenticatesUsers
      */
     public function postLogin(Request $request)
     {
-        // dd('akdnj');
         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
@@ -82,7 +81,6 @@ trait AuthenticatesUsers
         $password = $request->input('password1');
         $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
          $auth = \Auth::attempt($credentials, $request->has('remember'));
-
          if (!$auth) {
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
            if($user==null){
@@ -109,6 +107,7 @@ trait AuthenticatesUsers
             
             
            }else{
+                
                  return redirect()->intended($this->redirectPath());
             
         }

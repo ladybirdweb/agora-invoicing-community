@@ -4,7 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\User::class, function (Faker $faker) {
     return [
-       'user_name' => $faker->userName,
+        'user_name' => $faker->userName,
        'first_name' => $faker->firstName,
        'last_name' => $faker->lastName,
        'email' => $faker->unique()->safeEmail,
@@ -15,11 +15,12 @@ $factory->define(App\User::class, function (Faker $faker) {
        'country'    => $faker->country,
        'mobile' => $faker->e164PhoneNumber,
        'address' => $faker->address,
-       'town'=>  $faker->city,                                
+       'city'=>  $faker->city,                                
        'state'=> $faker->state,
-       'zip' =>   $faker->postcode,                                  
+       'zip' =>   $faker->postcode,
+       'ip' => $faker->ipv4 ,                                  
        'password' => bcrypt('password'),
-       
+       'password_confirmation' => bcrypt('password'),
        'remember_token' => str_random(10),
         'mobile_verified'=> 1,
         'active'   => 1,

@@ -37,7 +37,7 @@ Checkout
 }
 
     if ($symbol == 'INR'){
-   
+$exchangeRate= '';
 $orderData = [
     'receipt'         => 3456,
     'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
@@ -53,7 +53,9 @@ else
 {
      $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
      $exchange = json_decode(file_get_contents($url));
-     $displayAmount =$exchange->quotes->USDINR * $invoice->grand_total ;
+     $exchangeRate = $exchange->quotes->USDINR;
+     // dd($exchangeRate);
+     $displayAmount =$exchangeRate * $invoice->grand_total ;
      $orderData = [
     'receipt'         => 3456,
     'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
@@ -88,6 +90,10 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
+    "Currency"          => \Auth::user()->currency,
+    "Amount Paid"   => $invoice->grand_total,
+    "Exchange Rate"   =>  $exchangeRate,
+
     "merchant_order_id" =>  $merchant_orderid,
     ],
     "theme"             => [

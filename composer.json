@@ -16,6 +16,7 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.*",
         "pacely/mailchimp-apiv3": "dev-master",
+        "php-mock/php-mock": "^2.0",
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.2",
         "razorpay/razorpay": "^2.2",

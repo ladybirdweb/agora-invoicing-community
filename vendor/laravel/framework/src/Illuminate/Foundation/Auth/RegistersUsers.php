@@ -37,7 +37,7 @@ trait RegistersUsers
      */
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
-   
+           
         try {
             $pass = $request->input('password');
             $country = $request->input('country');
@@ -105,7 +105,7 @@ trait RegistersUsers
         } catch (\Exception $ex) {
             //return redirect()->back()->with('fails', $ex->getMessage());
             $result = [$ex->getMessage()];
-
+            
             return response()->json($result);
         }
 
@@ -468,13 +468,16 @@ trait RegistersUsers
         // if ($account_count) {
         //     $manager = array_keys($account_count, min($account_count))[0];
         // }
+
+
         
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id','first_name')->toArray();
-        if($managers){
-            $randomized = array_rand($managers,2);
+         if(count($managers)>0){
+            $randomized[] = array_rand($managers);
         shuffle($randomized);
         $manager = $managers[$randomized[0]];
         }
+        
         else{
             $manager = '';
         }

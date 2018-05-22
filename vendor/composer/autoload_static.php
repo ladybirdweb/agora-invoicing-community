@@ -30,6 +30,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
     public static $prefixLengthsPsr4 = array (
         'p' => 
         array (
+            'phpmock\\' => 8,
             'phpDocumentor\\Reflection\\' => 25,
         ),
         'Y' => 
@@ -151,6 +152,11 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
     );
 
     public static $prefixDirsPsr4 = array (
+        'phpmock\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/php-mock/php-mock/classes',
+            1 => __DIR__ . '/..' . '/php-mock/php-mock/tests',
+        ),
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
@@ -4915,9 +4921,12 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'TemplateTableSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'TemplateTypeTableSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'Tests\\CreatesApplication' => __DIR__ . '/../..' . '/tests/CreatesApplication.php',
+        'Tests\\DBTestCase' => __DIR__ . '/../..' . '/tests/DBTestCase.php',
         'Tests\\Feature\\ExampleTest' => __DIR__ . '/../..' . '/tests/Feature/ExampleTest.php',
         'Tests\\TestCase' => __DIR__ . '/../..' . '/tests/TestCase.php',
+        'Tests\\Unit\\Client\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Unit/Client/RegistrationTest.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
+        'Tests\\Unit\\LoginTest' => __DIR__ . '/../..' . '/tests/Unit/LoginTest.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'Thomaswelton\\LaravelGravatar\\Facades\\Gravatar' => __DIR__ . '/..' . '/thomaswelton/laravel-gravatar/src/Facades/Gravatar.php',
         'Thomaswelton\\LaravelGravatar\\Gravatar' => __DIR__ . '/..' . '/thomaswelton/laravel-gravatar/src/Gravatar.php',
@@ -5027,6 +5036,42 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'phpDocumentor\\Reflection\\Types\\String_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/String_.php',
         'phpDocumentor\\Reflection\\Types\\This' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/This.php',
         'phpDocumentor\\Reflection\\Types\\Void_' => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src/Types/Void_.php',
+        'phpmock\\AbstractMockTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/AbstractMockTest.php',
+        'phpmock\\Deactivatable' => __DIR__ . '/..' . '/php-mock/php-mock/classes/Deactivatable.php',
+        'phpmock\\Mock' => __DIR__ . '/..' . '/php-mock/php-mock/classes/Mock.php',
+        'phpmock\\MockBuilder' => __DIR__ . '/..' . '/php-mock/php-mock/classes/MockBuilder.php',
+        'phpmock\\MockBuilderTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/MockBuilderTest.php',
+        'phpmock\\MockCaseInsensitivityTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/MockCaseInsensitivityTest.php',
+        'phpmock\\MockDefiningOrderTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/MockDefiningOrderTest.php',
+        'phpmock\\MockEnabledException' => __DIR__ . '/..' . '/php-mock/php-mock/classes/MockEnabledException.php',
+        'phpmock\\MockRegistry' => __DIR__ . '/..' . '/php-mock/php-mock/classes/MockRegistry.php',
+        'phpmock\\MockTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/MockTest.php',
+        'phpmock\\environment\\MockEnvironment' => __DIR__ . '/..' . '/php-mock/php-mock/classes/environment/MockEnvironment.php',
+        'phpmock\\environment\\MockEnvironmentTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/environment/MockEnvironmentTest.php',
+        'phpmock\\environment\\SleepEnvironmentBuilder' => __DIR__ . '/..' . '/php-mock/php-mock/classes/environment/SleepEnvironmentBuilder.php',
+        'phpmock\\environment\\SleepEnvironmentBuilderTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/environment/SleepEnvironmentBuilderTest.php',
+        'phpmock\\functions\\AbstractSleepFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/AbstractSleepFunction.php',
+        'phpmock\\functions\\AbstractSleepFunctionTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/functions/AbstractSleepFunctionTest.php',
+        'phpmock\\functions\\FixedDateFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/FixedDateFunction.php',
+        'phpmock\\functions\\FixedDateFunctionTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/functions/FixedDateFunctionTest.php',
+        'phpmock\\functions\\FixedMicrotimeFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/FixedMicrotimeFunction.php',
+        'phpmock\\functions\\FixedMicrotimeFunctionTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/functions/FixedMicrotimeFunctionTest.php',
+        'phpmock\\functions\\FixedValueFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/FixedValueFunction.php',
+        'phpmock\\functions\\FunctionProvider' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/FunctionProvider.php',
+        'phpmock\\functions\\Incrementable' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/Incrementable.php',
+        'phpmock\\functions\\IncrementableTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/functions/IncrementableTest.php',
+        'phpmock\\functions\\MicrotimeConverter' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/MicrotimeConverter.php',
+        'phpmock\\functions\\MicrotimeConverterTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/functions/MicrotimeConverterTest.php',
+        'phpmock\\functions\\SleepFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/SleepFunction.php',
+        'phpmock\\functions\\UsleepFunction' => __DIR__ . '/..' . '/php-mock/php-mock/classes/functions/UsleepFunction.php',
+        'phpmock\\generator\\MockFunctionGenerator' => __DIR__ . '/..' . '/php-mock/php-mock/classes/generator/MockFunctionGenerator.php',
+        'phpmock\\generator\\MockFunctionGeneratorTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/generator/MockFunctionGeneratorTest.php',
+        'phpmock\\generator\\ParameterBuilder' => __DIR__ . '/..' . '/php-mock/php-mock/classes/generator/ParameterBuilder.php',
+        'phpmock\\generator\\ParameterBuilderTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/generator/ParameterBuilderTest.php',
+        'phpmock\\spy\\Invocation' => __DIR__ . '/..' . '/php-mock/php-mock/classes/spy/Invocation.php',
+        'phpmock\\spy\\Spy' => __DIR__ . '/..' . '/php-mock/php-mock/classes/spy/Spy.php',
+        'phpmock\\spy\\SpyTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/spy/SpyTest.php',
+        'phpmock\\test\\MockNamespaceTest' => __DIR__ . '/..' . '/php-mock/php-mock/tests/MockNamespaceTest.php',
         'thomaswelton\\GravatarLib\\Gravatar' => __DIR__ . '/..' . '/thomaswelton/gravatarlib/thomaswelton/GravatarLib/Gravatar.php',
     );
 

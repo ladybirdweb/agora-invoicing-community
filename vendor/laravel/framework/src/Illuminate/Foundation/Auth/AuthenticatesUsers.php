@@ -69,7 +69,8 @@ trait AuthenticatesUsers
      */
     public function postLogin(Request $request)
     {
-        $this->validate($request, [
+        
+         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
             'email1.required'    => 'Username/Email is required',

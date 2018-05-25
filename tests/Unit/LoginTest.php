@@ -26,30 +26,27 @@ class LoginTest extends DBTestCase
         $this->assertStringContainsSubstring($response->getTargetUrl(), '/');
     }
 
-    
-     /** @group postLogin */
+    /** @group postLogin */
     public function test_postLogin_when_mobile_is_Unverified()
     {
         $user = factory(User::class)->create(['mobile_verified'=>0]);
-        $response = $this->call('POST','login',['email1'=>$user->email, 'password1' => 'password']);
-        $this->assertStringContainsSubstring($response->getTargetUrl(),'/verify');
+        $response = $this->call('POST', 'login', ['email1'=>$user->email, 'password1' => 'password']);
+        $this->assertStringContainsSubstring($response->getTargetUrl(), '/verify');
     }
-     
-     /** @group postLogin */
-     public function test_postLogin_when_email_is_Unverified()
+
+    /** @group postLogin */
+    public function test_postLogin_when_email_is_Unverified()
     {
         $user = factory(User::class)->create(['active'=>0]);
-        $response = $this->call('POST','login',['email1'=>$user->email, 'password1' => 'password']);
-        $this->assertStringContainsSubstring($response->getTargetUrl(),'/verify');
+        $response = $this->call('POST', 'login', ['email1'=>$user->email, 'password1' => 'password']);
+        $this->assertStringContainsSubstring($response->getTargetUrl(), '/verify');
     }
 
-      /** @group postLogin */
-     public function test_postLogin_when_email_and_mobile_are_Unverified()
+    /** @group postLogin */
+    public function test_postLogin_when_email_and_mobile_are_Unverified()
     {
-        $user = factory(User::class)->create(['active'=>0,'mobile_verified'=>0]);
-        $response = $this->call('POST','login',['email1'=>$user->email, 'password1' => 'password']);
-        $this->assertStringContainsSubstring($response->getTargetUrl(),'/verify');
+        $user = factory(User::class)->create(['active'=>0, 'mobile_verified'=>0]);
+        $response = $this->call('POST', 'login', ['email1'=>$user->email, 'password1' => 'password']);
+        $this->assertStringContainsSubstring($response->getTargetUrl(), '/verify');
     }
-
-
 }

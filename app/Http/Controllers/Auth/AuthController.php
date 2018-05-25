@@ -425,7 +425,7 @@ class AuthController extends Controller
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
             $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number. 'Please Verify to Login'];
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'Please Verify to Login'];
 
             return response()->json($response);
         } catch (\Exception $ex) {

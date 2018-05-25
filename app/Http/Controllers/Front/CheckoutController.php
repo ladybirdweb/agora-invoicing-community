@@ -88,7 +88,8 @@ class CheckoutController extends Controller
                     \Session::put('domain'.$key, $value);
                 }
             }
-            \Session::put('content',$content);
+            \Session::put('content', $content);
+
             return redirect('auth/login')->with('fails', 'Please login');
         }
         $content = Cart::getContent();

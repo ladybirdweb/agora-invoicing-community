@@ -219,7 +219,6 @@ class ClientController extends Controller
     {
         $user = $this->user->where('id', $id)->first();
         $user->fill($request->input())->save();
-
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 

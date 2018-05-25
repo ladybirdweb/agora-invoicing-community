@@ -8,11 +8,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\User;
 use phpmock\MockBuilder;
+use Tests\Unit\MailTracker;
 
 
 class RegistrationTest extends DBTestCase
 {
 	use DatabaseTransactions;
+  use MailTracker;
  	private $address;
 	private $mock;
 
@@ -70,7 +72,7 @@ class RegistrationTest extends DBTestCase
    
     }
     
-      /** @group postRegister */
+     /** @group postRegister */
      public function test_when_user_registers_successfully()
     {
 
@@ -95,23 +97,16 @@ class RegistrationTest extends DBTestCase
    				     'password'=>$user->password,
    				     'password_confirmation'=>$user->password,
    				     'terms' =>'on',
-   				     // 'from' => 'test@gmail.com',
-   				     // 'to'  => 'ashu@gmail.com',
-   				     // 'template_data' => 'sdfds',
-   				     // 'template_name' =>'asd',
-   				     // 'replace' =>'dsds',
-   				     // 'manager_email'=>'dsdas',
-   				     //  'driver' => 'smtp',
-            //     'port' => '465',
-            //     'host' => 'smtp.gmail.com',
-            //     'enc' => 'tls',
-            //     'email' => 'ashutosh@gmail.com',
-            //     'mail_password' => '123456',
-            //     'name' => 'Ladybird'
+               
    				     ]);
+
+           \Mail::raw('Test Mail',function($message){
+                $message->to('testmail@gmail.com');
+            });
+              
         // dd(json_decode($response->content())->type);
         // $success = session('success');
- 
+        $this->assertEmailWasSent();
         $this->assertEquals(json_decode($response->content())->type,"success");
         $this->assertEquals(json_decode($response->content())->message,"Registered Successfully...");
 

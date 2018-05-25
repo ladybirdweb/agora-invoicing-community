@@ -37,10 +37,24 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if (\Auth::user()->role == 'admin') {
+// dd(\Auth::user()->role);
+        if (\Auth::user()->role == 'admin' ) {
             return $next($request);
-        } else {
-            \Auth::logout();
+        } 
+        elseif(\Auth::user()->role == 'user'){
+
+            $url= \Session::get('session-url');
+            if($url){
+                $content = \Session::get('content');
+                $domain = \Session::get('domain');
+              return redirect($url);
+            }
+             
+             return redirect('/home');
+        }
+
+        else {
+                \Auth::logout();
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
             } else {

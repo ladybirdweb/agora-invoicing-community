@@ -98,7 +98,7 @@ trait RegistersUsers
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
             if ($user) {
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received.Verify your Email and Mobile to log into Faveo.'];
 
                 return response()->json($response);
             }

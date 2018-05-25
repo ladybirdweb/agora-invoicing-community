@@ -465,7 +465,8 @@
           <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
           <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
-          
+              <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
+                        <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
           

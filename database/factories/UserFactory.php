@@ -19,6 +19,7 @@ $factory->define(App\User::class, function (Faker $faker) {
        'state'=> $faker->state,
        'zip' =>   $faker->postcode,                                  
        'password' => bcrypt('password'),
+       // 'timezone' => $faker->timezone,
        
        'remember_token' => str_random(10),
         'mobile_verified'=> 1,

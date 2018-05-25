@@ -117,6 +117,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </a>
                                 <p style="display: none">Confirmation</p>
                             </li>
+
                            
                         </ul>
                     </div>
@@ -129,6 +130,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                                 <div id="fails">
                                 </div>
+                                 <!-- <div id="error2">
+                                 </div>
+                                 <div id="alertMessage2" class="-text" ></div> -->
                                 @if(Session::has('success'))
                                 <div class="alert alert-success alert-dismissable">
                                     <i class="fa fa-ban"></i>
@@ -412,8 +416,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="form-row">
                                                         <div class="form-group col">
                                                        
-                                             <button type="button" class="btn btn-primary mb-xl next-step" name="sendOtp" id="sendOtp" onclick="sendOTP()">
-                                            Send
+                                             <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                            Next
                                              </button>
                                                         </div>
                                                     </div>
@@ -480,14 +484,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                     <button type="button" class="btn btn-default mb-xl" data-loading-text="Loading..." name="resendOTP" id="resendOTP" onclick="resendOTP()" style="background: grey; color: white;" ><i class="fa fa-phone" style="font-size: 18px;"></i>&nbsp;&nbsp; Get OTP via Voice </button>
                                 </div>
                             </div> -->
-                             <div class="row">
+                           <!--   <div class="row">
                                 <div class="col-md-6">
                                     <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
-                                    <!-- <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" > -->
-                                    <!-- <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'> -->
+                                    <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" >
+                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'>
 
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                 </div>
@@ -533,7 +537,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           },
           success: function (response) {
             if(response.type == 'success'){
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                 $('#alertMessage1').html(result);
                 $('.wizard-inner').css('display','block');
                 var $active = $('.wizard .nav-tabs li.active');
@@ -595,7 +599,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           type: 'GET',
           data: data,
           success: function (response) {
-                var result =  '<div class="alert alert-success alert-dismissable"><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
                 $('#alertMessage2').html(result);
                 $('#error1').hide();
                 $('.wizard-inner').css('display','none');
@@ -624,9 +628,30 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           }
         });
     }
+ 
+    //get login tab1
+    function getLoginTab(){
+         registerForm.elements['first_name'].value = '';
+        registerForm.elements['last_name'].value = '';
+        registerForm.elements['email'].value = '';
+        registerForm.elements['company'].value = '';
+        registerForm.elements['bussiness'].value = '';
+        registerForm.elements['company_type'].value = '';
+        registerForm.elements['company_size'].value = '';
+        registerForm.elements['mobile'].value = '';
+        registerForm.elements['address'].value = '';
+        registerForm.elements['user_name'].value = '';
+        registerForm.elements['password'].value = '';
+        registerForm.elements['password_confirmation'].value = '';
+        registerForm.elements['terms'].checked = false;
 
+        $('.nav-tabs li a[href="#step1"]').tab('show');
+        $('.wizard-inner').css('display','none');
+    }
 
-   
+   $(".prev-step").click(function (e) {
+          getLoginTab();
+    });
 
     function verifyBySendOtp() {
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
@@ -643,9 +668,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             success: function (response) {
                 $('#error2').hide(); 
                 $('#alertMessage2').show();
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage2').html(result);
+                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
+                 $('#alertMessage2').hide();
+                $('#success').html(result);
                 $("#verifyOtp").html("Verify OTP");
+                setTimeout(()=>{
+                        getLoginTab();
+                },2500)
             },
             error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);
@@ -678,12 +707,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           success: function (response) {
                 $('#alertMessage2').show();
                 $('#error2').hide();
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                 $('#alertMessage2').html(result+ ".");
           },
           error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);
-                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
                 for (var key in myJSON)
                 {
                     html += '<li>' + myJSON[key][0] + '</li>'
@@ -872,26 +901,7 @@ fbq('track', 'PageView');
         window.scrollTo(0, 10);
 
     });*/
-    $(".prev-step").click(function (e) {
-
-        registerForm.elements['first_name'].value = '';
-        registerForm.elements['last_name'].value = '';
-        registerForm.elements['email'].value = '';
-        registerForm.elements['company'].value = '';
-        registerForm.elements['bussiness'].value = '';
-        registerForm.elements['company_type'].value = '';
-        registerForm.elements['company_size'].value = '';
-        registerForm.elements['mobile'].value = '';
-        registerForm.elements['address'].value = '';
-        registerForm.elements['user_name'].value = '';
-        registerForm.elements['password'].value = '';
-        registerForm.elements['password_confirmation'].value = '';
-        registerForm.elements['terms'].checked = false;
-
-        $('.nav-tabs li a[href="#step1"]').tab('show');
-        $('.wizard-inner').css('display','none');
-
-    });
+   
     $(".prev").click(function (e) {
         
         var $active = $('.wizard .nav-tabs li.active');

@@ -424,8 +424,8 @@ class AuthController extends Controller
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
-            // $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number];
+            $result = $this->sendOtp($mobile, $code);
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number. 'Please Verify to Login'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -451,11 +451,11 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            // $result = $this->sendOtp($mobile, $code);
+            $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
-            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
+            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'.<br>OTP has been sent to '.$number.'.<br>Please enter the OTP received on your mobile No below. Incase you did not recieve OTP,please get in touch with us on <a href="mailto:support@faveohelpdesk.com">support@faveohelpdesk.com</a>'];
 
             return response()->json($response);
         } catch (\Exception $ex) {

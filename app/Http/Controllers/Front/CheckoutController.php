@@ -80,9 +80,15 @@ class CheckoutController extends Controller
         $cart_currency = 'INR';
         if (!\Auth::user()) {
             $url = $request->segments();
-
+            $content = Cart::getContent();
             \Session::put('session-url', $url[0]);
-
+            $domain = $request->input('domain');
+            if (count($domain) > 0) {
+                foreach ($domain as $key => $value) {
+                    \Session::put('domain'.$key, $value);
+                }
+            }
+            \Session::put('content',$content);
             return redirect('auth/login')->with('fails', 'Please login');
         }
         $content = Cart::getContent();

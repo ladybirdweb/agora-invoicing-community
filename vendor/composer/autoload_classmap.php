@@ -4411,6 +4411,8 @@ return array(
     'Tests\\Unit\\Client\\RegistrationTest' => $baseDir . '/tests/Unit/Client/RegistrationTest.php',
     'Tests\\Unit\\ExampleTest' => $baseDir . '/tests/Unit/ExampleTest.php',
     'Tests\\Unit\\LoginTest' => $baseDir . '/tests/Unit/LoginTest.php',
+    'Tests\\Unit\\MailTracker' => $baseDir . '/tests/Unit/MailTracker.php',
+    'Tests\\Unit\\TestingMailEventListener' => $baseDir . '/tests/Unit/MailTracker.php',
     'Text_Template' => $vendorDir . '/phpunit/php-text-template/src/Template.php',
     'Thomaswelton\\LaravelGravatar\\Facades\\Gravatar' => $vendorDir . '/thomaswelton/laravel-gravatar/src/Facades/Gravatar.php',
     'Thomaswelton\\LaravelGravatar\\Gravatar' => $vendorDir . '/thomaswelton/laravel-gravatar/src/Gravatar.php',

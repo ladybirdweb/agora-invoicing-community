@@ -41,6 +41,7 @@ main
                     <div id="alertMessage1"></div>
                      <div id="alertMessage2"></div>
                     <div id="error1">
+                       <div id="email1"></div>
                     </div>
                      @if($user && $user->active != 1 && $user->mobile_verified == 1)
 
@@ -93,7 +94,7 @@ main
 
                   
                     <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
-                     &nbsp &nbsp <label for="mobile" class="required">Email</label><br/>
+                     <label for="mobile" class="required">Email</label><br/>
                    
                        <input type="text" class="form-control input-lg" name="email" value="{{$user -> email}}" id="u_email">
                        <div class="clear"></div>
@@ -150,7 +151,7 @@ main
                     </div>
                         @endif
 
-                         @if($user->mobile_verified ==0 && $user->active == 0)
+                         @if($user->mobile_verified == 0 && $user->active == 0)
                           <div class="row">
                            <div class="form-group col-lg-12 email-mobile">
                            <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
@@ -199,12 +200,7 @@ main
 
                          @endif
                         @endif
-                        @if($user->role=='user')
-                        <?php $url = url('login'); ?>
-                        @else 
-                        <?php $url = url('/'); ?>
-                        @endif
-                        <a href="{{$url}}"  class="btn btn-info"  ng-show="proceedo">Click here to login</a>
+                       
                         </div>
 
 
@@ -218,26 +214,38 @@ main
 
                      
                      
-                        @stop
+    @stop
 
 @section('script')
 
+
+
+
+                    
                         <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
                         <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
                         <script src="{{asset('dist/js/angular.min.js')}}"></script>
+
+          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+
                                     <script type="text/javascript">
     var telInput = $(".phonecode");
+    let currentCountry="";
     telInput.intlTelInput({
+        initialCountry: "auto",
         geoIpLookup: function (callback) {
             $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
-                callback(countryCode);
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
             });
         },
-        initialCountry: "auto",
         separateDialCode: true,
-        utilsScript: "js/intl/js/utils.js"
+        utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
     $('.intl-tel-input').css('width', '100%');
 
     telInput.on('blur', function () {
@@ -272,9 +280,12 @@ main
                                         success: function (response) {
                                             $('#error2').hide(); 
                                             $('#alertMessage2').show();
-                                            var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                                            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                                            $('#alertMessage1').hide(); 
                                             $('#alertMessage2').html(result);
                                             $("#verifyOtp").html("Verify OTP");
+                                              window.location.href = 'login';
+                                            
                                         },
                                         error: function (data) {
                                              var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.result+' <br><ul>';
@@ -381,8 +392,9 @@ main
                                             method: "GET",
                                             params: $scope.newObj
                                         }).success(function (data) {
-                                            $scope.proceedo=data.proceed;
-                                            $scope.msg2 = true;
+                                           window.location.href = 'login';
+                                            // $scope.proceedo=data.proceed;
+                                            // $scope.msg2 = true;
                                             $("#verifyOTP").html("Verify OTP");
                                              var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> </strong>'+data.message+'!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                                             $('#alertMessage1').html(result);
@@ -415,7 +427,9 @@ main
                                         }).success(function (data) {
                                             $scope.proceedo=data.proceed;
                                             $scope.msg1 = true;
-                                            $('#email1').html(data.message);
+                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+data.message+'!</div>';
+                                             $('#snap1').hide();
+                                            $('#email1').html(result);
                                             $('#email1').css('color', 'green');
                                             $("#sendEmail").html("Send Email");
                                         }).error(function (data) {
@@ -448,7 +462,7 @@ main
                                           success: function (response) {
                                             $('.otp-field').show();
                                             $('.email-mobile').hide();
-                                                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
                                                 $('#alertMessage1').html(result);
                                                 $('#snap1').hide();
                                                 $('.wizard-inner').css('display','none');

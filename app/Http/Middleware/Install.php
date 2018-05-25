@@ -25,7 +25,7 @@ class Install
             return $next($request);
         } else {
             //     // dump(\File::exists($env).' '.env('DB_INSTALL').' '.$env;
-            return redirect()->route('LaravelInstaller::welcome');
+            // return redirect()->route('LaravelInstaller::welcome');
         }
     }
 }

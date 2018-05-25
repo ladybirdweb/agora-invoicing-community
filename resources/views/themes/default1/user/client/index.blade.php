@@ -141,10 +141,10 @@
                     $('#reset').on('click', function () {
                         $('#country').val('');
                         $('#industry').val('');
-                         $('#name').val('');
-                          $('#email').val('');
-                           $('#mobile').val('');
-                            $('#username').val('');
+                        $('#name').val('');
+                        $('#email').val('');
+                        $('#mobile').val('');
+                        $('#username').val('');
                     //     var uri = window.location.toString();
 
                     // if (uri.indexOf("?") > 0) {

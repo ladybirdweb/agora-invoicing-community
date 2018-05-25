@@ -4927,6 +4927,8 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Tests\\Unit\\Client\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Unit/Client/RegistrationTest.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
         'Tests\\Unit\\LoginTest' => __DIR__ . '/../..' . '/tests/Unit/LoginTest.php',
+        'Tests\\Unit\\MailTracker' => __DIR__ . '/../..' . '/tests/Unit/MailTracker.php',
+        'Tests\\Unit\\TestingMailEventListener' => __DIR__ . '/../..' . '/tests/Unit/MailTracker.php',
         'Text_Template' => __DIR__ . '/..' . '/phpunit/php-text-template/src/Template.php',
         'Thomaswelton\\LaravelGravatar\\Facades\\Gravatar' => __DIR__ . '/..' . '/thomaswelton/laravel-gravatar/src/Facades/Gravatar.php',
         'Thomaswelton\\LaravelGravatar\\Gravatar' => __DIR__ . '/..' . '/thomaswelton/laravel-gravatar/src/Gravatar.php',

@@ -4,6 +4,7 @@ use Faker\Generator as Faker;
 
 $factory->define(App\User::class, function (Faker $faker) {
     return [
+
        'user_name' => $faker->userName,
        'first_name' => $faker->firstName,
        'last_name' => $faker->lastName,
@@ -22,8 +23,9 @@ $factory->define(App\User::class, function (Faker $faker) {
        // 'timezone' => $faker->timezone,
        
        'remember_token' => str_random(10),
+
         'mobile_verified'=> 1,
-        'active'   => 1,
-        'role'=>'user',
+        'active'         => 1,
+        'role'           => 'user',
     ];
 });

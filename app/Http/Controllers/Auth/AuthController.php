@@ -456,8 +456,7 @@ class AuthController extends Controller
 
             $this->sendActivation($email, $method, $pass);
             $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'.<br>OTP has been sent to '.$number.'.<br>Please enter the OTP received on your mobile No below. Incase you did not recieve OTP,please get in touch with us on <a href="mailto:support@faveohelpdesk.com">support@faveohelpdesk.com</a>'];
- 
-              
+
             return response()->json($response);
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
@@ -528,12 +527,12 @@ class AuthController extends Controller
                 $user->save();
             }
             $check = $this->checkVerify($user);
-             // $url= 'auth/login';
-             // if (\Session::has('session-url')) {
-             //        $url = \Session::get('session-url');
-             //       dd($url);
-             //        return redirect($url);
-             //    }
+            // $url= 'auth/login';
+            // if (\Session::has('session-url')) {
+            //        $url = \Session::get('session-url');
+            //       dd($url);
+            //        return redirect($url);
+            //    }
             $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified'];
 
             return response()->json($response);

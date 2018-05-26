@@ -35,7 +35,7 @@ $tax=  0;
              <div class="card-header">
               <h4 class="card-title m-0">
                            
-                        Review &amp; Payment
+                        Review Your Order
                                             
                </h4>
                 
@@ -45,18 +45,21 @@ $tax=  0;
             <div class="card-body">
 
                 @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
+                <div class="alert alert-success">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                     {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    
                     {!!Session::get('success')!!}
                 </div>
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                   {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
+                  
                     {{Session::get('fails')}}
                 </div>
                 @endif

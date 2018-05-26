@@ -134,10 +134,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                  </div>
                                  <div id="alertMessage2" class="-text" ></div> -->
                                 @if(Session::has('success'))
-                                <div class="alert alert-success alert-dismissable">
-                                    <i class="fa fa-ban"></i>
-                                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                                <div class="alert alert-success">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                   <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                                    {{Lang::get('message.alert')}}! {{Lang::get('message.success')}}.
+                                    
                                     {{Session::get('success')}}
                                 </div>
                                 @endif
@@ -557,24 +558,25 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           },
           error: function (ex) {
             var data = JSON.parse(ex.responseText);
-
+            // console.log(data.errors);
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
             var res = "";
 
                 function ash(idx, topic) {
-                   
+                    // console.log(idx);
                    if(typeof topic==="object"){
                       $.each(topic, ash);
                    }
                    else{
-                     // var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                     res += "<ul style='list-style-type:none'><li><i class='fa fa-ban'></i>&nbsp" + topic + "</li></ul>";
+                    
+                     res += '<li>' + topic + '</li>';
+                     
                    }
                 };
                  $.each(data, ash);
-                console.log(res)
-                $('#error').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
+                // console.log(res)
+                $('#error').html('<div class="alert alert-danger"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.message+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
               
             $('#error').show();
             setTimeout(function(){ 

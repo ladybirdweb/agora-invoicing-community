@@ -26,14 +26,13 @@
   
           <!-- Vendor CSS -->
           <!-- <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}"> -->
-          <link rel="stylesheet" href="{{asset('cart/vendor/bootstrap/css/bootstrap.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
-          <link rel="stylesheet" href="{{asset('cart/vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
-        <link rel="stylesheet" href="{{asset('cart/vendor/magnific-popup/magnific-popup.min.css')}}">
-  
+          <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
+          <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
           <!-- Theme CSS -->
           <link rel="stylesheet" href="{{asset('css/theme.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
@@ -86,7 +85,7 @@
                             </div>
                              <div class="header-column justify-content-end">
                                 <div class="header-row pt-3">
-                                    <nav class="header-nav-top" style="margin-left:650px;margin-top:10px;">
+                                    <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
                                               <li class="nav-item d-none d-sm-block">
                                                   <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> support@faveohelpdesk.com</a>
@@ -194,6 +193,7 @@
                                                     <li class="dropdown">
                                                         <a class="nav-link" class="dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
+                                                            &nbsp;<i class="fas fa-caret-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             @if(Auth::user()->role=='admin')
@@ -348,7 +348,7 @@
                        <div class="col-lg-3 order-2 order-lg-1">
                             <aside class="sidebar">
 
-                                <h4 class="heading-primary">My Accounts</h4>
+                                
                                 <ul class="nav nav-list flex-column mb-4 sort-source" data-sort-id="portfolio" data-option-key="filter" data-plugin-options="{'layoutMode': 'fitRows', 'filter': '*'}">
                                     <li class="@yield('nav-orders')"><a class="nav-link" href="{{url('my-orders')}}">My Orders</a></li>
 
@@ -454,11 +454,11 @@
         </div>
 
         <!-- Vendor -->
-        <!--<script src="{{asset('cart/vendor/jquery/jquery.min.js')}}"></script>-->
+         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
-        <script src="{{asset('cart/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
+       <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
         <script src="{{asset('cart/vendor/common/common.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.validation/jquery.validation.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.stellar/jquery.stellar.min.js')}}"></script>
@@ -469,6 +469,7 @@
         <script src="{{asset('cart/vendor/owl.carousel/owl.carousel.min.js')}}"></script>
         <script src="{{asset('cart/vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
         <script src="{{asset('cart/vendor/vide/vide.min.js')}}"></script>
+        
 
         <!-- Theme Base, Components and Settings -->
         <script src="{{asset('cart/js/theme.js')}}"></script>

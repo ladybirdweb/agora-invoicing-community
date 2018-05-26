@@ -5,8 +5,12 @@ Agora | Invoice
 @section('nav-invoice')
 active
 @stop
+@section('page-heading')
+ <h1>My Account </h1>
+@stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
+<li class="active">My Account</li>
 <li class="active">Invoices</li>
 @stop
 

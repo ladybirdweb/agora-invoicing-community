@@ -10,6 +10,7 @@ active
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
+<li class="active">My Account</li>
 <li class="active">Orders</li>
 @stop
 

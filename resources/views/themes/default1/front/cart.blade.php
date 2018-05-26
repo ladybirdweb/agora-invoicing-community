@@ -31,8 +31,9 @@ if (count($attributes) > 0) {
 <div class="row">
     <div class="col-md-12">
         @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <div class="alert alert-danger alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -44,8 +45,9 @@ if (count($attributes) > 0) {
         @if(Session::has('success'))
     </br>
 </br>
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+         <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
             {{Session::get('success')}}
         </div>
         @endif
@@ -53,6 +55,7 @@ if (count($attributes) > 0) {
         @if(Session::has('fails'))
         <div class="alert alert-danger alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Something Went Wrong.
             {{Session::get('fails')}}
         </div>
         @endif

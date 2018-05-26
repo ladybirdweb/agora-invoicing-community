@@ -1,4 +1,4 @@
-<a href="#renew" class="btn btn-lg btn-primary" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
+<a href="#renew" class="btn  btn-primary" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
 <div class="modal fade" id="renew{{$id}}">
     <div class="modal-dialog">
         <div class="modal-content">

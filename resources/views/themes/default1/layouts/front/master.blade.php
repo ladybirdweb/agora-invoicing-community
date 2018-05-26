@@ -191,6 +191,7 @@
                                                     <li class="dropdown">
                                                         <a class="nav-link" class="dropdown-toggle" href="#">
                                                             {{Auth::user()->first_name}}
+                                                            &nbsp;<i class="fas fa-caret-down"></i>
                                                         </a>
                                                         <ul class="dropdown-menu">
                                                             @if(Auth::user()->role=='admin')

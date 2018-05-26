@@ -92,10 +92,10 @@ class ClientController extends Controller
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-lg btn-primary'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn  btn-primary'>Pay Now</a>";
                                 }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-lg btn-primary'>View</a>".$payment.'</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn  btn-primary'>View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
@@ -281,7 +281,7 @@ class ClientController extends Controller
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-lg btn-primary' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>$listUrl $url </a>"
+                                return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>$listUrl $url </a>"
                                         .'&nbsp;
 
 

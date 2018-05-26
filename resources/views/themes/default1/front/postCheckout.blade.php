@@ -113,12 +113,12 @@ $json = json_encode($data);
 <div class="row">
 
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                        Review & Payment
-                    </a>
+         <div class="card card-default" style="margin-bottom: 40px;">
+            <div class="card-header">
+                <h4 class="card-title m-0">
+                   
+                        Payment
+                   
                 </h4>
             </div>
 
@@ -237,9 +237,9 @@ $json = json_encode($data);
                 </div>
                
                     <div class="col-md-12">
-                         <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
-                        <table class="cart-totals">
+                        <!--  <hr class="tall">
+                    <h4 class="heading-primary">Cart Totals</h4> -->
+                       <!--  <table class="cart-totals">
                             <tbody>
 
 
@@ -252,9 +252,9 @@ $json = json_encode($data);
                                     </td>
                                 </tr>
 
-                            </tbody>
-                        </table>
-                        <hr class="tall">
+                            </tbody> -->
+                      <!--   </table>
+                        <hr class="tall"> -->
                     </div>
                 
                 

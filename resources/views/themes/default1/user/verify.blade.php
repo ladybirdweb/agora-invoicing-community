@@ -284,7 +284,9 @@ main
                                             $('#alertMessage1').hide(); 
                                             $('#alertMessage2').html(result);
                                             $("#verifyOtp").html("Verify OTP");
+                                            
                                               window.location.href = 'login';
+                                              // response.success("Success");
                                             
                                         },
                                         error: function (data) {
@@ -321,7 +323,7 @@ main
                                                 $('#alertMessage2').show();
                                                 $('#alertMessage1').hide();
                                                 $('#error2').hide();
-                                                var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong>'+response.message+'.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                                                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-thumbs-up"></i> Well Done! </strong>'+response.message+'.</div>';
                                                 $('#alertMessage2').html(result+ ".");
                                           },
                                           error: function (ex) {

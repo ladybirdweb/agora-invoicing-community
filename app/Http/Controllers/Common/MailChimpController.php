@@ -242,7 +242,6 @@ class MailChimpController extends Controller
     public function mailChimpSettings()
     {
         try {
-
             $set = $this->mailchimp_set;
             $lists = $this->lists->pluck('name', 'list_id')->toArray();
 

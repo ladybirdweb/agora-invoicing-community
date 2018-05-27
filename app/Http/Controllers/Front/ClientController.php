@@ -566,9 +566,9 @@ class ClientController extends Controller
         }
     }
 
-    public function renewPopup($id,$productid)
+    public function renewPopup($id, $productid)
     {
-        return view('themes.default1.renew.popup', compact('id','productid'));
+        return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
     public function downloadPopup($clientid, $invoiceid, $productid)

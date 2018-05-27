@@ -80,6 +80,7 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
+            dd($ex);
             $exe = json_decode($ex->getMessage(), true);
             if ($exe['status'] == 400) {
                 throw new Exception("$email is already subscribed to newsletter", 400);
@@ -241,13 +242,12 @@ class MailChimpController extends Controller
     public function mailChimpSettings()
     {
         try {
+
             $set = $this->mailchimp_set;
             $lists = $this->lists->pluck('name', 'list_id')->toArray();
 
             return view('themes.default1.common.mailchimp.settings', compact('set', 'lists'));
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

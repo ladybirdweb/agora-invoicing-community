@@ -479,6 +479,7 @@
 
         <!-- Theme Initialization Files -->
         <script src="{{asset('cart/js/theme.init.js')}}"></script>
+        
         <script>
             function removeItem(id) {
 

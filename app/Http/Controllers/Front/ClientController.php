@@ -270,7 +270,7 @@ class ClientController extends Controller
                                 $url = '';
                                 if ($status == 'success') {
                                     if ($sub) {
-                                        $url = $this->renewPopup($sub->id);
+                                        $url = $this->renewPopup($sub->id, $productid);
                                     }
                                     //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                                 }
@@ -566,9 +566,9 @@ class ClientController extends Controller
         }
     }
 
-    public function renewPopup($id)
+    public function renewPopup($id,$productid)
     {
-        return view('themes.default1.renew.popup', compact('id'));
+        return view('themes.default1.renew.popup', compact('id','productid'));
     }
 
     public function downloadPopup($clientid, $invoiceid, $productid)

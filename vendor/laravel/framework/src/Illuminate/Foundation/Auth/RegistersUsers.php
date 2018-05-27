@@ -98,7 +98,7 @@ trait RegistersUsers
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
             if ($user) {
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received.Verify your Email and Mobile to log into Faveo.'];
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into Faveo.'];
 
                 return response()->json($response);
             }
@@ -192,7 +192,7 @@ trait RegistersUsers
                 $user->active = 1;
                 $user->save();
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 

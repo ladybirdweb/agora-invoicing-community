@@ -11,7 +11,9 @@
                 <!-- Form  -->
                 
                 <?php 
-                $plans = App\Model\Payment\Plan::pluck('name','id')->toArray();
+           
+                $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
+                // dump($plans);
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">

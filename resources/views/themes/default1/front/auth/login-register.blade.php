@@ -130,6 +130,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                                 <div id="fails">
                                 </div>
+                                 <div id="alertMessage1"></div>
+                                 <div id="alertMessage2"></div>
                                  <!-- <div id="error2">
                                  </div>
                                  <div id="alertMessage2" class="-text" ></div> -->
@@ -137,9 +139,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 <div class="alert alert-success">
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                                    <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
-                                    {{Lang::get('message.alert')}}! {{Lang::get('message.success')}}.
-                                    
-                                    {{Session::get('success')}}
+                                        {{Session::get('success')}}
                                 </div>
                                 @endif
                                 <!-- fail message -->
@@ -381,7 +381,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                         <!-- fail message -->
             <div class="row">
                 <div class="col-lg-6 offset-lg-3">
-                    <div id="alertMessage1"></div>
+                    <div id="successMessage1"></div>
+                     <!-- <div id="successMessage2"></div> -->
+
                     <div id="error1">
                     </div>
                    <div class="featured-box featured-box-primary text-left mt-5">
@@ -440,7 +442,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                 <div class="col-lg-6 offset-lg-3">
                     <div id="error2">
                     </div>
-                    <div id="alertMessage2" class="-text" ></div>
+                    <div id="successMessage2"></div>
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
@@ -508,6 +510,20 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 @stop 
 @section('script')
 <script type="text/javascript">
+    
+
+    $( document ).ready(function() {
+        var printitem= localStorage.getItem('successmessage');
+         if(printitem != null){
+         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
+         $('#alertMessage2').html(result);
+         localStorage.removeItem('successmessage');
+         localStorage.clear();
+     }
+    
+});
+</script>
+<script type="text/javascript">
 
     function registerUser() {
         $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
@@ -539,7 +555,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           success: function (response) {
             if(response.type == 'success'){
                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
-                $('#alertMessage1').html(result);
+                $('#successMessage1').html(result);
                 $('.wizard-inner').css('display','block');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
@@ -602,7 +618,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           data: data,
           success: function (response) {
                 var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
-                $('#alertMessage2').html(result);
+                $('#successMessage2').html(result);
                 $('#error1').hide();
                 $('.wizard-inner').css('display','none');
                 var $active = $('.wizard .nav-tabs li.active');
@@ -671,12 +687,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                 $('#error2').hide(); 
                 $('#alertMessage2').show();
                 var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
-                 $('#alertMessage2').hide();
+                 $('#successMessage2').hide();
                 $('#success').html(result);
                 $("#verifyOtp").html("Verify OTP");
                 setTimeout(()=>{
                         getLoginTab();
-                },2500)
+                },0)
             },
             error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);

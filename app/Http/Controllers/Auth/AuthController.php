@@ -281,8 +281,8 @@ class AuthController extends Controller
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                // $r = $mailchimp->addSubscriber($user->email);
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
@@ -295,6 +295,7 @@ class AuthController extends Controller
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
+            dd($ex);
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
 

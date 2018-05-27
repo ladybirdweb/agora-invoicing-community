@@ -20,8 +20,9 @@ active
 
 <div class="col-md-12 pull-center">
     @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -40,10 +41,10 @@ active
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+               <div class="alert alert-danger alert-dismissable" role="alert">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                   <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
+                    
                     {{Session::get('fails')}}
                 </div>
                 @endif

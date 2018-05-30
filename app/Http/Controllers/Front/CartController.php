@@ -298,7 +298,7 @@ class CartController extends Controller
                         }
                            }
                        } else {//If user from other Country
-
+                           
                            $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
 
                            if ($taxClassId) { //if state equals the user State or country equals user country
@@ -1063,11 +1063,8 @@ class CartController extends Controller
     public static function taxValue($rate, $price)
     {
         try {
-            // $tax = $price / (($rate / 100) + 1);
-            // // $result = $price - $tax;
-            $tax = $price * ($rate / 100);
-            // $tax = $price / (($rate / 100) + 1);
-            $result = $tax;
+             $tax = $price * ($rate / 100);
+             $result = $tax;
             $result = self::rounding($result);
 
             return $result;

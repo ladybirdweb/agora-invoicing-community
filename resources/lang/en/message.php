@@ -87,7 +87,7 @@ return [
     'remember-me'                   => 'Remember Me',
     'sign-in'                       => 'Sign In',
     'sign-up'                       => 'Sign Up',
-    'forgot-my-password'            => 'Forgot my Password',
+    'forgot-my-password'            => 'Forgot Password?',
     /*
      * Reset Password
      */

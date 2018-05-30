@@ -92,10 +92,10 @@ class ClientController extends Controller
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn  btn-primary'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-sm btn-primary btn-xs'>Pay Now</a>";
                                 }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn  btn-primary'>View</a>".$payment.'</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary btn-xs'>View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')

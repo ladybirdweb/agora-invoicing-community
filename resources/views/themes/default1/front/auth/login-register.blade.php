@@ -175,17 +175,28 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
                                                        
                                                             <label class="required">Username or E-mail Address</label>
-                                                            {!! Form::text('email1',null,['class' => 'form-control input-lg']) !!}
+                                                              <div class="input-group">
+                                                              {!! Form::text('email1',null,['class' => 'form-control input-lg ']) !!}
+                                                                <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                          </div>
+                                                             
+                                                             </div>
 
                                                         
                                                     </div>
                                                 </div>
                                                 <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
-                                                        
+                                                           
                                                             <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                             <label class="required">Password</label>
+                                                             <div class="input-group">
                                                             {!! Form::password('password1',['class' => 'form-control input-lg']) !!}
+                                                              <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                          </div>
+                                                        </div>
                                                             <!--<input type="password" value="" class="form-control input-lg">-->
                                                         
                                                     </div>
@@ -354,13 +365,25 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <label>
-                                                            <input type="checkbox" name="terms" id="terms"> {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                            <input type="checkbox" name="terms" id="terms" > {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                     </div>
+                                                    <div class="form-row">
+                                                          <div class="form-group col-lg-6">
+                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()" style="margin-right:-230px;margin-top:4px;">Submit</button>
+                                                          </div>
+                                                    </div>
                                                 </div>
+                                                <div class="pull-left obligatory-fields" style="margin-top:-8px;">
+                                                   * Obligatory fields
+                                                                </div>
                                                 <div class="form-row">
-                                                    <div class="form-group col-lg-6 pull-right">
-                                                        <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
+                                                    <div class="form-group col-lg-6 ">
+                                                        
+                                                               <!--  <div class="pull-right marginright">
+                    <button type="submit" class="btn btn-medium btn-custom ">Submit</button>
+                </div> -->
+                                                      
                                                        <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
                                                         </button> -->
                                                     </div>
@@ -443,6 +466,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                     <div id="error2">
                     </div>
                     <div id="successMessage2"></div>
+                    <div id="alertMessage3"></div>
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
@@ -526,7 +550,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 <script type="text/javascript">
 
     function registerUser() {
-        $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
+        $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
 
         $.ajax({
           url: '{{url("auth/register")}}',
@@ -687,6 +711,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                 $('#error2').hide(); 
                 $('#alertMessage2').show();
                 var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
+                 // $('#alertMessage3').show();
                  $('#successMessage2').hide();
                 $('#success').html(result);
                 $("#verifyOtp").html("Verify OTP");
@@ -723,10 +748,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           type: 'GET',
           data: data,
           success: function (response) {
-                $('#alertMessage2').show();
+               
+                 $('#successMessage2').hide ();
+                  $('#alertMessage3').show();
                 $('#error2').hide();
                 var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                $('#alertMessage2').html(result+ ".");
+                $('#alertMessage3').html(result+ ".");
           },
           error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);

@@ -16,20 +16,21 @@ Checkout
     $symbol = $invoice->currency;
 
 ?>
+<div class="container">
 <div class="row">
 
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+        <div class="card card-default" style="margin-bottom: 40px;">
+             <div class="card-header">
+                 <h4 class="card-title m-0">
+                    
                         Review & Payment
-                    </a>
+                    
                 </h4>
             </div>
 
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
@@ -119,8 +120,8 @@ Checkout
 
                     </table>
                     <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
-                    <div class="col-md-12">
+                    <!-- <h4 class="heading-primary">Cart Totals</h4> -->
+                   <!--  <div class="col-md-12">
                         <table class="cart-totals">
                             <tbody>
 
@@ -137,7 +138,7 @@ Checkout
                             </tbody>
                         </table>
                         <hr class="tall">
-                    </div>
+                    </div> -->
 
                 </div>
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
@@ -148,7 +149,8 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
-                        {{$gateways}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                         {!! Form::checkbox('payment_gateway',strtolower($gateways)) !!}&nbsp; &nbsp; 
+                        {{ucfirst($gateways)}}<br><br>
                     </div>
                     
                     <div class="col-md-6">
@@ -215,6 +217,7 @@ Checkout
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 @endsection

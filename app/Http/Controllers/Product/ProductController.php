@@ -298,14 +298,14 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['currency', 'price'], 'required', function ($input) {
             //     return $input->subscription != 1;
             // });
-            // if ($v->fails()) {
+            if ($v->fails()) {
             //     $currency = $input['currency'];
 
-            //     return redirect()->back()
-            //             ->withErrors($v)
-            //             ->withInput()
-            //             ->with('currency');
-            // }
+                return redirect()->back()
+                        ->withErrors($v)
+                        ->withInput()
+                        ->with('currency');
+            }
 
             try {
                 if ($request->hasFile('image')) {
@@ -419,6 +419,7 @@ use App\Http\Controllers\Controller;
         public function update($id, Request $request)
         {
             $input = $request->all();
+            // dd($input);
             $v = \Validator::make($input, [
                         'name'  => 'required',
                         'type'  => 'required',
@@ -799,13 +800,12 @@ use App\Http\Controllers\Controller;
         {
             try {
                 if (\Input::has('github_owner') && \Input::has('github_repository')) {
-                    $owner = \Input::get('github_owner');
+                     $owner = \Input::get('github_owner');
                     $repo = \Input::get('github_repository');
                     $product = $this->product->find($productid);
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $version = $github_controller->findVersion($owner, $repo);
-                    // dd($version);
-                    $product->version = $version;
+                      $product->version = $version;
                     $product->save();
                 }
             } catch (\Exception $ex) {

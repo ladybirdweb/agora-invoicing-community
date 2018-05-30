@@ -278,14 +278,16 @@ main
                                         type: 'GET',
                                         data: data,
                                         success: function (response) {
+                                          $('#alertMessage1').hide(); 
+                                          localStorage.setItem('successmessage', response.message);
+                                              window.location.href = 'login';
                                             $('#error2').hide(); 
                                             $('#alertMessage2').show();
                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
                                             $('#alertMessage1').hide(); 
                                             // $('#alertMessage2').html(result);
                                             $("#verifyOtp").html("Verify OTP");
-                                          localStorage.setItem('successmessage', response.message);
-                                              window.location.href = 'login';
+                                          
                                               // response.success("Success");
                                             
                                         },
@@ -447,7 +449,7 @@ main
                                     }
                        
                                $scope.sendOTPmail=function(){
-                                        $("#sendOtpmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                                        $("#sendOTPmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
                                        
                                         var data = {
                                             "email": $('#u_email').val(),

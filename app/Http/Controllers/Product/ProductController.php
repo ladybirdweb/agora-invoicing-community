@@ -299,7 +299,7 @@ use App\Http\Controllers\Controller;
             //     return $input->subscription != 1;
             // });
             if ($v->fails()) {
-            //     $currency = $input['currency'];
+                //     $currency = $input['currency'];
 
                 return redirect()->back()
                         ->withErrors($v)
@@ -800,12 +800,12 @@ use App\Http\Controllers\Controller;
         {
             try {
                 if (\Input::has('github_owner') && \Input::has('github_repository')) {
-                     $owner = \Input::get('github_owner');
+                    $owner = \Input::get('github_owner');
                     $repo = \Input::get('github_repository');
                     $product = $this->product->find($productid);
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $version = $github_controller->findVersion($owner, $repo);
-                      $product->version = $version;
+                    $product->version = $version;
                     $product->save();
                 }
             } catch (\Exception $ex) {

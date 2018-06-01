@@ -40,8 +40,7 @@ class Admin
         // dd(\Auth::user()->role);
         if (\Auth::user()->role == 'admin') {
             return $next($request);
-        } 
-        elseif (\Auth::user()->role == 'user') {
+        } elseif (\Auth::user()->role == 'user') {
             $url = \Session::get('session-url');
             if ($url) {
                 $content = \Session::get('content');
@@ -51,8 +50,7 @@ class Admin
             }
 
             return redirect('/home');
-        } 
-        else {
+        } else {
             \Auth::logout();
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);

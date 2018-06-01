@@ -1138,7 +1138,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
 
     function sendOTP() {
 
-        
+           $(document).ready(function(){
             $('#conemail').hide();
             $('#conmobile').hide();
 
@@ -1150,9 +1150,21 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             });
             function verify_email_check(){
 
-              var userEmail =$('#verify_email').val();
-              alert('dsfds');
+              var userEmail = $('#verify_email').val();
+              if(userEmail.length == ''){
+                $('#conemail').show();
+                $('#conemail').html("**Please Enter Your Email");
+                $('#conemail').focus();
+                $('#conemail').css("color","red");
+                mail_error = false;
+                return false;
+              }
+              else{
+                $('#conemail').show();
+              }
             }
+        });
+            
         
 
 

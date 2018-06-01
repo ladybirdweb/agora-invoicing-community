@@ -337,7 +337,6 @@ class TaxController extends Controller
                     $rules->fill($request->input())->save();
                 }
             } else {
-               
                 $v = \Validator::make($request->all(), ['name' => 'required']);
                 if ($v->fails()) {
                     return redirect()->back()

@@ -1,53 +1,52 @@
 <?php
 
 namespace Tests\Unit\Admin\Setting\Tax;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+
 use App\Model\Payment\TaxOption;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\TestCase;
 
 class TaxOptionTest extends TestCase
 {
-   use DatabaseTransactions;
+    use DatabaseTransactions;
 
-   /* group taxController */
+    /* group taxController */
     public function test_options_whenGstIsEnable()
     {
         $this->withoutMiddleware();
         $rule = TaxOption::where('id', 1)->update(['tax_enable'=>'1']);
-        $response = $this->call('PATCH','taxes/option',[
-         'Gst_no' =>'2323244',
+        $response = $this->call('PATCH', 'taxes/option', [
+         'Gst_no' => '2323244',
      ]);
         $response->assertSessionHas('success');
     }
-     
-     /* group taxController */
-     public function test_options_whenTaxClassIsCreated_whenTaxTypeIsOthers()
-     {
-     	 $this->withoutMiddleware();
-     	  $response = $this->call('POST','taxes/option',[
-         'name' =>'Others',
-         'tax-name' =>'VAT',
-         'active'  => 1,
-         'country' =>'AU',
-         'state' => 'QLD',
-         'rate' =>'20'
-     ]);
-     	 $response->assertSessionHas('success');
-     }
 
-      public function test_options_whenTaxClassIsCreated_whenTaxTypeIsGst()
-     {
-     	 $this->withoutMiddleware();
-     	  $response = $this->call('POST','taxes/option',[
-         'name' =>'Inter State GST',
-         'tax-name' =>'CGST',
-         'active'  => 1,
-         'country' =>'IN',
-         'state' => 'IN-MH',
-         'rate' =>'20'
+    /* group taxController */
+    public function test_options_whenTaxClassIsCreated_whenTaxTypeIsOthers()
+    {
+        $this->withoutMiddleware();
+        $response = $this->call('POST', 'taxes/option', [
+         'name'     => 'Others',
+         'tax-name' => 'VAT',
+         'active'   => 1,
+         'country'  => 'AU',
+         'state'    => 'QLD',
+         'rate'     => '20',
      ]);
-     	 $response->assertSessionHas('success');
-     }
+        $response->assertSessionHas('success');
+    }
+
+    public function test_options_whenTaxClassIsCreated_whenTaxTypeIsGst()
+    {
+        $this->withoutMiddleware();
+        $response = $this->call('POST', 'taxes/option', [
+         'name'     => 'Inter State GST',
+         'tax-name' => 'CGST',
+         'active'   => 1,
+         'country'  => 'IN',
+         'state'    => 'IN-MH',
+         'rate'     => '20',
+     ]);
+        $response->assertSessionHas('success');
+    }
 }

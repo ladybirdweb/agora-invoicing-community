@@ -23,10 +23,11 @@ class Install
         // dd(\File::exists($env) && env('DB_INSTALL')==1);
         if (\File::exists($env) && env('DB_INSTALL') == 1) {
             return $next($request);
-        } 
-        // else {
-        //         // dump(\File::exists($env).' '.env('DB_INSTALL').' '.$env;
-        //     return redirect()->route('LaravelInstaller::welcome');
-        // }
+
+        } else {
+            // dump(\File::exists($env).' '.env('DB_INSTALL').' '.$env;
+            return redirect()->route('LaravelInstaller::welcome');
+        }
+
     }
 }

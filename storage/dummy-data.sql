@@ -212,41 +212,41 @@ INSERT INTO `template_types` (`id`,`name`,`created_at`, `updated_at`) VALUES
 (2, '[Faveo Helpdesk] Verify your email address','1','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
-<td style="width: 30px;">&nbsp;</td>
+<td style="width: 30px;"> </td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="https://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
-<td style="width: 30px;">&nbsp;</td>
+<td style="width: 30px;"> </td>
 </tr>
 <tr>
-<td style="width: 30px;">&nbsp;</td>
-<td style="width: 640px; padding-top: 30px;">
-<table style="width: 640px;" border="0" cellspacing="0" cellpadding="0">
+<td style="width: 30px;"> </td>
+<td style="width: 640px;  padding-top: 30px;">
+<table style="width: 640px; border-bottom: 1px solid #ccc;" border="0" cellspacing="0" cellpadding="0">
 <tbody>
 <tr>
-<td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}},&nbsp;<br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile &amp; Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="http://faveohelpdesk.com/billing/">www.faveohelpdesk.com</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="http://faveohelpdesk.com/billing/public/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
+<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="https://www.billing.faveohelpdesk.com/">https://www.billing.faveohelpdesk.com</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="https://www.billing.faveohelpdesk.com/public/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
 </td>
-<td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
 <tr>
-<td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
-<td style="background: #fff; padding: 0; width: 560px;" align="left">&nbsp;</td>
-<td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
+<td style="background: #fff; padding: 0; width: 560px;" align="left"> </td>
+<td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
 <tr>
-<td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="background: #fff; border-left: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; padding: 20px 0 50px 0; width: 560px;" align="left"><a style="background: #00aeef; border: 1px solid                        #0088CC; padding: 10px 20px; border-radius: 5px; font-size: 14px; font-weight: bold; color: #fff; outline: none; text-shadow: none; text-decoration: none; font-family: Arial,sans-serif;" href="{{url}}" target="_blank">Verify Email </a></td>
-<td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="background: #fff; border-right: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
 </tbody>
 </table>
 </td>
-<td style="width: 30px;">&nbsp;</td>
+<td style="width: 30px;"> </td>
 </tr>
 <tr>
-<td style="width: 30px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="width: 30px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="padding: 20px 0 10px 0; width: 640px;" align="left">
 <table border="0" width="100%" cellspacing="0" cellpadding="0">
 <tbody>
@@ -257,23 +257,23 @@ INSERT INTO `template_types` (`id`,`name`,`created_at`, `updated_at`) VALUES
 </tr>
 <tr>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;"><a class="moz-txt-link-abbreviated" href="mailto:info@faveohelpdesk.com">info@faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;"><a class="moz-txt-link-abbreviated" href="mailto:sales@faveohelpdesk.com">sales@faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="http://www.ladybirdweb.com/support">http://www.ladybirdweb.com/support</a></p>
+<p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="https://www.support.faveohelpdesk.com">https://www.support.faveohelpdesk.com</a></p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:support@ladybirdweb.com">support@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="http://www.faveohelpdesk.com">http://www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@ladybirdweb.com">accounts@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">https://www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 </tr>
 </tbody>
 </table>
 </td>
-<td style="width: 30px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
+<td style="width: 30px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
 </tbody>
 </table>
-<p>&nbsp;</p>','2018-04-13 12:53:58','2018-04-13 12:53:58'),
+<p> </p>','2018-04-13 12:53:58','2018-04-13 12:53:58'),
 
 (4, '[Faveo Helpdesk] Purchase confirmation','7','null','<table style="background: #f2f2f2; width: 700px;" border="0" cellspacing="0" cellpadding="0">
 <tbody>

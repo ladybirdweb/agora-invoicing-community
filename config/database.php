@@ -43,7 +43,7 @@ return [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
             'port'        => env('DB_PORT', ''),
-            'database'    => env('DB_DATABASE', 'installer'),
+            'database'    => env('DB_DATABASE', 'installertest'),
             'username'    => env('DB_USERNAME', 'root'),
             'password'    => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),

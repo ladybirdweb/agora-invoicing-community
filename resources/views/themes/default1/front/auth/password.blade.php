@@ -59,7 +59,12 @@ main
                                 <div class="form-group col">
                                    
                                         <label>Email Address <span style="color: red">*</span></label>
+                                          <div class="input-group">
                                       <input type="text" name="email" value="" class="form-control input-lg">
+                                      <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                      </div>
+                                  </div>
                                         <!-- {!! Form::text('email',null,['class' => 'form-control input-lg']) !!} -->
                                     
                                 </div>

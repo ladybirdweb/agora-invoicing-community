@@ -15,7 +15,7 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+          <link rel="shortcut icon" href="images/faveo1.png" type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -45,7 +45,7 @@
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
-          <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
   
           <!-- Theme Custom CSS -->
@@ -454,7 +454,7 @@
         </div>
 
         <!-- Vendor -->
-         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
+         <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script> -->
         <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>

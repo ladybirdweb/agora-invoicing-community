@@ -176,12 +176,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                        
                                                             <label class="required">Username or E-mail Address</label>
                                                               <div class="input-group">
-                                                              {!! Form::text('email1',null,['class' => 'form-control input-lg ']) !!}
+                                                              {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
                                                                 <div class="input-group-append">
                                                             <span class="input-group-text"><i class="fa fa-user"></i></span>
                                                           </div>
                                                              
                                                              </div>
+                                                             <h6 id="usercheck"></h6>
 
                                                         
                                                     </div>
@@ -192,11 +193,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                             <label class="required">Password</label>
                                                              <div class="input-group">
-                                                            {!! Form::password('password1',['class' => 'form-control input-lg']) !!}
+                                                            {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
                                                               <div class="input-group-append">
                                                             <span class="input-group-text"><i class="fa fa-key"></i></span>
                                                           </div>
+                                                          
                                                         </div>
+                                                        <h6 id="passcheck"></h6>
                                                             <!--<input type="password" value="" class="form-control input-lg">-->
                                                         
                                                     </div>
@@ -212,7 +215,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     </div>
                                                     </div>
                                                      <div class="form-group col-lg-6">
-                                                        <input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                        <input type="submit" id="submitbtn" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
                                                     </div>
                                                 </div>
                                                 {!! Form::close() !!}
@@ -223,7 +226,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                          <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
                                                <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
-                                                <form name="registerForm" id="regiser-form">
+                                                <form name="registerForm" id="regiser-form" >
                                                 <div class="row">
                                                    
                                                         <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
@@ -231,13 +234,18 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                           <label class="required">First Name</label>
                                                           
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
+                                                            <h6 id="first_namecheck"></h6>
                                                            </div>
+                                                            
+
                                                         
                                                             <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
                                                                 {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
                                                             
                                                         </div>
+                                                         <h6 id="last_namecheck"></h6>
+
                                                     
                                                 </div>
                                                  <div class="form-row">
@@ -247,20 +255,27 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
                                                         </div>
 
-                                                    
+                                                      <h6 id="emailcheck"></h6>
                                                 </div>
+                                                
+
                                                 <div class="row">
                                                    
                                                         <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
                                                         </div>
+                                                        <h6 id="companycheck"></h6>
+
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
                                                         </div>
+                                                        <h6 id="bussinesscheck"></h6>
+
                                                     
                                                 </div>
+                                                 
                                                 <div class='row'>
                                                     <?php
                                                     $type = DB::table('company_types')->pluck('name', 'short')->toArray();;
@@ -274,12 +289,16 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
 
                                                     </div>
+                                                     <h6 id="company_typecheck"></h6>
+
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
                                                         {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
 
                                                     </div>
+                                                     <h6 id="company_sizecheck"></h6>
+
                                                 </div>
                                                 <div class="form-row">
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
@@ -288,6 +307,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
 
                                                             </div>
+                                                             <h6 id="countrycheck"></h6>
+
                                                  </div>
                                                 <div class="form-row">
                                                     <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
@@ -296,6 +317,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
                                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
                                                     </div>
+                                                     <h6 id="mobile_codecheck"></h6>
+
                                                    
                                                 </div>
                                                 <div class="form-row">
@@ -306,6 +329,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                       
                                                     </div>
+                                                     <h6 id="addresscheck"></h6>
+
                                                 </div>
                                                   <div class="form-row">
                                                     
@@ -313,6 +338,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label>City/Town</label>
                                                             {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
                                                         </div>
+                                                        <h6 id="towncheck"></h6>
 
                                                         
                                                             <div class="form-group col-lg-6 {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -330,6 +356,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
 
                                                             </div>
+                                                             <h6 id="statecheck"></h6>
+
                                                         
                                                    
                                                 </div>
@@ -340,11 +368,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 <label class="required">Zip/Postal Code</label>
                                                                 {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
                                                             </div>
+                                                             <h6 id="zipcheck"></h6>
+
 
                                                             <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
                                                                 <label class="required">User Name/E-mail Id</label>
                                                                 {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
                                                             </div>
+                                                             <h6 id="user_namecheck"></h6>
+
                                                        
                                                     
                                                 </div>
@@ -354,11 +386,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
                                                         </div>
+                                                         <h6 id="passwordcheck"></h6>
+
                                                         <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
                                                         </div>
+                                                         <h6 id="conpasscheck"></h6>
+
                                                    
                                                 </div>
 
@@ -374,9 +410,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                           </div>
                                                     </div>
                                                 </div>
-                                                <div class="pull-left obligatory-fields" style="margin-top:-8px;">
-                                                   * Obligatory fields
-                                                                </div>
+                                                <div class="form-row">
+                                                  
+                                                <div class="pull-left obligatory-fields required" >
+                                                     </div>&nbsp;
+                                                  Required fields
+                                              </div>
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6 ">
                                                         
@@ -420,8 +459,18 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 <div class="form-row">
                                                         <div class="form-group col">
                                                             <label>Email</label>
+                                                             <div class="input-group">
+
+                                                  
+
+
                                                             <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                                             <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                                          </div>
                                                         </div>
+                                                        </div>
+                                                         <h6 id="conemail"></h6>
                                                     </div>
 
 
@@ -429,14 +478,17 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                             
 
                                                      <div class="form-row">
-                                                        <div class="form-group col-lg-12">
+                                                        <div class="form-group col">
                                                         <input id="mobile_code_hidden" name="mobile_code" type="hidden">
-                                                         <input class="form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                                         <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
                                                           <label for="mobile" class="required">Mobile</label><br/>
-                                                          
+                                                            
                                                        <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
+                                                        
+                                                      
   
                                                       </div>
+                                                       <h6 id="conmobile"></h6>
                                                   </div>
 
                                                     <div class="form-row">
@@ -548,10 +600,457 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 });
 </script>
 <script type="text/javascript">
+    //register Validdation
+  
 
-    function registerUser() {
-        $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+  
 
+
+  
+
+</script>
+
+<script type="text/javascript">
+    //Login Form Jquery validation
+ $(document).ready(function(){
+   $('#usercheck').hide();
+   $('#passcheck').hide();
+
+   var userErr = true;
+   var passErr = true;
+   // var conPassErr = true;
+
+   // $('#username').keyup(function(){
+   //     username_check();
+   // });
+
+
+
+   //  $('#pass').keyup(function(){
+   //     password_check();
+   // });
+
+   
+
+  //   $('#conpassword').keyup(function(){
+  //      con_password_check();
+  //  });
+
+  //    function con_password_check(){
+  //       var conPassStore= $('#conpassword').val();
+  //        var passStore = $('#pass').val();
+  //        if(conPassStore != passStore)
+         
+  //       $('#confirm_pass').show();
+  //       $('#confirm_pass').html("**password Don;t Match");
+  //       $('#confirm_pass').focus();
+  //       $('#confirm_pass').css("color","red");
+  //       conPassErr =false;
+  //       return false;
+    
+  //   else{
+  //        $('#passcheck').hide();
+  //   }
+
+  // }
+  $('#formoid').submit(function(){
+       function username_check(){
+    var user_val = $('#username').val();
+    if(user_val.length == ''){
+        $('#usercheck').show();
+        $('#usercheck').html("**Please Enter Username/Email");
+        $('#usercheck').focus();
+        $('#usercheck').css("color","red");
+        // userErr =false;
+        // return false;
+    }
+    else if((user_val.length < 3) || (user_val.length > 10))  {
+        $('#usercheck').show();
+        $('#usercheck').html("**Username Length must be between 3 to 20 characters");
+        $('#usercheck').focus();
+        $('#usercheck').css("color","red");
+        // userErr =false;
+        // return false;
+    }
+    else{
+         $('#usercheck').hide();
+         return true;
+    }
+   }
+   
+
+    function password_check(){
+        var passStore= $('#pass').val()
+    if(passStore.length == ''){
+        $('#passcheck').show();
+        $('#passcheck').html("**Please Enter Password");
+        $('#passcheck').focus();
+        $('#passcheck').css("color","red");
+        passErr =false;
+        return false;
+    }
+    else if((passStore.length < 3) || (passStore.length > 10)){
+        $('#passcheck').show();
+        $('#passcheck').html("**Password Length must be between 3 and 10");
+        $('#passcheck').focus();
+        $('#passcheck').css("color","red");
+        passErr =false;
+        return false;
+    }
+    else{
+         $('#passcheck').hide();
+         return true;
+    }
+    }
+    // userErr = true;
+    // passErr = true;
+   // var conPassErr = true;
+
+    username_check();
+    password_check();
+     // con_password_check();
+console.log(username_check(),password_check())
+     if(username_check() && password_check()){
+        return true;
+     }
+     else{
+        return false;
+     }
+  });
+
+ });
+
+
+
+
+
+
+ function first_namecheck(){
+    var firrstname_val = $('#first_name').val();
+    if(firrstname_val.length == ''){
+        $('#first_namecheck').show();
+        $('#first_namecheck').html("**Please Enter First Name");
+        $('#first_namecheck').focus();
+        $('#first_namecheck').css("color","red");
+        // userErr =false;
+        // return false;
+          $('html, body').animate({
+        scrollTop: $("#first_namecheck").offset().top
+    }, 1000)
+    }
+   
+    else{
+         $('#first_namecheck').hide();
+         return true;
+    }
+   }
+    //Validating last name field
+    function last_namecheck(){
+    var lastname_val = $('#last_name').val();
+    if(lastname_val.length == ''){
+        $('#last_namecheck').show();
+        $('#last_namecheck').html("**Please Enter Last Name");
+        $('#last_namecheck').focus();
+        $('#last_namecheck').css("color","red");
+        // userErr =false;
+        return false;
+    }
+   
+    else{
+         $('#last_namecheck').hide();
+         return true;
+    }
+   }
+    //Validating email field
+    function emailcheck(){
+    var email_val = $('#email').val();
+    if(email_val.length == ''){
+        $('#emailcheck').show();
+        $('#emailcheck').html("**Please Enter Email");
+        $('#emailcheck').focus();
+        $('#emailcheck').css("color","red");
+        // userErr =false;
+        return false;
+    }
+   
+    else{
+         $('#emailcheck').hide();
+         return true;
+    }
+   }
+
+    function companycheck(){
+    var company_val = $('#company').val();
+    if(company_val.length == ''){
+        $('#companycheck').show();
+        $('#companycheck').html("**Please Enter Company");
+        $('#companycheck').focus();
+        $('#companycheck').css("color","red");
+        // userErr =false;
+        return false;
+    }
+   
+    else{
+         $('#companycheck').hide();
+         return true;
+    }
+   }
+
+   // function bussinesscheck(){
+   //  var business_val = $('#business').val();
+   //  if(business_val.length == ''){
+   //      $('#bussinesscheck').show();
+   //      $('#bussinesscheck').html("**Please Select One Industry");
+   //      $('#bussinesscheck').focus();
+   //      $('#bussinesscheck').css("color","red");
+   //      // userErr =false;
+   //      return false;
+   //  }
+   
+   //  else{
+   //       $('#bussinesscheck').hide();
+   //       return true;
+   //  }
+   // }
+
+   // function company_typecheck(){
+   //  var companytype_val = $('#company_type').val();
+   //  if(business_val.length == ''){
+   //      $('#company_typecheck').show();
+   //      $('#company_typecheck').html("**Please Select Company Type");
+   //      $('#company_typecheck').focus();
+   //      $('#company_typecheck').css("color","red");
+   //      // userErr =false;
+   //      return false;
+   //  }
+   
+   //  else{
+   //       $('#company_typecheck').hide();
+   //       return true;
+   //  }
+   // }
+
+   // function company_sizecheck(){
+   //  var companysize_val = $('#company_size').val();
+   //  if(business_val.length == ''){
+   //      $('#company_sizecheck').show();
+   //      $('#company_sizecheck').html("**Please Select company Size ");
+   //      $('#company_sizecheck').focus();
+   //      $('#company_sizecheck').css("color","red");
+   //      // userErr =false;
+   //       return false;
+   //  }
+   
+   //  else{
+   //       $('#company_sizecheck').hide();
+   //       return true;
+   //  }
+   // }
+   
+   // function countrycheck(){
+   //  var country_val = $('#country').val();
+   //  if(business_val.length == ''){
+   //      $('#countrycheck').show();
+   //      $('#countrycheck').html("**Please Select One Country ");
+   //      $('#countrycheck').focus();
+   //      $('#countrycheck').css("color","red");
+   //      // userErr =false;
+   //       return false;
+   //  }
+   //  else{
+   //       $('#countrycheck').hide();
+   //       return true;
+   //  }
+   // }
+
+    function mobile_codecheck(){
+    var mobile_val = $('#mobilenum').val();
+    if(mobile_val.length == ''){
+        $('#mobile_codecheck').show();
+        $('#mobile_codecheck').html("**Please Select One Country ");
+        $('#mobile_codecheck').focus();
+        $('#mobile_codecheck').css("color","red");
+        // userErr =false;
+         return false;
+    }
+    else{
+         $('#mobile_codecheck').hide();
+         return true;
+    }
+   }
+    
+    function addresscheck(){
+    var address_val = $('#address').val();
+    if(address_val.length == ''){
+        $('#addresscheck').show();
+        $('#addresscheck').html("**Please Enter Address ");
+        $('#addresscheck').focus();
+        $('#addresscheck').css("color","red");
+        // userErr =false;
+        return false;
+    }
+    else{
+         $('#addresscheck').hide();
+         return true;
+    }
+   }
+
+    function towncheck(){
+    var town_val = $('#city').val();
+    if(town_val.length == ''){
+        $('#towncheck').show();
+        $('#towncheck').html("**Please Enter Town ");
+        $('#towncheck').focus();
+        $('#towncheck').css("color","red");
+        // userErr =false;
+         return false;
+    }
+    else{
+         $('#towncheck').hide();
+         return true;
+    }
+   }
+
+    function statecheck(){
+    var state_val = $('#state-list').val();
+    if(state_val.length == ''){
+        $('#statecheck').show();
+        $('#statecheck').html("**Please Enter Address ");
+        $('#statecheck').focus();
+        $('#statecheck').css("color","red");
+        // userErr =false;
+         return false;
+    }
+   
+    else{
+         $('#statecheck').hide();
+         return true;
+    }
+   }
+
+   function zipcheck(){
+    var zip_val = $('#zip').val();
+    if(zip_val.length == ''){
+        $('#zipcheck').show();
+        $('#zipcheck').html("**Please Enter Zip Code ");
+        $('#zipcheck').focus();
+        $('#zipcheck').css("color","red");
+        // userErr =false;
+         return false;
+    }
+   
+    else{
+         $('#statecheck').hide();
+         return true;
+    }
+   }
+   function user_namecheck(){
+    var username_val = $('#user_name').val();
+    if(username_val.length == ''){
+        $('#user_namecheck').show();
+        $('#user_namecheck').html("**Please Enter Userbname ");
+        $('#user_namecheck').focus();
+        $('#user_namecheck').css("color","red");
+        // userErr =false;
+       
+            $('html, body').animate({
+        scrollTop: $("#user_namecheck").offset().top
+    }, 10000)
+     
+    }
+   
+    else{
+         $('#user_namecheck').hide();
+         return true;
+    }
+   }
+
+
+   
+
+    function password1check(){
+        var passwordStore= $('#password').val()
+    if(passwordStore.length == ''){
+        $('#password1check').show();
+        $('#password1check').html("**Please Enter Password");
+        $('#password1check').focus();
+        $('#password1check').css("color","red");
+      
+    }
+    else if((passwordStore.length < 3) || (passwordStore.length > 10)){
+        $('#password1check').show();
+        $('#password1check').html("**Password Length must be between 3 and 10");
+        $('#password1check').focus();
+        $('#password1check').css("color","red");
+       
+    }
+    else{
+         $('#password1check').hide();
+         return true;
+    }
+    }
+
+   //    $('#conpassword').keyup(function(){
+   //     con_password_check();
+   // });
+
+     function conpasscheck(){
+        var confirmPassStore= $('#confirm_pass').val();
+         var passwordStore = $('#password').val();
+         if(confirmPassStore != passwordStore){
+            $('#conpasscheck').show();
+            $('#conpasscheck').html("**password Don;t Match");
+            $('#conpasscheck').focus();
+            $('#conpasscheck').css("color","red");
+            return false;
+         }
+        else{
+             $('#conpasscheck').hide();
+               return true;
+        }
+  }
+ 
+function registerUser() {
+     // $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+
+   $('#first_namecheck').hide();
+   $('#last_namecheck').hide();
+    $('#emailcheck').hide();
+     $('#companycheck').hide();
+      $('#bussinesscheck').hide();
+       $('#company_typecheck').hide();
+        $('#company_sizecheck').hide();
+         $('#countrycheck').hide();
+         $('#mobile_codecheck').hide();
+          $('#addresscheck').hide();
+           $('#towncheck').hide();
+            $('#statecheck').hide();
+             $('#zipcheck').hide();
+              $('#user_namecheck').hide();
+               $('#password1check').hide();
+                $('#conpasscheck').hide();
+
+
+         var first_nameErr = true;
+         var last_nameErr = true;
+         var emailErr = true;
+         var companyeErr = true;
+         var bussinessErr = true;
+         var company_typeErr = true;
+         var company_sizeErr = true;
+         var countryErr = true;
+          var mobile_codeErr = true;
+          var addressErr = true;
+          var townErr = true;
+          var stateErr = true;
+          var zipErr = true;
+          var user_nameErr = true;
+          var password1Err = true;
+          var conPassErr = true;
+
+     // con_password_check();
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck() && statecheck() && zipcheck() &&  user_namecheck() && password1check() && conpasscheck())
+     {
         $.ajax({
           url: '{{url("auth/register")}}',
           type: 'post',
@@ -586,7 +1085,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                 nextTab($active);
                 window.scrollTo(0, 10);
                 verifyForm.elements['user_id'].value = response.user_id;
-                verifyForm.elements['verify_email'].value = $('#email').val();
+                var $emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
+                sessionStorage.setItem('oldemail',$emailverfy);
+                
+
                 verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
                 verifyForm.elements['verify_number'].value = $('#mobilenum').val();
                 verifyForm.elements['email_password'].value = $('#password').val();
@@ -621,12 +1123,52 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             $('#error').show();
             setTimeout(function(){ 
                 $('#error').hide(); 
-            }, 5000000);
+            }, 500000);
           }
         });
-    }
+     }
+    
+       else{
+        return false;
+        
+        
+     }
+    };
+    
 
     function sendOTP() {
+
+        
+            $('#conemail').hide();
+            $('#conmobile').hide();
+
+            var mail_error = true;
+            var mobile_error = true;
+
+            $('#verify_email').keyup(function(){
+              verify_email_check();
+            });
+            function verify_email_check(){
+
+              var userEmail =$('#verify_email').val();
+              alert('dsfds');
+            }
+        
+
+
+        var oldemail=sessionStorage.getItem('oldemail');
+        var newemail = $('#verify_email').val(); // this.value
+       
+
+            $.ajax({ 
+                url: '{{url("change/email")}}',
+                data: { newemail: newemail,oldemail:oldemail },
+                type: 'get'
+            });
+  
+
+
+
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
             "email": $('#verify_email').val(),
@@ -635,12 +1177,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
-           // alert('ok');
+          
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
           data: data,
           success: function (response) {
+           
+            //  sessionStorage.removeItem(oldemail);
+            // console.log(response)
                 var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
                 $('#successMessage2').html(result);
                 $('#error1').hide();
@@ -648,6 +1193,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
+                  setTimeout(function(){ 
+               sessionStorage.removeItem(oldemail); 
+            }, 500);
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
@@ -782,8 +1330,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     });
 
     function getCountryAttr(val) {
-        getState(val);
-        getCode(val);
+        if(val!=""){
+            getState(val);
+            getCode(val);
+        }
+        else{
+             console.log(val)
+            $("#state-list").html('<option value="">Please select Country</option>').val('');
+        }
 
 //        getCurrency(val);
 
@@ -795,6 +1349,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             url: "{{url('get-loginstate')}}/" + val,
               data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
+                 $("#state-list").html('<option value="">Please select Country</option>').val('');
+                console.log()
               $("#state-list").html(data).val(state.id);
             }
         });

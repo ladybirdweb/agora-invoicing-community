@@ -98,11 +98,12 @@ trait RegistersUsers
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
             if ($user) {
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into Faveo.'];
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
 
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             //return redirect()->back()->with('fails', $ex->getMessage());
             $result = [$ex->getMessage()];
             
@@ -199,7 +200,7 @@ trait RegistersUsers
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful.. Please login to access your account');
             } else {
                 throw new NotFoundHttpException();
             }
@@ -404,7 +405,7 @@ trait RegistersUsers
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');

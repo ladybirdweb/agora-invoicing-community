@@ -290,12 +290,12 @@ class AuthController extends Controller
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful..Please login to access your account');
             } else {
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            // dd($ex);
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
 
@@ -438,6 +438,7 @@ class AuthController extends Controller
 
     public function requestOtpFromAjax(Request $request)
     {
+        // dd($request->all());
         $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
@@ -452,7 +453,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            $result = $this->sendOtp($mobile, $code);
+            // $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
@@ -460,6 +461,7 @@ class AuthController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
+            dd($ex);
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -534,7 +536,7 @@ class AuthController extends Controller
             //       dd($url);
             //        return redirect($url);
             //    }
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');
@@ -652,5 +654,14 @@ class AuthController extends Controller
             //dd($from, $to, $template_data, $template_name, $replace);
             $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
+    }
+
+    public function updateUserEmail(Request $request){
+        $email=$request->oldemail;
+        $newEmail=$request->newemail;
+        User::where('email',$email)->update(['email'=>$newEmail]);
+        $message='User email updated successfully';
+        return $message;
+
     }
 }

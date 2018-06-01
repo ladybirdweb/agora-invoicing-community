@@ -149,8 +149,7 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
-                         {!! Form::checkbox('payment_gateway',strtolower($gateways)) !!}&nbsp; &nbsp; 
-                        {{ucfirst($gateways)}}<br><br>
+                         <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                     
                     <div class="col-md-6">

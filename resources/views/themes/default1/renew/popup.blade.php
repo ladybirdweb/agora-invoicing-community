@@ -1,11 +1,12 @@
-<a href="#renew" class="btn  btn-primary" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
+<a href="#renew" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
 <div class="modal fade" id="renew{{$id}}">
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Renew</h4>
+                 <h4 class="modal-title">Renew</h4>
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               
             </div>
             <div class="modal-body">
                 <!-- Form  -->

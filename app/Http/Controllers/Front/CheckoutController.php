@@ -191,14 +191,15 @@ class CheckoutController extends Controller
         }
 
         $cost = $request->input('cost');
-        if (\Cart::getSubTotal() > 0 || $cost > 0) {
-            $v = $this->validate($request, [
-                'payment_gateway' => 'required',
-                    ], [
+        if (\Cart::getSubTotal() > 0 || $cost > 0)
+        //  {
+        //     $v = $this->validate($request, [
+        //         'payment_gateway' => 'required',
+        //             ], [
 
-                'payment_gateway.required' => 'Please choose a payment gateway',
-                    ]);
-        }
+        //         'payment_gateway.required' => 'Please choose a payment gateway',
+        //             ]);
+        // }
 
         try {
             if (!$this->setting->where('id', 1)->first()) {

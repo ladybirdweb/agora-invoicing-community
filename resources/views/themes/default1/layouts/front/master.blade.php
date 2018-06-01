@@ -15,7 +15,7 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon" />
+          <link rel="shortcut icon" href="images/faveo1.png" type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -45,7 +45,7 @@
           <!-- Skin CSS -->
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
-          <!-- <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
 
   
           <!-- Theme Custom CSS -->
@@ -108,7 +108,7 @@
                                                                             </ul>
                                                                         </nav>-->
                                 </div>
-                                <div class="header-row">
+                                  <div class="header-row">
                                     <div class="header-nav">
                                         <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main">
                                             <i class="fa fa-bars"></i>
@@ -121,6 +121,7 @@
                                             <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                             @endforeach
                                         </ul>
+
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
@@ -138,6 +139,7 @@
                                                     </li>
 
                                                     <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
+
                                                     @foreach($pages as $page)
                                                     <li class="dropdown">
 
@@ -178,7 +180,7 @@
                                                     </li>
                                                     @endforeach
 
-
+ 
 
                                                     @if(!Auth::user())
                                                     <li class="dropdown">
@@ -219,6 +221,7 @@
                                                                             if ($product->require_domain == 1) {
                                                                                 $domain[$key] = $item->id;
                                                                             }
+                                                                            // dd('sads')
                                                                             $cart_controller = new \App\Http\Controllers\Front\CartController();
                                                                             $currency = $cart_controller->currency();
                                                                             ?>

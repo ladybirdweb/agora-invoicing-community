@@ -92,10 +92,10 @@ class ClientController extends Controller
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-sm btn-primary btn-xs'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-primary btn-xs'>Pay Now</a>";
                                 }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary btn-xs'>View</a>".$payment.'</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-primary btn-xs'>View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
@@ -281,11 +281,13 @@ class ClientController extends Controller
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>$listUrl $url </a>"
-                                        .'&nbsp;
+                                // return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>  $url $listUrl</a>"
+                                //         .'&nbsp;
 
 
-                                   </p>';
+                                //    </p>';
+
+                                return  "<a href=".url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
@@ -547,7 +549,7 @@ class ClientController extends Controller
                 $invoices = $order->invoice()->pluck('id')->toArray();
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
-                    ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
+                    ->select('id', 'invoice_id', 'user_id',  'payment_method', 'payment_status', 'created_at','amount');
             //dd(\Input::all());
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {

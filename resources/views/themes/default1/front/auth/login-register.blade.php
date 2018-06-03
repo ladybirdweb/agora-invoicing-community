@@ -468,9 +468,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                              <div class="input-group-append">
                                                             <span class="input-group-text"><i class="fa fa-envelope"></i></span>
                                                           </div>
+                                                          
                                                         </div>
+                                                        <h6 id="conemail"></h6>
                                                         </div>
-                                                         <h6 id="conemail"></h6>
+                                                         
                                                     </div>
 
 
@@ -486,9 +488,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                        <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
                                                         
                                                       
-  
+                                                        <h6 id="conmobile"></h6>
                                                       </div>
-                                                       <h6 id="conmobile"></h6>
+                                                       
                                                   </div>
 
                                                     <div class="form-row">
@@ -600,13 +602,73 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 });
 </script>
 <script type="text/javascript">
-    //register Validdation
-  
+    //confirm email/password Validdation
+ 
+            // alert('sdsd');   
+            
 
-  
+            $('#verify_email').keyup(function(){
+                 verify_email_check();
+            });
 
 
-  
+            function verify_email_check(){
+
+              // var userEmail = $('#verify_email').val();
+              // if(userEmail.length == ''){
+              //    $('#conemail').show();
+              //   $('#conemail').html("**Please Enter Your Email");
+              //   $('#conemail').focus();
+              //   $('#conemail').css("color","red");
+              //   mail_error = false;
+              //   return false;
+              // }
+              // else{
+              //   $('#conemail').hide();
+              //   return true;
+                
+              // }
+
+              var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+              if (pattern.test($('#verify_email').val())){
+                 $('#conemail').hide();
+                 return true;
+               
+              }
+              else{
+                 $('#conemail').show();
+                $('#conemail').html("**Not a valid email");
+                 $('#conemail').focus();
+                $('#conemail').css("color","red");
+                   // mail_error = false;
+                return false;
+                
+              }
+
+            }
+         
+         $('#verify_number').keyup(function(){
+            verify_number_check();
+         });
+
+         function verify_number_check(){
+            var userNumber = $('#verify_number').val();
+            if (userNumber.length < 10){
+                $('#conmobile').show();
+                $('#conmobile').html("**Please Enter Your Mobile No.");
+                $('#conmobile').focus();
+                $('#conmobile').css("color","red");
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#conmobile').hide();
+                return true;
+                
+              }
+         }
+
+        
 
 </script>
 
@@ -618,41 +680,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
    var userErr = true;
    var passErr = true;
-   // var conPassErr = true;
 
-   // $('#username').keyup(function(){
-   //     username_check();
-   // });
-
-
-
-   //  $('#pass').keyup(function(){
-   //     password_check();
-   // });
-
-   
-
-  //   $('#conpassword').keyup(function(){
-  //      con_password_check();
-  //  });
-
-  //    function con_password_check(){
-  //       var conPassStore= $('#conpassword').val();
-  //        var passStore = $('#pass').val();
-  //        if(conPassStore != passStore)
-         
-  //       $('#confirm_pass').show();
-  //       $('#confirm_pass').html("**password Don;t Match");
-  //       $('#confirm_pass').focus();
-  //       $('#confirm_pass').css("color","red");
-  //       conPassErr =false;
-  //       return false;
-    
-  //   else{
-  //        $('#passcheck').hide();
-  //   }
-
-  // }
   $('#formoid').submit(function(){
        function username_check(){
     var user_val = $('#username').val();
@@ -702,15 +730,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
          return true;
     }
     }
-    // userErr = true;
-    // passErr = true;
-   // var conPassErr = true;
-
     username_check();
     password_check();
-     // con_password_check();
-console.log(username_check(),password_check())
-     if(username_check() && password_check()){
+  if(username_check() && password_check()){
         return true;
      }
      else{
@@ -721,10 +743,7 @@ console.log(username_check(),password_check())
  });
 
 
-
-
-
-
+//Registration Form Validation
  function first_namecheck(){
     var firrstname_val = $('#first_name').val();
     if(firrstname_val.length == ''){
@@ -1076,6 +1095,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
+
             if(response.type == 'success'){
                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                 $('#successMessage1').html(result);
@@ -1130,59 +1150,43 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
     
        else{
         return false;
-        
-        
+          
      }
     };
     
 
     function sendOTP() {
-
-           $(document).ready(function(){
-            $('#conemail').hide();
+        $('#conemail').hide();
             $('#conmobile').hide();
 
+            // var mail_error = true;
+            // var mobile_error = true;
+          
             var mail_error = true;
-            var mobile_error = true;
-
-            $('#verify_email').keyup(function(){
-              verify_email_check();
-            });
-            function verify_email_check(){
-
-              var userEmail = $('#verify_email').val();
-              if(userEmail.length == ''){
-                $('#conemail').show();
-                $('#conemail').html("**Please Enter Your Email");
-                $('#conemail').focus();
-                $('#conemail').css("color","red");
-                mail_error = false;
-                return false;
-              }
-              else{
-                $('#conemail').show();
-              }
-            }
-        });
-            
-        
-
-
+           var mobile_error = true;
+           if((verify_email_check()) && (verify_number_check()))
+           {
+          
+           
+   
+           
         var oldemail=sessionStorage.getItem('oldemail');
         var newemail = $('#verify_email').val(); // this.value
        
 
-            $.ajax({ 
-                url: '{{url("change/email")}}',
-                data: { newemail: newemail,oldemail:oldemail },
-                type: 'get'
-            });
-  
+            // $.ajax({ 
+            //     url: '{{url("change/email")}}',
+            //     data: { newemail: newemail,oldemail:oldemail },
+            //     type: 'get'
+            // });
+         
 
 
 
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
+            "newemail": newemail,
+            "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
             "code": $('#verify_country_code').val(),
@@ -1196,9 +1200,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
           data: data,
           success: function (response) {
            
-            //  sessionStorage.removeItem(oldemail);
-            // console.log(response)
-                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+            var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
                 $('#successMessage2').html(result);
                 $('#error1').hide();
                 $('.wizard-inner').css('display','none');
@@ -1206,13 +1208,15 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 $active.next().removeClass('disabled');
                 nextTab($active);
                   setTimeout(function(){ 
-               sessionStorage.removeItem(oldemail); 
+               sessionStorage.removeItem('oldemail');
+           sessionStorage.clear();
             }, 500);
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
           },
           error: function (ex) {
+
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
@@ -1229,6 +1233,11 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             }, 5000);
           }
         });
+    }
+     else{
+        return false;
+    }
+   
     }
  
     //get login tab1

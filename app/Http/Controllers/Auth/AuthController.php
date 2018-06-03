@@ -444,12 +444,14 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
-
+        $email = $request->oldemail;
+        $newEmail = $request->newemail;
+        User::where('email', $email)->update(['email'=>$newEmail]);
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
-            $email = $request->input('email');
+            $email = $request->input('newemail');
             $pass = $request->input('password');
             $number = $code.$mobile;
 
@@ -658,7 +660,7 @@ class AuthController extends Controller
 
     public function updateUserEmail(Request $request)
     {
-        $email = $request->oldemail;
+         $email = $request->oldemail;
         $newEmail = $request->newemail;
         User::where('email', $email)->update(['email'=>$newEmail]);
         $message = 'User email updated successfully';

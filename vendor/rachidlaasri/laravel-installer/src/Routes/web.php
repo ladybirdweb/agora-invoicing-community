@@ -8,6 +8,9 @@ Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 
         'uses' => 'WelcomeController@welcome'
     ]);
 }
+   else{
+    return redirect('login');
+   }
 
     Route::get('environment', [
         'as' => 'environment',

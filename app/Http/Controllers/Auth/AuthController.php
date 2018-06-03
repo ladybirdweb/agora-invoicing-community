@@ -447,6 +447,7 @@ class AuthController extends Controller
         $email = $request->oldemail;
         $newEmail = $request->newemail;
         User::where('email', $email)->update(['email'=>$newEmail]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -660,7 +661,7 @@ class AuthController extends Controller
 
     public function updateUserEmail(Request $request)
     {
-         $email = $request->oldemail;
+        $email = $request->oldemail;
         $newEmail = $request->newemail;
         User::where('email', $email)->update(['email'=>$newEmail]);
         $message = 'User email updated successfully';

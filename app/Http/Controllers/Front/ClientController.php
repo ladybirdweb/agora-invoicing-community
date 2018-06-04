@@ -12,10 +12,12 @@ use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use App\Model\Common\Timezone;
 use App\User;
 use Bugsnag;
 use Exception;
 use Hash;
+use Auth;
 
 class ClientController extends Controller
 {
@@ -80,9 +82,11 @@ class ClientController extends Controller
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                $date = date_create($model->created_at);
+                                $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
+                                $date = date_create($model->created_at->timezone($timezone));
 
                                 return date_format($date, 'l, F j, Y H:m A');
+                                // $myobject->created_at->timezone($this->auth->user()->timezone);
                             })
                             // ->showColumns('created_at')
                             ->addColumn('total', function ($model) {
@@ -250,11 +254,12 @@ class ClientController extends Controller
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
+                                  $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
                                 $end = '--';
                                 if ($model->subscription()->first()) {
                                     if ($end != '0000-00-00 00:00:00' || $end != null) {
                                         $ends = $model->subscription()->first()->ends_at;
-                                        $date = date_create($ends);
+                                        $date = date_create($ends->timezone($timezone));
                                         $end = date_format($date, 'l, F j, Y H:m A');
                                     }
                                 }
@@ -554,10 +559,11 @@ class ClientController extends Controller
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
                             })
-                            ->addColumn('payment_method', 'payment_status', 'created_at')
-                            ->addColumn('total', function ($model) {
-                                return $model->grand_total;
+                              ->addColumn('total', function ($model) {
+                                return $model->amount;
                             })
+                            ->addColumn('payment_method', 'payment_status', 'created_at')
+                          
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {

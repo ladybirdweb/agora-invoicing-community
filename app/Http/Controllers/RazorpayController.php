@@ -35,7 +35,7 @@ class RazorpayController extends Controller
 
     public function payment($invoice, Request $request)
     {
-
+     
         //Input items of form
         $input = Input::all();
 
@@ -87,6 +87,7 @@ class RazorpayController extends Controller
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
+                dd($ex);
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }

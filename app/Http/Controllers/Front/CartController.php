@@ -56,8 +56,8 @@ class CartController extends Controller
 
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
-
-        $this->middleware('auth');
+        
+        // $this->middleware('Inatall');
         // $this->middleware('admin');
     }
 

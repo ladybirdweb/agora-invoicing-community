@@ -410,6 +410,7 @@ class OrderController extends Controller
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
                         if ($this->checkOrderCreateSubscription($order->id) == true) {
                             $this->addSubscription($order->id, $plan_id, $version, $product);
+                           
                         }
                         $this->sendOrderMail($user_id, $order->id, $item->id);
                     }

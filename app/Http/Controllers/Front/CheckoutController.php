@@ -298,6 +298,8 @@ class CheckoutController extends Controller
                 //execute the order
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
+                 $payment = new \App\Http\Controllers\Order\InvoiceController;
+                $payment->postRazorpayPayment($invoice_id,$invoice->grand_total);
             }
 
             return 'success';

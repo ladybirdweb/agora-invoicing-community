@@ -18,6 +18,7 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
+use Carbon;
 //use Symfony\Component\HttpFoundation\Request as Requests;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
@@ -1037,6 +1038,23 @@ class InvoiceController extends Controller
             $payment_status = 'success';
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
+            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
+            if ($payment) {
+                return redirect()->back()->with('success', 'Payment Accepted Successfully');
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postRazorpayPayment($invoiceid,$grand_total)
+    {
+       
+       try {
+            $payment_method = 'Razorpay';
+            $payment_status = 'success';
+            $payment_date = \Carbon\Carbon::now()->toDateTimeString();
+            $amount = $grand_total;
             $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
             if ($payment) {
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');

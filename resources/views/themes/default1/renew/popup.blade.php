@@ -14,7 +14,6 @@
                 <?php 
            
                 $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
-                // dump($plans);
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
@@ -35,7 +34,7 @@
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
-                        {!! Form::text('cost',null,['class' => 'form-control','id'=>'price']) !!}
+                        {!! Form::text('cost',null,['class' => 'form-control','id'=>'price','readonly'=>'readonly']) !!}
 
                     </div>
 

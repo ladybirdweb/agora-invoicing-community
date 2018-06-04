@@ -255,27 +255,27 @@ class AuthController extends Controller
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                  $zoho = $this->reqFields($user,$email);
-                 $auth="5930375bef3fe5e0a2b35945cbf3a644";
+                $zoho = $this->reqFields($user, $email);
+                $auth = '5930375bef3fe5e0a2b35945cbf3a644';
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
-               $zohoUrl= "https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&";
-               $query="authtoken=".$auth."&scope=crmapi&xmlData=".$zoho;
-              $ch = curl_init();
+                $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
+                $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
+                $ch = curl_init();
                 curl_setopt($ch, CURLOPT_URL, $zohoUrl);
-            /* allow redirects */
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-            /* return a response into a variable */
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            /* times out after 30s */
-            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            /* set POST method */
-            curl_setopt($ch, CURLOPT_POST, 1);
-            /* add POST fields parameters */
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);// Set the request as a POST FIELD for curl.
+                /* allow redirects */
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                /* return a response into a variable */
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                /* times out after 30s */
+                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                /* set POST method */
+                curl_setopt($ch, CURLOPT_POST, 1);
+                /* add POST fields parameters */
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
 
-            //Execute cUrl session
-            $response = curl_exec($ch);
-            curl_close($ch);
+                //Execute cUrl session
+                $response = curl_exec($ch);
+                curl_close($ch);
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
@@ -298,14 +298,12 @@ class AuthController extends Controller
             return redirect($url)->with('fails', $ex->getMessage());
         }
     }
-    
-    
-     public function reqFields($user,$email)
+
+    public function reqFields($user, $email)
     {
-       
-        $user = $user->where('email',$email)->first();
-        if($user){
-            $xml='      <Leads>
+        $user = $user->where('email', $email)->first();
+        if ($user) {
+            $xml = '      <Leads>
                         <row no="1">
                         <FL val="Lead Source">Faveo Billing</FL>
                         <FL val="Company">'.$user->company.'</FL>
@@ -324,9 +322,9 @@ class AuthController extends Controller
                          <FL val="No. of Employees">'.$user->company_size.'</FL>
                         </row>
                         </Leads>';
-                return $xml;
-        }
 
+            return $xml;
+        }
     }
 
     /**
@@ -586,8 +584,8 @@ class AuthController extends Controller
 
         return $manager;
     }
-    
-       public function getState(Request $request, $state)
+
+    public function getState(Request $request, $state)
     {
         try {
             $id = $state;

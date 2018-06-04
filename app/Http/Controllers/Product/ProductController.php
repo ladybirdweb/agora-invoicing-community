@@ -413,6 +413,7 @@ use App\Http\Controllers\Controller;
                 return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -820,7 +821,7 @@ use App\Http\Controllers\Controller;
         public function getProductField($productid)
         {
             try {
-               $field = '';
+                $field = '';
                 $product = $this->product->find($productid);
                 if ($product) {
                     if ($product->require_domain == 1) {

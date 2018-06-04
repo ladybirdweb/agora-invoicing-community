@@ -858,14 +858,13 @@ class CartController extends Controller
     public static function taxValue($rate, $price)
     {
         try {
-            $tax = $price / (((int)$rate / 100) + 1);
+            $tax = $price / (((int) $rate / 100) + 1);
             // $result = $price - $tax;
-            $result = $price * ((int)$rate / 100);
+            $result = $price * ((int) $rate / 100);
             $result = self::rounding($result);
 
             return $result;
         } catch (\Exception $ex) {
-            
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

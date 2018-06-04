@@ -501,7 +501,6 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -511,7 +510,6 @@ class TemplateController extends Controller
     public function taxProcess($taxes, $price, $cart, $shop)
     {
         try {
-           
             $rate = '';
             foreach ($taxes as $tax) {
                 // dd($tax->rate);
@@ -520,7 +518,6 @@ class TemplateController extends Controller
                 } else {
                     $rate = $tax->rate;
                 }
-             
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }

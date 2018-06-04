@@ -326,7 +326,7 @@ class HomeController extends Controller
 
     public function faveoVerification(Request $request)
     {
-        \Log::info("sdfsdfsdfsdfsdfsdf");
+        \Log::info('sdfsdfsdfsdfsdfsdf');
         //H9PQYZMJLSZ8VARH
         try {
             $data = $request->input('data');

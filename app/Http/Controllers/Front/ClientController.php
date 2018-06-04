@@ -8,9 +8,9 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Product\Subscription;
-use Hash;
 use App\User;
 use Exception;
+use Hash;
 
 class ClientController extends Controller
 {
@@ -130,24 +130,20 @@ class ClientController extends Controller
                             $order_cont = new \App\Http\Controllers\Order\OrderController();
                             $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                             $url = '';
-                            $productType =  $model->product()->select('type')->where('id', $model->product)->first();
-                             if ($status == 'success') {
+                            $productType = $model->product()->select('type')->where('id', $model->product)->first();
+                            if ($status == 'success') {
                                 if ($sub) {
                                     $url = $this->renewPopup($sub->id);
                                 }
                                 // $url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                             }
-                            if($productType->type ==2){
-                                 return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
+                            if ($productType->type == 2) {
+                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
                                     .'&nbsp; <a href='.url('download/'.$model->client.'/'.$model->invoice()->first()->number)." class='btn btn-sm btn-primary'><i class='fa fa-download' title=Download></i></a>&nbsp;$url</p>";
-                              }
-                              else{
-                                   return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
+                            } else {
+                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary'><i class='fa fa-eye' title='Details of order'></i></a>"
                                     .'&nbsp;'.$url.'</p>';
-                                  
-                              }
-
-                           
+                            }
                         })
                         ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                         // ->orderColumns('id', 'created_at', 'ends_at', 'product')

@@ -322,26 +322,25 @@ class GithubController extends Controller
                     $ver[] = $value['tag_name'];
                 }
             }
-             //For Satellite Helpdesk
-            if($repo == 'faveo-satellite-helpdesk-advance')
-            {
-
-             $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
+            //For Satellite Helpdesk
+            if ($repo == 'faveo-satellite-helpdesk-advance') {
+                $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
-             //For Helpdesk Advanced
-           if($repo == 'faveo-helpdesk-advance'){
-               $url = 'https://api.github.com/repos/ladybirdweb/faveo-helpdesk-advance/zipball/'.$ver[0];
-        }
-          //For Service Desk Advance
-              if ($repo == 'faveo-service-desk-advance') {
-               
+            //For Helpdesk Advanced
+            if ($repo == 'faveo-helpdesk-advance') {
+                $url = 'https://api.github.com/repos/ladybirdweb/faveo-helpdesk-advance/zipball/'.$ver[0];
+            }
+            //For Service Desk Advance
+            if ($repo == 'faveo-service-desk-advance') {
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-advance/zipball/'.$ver[0];
             }
 
-             $link = $this->github_api->getCurl1($url);
-             return $link['header'];
+            $link = $this->github_api->getCurl1($url);
+
+            return $link['header'];
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

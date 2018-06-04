@@ -35,7 +35,7 @@ class RazorpayController extends Controller
 
     public function payment($invoice, Request $request)
     {
-     
+
         //Input items of form
         $input = Input::all();
 
@@ -67,7 +67,7 @@ class RazorpayController extends Controller
                 $control = new \App\Http\Controllers\Order\RenewController();
                 $invoice = Invoice::where('id', $invoice)->first();
                 if ($control->checkRenew() == false) {
-                     
+
                     // $invoicenumber=$invoice->number;
                     // dd($invoice ,$invoicenumber);
                     // $invoiceid = $request->input('orderNo');
@@ -89,6 +89,7 @@ class RazorpayController extends Controller
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 dd($ex);
+
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }

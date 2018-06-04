@@ -89,6 +89,7 @@ class RenewController extends Controller
             $this->removeSession();
         } catch (Exception $ex) {
             dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }

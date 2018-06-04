@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Requests\User\ProfileRequest;
+use App\Model\Common\Timezone;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -12,12 +13,11 @@ use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
-use App\Model\Common\Timezone;
 use App\User;
+use Auth;
 use Bugsnag;
 use Exception;
 use Hash;
-use Auth;
 
 class ClientController extends Controller
 {
@@ -82,9 +82,10 @@ class ClientController extends Controller
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                
+
                                 // $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
                                 $date = $model->created_at;
+
                                 return $date;
                                 // $myobject->created_at->timezone($this->auth->user()->timezone);
                             })
@@ -254,10 +255,9 @@ class ClientController extends Controller
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
-                                    $tz = \Auth::user()->timezone()->first()->name;
+                                $tz = \Auth::user()->timezone()->first()->name;
                                 $end = '--';
                                 if ($model->subscription()->first()) {
-
                                     if ($end != '0000-00-00 00:00:00' || $end != null) {
                                         $ends = $model->subscription()->first()->ends_at;
                                         $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
@@ -561,10 +561,10 @@ class ClientController extends Controller
                                 return $model->invoice()->first()->number;
                             })
                               ->addColumn('total', function ($model) {
-                                return $model->amount;
-                            })
+                                  return $model->amount;
+                              })
                             ->addColumn('payment_method', 'payment_status', 'created_at')
-                          
+
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {

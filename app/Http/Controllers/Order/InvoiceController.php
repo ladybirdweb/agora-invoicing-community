@@ -18,7 +18,6 @@ use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
-use Carbon;
 //use Symfony\Component\HttpFoundation\Request as Requests;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
@@ -1047,10 +1046,9 @@ class InvoiceController extends Controller
         }
     }
 
-    public function postRazorpayPayment($invoiceid,$grand_total)
+    public function postRazorpayPayment($invoiceid, $grand_total)
     {
-       
-       try {
+        try {
             $payment_method = 'Razorpay';
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();

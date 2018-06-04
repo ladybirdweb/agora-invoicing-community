@@ -82,10 +82,10 @@ class ClientController extends Controller
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
-                                $date = date_create($model->created_at->timezone($timezone));
-
-                                return date_format($date, 'l, F j, Y H:m A');
+                                
+                                // $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
+                                $date = $model->created_at;
+                                return $date;
                                 // $myobject->created_at->timezone($this->auth->user()->timezone);
                             })
                             // ->showColumns('created_at')
@@ -254,17 +254,18 @@ class ClientController extends Controller
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
-                                  $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
+                                    $tz = \Auth::user()->timezone()->first()->name;
                                 $end = '--';
                                 if ($model->subscription()->first()) {
+
                                     if ($end != '0000-00-00 00:00:00' || $end != null) {
                                         $ends = $model->subscription()->first()->ends_at;
-                                        $date = date_create($ends->timezone($timezone));
-                                        $end = date_format($date, 'l, F j, Y H:m A');
+                                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
+                                        $end = $date;
                                     }
                                 }
 
-                                return $end;
+                                return $end->setTimezone($tz);
                             })
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();

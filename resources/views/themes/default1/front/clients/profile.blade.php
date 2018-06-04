@@ -70,7 +70,8 @@ active
                           <div class="form-row">
                         <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
-                        {!! Form::text('mobile_code',null,['class'=>'form-control input-lg']) !!}
+                        <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
+                        {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
                     </div>
                 </div> 
                          <div class="form-row">
@@ -120,7 +121,7 @@ active
                                 <!-- name -->
                                 {!! Form::label('state',Lang::get('message.state')) !!}
                                 <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
-                                <select name="state" id="state-list" class="form-control input-lg ">
+                                <select name="state" id="stateList" class="form-control input-lg ">
                                     @if(count($state)>0)
                                     <option value="{{$state['id']}}">{{$state['name']}}</option>
                                     @endif
@@ -206,19 +207,59 @@ active
     </div>
 
 </div>    
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
+<script type="text/javascript">
+       $(document).ready(function(){ 
+    var telInput = $('#mobile_code');
+     let currentCountry="";
+    telInput.intlTelInput({
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
+            });
+        },
+        separateDialCode: false,
+        utilsScript: "{{asset('js/intl/js/utils.js')}}",
+    });
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+});
+</script>
 <script>
     function getState(val) {
 
 
         $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
+            type: "GET",
+              url: "{{url('get-state')}}/" + val,
             data: 'country_id=' + val,
             success: function (data) {
-                $("#state-list").html(data);
+                $("#stateList").html(data);
             }
         });
     }
 </script>
+
 
 @stop

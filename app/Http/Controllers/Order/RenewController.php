@@ -69,9 +69,11 @@ class RenewController extends Controller
         }
     }
 
-    public function successRenew()
+    public function successRenew($invoice)
     {
         try {
+            $invoice->status = 'success';
+            $invoice->save();
             $id = Session::get('subscription_id');
 
             $planid = Session::get('plan_id');
@@ -86,6 +88,7 @@ class RenewController extends Controller
             $sub->save();
             $this->removeSession();
         } catch (Exception $ex) {
+            dd($ex);
             throw new Exception($ex->getMessage());
         }
     }

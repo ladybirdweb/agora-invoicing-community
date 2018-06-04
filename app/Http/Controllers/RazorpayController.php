@@ -65,8 +65,9 @@ class RazorpayController extends Controller
             try {
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
+                $invoice = Invoice::where('id', $invoice)->first();
                 if ($control->checkRenew() == false) {
-                    $invoice = Invoice::where('id', $invoice)->first();
+                     
                     // $invoicenumber=$invoice->number;
                     // dd($invoice ,$invoicenumber);
                     // $invoiceid = $request->input('orderNo');
@@ -77,7 +78,7 @@ class RazorpayController extends Controller
 
                     $checkout_controller->checkoutAction($invoice);
                 } else {
-                    $control->successRenew();
+                    $control->successRenew($invoice);
                 }
                 // $returnValue=$checkout_controller->checkoutAction($invoice);
 

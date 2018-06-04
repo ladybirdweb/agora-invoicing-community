@@ -17,6 +17,7 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use Bugsnag;
 use Config;
 use Illuminate\Http\Request;
 
@@ -159,6 +160,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.create', compact('type', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -177,6 +180,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -195,6 +200,8 @@ class TemplateController extends Controller
 
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -214,6 +221,8 @@ class TemplateController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -281,34 +290,34 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-            $fields = $settings;
-            $driver = '';
-            $port = '';
-            $host = '';
-            $enc = '';
-            $email = '';
-            $mail_password = '';
-            $name = '';
-            if ($fields) {
-                $driver = $fields->driver;
-                $port = $fields->port;
-                $host = $fields->host;
-                $enc = $fields->encryption;
-                $email = $fields->email;
-                $mail_password = $fields->password;
-                $name = $fields->company;
-            }
+            // $fields = $settings;
+            // $driver = '';
+            // $port = '';
+            // $host = '';
+            // $enc = '';
+            // $email = '';
+            // $mail_password = '';
+            // $name = '';
+            // if ($fields) {
+            //     $driver = $fields->driver;
+            //     $port = $fields->port;
+            //     $host = $fields->host;
+            //     $enc = $fields->encryption;
+            //     $email = $fields->email;
+            //     $mail_password = $fields->password;
+            //     $name = $fields->company;
+            // }
 
-            $https['ssl']['verify_peer'] = false;
-            $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            $transport->setUsername($email);
-            $transport->setPassword($mail_password);
-            $transport->setStreamOptions($https);
-            $set = new \Swift_Mailer($transport);
+            // $https['ssl']['verify_peer'] = false;
+            // $https['ssl']['verify_peer_name'] = false;
+            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
+            // $transport->setUsername($email);
+            // $transport->setPassword($mail_password);
+            // $transport->setStreamOptions($https);
+            // $set = new \Swift_Mailer($transport);
 
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+            // // // Set the mailer
+            // \Mail::setSwiftMailer($set);
 
             /*Mail config ends*/
 
@@ -334,7 +343,7 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
@@ -410,6 +419,8 @@ class TemplateController extends Controller
                             </div>
                         </div>';
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -430,7 +441,7 @@ class TemplateController extends Controller
             // dd($price);
             return $price;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -487,10 +498,11 @@ class TemplateController extends Controller
                     // dd($tax_amount);
                 }
             }
-
+            // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            dd($ex);
+            
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -499,21 +511,24 @@ class TemplateController extends Controller
     public function taxProcess($taxes, $price, $cart, $shop)
     {
         try {
+           
             $rate = '';
             foreach ($taxes as $tax) {
+                // dd($tax->rate);
                 if ($tax->compound != 1) {
-                    $rate += $tax->rate;
+                    $rate = $tax->rate;
                 } else {
                     $rate = $tax->rate;
                 }
-                // dd($rate);
+             
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            dd($ex);
+            //dd($ex->getMessage(),$ex->getline(),$ex->getFile());
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -561,7 +576,7 @@ class TemplateController extends Controller
             // $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
             // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
             } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
                 $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
             } else {
@@ -602,7 +617,7 @@ class TemplateController extends Controller
             // dd($product);
             if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
                 if ($product == 1 && $shop == 1 && $cart == 1) {
-                    $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
+                    $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
                 }
                 if ($product == 1 && $shop == 0 && $cart == 0) {
                     $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
@@ -629,7 +644,7 @@ class TemplateController extends Controller
 
             return $result;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -646,7 +661,7 @@ class TemplateController extends Controller
 
             return $price;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -660,6 +675,8 @@ class TemplateController extends Controller
             //dd($total);
             return $total;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -675,6 +692,8 @@ class TemplateController extends Controller
 
             return $price;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -694,6 +713,8 @@ class TemplateController extends Controller
 
             return $price;
         } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -701,13 +722,9 @@ class TemplateController extends Controller
     public function plans($url, $id)
     {
         $plan = new Plan();
-        // dd($plan);
-        $plan_form = 'No subscription';
+        $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
-        // dd($plans);
         $plans = $this->prices($id);
-        // dd($plans);
-        // dd((count($plans) > 0));
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
             // dd($plan_form);
@@ -723,7 +740,6 @@ class TemplateController extends Controller
     {
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-        // dd($plans);
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
@@ -734,7 +750,8 @@ class TemplateController extends Controller
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30 / 12);
             // dd($months);
-            $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
+            // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
+            $price[$value->id] = $currency.' '.$cost;
         }
         // dd($price);
         $this->leastAmount($id);
@@ -763,16 +780,49 @@ class TemplateController extends Controller
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            $cost = "$currency $price /year";
+            $cost = "$currency $price";
         } else {
-            $price = $cart_controller->productCost($id);
-            $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-            $product_cost = \App\Http\Controllers\Front\CartController::rounding($product_cost);
-            if ($product_cost != 0) {
-                $cost = $currency.' '.$product_cost;
-            }
+            $cost = 'Free';
+            // dd($cost);
+            // dd($cost);
+            // $price = $cart_controller->productCost($id);
+            // // dd($price);
+            // $product_cost = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+            // $product_cost = \App\Http\Controllers\Front\CartController::rounding($product_cost);
+            // if ($product_cost != 0) {
+            //     $cost = $currency.' '.$product_cost;
+            // }
         }
 
         return $cost;
+    }
+
+    public function leastAmountService($id)
+    {
+        $cost = 'Free';
+        $plan = new Plan();
+        $plans = $plan->where('product', $id)->get();
+
+        $cart_controller = new \App\Http\Controllers\Front\CartController();
+        $currency = $cart_controller->currency();
+
+        if ($plans->count() > 0) {
+            foreach ($plans as $value) {
+                $days = $value->min('days');
+
+                $month = round($days / 30);
+                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
+
+                // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
+
+                $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                // dd($price);
+            }
+            $cost = "$currency $price /year";
+        } else {
+            $price = $cart_controller->productCost($id);
+        }
+
+        return $price;
     }
 }

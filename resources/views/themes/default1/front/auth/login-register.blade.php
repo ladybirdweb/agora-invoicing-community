@@ -809,6 +809,9 @@ border-top: none;
 
 <script>
 
+     var data='{{json_encode($value)}}';
+    var state=JSON.parse(data.replace(/&quot;/g,'"'));
+    // console.log(state)
     $(document).ready(function () {
         var val = $("#country").val();
         getCountryAttr(val);
@@ -821,19 +824,30 @@ border-top: none;
 //        getCurrency(val);
 
     }
-
+    
     function getState(val) {
-
-
-        $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
-            data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+      $.ajax({
+            type: "GET",
+            url: "{{url('get-loginstate')}}/" + val,
+              data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
-                $("#state-list").html(data);
+              $("#state-list").html(data).val(state.id);
             }
         });
     }
+
+    // function getState(val) {
+
+
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "{{url('get-state')}}",
+    //         data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
+    //         success: function (data) {
+    //             $("#state-list").html(data);
+    //         }
+    //     });
+    // }
     function getCode(val) {
         $.ajax({
             type: "GET",

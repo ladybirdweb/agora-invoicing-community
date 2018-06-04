@@ -9,6 +9,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
+use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
 use Session;
@@ -477,7 +478,7 @@ class CartController extends Controller
         $renew_control->removeSession();
         Cart::clear();
 
-        return redirect('show/cart')->with('warning', 'Your cart is empty! ');
+        return redirect('show/cart');
     }
 
     /**
@@ -605,12 +606,15 @@ class CartController extends Controller
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
+                // $price = str_replace(',', '', $price);
+
                 return round($price);
             } else {
                 return $price;
             }
         } catch (\Exception $ex) {
-            throw new \Exception('error in get tax priority');
+            Bugsnag::notifyException($ex);
+            // throw new \Exception('error in get tax priority');
         }
     }
 
@@ -640,11 +644,11 @@ class CartController extends Controller
         ]);
 
         $set = new \App\Model\Common\Setting();
-        $set = $put->findOrFail(1);
+        $set = $set->findOrFail(1);
 
         try {
-            $from = $put->email;
-            $fromname = $put->company;
+            $from = $set->email;
+            $fromname = $set->company;
             $toname = '';
             $to = 'support@ladybirdweb.com';
             $data = '';
@@ -790,9 +794,7 @@ class CartController extends Controller
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                } else {
-                    $result = '';
+                    //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 }
             }
 
@@ -838,7 +840,7 @@ class CartController extends Controller
         try {
             $template_controller = new TemplateController();
             $result = $template_controller->checkTax($productid, $price, $cart, $cart1, $shop);
-            // dd($result);
+
             $result = self::rounding($result);
 
             return $result;
@@ -856,12 +858,14 @@ class CartController extends Controller
     public static function taxValue($rate, $price)
     {
         try {
-            $tax = $price / (($rate / 100) + 1);
-            $result = $price - $tax;
+            $tax = $price / (((int)$rate / 100) + 1);
+            // $result = $price - $tax;
+            $result = $price * ((int)$rate / 100);
             $result = self::rounding($result);
 
             return $result;
         } catch (\Exception $ex) {
+            
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

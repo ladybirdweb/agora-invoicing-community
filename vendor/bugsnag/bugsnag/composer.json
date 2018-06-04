@@ -1,0 +1,42 @@
+{
+    "name": "bugsnag/bugsnag",
+    "type": "library",
+    "description": "Official Bugsnag notifier for PHP applications.",
+    "keywords": ["bugsnag", "exceptions", "errors", "logging", "tracking"],
+    "homepage": "https://github.com/bugsnag/bugsnag-php",
+    "license": "MIT",
+    "authors": [{
+        "name": "James Smith",
+        "email": "notifiers@bugsnag.com",
+        "homepage": "https://bugsnag.com"
+    }],
+    "require": {
+        "php": ">=5.5",
+        "composer/ca-bundle": "^1.0",
+        "guzzlehttp/guzzle": "^5.0|^6.0"
+    },
+    "require-dev": {
+        "graham-campbell/testbench-core": "^1.1",
+        "mockery/mockery": "^0.9.4|^1.0",
+        "mtdowling/burgomaster": "dev-master#72151eddf5f0cf101502b94bf5031f9c53501a04",
+        "phpunit/phpunit": "^4.8|^5.0",
+        "php-mock/php-mock-phpunit": "^1.1"
+    },
+    "autoload": {
+        "psr-4" : {
+            "Bugsnag\\" : "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4" : {
+            "Bugsnag\\Tests\\" : "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.13-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

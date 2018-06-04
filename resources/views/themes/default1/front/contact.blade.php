@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Cart
+Contact Us
 @stop
 @section('page-header')
 Cart

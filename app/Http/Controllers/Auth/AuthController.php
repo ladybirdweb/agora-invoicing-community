@@ -255,8 +255,29 @@ class AuthController extends Controller
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                // $r = $mailchimp->addSubscriber($user->email);
+                  $zoho = $this->reqFields($user,$email);
+                 $auth="5930375bef3fe5e0a2b35945cbf3a644";
+                // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
+               $zohoUrl= "https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&";
+               $query="authtoken=".$auth."&scope=crmapi&xmlData=".$zoho;
+              $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, $zohoUrl);
+            /* allow redirects */
+            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+            /* return a response into a variable */
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            /* times out after 30s */
+            curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+            /* set POST method */
+            curl_setopt($ch, CURLOPT_POST, 1);
+            /* add POST fields parameters */
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $query);// Set the request as a POST FIELD for curl.
+
+            //Execute cUrl session
+            $response = curl_exec($ch);
+            curl_close($ch);
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 
@@ -276,6 +297,36 @@ class AuthController extends Controller
 
             return redirect($url)->with('fails', $ex->getMessage());
         }
+    }
+    
+    
+     public function reqFields($user,$email)
+    {
+       
+        $user = $user->where('email',$email)->first();
+        if($user){
+            $xml='      <Leads>
+                        <row no="1">
+                        <FL val="Lead Source">Faveo Billing</FL>
+                        <FL val="Company">'.$user->company.'</FL>
+                        <FL val="First Name">'.$user->first_name.'</FL>
+                        <FL val="Last Name">'.$user->last_name.'</FL>
+                        <FL val="Email">'.$user->email.'</FL>
+                        <FL val="Manager">'.$user->manager.'</FL>
+                         <FL val="Phone">'.$user->mobile_code.''.$user->mobile.'</FL>
+                        <FL val="Mobile">'.$user->mobile_code.''.$user->mobile.'</FL>
+                         <FL val="Industry">'.$user->bussiness.'</FL>
+                          <FL val="City">'.$user->town.'</FL>
+                           <FL val="Street">'.$user->address.'</FL>
+                            <FL val="State">'.$user->state.'</FL>
+                            <FL val="Country">'.$user->country.'</FL>
+                        <FL val="Zip Code">'.$user->zip.'</FL>
+                         <FL val="No. of Employees">'.$user->company_size.'</FL>
+                        </row>
+                        </Leads>';
+                return $xml;
+        }
+
     }
 
     /**
@@ -534,6 +585,23 @@ class AuthController extends Controller
         }
 
         return $manager;
+    }
+    
+       public function getState(Request $request, $state)
+    {
+        try {
+            $id = $state;
+            $states = \App\Model\Common\State::where('country_code_char2', $id)->orderBy('state_subdivision_name', 'asc')->get();
+            // return $states;
+            // echo '<option value=>Select a State</option>';
+            foreach ($states as $state) {
+                echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
+            }
+        } catch (\Exception $ex) {
+            echo "<option value=''>Problem while loading</option>";
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function accountManagerMail($user)

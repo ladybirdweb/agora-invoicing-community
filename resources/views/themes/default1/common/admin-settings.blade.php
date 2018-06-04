@@ -64,10 +64,9 @@
                         <p class="box-title" >Error Log</p>
                     </div>
                 </div>
-                <!--/.col-md-2-->
-                
-                
-               
+
+                 <!--/.col-md-2-->
+                  
             </div>
         </div>
         <!-- /.row -->

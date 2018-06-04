@@ -77,7 +77,12 @@
         Route::get('my-profile', 'Front\ClientController@profile');
         Route::patch('my-profile', 'Front\ClientController@postProfile');
         Route::patch('my-password', 'Front\ClientController@postPassword');
-        Route::get('paynow/{id}', 'Front\CheckoutController@paynow');
+        Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
+
+        // Get Route For Show Razorpay Payment Form
+        Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
+        // Post Route For Make Razorpay Payment Request
+        Route::post('payment/{invoice}', 'RazorpayController@payment')->name('payment');
 
         /*
          * Social Media
@@ -196,6 +201,7 @@
         Route::resource('tax', 'Payment\TaxController');
         Route::get('get-state/{state}', 'Payment\TaxController@getState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
+        Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
 
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
@@ -209,7 +215,7 @@
 
         Route::resource('promotions', 'Payment\PromotionController');
         Route::post('get-code', 'Payment\PromotionController@getCode');
-        Route::get('get-promotions', 'Payment\PromotionController@getPromotion');
+        Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy');
 
         /*

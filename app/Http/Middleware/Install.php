@@ -16,6 +16,7 @@ class Install
      */
     public function handle($request, Closure $next)
     {
+        // dd($next);
         $env = base_path('.env');
 
         // 'driver' => env('DB_INSTALL', '1'),
@@ -23,7 +24,8 @@ class Install
         if (\File::exists($env) && env('DB_INSTALL') == 1) {
             return $next($request);
         } else {
-            return redirect('/install');
+            // dump(\File::exists($env).' '.env('DB_INSTALL').' '.$env;
+            return redirect()->route('LaravelInstaller::welcome');
         }
     }
 }

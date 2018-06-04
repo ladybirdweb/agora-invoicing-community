@@ -7,6 +7,7 @@
     "require": {
         "php": ">=5.6.4",
         "barryvdh/laravel-dompdf": "^0.8.1",
+        "bugsnag/bugsnag-laravel": "^2.0",
         "chumper/datatable": "dev-develop",
         "chumper/zipper": "1.0.x",
         "darryldecode/cart": "dev-master",
@@ -16,11 +17,11 @@
         "pacely/mailchimp-apiv3": "dev-master",
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.2",
+        "razorpay/razorpay": "^2.2",
         "thomaswelton/laravel-gravatar": "~1.0",
         "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.4",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~5.7"

@@ -1,0 +1,30 @@
+{
+    "name": "jildertmiedema/laravel-plupload",
+    "description": "Laravel 5/Plupload - Handle large file uploads",
+    "authors": [
+        {
+            "name": "Jildert Miedema",
+            "email": "jildertmiedema@gmail.com"
+        }
+    ],
+    "keywords": [
+        "laravel",
+        "pluload",
+        "large files"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/support": "^5.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.0",
+        "mockery/mockery": "^0.9.4"
+    },
+    "autoload": {
+        "psr-0": {
+            "JildertMiedema\\LaravelPlupload": "src/"
+        }
+    },
+    "minimum-stability": "stable"
+}

@@ -18,6 +18,7 @@ use App\Http\Controllers\Controller;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
+    use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
 
@@ -191,6 +192,7 @@ use App\Http\Controllers\Controller;
         ->make(true);
         }
 
+        // Save file Info in Modal popup
         public function save(Request $request)
         {
 
@@ -221,6 +223,7 @@ use App\Http\Controllers\Controller;
             }
         }
 
+        //Update the File Info
         public function uploadUpdate($id, Request $request)
         {
             // return phpinfo();
@@ -273,6 +276,8 @@ use App\Http\Controllers\Controller;
 
                 return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -352,7 +357,7 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                dd($e);
+                Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
             }
@@ -407,7 +412,7 @@ use App\Http\Controllers\Controller;
 
                 return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
             } catch (\Exception $e) {
-                // dd($e);
+                Bugsnag::notifyException($e);
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -495,7 +500,7 @@ use App\Http\Controllers\Controller;
                 // dd('sdg');
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
-                dd($e);
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }
@@ -657,13 +662,14 @@ use App\Http\Controllers\Controller;
                         return ['release'=>$relese, 'type'=>'github'];
                     } elseif ($file->file) {
                         // dd($file->file);
-                        $relese = storage_path().'\products'.'\\'.$file->file;
-
+                        // $relese = storage_path().'\products'.'\\'.$file->file;
+                        $relese = '/home/faveo/products/'.$file->file;
+                        // dd($relese);
                         return $relese;
                     }
                 }
             } catch (\Exception $e) {
-                dd($e->getMessage());
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }
@@ -685,8 +691,9 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
 
                         return ['release'=>$relese, 'type'=>'github'];
-                    } elseif ($file) {
-                        $relese = '/home/faveo/products/'.$file;
+                    } elseif ($file->file) {
+                        // $relese = storage_path().'\products'.'\\'.$file->file;
+                        $relese = '/home/faveo/products/'.$file->file;
 
                         return $relese;
                     }
@@ -813,7 +820,7 @@ use App\Http\Controllers\Controller;
         public function getProductField($productid)
         {
             try {
-                $field = '';
+               $field = '';
                 $product = $this->product->find($productid);
                 if ($product) {
                     if ($product->require_domain == 1) {

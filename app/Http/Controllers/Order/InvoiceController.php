@@ -19,6 +19,7 @@ use App\Model\Product\Product;
 use App\User;
 use Illuminate\Http\Request;
 use Input;
+use Bugsnag;
 
 class InvoiceController extends Controller
 {
@@ -87,6 +88,7 @@ class InvoiceController extends Controller
             //dd($this->invoice->get());
             return view('themes.default1.invoice.index');
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -154,6 +156,7 @@ class InvoiceController extends Controller
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -184,13 +187,13 @@ class InvoiceController extends Controller
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-        // dd($request->all());
         $qty = 1;
         // if (array_key_exists('domain', $request->all())) {
         //     $this->validate($request, [
@@ -227,6 +230,7 @@ class InvoiceController extends Controller
             }
             $controller = new \App\Http\Controllers\Front\CartController();
             $currency = $controller->currency($user_id);
+
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $product = $this->product->find($productid);
@@ -234,10 +238,9 @@ class InvoiceController extends Controller
             if ($cost != $total) {
                 $grand_total = $total;
             }
-            //dd($cost);
+
             if ($code) {
                 $grand_total = $this->checkCode($code, $productid);
-            //dd($grand_total);
             } else {
                 if (!$total) {
                     $grand_total = $cost;
@@ -246,22 +249,27 @@ class InvoiceController extends Controller
                 }
             }
             $grand_total = $qty * $grand_total;
-            //dd($grand_total);
+
+            // dd($grand_total);
             $tax = $this->checkTax($product->id);
-            //dd($tax);
+
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
                 foreach ($tax as $key => $value) {
-                    //dd($value);
+                    // dd($value);
                     $tax_name .= $value['name'].',';
                     $tax_rate .= $value['rate'].',';
                 }
             }
-            //dd('dsjcgv');
-            $grand_total = $this->calculateTotal($tax_rate, $grand_total);
 
-            //dd($grand_total);
+            //dd('dsjcgv');
+            if ($currency == 'INR') {
+                $grand_total = $this->calculateTotal($tax_rate, $grand_total);
+                // dd($grand_total);
+            }
+
+            // dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
@@ -269,14 +277,18 @@ class InvoiceController extends Controller
             //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             //            }
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan);
+          
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
+
                 $result = ['success' => \Lang::get('message.invoice-generated-successfully')];
             } else {
                 $result = ['fails' => \Lang::get('message.can-not-generate-invoice')];
             }
         } catch (\Exception $ex) {
-            dd($ex);
+            
+            // die;
+            Bugsnag::notifyExeption($ex);
             $result = ['fails' => $ex->getMessage()];
         }
 
@@ -286,8 +298,8 @@ class InvoiceController extends Controller
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
-            $agent = $request->input('agent');
-            $client = $request->input('client');
+            $agent = \Input::get('agent');
+            $client = \Input::get('client');
             if ($agent == 1) {
                 $id = \Auth::user()->id;
                 $this->sendMail($id, $invoiceid);
@@ -296,6 +308,7 @@ class InvoiceController extends Controller
                 $this->sendMail($userid, $invoiceid);
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -308,12 +321,20 @@ class InvoiceController extends Controller
     public function generateInvoice()
     {
         try {
+            // dd(\Cart::getContent());
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
 
             $user_id = \Auth::user()->id;
-            $grand_total = \Cart::getSubTotal();
+            if (\Auth::user()->currency == 'INR') {
+                $grand_total = \Cart::getSubTotal();
+            } else {
+                foreach (\Cart::getContent() as $cart) {
+                    $grand_total = $cart->price;
+                }
+            }
+            // dd($grand_total);
 
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
@@ -337,8 +358,7 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-            dd($ex);
-
+           Bugsnag::notifyExeption($ex);
             throw new \Exception('Can not Generate Invoice');
         }
     }
@@ -349,6 +369,7 @@ class InvoiceController extends Controller
             $planid = 0;
             $product_name = $cart->name;
             $regular_price = $cart->price;
+            // dd($regular_price);
             $quantity = $cart->quantity;
             $domain = $this->domain($cart->id);
             $cart_cont = new \App\Http\Controllers\Front\CartController();
@@ -356,7 +377,12 @@ class InvoiceController extends Controller
                 $planid = \Session::get('plan');
             }
             //dd($quantity);
-            $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
+            $user_currency = \Auth::user()->currency;
+            if ($user_currency == 'INR') {
+                $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
+            } else {
+                $subtotal = $regular_price;
+            }
 
             $tax_name = '';
             $tax_percentage = '';
@@ -383,7 +409,7 @@ class InvoiceController extends Controller
 
             return $invoiceItem;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyExeption($ex);
 
             throw new \Exception('Can not create Invoice Items');
         }
@@ -410,6 +436,7 @@ class InvoiceController extends Controller
                 $this->updateInvoice($invoiceid);
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -445,7 +472,9 @@ class InvoiceController extends Controller
                     $tax_rate .= $value['rate'].',';
                 }
             }
-            $subtotal = $this->calculateTotal($tax_rate, $subtotal);
+            if ($currency == 'INR') {
+                $subtotal = $this->calculateTotal($tax_rate, $subtotal);
+            }
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
@@ -463,7 +492,7 @@ class InvoiceController extends Controller
 
             return $items;
         } catch (\Exception $ex) {
-            dd($ex);
+            Bugsnag::notifyExeption($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -508,8 +537,7 @@ class InvoiceController extends Controller
                 return $price;
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
+           Bugsnag::notifyExeption($ex);
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
@@ -529,6 +557,7 @@ class InvoiceController extends Controller
 
             return $updated_price;
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception(\Lang::get('message.find-discount-error'));
         }
     }
@@ -549,6 +578,7 @@ class InvoiceController extends Controller
                     return 0;
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception(\Lang::get('message.find-cost-error'));
         }
     }
@@ -568,6 +598,7 @@ class InvoiceController extends Controller
                 return 'fails';
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception(\Lang::get('message.find-cost-error'));
         }
     }
@@ -606,8 +637,7 @@ class InvoiceController extends Controller
             } else {
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
+           Bugsnag::notifyExeption($ex);
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
@@ -635,7 +665,7 @@ class InvoiceController extends Controller
                             $taxs[$key] = ['name' => $tax->name, 'rate' => $tax->rate];
                         } else {
                             $rate = '';
-                            $rate += $tax->rate;
+                            $rate = $tax->rate;
                             $taxs[$key] = ['name' => $tax->name, 'rate' => $rate];
                         }
                     }
@@ -644,7 +674,7 @@ class InvoiceController extends Controller
             //dd($taxs);
             return $taxs;
         } catch (\Exception $ex) {
-            dd($ex);
+           Bugsnag::notifyExeption($ex);
 
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
@@ -675,8 +705,7 @@ class InvoiceController extends Controller
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            // dd($ex);
-
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -684,22 +713,24 @@ class InvoiceController extends Controller
     public function calculateTotal($rate, $total)
     {
         try {
-            //dd($total);
+          
             $rates = explode(',', $rate);
-            //dd($rates);
+          
             //            $total = '';
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->tax_enable == 1 && $rule->inclusive == 0) {
                 foreach ($rates as $rate) {
-                    $total += $total * ($rate / 100);
+                    if($rate != ""){
+                        $total += $total * ($rate / 100);
+                    }
+                    
                 }
             }
             //dd($total);
             return $total;
         } catch (\Exception $ex) {
-            dd($ex);
-
+          Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -763,6 +794,7 @@ class InvoiceController extends Controller
             }
             \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -778,6 +810,7 @@ class InvoiceController extends Controller
 
             return $domain;
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
         }
     }
 
@@ -802,6 +835,7 @@ class InvoiceController extends Controller
 
             $invoice->save();
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -834,6 +868,7 @@ class InvoiceController extends Controller
 
             return $payment;
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -867,6 +902,7 @@ class InvoiceController extends Controller
 
             return redirect()->back();
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -889,6 +925,7 @@ class InvoiceController extends Controller
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');
             }
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -902,6 +939,7 @@ class InvoiceController extends Controller
 
             return $this->sendInvoiceMail($userid, $number, $total, $invoiceid);
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
             throw new \Exception($ex->getMessage());
         }
     }
@@ -946,7 +984,7 @@ class InvoiceController extends Controller
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
-            dd($e);
+            Bugsnag::notifyExeption($e);
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
@@ -968,6 +1006,7 @@ class InvoiceController extends Controller
 
             return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -990,6 +1029,7 @@ class InvoiceController extends Controller
 
             return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -1011,6 +1051,7 @@ class InvoiceController extends Controller
 
             return $response;
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

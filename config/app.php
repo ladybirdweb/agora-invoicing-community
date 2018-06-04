@@ -13,7 +13,7 @@ return [
     */
 
     'name'      => env('APP_NAME', 'Laravel'),
-      'version' => ' v1.0.9',
+    'version'   => ' v1.0.12',
 
     /*
     |--------------------------------------------------------------------------
@@ -103,6 +103,13 @@ return [
 
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Razorpay\ServiceProvider',
+'App\Plugins\Razorpay\ServiceProvider',
+'App\Plugins\Paypal\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',//
+'App\Plugins\Paypal\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
+'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
 
@@ -171,6 +178,7 @@ return [
         Illuminate\Translation\TranslationServiceProvider::class,
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
+        Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -239,6 +247,7 @@ return [
         'Session'      => Illuminate\Support\Facades\Session::class,
         'Storage'      => Illuminate\Support\Facades\Storage::class,
         'URL'          => Illuminate\Support\Facades\URL::class,
+        'Bugsnag'      => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
 
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,

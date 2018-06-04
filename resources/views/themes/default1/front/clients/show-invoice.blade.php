@@ -2,14 +2,6 @@
 @section('title')
 Agora | Invoice
 @stop
-@section('page-heading')
- <h1>View Invoice </h1>
-@stop
-@section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
-<li><a href="{{url('my-invoices')}}">My Account</a></li>
-<li class="active">Invoice</li> 
-@stop
 @section('nav-invoice')
 active
 @stop
@@ -18,9 +10,7 @@ active
 <div class="featured-boxes">
     <div class="row">
         <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
-           <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
-            <div class="col-lg-12 order-1 order-lg-2">
-        <div class="featured-box featured-box-primary align-left mt-xlg"  style="text-align: left;">
+        <div class="featured-box featured-box-primary align-left mt-xlg">
             <div class="box-content">
                 <div class="content-wrapper">
                     <!-- Content Header (Page header) -->
@@ -29,7 +19,6 @@ active
                             Invoice
                             <small>#{{$invoice->number}}</small>
                         </h1>
-
 
                     </section>
 
@@ -67,8 +56,6 @@ active
                             </div><!-- /.col -->
                             <div class="col-sm-4 invoice-col">
                                 <b>Invoice   #{{$invoice->number}}</b><br/>
-                               
-                                 <b>GSTIN   #{{$gst->Gst_No}}</b><br/>
                                 <br/>
 
                             </div><!-- /.col -->
@@ -85,7 +72,6 @@ active
                                             <th>Price</th>
                                             <th>Taxes</th>
                                             <th>Tax Rates</th>
-                                             <th>Discount</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
@@ -116,12 +102,6 @@ active
                                                     @endif
                                                 </ul>
                                             </td>
-                                             <?php
-                                        $data=($item->discount)?$item->discount:'No discounts';
-                                        ?>
-                                        <td>
-                                            {{$data}}
-                                        </td>
                                             <td>{{$item->subtotal}}</td>
                                         </tr>
                                         @endforeach
@@ -136,7 +116,7 @@ active
 
                             </div><!-- /.col -->
                             <div class="col-xs-6">
-                                <p class="lead">Subtotal</p>
+                                <p class="lead">Amount</p>
                                 <div class="table-responsive">
                                     <table class="table">
                                          <?php 
@@ -161,10 +141,10 @@ active
                                     @if($tax_name[$i]!='null')
                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
+                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
                                         </td>
 
                                     </tr>
@@ -181,10 +161,10 @@ active
                         </div><!-- /.row -->
 
                         <!-- this row will not appear when printing -->
-                           <div class="row no-print">
+                        <div class="row no-print">
                             <div class="col-xs-12">	
                                 <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
-                                 @if($invoice->status !='Success')
+                                 @if($item->subtotal!=0)
                             <a href="{{url('paynow/'.$invoice->id)}}"><button class="btn btn-primary" style="margin-right: 5px;"> Pay Now</button></a>
                       @endif
                             </div>
@@ -196,7 +176,6 @@ active
                 <div class="control-sidebar-bg"></div>
             </div><!-- ./wrapper -->
         </div> 
-    </div>
     </div>
 </div>
 

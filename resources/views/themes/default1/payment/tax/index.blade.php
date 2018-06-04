@@ -1,5 +1,5 @@
-    @extends('themes.default1.layouts.master')
-    @section('content')
+@extends('themes.default1.layouts.master')
+@section('content')
 
     <div class="box box-primary">
 

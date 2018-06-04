@@ -3,6 +3,7 @@
 Cart
 @stop
 @section('page-header')
+<br>
 Cart
 @stop
 @section('breadcrumb')
@@ -37,6 +38,8 @@ if (count($attributes) > 0) {
         @endif
 
         @if(Session::has('success'))
+    </br>
+</br>
         <div class="alert alert-success alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
@@ -50,7 +53,7 @@ if (count($attributes) > 0) {
         </div>
         @endif
 
-
+        
         @if(!Cart::isEmpty())
         <div class="featured-boxes">
             <div class="row">
@@ -130,10 +133,10 @@ if (count($attributes) > 0) {
                                                     </td>
 
                                                     <td class="product-price">
-                                                       {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
-                                                          
-
-                                                        </span>
+                                                         <span class="amount"><small>{!! $symbol !!}&nbsp;</small>
+                                                         {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
+                                                     </span>
+                                                      
                                                     </td>
                                                     <td class="product-quantity">
                                                         @if($multi_product==true)
@@ -145,9 +148,8 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                   
-                                                             {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
-                                                        </span>
+                                                              <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                                            
                                                     </td>
 
                                                 </tr>
@@ -185,7 +187,7 @@ if (count($attributes) > 0) {
                 </div>
 
                 <div class="col-md-4">
-                    <div class="featured-box featured-box-primary align-left mt-sm">
+                    <div class="featured-box featured-box-primary align-left mt-sm" style="height: 300px !important;">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
                             <table class="cart-totals">
@@ -213,7 +215,7 @@ if (count($attributes) > 0) {
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
                                         </td>
                                     </tr>
 
@@ -242,6 +244,7 @@ if (count($attributes) > 0) {
                                     <input type="submit" value="Update">
                                 </div>
                                 {!! Form::close() !!}
+                                </div>
                             </div>
                         </div>
                         <div class=" col-md-6"><br><br><br><br>
@@ -257,7 +260,7 @@ if (count($attributes) > 0) {
                             <a href="{{url('checkout')}}"><button class="btn btn-primary btn-lg">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                         </div>
-                    </div>
+                    
                 </div>
 
 
@@ -269,6 +272,7 @@ if (count($attributes) > 0) {
                 <div class="col-md-12">
                     <div class="featured-box featured-box-primary align-left mt-sm">
                         <div class="box-content">
+
                             <div class="col-md-offset-5">
                                 <p>There are no items in this cart.</p>
                                 <a href="{{url('home')}}" class="btn btn-primary">CONTINUE SHOPPING</a>

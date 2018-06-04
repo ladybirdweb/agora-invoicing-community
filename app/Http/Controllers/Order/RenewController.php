@@ -72,10 +72,13 @@ class RenewController extends Controller
     public function successRenew()
     {
         try {
-            $planid = Session::get('plan_id');
             $id = Session::get('subscription_id');
+
+            $planid = Session::get('plan_id');
             $plan = $this->plan->find($planid);
+            // dd($plan);
             $days = $plan->days;
+
             $sub = $this->sub->find($id);
             $current = $sub->ends_at;
             $ends = $this->getExpiryDate($current, $days);
@@ -365,7 +368,7 @@ class RenewController extends Controller
     public function setSession($sub_id, $planid)
     {
         Session::put('subscription_id', $sub_id);
-        Session::put('plan_id', $sub_id);
+        Session::put('plan_id', $planid);
     }
 
     public function removeSession()

@@ -191,8 +191,8 @@ class CheckoutController extends Controller
         }
 
         $cost = $request->input('cost');
-        if (\Cart::getSubTotal() > 0 || $cost > 0) {
-            //  {
+        // if (\Cart::getSubTotal() > 0 || $cost > 0) {
+        //     //  {
             //     $v = $this->validate($request, [
             //         'payment_gateway' => 'required',
             //             ], [
@@ -274,7 +274,7 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
         }
-    }
+    
 
     public function checkoutAction($invoice)
     {

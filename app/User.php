@@ -96,7 +96,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
             if (is_file($file)) {
                 $mime = \File::mimeType($file);
                 $extension = \File::extension($file);
-                if (mime($mime) == 'image' && mime($extension) == 'image') {
+                if ($mime == 'image' && $extension == 'image') {
                     $image = asset('dist/app/users/'.$value);
                 } else {
                     unlink($file);

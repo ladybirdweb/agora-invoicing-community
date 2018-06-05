@@ -446,7 +446,9 @@ class AuthController extends Controller
         ]);
         $email = $request->oldemail;
         $newEmail = $request->newemail;
-        User::where('email', $email)->update(['email'=>$newEmail]);
+        $number = $request->oldnumber;
+        $newNumber = $request->newnumber;
+        User::where('email', $email)->orwhere('mobile',$number)->update(['email'=>$newEmail,'mobile'=>$newNumber]);
 
         try {
             $code = $request->input('code');

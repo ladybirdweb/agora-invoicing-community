@@ -392,8 +392,35 @@ $json = json_encode($data);
                   
                   </tr>
                  @endif
+
                 @endforeach
                 @endif
+                <?php
+                $items=$invoice->invoiceItem()->get();
+                ?>
+                   
+                @if ($attributes == null)
+                
+                @foreach ($items as $item)
+               <tr class="Taxes">
+                  <th>
+                        <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                         
+                       
+                    </td>
+                  
+                  </tr>
+                  @endforeach
+                @endif
+
+               
+               
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>

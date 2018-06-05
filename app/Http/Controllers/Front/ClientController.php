@@ -262,6 +262,7 @@ class ClientController extends Controller
                                         $ends = $model->subscription()->first()->ends_at;
                                         $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
                                         $end = $date;
+                                        // dd($end);
                                     }
                                 }
 
@@ -479,8 +480,8 @@ class ClientController extends Controller
                             })
                             ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
-
-                                return date_format($date, 'l, F j, Y H:m A');
+                                  return $date;
+                                // return date_format($date, 'l, F j, Y H:m A');
                             })
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
@@ -563,8 +564,15 @@ class ClientController extends Controller
                               ->addColumn('total', function ($model) {
                                   return $model->amount;
                               })
-                            ->addColumn('payment_method', 'payment_status', 'created_at')
+                               ->addColumn('created_at', function ($model){
+                                $tz = \Auth::user()->timezone()->first()->name;
+                                 $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
 
+                                return $date->setTimezone($tz);
+                                 })
+
+                            ->addColumn('payment_method', 'payment_status', 'created_at')
+                            
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {

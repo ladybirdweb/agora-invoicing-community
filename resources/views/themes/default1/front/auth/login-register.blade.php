@@ -619,7 +619,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                  $('#conemail').show();
                 $('#conemail').html("Not a valid email");
                  $('#conemail').focus();
-                $('#conemail').css("border-color","red");
+                $('#verify_email').css("border-color","red");
                 $('#conemail').css({"color":"red","margin-top":"5px"});
 
                    // mail_error = false;
@@ -1030,7 +1030,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
          $('#password').css("border-color","red");
         $('#password1check').css({"color":"red","margin-top":"5px"});
         $('html, body').animate({
-        scrollTop: $("#password1check").offset().top +50
+        scrollTop: $("#password1check").offset().top -200
     }, 1000)
       
     }
@@ -1041,7 +1041,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
          $('#password').css("border-color","red");
         $('#password1check').css({"color":"red","margin-top":"5px"});
         $('html, body').animate({
-        scrollTop: $("#password1check").offset().top +50
+        scrollTop: $("#password1check").offset().top -200
     }, 1000)
     }
     else{
@@ -1064,7 +1064,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
              $('#confirm_pass').css("border-color","red");
             $('#conpasscheck').css("color","red");
            $('html, body').animate({
-        scrollTop: $("#conpasscheck").offset().top +50
+        scrollTop: $("#conpasscheck").offset().top -200
     }, 1000)
          }
         else{
@@ -1151,10 +1151,12 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 verifyForm.elements['user_id'].value = response.user_id;
                 var $emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
                 sessionStorage.setItem('oldemail',$emailverfy);
-                
+
+                 
 
                 verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
-                verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+               var $numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+                sessionStorage.setItem('oldenumber',$numberverify);
                 verifyForm.elements['email_password'].value = $('#password').val();
                 $("#register").html("Register");
                 /*setTimeout(function(){ 
@@ -1213,10 +1215,14 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
           
            var oldemail=sessionStorage.getItem('oldemail');
         var newemail = $('#verify_email').val(); // this.value
+        var oldnumber = sessionStorage.getItem('oldemail');
+        var newnumber = $('#verify_number').val();
        
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
             "newemail": newemail,
+            "newnumber": newnumber,
+            "oldnumber": oldnumber,
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),

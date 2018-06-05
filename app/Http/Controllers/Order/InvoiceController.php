@@ -45,7 +45,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        $this->middleware('admin',['except' => ['pdf']]);
 
         $invoice = new Invoice();
         $this->invoice = $invoice;
@@ -557,8 +557,7 @@ class InvoiceController extends Controller
             $planId = Plan::where('product', $productid)->pluck('id')->first();
             // dd($planId);
             $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
-            dd($product_price);
-            //   if (!$product_price) {
+             //   if (!$product_price) {
             //     $product_price = $product->price()->first()->price;
             // }
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);

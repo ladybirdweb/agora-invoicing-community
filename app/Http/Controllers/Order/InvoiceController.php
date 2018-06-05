@@ -466,7 +466,7 @@ class InvoiceController extends Controller
                 $mode = 'coupon';
                 $discount = $price - $subtotal;
             }
-            $userid=\Auth::user()->id;
+            $userid = \Auth::user()->id;
             $tax = $this->checkTax($product->id, $userid);
             $tax_name = '';
             $tax_rate = '';

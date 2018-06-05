@@ -480,7 +480,8 @@ class ClientController extends Controller
                             })
                             ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
-                                  return $date;
+
+                                return $date;
                                 // return date_format($date, 'l, F j, Y H:m A');
                             })
                             ->addColumn('total', function ($model) {
@@ -564,15 +565,15 @@ class ClientController extends Controller
                               ->addColumn('total', function ($model) {
                                   return $model->amount;
                               })
-                               ->addColumn('created_at', function ($model){
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                 $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
+                               ->addColumn('created_at', function ($model) {
+                                   $tz = \Auth::user()->timezone()->first()->name;
+                                   $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
 
-                                return $date->setTimezone($tz);
-                                 })
+                                   return $date->setTimezone($tz);
+                               })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')
-                            
+
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {

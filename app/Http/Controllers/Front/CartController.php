@@ -1069,7 +1069,7 @@ class CartController extends Controller
         try {
             $tax = $price * ($rate / 100);
             $result = $tax;
-            
+
             $result = self::rounding($result);
 
             return $result;

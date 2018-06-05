@@ -193,88 +193,87 @@ class CheckoutController extends Controller
         $cost = $request->input('cost');
         // if (\Cart::getSubTotal() > 0 || $cost > 0) {
         //     //  {
-            //     $v = $this->validate($request, [
-            //         'payment_gateway' => 'required',
-            //             ], [
+        //     $v = $this->validate($request, [
+        //         'payment_gateway' => 'required',
+        //             ], [
 
-            //         'payment_gateway.required' => 'Please choose a payment gateway',
-            //             ]);
-            // }
+        //         'payment_gateway.required' => 'Please choose a payment gateway',
+        //             ]);
+        // }
 
-            try {
-                if (!$this->setting->where('id', 1)->first()) {
-                    return redirect()->back()->with('fails', 'Complete your settings');
+        try {
+            if (!$this->setting->where('id', 1)->first()) {
+                return redirect()->back()->with('fails', 'Complete your settings');
+            }
+            if ($paynow == false) {
+                /*
+                 * Do order, invoicing etc
+                 */
+                $invoice = $invoice_controller->generateInvoice();
+                $status = 'pending';
+                if (!$payment_method) {
+                    $payment_method = 'free';
+                    $status = 'success';
                 }
-                if ($paynow == false) {
-                    /*
-                     * Do order, invoicing etc
-                     */
-                    $invoice = $invoice_controller->generateInvoice();
-                    $status = 'pending';
-                    if (!$payment_method) {
-                        $payment_method = 'free';
-                        $status = 'success';
-                    }
-                    $invoice_no = $invoice->number;
+                $invoice_no = $invoice->number;
 
-                    $invoiceid = $invoice->id;
+                $invoiceid = $invoice->id;
 
-                    $amount = $invoice->grand_total;
+                $amount = $invoice->grand_total;
 
-                    //dd($payment);
-                    $url = '';
-                    $cart = Cart::getContent();
-                    $invoices = $this->invoice->find($invoiceid);
-                    // dd($invoice);
-                    $items = new \Illuminate\Support\Collection();
-                    // dd($items);
-                    if ($invoices) {
-                        $items = $invoice->invoiceItem()->get();
-
-                        $product = $this->product($invoiceid);
-                        $content = Cart::getContent();
-                        $attributes = $this->getAttributes($content);
-                    }
-                } else {
-                    $items = new \Illuminate\Support\Collection();
-                    $cart = [];
-                    $invoice_id = $request->input('invoice_id');
-                    $invoice = $this->invoice->find($invoice_id);
+                //dd($payment);
+                $url = '';
+                $cart = Cart::getContent();
+                $invoices = $this->invoice->find($invoiceid);
+                // dd($invoice);
+                $items = new \Illuminate\Support\Collection();
+                // dd($items);
+                if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
-                    $product = $this->product($invoice_id);
-                    $amount = $invoice->grand_total;
+
+                    $product = $this->product($invoiceid);
                     $content = Cart::getContent();
                     $attributes = $this->getAttributes($content);
                 }
-
-                //trasfer the control to event if cart price is not equal 0
-                if (Cart::getSubTotal() != 0 || $cost > 0) {
-                    //                if ($paynow == true) {
-                    //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
-                    //                }
-                    return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
-                // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
-                // dd('sdfds');
-                } else {
-                    $action = $this->checkoutAction($invoice);
-
-                    $check_product_category = $this->product($invoiceid);
-
-                    $url = '';
-                    if ($check_product_category->category) {
-                        $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
-                    }
-                    \Cart::clear();
-
-                    return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
-                }
-            } catch (\Exception $ex) {
-                Bugsnag::notifyException($ex);
-
-                return redirect()->back()->with('fails', $ex->getMessage());
+            } else {
+                $items = new \Illuminate\Support\Collection();
+                $cart = [];
+                $invoice_id = $request->input('invoice_id');
+                $invoice = $this->invoice->find($invoice_id);
+                $items = $invoice->invoiceItem()->get();
+                $product = $this->product($invoice_id);
+                $amount = $invoice->grand_total;
+                $content = Cart::getContent();
+                $attributes = $this->getAttributes($content);
             }
+
+            //trasfer the control to event if cart price is not equal 0
+            if (Cart::getSubTotal() != 0 || $cost > 0) {
+                //                if ($paynow == true) {
+                //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
+                //                }
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
+            // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+                // dd('sdfds');
+            } else {
+                $action = $this->checkoutAction($invoice);
+
+                $check_product_category = $this->product($invoiceid);
+
+                $url = '';
+                if ($check_product_category->category) {
+                    $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
+                }
+                \Cart::clear();
+
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
+            }
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-    
+    }
 
     public function checkoutAction($invoice)
     {

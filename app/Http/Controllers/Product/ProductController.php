@@ -422,9 +422,9 @@ use App\Http\Controllers\Controller;
             $input = $request->all();
             // dd($input);
             $v = \Validator::make($input, [
-                        'name'  => 'required',
-                        'type'  => 'required',
-                        'group' => 'required',
+                        'name'    => 'required',
+                        'type'    => 'required',
+                        'group'   => 'required',
                         'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
     //                    'subscription' => 'required',
     //                    'currency.*' => 'required',

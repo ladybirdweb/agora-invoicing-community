@@ -197,7 +197,7 @@ class RenewController extends Controller
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $code, $product_cost, $currency, $qty = 1);
-             
+
             return $items;
         } catch (Exception $ex) {
             dd($ex);

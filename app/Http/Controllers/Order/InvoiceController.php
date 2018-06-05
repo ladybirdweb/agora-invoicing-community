@@ -466,8 +466,8 @@ class InvoiceController extends Controller
                 $mode = 'coupon';
                 $discount = $price - $subtotal;
             }
+            $userid=\Auth::user()->id;
             $tax = $this->checkTax($product->id, $userid);
-            // dd($tax);
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
@@ -706,8 +706,6 @@ class InvoiceController extends Controller
 
             return $taxs;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }

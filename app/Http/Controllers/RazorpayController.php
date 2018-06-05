@@ -79,6 +79,8 @@ class RazorpayController extends Controller
                     $checkout_controller->checkoutAction($invoice);
                 } else {
                     $control->successRenew($invoice);
+                    $payment= new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
                 }
                 // $returnValue=$checkout_controller->checkoutAction($invoice);
 

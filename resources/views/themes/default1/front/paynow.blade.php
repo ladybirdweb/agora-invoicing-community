@@ -190,7 +190,7 @@ Checkout
                  
                 @foreach($items->toArray() as $attribute)
                 
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
+                @if($attribute['tax_name']!='null,')
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";
@@ -201,7 +201,19 @@ Checkout
                     $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
                 }
                 ?>
+                <tr class="Taxes">
+                    <th>
+                        <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
+                         </th>
+                    <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                        
+                       
+                       
+                    </td>
 
+
+                </tr>
                
                 @endif
                 @endforeach

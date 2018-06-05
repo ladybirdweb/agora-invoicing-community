@@ -242,10 +242,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
                                                                 {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
-                                                            
-                                                        </div>
-                                                         <h6 id="last_namecheck"></h6>
+                                                             <h6 id="last_namecheck"></h6>
 
+                                                        </div>
+                                                        
                                                     
                                                 </div>
                                                  <div class="form-row">
@@ -253,9 +253,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
+                                                            <h6 id="emailcheck"></h6>
                                                         </div>
 
-                                                      <h6 id="emailcheck"></h6>
+                                                      
                                                 </div>
                                                 
 
@@ -264,14 +265,16 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
+                                                             <h6 id="companycheck"></h6>
                                                         </div>
-                                                        <h6 id="companycheck"></h6>
+                                                       
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                            <h6 id="bussinesscheck"></h6>
                                                         </div>
-                                                        <h6 id="bussinesscheck"></h6>
+                                                        
 
                                                     
                                                 </div>
@@ -287,17 +290,17 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
                                                         {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
-
-                                                    </div>
                                                      <h6 id="company_typecheck"></h6>
+                                                    </div>
+                                                    
 
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
                                                         {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
-
+                                                       <h6 id="company_sizecheck"></h6>
                                                     </div>
-                                                     <h6 id="company_sizecheck"></h6>
+                                                    
 
                                                 </div>
                                                 <div class="form-row">
@@ -305,10 +308,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                            <h6 id="countrycheck"></h6>
 
                                                             </div>
-                                                             <h6 id="countrycheck"></h6>
-
+                                                            
                                                  </div>
                                                 <div class="form-row">
                                                     <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
@@ -316,8 +319,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
                                                            <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
                                                         {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                                        <h6 id="mobile_codecheck"></h6>
                                                     </div>
-                                                     <h6 id="mobile_codecheck"></h6>
+                                                     
 
                                                    
                                                 </div>
@@ -327,9 +331,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <label class="required">Address</label>
                                                             {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
 
-                                                      
+                                                       <h6 id="addresscheck"></h6>
                                                     </div>
-                                                     <h6 id="addresscheck"></h6>
+                                                     
 
                                                 </div>
                                                   <div class="form-row">
@@ -337,8 +341,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col-lg-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                                             <label>City/Town</label>
                                                             {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
+                                                             <h6 id="towncheck"></h6>
                                                         </div>
-                                                        <h6 id="towncheck"></h6>
+                                                       
 
                                                         
                                                             <div class="form-group col-lg-6 {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -354,9 +359,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 // dd($value);
                                                                 ?>
                                                                 {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
-
+                                                            <h6 id="statecheck"></h6>
                                                             </div>
-                                                             <h6 id="statecheck"></h6>
+                                                             
 
                                                         
                                                    
@@ -367,15 +372,17 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                             <div class="form-group col-lg-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
                                                                 {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
+                                                                 <h6 id="zipcheck"></h6>
                                                             </div>
-                                                             <h6 id="zipcheck"></h6>
+                                                            
 
 
                                                             <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
                                                                 <label class="required">User Name/E-mail Id</label>
                                                                 {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
+                                                                 <h6 id="user_namecheck"></h6>
                                                             </div>
-                                                             <h6 id="user_namecheck"></h6>
+                                                            
 
                                                        
                                                     
@@ -385,15 +392,17 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                               <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
+                                                            <h6 id="passwordcheck"></h6>
                                                         </div>
-                                                         <h6 id="passwordcheck"></h6>
+                                                         
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
+                                                             <h6 id="conpasscheck"></h6>
                                                         </div>
-                                                         <h6 id="conpasscheck"></h6>
+                                                        
 
                                                    
                                                 </div>
@@ -559,20 +568,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 </div>
                              
                             </form>
-                           <!--  <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Didn't recieve OTP via SMS</h5>
-                                    <button type="button" class="btn btn-default mb-xl" data-loading-text="Loading..." name="resendOTP" id="resendOTP" onclick="resendOTP()" style="background: grey; color: white;" ><i class="fa fa-phone" style="font-size: 18px;"></i>&nbsp;&nbsp; Get OTP via Voice </button>
-                                </div>
-                            </div> -->
-                           <!--   <div class="row">
-                                <div class="col-md-6">
-                                    <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
-                                    <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" >
-                                    <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'>
-
-                                </div>
-                            </div> -->
+                          
                         </div>
                     </div>
                 </div>
@@ -613,22 +609,6 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
 
             function verify_email_check(){
-
-              // var userEmail = $('#verify_email').val();
-              // if(userEmail.length == ''){
-              //    $('#conemail').show();
-              //   $('#conemail').html("**Please Enter Your Email");
-              //   $('#conemail').focus();
-              //   $('#conemail').css("color","red");
-              //   mail_error = false;
-              //   return false;
-              // }
-              // else{
-              //   $('#conemail').hide();
-              //   return true;
-                
-              // }
-
               var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
               if (pattern.test($('#verify_email').val())){
                  $('#conemail').hide();
@@ -637,9 +617,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
               }
               else{
                  $('#conemail').show();
-                $('#conemail').html("**Not a valid email");
+                $('#conemail').html("Not a valid email");
                  $('#conemail').focus();
-                $('#conemail').css("color","red");
+                $('#conemail').css("border-color","red");
+                $('#conemail').css({"color":"red","margin-top":"5px"});
+
                    // mail_error = false;
                 return false;
                 
@@ -655,9 +637,12 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             var userNumber = $('#verify_number').val();
             if (userNumber.length < 10){
                 $('#conmobile').show();
-                $('#conmobile').html("**Please Enter Your Mobile No.");
+                $('#conmobile').html("Please Enter Your Mobile No.");
                 $('#conmobile').focus();
-                $('#conmobile').css("color","red");
+                 $('#verify_number').css("border-color","red");
+                $('#conmobile').css({"color":"red","margin-top":"5px"});
+
+               
                 // mobile_error = false;
                 return false;
             }
@@ -686,17 +671,21 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var user_val = $('#username').val();
     if(user_val.length == ''){
         $('#usercheck').show();
-        $('#usercheck').html("**Please Enter Username/Email");
+        $('#usercheck').html("Please Enter Username/Email");
         $('#usercheck').focus();
-        $('#usercheck').css("color","red");
-        // userErr =false;
+        $('#username').css("border-color","red");
+       $('#usercheck').css({"color":"red","margin-top":"5px"});
+
+          // userErr =false;
         // return false;
     }
     else if((user_val.length < 3) || (user_val.length > 10))  {
         $('#usercheck').show();
         $('#usercheck').html("**Username Length must be between 3 to 20 characters");
         $('#usercheck').focus();
-        $('#usercheck').css("color","red");
+          $('#username').css("border-color","red");
+       $('#usercheck').css({"color":"red","margin-top":"5px"});
+
         // userErr =false;
         // return false;
     }
@@ -711,17 +700,20 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         var passStore= $('#pass').val()
     if(passStore.length == ''){
         $('#passcheck').show();
-        $('#passcheck').html("**Please Enter Password");
+        $('#passcheck').html("Please Enter Password");
         $('#passcheck').focus();
-        $('#passcheck').css("color","red");
+        $('#pass').css("border-color","red");
+       $('#passcheck').css({"color":"red","margin-top":"5px"});
         passErr =false;
         return false;
     }
-    else if((passStore.length < 3) || (passStore.length > 10)){
+    else if((passStore.length < 3) || (passStore.length > 20)){
         $('#passcheck').show();
         $('#passcheck').html("**Password Length must be between 3 and 10");
         $('#passcheck').focus();
-        $('#passcheck').css("color","red");
+
+        $('#pass').css("border-color","red");
+       $('#passcheck').css({"color":"red","margin-top":"5px"});
         passErr =false;
         return false;
     }
@@ -748,13 +740,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var firrstname_val = $('#first_name').val();
     if(firrstname_val.length == ''){
         $('#first_namecheck').show();
-        $('#first_namecheck').html("**Please Enter First Name");
+        $('#first_namecheck').html("Please Enter First Name");
         $('#first_namecheck').focus();
+         $('#first_name').css("border-color","red");
         $('#first_namecheck').css("color","red");
         // userErr =false;
         // return false;
           $('html, body').animate({
-        scrollTop: $("#first_namecheck").offset().top
+        scrollTop: $("#first_namecheck").offset().top -200
     }, 1000)
     }
    
@@ -768,11 +761,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var lastname_val = $('#last_name').val();
     if(lastname_val.length == ''){
         $('#last_namecheck').show();
-        $('#last_namecheck').html("**Please Enter Last Name");
+        $('#last_namecheck').html("Please Enter Last Name");
         $('#last_namecheck').focus();
-        $('#last_namecheck').css("color","red");
+         $('#last_name').css("border-color","red");
+        $('#last_namecheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-        return false;
+         $('html, body').animate({
+         
+        scrollTop: $("#last_namecheck").offset().top - 200
+    }, 1000)
     }
    
     else{
@@ -782,31 +779,39 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    }
     //Validating email field
     function emailcheck(){
-    var email_val = $('#email').val();
-    if(email_val.length == ''){
-        $('#emailcheck').show();
-        $('#emailcheck').html("**Please Enter Email");
-        $('#emailcheck').focus();
-        $('#emailcheck').css("color","red");
-        // userErr =false;
-        return false;
-    }
-   
-    else{
-         $('#emailcheck').hide();
-         return true;
-    }
-   }
 
-    function companycheck(){
+            var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+              if (pattern.test($('#email').val())){
+                 $('#emailcheck').hide();
+                 return true;
+               
+              }
+              else{
+                 $('#emailcheck').show();
+                $('#emailcheck').html("Not a valid email");
+                 $('#emailcheck').focus();
+                  $('#email').css("border-color","red");
+                 $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                   // mail_error = false;
+               $('html, body').animate({
+        scrollTop: $("#emailcheck").offset().top -200 
+    }, 1000)
+    }
+                
+              }
+
+     function companycheck(){
     var company_val = $('#company').val();
     if(company_val.length == ''){
         $('#companycheck').show();
-        $('#companycheck').html("**Please Enter Company");
+        $('#companycheck').html("Please Enter Company Name");
         $('#companycheck').focus();
-        $('#companycheck').css("color","red");
+         $('#company').css("border-color","red");
+        $('#companycheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-        return false;
+         $('html, body').animate({
+        scrollTop: $("#companycheck").offset().top - 200
+    }, 1000)
     }
    
     else{
@@ -815,82 +820,98 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
    }
 
-   // function bussinesscheck(){
-   //  var business_val = $('#business').val();
-   //  if(business_val.length == ''){
-   //      $('#bussinesscheck').show();
-   //      $('#bussinesscheck').html("**Please Select One Industry");
-   //      $('#bussinesscheck').focus();
-   //      $('#bussinesscheck').css("color","red");
-   //      // userErr =false;
-   //      return false;
-   //  }
+   function bussinesscheck(){
+    var business_val = $('#business').val();
+    if(business_val== ''){
+        $('#bussinesscheck').show();
+        $('#bussinesscheck').html("Please Select One Industry");
+        $('#bussinesscheck').focus();
+         $('#business').css("border-color","red");
+        $('#bussinesscheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+        scrollTop: $("#companycheck").offset().top - 200
+    }, 1000)
+    }
    
-   //  else{
-   //       $('#bussinesscheck').hide();
-   //       return true;
-   //  }
-   // }
+    else{
+         $('#bussinesscheck').hide();
+         return true;
+    }
+   }
 
-   // function company_typecheck(){
-   //  var companytype_val = $('#company_type').val();
-   //  if(business_val.length == ''){
-   //      $('#company_typecheck').show();
-   //      $('#company_typecheck').html("**Please Select Company Type");
-   //      $('#company_typecheck').focus();
-   //      $('#company_typecheck').css("color","red");
-   //      // userErr =false;
-   //      return false;
-   //  }
+   function company_typecheck(){
+    var companytype_val = $('#company_type').val();
+    if(companytype_val == ''){
+        $('#company_typecheck').show();
+        $('#company_typecheck').html("Please Select Company Type");
+        $('#company_typecheck').focus();
+          $('#company_type').css("border-color","red");
+        $('#company_typecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+        $('html, body').animate({
+        scrollTop: $("#company_typecheck").offset().top - 200
+    }, 1000)
+    }
    
-   //  else{
-   //       $('#company_typecheck').hide();
-   //       return true;
-   //  }
-   // }
+    else{
+         $('#company_typecheck').hide();
+         return true;
+    }
+   }
 
-   // function company_sizecheck(){
-   //  var companysize_val = $('#company_size').val();
-   //  if(business_val.length == ''){
-   //      $('#company_sizecheck').show();
-   //      $('#company_sizecheck').html("**Please Select company Size ");
-   //      $('#company_sizecheck').focus();
-   //      $('#company_sizecheck').css("color","red");
-   //      // userErr =false;
-   //       return false;
-   //  }
+   function company_sizecheck(){
+    var companysize_val = $('#company_size').val();
+    if(companysize_val == ''){
+        $('#company_sizecheck').show();
+        $('#company_sizecheck').html("Please Select Company Size");
+        $('#company_sizecheck').focus();
+        $('#company_size').css("border-color","red");
+        $('#company_sizecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+          $('html, body').animate({
+        scrollTop: $("#company_sizecheck").offset().top - 200
+    }, 1000)
+    }
    
-   //  else{
-   //       $('#company_sizecheck').hide();
-   //       return true;
-   //  }
-   // }
+    else{
+         $('#company_sizecheck').hide();
+         return true;
+    }
+   }
    
-   // function countrycheck(){
-   //  var country_val = $('#country').val();
-   //  if(business_val.length == ''){
-   //      $('#countrycheck').show();
-   //      $('#countrycheck').html("**Please Select One Country ");
-   //      $('#countrycheck').focus();
-   //      $('#countrycheck').css("color","red");
-   //      // userErr =false;
-   //       return false;
-   //  }
-   //  else{
-   //       $('#countrycheck').hide();
-   //       return true;
-   //  }
-   // }
+   function countrycheck(){
+    var country_val = $('#country').val();
+    if(country_val == ''){
+        $('#countrycheck').show();
+        $('#countrycheck').html("Please Select One Country ");
+        $('#countrycheck').focus();
+         $('#country').css("border-color","red");
+          $('#country').css("border-color","red");
+         $('#countrycheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+        $('html, body').animate({
+        scrollTop: $("#countrycheck").offset().top - 200
+    }, 1000)
+    }
+    else{
+         $('#countrycheck').hide();
+         return true;
+    }
+   }
 
     function mobile_codecheck(){
     var mobile_val = $('#mobilenum').val();
     if(mobile_val.length == ''){
         $('#mobile_codecheck').show();
-        $('#mobile_codecheck').html("**Please Select One Country ");
+        $('#mobile_codecheck').html("Please Select One Country ");
         $('#mobile_codecheck').focus();
-        $('#mobile_codecheck').css("color","red");
+        $('#mobilenum').css("border-color","red");
+        $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-         return false;
+         $('html, body').animate({
+        scrollTop: $("#mobile_codecheck").offset().top -200
+    }, 1000)
     }
     else{
          $('#mobile_codecheck').hide();
@@ -902,11 +923,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var address_val = $('#address').val();
     if(address_val.length == ''){
         $('#addresscheck').show();
-        $('#addresscheck').html("**Please Enter Address ");
+        $('#addresscheck').html("Please Enter Address ");
         $('#addresscheck').focus();
-        $('#addresscheck').css("color","red");
+         $('#address').css("border-color","red");
+        $('#addresscheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-        return false;
+       $('html, body').animate({
+        scrollTop: $("#addresscheck").offset().top -200
+    }, 1000)
     }
     else{
          $('#addresscheck').hide();
@@ -918,11 +942,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var town_val = $('#city').val();
     if(town_val.length == ''){
         $('#towncheck').show();
-        $('#towncheck').html("**Please Enter Town ");
+        $('#towncheck').html("Please Enter Town ");
         $('#towncheck').focus();
-        $('#towncheck').css("color","red");
+        $('#city').css("border-color","red");
+        $('#towncheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-         return false;
+        $('html, body').animate({
+        scrollTop: $("#towncheck").offset().top -200
+    }, 1000)
     }
     else{
          $('#towncheck').hide();
@@ -934,11 +961,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var state_val = $('#state-list').val();
     if(state_val.length == ''){
         $('#statecheck').show();
-        $('#statecheck').html("**Please Enter Address ");
+        $('#statecheck').html("Please Select a State ");
         $('#statecheck').focus();
-        $('#statecheck').css("color","red");
+        $('#state-list').css("border-color","red");
+        $('#statecheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-         return false;
+         $('html, body').animate({
+        scrollTop: $("#statecheck").offset().top -200
+    }, 1000)
     }
    
     else{
@@ -951,15 +981,18 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var zip_val = $('#zip').val();
     if(zip_val.length == ''){
         $('#zipcheck').show();
-        $('#zipcheck').html("**Please Enter Zip Code ");
+        $('#zipcheck').html("Please Enter Zip Code ");
         $('#zipcheck').focus();
-        $('#zipcheck').css("color","red");
+        $('#zip').css("border-color","red");
+        $('#zipcheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
-         return false;
+           $('html, body').animate({
+        scrollTop: $("#zipcheck").offset().top -200
+    }, 1000)
     }
    
     else{
-         $('#statecheck').hide();
+         $('#zipcheck').hide();
          return true;
     }
    }
@@ -967,14 +1000,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var username_val = $('#user_name').val();
     if(username_val.length == ''){
         $('#user_namecheck').show();
-        $('#user_namecheck').html("**Please Enter Userbname ");
+        $('#user_namecheck').html("Please Enter Username ");
         $('#user_namecheck').focus();
-        $('#user_namecheck').css("color","red");
+        $('#user_name').css("border-color","red");
+        $('#user_namecheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
        
-            $('html, body').animate({
-        scrollTop: $("#user_namecheck").offset().top
-    }, 10000)
+          $('html, body').animate({
+        scrollTop: $("#user_namecheck").offset().top -200
+    }, 1000)
      
     }
    
@@ -991,17 +1025,24 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         var passwordStore= $('#password').val()
     if(passwordStore.length == ''){
         $('#password1check').show();
-        $('#password1check').html("**Please Enter Password");
+        $('#password1check').html("Please Enter Password");
         $('#password1check').focus();
-        $('#password1check').css("color","red");
+         $('#password').css("border-color","red");
+        $('#password1check').css({"color":"red","margin-top":"5px"});
+        $('html, body').animate({
+        scrollTop: $("#password1check").offset().top +50
+    }, 1000)
       
     }
-    else if((passwordStore.length < 3) || (passwordStore.length > 10)){
+    else if((passwordStore.length < 3) || (passwordStore.length > 20)){
         $('#password1check').show();
-        $('#password1check').html("**Password Length must be between 3 and 10");
+        $('#password1check').html("Password Length must be between 3 and 20 characters");
         $('#password1check').focus();
-        $('#password1check').css("color","red");
-       
+         $('#password').css("border-color","red");
+        $('#password1check').css({"color":"red","margin-top":"5px"});
+        $('html, body').animate({
+        scrollTop: $("#password1check").offset().top +50
+    }, 1000)
     }
     else{
          $('#password1check').hide();
@@ -1018,10 +1059,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
          var passwordStore = $('#password').val();
          if(confirmPassStore != passwordStore){
             $('#conpasscheck').show();
-            $('#conpasscheck').html("**password Don;t Match");
+            $('#conpasscheck').html("Passwords Don't Match");
             $('#conpasscheck').focus();
+             $('#confirm_pass').css("border-color","red");
             $('#conpasscheck').css("color","red");
-            return false;
+           $('html, body').animate({
+        scrollTop: $("#conpasscheck").offset().top +50
+    }, 1000)
          }
         else{
              $('#conpasscheck').hide();
@@ -1068,7 +1112,7 @@ function registerUser() {
           var conPassErr = true;
 
      // con_password_check();
-if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck() && statecheck() && zipcheck() &&  user_namecheck() && password1check() && conpasscheck())
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck())
      {
         $.ajax({
           url: '{{url("auth/register")}}',
@@ -1167,22 +1211,9 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
            if((verify_email_check()) && (verify_number_check()))
            {
           
-           
-   
-           
-        var oldemail=sessionStorage.getItem('oldemail');
+           var oldemail=sessionStorage.getItem('oldemail');
         var newemail = $('#verify_email').val(); // this.value
        
-
-            // $.ajax({ 
-            //     url: '{{url("change/email")}}',
-            //     data: { newemail: newemail,oldemail:oldemail },
-            //     type: 'get'
-            // });
-         
-
-
-
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
             "newemail": newemail,
@@ -1553,7 +1584,7 @@ function prevTab(elem) {
             });
         },
         initialCountry: "auto",
-        separateDialCode: true,
+        separateDialCode: false,
         utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');

@@ -703,8 +703,6 @@ class InvoiceController extends Controller
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }
-
-            // dd($taxs);
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);

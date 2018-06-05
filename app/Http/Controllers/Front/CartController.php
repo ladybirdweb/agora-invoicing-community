@@ -195,7 +195,8 @@ class CartController extends Controller
                 'value'  => '0%',
             ]);
 
-            $product = $this->product->findOrFail($productid);
+            // $product = $this->product->findOrFail($productid);
+            // dd($product);
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
             } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy

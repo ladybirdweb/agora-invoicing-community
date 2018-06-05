@@ -478,6 +478,8 @@
         <script src="{{asset('cart/js/custom.js')}}"></script>
 
         <!-- Theme Initialization Files -->
+         <script src="{{asset('js/theme.init.js')}}"></script>
+          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
         <script src="{{asset('cart/js/theme.init.js')}}"></script>
         
         <script>
@@ -493,6 +495,7 @@
             });
             }
 $.ajax({
+    type: 'GET',
     dataType: "html",
     url: '{{url('twitter')}}',
     success: function (returnHTML) {

@@ -290,7 +290,7 @@ class AuthController extends Controller
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful..Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful.Please login to access your account !!');
             } else {
                 throw new NotFoundHttpException();
             }
@@ -420,13 +420,16 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
-
+         
+        $number = $request->oldnumber;
+        $newNumber = $request->newnumber;
+        User::where('mobile',$number)->update(['mobile'=>$newNumber]);
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
             $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'Please Verify to Login'];
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -438,7 +441,7 @@ class AuthController extends Controller
 
     public function requestOtpFromAjax(Request $request)
     {
-        // dd($request->all());
+        // dd($request->allow());
         $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
@@ -458,7 +461,7 @@ class AuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
 
-            // $result = $this->sendOtp($mobile, $code);
+            $result = $this->sendOtp($mobile, $code);
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
@@ -556,11 +559,14 @@ class AuthController extends Controller
     }
 
     public function verifyEmail(Request $request)
+
     {
         $this->validate($request, [
             'email' => 'required|email',
         ]);
-
+        $email = $request->oldmail;
+        $newMail = $request->newmail;
+        User::where('mobile',$email)->update(['mobile'=>$newMail]);
         try {
             $email = $request->input('email');
             $userid = $request->input('id');

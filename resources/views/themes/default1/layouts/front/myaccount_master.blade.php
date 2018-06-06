@@ -335,14 +335,16 @@
                     </div>
                     @endif
                     @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                            <li>{!! $error !!}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                     <div class="alert alert-danger alert-dismissable" role="alert">
+                                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                   <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                        <li>{!! $error !!}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
                     @endif
                     <div class="row">
                        <div class="col-lg-3 order-2 order-lg-1">

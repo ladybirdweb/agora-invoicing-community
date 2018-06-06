@@ -547,6 +547,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                         
                                         <input type="hidden" name="user_id" id="hidden_user_id"/>
                                         <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" >
+                                         <h6 id="enterotp"></h6>
                                     </div>
 
 
@@ -612,12 +613,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
               var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
               if (pattern.test($('#verify_email').val())){
                  $('#conemail').hide();
+                  $('#verify_email').css("border-color","");
                  return true;
                
               }
               else{
                  $('#conemail').show();
-                $('#conemail').html("Not a valid email");
+                $('#conemail').html("Please Enter a valid email");
                  $('#conemail').focus();
                 $('#verify_email').css("border-color","red");
                 $('#conemail').css({"color":"red","margin-top":"5px"});
@@ -648,6 +650,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             }
             else{
                 $('#conmobile').hide();
+
+                 $('#verify_number').css("border-color","");
                 return true;
                 
               }
@@ -681,7 +685,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else if((user_val.length < 3) || (user_val.length > 10))  {
         $('#usercheck').show();
-        $('#usercheck').html("**Username Length must be between 3 to 20 characters");
+        $('#usercheck').html("Username Length must be between 3 to 20 characters");
         $('#usercheck').focus();
           $('#username').css("border-color","red");
        $('#usercheck').css({"color":"red","margin-top":"5px"});
@@ -691,6 +695,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#usercheck').hide();
+          $('#username').css("border-color","");
          return true;
     }
    }
@@ -709,7 +714,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else if((passStore.length < 3) || (passStore.length > 20)){
         $('#passcheck').show();
-        $('#passcheck').html("**Password Length must be between 3 and 10");
+        $('#passcheck').html("Password Length must be between 3 and 10");
         $('#passcheck').focus();
 
         $('#pass').css("border-color","red");
@@ -719,6 +724,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#passcheck').hide();
+          $('#pass').css("border-color","");
          return true;
     }
     }
@@ -753,6 +759,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#first_namecheck').hide();
+          $('#first_name').css("border-color","");
          return true;
     }
    }
@@ -774,6 +781,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#last_namecheck').hide();
+         $('#last_name').css("border-color","");
          return true;
     }
    }
@@ -783,12 +791,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
               if (pattern.test($('#email').val())){
                  $('#emailcheck').hide();
+                 $('#email').css("border-color","");
                  return true;
                
               }
               else{
                  $('#emailcheck').show();
-                $('#emailcheck').html("Not a valid email");
+                $('#emailcheck').html("Please Enter a valid email");
                  $('#emailcheck').focus();
                   $('#email').css("border-color","red");
                  $('#emailcheck').css({"color":"red","margin-top":"5px"});
@@ -816,6 +825,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#companycheck').hide();
+          $('#company').css("border-color","");
          return true;
     }
    }
@@ -836,6 +846,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#bussinesscheck').hide();
+         $('#business').css("border-color","");
          return true;
     }
    }
@@ -856,6 +867,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#company_typecheck').hide();
+          $('#company_type').css("border-color","");
          return true;
     }
    }
@@ -876,6 +888,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#company_sizecheck').hide();
+         $('#company_size').css("border-color","");
          return true;
     }
    }
@@ -887,8 +900,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         $('#countrycheck').html("Please Select One Country ");
         $('#countrycheck').focus();
          $('#country').css("border-color","red");
-          $('#country').css("border-color","red");
-         $('#countrycheck').css({"color":"red","margin-top":"5px"});
+            $('#countrycheck').css({"color":"red","margin-top":"5px"});
         // userErr =false;
         $('html, body').animate({
         scrollTop: $("#countrycheck").offset().top - 200
@@ -896,6 +908,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#countrycheck').hide();
+         $('#country').css("border-color","");
          return true;
     }
    }
@@ -915,6 +928,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#mobile_codecheck').hide();
+         $('#mobilenum').css("border-color","");
          return true;
     }
    }
@@ -934,6 +948,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#addresscheck').hide();
+          $('#address').css("border-color","");
          return true;
     }
    }
@@ -953,6 +968,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#towncheck').hide();
+         $('#city').css("border-color","");
          return true;
     }
    }
@@ -973,6 +989,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#statecheck').hide();
+          $('#state-list').css("border-color","");
          return true;
     }
    }
@@ -993,6 +1010,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#zipcheck').hide();
+          $('#zip').css("border-color","");
          return true;
     }
    }
@@ -1014,6 +1032,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    
     else{
          $('#user_namecheck').hide();
+         $('#user_name').css("border-color","");
          return true;
     }
    }
@@ -1046,6 +1065,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
     else{
          $('#password1check').hide();
+          $('#password').css("border-color","");
          return true;
     }
     }
@@ -1069,6 +1089,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
          }
         else{
              $('#conpasscheck').hide();
+             $('#confirm_pass').css("border-color","");
                return true;
         }
   }
@@ -1301,7 +1322,36 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
           getLoginTab();
     });
 
+    //Enter OTP Validation
+    $('#oneTimePassword').keyup(function(){
+                 verify_otp_check();
+            });
+
+
+            function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                 $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+               
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+                
+              }
+         }
+
     function verifyBySendOtp() {
+       $('#enterotp').hide();
+         if(verify_otp_check()) {
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
             "mobile":   $('#verify_number').val(),
@@ -1342,6 +1392,11 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 }, 5000);
             }
         });
+      }
+      else
+      {
+        return false;
+      }
     }
 
     function resendOTP() {

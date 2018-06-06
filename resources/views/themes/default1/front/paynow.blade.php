@@ -149,7 +149,7 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
-                         <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
+                         <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                     
                     <div class="col-md-6">

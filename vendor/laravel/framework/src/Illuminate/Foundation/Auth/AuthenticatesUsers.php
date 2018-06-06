@@ -68,7 +68,7 @@ trait AuthenticatesUsers
      * @return \Illuminate\Http\Response
      */
     public function postLogin(Request $request)
-    {
+    {//here
         
          $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',

@@ -64,7 +64,9 @@ main
                     </div>
     <div class="col-md-12">
         <div class="pricing-table princig-table-flat">
+            <div class="row">
         {!! html_entity_decode($template) !!}
+    </div>
         </div>
     </div>
     <br/>    <br/>    <br/>    <br/>  <br/> <br/>

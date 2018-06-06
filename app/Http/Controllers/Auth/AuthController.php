@@ -420,10 +420,11 @@ class AuthController extends Controller
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
-         
+
         $number = $request->oldnumber;
         $newNumber = $request->newnumber;
-        User::where('mobile',$number)->update(['mobile'=>$newNumber]);
+        User::where('mobile', $number)->update(['mobile'=>$newNumber]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
@@ -559,14 +560,14 @@ class AuthController extends Controller
     }
 
     public function verifyEmail(Request $request)
-
     {
         $this->validate($request, [
             'email' => 'required|email',
         ]);
         $email = $request->oldmail;
         $newMail = $request->newmail;
-        User::where('mobile',$email)->update(['mobile'=>$newMail]);
+        User::where('mobile', $email)->update(['mobile'=>$newMail]);
+
         try {
             $email = $request->input('email');
             $userid = $request->input('id');

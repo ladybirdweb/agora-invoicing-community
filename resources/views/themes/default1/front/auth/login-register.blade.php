@@ -1061,14 +1061,6 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             }
 
 
-
-
-
-
-   
-
-
-
    //    $('#conpassword').keyup(function(){
    //     con_password_check();
    // });

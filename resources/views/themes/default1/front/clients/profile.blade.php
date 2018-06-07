@@ -178,7 +178,8 @@ active
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('old_password') ? 'has-error' : '' }}">
                             {!! Form::label('old_password',Lang::get('message.old_password')) !!}
-                            {!! Form::password('old_password',['class' => 'form-control input-lg']) !!}
+                            {!! Form::password('old_password',['class' => 'form-control input-lg','id'=>'old_password']) !!}
+                            <h6 id="oldpasswordcheck"></h6>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                         </div>
                     </div>
@@ -186,24 +187,27 @@ active
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
                             {!! Form::label('new_password',Lang::get('message.new_password')) !!}
-                            {!! Form::password('new_password',['class' => 'form-control input-lg']) !!}
+                            {!! Form::password('new_password',['class' => 'form-control input-lg','id'=>'new_password']) !!}
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                            <h6 id="newpasswordcheck"></h6>
                         </div>
                     </div>
                         <!-- cofirm password -->
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
                             {!! Form::label('confirm_password',Lang::get('message.confirm_password')) !!}
-                            {!! Form::password('confirm_password',['class' => 'form-control input-lg']) !!}
+                            {!! Form::password('confirm_password',['class' => 'form-control input-lg','id'=>'confirm_password']) !!}
+                            <h6 id ="confirmpasswordcheck"></h6>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                         </div>
                     </div>
                         <div class="row">
                             <div class="col-md-12">
-                                <input type="submit" value="Update" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                 <button type="button"  class="btn btn-primary mb-xl next-step float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" >Update</button>
+                              
                             </div>
                         </div>
-                        {!! Form::close() !!}
+                      
                     </div>
                 </div>
             </div>
@@ -214,6 +218,8 @@ active
 </div>    
 
 <script>
+
+                  
  function updateProfile() 
                         {  
                             
@@ -244,6 +250,7 @@ active
                                         
                                         if(response.type == 'success'){
                                              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                                              $('#error').hide();
                                             $('#alertMessage').html(result);
                                             // $('#alertMessage2').html(result);
                                             $("#update").html("Update");
@@ -271,6 +278,127 @@ active
                                     });
                                  
                                 }
+                
+
+                //Password Validation
+                   function oldpasswordcheck(){
+                    var oldpassword_val = $('#old_password').val();
+                    if(oldpassword_val.length == ''){
+                        $('#oldpasswordcheck').show();
+                        $('#oldpasswordcheck').html("This field is Required");
+                        $('#oldpasswordcheck').focus();
+                        $('#old_password').css("border-color","red");
+                        $('#oldpasswordcheck').css({"color":"red","margin-top":"5px"});
+                        // userErr =false;
+                       
+                       
+                     
+                    }
+                   
+                    else{
+                         $('#oldpasswordcheck').hide();
+                         $('#old_password').css("border-color","");
+                         return true;
+                    }
+                   }
+                    
+              function newpasswordcheck(){
+              var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+              if (pattern.test($('#new_password').val())){
+                 $('#newpasswordcheck').hide();
+                  $('#new_password').css("border-color","");
+                 return true;
+               
+              }
+              else{
+                 $('#newpasswordcheck').show();
+                $('#newpasswordcheck').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                 $('#newpasswordcheck').focus();
+                $('#new_password').css("border-color","red");
+                $('#newpasswordcheck').css({"color":"red","margin-top":"5px"});
+
+                   // mail_error = false;
+                return false;
+                
+              }
+
+            }
+
+                 function confirmpasswordcheck(){
+        var confirmPassStore= $('#confirm_password').val();
+         var passwordStore = $('#new_password').val();
+         if(confirmPassStore != passwordStore){
+            $('#confirmpasswordcheck').show();
+            $('#confirmpasswordcheck').html("Passwords Don't Match");
+            $('#confirmpasswordcheck').focus();
+             $('#confirm_password').css("border-color","red");
+            $('#confirmpasswordcheck').css("color","red");
+         
+         }
+        else{
+             $('#confirmpasswordcheck').hide();
+             $('#confirm_password').css("border-color","");
+               return true;
+        }
+  }
+
+
+
+               function updatePassword()
+             {
+                 $('#oldpasswordcheck').hide();
+                   $('#newpasswordcheck').hide();
+                    $('#confirmpasswordcheck').hide();
+                    if(oldpasswordcheck() && newpasswordcheck() && confirmpasswordcheck() ){
+                $("#password").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Updating...");
+                 var data = {
+                                        "old_password":   $('#old_password').val(),
+                                        "new_password" :    $('#new_password').val(),
+                                        "confirm_password":  $('#confirm_password').val(),
+                                       
+                                                             
+                            };
+                                $.ajax({
+                                        url: '{{url('my-password')}}',
+                                        type: 'PATCH',
+                                        data: data,
+                                        success: function (response) {
+                                            console.log(response)
+                                        
+                                        if(response.type == 'success'){
+                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                                              $('#error').hide();
+                                            $('#alertMessage').html(result);
+                                            // $('#alertMessage2').html(result);
+                                            $("#password").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 1000);
+                                          
+                                              // response.success("Success");
+                                           }  
+                                        },
+                                        error: function (data) {
+                                          console.log(data)
+                                             var html = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
+                                            $("#password").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 500);
+                                              for (var key in data.responseJSON.errors)
+                                            {
+                                                html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                                            }
+                                            html += '</ul></div>';
+                                           $('#alertMessage').hide(); 
+                                            
+                                            $('#error').show();
+                                             document.getElementById('error').innerHTML = html;
+                                           
+                                        }
+                                    });
+                            }
+                            else{
+                                return false;
+                            }
+             } 
+
                                 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>

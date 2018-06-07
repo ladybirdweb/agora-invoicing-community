@@ -391,16 +391,18 @@ class ClientController extends Controller
             if (\Hash::check($oldpassword, $currentpassword)) {
                 $user->password = Hash::make($newpassword);
                 $user->save();
-
-                return redirect()->back()->with('success1', \Lang::get('message.updated-successfully'));
+                $response = ['type'=>'success','message'=>'Password Updated Successfully'];
+                return $response;
+               
             } else {
-                return redirect()->back()->with('fails1', \Lang::get('message.not-updated'));
+               $response = ['type'=>'error','message'=>'Password Not Updated'];
             }
         } catch (\Exception $e) {
+              $result = [$e->getMessage()];
+              return response()->json(compact('result'), 500);
             Bugsnag::notifyException($e);
 
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
+             }
     }
 
     public function getInvoice($id)

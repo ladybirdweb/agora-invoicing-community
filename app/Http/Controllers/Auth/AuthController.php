@@ -470,7 +470,6 @@ class AuthController extends Controller
 
             return response()->json($response);
         } catch (\Exception $ex) {
-            dd($ex);
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -580,7 +579,7 @@ class AuthController extends Controller
 
             return response()->json($response);
 
-            return redirect('/login');
+            // return redirect('/login');
         } catch (\Exception $ex) {
             //dd($ex);
             $result = [$ex->getMessage()];

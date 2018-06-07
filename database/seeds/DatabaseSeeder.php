@@ -214,10 +214,10 @@ class TemplateTypeTableSeeder extends Seeder
         \DB::table('template_types')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TemplateType::create(['id' => 1, 'name' => 'welcome_mail']);
-        TemplateType::create(['id' => 2, 'name' => 'forgot_password']);
-        TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end']);
-        TemplateType::create(['id' => 5, 'name' => 'subscription_over']);
-        TemplateType::create(['id' => 6, 'name' => 'invoice']);
+        TemplateType::create(['id' => 2, 'name' => 'forgot_password_mail']);
+        TemplateType::create(['id' => 4, 'name' => 'subscription_going_to_end_mail']);
+        TemplateType::create(['id' => 5, 'name' => 'subscription_over_mail']);
+        TemplateType::create(['id' => 6, 'name' => 'invoice_mail']);
         TemplateType::create(['id' => 7, 'name' => 'order_mail']);
         TemplateType::create(['id' => 8, 'name' => 'download_mail']);
         TemplateType::create(['id' => 9, 'name' => 'manager_email']);

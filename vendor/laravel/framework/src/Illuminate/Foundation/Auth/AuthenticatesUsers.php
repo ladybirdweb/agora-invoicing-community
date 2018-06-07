@@ -102,13 +102,12 @@ trait AuthenticatesUsers
 
              if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
                   return redirect('verify')->with('user', $user);
-      
+             
          }
                 
             
             
            }else{
-             
                  return redirect()->intended($this->redirectPath());
             
         }

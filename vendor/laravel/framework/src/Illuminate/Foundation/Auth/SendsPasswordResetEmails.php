@@ -87,7 +87,7 @@ trait SendsPasswordResetEmails {
      * @return \Illuminate\Http\Response
      */
     public function sendResetLinkEmail(Request $request) {
-
+        try{
         $this->validate($request, ['email' => 'required|email|exists:users,email']);
         $email = $request->email;
         $token = str_random(40);
@@ -112,10 +112,10 @@ trait SendsPasswordResetEmails {
         //template
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->forgot_password;
-
-        $template = $templates->where('id', $temp_id)->first();
+            $template = $templates->where('id', $temp_id)->first();
 
         $from = $setting->email;
+        
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
@@ -130,8 +130,17 @@ trait SendsPasswordResetEmails {
         }
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-        return redirect()->back()->with('success', "Reset instructions have been mailed to $to
-        Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.");
+         $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to ' . $to .'
+        .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
+
+            return response()->json($response);
+      }
+      catch (\Exception $ex) {
+            $result = [$ex->getMessage()];
+            $errors = ['You are not registered with this Email. Please enter correct Email Address !!'];
+            return response()->json(compact('result','errors'), 500);
+        }
+
     }
 
     /**

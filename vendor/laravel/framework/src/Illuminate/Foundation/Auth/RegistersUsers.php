@@ -37,8 +37,7 @@ trait RegistersUsers
      */
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
-           
-        try {
+          try {
             $pass = $request->input('password');
             $country = $request->input('country');
             $currency = 'INR';

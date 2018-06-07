@@ -193,8 +193,10 @@ main
                                <label for="mobile" class="required">Enter OTP</label>
                                <div class="row">
                                     <div class="col-md-6">
-                                        <input type="text" class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword"  ng-model="otp">
+                                        <input type="text" class="form-control input-lg"  id="otp1" name="oneTimePassword"  ng-model="otp">
+                                        <h6 id ="confirmotp"></h6>
                                     </div>
+                                    
                                     <div class="col-md-3">
                                         <button class="btn btn-primary float-right mb-5" id="verifyOtp"  onclick="verifyBySendOtp()" >Verify OTP</button>
                                     </div>
@@ -232,13 +234,14 @@ main
 
                     
                         <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
+
                         <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
                         <script src="{{asset('dist/js/angular.min.js')}}"></script>
 
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
-
+          
         <script>
-          //validation when both email and moble are not verified
+             //validation when both email and moble are not verified
           $('#u_email').keyup(function(){
                  verify_user_check();
             });
@@ -375,6 +378,7 @@ main
 
 
     <script type="text/javascript">
+
     var telInput = $(".phonecode");
     let currentCountry="";
     telInput.intlTelInput({
@@ -411,12 +415,40 @@ main
 
 </script>
 <script> 
-    function verifyBySendOtp() {
+      $('#otp1').keyup(function(){
+                 verify_otp1_check();
+            });
+
+
+            function verify_otp1_check(){
+            var userOtp = $('#otp1').val();
+            if (userOtp.length < 4){
+                $('#confirmotp').show();
+                $('#confirmotp').html("Please Enter A Valid OTP");
+                $('#confirmotp').focus();
+                 $('#otp1').css("border-color","red");
+                $('#confirmotp').css({"color":"red","margin-top":"5px"});
+
+               
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#confirmotp').hide();
+                $('#otp1').css("border-color","");
+                return true;
+                
+              }
+         }
+
+                                  function verifyBySendOtp() {
+                                     $('#confirmotp').hide();
+                                      if(verify_otp1_check()) {
                                     $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                     var data = {
                                         "mobile":   $('#u_mobile').val(),
                                         "code"  :   $('#u_code').val(),
-                                        "otp"   :   $('#oneTimePassword').val(),
+                                        "otp"   :   $('#otp1').val(),
                                         'id'    :   $('#u_id').val()
                                     };
                                     $.ajax({
@@ -454,6 +486,10 @@ main
                                             }, 5000);
                                         }
                                     });
+                                  }
+                                  else{
+                                    return false;
+                                  }
                                     }
 
 

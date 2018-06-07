@@ -76,7 +76,7 @@ class ProfileRequest extends Request
                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
                     'mobile_code'           => 'required|numeric',
                     'user_name'             => 'required|unique:users|min:3|max:20',
-                    'terms'                 => 'required',
+                    'terms'                 => 'accepted',
                     'zip'                   => 'required',
                     'password'              => 'required|min:6',
                     'password_confirmation' => 'required|same:password',

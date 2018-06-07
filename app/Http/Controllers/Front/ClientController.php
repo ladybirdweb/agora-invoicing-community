@@ -369,16 +369,15 @@ class ClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->fill($request->input())->save();
-               $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
-               return $response;
+            $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
+
+            return $response;
             // return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
-             $result = [$ex->getMessage()];
+            $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
             Bugsnag::notifyException($e);
-
-           
         }
     }
 

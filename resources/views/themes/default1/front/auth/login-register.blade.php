@@ -52,25 +52,14 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         padding-left:5px;
     }
 
-    
-    
-
-
-
-
-
+   
 }
 
 .wizard-inner
 {
     display:none;
 }
-
-
-
-
-
-    
+   
 }
 
 .nav-tabs{
@@ -215,7 +204,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     </div>
                                                     </div>
                                                      <div class="form-group col-lg-6">
-                                                        <input type="submit" id="submitbtn" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                       <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                      <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                                                  Send Email
+                                                      </button> -->
+                                                       
                                                     </div>
                                                 </div>
                                                 {!! Form::close() !!}
@@ -392,7 +385,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                               <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
-                                                            <h6 id="passwordcheck"></h6>
+                                                            <h6 id="password1check"></h6>
                                                         </div>
                                                          
 
@@ -407,10 +400,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                    
                                                 </div>
 
+                                              <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
+ -->
                                                <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <label>
-                                                            <input type="checkbox" name="terms" id="terms" > {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+
+                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                     </div>
                                                     <div class="form-row">
@@ -584,6 +580,10 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 </div>
 @stop 
 @section('script')
+
+
+
+
 <script type="text/javascript">
     
 
@@ -1038,37 +1038,36 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
    }
 
 
+   function password1check(){
+              var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+              if (pattern.test($('#password').val())){
+                 $('#password1check').hide();
+                  $('#password').css("border-color","");
+                 return true;
+               
+              }
+              else{
+                 $('#password1check').show();
+                $('#password1check').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                 $('#password1check').focus();
+                $('#password').css("border-color","red");
+                $('#password1check').css({"color":"red","margin-top":"5px"});
+
+                   // mail_error = false;
+                return false;
+                
+              }
+
+            }
+
+
+
+
+
+
    
 
-    function password1check(){
-        var passwordStore= $('#password').val()
-    if(passwordStore.length == ''){
-        $('#password1check').show();
-        $('#password1check').html("Please Enter Password");
-        $('#password1check').focus();
-         $('#password').css("border-color","red");
-        $('#password1check').css({"color":"red","margin-top":"5px"});
-        $('html, body').animate({
-        scrollTop: $("#password1check").offset().top -200
-    }, 1000)
-      
-    }
-    else if((passwordStore.length < 3) || (passwordStore.length > 20)){
-        $('#password1check').show();
-        $('#password1check').html("Password Length must be between 3 and 20 characters");
-        $('#password1check').focus();
-         $('#password').css("border-color","red");
-        $('#password1check').css({"color":"red","margin-top":"5px"});
-        $('html, body').animate({
-        scrollTop: $("#password1check").offset().top -200
-    }, 1000)
-    }
-    else{
-         $('#password1check').hide();
-          $('#password').css("border-color","");
-         return true;
-    }
-    }
+
 
    //    $('#conpassword').keyup(function(){
    //     con_password_check();
@@ -1093,9 +1092,18 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                return true;
         }
   }
- 
+
+ $(document).on('change','#term',function(){
+    if($(this).val()=="false"){
+      $(this).val("true");
+    }
+    else{
+      $(this).val("false");
+    }
+    console.log($(this).val());
+ })
 function registerUser() {
-     // $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     
 
    $('#first_namecheck').hide();
    $('#last_namecheck').hide();
@@ -1135,6 +1143,8 @@ function registerUser() {
      // con_password_check();
 if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck())
      {
+      console.log($('#term').val())
+     $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
           url: '{{url("auth/register")}}',
           type: 'post',
@@ -1156,7 +1166,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "user_name": $('#user_name').val(),
                 "password": $('#password').val(),
                 "password_confirmation": $('#confirm_pass').val(),
-                "terms": $('#terms').val(),
+                "terms": $('#term').val(),
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
@@ -1168,7 +1178,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
-                window.scrollTo(0, 10);
+                window.scrollTo(0,0);
                 verifyForm.elements['user_id'].value = response.user_id;
                 var $emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
                 sessionStorage.setItem('oldemail',$emailverfy);

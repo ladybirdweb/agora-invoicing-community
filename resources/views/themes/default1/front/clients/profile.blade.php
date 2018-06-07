@@ -24,6 +24,8 @@ active
             </p>
         </div>-->
 </div>
+ <div id="alertMessage"></div>
+ <div id="error"></div>
 <div class="col">
     <div class="featured-boxes">
         <div class="row">
@@ -32,12 +34,12 @@ active
                     <div class="box-content">
 
                         <h4 class="heading-primary text-uppercase mb-md">Edit Profile</h4>
-                        {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
+                      {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
                         <div class="form-row">
                         <div class="form-group col{{ $errors->has('first_name') ? 'has-error' : '' }}">
                             <!-- first name -->
                             {!! Form::label('first_name',Lang::get('message.first_name')) !!}
-                            {!! Form::text('first_name',null,['class' => 'form-control input-lg ']) !!}
+                            {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
 
                         </div>
                     </div>
@@ -45,7 +47,7 @@ active
                         <div class="form-group col{{ $errors->has('last_name') ? 'has-error' : '' }}">
                             <!-- last name -->
                             {!! Form::label('last_name',Lang::get('message.last_name')) !!}
-                            {!! Form::text('last_name',null,['class' => 'form-control input-lg ']) !!}
+                            {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
 
                         </div>
                     </div>
@@ -54,7 +56,7 @@ active
                         <div class="form-group col">
                             <!-- email -->
                             {!! Form::label('email',Lang::get('message.email')) !!}
-                             {!! Form::text('email',null,['class' => 'form-control input-lg ']) !!}
+                             {!! Form::text('email',null,['class' => 'form-control input-lg ','id'=>'Email']) !!}
                          
                         </div>
                     </div>
@@ -62,7 +64,7 @@ active
                         <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
                             <!-- company -->
                             {!! Form::label('company',Lang::get('message.company')) !!}
-                            {!! Form::text('company',null,['class' => 'form-control input-lg']) !!}
+                            {!! Form::text('company',null,['class' => 'form-control input-lg','id'=>'Company']) !!}
 
                         </div>
                     </div> 
@@ -79,7 +81,7 @@ active
                             
                             <!-- mobile -->
                             {!! Form::label('mobile',Lang::get('message.mobile')) !!}
-                            {!! Form::text('mobile',null,['class' => 'form-control input-lg']) !!}
+                            {!! Form::text('mobile',null,['class' => 'form-control input-lg','id'=>'mobile']) !!}
 
                         </div>
                     </div>
@@ -88,7 +90,7 @@ active
                         <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                             <!-- phone number -->
                             {!! Form::label('address',Lang::get('message.address')) !!}
-                            {!! Form::textarea('address',null,['class' => 'form-control input-lg']) !!}
+                            {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
 
                         </div>
                          </div>
@@ -98,13 +100,13 @@ active
                             <div class="form-group col-md-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                 <!-- mobile -->
                                 {!! Form::label('town',Lang::get('message.town')) !!}
-                                {!! Form::text('town',null,['class' => 'form-control input-lg']) !!}
+                                {!! Form::text('town',null,['class' => 'form-control input-lg','id'=>'Town']) !!}
 
                             </div>
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
                                 {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
-                                {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control input-lg']) !!}
+                                {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
 
                             </div>
                         </div>
@@ -114,13 +116,12 @@ active
                                 <!-- name -->
                                 {!! Form::label('country',Lang::get('message.country')) !!}
                                  <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','onChange'=>'getState(this.value);']) !!}
+                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'Country','onChange'=>'getState(this.value);']) !!}
 
                             </div>
                             <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                                <!-- name -->
                                 {!! Form::label('state',Lang::get('message.state')) !!}
-                                <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
+                              
                                 <select name="state" id="stateList" class="form-control input-lg ">
                                     @if(count($state)>0)
                                     <option value="{{$state['id']}}">{{$state['name']}}</option>
@@ -140,7 +141,7 @@ active
                         <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
                             <!-- mobile -->
                             {!! Form::label('zip',Lang::get('message.zip')) !!}
-                            {!! Form::text('zip',null,['class' => 'form-control input-lg ']) !!}
+                            {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
 
                         </div>
                     </div>
@@ -149,17 +150,20 @@ active
                         <div class="form-group {{ $errors->has('profile_pic') ? 'has-error' : '' }}">
                             <!-- profile pic -->
                             {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
-                            {!! Form::file('profile_pic') !!}
+                            {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
 
                         </div>
                     </div> 
 
                         <div class="form-row">
                            <div class="form-group col">
-                                <input type="submit" value="Update" class="btn btn-primary pull-right " data-loading-text="Loading...">
+                             <button type="button"  class="btn btn-primary mb-xl next-step float-right" data-loading-text="Loading..." name="update" id="update" onclick="updateProfile()" >Submit</button>
+                           
+                               
                             </div>
                         </div>
-                        {!! Form::close() !!}
+                         {!! Form::close() !!}
+                      
                     </div>
                 </div>
             </div>
@@ -207,6 +211,66 @@ active
     </div>
 
 </div>    
+
+<script>
+ function updateProfile() 
+                        {  
+                            
+                          $("#update").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Updating...");
+                                    var data = {
+                                        "first_name":   $('#firstName').val(),
+                                        "last_name" :    $('#lastName').val(),
+                                        "email":  $('#Email').val(),
+                                        "company":  $('#Company').val(),
+                                        "mobile_code": $('#mobile_code').val(),
+                                        "mobile": $('#mobile').val(),
+                                        "address" : $('#Address').val(),
+                                        "town" : $('#Town').val(),
+                                        "timezone_id" : $('#timezone').val(),
+                                        "country":$('#Country').val(),
+                                        "state" : $('#stateList').val(),
+                                        "zip"   : $('#Zip').val(),
+                                        "profile_pic": $('#profilePic').val(),
+
+                                                             
+                                    };
+                                    $.ajax({
+                                        url: '{{url('my-profile')}}',
+                                        type: 'PATCH',
+                                        data: data,
+                                        success: function (response) {
+                                            console.log(response)
+                                        
+                                        if(response.type == 'success'){
+                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                                            $('#alertMessage').html(result);
+                                            // $('#alertMessage2').html(result);
+                                            $("#update").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 1000);
+                                          
+                                              // response.success("Success");
+                                           }  
+                                        },
+                                        error: function (data) {
+                                          console.log(data)
+                                             var html = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
+                                            $("#update").html("Update");
+                                              $('html, body').animate({scrollTop:0}, 500);
+                                              for (var key in data.responseJSON.errors)
+                                            {
+                                                html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                                            }
+                                            html += '</ul></div>';
+                                           $('#alertMessage').hide(); 
+                                            
+                                            $('#error').show();
+                                             document.getElementById('error').innerHTML = html;
+                                           
+                                        }
+                                    });
+                                 
+                                }
+                                </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
@@ -245,8 +309,10 @@ active
         $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
     });
 });
-</script>
-<script>
+
+
+  
+
     function getState(val) {
 
 
@@ -259,7 +325,10 @@ active
             }
         });
     }
+
+
+    
 </script>
-
-
 @stop
+
+

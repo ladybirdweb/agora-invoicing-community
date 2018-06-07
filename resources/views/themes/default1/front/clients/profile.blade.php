@@ -73,6 +73,7 @@ active
                         <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
+                        
                         {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
                     </div>
                 </div> 

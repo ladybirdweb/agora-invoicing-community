@@ -89,169 +89,136 @@ class RazorpayController extends Controller
                 $message = '
 
 
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-  <link rel="stylesheet" href="{{asset("vendor/bootstrap/css/bootstrap.min.css")}}">
-   <link href="jumbotron-narrow.css" rel="stylesheet">
+<div class="container">
+                            
+            
+            <div class="row main-content-wrap">
 
-   <style>
-    <link href="jumbotron-narrow.css" rel="stylesheet">
+            <!-- main content -->
+            <div class="main-content col-lg-9">
 
-.panel-title {display: inline;font-weight: bold;}
-.checkbox.pull-right { margin: 0; }
-.pl-ziro { padding-left: 0px; }
+                            
+    <div id="content" role="main">
+                
+            <article class="post-23 page type-page status-publish hentry">
+                
+                <span class="entry-title" style="display: none;">Order received</span><span class="vcard" style="display: none;"><span class="fn"><a href="http://alok-ladybirdweb.tk/sm/author/admin/" title="Posts by admin" rel="author">admin</a></span></span><span class="updated" style="display:none">2018-06-08T11:13:38+00:00</span>
+                <div class="page-content">
+                    <div class="woocommerce">
+<div class="woocommerce-order">
 
-.panel {
-    border: 0px solid transparent;
-    background: #f1f1f1;
-}
-
-
-
-.container {
-
-    border-radius:10px;
-    margin-top:20px;
-    margin-bottom:20px;
-}
-.container-narrow > hr {
-  margin: 30px 0;
-      background:#ffffff;
-}
-
-.container-narrow > hr {
-  margin: 30px 0;
-      background:#ffffff;
-}
-
-.panel-heading {
-    border-bottom: 0px solid #555555 !important;
-}
-
-.panel-default>.panel-heading {
-    color: #ffffff;
-    background-color: #428bca;
-    padding-bottom: 1px !important;
-}
-.header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
-}
-
-.table {
-    margin-bottom: 0px;
-}
-
-.invoice-title h2, .invoice-title h3 {
-    display: inline-block;
-}
-
-.table > tbody > tr > .no-line {
-    border-top: none;
-}
-
-.table > thead > tr > .no-line {
-    border-bottom: none;
-}
-
-.table > tbody > tr > .thick-line {
-    border-top: 2px solid;
-}
-   </style>
-
-
-
-  </head>
-
-   <body class="main">
-
-    <div class="container">
-
-      <div class="row marketing">
-      
-        <div class="col-lg-12">
+    
         
-          <h4><b>Helpdesk Advance Payment</b></h4>
-<hr />
+            <p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">Thank you. Your order has been received.</p>
 
-<div>
-<center>  
-<h4>Success - Your Payment is confirmed!</h4>
-<h5>Order number: #243735374</h5>
-<hr />  
+            <ul class="woocommerce-order-overview woocommerce-thankyou-order-details order_details">
+
+                <li class="woocommerce-order-overview__order order">
+                    Order number:                    <strong>2288</strong>
+                </li>
+
+                <li class="woocommerce-order-overview__date date">
+                    Date:                    <strong>June 8, 2018</strong>
+                </li>
+
+                                    <li class="woocommerce-order-overview__email email">
+                        Email:                        <strong>admin@ladybirdweb.com</strong>
+                    </li>
+                
+                <li class="woocommerce-order-overview__total total">
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></strong>
+                </li>
+
+                                    <li class="woocommerce-order-overview__payment-method method">
+                        Payment method:                        <strong>Cash on delivery</strong>
+                    </li>
+                
+            </ul>
+
+        
+        <p>Pay with cash upon delivery.</p>
+        
+
+<section class="woocommerce-order-details">
+    
+    <h2 class="woocommerce-order-details__title">Order Details</h2>
+    
+    <table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+    
+        <thead>
+            <tr>
+                <th class="woocommerce-table__product-name product-name">Product</th>
+                <th class="woocommerce-table__product-table product-total">Total</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr class="woocommerce-table__line-item order_item">
+
+    <td class="woocommerce-table__product-name product-name">
+        <a href="http://alok-ladybirdweb.tk/sm/product/test-asu/">test asu</a> <strong class="product-quantity">× 1</strong>    </td>
+
+    <td class="woocommerce-table__product-total product-total">
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span>    </td>
+
+</tr>
+
+        </tbody>
+        <tfoot>
+                                <tr>
+                        <th scope="row">Subtotal:</th>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Payment method:</th>
+                        <td>Cash on delivery</td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Total:</th>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></td>
+                    </tr>
+                            </tfoot>
+    </table>
+    <br>
+    
+            <section class="woocommerce-customer-details">
+
+    
+    <h2 class="woocommerce-column__title">Billing address</h2>
+
+    <address>
+        Alok jena<br>68 , 10th main Indiranagar<br>Bangalore - 560038<br>Karnataka
+                    <p class="woocommerce-customer-details--phone">7795792760</p>
+        
+                    <p class="woocommerce-customer-details--email">admin@ladybirdweb.com</p>
+            </address>
+
+    
+</section>
+    
+
+</section>
+
+    
 </div>
-</center>
-        </div>
-
-          <div class="col-lg-3">
-            <address>
-                    <strong>User Details:</strong><br>
-                        Aniel Simmons<br>
-                        name@site.com<br>
-                        0737632706<br>
-                        Indiranagar<br>
-                        560038, Bangalore, India
-                    </address>
-        </div>
-        <div class="col-lg-9">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <center><p style="color:#6FA;padding-left:10px;padding:right:10px;"><span class="glyphicon glyphicon glyphicon-question-sign" aria-hidden="true"></span> 
-                    We have mailed you Payment Confirmation Mail and a link to download the product.</p> </center>
+</div>
                 </div>
-                <div class="panel-body">
-                    <div class="table-responsive">
-                        <table class="table table-condensed">
-                            <thead>
-                                <tr>
-                                    <td><strong>Product Name</strong></td>
-                                    <td class="text-right"><strong>Invoice Number</strong></td>
-                                    <td class="text-right"><strong>Subscription Ends</strong></td>
-                                    <td class="text-right"><strong>Price</strong></td>
-                                    
-                                </tr>
-                            </thead>
-                            <tbody>
-                                 <tr>
-                                    <td>Helpdesk Advance</td>
-                                    <td class="text-right">#12323443</td>
-                                    <td class="text-right">4-4-2019</td>
-                                    <td class="text-right">189234</td>
-                                </tr>
-                                <tr>
-                                    <td class="thick-line"></td>
-                                    <td class="thick-line"></td>
-                                    <td class="thick-line text-right"><strong>GST - 12%</strong></td>
-                                    <td class="thick-line text-right">incl.</td>
-                                </tr>
-                               
-                                <tr>
-                                    <td class="no-line"></td>
-                                    <td class="no-line"></td>
-                                    <td class="no-line text-right"><strong>Total</strong></td>
-                                    <td class="no-line text-right"> USD 189 </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-            </div>
-        </div>
-         </div>
-      
-   
+            </article>
 
+            <div class="">
+            
+                        </div>
 
-      </div>
+        
+    </div>
 
-    </div> <!-- /container -->
+        
 
+</div><!-- end main content -->
 
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-   
-  </body>
-</html>';
+    
+    </div>
+    </div>';
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {

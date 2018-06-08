@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Model\Order;
+use DateTime;
+use DateTimeZone;
 
 use App\BaseModel;
 
@@ -47,10 +49,20 @@ class Invoice extends BaseModel
 
     public function getCreatedAtAttribute($value)
     {
-        $tz = \Auth::user()->timezone()->first()->name;
-        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
+        // $tz = \Auth::user()->timezone()->first()->name;
+        // $date = \Carbon\Carbon::createFromFormat('D ,M j,Y, g:i a', $value, 'UTC');
 
-        return $date->setTimezone($tz);
+      $date1 = new DateTime($value);
+                                                    $tz = \Auth::user()->timezone()->first()->name;
+                                                    
+                                                     $date1->setTimezone(new DateTimeZone($tz));
+                                                      
+                                                    $date = $date1->format('D ,M j,Y, g:i a ');
+
+        return $date;
+
+
+      
     }
 
     public function delete()

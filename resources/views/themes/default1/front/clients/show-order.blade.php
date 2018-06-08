@@ -5,22 +5,32 @@ Agora | Orders
 @section('nav-orders')
 active
 @stop
+@section('page-heading')
+ <h1>My Account </h1>
+@stop
+@section('breadcrumb')
+<li><a href="{{url('home')}}">Home</a></li>
+<li class="active">My Account</li>
+<li class="active">Orders</li>
+@stop
 
 @section('content')
 
 
 
 <style>
-        .table{width:800px;table-layout:fixed}
+        .table{table-layout:fixed}
         .table td, .table th {
     padding: 0.5rem;
     vertical-align: top;
     border-top: 1px solid #dee2e6;
     </style>
 <div class="col-md-12">
-
+    
     <div class="featured-boxes">
+
         <div class="row">
+            <h2 class="mb-none"> My Orders</h2>
 
             <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
@@ -28,7 +38,7 @@ active
                         <!-- Content Header (Page header) -->
                         <section class="content-header">
 
-                            <h2>My Order</h2>
+                            <h2>Overview</h2>
 
                         </section>
                         <div class="row">
@@ -76,9 +86,14 @@ active
                                                 if (!$subscription || $subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
                                                     $sub = "--";
                                                 } else {
-                                                    $sub1 = $subscription->ends_at;
-                                                     $date = date_create($sub1);
-                                                    $sub = date_format($date,'l, F j, Y H:m A');
+                                                    $date = new DateTime($subscription->ends_at);
+                                                    $tz = \Auth::user()->timezone()->first()->name;
+                                                     $date->setTimezone(new DateTimeZone($tz));
+                                                      
+                                                    $sub = $date->format('D ,M j,Y, g:i a ');
+                                                     // $sub = $sub2->setTimezone($tz);
+
+
                                                 }
                                                 ?>
                                                 <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
@@ -104,7 +119,7 @@ active
     <div class="featured-boxes">
         <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->
@@ -187,7 +202,7 @@ active
     <div class="featured-boxes">
         <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->

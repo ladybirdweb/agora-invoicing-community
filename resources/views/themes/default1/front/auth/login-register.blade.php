@@ -1373,6 +1373,8 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                  $('#successMessage2').hide();
                 $('#success').html(result);
                 $("#verifyOtp").html("Verify OTP");
+                  $('.nav-tabs li a[href="#step1"]').tab('show');
+                  $('.wizard-inner').css('display','none');
                 setTimeout(()=>{
                         getLoginTab();
                 },0)

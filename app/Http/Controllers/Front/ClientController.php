@@ -18,8 +18,6 @@ use Auth;
 use Bugsnag;
 use Exception;
 use Hash;
-use DateTime;
-use DateTimeZone;
 
 class ClientController extends Controller
 {
@@ -487,7 +485,8 @@ class ClientController extends Controller
                             })
                             ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
-                                 return date_format($date, 'D ,M j,Y, g:i a');
+
+                                return date_format($date, 'D ,M j,Y, g:i a');
                             })
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;

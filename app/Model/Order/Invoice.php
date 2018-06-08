@@ -1,10 +1,10 @@
 <?php
 
 namespace App\Model\Order;
-use DateTime;
-use DateTimeZone;
 
 use App\BaseModel;
+use DateTime;
+use DateTimeZone;
 
 class Invoice extends BaseModel
 {
@@ -52,17 +52,14 @@ class Invoice extends BaseModel
         // $tz = \Auth::user()->timezone()->first()->name;
         // $date = \Carbon\Carbon::createFromFormat('D ,M j,Y, g:i a', $value, 'UTC');
 
-      $date1 = new DateTime($value);
-                                                    $tz = \Auth::user()->timezone()->first()->name;
-                                                    
-                                                     $date1->setTimezone(new DateTimeZone($tz));
-                                                      
-                                                    $date = $date1->format('D ,M j,Y, g:i a ');
+        $date1 = new DateTime($value);
+        $tz = \Auth::user()->timezone()->first()->name;
+
+        $date1->setTimezone(new DateTimeZone($tz));
+
+        $date = $date1->format('D ,M j,Y, g:i a ');
 
         return $date;
-
-
-      
     }
 
     public function delete()

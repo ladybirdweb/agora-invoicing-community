@@ -46,7 +46,9 @@
 
 
                             <table class="table table-hover">
-                                <tbody><tr><td><b>Serial Key:</b></td><td>{{$order->serial_key}}</td></tr>
+   
+                              
+                                <tbody><tr><td><b>Serial Key:</b></td><td>{{($order->serial_key)}}</td></tr>
                                     <tr><td><b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
                                     <?php
                                     $sub = "--";

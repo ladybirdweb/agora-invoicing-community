@@ -1,0 +1,293 @@
+/* Custom Map */
+section.section-custom-map {
+	background: transparent url(../img/map.png) center 0 no-repeat;
+	padding: 129px 0 0;
+	margin: $spacement-lg 0 0;
+	border: 0;
+	section.section {
+		border-top-color: rgba(#F1F1F1, 0.8);
+		background: rgba(#F4F4F4, 0.8);
+	}
+}
+
+section.section-custom-map-2 {
+	background: transparent url(../img/map-2.png) center 0 no-repeat;
+	padding: 129px 0 0;
+	margin: 50px 0 0;
+	border: 0;
+	section.section {
+		border-top-color: rgba(#F1F1F1, 0.8);
+		background: rgba(#F4F4F4, 0.8);
+	}
+}
+
+
+/* Home Intro */
+.home-intro {
+	background-color: #171717;
+	margin-bottom: 60px;
+	overflow: hidden;
+	padding: 2.2rem 0;
+	position: relative;
+	text-align: $left;
+	p {
+		color: #FFF;
+		display: inline-block;
+		font-size: 1.4em;
+		font-weight: 300;
+		margin-bottom: 0;
+		span {
+			color: #999;
+			display: block;
+			font-size: 0.8em;
+			padding-top: 5px;
+		}
+		em {
+			font-family: $font-secondary;
+			font-size: 1.6em;
+		}
+	}
+	.get-started {
+		position: relative;
+		.btn {
+			position: relative;
+			z-index: 1;
+			i {
+				font-size: 1.1em;
+				font-weight: normal;
+				margin-#{$left}: 5px;
+			}
+		}
+		a {
+			color: #FFF;
+		}
+		a:not(.btn) {
+			color: $color-font-default;
+		}
+	}
+	.learn-more {
+		margin-#{$left}: 15px;
+	}
+	&.light {
+		background-color: #E2E2E2;
+		&.secondary {
+			background-color: #E0E1E4;
+		}
+		p {
+			color: $color-font-default;
+		}
+	}
+}
+
+/* Home Intro Compact */
+.home-intro-compact {
+	border-radius: corner-values(0 0 10px 10px);
+	margin-top: -10px;
+	p {
+		padding-#{$left}: 20px;
+	}
+	.get-started {
+		padding-#{$right}: 20px;
+	}
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+	/* Home Intro */
+	.home-intro {
+		p {
+			margin-bottom: 2rem;
+		}
+	}
+
+	.home-intro-compact {
+		.get-started {
+			padding-#{$left}: 20px;
+		}
+	}
+}
+
+@media (max-width: 767px) {
+
+	/* Home Intro */
+	.home-intro-compact {
+		margin-#{$left}: 0;
+		margin-#{$right}: 0;
+		padding-#{$left}: 0;
+		padding-#{$right}: 0;
+	}
+
+}
+/* Home Concept SVG Animations */
+@keyframes animatedLineBg {
+	from {
+		stroke-dasharray: 1000;
+	}
+	to {
+		stroke-dasharray: 1360;
+	}
+}
+
+@keyframes animatedLineSmallCircle {
+	from {
+		stroke-dasharray: 1000;
+	}
+	to {
+		stroke-dasharray: 1120;
+	}
+}
+
+@keyframes animatedLineBigCircle {
+	from {
+		stroke-dasharray: 1000;
+	}
+	to {
+		stroke-dasharray: 1266;
+	}
+}
+
+@keyframes animatedInitialPin {
+	0% {
+		transform: translate(2px, 69px) scale(0.23);
+	}
+	33% {
+		transform: translate(2px, 79px) scale(0.23);
+	}
+	66% {
+		transform: translate(2px, 74px) scale(0.23);
+	}
+	100% {
+		transform: translate(2px, 79px) scale(0.23);
+	}
+}
+
+@keyframes animatedFinalPin {
+	0% {
+		transform: translate(325px, -19px) scale(0.23) rotate(36deg);
+	}
+	33% {
+		transform: translate(325px, -13px) scale(0.23) rotate(36deg);
+	}
+	66% {
+		transform: translate(325px, -16px) scale(0.23) rotate(36deg);
+	}
+	100% {
+		transform: translate(325px, -13px) scale(0.23) rotate(36deg);
+	}
+}
+
+/* Firefox Final Pin Animation */
+@keyframes animatedFinalPinFirefox {
+	0% {
+		transform: translate(193px, -16px) scale(0.23) rotate(36deg);
+	}
+	33% {
+		transform: translate(193px, -10px) scale(0.23) rotate(36deg);
+	}
+	66% {
+		transform: translate(193px, -13px) scale(0.23) rotate(36deg);
+	}
+	100% {
+		transform: translate(193px, -10px) scale(0.23) rotate(36deg);
+	}
+}
+
+/* Home Concept */
+.home-concept {
+	background: transparent url(../img/home-concept.png) no-repeat center 0;
+	width: 100%;
+	overflow: hidden;
+	strong {
+		display: block;
+		font-family: $font-secondary;
+		font-size: 2.1em;
+		font-weight: normal !important;
+		position: relative;
+		margin-top: 30px;
+	}
+	.row {
+		position: relative;
+	}
+	.process-image {
+		background: transparent url(../img/home-concept-item.png) no-repeat 0 0;
+		width: 160px;
+		margin: 135px auto 0 auto;
+		padding-bottom: 50px;
+		position: relative;
+		z-index: 1;
+		img {
+			border-radius: 150px;
+			margin: 7px 8px;
+			width: auto;
+			height: auto;
+			max-width: 145px;
+			max-height: 145px;
+		}
+	}
+	.our-work {
+		margin-top: 52px;
+		font-size: 2.6em;
+	}
+	.project-image {
+		background: transparent url(../img/home-concept-item.png) no-repeat 100% 0;
+		width: 350px;
+		margin: side-values(15px 0 0 -30px);
+		padding-bottom: 45px;
+		position: relative;
+		z-index: 1;
+	}
+	.sun {
+		background: transparent url(../img/home-concept-icons.png) no-repeat 0 0;
+		width: 60px;
+		height: 56px;
+		display: block;
+		position: absolute;
+		#{$left}: 10%;
+		top: 35px;
+	}
+	.cloud {
+		background: transparent url(../img/home-concept-icons.png) no-repeat 100% 0;
+		width: 116px;
+		height: 56px;
+		display: block;
+		position: absolute;
+		#{$left}: 57%;
+		top: 35px;
+	}
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+
+	.home-concept {
+		background-image: none;
+		.project-image {
+			margin: 20px auto 0 auto;
+		}
+		.process-image {
+			margin-top: 0;
+			padding-bottom: 25px;
+		}
+	}
+
+}
+
+@media (max-width: 479px) {
+
+	.home-concept {
+		.project-image {
+			background-position: 0 0;
+			margin-#{$left}: auto;
+			max-width: 160px;
+		}
+		.fc-slideshow {
+			max-width: 145px;
+			height: 145px;
+			img {
+				max-height: 145px;
+				max-width: 145px;
+			}
+		}
+	}
+
+}

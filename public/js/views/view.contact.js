@@ -1,7 +1,7 @@
 /*
 Name: 			View - Contact
 Written by: 	Okler Themes - (http://www.okler.net)
-Version: 		4.5.0
+Theme Version:	6.2.0
 */
 
 (function($) {
@@ -9,17 +9,41 @@ Version: 		4.5.0
 	'use strict';
 
 	/*
+	Custom Rules
+	*/
+	
+	// No White Space
+	$.validator.addMethod("noSpace", function(value, element) {
+    	if( $(element).attr('required') ) {
+    		return value.search(/[a-z0-9]/i) == 0;
+    	}
+
+    	return true;
+	}, 'Please fill this empty field.');
+
+	/*
+	Assign Custom Rules on Fields
+	*/
+	$.validator.addClassRules({
+	    'form-control': {
+	        noSpace: true
+	    }
+	});
+
+	/*
 	Contact Form: Basic
 	*/
-	$('#contactForm:not([data-type=advanced])').validate({
+	$('#contactForm').validate({
 		submitHandler: function(form) {
 
 			var $form = $(form),
 				$messageSuccess = $('#contactSuccess'),
 				$messageError = $('#contactError'),
-				$submitButton = $(this.submitButton);
+				$submitButton = $(this.submitButton),
+				$errorMessage = $('#mailErrorMessage'),
+				submitButtonText = $submitButton.val();
 
-			$submitButton.button('loading');
+			$submitButton.val( $submitButton.data('loading-text') ? $submitButton.data('loading-text') : 'Loading...' ).attr('disabled', true);
 
 			// Ajax Submit
 			$.ajax({
@@ -30,54 +54,58 @@ Version: 		4.5.0
 					email: $form.find('#email').val(),
 					subject: $form.find('#subject').val(),
 					message: $form.find('#message').val()
-				},
-				dataType: 'json',
-				complete: function(data) {
-				
-					if (typeof data.responseJSON === 'object') {
-						if (data.responseJSON.response == 'success') {
+				}
+			}).always(function(data, textStatus, jqXHR) {
 
-							$messageSuccess.removeClass('hidden');
-							$messageError.addClass('hidden');
+				$errorMessage.empty().hide();
 
-							// Reset Form
-							$form.find('.form-control')
-								.val('')
-								.blur()
-								.parent()
-								.removeClass('has-success')
-								.removeClass('has-error')
-								.find('label.error')
-								.remove();
+				if (data.response == 'success') {
 
-							if (($messageSuccess.offset().top - 80) < $(window).scrollTop()) {
-								$('html, body').animate({
-									scrollTop: $messageSuccess.offset().top - 80
-								}, 300);
-							}
+					$messageSuccess.removeClass('d-none');
+					$messageError.addClass('d-none');
 
-							$submitButton.button('reset');
-							
-							return;
+					// Reset Form
+					$form.find('.form-control')
+						.val('')
+						.blur()
+						.parent()
+						.removeClass('has-success')
+						.removeClass('has-danger')
+						.find('label.error')
+						.remove();
 
-						}
-					}
-
-					$messageError.removeClass('hidden');
-					$messageSuccess.addClass('hidden');
-
-					if (($messageError.offset().top - 80) < $(window).scrollTop()) {
+					if (($messageSuccess.offset().top - 80) < $(window).scrollTop()) {
 						$('html, body').animate({
-							scrollTop: $messageError.offset().top - 80
+							scrollTop: $messageSuccess.offset().top - 80
 						}, 300);
 					}
 
-					$form.find('.has-success')
-						.removeClass('has-success');
-						
-					$submitButton.button('reset');
+					$form.find('.form-control').removeClass('error');
 
+					$submitButton.val( submitButtonText ).attr('disabled', false);
+					
+					return;
+
+				} else if (data.response == 'error' && typeof data.errorMessage !== 'undefined') {
+					$errorMessage.html(data.errorMessage).show();
+				} else {
+					$errorMessage.html(data.responseText).show();
 				}
+
+				$messageError.removeClass('d-none');
+				$messageSuccess.addClass('d-none');
+
+				if (($messageError.offset().top - 80) < $(window).scrollTop()) {
+					$('html, body').animate({
+						scrollTop: $messageError.offset().top - 80
+					}, 300);
+				}
+
+				$form.find('.has-success')
+					.removeClass('has-success');
+					
+				$submitButton.val( submitButtonText ).attr('disabled', false);
+
 			});
 		}
 	});
@@ -85,7 +113,7 @@ Version: 		4.5.0
 	/*
 	Contact Form: Advanced
 	*/
-	$('#contactFormAdvanced, #contactForm[data-type=advanced]').validate({
+	$('#contactFormAdvanced').validate({
 		onkeyup: false,
 		onclick: false,
 		onfocusout: false,
@@ -102,7 +130,7 @@ Version: 		4.5.0
 		},
 		errorPlacement: function(error, element) {
 			if (element.attr('type') == 'radio' || element.attr('type') == 'checkbox') {
-				error.appendTo(element.parent().parent());
+				error.appendTo(element.closest('.form-group'));
 			} else {
 				error.insertAfter(element);
 			}

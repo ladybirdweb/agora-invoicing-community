@@ -1,0 +1,238 @@
+/* Dividers */
+hr {
+	background-image: linear-gradient(to $left, transparent, #DBDBDB, transparent);
+	border: 0;
+	height: 1px;
+	margin: 22px 0;
+	&.short {
+		margin: 11px 0;
+	}
+	&.tall {
+		margin: 44px 0;
+	}
+	&.taller {
+		margin: 66px 0;
+	}
+	&.gradient-to-right {
+		background-image: linear-gradient(to $left, #DBDBDB, transparent);
+	}
+	&.gradient-to-left {
+		background-image: linear-gradient(to $left, transparent, #DBDBDB);
+	}
+	&.solid {
+		background: #DBDBDB;
+	}
+	&.light {
+		background-image: linear-gradient(to $left, transparent, rgba(255, 255, 255, 0.15), transparent);
+	}
+	&.invisible {
+		background: none;
+	}
+}
+
+.divider {
+	border: 0;
+	height: 1px;
+	margin: 44px auto;
+	background-image: linear-gradient(to $left, transparent, #DBDBDB, transparent);
+	text-align: center;
+	position: relative;
+	clear: both;
+
+	&.taller {
+		margin: 66px auto;
+	}
+
+	.fa, .fas, .far, .fal, .fab, .icons {
+		text-align: center;
+		background: #FFF;
+		border-radius: 50px;
+		color: #a9a9a9;
+		display: inline-block;
+		height: 50px;
+		line-height: 50px;
+		position: absolute;
+		text-align: center;
+		width: 50px;
+		font-size: 20px;
+		margin: 0 auto 0 -25px;
+		top: -25px;
+		#{$left}: 50%;
+		z-index: 1;
+	}
+
+	&.divider-solid {
+		background: #DBDBDB;
+	}
+
+	&.divider-icon-sm {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			width: 30px;
+			height: 30px;
+			line-height: 30px;
+			top: -15px;
+			font-size: 15px;
+			margin-#{$left}: -16px;
+		}
+	}
+
+	&.divider-icon-lg {
+		margin: 86px 0;
+		.fa, .fas, .far, .fal, .fab, .icons {
+			width: 60px;
+			height: 60px;
+			line-height: 60px;
+			top: -30px;
+			font-size: 30px;
+			margin-#{$left}: -30px;
+		}
+
+		&.taller {
+			margin: 100px auto;
+		}
+	}
+
+	&.divider-xs {
+		width: 35%;
+	}
+
+	&.divider-sm {
+		width: 67%;
+	}
+
+	&.divider-left {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			#{$left}: 0;
+			margin-left: 0;
+			margin-right: 0;
+			#{$right}: auto;
+		}
+	}
+
+	&.divider-right {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			#{$left}: auto;
+			margin-left: 0;
+			margin-right: 0;
+			#{$right}: 0;
+		}
+	}
+
+	&.divider-style-2 {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			background: #f4f4f4;
+			color: #a9a9a9;
+		}
+	}
+
+	&.divider-style-3 {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			border: 1px solid #CECECE;
+		}
+	}
+
+	&.divider-style-4 {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			border: 1px solid #CECECE;
+			&:after {
+				border: 3px solid #f4f4f4;
+				border-radius: 50%;
+				box-sizing: content-box;
+				content: "";
+				display: block;
+				height: 100%;
+				#{$left}: -4px;
+				padding: 1px;
+				position: absolute;
+				top: -4px;
+				width: 100%;
+			}
+		}
+	}
+
+	&.divider-small {
+		margin: 22px auto;
+		background: transparent;
+		hr {
+			width: 50px;
+			height: 3px;
+			background: #555;
+		}
+
+		&.divider-small-center {
+			text-align: center;
+			hr {
+				margin-left: auto;
+				margin-right: auto;
+			}
+		}
+
+		&.divider-small-right {
+			text-align: $right;
+			hr {
+				margin-#{$left}: auto;
+			}
+		}
+
+		&.divider-light {
+			hr {
+				background: #DDD;
+			}
+		}
+
+		&.divider-small-sm {
+			hr {
+				height: 1px;
+			}
+		}
+
+		&.divider-small-lg {
+			hr {
+				height: 6px;
+			}
+		}
+
+		&.tall {
+			margin: 34px 0;
+		}
+		&.taller {
+			margin: 46px 0;
+		}
+	}
+}
+
+hr, .divider {
+	&.dashed {
+		background: none;
+		position: relative;
+		&:after {
+			border-top: 1px dashed #DBDBDB;
+			content: "";
+			display: block;
+			height: 0;
+			position: absolute;
+			top: 50%;
+			margin-top: -1px;
+			width: 100%;
+		}
+	}
+	&.pattern {
+		background: none;
+		position: relative;
+		&:after {
+			background: transparent url(../img/patterns/worn_dots.png) repeat 0 0;
+			content: "";
+			display: block;
+			height: 15px;
+			position: absolute;
+			top: 50%;
+			margin-top: -7px;
+			width: 100%;
+		}
+		&.pattern-2 {
+			&:after {
+				background-image: url(../img/patterns/az_subtle.png);
+			}
+		}
+	}
+}

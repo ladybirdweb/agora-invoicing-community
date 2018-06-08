@@ -1,0 +1,56 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #008fe2;
+
+@color-secondary: #2d529f;
+
+@color-tertiary: #3aabdd;
+
+@color-quaternary: #242424;
+
+@import "skin";
+
+@media (min-width: 992px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								color: @color-primary !important;
+							}
+						}
+						&:hover, &.open {
+							> a {
+								&.active {
+									background-color: @color-secondary !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								background-color: @color-primary !important;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

@@ -1,10 +1,13 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Cart
+Cart | Faveo Helpdesk
 @stop
 @section('page-header')
 <br>
 Cart
+@stop
+@section('page-heading')
+ <h1>Cart</h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -28,8 +31,9 @@ if (count($attributes) > 0) {
 <div class="row">
     <div class="col-md-12">
         @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+        <div class="alert alert-danger alert-dismissable" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+             <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
@@ -41,8 +45,9 @@ if (count($attributes) > 0) {
         @if(Session::has('success'))
     </br>
 </br>
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+         <div class="alert alert-success">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
             {{Session::get('success')}}
         </div>
         @endif
@@ -50,6 +55,7 @@ if (count($attributes) > 0) {
         @if(Session::has('fails'))
         <div class="alert alert-danger alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Something Went Wrong.
             {{Session::get('fails')}}
         </div>
         @endif
@@ -60,9 +66,9 @@ if (count($attributes) > 0) {
             <div class="row">
 
                 <div class="col-md-8">
-                    <ul class="list-unstyled">
-                        <li>
-                            <div class="featured-box featured-box-primary align-left mt-sm">
+                   
+                       
+                           <div class="featured-box featured-box-primary align-left mt-sm">
                                 <div class="box-content">
                                     <form method="post" action="">
                                         <table class="shop_table cart">
@@ -162,7 +168,7 @@ if (count($attributes) > 0) {
                                     </form>
                                 </div>
                             </div>
-                        </li>
+                       
                         <?php $addons = \App\Http\Controllers\Front\CartController::addons();
               
                         ?>
@@ -184,11 +190,11 @@ if (count($attributes) > 0) {
 
                         </li>
                         @endif
-                    </ul>
+                    
                 </div>
 
                 <div class="col-md-4">
-                    <div class="featured-box featured-box-primary align-left mt-sm">
+                   <div class="featured-box featured-box-primary text-left ">
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
                             <table class="cart-totals">
@@ -220,10 +226,10 @@ if (count($attributes) > 0) {
                             </table>
                             <div class="row">
                                 {!! Form::open(['url'=>'pricing/update','method'=>'post']) !!}
-                                <div class="form-group col-md-8">
+                                <div class="form-group col-md-12">
 
                                     <label for="coupon"><b>{{Lang::get('message.coupon-code')}}</b></label>
-                                    <input type="text" name="coupon" class="form-control">
+                                    <input type="text" name="coupon" class="form-control input-lg">
 
                                 </div>
                                 <div class="form-group col-md-4-5">
@@ -233,20 +239,21 @@ if (count($attributes) > 0) {
                             </div>
                         </div>
                          </div>
-                        <div class=" col-md-6"><br><br><br><br>
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-lg">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
-                        </div>
-                        <div class="col-md-6"><br><br><br><br>
-
+                           <div class="row">
+                        <div class=" col-md-6">
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger" style="margin-bottom: 20px;">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
+                        
+                       </div>
+                        <div class=" col-md-6">
                             @if(count($domain)>0)
 
-                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-lg">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary "style="margin-bottom: 20px;"> Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-lg">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary" style="margin-bottom: 20px;">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                         </div>
-                   
+                      </div>
                 </div>
 
 

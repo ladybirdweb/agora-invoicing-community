@@ -12,7 +12,7 @@
 */
 
 // Route::get('/', function () {
-// 	dd('ok');
+//  dd('ok');
 //     return view('welcome');
 // });
 // Route::group(['middleware' => ['web']], function () {
@@ -97,7 +97,7 @@
         /*
          * Tweeter api
          */
-        Route::get('twitter', 'Common\SocialMediaController@getTweets');
+        Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
         /*
          * Authentication
@@ -111,6 +111,8 @@
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
         Route::get('activate/{token}', 'Auth\AuthController@Activate');
+
+         Route::get('change/email', 'Auth\AuthController@updateUserEmail');
 
         /*
          * Profile Process
@@ -215,7 +217,7 @@
          */
 
         Route::resource('promotions', 'Payment\PromotionController');
-        Route::post('get-code', 'Payment\PromotionController@getCode');
+        Route::post('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 

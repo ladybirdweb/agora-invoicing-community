@@ -1,7 +1,7 @@
 /*
 Name: 			theme-shop.css
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	5.7.2
+Theme Version:	6.2.0
 */
 /* Custom Font - Stars (From WooCommerce) */
 @font-face {
@@ -12,17 +12,7 @@ Theme Version:	5.7.2
 	font-style: normal;
 }
 /* Shop - Base */
-.shop {
-	margin-top: -10px;
-}
-
-.shop ul.products {
-	margin: 0;
-	padding: 25px 0;
-	list-style: none;
-}
-
-.shop ul.products:after {
+.shop .products:after {
 	content: ".";
 	display: block;
 	clear: both;
@@ -31,18 +21,17 @@ Theme Version:	5.7.2
 	height: 0;
 }
 
-.shop ul.products .product {
+.shop .products .product {
 	position: relative;
 	margin-bottom: 30px;
 }
 
-.shop ul.products .product a {
+.shop .products .product a {
 	text-decoration: none;
 }
 
-.shop ul.products .product .add-to-cart-product {
+.shop .products .product .add-to-cart-product {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	position: absolute;
 	top: 0;
@@ -57,40 +46,40 @@ Theme Version:	5.7.2
 	-webkit-transform: translate3d(0, 0, 0);
 }
 
-.shop ul.products .product .add-to-cart-product .fa, .shop ul.products .product .add-to-cart-product .icons {
+.shop .products .product .add-to-cart-product .fa, .shop .products .product .add-to-cart-product .fas, .shop .products .product .add-to-cart-product .far, .shop .products .product .add-to-cart-product .fal, .shop .products .product .add-to-cart-product .fab, .shop .products .product .add-to-cart-product .icons {
 	margin-right: 3px;
 	font-size: 1.1em;
 }
 
-.shop ul.products .product:hover .add-to-cart-product {
+.shop .products .product:hover .add-to-cart-product {
 	filter: alpha(opacity=100);
 	opacity: 1;
 }
 
-.shop ul.products .product:hover .add-to-cart-product:hover {
+.shop .products .product:hover .add-to-cart-product:hover {
 	background: #000;
 }
 
-.shop ul.products .product .price {
+.shop .products .product .price {
 	display: block;
 	min-height: 28px;
 }
 
-.shop ul.products .product .price del {
+.shop .products .product .price del {
 	color: rgba(145, 145, 145, 0.5);
 	font-size: 0.7em;
 	margin: -2px 0 0;
 }
 
-.shop ul.products .product .price ins {
+.shop .products .product .price ins {
 	text-decoration: none;
 }
 
-.shop ul.products .product .price .amount {
+.shop .products .product .price .amount {
 	font-size: 1.3em;
 }
 
-.shop ul.products .product .onsale {
+.shop .products .product .onsale {
 	position: absolute;
 	background-image: none;
 	border-radius: 100%;
@@ -104,6 +93,7 @@ Theme Version:	5.7.2
 	display: inline-block;
 	text-align: center;
 	z-index: 10;
+	-webkit-box-shadow: none;
 	box-shadow: none;
 	font-size: 0.9em;
 	color: #FFF;
@@ -113,7 +103,6 @@ Theme Version:	5.7.2
 /* Product Info */
 .product-info {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	border-radius: 6px;
 	padding: 0;
@@ -149,7 +138,6 @@ Theme Version:	5.7.2
 
 .product-info img {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	border-radius: 6px 6px 0 0;
 }
@@ -176,7 +164,6 @@ Theme Version:	5.7.2
 
 .product-info .product-info-image:before {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	content: "";
 	display: block;
@@ -225,7 +212,6 @@ Theme Version:	5.7.2
 
 .product-info .product-info-act-left em {
 	-webkit-transition: all 0.2s ease 0s;
-	-moz-transition: all 0.2s ease 0s;
 	transition: all 0.2s ease 0s;
 	left: 0%;
 	opacity: 0;
@@ -239,7 +225,6 @@ Theme Version:	5.7.2
 
 .product-info .product-info-act-right em {
 	-webkit-transition: all 0.2s ease 0s;
-	-moz-transition: all 0.2s ease 0s;
 	transition: all 0.2s ease 0s;
 	right: 0%;
 	font-weight: 600;
@@ -312,7 +297,6 @@ Theme Version:	5.7.2
 
 .product-info.secondary .product-info-content h4 {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	color: #FFF;
 	position: relative;
@@ -322,7 +306,6 @@ Theme Version:	5.7.2
 
 .product-info.secondary .product-info-content .date {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	position: relative;
 	top: 25%;
@@ -336,7 +319,6 @@ Theme Version:	5.7.2
 
 .product-info.secondary .label {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	clear: both;
 	display: inline-block;
@@ -429,6 +411,7 @@ Theme Version:	5.7.2
 	background: #f4f4f4;
 	border: 1px solid #C8BFC6;
 	border-radius: 2px;
+	-webkit-box-shadow: none;
 	box-shadow: none;
 	color: #5E5E5E;
 	cursor: pointer;
@@ -453,6 +436,7 @@ Theme Version:	5.7.2
 	background: #f4f4f4;
 	border: 1px solid #C8BFC6;
 	border-radius: 2px;
+	-webkit-box-shadow: none;
 	box-shadow: none;
 	color: #5E5E5E;
 	cursor: pointer;
@@ -477,6 +461,7 @@ Theme Version:	5.7.2
 
 .shop .quantity .qty {
 	border: 1px solid #CCC;
+	-webkit-box-shadow: none;
 	box-shadow: none;
 	float: left;
 	height: 35px;
@@ -532,10 +517,10 @@ Theme Version:	5.7.2
 }
 
 .shop table.cart td.actions {
-	padding: 20px 10px;
+	padding: 20px 0;
 }
 
-.shop table.cart .remove .fa {
+.shop table.cart .remove .fa, .shop table.cart .remove .fas, .shop table.cart .remove .far, .shop table.cart .remove .fal, .shop table.cart .remove .fab {
 	font-size: 1.5em;
 }
 
@@ -586,7 +571,6 @@ Theme Version:	5.7.2
 /* Product Thumb Info */
 .product-thumb-info {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	border-radius: 6px;
 	padding: 0;
@@ -623,7 +607,6 @@ Theme Version:	5.7.2
 
 .product-thumb-info img {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	border-radius: 6px 6px 0 0;
 }
@@ -666,7 +649,6 @@ Theme Version:	5.7.2
 
 .product-thumb-info .product-thumb-info-image:before {
 	-webkit-transition: all 0.2s;
-	-moz-transition: all 0.2s;
 	transition: all 0.2s;
 	content: "";
 	display: block;

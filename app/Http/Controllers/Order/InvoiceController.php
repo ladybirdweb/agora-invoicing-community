@@ -45,7 +45,7 @@ class InvoiceController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
-        $this->middleware('admin');
+        $this->middleware('admin', ['except' => ['pdf']]);
 
         $invoice = new Invoice();
         $this->invoice = $invoice;
@@ -202,6 +202,7 @@ class InvoiceController extends Controller
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
+        // dd($request->all());
         $qty = 1;
         // if (array_key_exists('domain', $request->all())) {
         //     $this->validate($request, [
@@ -360,6 +361,7 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -464,8 +466,8 @@ class InvoiceController extends Controller
                 $mode = 'coupon';
                 $discount = $price - $subtotal;
             }
+            $userid = \Auth::user()->id;
             $tax = $this->checkTax($product->id, $userid);
-            // dd($tax);
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
@@ -553,8 +555,8 @@ class InvoiceController extends Controller
             $promotion_type = $promotion->type;
             $promotion_value = $promotion->value;
             $planId = Plan::where('product', $productid)->pluck('id')->first();
+            // dd($planId);
             $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
-
             //   if (!$product_price) {
             //     $product_price = $product->price()->first()->price;
             // }
@@ -654,11 +656,11 @@ class InvoiceController extends Controller
             $product = $this->product->findOrFail($productid);
             $cartController = new CartController();
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
-                if ($product->tax()->first()) {
-                    $tax_class_id = $product->tax()->first()->tax_class_id;
-                } else {
-                    return [$taxs[0]['name'], $taxs[0]['rate']];
-                }
+                // if ($product->tax()->first()) {
+                //     $tax_class_id = $product->tax()->first()->tax_class_id;
+                // } else {
+                //     return [$taxs[0]['name'], $taxs[0]['rate']];
+                // }
 
                 if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
                     $rate = $this->getRate($productid, $taxs[0], $userid);
@@ -667,14 +669,21 @@ class InvoiceController extends Controller
                 } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
                      $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
                            if ($taxClassId) {
-                               $taxes = $cartController->getTaxByPriority($taxClassId);
-                               $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
+                               $taxs = $cartController->getTaxByPriority($taxClassId);
+                               $value = $cartController->getValueForOthers($productid, $taxClassId, $taxs);
                                if ($value == 0) {
                                    $status = 0;
                                }
                                $rate = $value;
-                           } else {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
+                           } elseif ($geoip_country != 'IN') {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
+
                                $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+
+                               // $taxClassId =Tax::where('country','!=','IN')->where(function($q) use($geoip_state,$geoip_country){
+                               //  $q->where('state', $geoip_state)->orWhere('country', $geoip_country);
+                               // })->pluck('tax_classes_id')->first();
+
+                               // dd($taxClassId);
                                if ($taxClassId) { //if state equals the user State
                                    $taxes = $cartController->getTaxByPriority($taxClassId);
                                    $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
@@ -684,20 +693,18 @@ class InvoiceController extends Controller
                                    $rate = $value;
                                }
                                $taxs = ([$taxes[0]['name'], $taxes[0]['rate']]);
-                               dd($taxs);
+                               // dd($taxs);
                                //                $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
                 // $tax_value = '0%';
                            }
+                    $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }
 
-            // dd($taxs);
             return $taxs;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -739,13 +746,14 @@ class InvoiceController extends Controller
                    $taxes = [0];
                }
             } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
-         $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
-          if ($taxClassId) {
-              $taxes = $cartController->getTaxByPriority($taxClassId);
-              $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
-          } else {
-              $taxes = [0];
-          }
+
+                $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
+                if ($taxClassId) {
+                    $taxes = $cartController->getTaxByPriority($taxClassId);
+                    $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
+                } else {
+                    $taxes = [0];
+                }
             } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
         $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
          if ($taxClassId) {
@@ -832,9 +840,10 @@ class InvoiceController extends Controller
             //            $total = '';
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
-            if ($rule->tax_enable == 1 && $rule->inclusive == 0) {
+            if ($rule->inclusive == 0) {
                 foreach ($rates as $rate) {
                     $total += $total * ($rate / 100);
+                    // dd($total);
                 }
             }
             //dd($total);
@@ -1024,6 +1033,22 @@ class InvoiceController extends Controller
             $payment_status = 'success';
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
+            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
+            if ($payment) {
+                return redirect()->back()->with('success', 'Payment Accepted Successfully');
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function postRazorpayPayment($invoiceid, $grand_total)
+    {
+        try {
+            $payment_method = 'Razorpay';
+            $payment_status = 'success';
+            $payment_date = \Carbon\Carbon::now()->toDateTimeString();
+            $amount = $grand_total;
             $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
             if ($payment) {
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');

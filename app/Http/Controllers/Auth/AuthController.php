@@ -86,6 +86,8 @@ class AuthController extends Controller
         $auth = \Auth::attempt($credentials, $request->has('remember'));
 
         if ($auth) {
+            dd($this->redirectPath());
+
             return redirect()->intended($this->redirectPath());
         }
 
@@ -258,7 +260,8 @@ class AuthController extends Controller
 
                 $zoho = $this->reqFields($user, $email);
 
-                $auth = '151da623a1674f692d52229adee1d866';
+                $auth = '5930375bef3fe5e0a2b35945cbf3a644';
+
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
                 $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
@@ -278,8 +281,8 @@ class AuthController extends Controller
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                // $r = $mailchimp->addSubscriber($user->email);
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
@@ -287,11 +290,12 @@ class AuthController extends Controller
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful.Please login to access your account !!');
             } else {
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
+            // dd($ex);
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
 
@@ -417,12 +421,16 @@ class AuthController extends Controller
             'mobile' => 'required|numeric',
         ]);
 
+        $number = $request->oldnumber;
+        $newNumber = $request->newnumber;
+        User::where('mobile', $number)->update(['mobile'=>$newNumber]);
+
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $number = $code.$mobile;
             $result = $this->sendOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number];
+            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.'.Please Verify to Login'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -434,17 +442,23 @@ class AuthController extends Controller
 
     public function requestOtpFromAjax(Request $request)
     {
+        // dd($request->allow());
         $this->validate($request, [
             'email'  => 'required|email',
             'code'   => 'required|numeric',
             'mobile' => 'required|numeric',
         ]);
+        $email = $request->oldemail;
+        $newEmail = $request->newemail;
+        $number = $request->oldnumber;
+        $newNumber = $request->newnumber;
+        User::where('email', $email)->orwhere('mobile', $number)->update(['email'=>$newEmail, 'mobile'=>$newNumber]);
 
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
             $userid = $request->input('id');
-            $email = $request->input('email');
+            $email = $request->input('newemail');
             $pass = $request->input('password');
             $number = $code.$mobile;
 
@@ -452,7 +466,7 @@ class AuthController extends Controller
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
-            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
+            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'.<br>OTP has been sent to '.$number.'.<br>Please enter the OTP received on your mobile No below. Incase you did not recieve OTP,please get in touch with us on <a href="mailto:support@faveohelpdesk.com">support@faveohelpdesk.com</a>'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -462,7 +476,7 @@ class AuthController extends Controller
         }
     }
 
-    public function retryOTP($request)
+    public function retryOTP(Request $request)
     {
         $this->validate($request, [
             'code'   => 'required|numeric',
@@ -472,9 +486,13 @@ class AuthController extends Controller
         try {
             $code = $request->input('code');
             $mobile = $request->input('mobile');
+            $otp = $request->input('otp');
             $number = $code.$mobile;
-            $result = $this->sendForReOtp($mobile, $code);
-            $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
+            $result = $this->sendOtp($mobile, $code);
+            // dd($result);
+
+            $array = json_decode($result, true);
+            $response = ['type' => 'success', 'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -509,7 +527,7 @@ class AuthController extends Controller
             $verify = $this->verifyOtp($mobile, $code, $otp);
             $array = json_decode($verify, true);
             if ($array['type'] == 'error') {
-                throw new \Exception($array['message']);
+                throw new \Exception('OTP Not Verified!');
             }
 
             $user = User::find($userid);
@@ -520,14 +538,20 @@ class AuthController extends Controller
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
+            // $url= 'auth/login';
+            // if (\Session::has('session-url')) {
+            //        $url = \Session::get('session-url');
+            //       dd($url);
+            //        return redirect($url);
+            //    }
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-            if ($ex->getMessage() == 'otp_not_verified') {
-                $result = ['OTP Not Verified!'];
+            if ($ex->getMessage() == 'OTP Not Verified!') {
+                $errors = ['OTP Not Verified!'];
             }
 
             return response()->json(compact('result'), 500);
@@ -539,6 +563,9 @@ class AuthController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
         ]);
+        $email = $request->oldmail;
+        $newMail = $request->newmail;
+        User::where('mobile', $email)->update(['mobile'=>$newMail]);
 
         try {
             $email = $request->input('email');
@@ -552,7 +579,7 @@ class AuthController extends Controller
 
             return response()->json($response);
 
-            return redirect('/login');
+            // return redirect('/login');
         } catch (\Exception $ex) {
             //dd($ex);
             $result = [$ex->getMessage()];
@@ -638,5 +665,15 @@ class AuthController extends Controller
             //dd($from, $to, $template_data, $template_name, $replace);
             $template_controller->mailing($from, $to, $template_data, $template_name, $replace, 'manager_email');
         }
+    }
+
+    public function updateUserEmail(Request $request)
+    {
+        $email = $request->oldemail;
+        $newEmail = $request->newemail;
+        User::where('email', $email)->update(['email'=>$newEmail]);
+        $message = 'User email updated successfully';
+
+        return $message;
     }
 }

@@ -1,7 +1,7 @@
 /*
 Name: 			Shortcodes - Image Gallery - Examples
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	4.5.0
+Theme Version:	6.2.0
 */
 (function($) {
 
@@ -21,13 +21,14 @@ Theme Version:	4.5.0
 			margin: 10,
 			nav: true,
 			dots: false,
-			loop: true,
-			navText: []
+			loop: false,
+			navText: [],
+			rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
 		})
 		.on('changed.owl.carousel', function(e) {
 			if (!flag) {
 				flag = true;
-				$thumbGalleryThumbs1.trigger('to.owl.carousel', [e.item.index, duration, true]);
+				$thumbGalleryThumbs1.trigger('to.owl.carousel', [e.item.index-1, duration, true]);
 				flag = false;
 			}
 		});
@@ -38,14 +39,11 @@ Theme Version:	4.5.0
 			items: 4,
 			nav: false,
 			center: false,
-			dots: false
+			dots: false,
+			rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
 		})
 		.on('click', '.owl-item', function() {
 			$thumbGalleryDetail1.trigger('to.owl.carousel', [$(this).index(), duration, true]);
-
-		})
-		.on('changed.owl.carousel', function(e) {
-			console.log(e);
 		})
 		.on('changed.owl.carousel', function(e) {
 			if (!flag) {
@@ -68,7 +66,8 @@ Theme Version:	4.5.0
 			items: 1,
 			margin: 10,
 			nav: false,
-			dots: false
+			dots: false,
+			rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
 		})
 		.on('changed.owl.carousel', function(e) {
 			if (!flag) {
@@ -84,7 +83,8 @@ Theme Version:	4.5.0
 			items: 4,
 			nav: false,
 			center: true,
-			dots: true
+			dots: false,
+			rtl: ( $('html').attr('dir') == 'rtl' ) ? true : false
 		})
 		.on('click', '.owl-item', function() {
 			$thumbGalleryDetail2.trigger('to.owl.carousel', [$(this).index(), duration, true]);

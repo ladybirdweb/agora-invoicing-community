@@ -80,8 +80,15 @@ class CheckoutController extends Controller
         $cart_currency = 'INR';
         if (!\Auth::user()) {
             $url = $request->segments();
-
+            $content = Cart::getContent();
             \Session::put('session-url', $url[0]);
+            $domain = $request->input('domain');
+            if (count($domain) > 0) {
+                foreach ($domain as $key => $value) {
+                    \Session::put('domain'.$key, $value);
+                }
+            }
+            \Session::put('content', $content);
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
@@ -184,14 +191,15 @@ class CheckoutController extends Controller
         }
 
         $cost = $request->input('cost');
-        if (\Cart::getSubTotal() > 0 || $cost > 0) {
-            $v = $this->validate($request, [
-                'payment_gateway' => 'required',
-                    ], [
+        // if (\Cart::getSubTotal() > 0 || $cost > 0) {
+        //     //  {
+        //     $v = $this->validate($request, [
+        //         'payment_gateway' => 'required',
+        //             ], [
 
-                'payment_gateway.required' => 'Please choose a payment gateway',
-                    ]);
-        }
+        //         'payment_gateway.required' => 'Please choose a payment gateway',
+        //             ]);
+        // }
 
         try {
             if (!$this->setting->where('id', 1)->first()) {
@@ -289,6 +297,8 @@ class CheckoutController extends Controller
                 //execute the order
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
+                $payment = new \App\Http\Controllers\Order\InvoiceController();
+                $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
             }
 
             return 'success';

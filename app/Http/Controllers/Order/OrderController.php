@@ -15,6 +15,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
+use Crypt;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -550,8 +551,8 @@ class OrderController extends Controller
             if ($product_type == 2) {
                 $str = str_random(16);
                 $str = strtoupper($str);
-                $str = \Crypt::encrypt($str);
-
+                $str = Crypt::encrypt($str);
+                // dd($str);
                 return $str;
             }
         } catch (\Exception $ex) {

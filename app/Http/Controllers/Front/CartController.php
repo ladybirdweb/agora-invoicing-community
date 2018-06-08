@@ -56,6 +56,9 @@ class CartController extends Controller
 
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
+
+        // $this->middleware('Inatall');
+        // $this->middleware('admin');
     }
 
     public function productList(Request $request)
@@ -192,7 +195,8 @@ class CartController extends Controller
                 'value'  => '0%',
             ]);
 
-            $product = $this->product->findOrFail($productid);
+            // $product = $this->product->findOrFail($productid);
+            // dd($product);
             if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
                 $ip = $_SERVER['HTTP_CLIENT_IP'];
             } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
@@ -1063,11 +1067,9 @@ class CartController extends Controller
     public static function taxValue($rate, $price)
     {
         try {
-            // $tax = $price / (($rate / 100) + 1);
-            // // $result = $price - $tax;
             $tax = $price * ($rate / 100);
-            // $tax = $price / (($rate / 100) + 1);
             $result = $tax;
+
             $result = self::rounding($result);
 
             return $result;

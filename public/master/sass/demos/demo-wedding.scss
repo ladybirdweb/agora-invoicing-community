@@ -1,0 +1,778 @@
+//COMMON IMPORTS
+@import "../config/imports";
+
+// Custom Font Family
+.alternative-font {
+	font-family: 'Great Vibes', cursive !important;
+	font-size: inherit;
+}
+
+// Custom Font Size
+.custom-font-size-1 {
+	font-size: 4em;
+}
+
+@media (max-width: 767px) {
+	.custom-font-size-1 {
+		font-size: 3em;
+	}
+}
+
+.custom-font-size-2 {
+	font-size: 7em;
+	line-height: 100px;
+}
+
+@media (max-width: 767px) {
+	.custom-font-size-2 {
+		font-size: 4em;
+	}
+}
+
+// Custom Text Color
+.custom-text-color-1 {
+	color: #6a696f !important;	
+}
+
+.custom-text-color-2 {
+	color: #3e415c !important;
+}
+
+.custom-default-text-color {
+	color: #777 !important;
+}
+
+// Custom Box Shadow
+.box-shadow-custom {
+	box-shadow: 10px 10px 74px -30px rgba(0,0,0,0.33);
+}
+
+// Custom Border Radius
+.custom-border-radius {
+	border-radius: 30px !important;
+}
+
+// Custom Overlay
+.custom-overlay-1 {
+	&:before {
+		background: url(../../img/demos/wedding/custom-overlay-1.png) repeat scroll 0 0 transparent !important;
+		z-index: -4;
+	}
+}
+
+// Thumb
+.thumb-info {
+	border: 0;
+}
+
+// Logo
+.header-logo {
+	visibility: hidden;
+	&.loaded {
+		visibility: visible;
+	}
+}
+
+.header-logo-text {
+	display: inline-block;
+	font-family: "Great Vibes",cursive !important;
+	font-size: 36px;
+	line-height: 36px;
+}
+
+// Header
+#header {
+	.header-body {
+		border-top: 0;
+	}
+}
+
+@media (min-width: 992px) {
+	#header {
+
+		.header-nav-main {
+			&:before {
+				content: '';
+				display: block;
+				position: absolute;
+				width: 100vw;
+				top: 0;
+				#{$left}: 50%;
+				border-top: 1px solid #e1e4e9;
+				transform: translateX(-50%);
+			}
+
+			nav {
+				display: block;
+
+				> ul {
+					> li {
+						> a {
+							position: relative;
+							background: none !important;
+							color: #666 !important;
+							font-size: 13px;
+							font-style: normal;
+							font-weight: 600;
+							transition: ease all 300ms;
+
+							&:hover {
+								color: #ef3447 !important;
+							}
+
+							&.active {
+								color: #ef3447 !important;
+
+								&:before {
+									content: '\f004';
+									display: block;
+									font-family: 'Font Awesome 5 Free';
+									position: absolute;
+									top: -13px;
+									left: 50%;
+									color: #ef3447;
+									line-height: 0;
+									transform: translateX(-50%);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+
+	html.sticky-header-enabled {
+
+		#header {
+			.header-body {
+				border-bottom-color: #e9e9e9;
+				box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+				position: fixed;
+				top: 0 !important;
+
+				.header-container:nth-child(1) {
+					> .header-row {
+						> .header-column {
+							margin-right: 90px;
+							margin-bottom: -70px;
+						}
+					}
+				}
+			}
+		}
+
+	}
+
+	#header {
+		min-height: 70px !important;
+		.header-body {
+			min-height: 0 !important;
+		}
+		.header-nav-main {
+			&:before {
+				content: none;
+			}
+		}
+	}
+
+}
+
+// Rev Slider Dark Transparent Image Overlay
+.rev_slider {
+	.slotholder:after {
+		width: 100%;
+		height: 100%;
+		content: "";
+		position: absolute;
+		#{$left}: 0;
+		top: 0;
+		pointer-events: none;    
+		background: rgba(0, 0, 0, 0.25);
+	}
+}
+
+// Rev Slider
+.slider-container.light {
+	background: #FBF9F3;
+
+	ul {
+		perspective: 1000px;
+	}
+
+	.slider-border {
+		position: absolute;
+		width: 100%;
+		#{$left}: 0;
+		bottom: 0;
+		height: 16px;
+		background: url(../../img/demos/wedding/slider-border-bg.png);
+		background-repeat: repeat-x;
+		z-index: 30;
+	}
+}
+
+@media (max-width: 991px) {
+	.slider-container {
+		.slider-border {
+			bottom: -1px;
+		}
+	}
+}
+
+// Custom Wedding Quotes
+.testimonial.testimonial-with-quotes.custom-wedding-quotes {
+	blockquote {
+		&:before {
+			content: '';
+			background: url(../../img/demos/wedding/testimonial/custom-red-quotes.png);
+			background-size: 100% 100%;
+			width: 36px;
+			height: 22px;
+			left: 13px;
+			right: auto;
+		}
+
+		&:after {
+			content: '';
+			background: url(../../img/demos/wedding/testimonial/custom-red-quotes.png);
+			background-size: 100% 100%;
+			width: 36px;
+			height: 22px;
+			bottom: -0.5rem;
+			right: 13px;
+			transform: rotate(180deg);
+		}
+	}
+} 
+
+// Hidden Load More Dots
+.load-more-loader {
+	display: none;
+	height: 113px;
+}
+
+// Bride & Groom Section
+.thumb-bride-groom {
+	&:hover {
+		.bride-groom-photo {
+			img {
+				transform: scale(1.1);
+			}
+		}
+	}
+
+	.bride-groom-bg {
+		position: relative;
+		display: inline-block;
+
+		&:before {
+			content: '';
+			display: block;
+			background: url(../../img/demos/wedding/bride-groom/bride-bg.jpg);
+			background-size: 100%;
+			background-repeat: no-repeat;
+			position: absolute;
+			top: 58%;
+			left: 50%;
+			width: 125%;
+			height: 100%;
+			z-index: -1;
+			transform: translate3d(-50%, -50%, 0);
+		}
+
+		&.groom-background-style {
+			&:before {
+				background: url(../../img/demos/wedding/bride-groom/groom-bg.jpg);
+				background-size: 100% 100%;
+				background-repeat: no-repeat;
+				top: 50%;
+			}
+		}
+	}
+
+	.bride-groom-photo {
+		position: relative;
+		display: inline-block;
+		width: 80%;
+		border: 10px solid #FFF;
+		border-radius: 100%;
+		margin: 50px 0;
+		overflow: hidden;
+		z-index: 1;
+
+		img {
+			width: 100%;
+			transition: all 0.3s ease;
+		}
+	}
+
+	.social-icons {
+		li {
+			box-shadow: none;
+			border: 2px solid #b7b8bc;
+			transition: all 0.3s ease;
+
+			a {
+				color: #b7b8bc !important;
+			}
+
+			&:hover {
+				border: 2px solid #ef3447;
+
+				a {
+					background: none;
+					color: #ef3447 !important;
+				}
+			}
+		}
+	}
+}
+
+// Wedding Countdown Section
+.wedding-countdown {
+	#clock {
+		span {
+			position: relative;
+			padding: 0 30px;
+			font-size: 4em;
+			font-weight: 100;
+
+			&:before {
+				content: '\f004';
+				display: block;
+				font-family: 'Font Awesome 5 Free';
+				position: absolute;
+				top: 60%;
+				#{$left}: -5px;
+				font-size: 0.2em;
+				color: #5fc3d2;
+				line-height: 0;
+				transform: translateY(-50%);
+			}
+
+			&:nth-child(1) {
+				&:before {
+					content: none;
+				}
+			}
+
+			> span {
+				position: absolute;
+				bottom: -15px;
+				left: 50%;
+				font-size: 0.3em;
+				text-align: center;
+				text-transform: uppercase;
+				transform: translateX(-50%);
+
+				&:before, &:after {
+					content: none;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.wedding-countdown {
+		#clock {
+			span {
+				padding: 0 15px;
+				font-size: 2.5em;
+			}
+		}
+	}
+}
+
+// Testimonials Section
+.testimonials {
+	.testimonial {
+		blockquote {
+			&:before, &:after {
+				filter: brightness(7);
+			}
+
+			p {
+				font-style: normal;
+				font-family: $font-primary;
+				line-height: 1.6;
+			}
+		}
+	}	
+}
+
+// The Wedding Section - Wedding Schedule
+.the-wedding {
+	&.section {
+		background: #fbf9f3;
+		border: none;
+		z-index: 0;
+	}
+}
+
+.wedding-schedule {
+	position: relative;
+	height: 500px;
+	max-height: 500px;
+	max-width: 430px;
+	padding: 10px;
+	margin: 0 auto;
+
+	&:before {
+		content: '';
+		display: block;
+		background: url(../../img/demos/wedding/the-wedding/the-wedding-bg-colors.png);
+		background-size: 100%;
+		background-repeat: no-repeat;
+		position: absolute;
+		width: 146%;
+		height: 125%;
+		top: 50%;
+		left: 50%;
+		z-index: -3;
+		transform: translate3d(-50%, -50%, 0);
+	}
+
+	.wedding-schedule-photo {
+		height: 185px;
+		overflow: hidden;
+		text-align: center;
+		img {
+			position: relative;
+			width: auto;
+			border-radius: 6% 6% 0 0;
+			z-index: -2;
+			height: 190px;
+		}
+	}
+
+	.wedding-schedule-background {
+		position: absolute;
+		background: url(../../img/demos/wedding/the-wedding/the-wedding-bg-1.png);
+		background-size: 100% 100%;
+		width: 98%;
+		height: 99%;
+		top: 50%;
+		left: 50%;
+		z-index: -1;
+		transform: translate3d(-50%, -50%, 0);
+	}
+
+	.icon-heart-white-border {
+		position: absolute;
+		top: 34.7%;
+		left: 50%;
+		transform: translate3d(-50%, -50%, 0);
+	}
+
+	span {
+		display: block;
+	}
+
+	.btn {
+		border-radius: 20px;
+	}
+}
+
+@media (max-width: 991px) {
+
+}
+
+// Our History Section
+#historyLoadMoreWrapper {
+	li {
+		list-style: none;
+	}
+}
+
+// History Item
+.history-item {
+	.thumb-info {
+		.thumb-info-wrapper {
+			&:after {
+				background: linear-gradient(to top, rgba(36, 44, 71, 0.6) 0, transparent 100%) repeat scroll 0 0 rgba(36, 44, 71, 0);
+				content: '';
+				display: block;
+				position: absolute;
+				bottom: 0;
+				#{$left}: 0;
+				width: 100%;
+				height: 80px;
+				z-index: 1;
+				opacity: 1;
+				top: auto;
+			}
+			&:before {
+				content: '';
+				display: block;
+				position: absolute;
+				bottom: 0;
+				#{$left}: 0;
+				width: 100%;
+				box-shadow: 0 0 190px 40px rgba(0, 0, 0, 1);
+				z-index: 1;
+			}
+		}
+
+		.thumb-info-title {
+			background: none;
+			padding: 9px 22px 9px;
+			bottom: 6%;
+			font-size: 15px;
+			z-index: 2;
+		}
+
+		.thumb-info-likes {
+			position: absolute;
+			bottom: 6%;
+			#{$right}: 0;
+			padding: 9px 22px 9px;
+			z-index: 2;
+
+			i {
+				border-radius: 100%;
+			}
+		}
+	}
+}
+
+// Guestbook
+#guestbookSendMessage {
+	position: relative;
+
+	&:before, &:after {
+		content: '';
+		display: block;
+		position: absolute;
+		background: url(../../img/demos/wedding/guestbook/guestbook-flower.png);
+		background-size: 100%;
+		background-repeat: no-repeat;
+		width: 17%;
+		height: 34%;
+		z-index: 10;
+	}
+
+	&:before {
+		top: 15px;
+		#{$right}: 15px;
+	}
+
+	&:after {
+		bottom: 15px;
+		#{$left}: 15px;
+		transform: rotate(180deg);
+	}
+
+	.form-content {
+		position: relative;
+		z-index: 1;
+
+		.form-row {
+			position: relative;
+			z-index: 1;
+		}
+
+		.form-control-custom {
+			text-align: $left;
+			background: none;
+			border: none;
+			border-bottom: 1px solid #b5b5b5;
+			box-shadow: none;
+			padding-left: 0;
+			padding-right: 0;
+			@include placeholder-color(#6a696f);
+		}
+	}
+}
+
+.guestbook-messages {
+	position: relative;
+	
+	.testimonial {
+		p {
+			font-family: "Open Sans", Arial, sans-serif;
+			line-height: 1.7;
+			font-style: normal;
+			text-align: $left;
+		}
+
+		blockquote {
+			&:after {
+				bottom: -0.3em;
+			}
+
+			p {
+				&:after {
+					content: '';
+					display: block;
+					position: absolute;
+					bottom: 0;
+					left: 50%;
+					width: 76%;
+					border-bottom: 1px solid #fed0d2;
+					transform: translateX(-50%);
+				}
+			}
+		}
+
+		.testimonial-author {
+			p {
+				text-align: $left;
+				padding-#{$left}: 60px;
+			}
+		}
+	}
+
+	.owl-carousel {
+		.owl-nav {
+			position: absolute;
+			bottom: -10%;
+			#{$right}: 10%;
+			top: auto;
+			
+			button.owl-prev, button.owl-next {
+				background: #76cbd9 !important;
+				border-radius: 100% !important;
+				border-color: transparent !important;
+				width: 40px;
+				height: 40px;
+
+				&:active {
+					background: #76cbd9 !important;
+					border-color: transparent !important;
+					color: #FFF !important;
+				}
+
+				&:hover {
+					background: #76cbd9 !important;
+					border-color: transparent !important;
+					color: #FFF !important;
+				}
+			}
+
+			button.owl-prev {
+				color: #FFF !important;
+
+				&:before {
+					content: if-ltr("\f104", "\f105");
+					font-size: 1.5rem;
+					line-height: 1.4;
+					top: -1px;
+				}
+			}
+
+			button.owl-next {
+				color: #FFF !important;
+
+				&:before {
+					content: if-ltr("\f105", "\f104");
+					font-size: 1.5rem;
+					line-height: 1.4;
+					top: -1px;
+				}
+			}
+		}
+	}
+}
+
+// Custom Inner Border
+.custom-inner-border {
+	position: absolute;
+    top: 10px;
+    #{$right}: 10px;
+    bottom: 10px;
+    #{$left}: 10px;
+    border: 1px solid #fed0d2;
+    z-index: 0;
+}
+
+// Blog
+.blog-list {
+	li {
+		list-style: none;
+	}
+}
+
+.blog-item {
+	.blog-item-content {
+		display: block;
+		.author {
+			width: 100%;
+			display: block;
+			border-top: 1px solid #e1e1e1;
+			border-bottom: 1px solid #e1e1e1;
+		}
+	}
+}
+
+// RSVP
+.rsvp {
+	&.section {
+		background: #fbf9f3;
+		border: none;
+		z-index: 0;
+	}
+
+	#rsvpForm {
+		input.form-control, select.form-control {
+			background: #FFF;
+			border-color: #ebe8e0;
+			height: 55px;
+		}
+	}
+}
+
+// Custom content grid - Gift Registry
+.content-grid {
+	.content-grid-item {
+		min-height: 160px;
+		border: 1px solid #e4e4e4;
+		border-left: none;
+
+		&:first-child {
+			border-left: 1px solid #e4e4e4;
+		}
+
+		&:before, &:after {
+			content: none;
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	.content-grid {
+		.content-grid-item {
+			&:nth-child(4) {
+				border-left: 1px solid #e4e4e4;
+			}
+
+			&:nth-child(4), &:nth-child(5), &:nth-child(6) {
+				border-top: 0;
+			}
+		}
+	}
+}
+
+@media (max-width: 767px) {
+	.content-grid {
+		.content-grid-item {
+			border-top: 0;
+			border-left: 1px solid #e4e4e4;
+
+			&:first-child {
+				border-top: 1px solid #e4e4e4;
+			}
+		}
+	}
+}
+
+// Isotope Item
+@media (max-width: 767px) {
+	.isotope-item {
+		text-align: $left;
+	}
+}

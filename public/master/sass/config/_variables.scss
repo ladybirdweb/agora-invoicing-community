@@ -1,0 +1,114 @@
+// =============================================================================
+// TYPOGRAPHY
+// =============================================================================
+$font-primary: "Open Sans", Arial, sans-serif;
+$font-secondary: "Shadows Into Light", cursive;
+$body-font-size: 14;
+$root-font-size: 10;
+$body-line-height: 22;
+
+// weights
+$font-weight-light: 300;
+$font-weight-normal: 400;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-extra-bold: 900;
+
+// spacement
+$spacement-increment: 5px;
+$spacement-xs: $spacement-increment;
+$spacement-sm: $spacement-xs + $spacement-increment;
+$spacement-md: $spacement-sm + $spacement-increment;
+$spacement-lg: $spacement-md + $spacement-increment;
+$spacement-xl: $spacement-lg + $spacement-increment;
+$spacement-xlg: $spacement-xl + $spacement-increment;
+
+// borders
+$border-thin: 3px;
+$border-normal: 5px;
+$border-thick: 7px;
+
+// =============================================================================
+// COLORS
+// =============================================================================
+$color-font-default: #777;
+
+$color-default: #f2f2f2;
+$color-default-inverse: #777;
+
+$color-muted: #999;
+
+$color-dark: #1d2127;
+$color-dark-inverse: #FFF;
+$color-dark-1: $color-dark;
+$color-dark-2: lighten($color-dark-1, 2%);
+$color-dark-3: lighten($color-dark-1, 5%);
+$color-dark-4: lighten($color-dark-1, 8%);
+$color-dark-5: lighten($color-dark-1, 3%);
+$color-darken-1: darken($color-dark-1, 2%);
+
+$color-primary: #CCC;
+$color-primary-inverse: #FFF;
+
+$color-secondary: #E36159;
+$color-secondary-inverse: #FFF;
+
+$color-tertiary: #2BAAB1;
+$color-tertiary-inverse: #FFF;
+
+$color-quaternary: $color-dark-4;
+$color-quaternary-inverse: #FFF;
+
+$color-success: #28a745;
+$color-success-inverse: #FFF;
+
+$color-warning: #ffc107;
+$color-warning-inverse: #FFF;
+
+$color-danger: #dc3545;
+$color-danger-inverse: #FFF;
+
+$color-info: #17a2b8;
+$color-info-inverse: #FFF;
+
+// colors list
+$colors-list: (primary $color-primary $color-primary-inverse) (secondary $color-secondary $color-secondary-inverse) (tertiary $color-tertiary $color-tertiary-inverse) (quaternary $color-quaternary $color-quaternary-inverse);
+
+// states list
+$states: (primary $color-primary $color-primary-inverse) (success $color-success $color-success-inverse) (warning $color-warning $color-warning-inverse) (danger $color-danger $color-danger-inverse) (info $color-info $color-info-inverse) (dark $color-dark $color-dark-inverse);
+
+// light version
+$light-bg: #FFF;
+$footer-bg: #0e0e0e;
+
+// dark version
+$dark-bg: $color-dark;
+$dark-default-text: #808697;
+
+// =============================================================================
+// SETTINGS
+// =============================================================================
+$border-radius: 5px;
+
+// =============================================================================
+// MEDIA QUERIES BREAKPOINTS
+// =============================================================================
+$screen-xs:                  576px !default;
+$screen-xs-min:              $screen-xs !default;
+$screen-phone:               $screen-xs-min !default;
+
+$screen-sm:                  768px !default;
+$screen-sm-min:              $screen-sm !default;
+$screen-tablet:              $screen-sm-min !default;
+
+$screen-md:                  992px !default;
+$screen-md-min:              $screen-md !default;
+$screen-desktop:             $screen-md-min !default;
+
+$screen-lg:                  1200px !default;
+$screen-lg-min:              $screen-lg !default;
+$screen-lg-desktop:          $screen-lg-min !default;
+
+$screen-xs-max:              ($screen-sm-min - 1) !default;
+$screen-sm-max:              ($screen-md-min - 1) !default;
+$screen-md-max:              ($screen-lg-min - 1) !default;

@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->integer('invoice_item_id');
             $table->integer('client')->unsigned()->index('orders_client_foreign');
             $table->string('order_status');
-            $table->string('serial_key')->nullable();
+            $table->string('serial_key', 255)->nullable();
             $table->integer('product')->unsigned()->nullable()->index('orders_product_foreign');
             $table->string('domain');
             $table->string('price_override');

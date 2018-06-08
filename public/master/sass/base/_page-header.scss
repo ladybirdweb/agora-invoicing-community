@@ -1,0 +1,249 @@
+/* Page Header */
+.page-header {
+	background-color: #171717;
+	border-bottom: 5px solid #CCC;
+	border-top: 5px solid #384045;
+	margin: 0 0 35px 0;
+	min-height: 50px;
+	padding: 20px 0;
+	position: relative;
+	text-align: $left;
+	.breadcrumb {
+		background: none;
+		margin: 0;
+	    padding: 0;
+		position: relative;
+		z-index: 1;
+		> li {
+			display: inline-block;
+			font-size: 0.85em;
+			text-transform: uppercase;
+			text-shadow: none;
+			& + li:before {
+				color: inherit;
+				opacity: 0.5;
+				font-family: 'Font Awesome 5 Free';
+				font-weight: 900;
+				content: "\f105";
+				padding: side-values(0 7px 0 5px);
+				@include if-rtl {
+					content: "\f104";
+					float: right;
+				}
+			}
+		}
+	}
+	h1 {
+		border-bottom: 5px solid #CCC;
+		color: #fff;
+		display: inline-block;
+		font-size: 32px;
+		font-weight: 200;
+		line-height: 32px;
+		margin: 0 0 -25px;
+		padding: 0 0 25px;
+		position: relative;
+		span {
+			color: #999da3;
+			display: block;
+			font-size: 0.6em;
+			font-weight: 300;
+			line-height: 1.3em;
+			margin: 7px 0 0;
+		}
+	}
+}
+
+.page-header-no-title-border {
+	h1 {
+		border: 0;
+	}
+}
+
+/* Page Header - Color */
+.page-header-color {
+	background-color: #F7F7F7;
+	border-bottom: 5px solid #F4F4F4;
+	border-top: none;
+	h1 {
+		border-bottom: none;
+		color: #1d2127;
+		font-size: 2.3em;
+		padding: 0;
+		margin: 0;
+		span {
+			opacity: 0.65;
+		}
+	}
+	.breadcrumb {
+		text-align: $right;
+		float: $right;
+		@media(max-width: 991px) {
+			padding: 18px 0px 0;
+			text-align: $left;
+			float: none;
+		}
+		> .active {
+			opacity: 0.65;
+		}
+	}
+}
+
+/* Page Header - More Padding */
+.page-header-more-padding {
+	padding: 35px 0;
+}
+
+/* Page Header - Light */
+.page-header-light {
+	background-color: #F7F7F7;
+	border-bottom: 5px solid #F4F4F4;
+	border-top: none;
+	h1 {
+		border-bottom: none;
+		color: #1d2127;
+		font-size: 2.3em;
+	}
+	.breadcrumb {
+		text-align: $right;
+		float: $right;
+		@media(max-width: 991px) {
+			padding: 18px 0px 0;
+			text-align: $left;
+			float: none;
+		}
+	}
+}
+
+/* Page Header - Reverse */
+.page-header-reverse {
+	text-align: $right;
+	.breadcrumb {
+		text-align: $left;
+		@media(max-width: 991px) {
+			text-align: $right;
+		}
+	}
+}
+
+/* Page Header - Parallax */
+.page-header.parallax {
+	margin: 0 0 35px;
+	padding: 180px 0 60px;
+}
+
+.page-header-center {
+	text-align: center;
+	.breadcrumb {
+		text-align: center;
+		justify-content: center;
+		margin: 15px 0 0;
+	}
+}
+
+/* Page Header Custom Background */
+.page-header-custom-background {
+	padding: 45px 0;
+	background-repeat: repeat;
+	background-color: transparent;
+	border-top: 0;
+	border-bottom: 0;
+	h1 {
+		color: #FFF;
+		border: 0;
+		span {
+			color: #FFF;
+			opacity: 0.7;
+		}
+	}
+	.breadcrumb {
+		text-align: $right;
+		float: $right;
+		@media(max-width: 991px) {
+			padding: 18px 0px 0;
+			text-align: $left;
+			float: none;
+		}
+		li.active {
+			color: #FFF;
+			opacity: 0.7;
+		}
+		a {
+			color: #FFF;
+		}
+	}
+}
+
+/* Page Header Custom - Create your Own */
+.page-header {
+	&.custom-product {
+		background-image: url(../img/custom-header-bg.jpg);
+		background-repeat: repeat;
+		background-color: #999;
+		border-top: 5px solid #888;
+		padding: 0;
+		overflow: hidden;
+		.row {
+			position: relative;
+		}
+		p.lead {
+			color: #E8E8E8;
+		}
+		h1 {
+			color: #FFF;
+			margin-bottom: 10px;
+			margin-top: 30px;
+			border: 0;
+		}
+	}
+}
+
+/* Responsive */
+@media (min-width: 992px) {
+
+	.page-header-more-padding,
+	.page-header-custom-background,
+	.page-header-float-breadcrumb {
+		.breadcrumb-valign-mid {
+			text-align: $right;
+		}
+		&.page-header-reverse {
+			.breadcrumb-valign-mid {
+				text-align: $left;
+			}
+		}
+	}
+
+}
+
+@media (max-width: 991px) {
+
+	.page-header {
+		.breadcrumb {
+			float: none !important;			
+			position: static !important;
+		}
+		.breadcrumb-valign-mid {
+			margin-top: 15px;
+		}
+	}
+
+	.page-header-reverse {
+		.breadcrumb-valign-mid {
+			margin-top: 0;
+			margin-bottom: 15px;
+		}
+	}
+
+}
+
+@media (max-width: 575px) {
+
+	.page-header {
+		h1 {
+			font-size: 26px;
+			line-height: 26px;
+		}
+	}
+
+}

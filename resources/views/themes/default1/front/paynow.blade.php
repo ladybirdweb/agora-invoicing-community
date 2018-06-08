@@ -16,20 +16,21 @@ Checkout
     $symbol = $invoice->currency;
 
 ?>
+<div class="container">
 <div class="row">
 
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+        <div class="card card-default" style="margin-bottom: 40px;">
+             <div class="card-header">
+                 <h4 class="card-title m-0">
+                    
                         Review & Payment
-                    </a>
+                    
                 </h4>
             </div>
 
 
-            <div class="panel-body">
+            <div class="card-body">
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
@@ -119,8 +120,8 @@ Checkout
 
                     </table>
                     <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
-                    <div class="col-md-12">
+                    <!-- <h4 class="heading-primary">Cart Totals</h4> -->
+                   <!--  <div class="col-md-12">
                         <table class="cart-totals">
                             <tbody>
 
@@ -137,7 +138,7 @@ Checkout
                             </tbody>
                         </table>
                         <hr class="tall">
-                    </div>
+                    </div> -->
 
                 </div>
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
@@ -148,7 +149,7 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
-                        {{$gateways}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                         <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                     
                     <div class="col-md-6">
@@ -189,7 +190,7 @@ Checkout
                  
                 @foreach($items->toArray() as $attribute)
                 
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
+                @if($attribute['tax_name']!='null,')
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";
@@ -200,7 +201,19 @@ Checkout
                     $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
                 }
                 ?>
+                <tr class="Taxes">
+                    <th>
+                        <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
+                         </th>
+                    <td>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                        
+                       
+                       
+                    </td>
 
+
+                </tr>
                
                 @endif
                 @endforeach
@@ -215,6 +228,7 @@ Checkout
             </tbody>
         </table>
     </div>
+</div>
 </div>
 
 @endsection

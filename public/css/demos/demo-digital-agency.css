@@ -1,6 +1,6 @@
 @media (min-width: 748px) {
 	.title-with-video-custom {
-		margin-top: -215px !important;
+		margin-top: -245px !important;
 	}
 	.title-with-video-custom h1 {
 		color: #FFF;
@@ -15,7 +15,8 @@ section.section-color-custom {
 }
 
 .social-icons li {
-	box-shadow: none;
+	-webkit-box-shadow: none;
+					box-shadow: none;
 }
 .social-icons li a {
 	background: transparent;

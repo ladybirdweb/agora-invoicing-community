@@ -1,9 +1,12 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Login | Register
+Login | Register | Faveo Helpdesk
 @stop
 @section('page-header')
 Login | Register
+@stop
+@section('page-heading')
+ <h1>Login <span>Sign in or register to use Faveo</span></h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -49,156 +52,19 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         padding-left:5px;
     }
 
-    .wizard {
-        margin: 20px auto;
-        background: #fff;
-    }
-
-    .wizard .nav-tabs {
-        position: relative;
-        margin: 40px auto;
-        margin-bottom: 0;
-        border-bottom-color: #e0e0e0;
-    }
-
-    .wizard > div.wizard-inner {
-        position: relative;
-    }
-
-.connecting-line {
-    height: 2px;
-    background: #e0e0e0;
-    position: absolute;
-    width: 70%;
-    margin: 0 auto;
-    left: 0;
-    right: 0;
-    top: 37%;
-    z-index: 1;
+   
 }
 
-.wizard .nav-tabs > li.active > a, .wizard .nav-tabs > li.active > a:hover, .wizard .nav-tabs > li.active > a:focus {
-    color: #555555;
-    cursor: default;
-    border: 0;
-    border-bottom-color: transparent;
-    
+.wizard-inner
+{
+    display:none;
 }
-.wizard .nav-tabs > li{
-    margin-bottom: 0px;
-}
-p.round-tab {
-    width: 70px;
-    height: 70px;
-    line-height: 70px;
-    display: inline-block;
-    border-radius: 100px;
-    background: #fff;
-    border: 2px solid #e0e0e0;
-    z-index: 2;
-    position: absolute;
-    left: 0;
-    text-align: center;
-    font-size: 25px;
-}
-p.round-tab i{
-    color:#555555;
-}
-.wizard li.active p.round-tab {
-    background: #fff;
-    border: 2px solid #5bc0de;
-    
-}
-.wizard li.active p.round-tab i{
-    color: #5bc0de;
-}
-
-p.round-tab:hover {
-    color: #333;
-    border: 2px solid #333;
-}
-
-.wizard .nav-tabs > li {
-    width: 33.333%;
-}
-
-.wizard li:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 0;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 5px solid transparent;
-    border-bottom-color: #5bc0de;
-    transition: 0.1s ease-in-out;
-}
-
-.wizard li.active:after {
-    content: " ";
-    position: absolute;
-    left: 46%;
-    opacity: 1;
-    margin: 0 auto;
-    bottom: 0px;
-    border: 10px solid transparent;
-    border-bottom-color: #5bc0de;
-}
-
-.wizard .nav-tabs > li a {
-    width: 70px;
-    height: 70px;
-    margin: 20px auto;
-    border-radius: 100%;
-    padding: 0;
-    border-left: none;
-border-right: none;
-border-top: none;
-}
-
-    .wizard .nav-tabs > li a:hover {
-        background: transparent;
-    }
-
-.wizard .tab-pane {
-    position: relative;
-    
-}
-
-.wizard h3 {
-    margin-top: 0;
-}
-
-@media( max-width : 585px ) {
-
-    .wizard {
-        width: 90%;
-        height: auto !important;
-    }
-
-    p.round-tab {
-        font-size: 16px;
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-    }
-
-    .wizard .nav-tabs > li a {
-        width: 50px;
-        height: 50px;
-        line-height: 50px;
-    }
-
-    .wizard li.active:after {
-        content: " ";
-        position: absolute;
-        left: 35%;
-    }
-    
+   
 }
 
 .nav-tabs{
       border-bottom: none;
+      margin: -5px;
 }
 .tab-content {
     border-radius: 0px;
@@ -210,41 +76,38 @@ border-top: none;
 }
 </style>
 
+
 <div class="row">
     <div class="col-md-12">
 
         <section>
             <div class="wizard">
                 <div class="wizard-inner" style="display: none">
-                    <div class="connecting-line"></div>
-                        <ul class="nav nav-tabs" role="tablist">
+                    
+                        <ul class="nav nav-tabs" role="tablist" style=" margin: -5px!important;">
                             <li role="presentation" class="active">
-                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Contact Information">
-                                    <p class="round-tab">
-                                        <i class="fa fa-user"></i>
-                                    </p>
+                                <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab">
+                                   
                                     
                                 </a>
-                                <p style="font-size: 17px;margin-left: 122px;">Contact Information</p>
+                                <p style="display: none">Contact Information</p>
                             </li>
                             <li role="presentation" class="disabled" >
-                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Identity Verification">
-                                    <p class="round-tab">
-                                        <i class="fa fa-exclamation-triangle"></i>
-                                    </p>
+                                <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" >
+                                   
                                     
                                 </a>
-                                <p style="font-size: 17px;margin-left: 120px;">Identity Verification</p>
+                                <p style="display: none">Identity Verification</p>
                             </li>
-                            <li role="presentation" class="disabled">
+                             <li role="presentation" class="disabled">
                                 <a href="#step3" data-toggle="tab" aria-controls="complete" role="tab" title="Confirmation">
-                                    <p class="round-tab">
-                                        <i class="fa fa-check"></i>
-                                    </p>
+                                 
                                     
                                 </a>
-                                <p style="font-size: 17px;margin-left: 150px;">Confirmation</p>
+                                <p style="display: none">Confirmation</p>
                             </li>
+
+                           
                         </ul>
                     </div>
                     <div class="row tab-content">
@@ -256,26 +119,33 @@ border-top: none;
                                 </div>
                                 <div id="fails">
                                 </div>
+                                 <div id="alertMessage1"></div>
+                                 <div id="alertMessage2"></div>
+                                 <!-- <div id="error2">
+                                 </div>
+                                 <div id="alertMessage2" class="-text" ></div> -->
                                 @if(Session::has('success'))
-                                <div class="alert alert-success alert-dismissable">
-                                    <i class="fa fa-ban"></i>
-                                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    {{Session::get('success')}}
+                                <div class="alert alert-success">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                   <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                                        {{Session::get('success')}}
                                 </div>
                                 @endif
                                 <!-- fail message -->
                                 @if(Session::has('fails'))
-                                <div class="alert alert-danger alert-dismissable">
-                                    <i class="fa fa-ban"></i>
-                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    {{Session::get('fails')}}
+                                <div class="alert alert-danger alert-dismissable" role="alert">
+                                    
+                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                      <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                                   <ul>
+                                  <li>  {{Session::get('fails')}} </li>
+                                </ul>
                                 </div>
                                 @endif
                                 @if (count($errors) > 0)
-                                <div class="alert alert-danger alert-dismissable">
-                                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                                    <strong>Whoops!</strong> Something went wrong<br><br>
+                                   <div class="alert alert-danger alert-dismissable" role="alert">
+                                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                   <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
 
                                     <ul>
                                         @foreach ($errors->all() as $error)
@@ -285,40 +155,60 @@ border-top: none;
                                 </div>
                                 @endif
                                 <div class="row">
-                                    <div class="col-sm-6">
-                                        <div class="featured-box featured-box-primary align-left mt-xlg">
+                                   <div class="col-sm-6">
+                                        <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
-                                                <h4 class="heading-primary text-uppercase mb-md">I'm a Returning Customer</h4>
+                                                <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
                                                 {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
-                                                <div class="row">
-                                                    <div class="form-group  {{ $errors->has('email1') ? 'has-error' : '' }}">
-                                                        <div class="col-md-12">
+                                                 <div class="form-row">
+                                                    <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
+                                                       
                                                             <label class="required">Username or E-mail Address</label>
-                                                            {!! Form::text('email1',null,['class' => 'form-control input-lg']) !!}
+                                                              <div class="input-group">
+                                                              {!! Form::text('email1',null,['class' => 'form-control input-lg','id'=>'username','autocomplete'=>"off" ]) !!}
+                                                                <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                                          </div>
+                                                             
+                                                             </div>
+                                                             <h6 id="usercheck"></h6>
 
-                                                        </div>
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group {{ $errors->has('password1') ? 'has-error' : '' }}">
-                                                        <div class="col-md-12">
+                                                <div class="form-row">
+                                                    <div class="form-group col {{ $errors->has('password1') ? 'has-error' : '' }}">
+                                                           
                                                             <a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>
                                                             <label class="required">Password</label>
-                                                            {!! Form::password('password1',['class' => 'form-control input-lg']) !!}
-                                                            <!--<input type="password" value="" class="form-control input-lg">-->
+                                                             <div class="input-group">
+                                                            {!! Form::password('password1',['class' => 'form-control input-lg' ,'id'=>'pass']) !!}
+                                                              <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-key"></i></span>
+                                                          </div>
+                                                          
                                                         </div>
+                                                        <h6 id="passcheck"></h6>
+                                                            <!--<input type="password" value="" class="form-control input-lg">-->
+                                                        
                                                     </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <span class="remember-box checkbox">
-                                                            <label for="rememberme">
-                                                                <input type="checkbox" id="rememberme" name="remember">Remember Me
+                                                 <div class="form-row">
+                                                    <div class="form-group col-lg-6">
+                                                        <div class="form-check form-check-inline">
+                                                       
+                                                            <label class="form-check-label">
+                                                                <input class="form-check-input" type="checkbox" id="rememberme" name="remember">Remember Me
                                                             </label>
-                                                        </span>
+                                                        
                                                     </div>
-                                                    <div class="col-md-12">
-                                                        <input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                    </div>
+                                                     <div class="form-group col-lg-6">
+                                                       <input type="submit" value="Login" id="submitbtn" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">
+                                                      <!-- <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="login" onclick="loginUser()">
+                                                                  Send Email
+                                                      </button> -->
+                                                       
                                                     </div>
                                                 </div>
                                                 {!! Form::close() !!}
@@ -326,46 +216,62 @@ border-top: none;
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <div class="featured-box featured-box-primary align-left mt-xlg">
+                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
-                                                <h4 class="heading-primary text-uppercase mb-md">Register An Account</h4>
-                                                <form name="registerForm" id="regiser-form">
+                                               <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
+                                                <form name="registerForm" id="regiser-form" >
                                                 <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
+                                                   
+                                                        <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
                                                           <!--   {!! Form::label('first_name',Lang::get('message.first_name'),['class'=>'required']) !!} -->
                                                           <label class="required">First Name</label>
+                                                          
                                                             {!! Form::text('first_name',null,['class'=>'form-control input-lg', 'id'=>'first_name']) !!}
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
+                                                            <h6 id="first_namecheck"></h6>
+                                                           </div>
+                                                            
+
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('last_name') ? 'has-error' : '' }}">
                                                                 <label class="required">Last Name</label>
                                                                 {!! Form::text('last_name',null,['class'=>'form-control input-lg', 'id'=>'last_name']) !!}
-                                                            </div>
+                                                             <h6 id="last_namecheck"></h6>
+
                                                         </div>
-                                                    </div>
+                                                        
+                                                    
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-12 {{ $errors->has('email') ? 'has-error' : '' }}">
+                                                 <div class="form-row">
+                                                    
+                                                        <div class="form-group col {{ $errors->has('email') ? 'has-error' : '' }}">
                                                             <label class="required">Email Address</label>
                                                             {!! Form::email('email',null,['class'=>'form-control input-lg', 'id'=>'email']) !!}
+                                                            <h6 id="emailcheck"></h6>
                                                         </div>
 
-                                                    </div>
+                                                      
                                                 </div>
+                                                
+
                                                 <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('company') ? 'has-error' : '' }}">
+                                                   
+                                                        <div class="form-group col-lg-6 {{ $errors->has('company') ? 'has-error' : '' }}">
                                                             <label  class="required">Company Name</label>
                                                             {!! Form::text('company',null,['class'=>'form-control input-lg', 'id'=>'company']) !!}
+                                                             <h6 id="companycheck"></h6>
                                                         </div>
-                                                        <div class="col-md-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
+                                                       
+
+                                                        <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                            <h6 id="bussinesscheck"></h6>
                                                         </div>
-                                                    </div>
+                                                        
+
+                                                    
                                                 </div>
+                                                 
                                                 <div class='row'>
                                                     <?php
                                                     $type = DB::table('company_types')->pluck('name', 'short')->toArray();;
@@ -377,61 +283,63 @@ border-top: none;
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
                                                         {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
-
+                                                     <h6 id="company_typecheck"></h6>
                                                     </div>
+                                                    
+
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
                                                         {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control input-lg', 'id'=>'company_size']) !!}
-
+                                                       <h6 id="company_sizecheck"></h6>
                                                     </div>
+                                                    
+
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-
-
-                                                        <div class="form-group">
-                                                            <div class="col-md-12 {{ $errors->has('country') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                      <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                            <h6 id="countrycheck"></h6>
 
                                                             </div>
+                                                            
+                                                 </div>
+                                                <div class="form-row">
+                                                    <div class="col-lg-12 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                                                        <label class="required">Mobile</label>
+                                                        {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden']) !!}
+                                                           <input class="form-control input-lg" id="mobilenum" name="mobile" type="tel">
+                                                        {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                                                        <h6 id="mobile_codecheck"></h6>
+                                                    </div>
+                                                     
 
-                                                        </div>
-                                                    </div>
+                                                   
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                                                        <label class="required">Country code</label>
-                                                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                                                        {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
-                                                    </div>
-                                                    <div class="col-md-8 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                                                        <!-- mobile -->
-                                                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                                                        {!! Form::text('mobile',null,['class' => 'form-control input-lg', 'id'=>'mobilenum']) !!}
-
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-12 {{ $errors->has('address') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                   
+                                                        <div class="form-group col {{ $errors->has('address') ? 'has-error' : '' }}">
                                                             <label class="required">Address</label>
                                                             {!! Form::textarea('address',null,['class'=>'form-control','rows'=>4, 'id'=>'address']) !!}
 
-                                                        </div>
+                                                       <h6 id="addresscheck"></h6>
                                                     </div>
+                                                     
+
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="col-md-6 {{ $errors->has('town') ? 'has-error' : '' }}">
+                                                  <div class="form-row">
+                                                    
+                                                        <div class="form-group col-lg-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                                             <label>City/Town</label>
                                                             {!! Form::text('town',$location['city'],['class'=>'form-control input-lg', 'id'=>'city']) !!}
+                                                             <h6 id="towncheck"></h6>
                                                         </div>
+                                                       
 
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('state') ? 'has-error' : '' }}">
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('state') ? 'has-error' : '' }}">
                                                                 {!! Form::label('state',Lang::get('message.state')) !!}
                                                                 <?php
                                                                 $value = "";
@@ -444,51 +352,82 @@ border-top: none;
                                                                 // dd($value);
                                                                 ?>
                                                                 {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
-
+                                                            <h6 id="statecheck"></h6>
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                             
+
+                                                        
+                                                   
                                                 </div>
-                                                <div class="row">
-                                                    <div class="form-group">
-                                                        <div class="form-group">
-                                                            <div class="col-md-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                    
+                                                        
+                                                            <div class="form-group col-lg-6 {{ $errors->has('zip') ? 'has-error' : '' }}">
                                                                 <label class="required">Zip/Postal Code</label>
                                                                 {!! Form::text('zip',$location['zip'],['class'=>'form-control input-lg', 'id'=>'zip']) !!}
+                                                                 <h6 id="zipcheck"></h6>
                                                             </div>
+                                                            
 
-                                                            <div class="col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
+
+                                                            <div class="form-group col-md-6 {{ $errors->has('user_name') ? 'has-error' : '' }}">
                                                                 <label class="required">User Name/E-mail Id</label>
                                                                 {!! Form::text('user_name',null,['class'=>'form-control input-lg', 'id'=>'user_name']) !!}
+                                                                 <h6 id="user_namecheck"></h6>
                                                             </div>
-                                                        </div>
-                                                    </div>
+                                                            
+
+                                                       
+                                                    
                                                 </div>
-                                                <div class="row">
-                                                    <div class="fo
-                                                    rm-group">
-                                                        <div class="col-md-6 {{ $errors->has('password') ? 'has-error' : '' }}">
+                                                <div class="form-row">
+                                                   
+                                              <div class="form-group col-lg-6 {{ $errors->has('password') ? 'has-error' : '' }}">
                                                             <label class="required">Password</label>
                                                             {!! Form::password('password',['class'=>'form-control input-lg', 'id'=>'password']) !!}
+                                                            <h6 id="password1check"></h6>
                                                         </div>
-                                                        <div class="col-md-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+                                                         
+
+                                                        <div class="form-group col-lg-6 {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
                                                             <label class="required">Re-enter Password</label>
 
                                                             {!! Form::password('password_confirmation',['class'=>'form-control input-lg', 'id'=>'confirm_pass']) !!}
+                                                             <h6 id="conpasscheck"></h6>
                                                         </div>
-                                                    </div>
+                                                        
+
+                                                   
                                                 </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-6">
+                                              <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
+ -->
+                                               <div class="form-row">
+                                                    <div class="form-group col-lg-6">
                                                         <label>
-                                                            <input type="checkbox" name="terms" id="terms"> {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+
+                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                     </div>
+                                                    <div class="form-row">
+                                                          <div class="form-group col-lg-6">
+                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()" style="margin-right:-230px;margin-top:4px;">Submit</button>
+                                                          </div>
+                                                    </div>
                                                 </div>
-                                                <div class="row">
-                                                    <div class="col-md-6 pull-right">
-                                                        <input type="button" value="Register" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">
+                                                <div class="form-row">
+                                                  
+                                                <div class="pull-left obligatory-fields required" >
+                                                     </div>&nbsp;
+                                                  Required fields
+                                              </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-lg-6 ">
+                                                        
+                                                               <!--  <div class="pull-right marginright">
+                    <button type="submit" class="btn btn-medium btn-custom ">Submit</button>
+                </div> -->
+                                                      
                                                        <!--  <button type="button" class="btn btn-primary mb-xl next-step" name="register" id="register" onclick="registerUser()">Register
                                                         </button> -->
                                                     </div>
@@ -504,49 +443,72 @@ border-top: none;
                         <div class="col-md-12 tab-pane" id="step2">
 
         <div class="featured-boxes">
+
             
                         <!-- fail message -->
             <div class="row">
-                <div class="col-sm-10" style="float: none;margin: auto">
-                    <div id="alertMessage1"></div>
+                <div class="col-lg-6 offset-lg-3">
+                    <div id="successMessage1"></div>
+                     <!-- <div id="successMessage2"></div> -->
+
                     <div id="error1">
                     </div>
-                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
+                   <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">Email and Mobile Verification</h4>
-                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step.</p>
-                            <form name="verifyForm" >
+                          
+                            <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
+                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email and Mobile</h4>
+                                            <p>You will be sent a verification email and OTP on your mobile immediately by an automated system, Please click on the verification link in the email and also enter the OTP in the next step. Click next to continue</p>
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
-                                <div class="row">
-                                    <div class="form-group">
-                                        <div class="col-md-12 ">
-                                            <label class="required">Email Address</label>
-                                            <input class="form-control input-lg" name="verify_email" id="verify_email" type="email">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-4 form-group ">
-                                        <label class="required">Country code</label>
-                                        <input id="mobile_code_hidden" name="mobile_code" type="hidden">
-                                        <input class="form-control input-lg"  id="verify_country_code" name="verify_country_code" type="text">
-                                    </div>
-                                    <div class="col-md-8 form-group ">
-                                        <!-- mobile -->
-                                        <label for="mobile" class="required">Mobile</label>
-                                        <input class="form-control input-lg" name="verify_number" type="text" id="verify_number">
+                                <div class="form-row">
+                                                        <div class="form-group col">
+                                                            <label>Email</label>
+                                                             <div class="input-group">
 
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6" style="float: right;">
-                                        <!-- <input type="button" value="Verify" class="btn btn-primary mb-xl next-step" data-loading-text="Loading..." name="sendOtp" id="sendOtp" onclick="sendOTP()"> -->
-                                        <button type="button" class="btn btn-primary mb-xl next-step" name="sendOtp" id="sendOtp" onclick="sendOTP()">
-                                            Send
-                                        </button>
-                                    </div>
-                                </div>
+                                                  
+
+
+                                                            <input type="email" value="" name="verify_email" id="verify_email" class="form-control form-control input-lg">
+                                                             <div class="input-group-append">
+                                                            <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                                          </div>
+                                                          
+                                                        </div>
+                                                        <h6 id="conemail"></h6>
+                                                        </div>
+                                                         
+                                                    </div>
+
+
+                                                     
+                                            
+
+                                                     <div class="form-row">
+                                                        <div class="form-group col">
+                                                        <input id="mobile_code_hidden" name="mobile_code" type="hidden">
+                                                         <input class="form-control form-control input-lg"  id="verify_country_code" name="verify_country_code" type="hidden">
+                                                          <label for="mobile" class="required">Mobile</label><br/>
+                                                            
+                                                       <input class="form-control input-lg phone"  name="verify_number" type="text" id="verify_number">
+                                                        
+                                                      
+                                                        <h6 id="conmobile"></h6>
+                                                      </div>
+                                                       
+                                                  </div>
+
+                                                    <div class="form-row">
+                                                        <div class="form-group col">
+                                                       
+                                             <button type="button" class="btn btn-primary mb-xl next-step float-right" name="sendOtp" id="sendOtp" onclick="sendOTP()">
+                                            Next
+                                             </button>
+                                                        </div>
+                                                    </div>
+                               
+                                
+                               
                             </form>
                         </div>
                     </div>
@@ -559,13 +521,14 @@ border-top: none;
         <div class="featured-boxes">
                         <!-- fail message -->
             <div class="row">
-                <div class="col-sm-10" style="float: none;margin: auto">
+                <div class="col-lg-6 offset-lg-3">
                     <div id="error2">
                     </div>
-                    <div id="alertMessage2" class="-text" ></div>
-                    <div class="featured-box featured-box-primary align-left mt-xlg" style="max-height: 1156px;height: auto">
+                    <div id="successMessage2"></div>
+                    <div id="alertMessage3"></div>
+                   <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
-                            <h4 class="heading-primary text-uppercase mb-md">Confirmation</h4>
+                            <h4 class="heading-primary text-uppercase mb-md">OTP Confirmation</h4>
                             <!-- <div class="row verify">
                                 <div class="col-md-12">
                                     <label>
@@ -574,33 +537,35 @@ border-top: none;
                                 </div>
                             </div> -->
                             <form name="verify_otp_form">
+                                   <label for="mobile" class="required">Enter OTP</label><br/>
                                 <div class="row verify">
-                                    <div class="col-md-4 form-group ">
+                                    <div class="form-group col-lg-6">
+                                        
                                         <input type="hidden" name="user_id" id="hidden_user_id"/>
-                                        <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" placeholder="Enter OTP">
+                                        <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" >
+                                         <h6 id="enterotp"></h6>
                                     </div>
-                                    <div class="col-md-2 form-group ">
-                                        <!-- <input type="button" class="btn btn-primary mb-xl" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-top: 6px;"> -->
-                                        <button type="button" class="btn btn-primary mb-xl" name="verifyOtp" id="verifyOtp" onclick="verifyBySendOtp()" style="margin-top: 6px;">
-                                            Verify OTP
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
-                           <!--  <div class="row">
-                                <div class="col-md-6">
-                                    <h5>Didn't recieve OTP via SMS</h5>
-                                    <button type="button" class="btn btn-default mb-xl" data-loading-text="Loading..." name="resendOTP" id="resendOTP" onclick="resendOTP()" style="background: grey; color: white;" ><i class="fa fa-phone" style="font-size: 18px;"></i>&nbsp;&nbsp; Get OTP via Voice </button>
-                                </div>
-                            </div> -->
-                             <div class="row">
-                                <div class="col-md-6">
-                                    <input type="button" value="Login" class="btn btn-default mb-xl prev-step" data-loading-text="Loading..." style="background: grey; color:white;">
-                                    <!-- <input type="button" value="Back To Verification" class="btn btn-default mb-xl prev" data-loading-text="Loading..." style="background: grey; color:white;" > -->
-                                    <!-- <input type="submit" value="Register" class="btn btn-primary mb-xl" data-loading-text="Loading..." onclick='goog_report_conversion()'> -->
 
+
+                                        
+                                              <div class="form-group col-lg-2">
+                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-right:-22px;">
+                                                        Verify OTP
+                                                 </button>
+                                                 </div>
+                                                     <div class="form-group col-lg-2">
+                                                        <a  class="btn btn-danger float-right mb-5" name="resendOTP" onclick="resendOTP()" id="resendOTP" ng-click="resendOTP()" style="margin-right:-55px; background: grey; color:white;">Resend OTP</a>
+                                                         </div>  
+                                                       
+                                                            
+                                                       
+
+
+                                   
                                 </div>
-                            </div>
+                             
+                            </form>
+                          
                         </div>
                     </div>
                 </div>
@@ -615,11 +580,563 @@ border-top: none;
 </div>
 @stop 
 @section('script')
+
+
+
+
 <script type="text/javascript">
+    
 
-    function registerUser() {
-        $("#register").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Registering...");
+    $( document ).ready(function() {
+        var printitem= localStorage.getItem('successmessage');
+         if(printitem != null){
+         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
+         $('#alertMessage2').html(result);
+         localStorage.removeItem('successmessage');
+         localStorage.clear();
+     }
+    
+});
+</script>
+<script type="text/javascript">
+    //confirm email/password Validdation
+ 
+            // alert('sdsd');   
+            
 
+            $('#verify_email').keyup(function(){
+                 verify_email_check();
+            });
+
+
+            function verify_email_check(){
+              var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+              if (pattern.test($('#verify_email').val())){
+                 $('#conemail').hide();
+                  $('#verify_email').css("border-color","");
+                 return true;
+               
+              }
+              else{
+                 $('#conemail').show();
+                $('#conemail').html("Please Enter a valid email");
+                 $('#conemail').focus();
+                $('#verify_email').css("border-color","red");
+                $('#conemail').css({"color":"red","margin-top":"5px"});
+
+                   // mail_error = false;
+                return false;
+                
+              }
+
+            }
+         
+         $('#verify_number').keyup(function(){
+            verify_number_check();
+         });
+
+         function verify_number_check(){
+            var userNumber = $('#verify_number').val();
+            if (userNumber.length < 10){
+                $('#conmobile').show();
+                $('#conmobile').html("Please Enter Your Mobile No.");
+                $('#conmobile').focus();
+                 $('#verify_number').css("border-color","red");
+                $('#conmobile').css({"color":"red","margin-top":"5px"});
+
+               
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#conmobile').hide();
+
+                 $('#verify_number').css("border-color","");
+                return true;
+                
+              }
+         }
+
+        
+
+</script>
+
+<script type="text/javascript">
+    //Login Form Jquery validation
+ $(document).ready(function(){
+   $('#usercheck').hide();
+   $('#passcheck').hide();
+
+   var userErr = true;
+   var passErr = true;
+
+  $('#formoid').submit(function(){
+       function username_check(){
+    var user_val = $('#username').val();
+    if(user_val.length == ''){
+        $('#usercheck').show();
+        $('#usercheck').html("Please Enter Username/Email");
+        $('#usercheck').focus();
+        $('#username').css("border-color","red");
+       $('#usercheck').css({"color":"red","margin-top":"5px"});
+
+          // userErr =false;
+        // return false;
+    }
+    else if((user_val.length < 3) || (user_val.length > 10))  {
+        $('#usercheck').show();
+        $('#usercheck').html("Username Length must be between 3 to 20 characters");
+        $('#usercheck').focus();
+          $('#username').css("border-color","red");
+       $('#usercheck').css({"color":"red","margin-top":"5px"});
+
+        // userErr =false;
+        // return false;
+    }
+    else{
+         $('#usercheck').hide();
+          $('#username').css("border-color","");
+         return true;
+    }
+   }
+   
+
+    function password_check(){
+        var passStore= $('#pass').val()
+    if(passStore.length == ''){
+        $('#passcheck').show();
+        $('#passcheck').html("Please Enter Password");
+        $('#passcheck').focus();
+        $('#pass').css("border-color","red");
+       $('#passcheck').css({"color":"red","margin-top":"5px"});
+        passErr =false;
+        return false;
+    }
+    else if((passStore.length < 3) || (passStore.length > 20)){
+        $('#passcheck').show();
+        $('#passcheck').html("Password Length must be between 3 and 10");
+        $('#passcheck').focus();
+
+        $('#pass').css("border-color","red");
+       $('#passcheck').css({"color":"red","margin-top":"5px"});
+        passErr =false;
+        return false;
+    }
+    else{
+         $('#passcheck').hide();
+          $('#pass').css("border-color","");
+         return true;
+    }
+    }
+    username_check();
+    password_check();
+  if(username_check() && password_check()){
+        return true;
+     }
+     else{
+        return false;
+     }
+  });
+
+ });
+
+
+//Registration Form Validation
+ function first_namecheck(){
+    var firrstname_val = $('#first_name').val();
+    if(firrstname_val.length == ''){
+        $('#first_namecheck').show();
+        $('#first_namecheck').html("Please Enter First Name");
+        $('#first_namecheck').focus();
+         $('#first_name').css("border-color","red");
+        $('#first_namecheck').css("color","red");
+        // userErr =false;
+        // return false;
+          $('html, body').animate({
+        scrollTop: $("#first_namecheck").offset().top -200
+    }, 1000)
+    }
+   
+    else{
+         $('#first_namecheck').hide();
+          $('#first_name').css("border-color","");
+         return true;
+    }
+   }
+    //Validating last name field
+    function last_namecheck(){
+    var lastname_val = $('#last_name').val();
+    if(lastname_val.length == ''){
+        $('#last_namecheck').show();
+        $('#last_namecheck').html("Please Enter Last Name");
+        $('#last_namecheck').focus();
+         $('#last_name').css("border-color","red");
+        $('#last_namecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+         
+        scrollTop: $("#last_namecheck").offset().top - 200
+    }, 1000)
+    }
+   
+    else{
+         $('#last_namecheck').hide();
+         $('#last_name').css("border-color","");
+         return true;
+    }
+   }
+    //Validating email field
+    function emailcheck(){
+
+            var pattern = new RegExp(/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+              if (pattern.test($('#email').val())){
+                 $('#emailcheck').hide();
+                 $('#email').css("border-color","");
+                 return true;
+               
+              }
+              else{
+                 $('#emailcheck').show();
+                $('#emailcheck').html("Please Enter a valid email");
+                 $('#emailcheck').focus();
+                  $('#email').css("border-color","red");
+                 $('#emailcheck').css({"color":"red","margin-top":"5px"});
+                   // mail_error = false;
+               $('html, body').animate({
+        scrollTop: $("#emailcheck").offset().top -200 
+    }, 1000)
+    }
+                
+              }
+
+     function companycheck(){
+    var company_val = $('#company').val();
+    if(company_val.length == ''){
+        $('#companycheck').show();
+        $('#companycheck').html("Please Enter Company Name");
+        $('#companycheck').focus();
+         $('#company').css("border-color","red");
+        $('#companycheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+        scrollTop: $("#companycheck").offset().top - 200
+    }, 1000)
+    }
+   
+    else{
+         $('#companycheck').hide();
+          $('#company').css("border-color","");
+         return true;
+    }
+   }
+
+   function bussinesscheck(){
+    var business_val = $('#business').val();
+    if(business_val== ''){
+        $('#bussinesscheck').show();
+        $('#bussinesscheck').html("Please Select One Industry");
+        $('#bussinesscheck').focus();
+         $('#business').css("border-color","red");
+        $('#bussinesscheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+        scrollTop: $("#companycheck").offset().top - 200
+    }, 1000)
+    }
+   
+    else{
+         $('#bussinesscheck').hide();
+         $('#business').css("border-color","");
+         return true;
+    }
+   }
+
+   function company_typecheck(){
+    var companytype_val = $('#company_type').val();
+    if(companytype_val == ''){
+        $('#company_typecheck').show();
+        $('#company_typecheck').html("Please Select Company Type");
+        $('#company_typecheck').focus();
+          $('#company_type').css("border-color","red");
+        $('#company_typecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+        $('html, body').animate({
+        scrollTop: $("#company_typecheck").offset().top - 200
+    }, 1000)
+    }
+   
+    else{
+         $('#company_typecheck').hide();
+          $('#company_type').css("border-color","");
+         return true;
+    }
+   }
+
+   function company_sizecheck(){
+    var companysize_val = $('#company_size').val();
+    if(companysize_val == ''){
+        $('#company_sizecheck').show();
+        $('#company_sizecheck').html("Please Select Company Size");
+        $('#company_sizecheck').focus();
+        $('#company_size').css("border-color","red");
+        $('#company_sizecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+          $('html, body').animate({
+        scrollTop: $("#company_sizecheck").offset().top - 200
+    }, 1000)
+    }
+   
+    else{
+         $('#company_sizecheck').hide();
+         $('#company_size').css("border-color","");
+         return true;
+    }
+   }
+   
+   function countrycheck(){
+    var country_val = $('#country').val();
+    if(country_val == ''){
+        $('#countrycheck').show();
+        $('#countrycheck').html("Please Select One Country ");
+        $('#countrycheck').focus();
+         $('#country').css("border-color","red");
+            $('#countrycheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+        $('html, body').animate({
+        scrollTop: $("#countrycheck").offset().top - 200
+    }, 1000)
+    }
+    else{
+         $('#countrycheck').hide();
+         $('#country').css("border-color","");
+         return true;
+    }
+   }
+
+    function mobile_codecheck(){
+    var mobile_val = $('#mobilenum').val();
+    if(mobile_val.length == ''){
+        $('#mobile_codecheck').show();
+        $('#mobile_codecheck').html("Please Select One Country ");
+        $('#mobile_codecheck').focus();
+        $('#mobilenum').css("border-color","red");
+        $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+        scrollTop: $("#mobile_codecheck").offset().top -200
+    }, 1000)
+    }
+    else{
+         $('#mobile_codecheck').hide();
+         $('#mobilenum').css("border-color","");
+         return true;
+    }
+   }
+    
+    function addresscheck(){
+    var address_val = $('#address').val();
+    if(address_val.length == ''){
+        $('#addresscheck').show();
+        $('#addresscheck').html("Please Enter Address ");
+        $('#addresscheck').focus();
+         $('#address').css("border-color","red");
+        $('#addresscheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+       $('html, body').animate({
+        scrollTop: $("#addresscheck").offset().top -200
+    }, 1000)
+    }
+    else{
+         $('#addresscheck').hide();
+          $('#address').css("border-color","");
+         return true;
+    }
+   }
+
+    function towncheck(){
+    var town_val = $('#city').val();
+    if(town_val.length == ''){
+        $('#towncheck').show();
+        $('#towncheck').html("Please Enter Town ");
+        $('#towncheck').focus();
+        $('#city').css("border-color","red");
+        $('#towncheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+        $('html, body').animate({
+        scrollTop: $("#towncheck").offset().top -200
+    }, 1000)
+    }
+    else{
+         $('#towncheck').hide();
+         $('#city').css("border-color","");
+         return true;
+    }
+   }
+
+    function statecheck(){
+    var state_val = $('#state-list').val();
+    if(state_val.length == ''){
+        $('#statecheck').show();
+        $('#statecheck').html("Please Select a State ");
+        $('#statecheck').focus();
+        $('#state-list').css("border-color","red");
+        $('#statecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+         $('html, body').animate({
+        scrollTop: $("#statecheck").offset().top -200
+    }, 1000)
+    }
+   
+    else{
+         $('#statecheck').hide();
+          $('#state-list').css("border-color","");
+         return true;
+    }
+   }
+
+   function zipcheck(){
+    var zip_val = $('#zip').val();
+    if(zip_val.length == ''){
+        $('#zipcheck').show();
+        $('#zipcheck').html("Please Enter Zip Code ");
+        $('#zipcheck').focus();
+        $('#zip').css("border-color","red");
+        $('#zipcheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+           $('html, body').animate({
+        scrollTop: $("#zipcheck").offset().top -200
+    }, 1000)
+    }
+   
+    else{
+         $('#zipcheck').hide();
+          $('#zip').css("border-color","");
+         return true;
+    }
+   }
+   function user_namecheck(){
+    var username_val = $('#user_name').val();
+    if(username_val.length == ''){
+        $('#user_namecheck').show();
+        $('#user_namecheck').html("Please Enter Username ");
+        $('#user_namecheck').focus();
+        $('#user_name').css("border-color","red");
+        $('#user_namecheck').css({"color":"red","margin-top":"5px"});
+        // userErr =false;
+       
+          $('html, body').animate({
+        scrollTop: $("#user_namecheck").offset().top -200
+    }, 1000)
+     
+    }
+   
+    else{
+         $('#user_namecheck').hide();
+         $('#user_name').css("border-color","");
+         return true;
+    }
+   }
+
+
+   function password1check(){
+              var pattern = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*(_|[^\w])).+$/);
+              if (pattern.test($('#password').val())){
+                 $('#password1check').hide();
+                  $('#password').css("border-color","");
+                 return true;
+               
+              }
+              else{
+                 $('#password1check').show();
+                $('#password1check').html("Password must contain Uppercase/Lowercase/Special Character and Number");
+                 $('#password1check').focus();
+                $('#password').css("border-color","red");
+                $('#password1check').css({"color":"red","margin-top":"5px"});
+
+                   // mail_error = false;
+                return false;
+                
+              }
+
+            }
+
+
+   //    $('#conpassword').keyup(function(){
+   //     con_password_check();
+   // });
+
+     function conpasscheck(){
+        var confirmPassStore= $('#confirm_pass').val();
+         var passwordStore = $('#password').val();
+         if(confirmPassStore != passwordStore){
+            $('#conpasscheck').show();
+            $('#conpasscheck').html("Passwords Don't Match");
+            $('#conpasscheck').focus();
+             $('#confirm_pass').css("border-color","red");
+            $('#conpasscheck').css("color","red");
+           $('html, body').animate({
+        scrollTop: $("#conpasscheck").offset().top -200
+    }, 1000)
+         }
+        else{
+             $('#conpasscheck').hide();
+             $('#confirm_pass').css("border-color","");
+               return true;
+        }
+  }
+
+ $(document).on('change','#term',function(){
+    if($(this).val()=="false"){
+      $(this).val("true");
+    }
+    else{
+      $(this).val("false");
+    }
+    console.log($(this).val());
+ })
+function registerUser() {
+     
+
+   $('#first_namecheck').hide();
+   $('#last_namecheck').hide();
+    $('#emailcheck').hide();
+     $('#companycheck').hide();
+      $('#bussinesscheck').hide();
+       $('#company_typecheck').hide();
+        $('#company_sizecheck').hide();
+         $('#countrycheck').hide();
+         $('#mobile_codecheck').hide();
+          $('#addresscheck').hide();
+           $('#towncheck').hide();
+            $('#statecheck').hide();
+             $('#zipcheck').hide();
+              $('#user_namecheck').hide();
+               $('#password1check').hide();
+                $('#conpasscheck').hide();
+
+
+         var first_nameErr = true;
+         var last_nameErr = true;
+         var emailErr = true;
+         var companyeErr = true;
+         var bussinessErr = true;
+         var company_typeErr = true;
+         var company_sizeErr = true;
+         var countryErr = true;
+          var mobile_codeErr = true;
+          var addressErr = true;
+          var townErr = true;
+          var stateErr = true;
+          var zipErr = true;
+          var user_nameErr = true;
+          var password1Err = true;
+          var conPassErr = true;
+
+     // con_password_check();
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck())
+     {
+      console.log($('#term').val())
+     $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
         $.ajax({
           url: '{{url("auth/register")}}',
           type: 'post',
@@ -641,22 +1158,28 @@ border-top: none;
                 "user_name": $('#user_name').val(),
                 "password": $('#password').val(),
                 "password_confirmation": $('#confirm_pass').val(),
-                "terms": $('#terms').val(),
+                "terms": $('#term').val(),
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
+
             if(response.type == 'success'){
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage1').html(result);
+                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                $('#successMessage1').html(result);
                 $('.wizard-inner').css('display','block');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
-                window.scrollTo(0, 10);
+                window.scrollTo(0,0);
                 verifyForm.elements['user_id'].value = response.user_id;
-                verifyForm.elements['verify_email'].value = $('#email').val();
+                var $emailverfy = verifyForm.elements['verify_email'].value = $('#email').val();
+                sessionStorage.setItem('oldemail',$emailverfy);
+
+                 
+
                 verifyForm.elements['verify_country_code'].value = $('#mobile_code').val();
-                verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+               var $numberverify= verifyForm.elements['verify_number'].value = $('#mobilenum').val();
+                sessionStorage.setItem('oldenumber',$numberverify);
                 verifyForm.elements['email_password'].value = $('#password').val();
                 $("#register").html("Register");
                 /*setTimeout(function(){ 
@@ -666,60 +1189,94 @@ border-top: none;
           },
           error: function (ex) {
             var data = JSON.parse(ex.responseText);
-
+            // console.log(data.errors);
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
             var res = "";
 
                 function ash(idx, topic) {
-                   
+                    // console.log(idx);
                    if(typeof topic==="object"){
                       $.each(topic, ash);
                    }
                    else{
-                     // var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                     res += "<ul style='list-style-type:none'><li><i class='fa fa-ban'></i>&nbsp" + topic + "</li></ul>";
+                    
+                     res += '<li>' + topic + '</li>';
+                     
                    }
                 };
                  $.each(data, ash);
-                console.log(res)
-                $('#error').html('<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
+                // console.log(res)
+                $('#error').html('<div class="alert alert-danger"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.message+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
               
             $('#error').show();
             setTimeout(function(){ 
                 $('#error').hide(); 
-            }, 5000000);
+            }, 500000);
           }
         });
-    }
+     }
+    
+       else{
+        return false;
+          
+     }
+    };
+    
 
     function sendOTP() {
+        $('#conemail').hide();
+            $('#conmobile').hide();
+
+            // var mail_error = true;
+            // var mobile_error = true;
+          
+            var mail_error = true;
+           var mobile_error = true;
+           if((verify_email_check()) && (verify_number_check()))
+           {
+          
+           var oldemail=sessionStorage.getItem('oldemail');
+        var newemail = $('#verify_email').val(); // this.value
+        var oldnumber = sessionStorage.getItem('oldemail');
+        var newnumber = $('#verify_number').val();
+       
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
+            "newemail": newemail,
+            "newnumber": newnumber,
+            "oldnumber": oldnumber,
+            "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
             "code": $('#verify_country_code').val(),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
-           // alert('ok');
+          
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
           data: data,
           success: function (response) {
-                var result =  '<div class="alert alert-success alert-dismissable"><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage2').html(result);
+           
+            var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
+                $('#successMessage2').html(result);
                 $('#error1').hide();
-                $('.wizard-inner').css('display','block');
+                $('.wizard-inner').css('display','none');
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
+                  setTimeout(function(){ 
+               sessionStorage.removeItem('oldemail');
+           sessionStorage.clear();
+            }, 500);
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
           },
           error: function (ex) {
+
             var myJSON = JSON.parse(ex.responseText);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
@@ -737,8 +1294,66 @@ border-top: none;
           }
         });
     }
+     else{
+        return false;
+    }
+   
+    }
+ 
+    //get login tab1
+    function getLoginTab(){
+         registerForm.elements['first_name'].value = '';
+        registerForm.elements['last_name'].value = '';
+        registerForm.elements['email'].value = '';
+        registerForm.elements['company'].value = '';
+        registerForm.elements['bussiness'].value = '';
+        registerForm.elements['company_type'].value = '';
+        registerForm.elements['company_size'].value = '';
+        registerForm.elements['mobile'].value = '';
+        registerForm.elements['address'].value = '';
+        registerForm.elements['user_name'].value = '';
+        registerForm.elements['password'].value = '';
+        registerForm.elements['password_confirmation'].value = '';
+        registerForm.elements['terms'].checked = false;
+
+        $('.nav-tabs li a[href="#step1"]').tab('show');
+        $('.wizard-inner').css('display','none');
+    }
+
+   $(".prev-step").click(function (e) {
+          getLoginTab();
+    });
+
+    //Enter OTP Validation
+    $('#oneTimePassword').keyup(function(){
+                 verify_otp_check();
+            });
+
+
+            function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                 $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+               
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+                
+              }
+         }
 
     function verifyBySendOtp() {
+       $('#enterotp').hide();
+         if(verify_otp_check()) {
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
             "mobile":   $('#verify_number').val(),
@@ -753,9 +1368,14 @@ border-top: none;
             success: function (response) {
                 $('#error2').hide(); 
                 $('#alertMessage2').show();
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage2').html(result);
+                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
+                 // $('#alertMessage3').show();
+                 $('#successMessage2').hide();
+                $('#success').html(result);
                 $("#verifyOtp").html("Verify OTP");
+                setTimeout(()=>{
+                        getLoginTab();
+                },0)
             },
             error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);
@@ -774,6 +1394,11 @@ border-top: none;
                 }, 5000);
             }
         });
+      }
+      else
+      {
+        return false;
+      }
     }
 
     function resendOTP() {
@@ -786,14 +1411,16 @@ border-top: none;
           type: 'GET',
           data: data,
           success: function (response) {
-                $('#alertMessage2').show();
+               
+                 $('#successMessage2').hide ();
+                  $('#alertMessage3').show();
                 $('#error2').hide();
-                var result =  '<div class="alert alert-success alert-dismissable"></i><b>'+response.message+'!</b>.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
-                $('#alertMessage2').html(result+ ".");
+                var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                $('#alertMessage3').html(result+ ".");
           },
           error: function (ex) {
                 var myJSON = JSON.parse(ex.responseText);
-                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
                 for (var key in myJSON)
                 {
                     html += '<li>' + myJSON[key][0] + '</li>'
@@ -818,8 +1445,14 @@ border-top: none;
     });
 
     function getCountryAttr(val) {
-        getState(val);
-        getCode(val);
+        if(val!=""){
+            getState(val);
+            getCode(val);
+        }
+        else{
+             console.log(val)
+            $("#state-list").html('<option value="">Please select Country</option>').val('');
+        }
 
 //        getCurrency(val);
 
@@ -831,6 +1464,8 @@ border-top: none;
             url: "{{url('get-loginstate')}}/" + val,
               data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
+                 $("#state-list").html('<option value="">Please select Country</option>').val('');
+                console.log()
               $("#state-list").html(data).val(state.id);
             }
         });
@@ -982,26 +1617,7 @@ fbq('track', 'PageView');
         window.scrollTo(0, 10);
 
     });*/
-    $(".prev-step").click(function (e) {
-
-        registerForm.elements['first_name'].value = '';
-        registerForm.elements['last_name'].value = '';
-        registerForm.elements['email'].value = '';
-        registerForm.elements['company'].value = '';
-        registerForm.elements['bussiness'].value = '';
-        registerForm.elements['company_type'].value = '';
-        registerForm.elements['company_size'].value = '';
-        registerForm.elements['mobile'].value = '';
-        registerForm.elements['address'].value = '';
-        registerForm.elements['user_name'].value = '';
-        registerForm.elements['password'].value = '';
-        registerForm.elements['password_confirmation'].value = '';
-        registerForm.elements['terms'].checked = false;
-
-        $('.nav-tabs li a[href="#step1"]').tab('show');
-        $('.wizard-inner').css('display','none');
-
-    });
+   
     $(".prev").click(function (e) {
         
         var $active = $('.wizard .nav-tabs li.active');
@@ -1022,7 +1638,7 @@ function prevTab(elem) {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
-    var telInput = $('#mobile');
+    var telInput = $('#mobilenum');
     telInput.intlTelInput({
         geoIpLookup: function (callback) {
             $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
@@ -1031,7 +1647,7 @@ function prevTab(elem) {
             });
         },
         initialCountry: "auto",
-        separateDialCode: true,
+        separateDialCode: false,
         utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');
@@ -1052,6 +1668,30 @@ function prevTab(elem) {
     });
 
 </script>
+<script>
+              $(".phone").intlTelInput({
+        // allowDropdown: false,
+        // autoHideDialCode: false,
+        // autoPlaceholder: "off",
+        // dropdownContainer: "body",
+        // excludeCountries: ["us"],
+        // formatOnDisplay: false,
+        geoIpLookup: function(callback) {
+          $.get("http://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+            var countryCode = (resp && resp.country) ? resp.country : "";
+            callback(countryCode);
+          });
+        },
+        // hiddenInput: "full_number",
+        initialCountry: "auto",
+        // nationalMode: false,
+        // onlyCountries: ['us', 'gb', 'ch', 'ca', 'do'],
+        placeholderNumberType: "MOBILE",
+        // preferredCountries: ['cn', 'jp'],
+        separateDialCode: true,
+        utilsScript: "js/intl/js/utils.js"
+      });
+        </script>
 <noscript>
  <img height="1" width="1" 
 src="https://www.facebook.com/tr?id=308328899511239&ev=PageView

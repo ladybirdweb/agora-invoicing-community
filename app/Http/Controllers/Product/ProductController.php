@@ -286,6 +286,7 @@ use App\Http\Controllers\Controller;
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
                         'group'   => 'required',
+                        // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
             // $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
@@ -298,14 +299,14 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['currency', 'price'], 'required', function ($input) {
             //     return $input->subscription != 1;
             // });
-            // if ($v->fails()) {
-            //     $currency = $input['currency'];
+            if ($v->fails()) {
+                //     $currency = $input['currency'];
 
-            //     return redirect()->back()
-            //             ->withErrors($v)
-            //             ->withInput()
-            //             ->with('currency');
-            // }
+                return redirect()->back()
+                        ->withErrors($v)
+                        ->withInput()
+                        ->with('currency');
+            }
 
             try {
                 if ($request->hasFile('image')) {
@@ -419,10 +420,12 @@ use App\Http\Controllers\Controller;
         public function update($id, Request $request)
         {
             $input = $request->all();
+            // dd($input);
             $v = \Validator::make($input, [
-                        'name'  => 'required',
-                        'type'  => 'required',
-                        'group' => 'required',
+                        'name'    => 'required',
+                        'type'    => 'required',
+                        'group'   => 'required',
+                        'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
     //                    'subscription' => 'required',
     //                    'currency.*' => 'required',
     //                    'price.*' => 'required',
@@ -804,7 +807,6 @@ use App\Http\Controllers\Controller;
                     $product = $this->product->find($productid);
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $version = $github_controller->findVersion($owner, $repo);
-                    // dd($version);
                     $product->version = $version;
                     $product->save();
                 }

@@ -1,0 +1,97 @@
+/* Counters */
+.counters {
+	.counter {
+		text-align: center;
+	}
+	.fa, .fas, .far, .fal, .fab, .icons {
+		display: block;
+		font-size: 35px;
+		line-height: 35px;
+		margin-bottom: 5px;
+	}
+	strong {
+		display: block;
+		font-weight: bold;
+		font-size: 50px;
+		line-height: 50px;
+	}
+	label {
+		display: block;
+		font-weight: 100;
+		font-size: 20px;
+		line-height: 20px;
+	}
+
+	.counter-side-icon {
+		.fa, .fas, .far, .fal, .fab, .icons, strong {
+			display: inline-block;
+		}
+	}
+
+	.counter-with-unit {
+		strong {
+			display: inline-block;
+		}
+	}
+
+	&.with-borders {
+		.counter {
+			border-radius: 6px;
+			border-top: 1px solid #DFDFDF;
+			border-bottom: 1px solid #DFDFDF;
+			border-#{$left}: 1px solid #ECECEC;
+			border-#{$right}: 1px solid #ECECEC;
+			box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
+			padding: 25px;
+		}
+	}
+
+	&.counters-sm {
+		.fa, .fas, .far, .fal, .fab, .icons {
+			font-size: 25px;
+			line-height: 25px;
+		}
+		strong {
+			font-size: 35px;
+			line-height: 35px;
+		}
+		label {
+			font-size: 15px;
+			line-height: 15px;
+		}
+	}
+
+	&.counters-lg {
+		.fa, .fas, .far, .fal, .fab {
+			font-size: 45px;
+			line-height: 45px;
+		}
+		strong {
+			font-size: 60px;
+			line-height: 60px;
+		}
+		label {
+			font-size: 25px;
+			line-height: 25px;
+		}
+	}
+
+	&.counters-text-light {
+		.counter {
+			color: #FFF !important;
+			.fa, .fas, .far, .fal, .fab, .icons, strong, label {
+				color: #FFF !important;
+			}
+		}
+	}
+
+	&.counters-text-dark {
+		.counter {
+			color: $color-dark-4 !important;
+			.fa, .fas, .far, .fal, .fab, .icons, strong, label {
+				color: $color-dark-4 !important;
+			}
+		}
+	}
+
+}

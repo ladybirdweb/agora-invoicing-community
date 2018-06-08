@@ -1,0 +1,111 @@
+/* Icons */
+.featured-icon {
+	background: #CCC;
+	border-radius: 35px;
+	color: #FFF;
+	display: inline-block;
+	height: 35px;
+	line-height: 35px;
+	margin-#{$right}: 10px;
+	position: relative;
+	text-align: center;
+	top: 5px;
+	width: 35px;
+	i {
+		color: #FFF;
+		font-size: 0.9em;
+		font-weight: normal;
+	}
+}
+
+/* Font Awesome List */
+.sample-icon-list {
+	margin-top: 22px;
+	.sample-icon a {
+		display: block;
+		color: #222222;
+		line-height: 36px;
+		height: 36px;
+		padding-#{$left}: 10px;
+		border-radius: 4px;
+		font-size: 11px;
+		.fa, .fas, .far, .fal, .fab, .icons {
+			width: 32px;
+			font-size: 14px;
+			display: inline-block;
+			text-align: $right;
+			margin-#{$right}: 10px;
+		}
+		&:hover {
+			color: #ffffff;
+			text-decoration: none;
+			.fa, .fas, .far, .fal, .fab, .icons {
+				font-size: 28px;
+				vertical-align: -6px;
+			}
+		}
+	}
+}
+
+/* Simple Line Icons List */
+#lineIcons {
+	.sample-icon-list {
+		.sample-icon a {
+			line-height: 39px;
+		}
+	}
+}
+
+/* Porto Icons */
+i.pi {
+ 	position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+	font-style: normal;
+    font-size: 14px;
+	&.pi-porto-brand {
+		&:before {
+			content: '\f111';
+			font-family: 'Font Awesome 5 Free';
+			font-weight: bold;
+			font-size: 0.51em;
+			color: #FFF;
+			padding: 1.2em;
+		}
+		&:after {
+		    content: '';
+		    width: 2em;
+		    height: 2em;
+		    border: 0.5em solid #FFF;
+		    border-radius: 100%;
+		    position: absolute;
+		    top: 50%;
+		    left: 50%;
+		    transform: translate3d(-50%, -50%, 0);
+		}
+	}
+
+	&.pi-close {
+		padding: 0.6em;
+		transform: rotate(45deg);
+		&:before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate3d(-50%, -50%, 0);
+			border-right: 1px solid #FFF;
+			height: 1em;
+		}
+		&:after {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate3d(-50%, -50%, 0);
+			border-bottom: 1px solid #FFF;
+			width: 1em;
+		}
+	}
+}

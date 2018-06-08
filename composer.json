@@ -11,10 +11,12 @@
         "chumper/datatable": "dev-develop",
         "chumper/zipper": "1.0.x",
         "darryldecode/cart": "dev-master",
+        "ezyang/htmlpurifier": "^4.10",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.*",
         "pacely/mailchimp-apiv3": "dev-master",
+        "php-mock/php-mock": "^2.0",
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.2",
         "razorpay/razorpay": "^2.2",
@@ -25,6 +27,7 @@
         "barryvdh/laravel-ide-helper": "^2.4",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
+        "phpunit/php-code-coverage": "^4.0",
         "phpunit/phpunit": "~5.7"
     },
     "autoload": {
@@ -41,6 +44,11 @@
         }
     },
     "scripts": {
+        "filter-test":"php vendor/phpunit/phpunit/phpunit --colors=always --filter",
+        "all-test":"php vendor/phpunit/phpunit/phpunit",
+        "all-unit-test":"php vendor/phpunit/phpunit/phpunit --testsuite unit",
+        "backend-test":"php vendor/phpunit/phpunit/phpunit --colors=always --testsuite backend",
+        "group-test":"php vendor/phpunit/phpunit/phpunit --colors=always --group",
         "post-root-package-install": [
             "php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],

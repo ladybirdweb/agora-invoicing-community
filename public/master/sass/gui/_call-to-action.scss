@@ -1,0 +1,293 @@
+/* Call to Action */
+.call-to-action {
+	display: flex;
+	flex-wrap: wrap;
+	position: relative;
+    padding: 32px 55px;
+	clear: both;
+	@include clearfix;
+	@media (max-width: 767px) {
+	    padding: 10px 10px;
+	}
+	h3 {
+		text-transform: none;
+		color: $color-dark;
+		padding: 0;
+		margin: 0 0 9px;
+	}
+
+	p {
+		font-size: 1.2em;
+	}
+
+	> [class*="col-"] {
+		display: flex;
+	    align-items: center;
+	    &:nth-child(2) {
+	    	justify-content: flex-end;
+			text-align: center;
+			@media (max-width: 767px) {
+				justify-content: center;
+			}
+	    }
+	}
+	
+	// When have a container inside
+	.container, .container-fluid {
+		> .row {
+			display: flex;
+			flex-wrap: wrap;
+			> [class*="col-"] {
+				display: flex;
+			    align-items: center;
+			    &:nth-child(2) {
+			    	justify-content: flex-end;
+					text-align: center;
+					@media (max-width: 767px) {
+						justify-content: center;
+					}
+			    }
+			}
+		}
+	}
+
+	// If has not a col-xs class
+	@media(max-width: 767px) {
+		> [class*="col-"]:not([class*="col-xs"]) {
+			width: 100%;
+		}
+
+		.container {
+			> .row {
+				[class*="col-"]:not([class*="col-xs"]) {
+					width: 100%;
+				}
+			}
+		}
+	}
+
+	.call-to-action-content {
+		text-align: center;
+	}
+
+	&.call-to-action-big {
+		padding: 63px 55px;
+		@media(max-width: 575px) {
+			padding: 63px 0;
+		}
+	}
+
+	&.call-to-action-front {
+		z-index: 1;
+	}
+
+	&.call-to-action-default {
+		background: #F4F4F4;
+	}
+
+	&.call-to-action-dark {
+		background: $color-dark-4;
+		h3, p {
+			color: #FFF;
+		}
+	}
+
+	&.with-borders {
+		border-top: 1px solid #DFDFDF;
+		border-bottom: 1px solid #DFDFDF;
+		border-#{$left}: 1px solid #ECECEC;
+		border-#{$right}: 1px solid #ECECEC;
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
+	}
+
+	&.with-full-borders {
+		border: 2px solid #CCC;
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
+	}
+
+	&.featured {
+		background: linear-gradient(to bottom, #FFF 1%, #fcfcfc 98%) repeat scroll 0 0 rgba(0, 0, 0, 0);
+		margin: 0;
+		border-top: 3px solid #CCC;
+		border-bottom: 1px solid #DFDFDF;
+		border-#{$left}: 1px solid #ECECEC;
+		border-#{$right}: 1px solid #ECECEC;
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.04);
+
+		@each $color in $colors-list {
+			&.featured-#{nth($color,1)} {
+				border-top-color: #{nth($color,2)};
+			}
+		}
+	}
+
+	&.with-button-arrow {
+		.call-to-action-btn {
+			position: relative;
+			@media (min-width: 992px) {
+				#{$left}: -80px;
+			}
+			.arrow {
+				position: absolute;
+				@media(max-width: 991px) {
+					display: none;
+				}
+			}
+			&.no-left {
+				#{$left}: 0;
+				@media (max-width: 991px) {
+				    margin-top: -25px !important;
+				}
+			}
+		}
+		&.button-arrow-price-centered {
+			.call-to-action-btn {
+				> span {
+					position: relative;
+					.arrow {
+						right: 50% !important;
+					}
+				}
+			}
+		}
+	}
+
+	&.content-align-center {
+		.call-to-action-content, .call-to-action-btn {
+			width: 100%;
+			text-align: center;
+		}
+	}
+
+	&.button-centered {
+		.call-to-action-content {
+			text-align: center;
+			width: 100%;
+			padding: 35px 0 0;
+			margin: 0;
+		}
+
+		.call-to-action-btn {
+			text-align: center;
+			position: static;
+			margin: 20px auto 25px;
+			width: auto;
+		}
+	}
+
+	&.call-to-action-in-footer {
+		padding-top: 90px;
+		padding-bottom: 70px;
+		margin-top: 30px;
+		margin-bottom: -50px !important;
+		&:before {
+			content: "";
+			display: block;
+			position: absolute;
+			border-#{$left}: 20px solid transparent;
+			border-#{$right}: 20px solid transparent;
+			border-top: 20px solid #FFF;
+			height: 20px;
+			width: 20px;
+			top: -5px;
+			#{$left}: 50%;
+			margin-#{$left}: -20px;
+		}
+	}
+
+	&.no-top-arrow {
+		&:before {
+			display: none;
+		}
+	}
+
+	&.call-to-action-in-footer-margin-top {
+		margin-top: 60px;
+	}
+}
+
+.container .call-to-action {
+	border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+	.call-to-action {
+		.call-to-action-content,
+		.call-to-action-btn {
+			margin: 0;
+			padding: 20px;
+			position: static;
+			width: auto;
+		}
+	}
+}
+
+/*
+* IE 11 Fixes
+*/
+html.ie:not(.ie9) {
+	.call-to-action {
+		.call-to-action-content {
+			width: 100%;
+		}
+		&.button-centered {
+			> [class*="col-"] {
+				display: block;
+			}
+			
+			// When have a container inside
+			.container, .container-fluid {
+				> .row {
+					display: block;
+				}
+			}
+		}
+	}
+}
+
+/*
+* IE 9 Fixes
+*/
+html.ie9 {
+	.call-to-action {
+		> [class*="col-"] {
+			display: table-cell;
+		   	vertical-align: middle;
+		   	float: none;
+		   	&:nth-child(2) {
+		   		text-align: $right;
+		   	}
+		}
+		
+		// When have a container inside
+		.container, .container-fluid {
+			> .row {
+				display: table;
+				width: 100%;
+				> [class*="col-"] {
+					display: table-cell;
+				    vertical-align: middle;
+				    float: none;
+				   	&:nth-child(2) {
+				   		text-align: center;
+				   	}
+				}
+			}
+		}
+
+		&.button-centered {
+			> [class*="col-"] {
+				float: $left;
+			}
+
+			.container, .container-fluid {
+				> .row {
+					> [class*="col-"] {
+					    float: $left;
+					}
+				}
+			}
+		}
+	}
+}

@@ -68,9 +68,9 @@ trait AuthenticatesUsers
      * @return \Illuminate\Http\Response
      */
     public function postLogin(Request $request)
-    {
-        // dd('akdnj');
-        $this->validate($request, [
+    {//here
+        
+         $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
                 ], [
             'email1.required'    => 'Username/Email is required',
@@ -82,7 +82,6 @@ trait AuthenticatesUsers
         $password = $request->input('password1');
         $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
          $auth = \Auth::attempt($credentials, $request->has('remember'));
-
          if (!$auth) {
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
            if($user==null){
@@ -103,7 +102,7 @@ trait AuthenticatesUsers
 
              if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
                   return redirect('verify')->with('user', $user);
-      
+             
          }
                 
             

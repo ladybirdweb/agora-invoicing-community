@@ -1,0 +1,51 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #b3642a;
+
+@color-secondary: #C06B2D;
+
+@color-tertiary: #e9e9e9;
+
+@color-quaternary: #161b29;
+
+@import "skin";
+
+/* 
+* Custom Styles
+*/
+.custom-link-color-dark {
+	&:hover {
+		color: @color-primary;
+	}
+}
+
+.custom-dropup-style-1 {
+	.dropdown-menu {
+		.dropdown-item {
+			&:active,
+			&:focus,
+			&:hover {
+				color: @color-primary;
+			}
+		}
+	}
+}
+
+/*
+* Thumb Info
+*/
+.custom-thumb-info-style-1 {
+	.thumb-info-footer {
+		.nav {
+			> li {
+				> a {
+					&:hover {
+						color: @color-primary;
+					}
+				}
+			}
+		}
+	}
+}

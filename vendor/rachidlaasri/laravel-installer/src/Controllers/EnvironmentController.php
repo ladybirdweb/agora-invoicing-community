@@ -166,7 +166,6 @@ class EnvironmentController extends Controller
         }
         }
         catch(Exception $e){
-            dd($e);
             return $this->response($e->getMessage());
         }
 

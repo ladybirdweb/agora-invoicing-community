@@ -1,0 +1,410 @@
+/* Position */
+.p-relative {
+	position: relative !important
+}
+
+.p-absolute {
+	position: absolute !important
+}
+
+.p-fixed {
+	position: fixed !important
+}
+
+.p-static {
+	position: static !important
+}
+
+.absolute-y-center {
+	position: absolute;
+	top: 50%;
+	transform: translate3d(0, -50%, 0);
+}
+
+/* Pull */
+.pull-none {
+	float: none !important;
+}
+
+.pull-left {
+	float: $left !important;
+}
+
+.pull-right {
+	float: $right !important;
+}
+
+@media (max-width: $screen-xs-max) {
+	.pull-xs-left {
+		float: $left;
+	}
+	.pull-xs-right {
+		float: $right;
+	}
+}
+
+@media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+	.pull-sm-left {
+		float: $left;
+	}
+	.pull-sm-right {
+		float: $right;
+	}
+}
+
+@media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
+	.pull-md-left {
+		float: $left;
+	}
+	.pull-md-right {
+		float: $right;
+	}
+}
+
+@media (min-width: $screen-lg-min) {
+	.pull-lg-left {
+		float: $left;
+	}
+	.pull-lg-right {
+		float: $right;
+	}
+}
+
+/* Inverted */
+.inverted {
+	color: #FFF;
+	display: inline-block;
+	padding-#{$left}: 10px;
+	padding-#{$right}: 10px;
+}
+
+h1 .inverted {
+	padding-#{$left}: 10px;
+	padding-#{$right}: 10px;
+}
+
+h2 .inverted {
+	padding-#{$left}: 7px;
+	padding-#{$right}: 7px;
+}
+
+h3 .inverted {
+	padding-#{$left}: 2px;
+	padding-#{$right}: 2px;;
+}
+
+h4 .inverted {
+	padding-#{$left}: 4px;
+	padding-#{$right}: 4px;
+}
+
+h5 .inverted {
+	padding-#{$left}: 2px;
+	padding-#{$right}: 2px;
+}
+
+h6 .inverted {
+	padding-#{$left}: 2px;
+	padding-#{$right}: 2px;
+}
+
+/* Letter Spacing */
+.negative-ls-1 {
+	letter-spacing: -1px;
+}
+
+.negative-ls-2 {
+	letter-spacing: -2px;
+}
+
+.negative-ls-3 {
+	letter-spacing: -2.5px;
+}
+
+.positive-ls-1 {
+	letter-spacing: 1px;
+}
+
+.positive-ls-2 {
+	letter-spacing: 2px;
+}
+
+.positive-ls-3 {
+	letter-spacing: 2.5px;
+}
+
+/* Cursor */
+.cur-pointer {
+	cursor: pointer;
+}
+
+/* Font Size */
+.text-xs {
+	@include font-size( 10 );
+}
+
+.text-sm {
+	@include font-size( 13 );
+}
+
+.text-md {
+	@include font-size( 16 );
+}
+
+.text-lg {
+	@include font-size( 19 );
+}
+
+.text-xl {
+	@include font-size( 22 );
+}
+
+.text-1 {
+	font-size: .8em !important;
+}
+
+.text-2 {
+	font-size: .9em !important;
+}
+
+.text-3 {
+	font-size: 1em !important;
+}
+
+.text-4 {
+	font-size: 1.1em !important;
+}
+
+.text-5 {
+	font-size: 1.50em !important;
+}
+
+.text-6 {
+	font-size: 1.80em !important;
+}
+
+.text-7 {
+	font-size: 2em !important;
+}
+
+.text-8 {
+	font-size: 2.30em !important;
+}
+
+.text-9 {
+	font-size: 2.50em !important;
+}
+
+.text-10 {
+	font-size: 2.75em !important;
+}
+
+/* Line Height */
+.line-height-xs {
+	line-height: 16px !important;
+}
+
+.line-height-sm {
+	line-height: 20px !important;
+}
+
+.line-height-md {
+	line-height: 24px !important;
+}
+
+.line-height-lg {
+	line-height: 28px !important;
+}
+
+.line-height-xl {
+	line-height: 32px !important;
+}
+
+/* Opacity */
+.opacity-0 {
+	opacity: 0 !important;
+}
+
+.opacity-1 {
+	opacity: 0.1 !important;
+}
+
+.opacity-2 {
+	opacity: 0.2 !important;
+}
+
+.opacity-3 {
+	opacity: 0.3 !important;
+}
+
+.opacity-4 {
+	opacity: 0.4 !important;
+}
+
+.opacity-5 {
+	opacity: 0.5 !important;
+}
+
+.opacity-6 {
+	opacity: 0.6 !important;
+}
+
+.opacity-7 {
+	opacity: 0.7 !important;
+}
+
+.opacity-8 {
+	opacity: 0.8 !important;
+}
+
+.opacity-9 {
+	opacity: 0.9 !important;
+}
+
+.opacity-10 {
+	opacity: 1 !important;
+}
+
+/* Outline */
+.outline-none {
+	outline: 0 !important;
+}
+
+/* Text Decoration */
+.text-decoration-none {
+	text-decoration: none !important;
+}
+
+/* Text Transform */
+.text-uppercase {
+	text-transform: uppercase !important;
+}
+
+.text-lowercase {
+	text-transform: lowercase !important;
+}
+
+.text-capitalize {
+	text-transform: capitalize !important;
+}
+
+.text-transform-none {
+	text-transform: none !important;
+}
+
+/* States */
+.text-muted {
+	color: $color-muted !important;
+}
+
+html.dark {
+	.text-muted {
+		color: darken( $dark-default-text, 20% ) !important;
+	}
+}
+
+/* Overflow */
+.overflow-visible {
+	overflow: visible !important;
+}
+
+.overflow-hidden {
+	overflow: hidden !important;
+}
+
+/* Colors */
+.text-dark {
+	color: $color-dark !important;
+}
+
+.text-light {
+	color: #FFF !important;
+}
+
+/* Weights */
+.font-weight-light {
+	font-weight: $font-weight-light !important;
+}
+
+.font-weight-normal {
+	font-weight: $font-weight-normal !important;
+}
+
+.font-weight-semibold {
+	font-weight: $font-weight-semibold !important;
+}
+
+.font-weight-bold, b, strong {
+	font-weight: $font-weight-bold !important;
+}
+
+.font-weight-extra-bold {
+	font-weight: $font-weight-extra-bold !important;
+}
+
+/* Borders */
+.no-borders {
+	border: none !important;
+}
+
+.rounded {
+	border-radius: $border-radius !important;
+}
+
+.b-thin {
+	border-width: $border-thin !important;
+}
+
+.b-normal {
+	border-width: $border-normal !important;
+}
+
+.b-thick {
+	border-width: $border-thick !important;
+}
+
+/* General Helpers */
+.ib {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.va-middle {
+	vertical-align: middle;
+}
+
+.ws-nowrap {
+	white-space: nowrap;
+}
+
+.ws-normal {
+	white-space: normal;
+}
+
+@import "../../vendor/bootstrap/scss/functions";
+@import "../../vendor/bootstrap/scss/variables";
+@import "../../vendor/bootstrap/scss/mixins";
+
+@include if-rtl() {
+	
+	// Float
+	@each $breakpoint in map-keys($grid-breakpoints) {
+	  	@include media-breakpoint-up($breakpoint) {
+		    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+		    .float#{$infix}-left  { @include float-right; }
+		    .float#{$infix}-right { @include float-left; }
+	  	}
+	}
+
+	// Text Align
+	@each $breakpoint in map-keys($grid-breakpoints) {
+	  	@include media-breakpoint-up($breakpoint) {
+		    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+		    .text#{$infix}-left   { text-align: right !important; }
+		    .text#{$infix}-right  { text-align: left !important; }
+	  	}
+	}
+
+}

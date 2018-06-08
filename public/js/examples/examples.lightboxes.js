@@ -1,7 +1,7 @@
 /*
 Name: 			Shortcodes - Lightboxes - Examples
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	4.5.0
+Theme Version:	6.2.0
 */
 
 (function( $ ) {
@@ -12,7 +12,6 @@ Theme Version:	4.5.0
 	Popup with video or map
 	*/
 	$('.popup-youtube, .popup-vimeo, .popup-gmaps').magnificPopup({
-		disableOn: 700,
 		type: 'iframe',
 		mainClass: 'mfp-fade',
 		removalDelay: 160,
@@ -63,22 +62,12 @@ Theme Version:	4.5.0
 		type: 'inline',
 		preloader: false,
 		focus: '#name',
-
-		// When elemened is focused, some mobile browsers in some cases zoom in
-		// It looks not nice, so we disable it:
 		callbacks: {
 			open: function() {
-				$('body').addClass('lightbox-opened');
+				$('html').addClass('lightbox-opened');
 			},
 			close: function() {
-				$('body').removeClass('lightbox-opened');
-			},
-			beforeOpen: function() {
-				if($(window).width() < 700) {
-					this.st.focus = false;
-				} else {
-					this.st.focus = '#name';
-				}
+				$('html').removeClass('lightbox-opened');
 			}
 		}
 	});
@@ -90,10 +79,10 @@ Theme Version:	4.5.0
 		type: 'ajax',
 		callbacks: {
 			open: function() {
-				$('body').addClass('lightbox-opened');
+				$('html').addClass('lightbox-opened');
 			},
 			close: function() {
-				$('body').removeClass('lightbox-opened');
+				$('html').removeClass('lightbox-opened');
 			}
 		}
 	});

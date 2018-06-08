@@ -1,3 +1,4 @@
+@charset "UTF-8";
 .alternative-font {
 	font-family: 'Great Vibes', cursive !important;
 	font-size: inherit;
@@ -35,7 +36,8 @@
 }
 
 .box-shadow-custom {
-	box-shadow: 10px 10px 74px -30px rgba(0, 0, 0, 0.33);
+	-webkit-box-shadow: 10px 10px 74px -30px rgba(0, 0, 0, 0.33);
+					box-shadow: 10px 10px 74px -30px rgba(0, 0, 0, 0.33);
 }
 
 .custom-border-radius {
@@ -63,90 +65,77 @@
 	font-family: "Great Vibes",cursive !important;
 	font-size: 36px;
 	line-height: 36px;
-	padding: 6px 0 15px;
 }
 
 #header .header-body {
 	border-top: 0;
 }
-#header .header-nav-main {
-	position: relative;
-	float: none;
-}
-#header .header-nav-main:before {
-	content: '';
-	display: block;
-	position: absolute;
-	width: 100vw;
-	top: 0;
-	left: 50%;
-	border-top: 1px solid #e1e4e9;
-	-webkit-transform: translateX(-50%);
-	-moz-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	-o-transform: translateX(-50%);
-	transform: translateX(-50%);
-}
 
 @media (min-width: 992px) {
+	#header .header-nav-main:before {
+		content: '';
+		display: block;
+		position: absolute;
+		width: 100vw;
+		top: 0;
+		left: 50%;
+		border-top: 1px solid #e1e4e9;
+		-webkit-transform: translateX(-50%);
+						transform: translateX(-50%);
+	}
 	#header .header-nav-main nav {
 		display: block;
 	}
 	#header .header-nav-main nav > ul > li > a {
+		position: relative;
 		background: none !important;
 		color: #666 !important;
-		font-size: 14px;
+		font-size: 13px;
 		font-style: normal;
 		font-weight: 600;
 		-webkit-transition: ease all 300ms;
-		-moz-transition: ease all 300ms;
 		transition: ease all 300ms;
 	}
 	#header .header-nav-main nav > ul > li > a:hover {
 		color: #ef3447 !important;
 	}
-	#header .header-nav-main nav > ul > li.dropdown-full-color.active > a {
+	#header .header-nav-main nav > ul > li > a.active {
 		color: #ef3447 !important;
 	}
-	#header .header-nav-main nav > ul > li.dropdown-full-color.active:before {
+	#header .header-nav-main nav > ul > li > a.active:before {
 		content: '\f004';
 		display: block;
-		font-family: 'FontAwesome';
+		font-family: 'Font Awesome 5 Free';
 		position: absolute;
 		top: -13px;
 		left: 50%;
 		color: #ef3447;
 		line-height: 0;
 		-webkit-transform: translateX(-50%);
-		-moz-transform: translateX(-50%);
-		-ms-transform: translateX(-50%);
-		-o-transform: translateX(-50%);
-		transform: translateX(-50%);
+						transform: translateX(-50%);
 	}
 }
 @media (max-width: 991px) {
-	html.sticky-header-enabled #header {
-		min-height: 70px !important;
-	}
 	html.sticky-header-enabled #header .header-body {
 		border-bottom-color: #e9e9e9;
-		box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+		-webkit-box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+						box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
 		position: fixed;
 		top: 0 !important;
 	}
-	html.sticky-header-enabled #header .header-logo {
-		padding-top: 7px !important;
+	html.sticky-header-enabled #header .header-body .header-container:nth-child(1) > .header-row > .header-column {
+		margin-right: 90px;
+		margin-bottom: -70px;
 	}
-	html.sticky-header-enabled #header .header-btn-collapse-nav {
-		margin: 7px 0 10px 15px;
+
+	#header {
+		min-height: 70px !important;
 	}
-	html.sticky-header-enabled #header .header-column.header-column-center {
-		float: left;
-		left: 10px;
-		margin-bottom: -65px;
-		margin-top: -5px;
-		position: relative;
-		text-align: center;
+	#header .header-body {
+		min-height: 0 !important;
+	}
+	#header .header-nav-main:before {
+		content: none;
 	}
 }
 .rev_slider .slotholder:after {
@@ -164,7 +153,8 @@
 	background: #FBF9F3;
 }
 .slider-container.light ul {
-	perspective: 1000px;
+	-webkit-perspective: 1000px;
+					perspective: 1000px;
 }
 .slider-container.light .slider-border {
 	position: absolute;
@@ -188,6 +178,8 @@
 	background-size: 100% 100%;
 	width: 36px;
 	height: 22px;
+	left: 13px;
+	right: auto;
 }
 .testimonial.testimonial-with-quotes.custom-wedding-quotes blockquote:after {
 	content: '';
@@ -195,11 +187,11 @@
 	background-size: 100% 100%;
 	width: 36px;
 	height: 22px;
+	bottom: -8px;
+	bottom: -0.5rem;
+	right: 13px;
 	-webkit-transform: rotate(180deg);
-	-moz-transform: rotate(180deg);
-	-ms-transform: rotate(180deg);
-	-o-transform: rotate(180deg);
-	transform: rotate(180deg);
+					transform: rotate(180deg);
 }
 
 .load-more-loader {
@@ -209,10 +201,7 @@
 
 .thumb-bride-groom:hover .bride-groom-photo img {
 	-webkit-transform: scale(1.1);
-	-moz-transform: scale(1.1);
-	-ms-transform: scale(1.1);
-	-o-transform: scale(1.1);
-	transform: scale(1.1);
+					transform: scale(1.1);
 }
 .thumb-bride-groom .bride-groom-bg {
 	position: relative;
@@ -231,10 +220,7 @@
 	height: 100%;
 	z-index: -1;
 	-webkit-transform: translate3d(-50%, -50%, 0);
-	-moz-transform: translate3d(-50%, -50%, 0);
-	-ms-transform: translate3d(-50%, -50%, 0);
-	-o-transform: translate3d(-50%, -50%, 0);
-	transform: translate3d(-50%, -50%, 0);
+					transform: translate3d(-50%, -50%, 0);
 }
 .thumb-bride-groom .bride-groom-bg.groom-background-style:before {
 	background: url(../../img/demos/wedding/bride-groom/groom-bg.jpg);
@@ -255,14 +241,13 @@
 .thumb-bride-groom .bride-groom-photo img {
 	width: 100%;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .thumb-bride-groom .social-icons li {
-	box-shadow: none;
+	-webkit-box-shadow: none;
+					box-shadow: none;
 	border: 2px solid #b7b8bc;
 	-webkit-transition: all 0.3s ease;
-	-moz-transition: all 0.3s ease;
 	transition: all 0.3s ease;
 }
 .thumb-bride-groom .social-icons li a {
@@ -285,7 +270,7 @@
 .wedding-countdown #clock span:before {
 	content: '\f004';
 	display: block;
-	font-family: 'FontAwesome';
+	font-family: 'Font Awesome 5 Free';
 	position: absolute;
 	top: 60%;
 	left: -5px;
@@ -293,10 +278,7 @@
 	color: #5fc3d2;
 	line-height: 0;
 	-webkit-transform: translateY(-50%);
-	-moz-transform: translateY(-50%);
-	-ms-transform: translateY(-50%);
-	-o-transform: translateY(-50%);
-	transform: translateY(-50%);
+					transform: translateY(-50%);
 }
 .wedding-countdown #clock span:nth-child(1):before {
 	content: none;
@@ -309,10 +291,7 @@
 	text-align: center;
 	text-transform: uppercase;
 	-webkit-transform: translateX(-50%);
-	-moz-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	-o-transform: translateX(-50%);
-	transform: translateX(-50%);
+					transform: translateX(-50%);
 }
 .wedding-countdown #clock span > span:before, .wedding-countdown #clock span > span:after {
 	content: none;
@@ -326,7 +305,7 @@
 }
 .testimonials .testimonial blockquote:before, .testimonials .testimonial blockquote:after {
 	-webkit-filter: brightness(7);
-	filter: brightness(7);
+					filter: brightness(7);
 }
 .testimonials .testimonial blockquote p {
 	font-style: normal;
@@ -361,10 +340,7 @@
 	left: 50%;
 	z-index: -3;
 	-webkit-transform: translate3d(-50%, -50%, 0);
-	-moz-transform: translate3d(-50%, -50%, 0);
-	-ms-transform: translate3d(-50%, -50%, 0);
-	-o-transform: translate3d(-50%, -50%, 0);
-	transform: translate3d(-50%, -50%, 0);
+					transform: translate3d(-50%, -50%, 0);
 }
 .wedding-schedule .wedding-schedule-photo {
 	height: 185px;
@@ -388,20 +364,14 @@
 	left: 50%;
 	z-index: -1;
 	-webkit-transform: translate3d(-50%, -50%, 0);
-	-moz-transform: translate3d(-50%, -50%, 0);
-	-ms-transform: translate3d(-50%, -50%, 0);
-	-o-transform: translate3d(-50%, -50%, 0);
-	transform: translate3d(-50%, -50%, 0);
+					transform: translate3d(-50%, -50%, 0);
 }
 .wedding-schedule .icon-heart-white-border {
 	position: absolute;
 	top: 34.7%;
 	left: 50%;
 	-webkit-transform: translate3d(-50%, -50%, 0);
-	-moz-transform: translate3d(-50%, -50%, 0);
-	-ms-transform: translate3d(-50%, -50%, 0);
-	-o-transform: translate3d(-50%, -50%, 0);
-	transform: translate3d(-50%, -50%, 0);
+					transform: translate3d(-50%, -50%, 0);
 }
 .wedding-schedule span {
 	display: block;
@@ -415,7 +385,7 @@
 }
 
 .history-item .thumb-info .thumb-info-wrapper:after {
-	background: -webkit-linear-gradient( bottom , rgba(36, 44, 71, 0.6) 0, transparent 100%) repeat scroll 0 0 rgba(36, 44, 71, 0);
+	background: -webkit-gradient(linear, left bottom, left top, color-stop(0, rgba(36, 44, 71, 0.6)), to(transparent)) repeat scroll 0 0 rgba(36, 44, 71, 0);
 	background: linear-gradient(to top, rgba(36, 44, 71, 0.6) 0, transparent 100%) repeat scroll 0 0 rgba(36, 44, 71, 0);
 	content: '';
 	display: block;
@@ -435,7 +405,8 @@
 	bottom: 0;
 	left: 0;
 	width: 100%;
-	box-shadow: 0 0 190px 40px black;
+	-webkit-box-shadow: 0 0 190px 40px black;
+					box-shadow: 0 0 190px 40px black;
 	z-index: 1;
 }
 .history-item .thumb-info .thumb-info-title {
@@ -468,6 +439,7 @@
 	background-repeat: no-repeat;
 	width: 17%;
 	height: 34%;
+	z-index: 10;
 }
 #guestbookSendMessage:before {
 	top: 15px;
@@ -477,35 +449,34 @@
 	bottom: 15px;
 	left: 15px;
 	-webkit-transform: rotate(180deg);
-	-moz-transform: rotate(180deg);
-	-ms-transform: rotate(180deg);
-	-o-transform: rotate(180deg);
-	transform: rotate(180deg);
+					transform: rotate(180deg);
 }
 #guestbookSendMessage .form-content {
 	position: relative;
 	z-index: 1;
 }
+#guestbookSendMessage .form-content .form-row {
+	position: relative;
+	z-index: 1;
+}
 #guestbookSendMessage .form-content .form-control-custom {
 	text-align: left;
-}
-#guestbookSendMessage .form-content .form-control-custom input, #guestbookSendMessage .form-content .form-control-custom textarea {
 	background: none;
 	border: none;
 	border-bottom: 1px solid #b5b5b5;
-	box-shadow: none;
+	-webkit-box-shadow: none;
+					box-shadow: none;
+	padding-left: 0;
+	padding-right: 0;
 }
-#guestbookSendMessage .form-content .form-control-custom input::-webkit-input-placeholder, #guestbookSendMessage .form-content .form-control-custom textarea::-webkit-input-placeholder {
+#guestbookSendMessage .form-content .form-control-custom::-webkit-input-placeholder {
 	color: #6a696f;
 }
-#guestbookSendMessage .form-content .form-control-custom input::-moz-placeholder, #guestbookSendMessage .form-content .form-control-custom textarea::-moz-placeholder {
+#guestbookSendMessage .form-content .form-control-custom::-moz-placeholder {
 	color: #6a696f;
 }
-#guestbookSendMessage .form-content .form-control-custom input:-ms-input-placeholder, #guestbookSendMessage .form-content .form-control-custom textarea:-ms-input-placeholder {
+#guestbookSendMessage .form-content .form-control-custom:-ms-input-placeholder {
 	color: #6a696f;
-}
-#guestbookSendMessage .form-content .form-control-custom textarea {
-	min-height: 103px;
 }
 
 .guestbook-messages {
@@ -529,10 +500,7 @@
 	width: 76%;
 	border-bottom: 1px solid #fed0d2;
 	-webkit-transform: translateX(-50%);
-	-moz-transform: translateX(-50%);
-	-ms-transform: translateX(-50%);
-	-o-transform: translateX(-50%);
-	transform: translateX(-50%);
+					transform: translateX(-50%);
 }
 .guestbook-messages .testimonial .testimonial-author p {
 	text-align: left;
@@ -540,39 +508,46 @@
 }
 .guestbook-messages .owl-carousel .owl-nav {
 	position: absolute;
-	bottom: 10%;
-	right: 15%;
-	top: initial;
+	bottom: -10%;
+	right: 10%;
+	top: auto;
 }
-.guestbook-messages .owl-carousel .owl-nav .owl-prev, .guestbook-messages .owl-carousel .owl-nav .owl-next {
+.guestbook-messages .owl-carousel .owl-nav button.owl-prev, .guestbook-messages .owl-carousel .owl-nav button.owl-next {
 	background: #76cbd9 !important;
 	border-radius: 100% !important;
 	border-color: transparent !important;
 	width: 40px;
 	height: 40px;
 }
-.guestbook-messages .owl-carousel .owl-nav .owl-prev:active, .guestbook-messages .owl-carousel .owl-nav .owl-next:active {
+.guestbook-messages .owl-carousel .owl-nav button.owl-prev:active, .guestbook-messages .owl-carousel .owl-nav button.owl-next:active {
 	background: #76cbd9 !important;
 	border-color: transparent !important;
+	color: #FFF !important;
 }
-.guestbook-messages .owl-carousel .owl-nav .owl-prev:hover, .guestbook-messages .owl-carousel .owl-nav .owl-next:hover {
+.guestbook-messages .owl-carousel .owl-nav button.owl-prev:hover, .guestbook-messages .owl-carousel .owl-nav button.owl-next:hover {
+	background: #76cbd9 !important;
 	border-color: transparent !important;
-}
-.guestbook-messages .owl-carousel .owl-nav .owl-prev {
 	color: #FFF !important;
 }
-.guestbook-messages .owl-carousel .owl-nav .owl-prev:before {
-	content: "\f104";
-	font-size: 2.2rem;
-	line-height: 1.4;
-}
-.guestbook-messages .owl-carousel .owl-nav .owl-next {
+.guestbook-messages .owl-carousel .owl-nav button.owl-prev {
 	color: #FFF !important;
 }
-.guestbook-messages .owl-carousel .owl-nav .owl-next:before {
-	content: "\f105";
-	font-size: 2.2rem;
+.guestbook-messages .owl-carousel .owl-nav button.owl-prev:before {
+	content: "";
+	font-size: 24px;
+	font-size: 1.5rem;
 	line-height: 1.4;
+	top: -1px;
+}
+.guestbook-messages .owl-carousel .owl-nav button.owl-next {
+	color: #FFF !important;
+}
+.guestbook-messages .owl-carousel .owl-nav button.owl-next:before {
+	content: "";
+	font-size: 24px;
+	font-size: 1.5rem;
+	line-height: 1.4;
+	top: -1px;
 }
 
 .custom-inner-border {
@@ -607,7 +582,7 @@
 .rsvp #rsvpForm input.form-control, .rsvp #rsvpForm select.form-control {
 	background: #FFF;
 	border-color: #ebe8e0;
-	height: 51px;
+	height: 55px;
 }
 
 .content-grid .content-grid-item {

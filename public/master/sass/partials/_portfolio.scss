@@ -1,0 +1,146 @@
+/* Portfolio */
+.portfolio-title {
+	margin-bottom: -10px;
+	a {
+		display: inline-block;
+	}
+	.fa, .fas, .far, .fal, .fab, .icons {
+		font-size: 1.7em;
+	}
+	.portfolio-nav {
+		margin-top: 11px;
+	}
+	.portfolio-nav-all {
+		margin-top: 9px;
+	}
+	.portfolio-nav {
+		text-align: right;
+	}
+	.portfolio-nav a {
+		width: 40%;
+		@include if-rtl {
+			float: right;
+		    transform: rotate(180deg);
+		    transform-origin: 50% 42%;
+		}
+	}
+	.portfolio-nav-all .fa,
+	.portfolio-nav-all .icons {
+		font-size: 2em;
+	}
+	.fa-angle-right {
+		text-align: $right;
+	}
+	.portfolio-nav-prev {
+		text-align: left;
+	}
+}
+
+/* Portfolio Info */
+.portfolio-info {
+	margin: 2px 0 10px;
+	ul {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		li {
+			display: inline-block;
+			border-#{$right}: 1px solid #E6E6E6;
+			color: #B1B1B1;
+			padding-#{$right}: 8px;
+			margin-#{$right}: 8px;
+			font-size: 0.9em;
+			&:last-child {
+				border-#{$right}: 0;
+				padding-#{$right}: 0;
+				margin-#{$right}: 0;
+			}
+			a {
+				text-decoration: none;
+				color: #B1B1B1;
+				&:hover {
+					.fa-heart {
+						color: #E53F51;
+					}
+				}
+			}
+			.fa, .fas, .far, .fal, .fab, .icons {
+				margin-#{$right}: 4px;
+			}
+		}
+	}
+}
+
+/* Portfolio List */
+.portfolio-list {
+	list-style: none;
+	padding: 0;
+	margin-top: 0;
+	margin-bottom: 0;
+	&:not(.row) {
+		margin: 0;
+	}
+	.portfolio-item {
+		position: relative;
+		margin-bottom: 35px;
+	}
+}
+
+/* Portfolio Details */
+.portfolio-details {
+	list-style: none;
+	padding: 0;
+	margin: side-values(45px 0 0 5px);
+	font-size: 0.9em;
+	> li {
+		padding: 0;
+		margin: 0 0 20px;
+	}
+	p {
+		padding: 0;
+		margin: 0;
+	}
+	blockquote {
+		padding: 0 0 0 10px;
+		margin: 15px 0 0;
+		color: #999;
+	}
+	.list-icons {
+		margin-#{$left}: 0;
+		> li {
+			padding-#{$left}: 18px;
+			margin-#{$right}: 10px;
+			.fa, .fas, .far, .fal, .fab, .icons {
+				top: 7px;
+			}
+		}
+	}
+}
+
+/* Portfolio Modal */
+.portfolio-modal,
+.portfolio-ajax-modal {
+	.mfp-arrow,
+	.mfp-close {
+		display: none;
+	}
+}
+
+.portfolio-load-more-loader {
+	display: none;
+	position: relative;
+	height: 49px;
+}
+
+.btn-portfolio-infinite-scroll {
+	opacity: 0;
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+
+	.portfolio-nav, .portfolio-nav-all {
+		display: none;
+	}	
+
+}

@@ -1,4 +1,4 @@
-<a onclick="getTables({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#lists">  <i class='fa fa-download' title=Download></i></a>
+<a onclick="getTables({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#lists">  <i class='fa fa-download' style="color:white;" title=Download></i></a>
 <style>
 .tooltip:hover .tooltiptext {
     visibility: visible;

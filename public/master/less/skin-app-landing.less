@@ -1,0 +1,131 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #f4645a;
+
+@color-secondary: #fff3f2;
+
+@color-tertiary: #242b32;
+
+@color-quaternary: #000;
+
+@import "skin";
+
+// Less Mixin
+.keyframes(@name; @arguments) {
+	@-moz-keyframes @name { @arguments(); }
+	@-webkit-keyframes @name { @arguments(); }
+	@keyframes @name { @arguments(); }
+}
+
+/*
+* Svg Animation Colors
+*/
+.keyframes(icons;{	
+	0% {
+		stroke: fade(@color-primary, 100%);
+		fill: fade(@color-primary, 0%);
+	}
+	90% {
+		stroke: fade(@color-primary, 100%);
+		fill: fade(@color-primary, 0%);
+	}
+	100% {
+		stroke: fade(@color-primary, 0%);
+		fill: fade(@color-primary, 100%);
+	}
+});
+
+/*
+* General Styles
+*/
+svg {
+	circle {
+		&.icons-circle {
+			stroke: @color-primary;
+		}
+	}
+}
+
+.custom-background-color-1 {
+	background-color: hsl(hue(@color-primary), 78%, 56%) !important;
+}
+
+/*
+* Custom Classes
+*/
+// button
+.custom-btn-style-1 {
+	&, &:active {
+		background: @color-primary;
+		background: -moz-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+		background: -webkit-gradient(left top, right top, color-stop(0%, @color-primary), color-stop(100%, hsl(hue(@color-primary), 100%, 75%)));
+		background: -webkit-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+		background: -o-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+		background: -ms-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+		background: linear-gradient(to right, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4645a', endColorstr='#ff857c', GradientType=1 );
+	}
+
+	&._borders {
+		border: 1px solid hsl(hue(@color-primary), 100%, 75%);
+		
+		&:hover, &:active, &:focus {
+			border-color: hsl(hue(@color-primary), 100%, 75%);
+			background: -moz-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+			background: -webkit-gradient(left top, right top, color-stop(0%, @color-primary), color-stop(100%, hsl(hue(@color-primary), 100%, 75%)));
+			background: -webkit-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+			background: -o-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+			background: -ms-linear-gradient(left, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+			background: linear-gradient(to right, @color-primary 0%, hsl(hue(@color-primary), 100%, 75%) 100%);
+			filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f4645a', endColorstr='#ff857c', GradientType=1 );
+		}
+	}
+}
+
+// bar
+h2 {
+    &.custom-bar {
+    	&:after {
+    		border-bottom-color: @color-primary;
+    	}
+    }
+}
+
+/*
+* FAQ'S
+*/
+.custom-accordion-style-1 {
+	.card-header {
+		.card-title {
+		    a {
+		    	&:not(.collapsed) {
+		    		color: @color-primary !important;
+		    		border-left-color: @color-primary;
+					background: @color-secondary;
+
+					&:after {
+						border-color: @color-primary transparent transparent transparent;
+					}
+		    	}
+		    }
+		}
+	}
+}
+
+#footer {
+    .footer-copyright {
+    	nav {
+    		ul {
+    			li {
+    				&:hover {
+    					a {
+    						color: @color-primary !important;
+    					}
+    				}
+    			}
+    		}
+    	}
+    }
+}

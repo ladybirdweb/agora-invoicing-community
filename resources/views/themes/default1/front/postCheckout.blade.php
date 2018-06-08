@@ -37,7 +37,7 @@ Checkout
 }
 
     if ($symbol == 'INR'){
-   
+$exchangeRate= '';
 $orderData = [
     'receipt'         => 3456,
     'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
@@ -53,7 +53,9 @@ else
 {
      $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
      $exchange = json_decode(file_get_contents($url));
-     $displayAmount =$exchange->quotes->USDINR * $invoice->grand_total ;
+     $exchangeRate = $exchange->quotes->USDINR;
+     // dd($exchangeRate);
+     $displayAmount =$exchangeRate * $invoice->grand_total ;
      $orderData = [
     'receipt'         => 3456,
     'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
@@ -88,6 +90,10 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
+    "Currency"          => \Auth::user()->currency,
+    "Amount Paid"   => $invoice->grand_total,
+    "Exchange Rate"   =>  $exchangeRate,
+
     "merchant_order_id" =>  $merchant_orderid,
     ],
     "theme"             => [
@@ -107,12 +113,12 @@ $json = json_encode($data);
 <div class="row">
 
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                        Review & Payment
-                    </a>
+         <div class="card card-default" style="margin-bottom: 40px;">
+            <div class="card-header">
+                <h4 class="card-title m-0">
+                   
+                        Payment
+                   
                 </h4>
             </div>
 
@@ -121,23 +127,26 @@ $json = json_encode($data);
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+         <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                     {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {!!Session::get('success')!!}
                 </div>
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
                 <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> 
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                   
                     {{Session::get('fails')}}
                 </div>
                 @endif
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -231,9 +240,9 @@ $json = json_encode($data);
                 </div>
                
                     <div class="col-md-12">
-                         <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
-                        <table class="cart-totals">
+                        <!--  <hr class="tall">
+                    <h4 class="heading-primary">Cart Totals</h4> -->
+                       <!--  <table class="cart-totals">
                             <tbody>
 
 
@@ -246,9 +255,9 @@ $json = json_encode($data);
                                     </td>
                                 </tr>
 
-                            </tbody>
-                        </table>
-                        <hr class="tall">
+                            </tbody> -->
+                      <!--   </table>
+                        <hr class="tall"> -->
                     </div>
                 
                 
@@ -383,8 +392,35 @@ $json = json_encode($data);
                   
                   </tr>
                  @endif
+
                 @endforeach
                 @endif
+                <?php
+                $items=$invoice->invoiceItem()->get();
+                ?>
+                   
+                @if ($attributes == null)
+                
+                @foreach ($items as $item)
+               <tr class="Taxes">
+                  <th>
+                        <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                         
+                       
+                    </td>
+                  
+                  </tr>
+                  @endforeach
+                @endif
+
+               
+               
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>

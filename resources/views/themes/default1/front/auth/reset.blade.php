@@ -1,6 +1,9 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-reset password
+Reset Paswword| Faveo Helpdesk
+@stop
+@section('page-heading')
+ <h1>Reset Your Password</h1>
 @stop
 @section('page-header')
 Reset Password
@@ -19,7 +22,7 @@ main
         <div class="featured-boxes">
             
             <div class="row">
-                <div class="col-sm-6 col-md-6 col-md-offset-3">
+                 <div class="col-lg-6 offset-lg-3">
                     @if(Session::has('success'))
                     <div class="alert alert-success alert-dismissable">
                         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
@@ -35,41 +38,50 @@ main
                         {{Session::get('fails')}}
                     </div>
                     @endif
-                    @if (count($errors) > 0)
-                    <div class="alert alert-danger">
-                        <strong>Whoops!</strong> There were some problems with your input.<br><br>
+
+                      @if (count($errors) > 0)
+                    <div class="alert alert-danger alert-dismissable" role="alert">
+                                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="fa fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
                         <ul>
                             @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
+                            <li>{!! $error !!}</li>
                             @endforeach
                         </ul>
                     </div>
                     @endif
-                    <div class="featured-box featured-box-primary align-left mt-xlg">
+
+
+                     <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
+                            
+                               
                             <h4 class="heading-primary text-uppercase mb-md">Reset Password</h4>
                             {!!  Form::open(['url'=>'/password/reset', 'method'=>'post']) !!}
                             <input type="hidden" name="token" value="{{ $token }}">
                             
-                            <div class="row">
-                                <div class="form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-                                    <div class="col-md-12">
-                                        <!--<a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>-->
+                            <div class="form-row">
+                                <div class="form-group col{{ $errors->has('password') ? 'has-error' : '' }}">
+                                   
+                                        
+                                      
+
                                         {!! Form::password('password',['placeholder'=>Lang::get('message.password'),'class' => 'form-control input-lg']) !!}
                                         <!--<input type="password" value="" class="form-control input-lg">-->
-                                    </div>
+                                   
                                 </div>
                             </div>
                             
-                            <div class="row">
-                                <div class="form-group {{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
-                                    <div class="col-md-12">
+                            <div class="form-row">
+                                <div class="form-group col{{ $errors->has('password_confirmation') ? 'has-error' : '' }}">
+                                   
                                         <!--<a class="pull-right" href="{{url('password/email')}}">({{Lang::get('message.forgot-my-password')}})</a>-->
                                         {!! Form::password('password_confirmation',['placeholder'=>'Retype password','class' => 'form-control input-lg']) !!}
                                         <!--<input type="password" value="" class="form-control input-lg">-->
-                                    </div>
+                                    
                                 </div>
-                            </div>
+                            
+                    </div>
                             <div class="row">
                                 
                                
@@ -79,7 +91,7 @@ main
                                     <!--<input type="submit" value="Login" class="btn btn-primary pull-right mb-xl" data-loading-text="Loading...">-->
                                 </div>
                             </div>
-                            </form>
+                           
                         </div>
                     </div>
                 </div>

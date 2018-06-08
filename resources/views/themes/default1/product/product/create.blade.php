@@ -84,7 +84,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins'],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -110,6 +110,12 @@
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
 
                                 </div>
+                                 <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
+                                                        <!-- last name -->
+                                                {!! Form::label('image',Lang::get('message.image')) !!}
+                                                {!! Form::file('image') !!}
+
+                                        </div>
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
                                         <li>

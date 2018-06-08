@@ -1,17 +1,19 @@
-<a href="#renew" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
+<a href="#renew" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
 <div class="modal fade" id="renew{{$id}}">
     <div class="modal-dialog">
         <div class="modal-content">
             {!! Form::open(['url'=>'client/renew/'.$id]) !!}
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title">Renew</h4>
+                 <h4 class="modal-title">Renew</h4>
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+               
             </div>
             <div class="modal-body">
                 <!-- Form  -->
                 
                 <?php 
-                $plans = App\Model\Payment\Plan::pluck('name','id')->toArray();
+           
+                $plans = App\Model\Payment\Plan::where('product',$productid)->pluck('name','id')->toArray();
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
@@ -32,7 +34,7 @@
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
-                        {!! Form::text('cost',null,['class' => 'form-control','id'=>'price']) !!}
+                        {!! Form::text('cost',null,['class' => 'form-control','id'=>'price','readonly'=>'readonly']) !!}
 
                     </div>
 

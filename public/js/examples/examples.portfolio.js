@@ -1,7 +1,7 @@
 /*
 Name: 			Portfolio - Examples
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	4.5.0
+Theme Version:	6.2.0
 */
 (function($) {
 
@@ -17,39 +17,33 @@ Theme Version:	4.5.0
 			enabled: true
 		},
 		callbacks: {
-			beforeOpen: function() {
-
-				// Close
-				$('a[data-portfolio-close]').on('click', function(e) {
-					e.preventDefault();
-					$.magnificPopup.close();
-				});
-
-				// Remove Next and Close
-				if($('a[data-portfolio-on-modal]').length <= 1) {
-					
-					$('a[data-portfolio-prev], a[data-portfolio-next]').remove();
-
-				} else {
-
-					// Prev
-					$('a[data-portfolio-prev]').on('click', function(e) {
-						e.preventDefault();
-						$('.mfp-arrow-left').trigger('click');
-						return false;
-					});
-
-					// Next
-					$('a[data-portfolio-next]').on('click', function(e) {
-						e.preventDefault();
-						$('.mfp-arrow-right').trigger('click');
-						return false;
-					});
-
-				}
-
-			}
+		  	open: function() {
+		  		$('.owl-carousel').owlCarousel('refresh');
+		  	},
+		  	change: function() {
+		  		setTimeout(function(){
+			  		$('.owl-carousel').owlCarousel('refresh');
+		  		}, 1);
+		  	}
 		}
+	});
+
+	$('a[data-portfolio-close]').on('click', function(e) {
+		e.preventDefault();
+		$.magnificPopup.instance.close();
+		return false;
+	});
+
+	$('a[data-portfolio-prev]').on('click', function(e) {
+		e.preventDefault();
+		$.magnificPopup.instance.prev();
+		return false;
+	});
+
+	$('a[data-portfolio-next]').on('click', function(e) {
+		e.preventDefault();
+		$.magnificPopup.instance.next();
+		return false;
 	});
 
 	/*
@@ -107,7 +101,7 @@ Theme Version:	4.5.0
 			spinner: "off",
 			stopLoop: "on",
 			stopAfterLoops: 0,
-			stopAtSlide: 3,
+			stopAtSlide: -1,
 			shuffle: "off",
 			autoHeight: "off",
 			disableProgressBar: "on",
@@ -212,6 +206,25 @@ Theme Version:	4.5.0
 				}
 			});
 
+			// Key Press
+			$(document.documentElement).on('keyup', function(e) {
+
+				if( !$('.mfp-wrap').get(0) ) {
+
+					// Next
+					if (e.keyCode == 39) {
+						self.next();
+					}
+
+					// Prev
+					if (e.keyCode == 37) {
+						self.prev();
+					}
+
+				}
+
+			});
+
 		},
 
 		add: function($el) {
@@ -267,7 +280,7 @@ Theme Version:	4.5.0
 						var $this = $(this),
 							opts;
 
-						var pluginOptions = $this.data('plugin-options');
+						var pluginOptions = theme.fn.getOptions($this.data('plugin-options'));
 						if (pluginOptions)
 							opts = pluginOptions;
 
@@ -335,7 +348,7 @@ Theme Version:	4.5.0
 				
 					setTimeout(function() {
 
-						self.$ajaxBoxContent.html(data.responseText).append('<div class="row"><div class="col-md-12"><hr class="tall mt-xl"></div></div>');
+						self.$ajaxBoxContent.html(data.responseText).append('<div class="row"><div class="col-md-12"><hr class="tall mt-4"></div></div>');
 						self.$ajaxBox.removeClass('ajax-box-loading');
 
 						self.events();
@@ -349,7 +362,9 @@ Theme Version:	4.5.0
 
 	}
 
-	ajaxOnPage.build();
+	if($('#porfolioAjaxBox').get(0)) {
+		ajaxOnPage.build();
+	}
 
 	/*
 	Ajax on Modal
@@ -402,7 +417,7 @@ Theme Version:	4.5.0
 						var $this = $(this),
 							opts;
 
-						var pluginOptions = $this.data('plugin-options');
+						var pluginOptions = theme.fn.getOptions($this.data('plugin-options'));
 						if (pluginOptions)
 							opts = pluginOptions;
 
@@ -423,6 +438,7 @@ Theme Version:	4.5.0
 		currentPage: 1,
 		$wrapper: $('#portfolioLoadMoreWrapper'),
 		$btn: $('#portfolioLoadMore'),
+		$btnWrapper: $('#portfolioLoadMoreBtnWrapper'),
 		$loader: $('#portfolioLoadMoreLoader'),
 
 		build: function() {
@@ -433,7 +449,7 @@ Theme Version:	4.5.0
 
 			if(self.pages <= 1) {
 
-				self.$btn.remove();
+				self.$btnWrapper.remove();
 				return;
 
 			} else {
@@ -442,8 +458,8 @@ Theme Version:	4.5.0
 					self.loadMore();
 				});
 
-				// Lazy Load
-				if(self.$btn.hasClass('btn-portfolio-lazy-load')) {
+				// Infinite Scroll
+				if(self.$btn.hasClass('btn-portfolio-infinite-scroll')) {
 					self.$btn.appear(function() {
 						self.$btn.trigger('click');
 					}, {
@@ -462,7 +478,7 @@ Theme Version:	4.5.0
 			var self = this;
 
 			self.$btn.hide();
-			self.$loader.show();
+			self.$loader.addClass('portfolio-load-more-loader-showing').show();
 
 			// Ajax
 			$.ajax({
@@ -473,15 +489,16 @@ Theme Version:	4.5.0
 
 					setTimeout(function() {
 
-						self.$wrapper.append( $items )
-							.isotope( 'appended', $items );
+						self.$wrapper.append($items)
+
+						self.$wrapper.isotope('appended', $items);
 
 						self.currentPage++;
 
 						if(self.currentPage < self.pages) {
 							self.$btn.show().blur();
 						} else {
-							self.$btn.remove();
+							self.$btnWrapper.remove();
 						}
 
 						// Carousel
@@ -490,7 +507,7 @@ Theme Version:	4.5.0
 								var $this = $(this),
 									opts;
 
-								var pluginOptions = $this.data('plugin-options');
+								var pluginOptions = theme.fn.getOptions($this.data('plugin-options'));
 								if (pluginOptions)
 									opts = pluginOptions;
 
@@ -498,7 +515,7 @@ Theme Version:	4.5.0
 							});
 						});
 
-						self.$loader.hide();
+						self.$loader.removeClass('portfolio-load-more-loader-showing').hide();
 
 					}, 1000);
 
@@ -519,7 +536,6 @@ Theme Version:	4.5.0
 	var portfolioPagination = {
 
 		pages: 0,
-		itemsPerPage: 8,
 		$wrapper: $('#portfolioPaginationWrapper'),
 		$filter: $('#portfolioPaginationFilter'),
 		$pager: $('#portfolioPagination'),
@@ -528,8 +544,9 @@ Theme Version:	4.5.0
 
 			var self = this;
 
-			self.$wrapper.on('filtered', function(event, laidOutItems) {
+			self.$filter.on('filtered', function(event, laidOutItems) {
 				self.build();
+				self.$filter.find('.active').trigger('click');
 			});
 
 		},
@@ -538,9 +555,24 @@ Theme Version:	4.5.0
 
 			var self = this,
 				filter = self.$wrapper.attr('data-filter'),
+				itemsPerPage = parseInt(self.$wrapper.attr('data-items-per-page')),
 				$activeItems = self.$wrapper.find(filter + '.isotope-item');
 
-			return Math.ceil($activeItems.length/self.itemsPerPage);
+			self.$wrapper.find('.isotope-item').removeAttr('data-page-rel');
+
+			$activeItems.each(function(i) {
+				var itemPage = Math.ceil((i+1)/itemsPerPage);
+
+				$(this).attr('data-page-rel', ((itemPage == 0) ? 1 : itemPage));
+
+				if (itemPage > 1) {
+					$(this).hide();
+				}
+			});
+
+			self.$wrapper.isotope('layout');
+
+			return Math.ceil($activeItems.length/itemsPerPage);
 		},
 
 		build: function() {
@@ -562,13 +594,19 @@ Theme Version:	4.5.0
 				self.$wrapper.attr('data-current-page', 1);
 
 				self.$pager.bootpag({
-					total: self.pages
+					total: self.pages,
+					page: 1
 				}).on('page', function(event, num) {
 					self.$wrapper.attr('data-current-page', num);
-					self.$filter.find('.active a').trigger('click');
+					self.$filter.find('.active').trigger('click');
 				});
 
 			}
+
+			self.$filter.find('.active').trigger('click');
+
+			self.$pager.find('li').addClass('page-item');
+			self.$pager.find('a').addClass('page-link');
 
 		}
 
@@ -576,6 +614,86 @@ Theme Version:	4.5.0
 
 	if($('#portfolioPagination').get(0)) {
 		portfolioPagination.init();
+	}
+
+	/*
+	Combination Filters
+	*/
+	if($('#combinationFilters').get(0)) {
+
+		$(window).on('load', function() {
+
+			setTimeout(function() {
+
+				var $grid = $('.portfolio-list').isotope({
+					itemSelector: '.isotope-item',
+					layoutMode: 'masonry',
+					filter: '*',
+					hiddenStyle: {
+						opacity: 0
+					},
+					visibleStyle: {
+						opacity: 1
+					},
+					stagger: 30,
+					isOriginLeft: ($('html').attr('dir') == 'rtl' ? false : true)
+				});
+
+				var filters = {},
+					$loader = $('.sort-destination-loader');
+
+				$('.filters').on('click', 'a', function(e) {
+					
+					e.preventDefault();
+					
+					var $this = $(this);
+
+					var $buttonGroup = $this.parents('.portfolio-filter-group');
+					var filterGroup = $buttonGroup.attr('data-filter-group');
+					
+					filters[filterGroup] = $this.parent().attr('data-option-value');
+					
+					var filterValue = concatValues(filters);
+					
+					$grid.isotope({
+						filter: filterValue
+					});
+				});
+
+				$('.portfolio-filter-group').each(function(i, buttonGroup) {
+					var $buttonGroup = $(buttonGroup);
+					$buttonGroup.on('click', 'a', function() {
+						$buttonGroup.find('.active').removeClass('active');
+						$(this).addClass('active');
+					});
+				});
+
+				var concatValues = function(obj) {
+					var value = '';
+					for (var prop in obj) {
+						value += obj[prop];
+					}
+					return value;
+				}
+
+				$(window).on('resize', function() {
+					setTimeout(function() {
+						$grid.isotope('layout');
+					}, 300);
+				});
+
+				if ($loader) {
+					$loader.removeClass('sort-destination-loader-showing');
+
+					setTimeout(function() {
+						$loader.addClass('sort-destination-loader-loaded');
+					}, 500);
+				}
+
+			}, 1000);
+
+		});
+
 	}
 
 }).apply(this, [jQuery]);

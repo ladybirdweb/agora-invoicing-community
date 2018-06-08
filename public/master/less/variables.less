@@ -1,0 +1,42 @@
+// =============================================================================
+// BORDERS
+// =============================================================================
+
+@border-radius: 4px;
+
+// =============================================================================
+// COLORS
+// =============================================================================
+
+@color-background: #f4f4f4;
+@color-background-dark: #1d2127;
+
+@color-primary: #0088CC;
+@color-primary-inverse: contrast(@color-primary, #777, #FFF);
+
+@color-secondary: #E36159;
+@color-secondary-inverse: contrast(@color-secondary, #777, #FFF);
+
+@color-tertiary: #2BAAB1;
+@color-tertiary-inverse: contrast(@color-tertiary, #777, #FFF);
+
+@color-quaternary: #383f48;
+@color-quaternary-inverse: contrast(@color-quaternary, #777, #FFF);
+
+@color-dark: #2e353e;
+@color-dark-inverse: #FFF;
+
+@color-light: #FFF;
+@color-light-inverse: #777;
+
+// colors list
+@colors-list: primary @color-primary @color-primary-inverse, secondary @color-secondary @color-secondary-inverse, tertiary @color-tertiary @color-tertiary-inverse, quaternary @color-quaternary @color-quaternary-inverse, dark @color-dark @color-dark-inverse, light @color-light @color-light-inverse;
+
+// color primary scale list
+@colors-scale-list: 1 darken(@color-primary, 10%), 2 darken(@color-primary, 5%), 3 @color-primary, 4 lighten(@color-primary, 5%), 5 lighten(@color-primary, 10%), 6 lighten(@color-primary, 15%);
+
+// color default scale list
+@color-background-scale: 1 darken(@color-background, 10%), 2 darken(@color-background, 20%), 3 darken(@color-background, 30%), 4 darken(@color-background, 40%), 5 darken(@color-background, 50%), 6 darken(@color-background, 60%), 7 darken(@color-background, 70%), 8 darken(@color-background, 80%), 9 darken(@color-background, 90%);
+
+// color dark scale list
+@color-background-scale-dark: 1 lighten(@color-background-dark, 10%), 2 lighten(@color-background-dark, 20%), 3 lighten(@color-background-dark, 30%), 4 lighten(@color-background-dark, 40%), 5 lighten(@color-background-dark, 50%), 6 lighten(@color-background-dark, 60%), 7 lighten(@color-background-dark, 70%), 8 lighten(@color-background-dark, 80%), 9 lighten(@color-background-dark, 90%);

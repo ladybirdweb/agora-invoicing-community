@@ -10,13 +10,19 @@ active
 
 
 
-
+<style>
+        .table{width:800px;table-layout:fixed}
+        .table td, .table th {
+    padding: 0.5rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    </style>
 <div class="col-md-12">
 
     <div class="featured-boxes">
         <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->
@@ -30,9 +36,7 @@ active
                                 <div class="col-md-12">
                                     <table class="table">
                                         <tr class="info">
-                                            <th scope="row">
-
-                                            </th>
+                                           
                                             <td>
                                                 Date: {{$order->created_at}}
                                             </td>
@@ -46,22 +50,25 @@ active
                                                 Status: {{$order->order_status}}
                                             </td>
                                         </tr>
-                                        </tbody>
+                                       
                                     </table>  
                                 </div>
 
                                 <div id="hide2">
-                                    <div class="col-md-6">
+                                    
                                         <table class="table table-hover">
+                                            <div class="col-md-6">
                                             <tbody><tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
                                                 <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
                                                 <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
                                                 <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
-                                            </tbody></table>
-                                    </div>
-                                    <div class="col-md-6">
+                                            </tbody> </div>
+                                        </table>
+                                   
+                                    
                                         <table class="table table-hover">
+                                            <div class="col-md-6">
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Domain Name:</b></td>     <td>{{$order->domain}}</td></tr>
                                                 <?php
@@ -76,17 +83,21 @@ active
                                                 ?>
                                                 <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
 
-                                            </tbody></table>
-                                    </div>
-                                </div></div>
+                                            </tbody>
+                                         </div>
+                                     </table>
+                                   
+                                </div>
+                            </div>
 
-                    </div>
+                   
                     <div class="control-sidebar-bg"></div>
                 </div><!-- ./wrapper -->
             </div> 
         </div>
     </div>
 </div>	
+</div>
 
 <div class="col-md-12">
 
@@ -100,7 +111,7 @@ active
                         <section class="content-header">
 
                             <h2>
-                                Transcation list
+                                Transaction list
 
                             </h2>
 

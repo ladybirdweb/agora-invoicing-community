@@ -1,0 +1,145 @@
+/* Circular Bars */
+.circular-bar {
+	text-align: center;
+	margin-bottom: 25px;
+	.circular-bar-chart {
+		position: relative;
+	}
+	strong {
+		display: block;
+		font-weight: 600;
+		font-size: 18px;
+		line-height: 30px;
+		position: absolute;
+		top: 35%;
+		width: 80%;
+		#{$left}: 10%;
+		text-align: center;
+	}
+	label {
+		display: block;
+		font-weight: 100;
+		font-size: 17px;
+		line-height: 20px;
+		position: absolute;
+		top: 50%;
+		width: 80%;
+		#{$left}: 10%;
+		text-align: center;
+	}
+
+	&.only-icon {
+		.fa, .fas, .far, .fal, .fab, .icons  {
+			display: block;
+			font-weight: 600;
+			font-size: 38px;
+			line-height: 30px;
+			position: absolute;
+			top: 40%;
+			width: 80%;
+			#{$left}: 10%;
+			text-align: center;
+		}
+	}
+
+	&.single-line {
+		strong {
+			top: 40%;
+		}
+	}
+
+	&.circular-bar-sm {
+		label {
+			font-size: 14px;
+			top: 36%;
+		}
+	}
+
+	&.circular-bar-lg {
+		strong {
+			font-size: 20px;
+			top: 40%;
+		}
+	}
+
+}
+
+/* Progress */
+.progress {
+	border-radius: 25px;
+	height: 20px;
+	background: #FAFAFA;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) inset;
+	overflow: visible;
+
+	&.progress-border-radius {
+		border-radius: 3px;
+		.progress-bar {
+			border-radius: 3px;
+		}
+	}
+
+	&.progress-no-border-radius {
+		border-radius: 0;
+		.progress-bar {
+			border-radius: 0;
+		}
+	}
+
+	&.progress-sm {
+		height: 10px;
+		.progress-bar {
+			line-height: 10px;
+			height: auto;
+		}
+	}
+
+	&.progress-lg {
+		height: 35px;
+		.progress-bar {
+			font-size: 13px;
+			line-height: 35px;
+			height: auto;
+		}
+	}
+}
+
+.progress-bar {
+	background-color: #CCC;
+	box-shadow: none;
+	position: relative;
+	border-radius: 25px;
+}
+
+.progress-bar-tooltip {
+	position: absolute;
+	padding: 4px 8px;
+	background-color: #333;
+	color: #FFF;
+	line-height: 15px;
+	font-size: 11px;
+	display: block;
+	position: absolute;
+	top: -28px;
+	#{$right}: 5px;
+	border-radius: 3px;
+	opacity: 0;
+	&:after {
+		border-color: #333 transparent;
+		border-style: solid;
+		border-width: 5px 5px 0;
+		bottom: -5px;
+		content: "";
+		display: block;
+		#{$left}: 13px;
+		position: absolute;
+		width: 0;
+	}
+}
+
+@each $state in $states {
+	.progress-bar-#{nth($state,1)} {
+		background-color: #{nth($state,2)};
+		color: #{nth($state,3)};
+	}
+}

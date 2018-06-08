@@ -285,6 +285,7 @@ class TemplateController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
+            // dd(json_encode($settings));
 
             /*Mail config*/
 
@@ -310,14 +311,19 @@ class TemplateController extends Controller
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            $transport->setUsername($email);
-            $transport->setPassword($mail_password);
-            $transport->setStreamOptions($https);
-            $set = new \Swift_Mailer($transport);
 
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+            try {
+                $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
+                $transport->setUsername($email);
+                $transport->setPassword($mail_password);
+                $transport->setStreamOptions($https);
+                $set = new \Swift_Mailer($transport);
+
+                // // Set the mailer
+                \Mail::setSwiftMailer($set);
+            } catch (\Swift_TransportException $e) {
+                dd($e->getMessage());
+            }
 
             /*Mail config ends*/
 

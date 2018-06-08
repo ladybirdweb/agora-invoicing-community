@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Requests\User\ProfileRequest;
+use App\Model\Common\Timezone;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -13,8 +14,10 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
+use Auth;
 use Bugsnag;
 use Exception;
+use Hash;
 
 class ClientController extends Controller
 {
@@ -79,9 +82,12 @@ class ClientController extends Controller
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                $date = date_create($model->created_at);
 
-                                return date_format($date, 'l, F j, Y H:m A');
+                                // $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
+                                $date = $model->created_at;
+
+                                return $date;
+                                // $myobject->created_at->timezone($this->auth->user()->timezone);
                             })
                             // ->showColumns('created_at')
                             ->addColumn('total', function ($model) {
@@ -91,10 +97,10 @@ class ClientController extends Controller
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-sm btn-primary'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-primary btn-xs'>Pay Now</a>";
                                 }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-sm btn-primary'>View</a>".$payment.'</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-primary btn-xs'>View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
@@ -249,16 +255,18 @@ class ClientController extends Controller
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
+                                $tz = \Auth::user()->timezone()->first()->name;
                                 $end = '--';
                                 if ($model->subscription()->first()) {
                                     if ($end != '0000-00-00 00:00:00' || $end != null) {
                                         $ends = $model->subscription()->first()->ends_at;
-                                        $date = date_create($ends);
-                                        $end = date_format($date, 'l, F j, Y H:m A');
+                                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
+                                        $end = $date;
+                                        // dd($end);
                                     }
                                 }
 
-                                return $end;
+                                return $end->setTimezone($tz);
                             })
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();
@@ -269,7 +277,7 @@ class ClientController extends Controller
                                 $url = '';
                                 if ($status == 'success') {
                                     if ($sub) {
-                                        $url = $this->renewPopup($sub->id);
+                                        $url = $this->renewPopup($sub->id, $productid);
                                     }
                                     //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                                 }
@@ -280,11 +288,12 @@ class ClientController extends Controller
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                return '<p><a href='.url('my-order/'.$model->id)." class='btn btn-sm btn-primary' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>$listUrl $url </a>"
-                                        .'&nbsp;
+                                // return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>  $url $listUrl</a>"
+                                //         .'&nbsp;
 
+                                //    </p>';
 
-                                   </p>';
+                                return  '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
@@ -360,12 +369,15 @@ class ClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->fill($request->input())->save();
+            $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
 
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            return $response;
+            // return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $e) {
-            Bugsnag::notifyException($e);
+            $result = [$ex->getMessage()];
 
-            return redirect()->back()->with('fails', $e->getMessage());
+            return response()->json(compact('result'), 500);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -379,15 +391,17 @@ class ClientController extends Controller
             if (\Hash::check($oldpassword, $currentpassword)) {
                 $user->password = Hash::make($newpassword);
                 $user->save();
+                $response = ['type'=>'success', 'message'=>'Password Updated Successfully'];
 
-                return redirect()->back()->with('success1', \Lang::get('message.updated-successfully'));
+                return $response;
             } else {
-                return redirect()->back()->with('fails1', \Lang::get('message.not-updated'));
+                $response = ['type'=>'error', 'message'=>'Password Not Updated'];
             }
         } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
+            $result = [$e->getMessage()];
 
-            return redirect()->back()->with('fails', $e->getMessage());
+            return response()->json(compact('result'), 500);
+            Bugsnag::notifyException($e);
         }
     }
 
@@ -472,7 +486,8 @@ class ClientController extends Controller
                             ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
 
-                                return date_format($date, 'l, F j, Y H:m A');
+                                return $date;
+                                // return date_format($date, 'l, F j, Y H:m A');
                             })
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
@@ -546,16 +561,24 @@ class ClientController extends Controller
                 $invoices = $order->invoice()->pluck('id')->toArray();
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
-                    ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
+                    ->select('id', 'invoice_id', 'user_id', 'payment_method', 'payment_status', 'created_at', 'amount');
             //dd(\Input::all());
             return \DataTables::of($payments->get())
                             ->addColumn('number', function ($model) {
                                 return $model->invoice()->first()->number;
                             })
+                              ->addColumn('total', function ($model) {
+                                  return $model->amount;
+                              })
+                               ->addColumn('created_at', function ($model) {
+                                   $tz = \Auth::user()->timezone()->first()->name;
+                                   $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
+
+                                   return $date->setTimezone($tz);
+                               })
+
                             ->addColumn('payment_method', 'payment_status', 'created_at')
-                            ->addColumn('total', function ($model) {
-                                return $model->grand_total;
-                            })
+
                             ->rawColumns(['number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
@@ -565,9 +588,9 @@ class ClientController extends Controller
         }
     }
 
-    public function renewPopup($id)
+    public function renewPopup($id, $productid)
     {
-        return view('themes.default1.renew.popup', compact('id'));
+        return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
     public function downloadPopup($clientid, $invoiceid, $productid)

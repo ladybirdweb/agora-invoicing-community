@@ -1,0 +1,117 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #43a6a3;
+
+@color-secondary: #eff3f5;
+
+@color-tertiary: #dd4b39;
+
+@color-quaternary: #111421;
+
+@import "skin";
+
+/*
+* Owl Carousel
+*/
+.owl-carousel {
+	&.custom-dots-style-1 {
+		&.custom-dots-color-primary {
+			.owl-dots {
+				button.owl-dot {
+					border-color: @color-primary;
+
+					&.active, &:hover {
+						span {
+							background-color: @color-primary;
+						}
+					}
+
+					span {
+						background-color: @color-primary;
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Header
+*/
+#header {
+	&.custom-header-transparent-style-1 {
+		.header-body {
+			&:before {
+				background-color: @color-quaternary !important;
+			}
+		}
+	}
+}
+
+@media (min-width: 992px) {
+	#header {
+		&.custom-header-transparent-style-1 {
+			.header-nav-main {
+				nav {
+					> ul {
+						> li {
+							> a {
+								&.active {
+									color: @color-primary;
+								}
+							}
+							&:hover {
+								> a {
+									color: @color-primary !important;
+								}
+							}
+						}
+					}
+				}
+			}
+			.header-body {
+				&:before {
+					background-color: @color-quaternary !important;
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	#header {
+		&.custom-header-transparent-style-1 {
+			.header-nav-main {
+				nav {
+					> ul {
+						> li {
+							> a {
+								&.active {
+									background: @color-primary !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/*
+* Timeline
+*/
+.timeline-balloon {
+	.balloon-time {
+		.time-dot {
+			&::before {
+				border-color: @color-primary;
+			}
+			&::after {
+				background-color: @color-primary;
+			}
+		}
+	}
+}

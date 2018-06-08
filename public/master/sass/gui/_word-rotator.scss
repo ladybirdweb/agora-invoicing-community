@@ -1,0 +1,109 @@
+/* Word Rotator */
+.word-rotator {
+	display: inline-block;
+	overflow: hidden;
+	text-align: center;
+	position: relative;
+	max-height: 22px;
+	line-height: 22px;
+	.word-rotator-items {
+		position: relative;
+		top: 0;
+		width: 0;
+		display: inline-block;
+		span {
+			display: inline-block;
+			white-space: nowrap;
+			&:not(:first-child) {
+				display: none;
+			}
+		}
+	}
+	&.active {
+		.word-rotator-items {
+			position: relative;
+			span {
+				display: inline-block;
+				float: $left;
+				clear: both;
+			}
+		}
+	}
+}
+
+h1.word-rotator-title {
+	.inverted {
+		min-height: 56px;
+	}
+	.word-rotator {
+		max-height: 46px;
+		line-height: 46px;
+		margin-bottom: -9px;
+	}
+}
+
+h2.word-rotator-title {
+	.inverted {
+		min-height: 46px;
+	}
+	.word-rotator {
+		max-height: 42px;
+		line-height: 42px;
+		margin-bottom: -9px;
+	}
+}
+
+h3.word-rotator-title {
+	.inverted {
+		min-height: 25px;
+	}
+	.word-rotator {
+		max-height: 24px;
+		line-height: 24px;
+		margin-bottom: -2px;
+	}
+}
+
+h4.word-rotator-title {
+	.inverted {
+		min-height: 32px;
+	}
+	.word-rotator {
+		max-height: 27px;
+		line-height: 27px;
+		margin-bottom: -6px;
+	}
+}
+
+h5.word-rotator-title {
+	.inverted {
+		min-height: 18px;
+	}
+	.word-rotator {
+		max-height: 18px;
+		line-height: 18px;
+		margin-bottom: -4px;
+	}
+}
+
+h6.word-rotator-title {
+	.inverted {
+		min-height: 20px;
+	}
+	.word-rotator {
+		max-height: 18px;
+		line-height: 18px;
+		margin-bottom: -4px;
+	}
+}
+
+p {
+	.inverted {
+		min-height: 24px;
+	}
+	.word-rotator {
+		max-height: 22px;
+		line-height: 22px;
+		margin-bottom: -6px;
+	}
+}

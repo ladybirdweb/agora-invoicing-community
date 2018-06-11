@@ -91,14 +91,14 @@ class RazorpayController extends Controller
 
                     $checkout_controller->checkoutAction($invoice);
                     $order = Order::where('invoice_id',$invoice->id)->first();
+                    $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
                      $date1 = new DateTime($order->created_at);
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
                      $date = $date1->format('D ,M j,Y, g:i a ');
-                     $product = Product::where('id',$order->product)->pluck('name')->first();
-
-                   
+                     $product = Product::where('id',$order->product)->select('id','name')->first();
+                     
                       \Cart::clear();
                 $status = 'success';
                 $message = '
@@ -115,21 +115,19 @@ class RazorpayController extends Controller
                             
     <div id="content" role="main">
                 
-            <article>
-                
-                
-                <div class="page-content">
+           <div class="page-content">
                     <div>
-<div>
 
     
         
-            <p class="">Thank you. Your Payment has been received.</p>
+            <strong>Thank you. Your Payment has been received. A confirmation Mail has been sent to you on your registered
+                Email
+            </strong><br>
 
             <ul class="">
 
                 <li class="">
-                    Order number:                    <strong>'.$order->number.'</strong>
+                    Invoice number:                    <strong>'.$invoice->number.'</strong>
                 </li>
 
                 <li class="woocommerce-order-overview__date date">
@@ -154,37 +152,37 @@ class RazorpayController extends Controller
        
 <section>
     
-    <h2 >Order Details</h2>
+    <h2 style="margin-top:40px ; margin-bottom:10px;">Order Details</h2>
     
-    <table class="table table-bordered">
+    <table class="table table-bordered table-sm table-striped">
     
         <thead>
             <tr>
-                <th class="woocommerce-table__product-name product-name">Product</th>
-                <th class="woocommerce-table__product-table product-total">Total</th>
+                <th>Product</th>
+                <th>Total</th>
             </tr>
         </thead>
         
         <tbody>
-            <tr class="woocommerce-table__line-item order_item">
+            <tr>
 
-    <td class="woocommerce-table__product-name product-name">
-        <h6>'.$product.'</h6> <strong class="product-quantity">× '.$order->qty.'</strong>    </td>
+    <td>
+        <h6>'.$product->name.'</h6> <strong class="product-quantity">× '.$order->qty.'</strong>    </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$order->price_override.'</span>    </td>
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem ->regular_price.'</span>    </td>
 
 </tr>
 
         </tbody>
         <tfoot>
                                 <tr>
-                        <th scope="row">Subtotal:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span>'.$order->price_override.'</span></td>
+                        <th scope="row">Order No:</th>
+                        <td><span class="woocommerce-Price-amount amount"> '.$order->number.'</span></td>
                     </tr>
                                         <tr>
                         <th scope="row">Payment method:</th>
-                        <td>Cash on delivery</td>
+                        <td>Razorpay</td>
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>
@@ -197,14 +195,13 @@ class RazorpayController extends Controller
             <section class="woocommerce-customer-details">
 
     
-    <h2 class="woocommerce-column__title">Billing address</h2>
+    <h2 style="margin-bottom:20px;">Billing address</h2>
 
-    <address>
-       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'
-                    <p class="woocommerce-customer-details--phone">'.$phone.'</p>
-        
-                    <p class="woocommerce-customer-details--email">'.$email.'</p>
-            </address>
+    <strong>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br>
+                   '.$phone.' <br><br>
+                     <a href= product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+            </strong>
 
     
 </section>
@@ -213,11 +210,9 @@ class RazorpayController extends Controller
 </section>
 
     
-</div>
+
 </div>
                 </div>
-            </article>
-
            
 
         
@@ -242,7 +237,8 @@ class RazorpayController extends Controller
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
                     $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
-                    $date1 = new DateTime($invoiceItem->created_at);
+                    $product = Product::where('name',$invoiceItem->product_name)->first();
+                     $date1 = new DateTime($invoiceItem->created_at);
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
@@ -274,9 +270,9 @@ class RazorpayController extends Controller
 
     
         
-            <p class="">Thank you. Your Subscription has been renewed.</p>
-
-            <ul class="">
+            <strong>Thank you. Your Subscription has been renewed.</strong>
+                <br>
+            <ul>
 
                 <li class="">
                     Invoice Number:                    <strong>'.$invoice->number.'</strong>
@@ -304,9 +300,9 @@ class RazorpayController extends Controller
        
 <section>
     
-    <h2>Order Details</h2>
+    <h2 style="margin-top:40px ; margin-bottom:10px;">Payment Details</h2>
     
-    <table class="table table-bordered">
+    <table class="table table-bordered table-sm table-striped">
     
         <thead>
             <tr>
@@ -322,20 +318,18 @@ class RazorpayController extends Controller
         <h6>'.$invoiceItem->product_name.'</h6> <strong class="product-quantity">× '.$invoiceItem->quantity.'</strong>    </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->subtotal.'</span>    </td>
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->regular_price.'</span>    </td>
 
 </tr>
 
         </tbody>
         <tfoot>
-                                <tr>
-                        <th scope="row">Subtotal:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span>'.$invoiceItem->subtotal.'</span></td>
-                    </tr>
+                               
                                         <tr>
                         <th scope="row">Payment method:</th>
                         <td>Razorpay</td>
                     </tr>
+
                                         <tr>
                         <th scope="row">Total:</th>
                         <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->subtotal.'</span></td>
@@ -347,16 +341,15 @@ class RazorpayController extends Controller
             <section class="woocommerce-customer-details">
 
     
-    <h2 class="woocommerce-column__title">Billing address</h2>
+    <h2 style="margin-bottom:20px;">Billing address</h2>
 
-    <address>
-       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'
-                    <p class="woocommerce-customer-details--phone">'.$phone.'</p>
-        
-                    <p class="woocommerce-customer-details--email">'.$email.'</p>
-            </address>
+    <strong>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br>
+                   '.$phone.' <br><br>
+                     <a href=" product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+                   
+            </strong>
 
-    
 </section>
     
 

@@ -320,9 +320,9 @@ $tax=  0;
 
                          @if($attributes[0]['currency'][0]['code'] == "INR")
                            
-                                            {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                          {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @else
-                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+                                           {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @endif
 
                        
@@ -350,7 +350,7 @@ $tax=  0;
             <div class="panel-body">
 
                 @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
+                <div>
                     <!-- {{Lang::get('message.success')}}. -->
                     
                     {!!Session::get('success')!!}

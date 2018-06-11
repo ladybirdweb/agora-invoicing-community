@@ -241,17 +241,19 @@ if (count($attributes) > 0) {
                          </div>
                            <div class="row">
                         <div class=" col-md-6">
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger" style="margin-bottom: 20px;">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
                         
                        </div>
                         <div class=" col-md-6">
                             @if(count($domain)>0)
 
-                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary "style="margin-bottom: 20px;"> Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary" style="margin-bottom: 20px;">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-sm" style="margin-bottom: 20px;">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
+                          
+
                         </div>
                       </div>
                 </div>
@@ -308,5 +310,6 @@ if (count($attributes) > 0) {
     }
 
 </script>
+
 @stop
 

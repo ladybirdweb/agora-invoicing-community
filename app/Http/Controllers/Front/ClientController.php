@@ -18,6 +18,8 @@ use Auth;
 use Bugsnag;
 use Exception;
 use Hash;
+use DateTime;
+use DateTimeZone;
 
 class ClientController extends Controller
 {
@@ -259,15 +261,22 @@ class ClientController extends Controller
                                 $end = '--';
                                 if ($model->subscription()->first()) {
                                     if ($end != '0000-00-00 00:00:00' || $end != null) {
-                                        $ends = $model->subscription()->first()->ends_at;
-                                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
+                                        $ends =new DateTime($model->subscription()->first()->ends_at) ;
+                                         $tz = \Auth::user()->timezone()->first()->name;
+                                         $ends->setTimezone(new DateTimeZone($tz));
+                                        $date =   $ends->format('D ,M j,Y, g:i a ');
                                         $end = $date;
                                         // dd($end);
                                     }
                                 }
 
-                                return $end->setTimezone($tz);
+                                return $end;
                             })
+
+
+
+
+
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();
                                 $order = Order::where('id', $model->id)->select('product')->first();
@@ -570,10 +579,13 @@ class ClientController extends Controller
                                   return $model->amount;
                               })
                                ->addColumn('created_at', function ($model) {
-                                   $tz = \Auth::user()->timezone()->first()->name;
-                                   $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
+                                $date1 = new DateTime($model->created_at);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                   $date1->setTimezone(new DateTimeZone($tz));
+                                    $date = $date1->format('D ,M j,Y, g:i a ');
+                                  
 
-                                   return $date->setTimezone($tz);
+                                   return $date;
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')
@@ -587,6 +599,8 @@ class ClientController extends Controller
         }
     }
 
+
+ 
     public function renewPopup($id, $productid)
     {
         return view('themes.default1.renew.popup', compact('id', 'productid'));

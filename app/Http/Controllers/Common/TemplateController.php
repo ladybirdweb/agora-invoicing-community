@@ -779,10 +779,9 @@ class TemplateController extends Controller
                 // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
 
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
-                if($currency == 'INR'){
+                if ($currency == 'INR') {
                     $symbol = '₹';
-                }
-                else{
+                } else {
                     $symbol == '$';
                 }
                 // dd($price);

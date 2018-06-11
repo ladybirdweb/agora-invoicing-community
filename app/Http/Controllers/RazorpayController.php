@@ -4,14 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use Razorpay\Api\Api;
-use Redirect;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
+use Razorpay\Api\Api;
+use Redirect;
 
 class RazorpayController extends Controller
 {
@@ -72,12 +72,12 @@ class RazorpayController extends Controller
         $currency = \Auth::user()->currency;
         $firstName = \Auth::user()->first_name;
         $lastName = \Auth::user()->last_name;
-            $invoice = Invoice::where('id', $invoice)->first();
+        $invoice = Invoice::where('id', $invoice)->first();
         if ($success === true) {
             try {
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
-              
+
                 if ($control->checkRenew() == false) {
 
                     // $invoicenumber=$invoice->number;
@@ -88,8 +88,8 @@ class RazorpayController extends Controller
 
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
 
-
                     $checkout_controller->checkoutAction($invoice);
+<<<<<<< HEAD
                     $order = Order::where('invoice_id',$invoice->id)->first();
                     $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
                      $date1 = new DateTime($order->created_at);
@@ -102,6 +102,19 @@ class RazorpayController extends Controller
                       \Cart::clear();
                 $status = 'success';
                 $message = '
+=======
+                    $order = Order::where('invoice_id', $invoice->id)->first();
+                    $date1 = new DateTime($order->created_at);
+                    $tz = \Auth::user()->timezone()->first()->name;
+
+                    $date1->setTimezone(new DateTimeZone($tz));
+                    $date = $date1->format('D ,M j,Y, g:i a ');
+                    $product = Product::where('id', $order->product)->pluck('name')->first();
+
+                    \Cart::clear();
+                    $status = 'success';
+                    $message = '
+>>>>>>> a397465d96d7d331ca6e33095a0e8164595288ab
 
 
 <div class="container">
@@ -225,29 +238,27 @@ class RazorpayController extends Controller
     
     </div>
     </div>';
-
-
-
-
-
-
                 } else {
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
+<<<<<<< HEAD
                     $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
                     $product = Product::where('name',$invoiceItem->product_name)->first();
                      $date1 = new DateTime($invoiceItem->created_at);
+=======
+                    $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
+                    $date1 = new DateTime($invoiceItem->created_at);
+>>>>>>> a397465d96d7d331ca6e33095a0e8164595288ab
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
-                     $date = $date1->format('D ,M j,Y, g:i a ');
+                    $date = $date1->format('D ,M j,Y, g:i a ');
 
-
-                                          \Cart::clear();
-                $status = 'success';
-                $message = '
+                    \Cart::clear();
+                    $status = 'success';
+                    $message = '
 
 
 <div class="container">
@@ -375,8 +386,6 @@ class RazorpayController extends Controller
     </div>';
                 }
                 // $returnValue=$checkout_controller->checkoutAction($invoice);
-
-               
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {

@@ -109,6 +109,13 @@ if ($displayCurrency !== 'INR')
     
 }
 $json = json_encode($data);
+if(\Auth::user()->currency == 'INR'){
+    $symbol = '₹';
+}
+else{
+    $symbol = '$';
+}
+
 ?>
 <div class="row">
 

@@ -337,12 +337,12 @@ $tax=  0;
 <div class="row">
 
     <div class="col-md-12">
-        <div class="panel panel-default">
+       
             <div class="panel-heading">
                 <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                
                         Order
-                    </a>
+                    
                 </h4>
             </div>
 
@@ -351,8 +351,8 @@ $tax=  0;
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-                    {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <!-- {{Lang::get('message.success')}}. -->
+                    
                     {!!Session::get('success')!!}
                 </div>
                 @endif
@@ -377,7 +377,7 @@ $tax=  0;
                 @endif
             </div>
         </div>
-    </div>
+    
 </div>
 @endif
 @endsection

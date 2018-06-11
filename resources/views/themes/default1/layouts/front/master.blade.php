@@ -122,7 +122,7 @@
                                             <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                             @endforeach
                                         </ul>
-
+ 
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
@@ -138,7 +138,7 @@
                                                         </a>
 
                                                     </li>
-
+ 
                                                     <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
 
                                                     @foreach($pages as $page)
@@ -217,6 +217,7 @@
                                                                     <table class="cart">
                                                                         <tbody>
                                                                             @forelse(Cart::getContent() as $key=>$item)
+                                                                            
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {

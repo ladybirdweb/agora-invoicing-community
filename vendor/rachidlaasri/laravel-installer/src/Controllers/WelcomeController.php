@@ -16,7 +16,13 @@ class WelcomeController extends Controller
      */
     public function welcome()
     {
-        return view('vendor.installer.welcome');
+    	  
+          if ((!\File::exists(base_path('.env'))) || (env('DB_INSTALL') == 0)) {
+             return view('vendor.installer.welcome');
+           }
+           else{
+           	return redirect()->back();
+           }
     }
 
 }

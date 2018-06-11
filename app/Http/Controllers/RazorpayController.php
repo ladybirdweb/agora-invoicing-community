@@ -6,8 +6,12 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
+use App\Model\Order\Order;
+use App\Model\Product\Product;
 use Razorpay\Api\Api;
 use Redirect;
+use DateTime;
+use DateTimeZone;
 
 class RazorpayController extends Controller
 {
@@ -60,12 +64,20 @@ class RazorpayController extends Controller
                 $error = 'Razorpay Error : '.$e->getMessage();
             }
         }
-
+        $email = \Auth::user()->email;
+        $country = \Auth::user()->country;
+        $state = \Auth::user()->state;
+        $phone = \Auth::user()->mobile;
+        $address = \Auth::user()->address;
+        $currency = \Auth::user()->currency;
+        $firstName = \Auth::user()->first_name;
+        $lastName = \Auth::user()->last_name;
+            $invoice = Invoice::where('id', $invoice)->first();
         if ($success === true) {
             try {
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
-                $invoice = Invoice::where('id', $invoice)->first();
+              
                 if ($control->checkRenew() == false) {
 
                     // $invoicenumber=$invoice->number;
@@ -76,15 +88,18 @@ class RazorpayController extends Controller
 
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
 
-                    $checkout_controller->checkoutAction($invoice);
-                } else {
-                    $control->successRenew($invoice);
-                    $payment = new \App\Http\Controllers\Order\InvoiceController();
-                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
-                }
-                // $returnValue=$checkout_controller->checkoutAction($invoice);
 
-                \Cart::clear();
+                    $checkout_controller->checkoutAction($invoice);
+                    $order = Order::where('invoice_id',$invoice->id)->first();
+                     $date1 = new DateTime($order->created_at);
+                    $tz = \Auth::user()->timezone()->first()->name;
+
+                    $date1->setTimezone(new DateTimeZone($tz));
+                     $date = $date1->format('D ,M j,Y, g:i a ');
+                     $product = Product::where('id',$order->product)->pluck('name')->first();
+
+                   
+                      \Cart::clear();
                 $status = 'success';
                 $message = '
 
@@ -92,58 +107,56 @@ class RazorpayController extends Controller
 <div class="container">
                             
             
-            <div class="row main-content-wrap">
+            <div >
 
             <!-- main content -->
-            <div class="main-content col-lg-9">
+            <div >
 
                             
     <div id="content" role="main">
                 
-            <article class="post-23 page type-page status-publish hentry">
+            <article>
                 
-                <span class="entry-title" style="display: none;">Order received</span><span class="vcard" style="display: none;"><span class="fn"><a href="http://alok-ladybirdweb.tk/sm/author/admin/" title="Posts by admin" rel="author">admin</a></span></span><span class="updated" style="display:none">2018-06-08T11:13:38+00:00</span>
+                
                 <div class="page-content">
-                    <div class="woocommerce">
-<div class="woocommerce-order">
+                    <div>
+<div>
 
     
         
-            <p class="woocommerce-notice woocommerce-notice--success woocommerce-thankyou-order-received">Thank you. Your order has been received.</p>
+            <p class="">Thank you. Your Payment has been received.</p>
 
-            <ul class="woocommerce-order-overview woocommerce-thankyou-order-details order_details">
+            <ul class="">
 
-                <li class="woocommerce-order-overview__order order">
-                    Order number:                    <strong>2288</strong>
+                <li class="">
+                    Order number:                    <strong>'.$order->number.'</strong>
                 </li>
 
                 <li class="woocommerce-order-overview__date date">
-                    Date:                    <strong>June 8, 2018</strong>
+                    Date:                    <strong>'.$date.'</strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__email email">
-                        Email:                        <strong>admin@ladybirdweb.com</strong>
+                        Email:                        <strong>'.$email.'</strong>
                     </li>
                 
                 <li class="woocommerce-order-overview__total total">
-                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></strong>
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$order->price_override.'</span></strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__payment-method method">
-                        Payment method:                        <strong>Cash on delivery</strong>
+                        Payment method:                        <strong>Razorpay</strong>
                     </li>
                 
             </ul>
 
         
-        <p>Pay with cash upon delivery.</p>
-        
-
-<section class="woocommerce-order-details">
+       
+<section>
     
-    <h2 class="woocommerce-order-details__title">Order Details</h2>
+    <h2 >Order Details</h2>
     
-    <table class="woocommerce-table woocommerce-table--order-details shop_table order_details">
+    <table class="table table-bordered">
     
         <thead>
             <tr>
@@ -156,10 +169,10 @@ class RazorpayController extends Controller
             <tr class="woocommerce-table__line-item order_item">
 
     <td class="woocommerce-table__product-name product-name">
-        <a href="http://alok-ladybirdweb.tk/sm/product/test-asu/">test asu</a> <strong class="product-quantity">× 1</strong>    </td>
+        <h6>'.$product.'</h6> <strong class="product-quantity">× '.$order->qty.'</strong>    </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span>    </td>
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$order->price_override.'</span>    </td>
 
 </tr>
 
@@ -167,7 +180,7 @@ class RazorpayController extends Controller
         <tfoot>
                                 <tr>
                         <th scope="row">Subtotal:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></td>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span>'.$order->price_override.'</span></td>
                     </tr>
                                         <tr>
                         <th scope="row">Payment method:</th>
@@ -175,7 +188,7 @@ class RazorpayController extends Controller
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">₹</span>100.00</span></td>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$order->price_override.'</span></td>
                     </tr>
                             </tfoot>
     </table>
@@ -187,10 +200,10 @@ class RazorpayController extends Controller
     <h2 class="woocommerce-column__title">Billing address</h2>
 
     <address>
-        Alok jena<br>68 , 10th main Indiranagar<br>Bangalore - 560038<br>Karnataka
-                    <p class="woocommerce-customer-details--phone">7795792760</p>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'
+                    <p class="woocommerce-customer-details--phone">'.$phone.'</p>
         
-                    <p class="woocommerce-customer-details--email">admin@ladybirdweb.com</p>
+                    <p class="woocommerce-customer-details--email">'.$email.'</p>
             </address>
 
     
@@ -205,9 +218,7 @@ class RazorpayController extends Controller
                 </div>
             </article>
 
-            <div class="">
-            
-                        </div>
+           
 
         
     </div>
@@ -219,6 +230,160 @@ class RazorpayController extends Controller
     
     </div>
     </div>';
+
+
+
+
+
+
+                } else {
+                    $control->successRenew($invoice);
+                    $payment = new \App\Http\Controllers\Order\InvoiceController();
+                    $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+
+                    $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
+                    $date1 = new DateTime($invoiceItem->created_at);
+                    $tz = \Auth::user()->timezone()->first()->name;
+
+                    $date1->setTimezone(new DateTimeZone($tz));
+                     $date = $date1->format('D ,M j,Y, g:i a ');
+
+
+                                          \Cart::clear();
+                $status = 'success';
+                $message = '
+
+
+<div class="container">
+                            
+            
+            <div >
+
+            <!-- main content -->
+            <div >
+
+                            
+    <div role="main">
+                
+            <article>
+                
+                
+                <div class="page-content">
+                    <div>
+<div>
+
+    
+        
+            <p class="">Thank you. Your Subscription has been renewed.</p>
+
+            <ul class="">
+
+                <li class="">
+                    Invoice Number:                    <strong>'.$invoice->number.'</strong>
+                </li>
+
+                <li class="woocommerce-order-overview__date date">
+                    Date:                    <strong>'.$date.'</strong>
+                </li>
+
+                                    <li class="woocommerce-order-overview__email email">
+                        Email:                        <strong>'.$email.'</strong>
+                    </li>
+                
+                <li class="woocommerce-order-overview__total total">
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->subtotal.'</span></strong>
+                </li>
+
+                                    <li class="woocommerce-order-overview__payment-method method">
+                        Payment method:                        <strong>Razorpay</strong>
+                    </li>
+                
+            </ul>
+
+        
+       
+<section>
+    
+    <h2>Order Details</h2>
+    
+    <table class="table table-bordered">
+    
+        <thead>
+            <tr>
+                <th class="woocommerce-table__product-name product-name">Product</th>
+                <th class="woocommerce-table__product-table product-total">Total</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr class="woocommerce-table__line-item order_item">
+
+    <td class="woocommerce-table__product-name product-name">
+        <h6>'.$invoiceItem->product_name.'</h6> <strong class="product-quantity">× '.$invoiceItem->quantity.'</strong>    </td>
+
+    <td class="woocommerce-table__product-total product-total">
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->subtotal.'</span>    </td>
+
+</tr>
+
+        </tbody>
+        <tfoot>
+                                <tr>
+                        <th scope="row">Subtotal:</th>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span>'.$invoiceItem->subtotal.'</span></td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Payment method:</th>
+                        <td>Razorpay</td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Total:</th>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->subtotal.'</span></td>
+                    </tr>
+                            </tfoot>
+    </table>
+    <br>
+    
+            <section class="woocommerce-customer-details">
+
+    
+    <h2 class="woocommerce-column__title">Billing address</h2>
+
+    <address>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'
+                    <p class="woocommerce-customer-details--phone">'.$phone.'</p>
+        
+                    <p class="woocommerce-customer-details--email">'.$email.'</p>
+            </address>
+
+    
+</section>
+    
+
+</section>
+
+    
+</div>
+</div>
+                </div>
+            </article>
+
+           
+
+        
+    </div>
+
+        
+
+</div><!-- end main content -->
+
+    
+    </div>
+    </div>';
+                }
+                // $returnValue=$checkout_controller->checkoutAction($invoice);
+
+               
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {

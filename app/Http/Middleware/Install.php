@@ -21,11 +21,11 @@ class Install
 
         // 'driver' => env('DB_INSTALL', '1'),
         // dd(\File::exists($env) && env('DB_INSTALL')==1);
-        if (\File::exists($env) && env('DB_INSTALL') == 1) {
+        if (\File::exists($env) && (\Config('database.DB_INSTALL') == 1)) {
+            // dd(\File::exists($env), env('DB_INSTALL'));
             return $next($request);
-        } elseif ((!\File::exists($env)) || (env('DB_INSTALL') == 0)) {
-            // dump(\File::exists($env).' '.env('DB_INSTALL').' '.$env;
-            return redirect()->route('LaravelInstaller::welcome');
+        } elseif ((!\File::exists($env)) || (\Config('database.DB_INSTALL') == 0)) {
+             return redirect()->route('LaravelInstaller::welcome');
         }
     }
 }

@@ -13,7 +13,13 @@ Checkout
 @section('content')
 <?php
 
-    $symbol = $invoice->currency;
+    $currency = $invoice->currency;
+    if ($currency == 'INR'){
+        $symbol = '₹';
+    }
+    else {
+        $symbol = '$';
+    }
 
 ?>
 <div class="container">

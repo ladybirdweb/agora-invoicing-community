@@ -147,7 +147,7 @@ CREATE TABLE IF NOT EXISTS `currencies` (
 
 INSERT INTO `currencies` (`id`,`code`,`symbol`, `name`, `base_conversion`,`created_at`, `updated_at`) VALUES
 (1, 'USD','$','US Dollar', '1.0','2018-04-13 12:53:58','2018-04-13 12:53:58'),
-(2, 'INR','Rs','Indian Rupee', '1,0', '2018-04-13 12:53:58','2018-04-13 12:53:58');
+(2, 'INR','₹','Indian Rupee', '1,0', '2018-04-13 12:53:58','2018-04-13 12:53:58');
 
 
 
@@ -709,7 +709,7 @@ INSERT INTO `taxes` (`id`,`tax_classes_id`,`level`,`active`,`name`,`country`,`st
 
 
 INSERT INTO `frontend_pages` (`id`,`parent_page_id`,`slug`,`name`,`content`,`url`,`type`,`publish`,`hidden`,`created_at`, `updated_at`) VALUES
-(1, '0','pricing','pricing','<div class="pricing-table princig-table-flat">
+(1, '0','pricing','pricing','
                             <div class="col-md-3 col-sm-6">
                                 <div class="plan">
                                     <h3>{{name}}<span>{{price}}</span></h3>
@@ -723,7 +723,7 @@ INSERT INTO `frontend_pages` (`id`,`parent_page_id`,`slug`,`name`,`content`,`url
                                     </ul>
                                 </div>
                             </div>
-               </div>','','cart','1','1','2018-04-13 12:53:58','2018-04-13 12:53:58');
+              ','','cart','1','1','2018-04-13 12:53:58','2018-04-13 12:53:58');
 
 
 

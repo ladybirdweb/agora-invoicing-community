@@ -40,8 +40,7 @@ use App\Http\Controllers\Controller;
         public function __construct()
         {
             $this->middleware('auth');
-            $this->middleware('admin', ['except' => ['adminDownload','userDownload']]);
-
+            $this->middleware('admin', ['except' => ['adminDownload', 'userDownload']]);
 
             $product = new Product();
             $this->product = $product;

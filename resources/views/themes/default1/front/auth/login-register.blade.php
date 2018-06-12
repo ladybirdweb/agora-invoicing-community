@@ -463,7 +463,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                 <input type="hidden" name="email_password" id="email_password"/>
                                 <div class="form-row">
                                                         <div class="form-group col">
-                                                            <label>Email</label>
+                                                            <label  for="mobile" class="required">Email</label>
                                                              <div class="input-group">
 
                                                   
@@ -538,8 +538,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                             </div> -->
                             <form name="verify_otp_form">
                                    <label for="mobile" class="required">Enter OTP</label><br/>
-                                <div class="row verify">
-                                    <div class="form-group col-lg-6">
+                                <div class="row ">
+                                      <div class="col-md-6">
                                         
                                         <input type="hidden" name="user_id" id="hidden_user_id"/>
                                         <input class="form-control input-lg"  id="oneTimePassword" name="oneTimePassword" type="text" >
@@ -548,20 +548,15 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
 
                                         
-                                              <div class="form-group col-lg-2">
-                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" style="margin-right:-22px;">
+                                             <div class="col-md-3">
+                                               <button type="button" class="btn btn-primary float-right mb-5" name="verifyOtp" id="verifyOtp" value="Verify OTP" onclick="verifyBySendOtp()" >
                                                         Verify OTP
                                                  </button>
                                                  </div>
-                                                     <div class="form-group col-lg-2">
-                                                        <a  class="btn btn-danger float-right mb-5" name="resendOTP" onclick="resendOTP()" id="resendOTP" ng-click="resendOTP()" style="margin-right:-55px; background: grey; color:white;">Resend OTP</a>
-                                                         </div>  
-                                                       
-                                                            
-                                                       
-
-
-                                   
+                                                      <div class="col-md-3">
+                                                        <a  class="btn btn-primary float-right mb-5" name="resendOTP" onclick="resendOTP()" id="resendOTP" ng-click="resendOTP()" style= "background: grey; color:white;">Resend OTP</a>
+                                        </div>  
+                                                          
                                 </div>
                              
                             </form>

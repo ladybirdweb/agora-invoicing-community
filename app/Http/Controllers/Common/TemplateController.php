@@ -780,7 +780,7 @@ class TemplateController extends Controller
                 if ($currency == 'INR') {
                     $symbol = '₹';
                 } else {
-                    $symbol == '$';
+                    $symbol = '$';
                 }
                 // dd($price);
             }

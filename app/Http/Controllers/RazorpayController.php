@@ -6,6 +6,8 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use App\Model\Common\State;
+use App\Model\Payment\TaxByState;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
@@ -66,12 +68,20 @@ class RazorpayController extends Controller
         }
         $email = \Auth::user()->email;
         $country = \Auth::user()->country;
-        $state = \Auth::user()->state;
+        $stateCode = \Auth::user()->state;
+        if ($country != 'IN'){
+        $state = State::where('state_subdivision_code', $stateCode)->pluck('state_subdivision_name')->first();
+        }
+        else{
+        $state = TaxByState::where('state_code',$stateCode)->pluck('state')->first();
+        }
         $phone = \Auth::user()->mobile;
         $address = \Auth::user()->address;
         $currency = \Auth::user()->currency;
         $firstName = \Auth::user()->first_name;
         $lastName = \Auth::user()->last_name;
+        $zip = \Auth::user()->zip;
+        $city = \Auth::user()->town;
         $invoice = Invoice::where('id', $invoice)->first();
         if ($success === true) {
             try {
@@ -155,7 +165,7 @@ class RazorpayController extends Controller
     
     <h2 style="margin-top:40px ; margin-bottom:10px;">Order Details</h2>
     
-    <table class="table table-bordered table-sm table-striped">
+    <table class="table table-bordered table-striped">
     
         <thead>
             <tr>
@@ -168,7 +178,8 @@ class RazorpayController extends Controller
             <tr>
 
     <td>
-        <h6>'.$product->name.'</h6> <strong class="product-quantity">× '.$order->qty.'</strong>    </td>
+        <strong>'.$product->name.' ×   '.$order->qty.' </strong>
+    </td>
 
     <td class="woocommerce-table__product-total product-total">
         <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem ->regular_price.'</span>    </td>
@@ -199,7 +210,7 @@ class RazorpayController extends Controller
     <h2 style="margin-bottom:20px;">Billing address</h2>
 
     <strong>
-       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$city.' - '.$zip.'<br> '.$state.' <br>
                    '.$phone.' <br><br>
                      <a href= product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
             </strong>
@@ -298,7 +309,7 @@ class RazorpayController extends Controller
     
     <h2 style="margin-top:40px ; margin-bottom:10px;">Payment Details</h2>
     
-    <table class="table table-bordered table-sm table-striped">
+    <table class="table table-bordered  table-striped">
     
         <thead>
             <tr>
@@ -308,10 +319,13 @@ class RazorpayController extends Controller
         </thead>
         
         <tbody>
+        <td>
+        <strong>'.$product->name.'</strong>×  <strong> '.$order->qty.' </strong>
+    </td>
             <tr class="woocommerce-table__line-item order_item">
 
     <td class="woocommerce-table__product-name product-name">
-        <h6>'.$invoiceItem->product_name.'</h6> <strong class="product-quantity">× '.$invoiceItem->quantity.'</strong>    </td>
+        <strong>'.$invoiceItem->product_name.'</strong> <strong>× '.$invoiceItem->quantity.'</strong>    </td>
 
     <td class="woocommerce-table__product-total product-total">
         <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->regular_price.'</span>    </td>
@@ -340,7 +354,7 @@ class RazorpayController extends Controller
     <h2 style="margin-bottom:20px;">Billing address</h2>
 
     <strong>
-       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br> '.$zip.' <br>
                    '.$phone.' <br><br>
                      <a href=" product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
                    

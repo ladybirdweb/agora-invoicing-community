@@ -54,7 +54,7 @@
               }
               else{
                  $('#domaincheck').show();
-                $('#domaincheck').html("Please Enter a Valid Domain");
+                $('#domaincheck').html("Domain name field is required in the format 'example.com'");
                  $('#domaincheck').focus();
                   $('#validDomain').css("border-color","red");
                  $('#domaincheck').css({"color":"red","margin-top":"5px"});

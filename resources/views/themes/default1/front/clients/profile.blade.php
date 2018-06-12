@@ -15,9 +15,10 @@ active
 @stop
 @section('content')
 
-<h2 class="mb-none"> My Profile</h2>
+
 
 <div class="row">
+
     <!--    <div class="col-md-12">
             <p class="lead">
                 Check out all the tables options.
@@ -27,7 +28,9 @@ active
  <div id="alertMessage"></div>
  <div id="error"></div>
 <div class="col">
+    <h2 class="mb-none"> My Profile</h2>
     <div class="featured-boxes">
+
         <div class="row">
             <div class="col-md-6">
                 <div class="featured-box featured-box-primary text-left mt-5">

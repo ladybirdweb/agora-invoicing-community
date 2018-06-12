@@ -236,7 +236,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="width: 30px;">&nbsp;</td>
 <td style="width: 640px; padding-top: 30px;">
-<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo.png" alt="Faveo Helpdesk" /></h2>
+<h2 style="color: #333; font-family: Arial, sans-serif; font-size: 18px; font-weight: bold; padding: 0; margin: 0;"><img src="http://www.faveohelpdesk.com/billing/public/cart/img/logo/faveo1.png" alt="Faveo Helpdesk" /></h2>
 </td>
 <td style="width: 30px;">&nbsp;</td>
 </tr>
@@ -279,13 +279,13 @@ class TemplateTableSeeder extends Seeder
 </tr>
 <tr>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;"><a class="moz-txt-link-abbreviated" href="mailto:info@faveohelpdesk.com">info@faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;"><a class="moz-txt-link-abbreviated" href="mailto:sales@faveohelpdesk.com">sales@faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="http://www.ladybirdweb.com/support">http://www.ladybirdweb.com/support</a></p>
+<p style="line-height: 20px;"><a class="moz-txt-link-freetext" href="https://www.support.faveohelpdesk.com">www.support.faveohelpdesk.com</a></p>
 </td>
 <td style="color: #333; font-family: Arial, sans-serif; font-size: 11px; padding-left: 25px;" valign="top">
-<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:support@ladybirdweb.com">support@ladybirdweb.com</a><br /><a class="moz-txt-link-freetext" href="http://www.faveohelpdesk.com">http://www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
+<p style="line-height: 20px;">Ladybird Web Solution Pvt Ltd<br /><a class="moz-txt-link-abbreviated" href="mailto:accounts@faveohelpdesk.com">accounts@faveohelpdesk.com</a><br /><a class="moz-txt-link-freetext" href="https://www.faveohelpdesk.com">www.faveohelpdesk.com</a><br /> Tel: +91 80 3075 2618</p>
 </td>
 </tr>
 </tbody>

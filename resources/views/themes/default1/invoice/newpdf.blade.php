@@ -143,10 +143,10 @@
                                 @if($tax_name[$i]!='null')
                                 <tr>
                                     <th>
-                                        <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
+                                        <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
                                     </th>
                                     <td>
-                                        <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
+                                        <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
                                     </td>
 
                                 </tr>

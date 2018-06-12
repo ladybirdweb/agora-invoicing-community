@@ -18,7 +18,16 @@ active
 <div class="featured-boxes">
     <div class="row">
         <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
-           <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
+           <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
+            ?>
+            <?php    
+            if($invoice->currency == 'INR'){
+                $symbol = '₹';
+             }
+             else{
+                $symbol = '$';
+             }
+                ?>
             <div class="col-lg-12 order-1 order-lg-2">
         <div class="featured-box featured-box-primary align-left mt-xlg"  style="text-align: left;">
             <div class="box-content">
@@ -164,7 +173,9 @@ active
                                             <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+
+                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+                                            
                                         </td>
 
                                     </tr>
@@ -172,7 +183,7 @@ active
                                     @endfor
                                         <tr>
                                             <th style="width:50%">Total:</th>
-                                            <td><small>{!! $invoice->currency !!}</small> {{$invoice->grand_total}}</td>
+                                            <td><small>{!! $symbol !!}</small> {{$invoice->grand_total}}</td>
                                         </tr>
 
                                     </table>

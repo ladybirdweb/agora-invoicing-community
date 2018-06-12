@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Common\State;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-use App\Model\Product\Product;
-use App\Model\Common\State;
 use App\Model\Payment\TaxByState;
+use App\Model\Product\Product;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
@@ -69,11 +69,10 @@ class RazorpayController extends Controller
         $email = \Auth::user()->email;
         $country = \Auth::user()->country;
         $stateCode = \Auth::user()->state;
-        if ($country != 'IN'){
-        $state = State::where('state_subdivision_code', $stateCode)->pluck('state_subdivision_name')->first();
-        }
-        else{
-        $state = TaxByState::where('state_code',$stateCode)->pluck('state')->first();
+        if ($country != 'IN') {
+            $state = State::where('state_subdivision_code', $stateCode)->pluck('state_subdivision_name')->first();
+        } else {
+            $state = TaxByState::where('state_code', $stateCode)->pluck('state')->first();
         }
         $phone = \Auth::user()->mobile;
         $address = \Auth::user()->address;
@@ -100,18 +99,18 @@ class RazorpayController extends Controller
 
                     $checkout_controller->checkoutAction($invoice);
 
-                    $order = Order::where('invoice_id',$invoice->id)->first();
-                    $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
-                     $date1 = new DateTime($order->created_at);
+                    $order = Order::where('invoice_id', $invoice->id)->first();
+                    $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
+                    $date1 = new DateTime($order->created_at);
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
-                     $date = $date1->format('D ,M j,Y, g:i a ');
-                     $product = Product::where('id',$order->product)->select('id','name')->first();
-                     
-                      \Cart::clear();
-                $status = 'success';
-                $message = '
+                    $date = $date1->format('D ,M j,Y, g:i a ');
+                    $product = Product::where('id', $order->product)->select('id', 'name')->first();
+
+                    \Cart::clear();
+                    $status = 'success';
+                    $message = '
 
 
 
@@ -182,7 +181,7 @@ class RazorpayController extends Controller
     </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem ->regular_price.'</span>    </td>
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$currency.'</span> '.$invoiceItem->regular_price.'</span>    </td>
 
 </tr>
 
@@ -242,10 +241,9 @@ class RazorpayController extends Controller
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
-
-                    $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
-                    $product = Product::where('name',$invoiceItem->product_name)->first();
-                     $date1 = new DateTime($invoiceItem->created_at);
+                    $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
+                    $product = Product::where('name', $invoiceItem->product_name)->first();
+                    $date1 = new DateTime($invoiceItem->created_at);
 
                     $tz = \Auth::user()->timezone()->first()->name;
 

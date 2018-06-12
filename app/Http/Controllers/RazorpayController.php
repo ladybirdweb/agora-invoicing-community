@@ -89,7 +89,7 @@ class RazorpayController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
 
                     $checkout_controller->checkoutAction($invoice);
-<<<<<<< HEAD
+
                     $order = Order::where('invoice_id',$invoice->id)->first();
                     $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
                      $date1 = new DateTime($order->created_at);
@@ -102,19 +102,7 @@ class RazorpayController extends Controller
                       \Cart::clear();
                 $status = 'success';
                 $message = '
-=======
-                    $order = Order::where('invoice_id', $invoice->id)->first();
-                    $date1 = new DateTime($order->created_at);
-                    $tz = \Auth::user()->timezone()->first()->name;
 
-                    $date1->setTimezone(new DateTimeZone($tz));
-                    $date = $date1->format('D ,M j,Y, g:i a ');
-                    $product = Product::where('id', $order->product)->pluck('name')->first();
-
-                    \Cart::clear();
-                    $status = 'success';
-                    $message = '
->>>>>>> a397465d96d7d331ca6e33095a0e8164595288ab
 
 
 <div class="container">
@@ -243,14 +231,11 @@ class RazorpayController extends Controller
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
-<<<<<<< HEAD
+
                     $invoiceItem = InvoiceItem::where('invoice_id',$invoice->id)->first();
                     $product = Product::where('name',$invoiceItem->product_name)->first();
                      $date1 = new DateTime($invoiceItem->created_at);
-=======
-                    $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
-                    $date1 = new DateTime($invoiceItem->created_at);
->>>>>>> a397465d96d7d331ca6e33095a0e8164595288ab
+
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));

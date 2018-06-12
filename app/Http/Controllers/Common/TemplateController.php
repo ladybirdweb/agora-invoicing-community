@@ -746,17 +746,15 @@ class TemplateController extends Controller
             $months = round($value->days / 30 / 12);
             // dd($months);
             // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
-            if ($currency == 'INR'){
-            $price[$value->id] = '₹'.' '.$cost;
-        }
-        else{
-             $price[$value->id] = '$'.' '.$cost;
-        }
-
+            if ($currency == 'INR') {
+                $price[$value->id] = '₹'.' '.$cost;
+            } else {
+                $price[$value->id] = '$'.' '.$cost;
+            }
         }
         // dd($price);
         $this->leastAmount($id);
-        
+
         return $price;
     }
 

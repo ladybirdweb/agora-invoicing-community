@@ -242,7 +242,7 @@ class RazorpayController extends Controller
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
                     $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
-                    $product = Product::where('name', $invoiceItem->product_name)->first();
+                     $product = Product::where('name', $invoiceItem->product_name)->first();
                     $date1 = new DateTime($invoiceItem->created_at);
 
                     $tz = \Auth::user()->timezone()->first()->name;
@@ -318,7 +318,7 @@ class RazorpayController extends Controller
         
         <tbody>
         <td>
-        <strong>'.$product->name.'</strong>×  <strong> '.$order->qty.' </strong>
+        <strong>'.$product->name.'</strong>×  <strong> '.$invoiceItem->quantity.' </strong>
     </td>
             <tr class="woocommerce-table__line-item order_item">
 

@@ -27,23 +27,23 @@ active
 </div>
  <div id="alertMessage"></div>
  <div id="error"></div>
-<div class="col">
+
     <h2 class="mb-none"> My Profile</h2>
     <div class="featured-boxes">
 
         <div class="row">
             <div class="col-md-6">
-                <div class="featured-box featured-box-primary text-left mt-5">
+                <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
                     <div class="box-content">
 
-                        <h4 class="heading-primary text-uppercase mb-md">Edit Profile</h4>
+                        <h4 class="heading-primary text-uppercase mb-3">Edit Profile</h4>
                       {!! Form::model($user,['url'=>'my-profile', 'method' => 'PATCH','files'=>true]) !!}
                         <div class="form-row">
                         <div class="form-group col{{ $errors->has('first_name') ? 'has-error' : '' }}">
                             <!-- first name -->
                             {!! Form::label('first_name',Lang::get('message.first_name')) !!}
                             {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
-
+                           <h6 id="firstNameCheck"></h6>
                         </div>
                     </div>
                        <div class="form-row">
@@ -51,7 +51,7 @@ active
                             <!-- last name -->
                             {!! Form::label('last_name',Lang::get('message.last_name')) !!}
                             {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
-
+                             <h6 id="lastNameCheck"></h6>
                         </div>
                     </div>
                       
@@ -60,7 +60,7 @@ active
                             <!-- email -->
                             {!! Form::label('email',Lang::get('message.email')) !!}
                              {!! Form::text('email',null,['class' => 'form-control input-lg ','id'=>'Email']) !!}
-                         
+                            <h6 id="emailCheck"></h6>
                         </div>
                     </div>
                           <div class="form-row">
@@ -68,7 +68,7 @@ active
                             <!-- company -->
                             {!! Form::label('company',Lang::get('message.company')) !!}
                             {!! Form::text('company',null,['class' => 'form-control input-lg','id'=>'Company']) !!}
-
+                            <h6 id="companyCheck"></h6>
                         </div>
                     </div> 
                          
@@ -78,6 +78,7 @@ active
                         <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
                         
                         {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
+                          <h6 id="mobileCodeCheck"></h6>
                     </div>
                 </div> 
                          <div class="form-row">
@@ -86,7 +87,7 @@ active
                             <!-- mobile -->
                             {!! Form::label('mobile',Lang::get('message.mobile')) !!}
                             {!! Form::text('mobile',null,['class' => 'form-control input-lg','id'=>'mobile']) !!}
-
+                              <h6 id="mobileCheck"></h6>
                         </div>
                     </div>
                         
@@ -95,7 +96,7 @@ active
                             <!-- phone number -->
                             {!! Form::label('address',Lang::get('message.address')) !!}
                             {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
-
+                               <h6 id="addressCheck"></h6>
                         </div>
                          </div>
 
@@ -105,13 +106,13 @@ active
                                 <!-- mobile -->
                                 {!! Form::label('town',Lang::get('message.town')) !!}
                                 {!! Form::text('town',null,['class' => 'form-control input-lg','id'=>'Town']) !!}
-
+                                 <h6 id="townCheck"></h6>
                             </div>
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
                                 {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
                                 {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
-
+                                <h6 id="timezoneCheck"></h6>
                             </div>
                         </div>
                         <div class="form-row">
@@ -121,7 +122,7 @@ active
                                 {!! Form::label('country',Lang::get('message.country')) !!}
                                  <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'Country','onChange'=>'getState(this.value);']) !!}
-
+                               <h6 id="countryCheck"></h6>
                             </div>
                             <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
                                 {!! Form::label('state',Lang::get('message.state')) !!}
@@ -136,7 +137,7 @@ active
                                     @endforeach
                                     
                                 </select>
-
+                              <h6 id="stateCheck"></h6>
                             </div>
 
 
@@ -146,7 +147,7 @@ active
                             <!-- mobile -->
                             {!! Form::label('zip',Lang::get('message.zip')) !!}
                             {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
-
+                             <h6 id="zipCheck"></h6>
                         </div>
                     </div>
 
@@ -155,7 +156,7 @@ active
                             <!-- profile pic -->
                             {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
                             {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
-
+                            <h6 id="profilePicCheck"></h6>
                         </div>
                     </div> 
 
@@ -171,7 +172,7 @@ active
                     </div>
                 </div>
             </div>
-            <div class="col-sm-6">
+            <div class="col-md-6">
                 <div class="featured-box featured-box-primary text-left mt-3 mt-md-5">
                     <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-3">Change Password</h4>
@@ -179,11 +180,11 @@ active
 
                         <!-- old password -->
                         <div class="form-row">
-                        <div class="form-group col has-feedback {{ $errors->has('old_password') ? 'has-error' : '' }}">
+                        <div class="form-group col {{ $errors->has('old_password') ? 'has-error' : '' }}">
                             {!! Form::label('old_password',Lang::get('message.old_password')) !!}
                             {!! Form::password('old_password',['class' => 'form-control input-lg','id'=>'old_password']) !!}
                             <h6 id="oldpasswordcheck"></h6>
-                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                           
                         </div>
                     </div>
                         <!-- new password -->
@@ -191,7 +192,7 @@ active
                         <div class="form-group col has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
                             {!! Form::label('new_password',Lang::get('message.new_password')) !!}
                             {!! Form::password('new_password',['class' => 'form-control input-lg','id'=>'new_password']) !!}
-                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                           
                             <h6 id="newpasswordcheck"></h6>
                         </div>
                     </div>
@@ -201,7 +202,7 @@ active
                             {!! Form::label('confirm_password',Lang::get('message.confirm_password')) !!}
                             {!! Form::password('confirm_password',['class' => 'form-control input-lg','id'=>'confirm_password']) !!}
                             <h6 id ="confirmpasswordcheck"></h6>
-                            <span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                           
                         </div>
                     </div>
                         <div class="row">
@@ -218,7 +219,7 @@ active
 
     </div>
 
-</div>    
+
 
 <script>
 

@@ -156,7 +156,7 @@ active
                             <!-- profile pic -->
                             {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
                             {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
-                            <h6 id="profilePicCheck"></h6>
+                        
                         </div>
                     </div> 
 

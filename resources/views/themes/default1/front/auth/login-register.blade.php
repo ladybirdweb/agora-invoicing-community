@@ -678,7 +678,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
           // userErr =false;
         // return false;
     }
-    else if((user_val.length < 3) || (user_val.length > 10))  {
+    else if((user_val.length < 3) || (user_val.length > 50))  {
         $('#usercheck').show();
         $('#usercheck').html("Username Length must be between 3 to 20 characters");
         $('#usercheck').focus();

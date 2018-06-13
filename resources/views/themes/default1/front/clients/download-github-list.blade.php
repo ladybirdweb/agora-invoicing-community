@@ -35,6 +35,9 @@
     border-style: solid;
     border-color: #555 transparent transparent transparent;
 }
+.more-text{
+     display:none;
+}
 </style>
 <div class="modal fade" id="lists">
     <div class="modal-dialog">
@@ -90,8 +93,8 @@
     function readmore(){
                         var maxLength = 300;
                         $("#github-version-table tbody tr td").each(function(){
-                            console.log($(this));
                             var myStr = $(this).text();
+                            console.log(myStr);
                             if($.trim(myStr).length > maxLength){
                                 var newStr = myStr.substring(0, maxLength);
                                  $(this).empty().html(newStr);

@@ -102,10 +102,13 @@ class EnvironmentController extends Controller
         // }
 
         $results = $this->EnvironmentManager->saveFileWizard($request);
-        $response = $this->migrateAndSeed($request);
+         $dummyCheck = $request->input('dummy-data');
+        return $redirect->route('LaravelInstaller::database')
+                        ->with(['results' => $results]);
+        // $response = $this->migrateAndSeed($request);
      
-        return redirect()->route('LaravelInstaller::final')
-                         ->with(['message' => $response]);
+        // return redirect()->route('LaravelInstaller::final')
+        //                  ->with(['message' => $response]);
     }
 
       public function migrateAndSeed($request)
@@ -135,6 +138,7 @@ class EnvironmentController extends Controller
 
         }
         catch(Exception $e){
+            dd($e);
             return $this->response($e->getMessage());
         }
 
@@ -196,7 +200,7 @@ class EnvironmentController extends Controller
      * @param collection $outputLog
      */
     private function sqlite($outputLog)
-    {
+    {   
         if(DB::connection() instanceof SQLiteConnection) {
             $database = DB::connection()->getDatabaseName();
             if(!file_exists($database)) {

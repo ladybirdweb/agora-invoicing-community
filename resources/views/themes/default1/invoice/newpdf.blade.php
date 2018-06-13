@@ -119,11 +119,11 @@
                     </div>
                     <!-- /.row -->
 
-                    <div class="col-xs-6 pull-right" >
+                    <div class="col pull-right" >
                         <p class="lead">Amount</p>
 
                         <div class="table-responsive">
-                            <table class="table">
+                           
                                 <?php
                                 $tax_name = [];
                                 $tax_percentage = [];
@@ -138,6 +138,7 @@
                                     $tax_percentage = explode(',', $rate);
                                 }
                                 ?>
+                                 <table class="table">
                                 @for($i=0;$i < count($tax_name);$i++)
 
                                 @if($tax_name[$i]!='null')

@@ -4,8 +4,8 @@ namespace Tests;
 
 use App\User;
 use DB;
-use ReflectionClass;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use ReflectionClass;
 
 /**
  * Base class for test cases with DB testing.

@@ -2,18 +2,14 @@
 
 namespace Tests\Unit\Client\Account;
 
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
+use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
-use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\User;
 use Tests\DBTestCase;
-
 
 class OrderTest extends DBTestCase
 {
@@ -22,9 +18,11 @@ class OrderTest extends DBTestCase
      *
      * @return void
      */
-     /** @group getOrder */
+
+    /** @group getOrder */
     public function test_getOrder_viewingAllTheOrders()
     {
+
     	$this->withoutMiddleware();
     	$product = factory(Product::class)->create();
      	$this->getLoggedInUser();
@@ -62,8 +60,8 @@ class OrderTest extends DBTestCase
          'order'   => $order,
          'plan'   => $plan,
          'product' =>$product,
-         'subscription' => $subscription,
-        ]) ;
+		 'subscription' => $subscription,
+        ]);
         $this->assertStringContainsSubstring($response->content(), 'Whoops');
-   }
+    }
 }

@@ -438,10 +438,6 @@ class ClientController extends Controller
                     $plan = $subscription->plan()->first();
                 }
                 $product = $order->product()->first();
-<<<<<<< HEAD
-=======
-
->>>>>>> 28a60ff539695e746e538abb1ed6227e6a375bde
                 $price = $product->price()->first();
                 //dd($price);
                 $user = \Auth::user();

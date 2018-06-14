@@ -815,14 +815,18 @@ class TemplateController extends Controller
                 $days = $value->min('days');
 
                 $month = round($days / 30);
-                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-
-                // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-
-                $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                $price = $value->planPrice()->where('currency', $currency)->min('add_price');   
+                // $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            $cost = "$currency $price /year";
+            if ($currency == 'INR')
+            {
+                $symbol = '₹' ;
+            }
+            else{
+                $symbol = '$';
+            }
+            $price = "$symbol $price";
         } else {
             $price = $cart_controller->productCost($id);
         }

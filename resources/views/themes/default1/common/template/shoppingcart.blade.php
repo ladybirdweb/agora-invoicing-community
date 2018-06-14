@@ -82,8 +82,10 @@ main
                     </div>
   <div class="col-md-12">
    <div class="pricing-table princig-table-flat">
+     <div class="row">
         {!! html_entity_decode($servicedesk_template) !!}
         </div>
+    </div>
 
 </div>
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
@@ -96,7 +98,9 @@ main
                     </div>
 <div class="col-md-12" style="margin-bottom:40px;">
    <div class="pricing-table princig-table-flat">
+    <div class= "row">
         {!! html_entity_decode($service_template) !!}
+    </div>
         </div>
 
 </div>

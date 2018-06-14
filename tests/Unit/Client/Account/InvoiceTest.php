@@ -19,11 +19,11 @@ class InvoiceTest extends DBTestCase
     public function test_Invoices()
     {
         $this->withoutMiddleware();
-    	$this->getLoggedInUser();
-    	$user = $this->user;
-    	$user_id = $user->id;
+        $this->getLoggedInUser();
+        $user = $this->user;
+        $user_id = $user->id;
         $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
-    	$invoiceItem = InvoiceItem::create([
+        $invoiceItem = InvoiceItem::create([
             'invoice_id'         => $invoice->id,
             'product_name'       => 'Helpdesk Advance',
             'regular_price'      => 10000,

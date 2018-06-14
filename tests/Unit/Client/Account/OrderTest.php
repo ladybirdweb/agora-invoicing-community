@@ -23,6 +23,7 @@ class OrderTest extends DBTestCase
     public function test_getOrder_viewingAllTheOrders()
     {
 
+
     	$this->withoutMiddleware();
     	$product = factory(Product::class)->create();
      	$this->getLoggedInUser();
@@ -61,7 +62,7 @@ class OrderTest extends DBTestCase
          'plan'    => $plan,
          'product' => $product,
 		 'subscription' => $subscription,
-        ]);
+		]);
         $this->assertStringContainsSubstring($response->content(), 'Whoops');
     }
 }

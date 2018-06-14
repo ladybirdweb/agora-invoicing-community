@@ -415,6 +415,7 @@ class ClientController extends Controller
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
             $user = \Auth::user();
+
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -438,7 +439,7 @@ class ClientController extends Controller
                     $plan = $subscription->plan()->first();
                 }
                 $product = $order->product()->first();
-                
+
                 $price = $product->price()->first();
                 //dd($price);
                 $user = \Auth::user();

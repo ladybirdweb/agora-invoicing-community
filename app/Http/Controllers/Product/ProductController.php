@@ -655,7 +655,8 @@ use App\Http\Controllers\Controller;
                     } elseif ($file) {
                         //If the Product is Downloaded from FileSystem
                         $fileName = $file->file;
-                        $relese = storage_path().'/products'.'//'.$fileName;
+                        // $relese = storage_path().'/products'.'//'.$fileName;
+                        $relese = '/home/faveo/products/'.$file->file;
 
                         return $relese;
                     }

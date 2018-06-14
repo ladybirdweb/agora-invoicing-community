@@ -153,6 +153,7 @@ active
                                     $tax_percentage = [];
                                         foreach($items as $key=>$item){
                                             if(str_finish(',', $item->tax_name)){
+                                                dd('sd');
                                                 $name = substr_replace($item->tax_name,'',-1);
                      
                                             }
@@ -170,7 +171,7 @@ active
                                     @if($tax_name[$i]!='null')
                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}</strong>
+                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}} %</strong>
                                         </th>
                                         <td>
 

@@ -3,36 +3,30 @@
 namespace Tests\Unit\Client\Account;
 
 use Tests\TestCase;
+use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
+use App\User;
+use Tests\DBTestCase;
 
-class InvoiceTest extends TestCase
+class InvoiceTest extends DBTestCase
 {
-	use DatabaseTransactions;
-    /**
+	  /**
      * A basic test example.
      *
      * @return void
      */
 
-     private function invoiceItem($invoice)
+  
+    /** @group ClientController */
+    public function test_Invoices()
     {
-        $params = [
-            'invoice_id'       => $invoice->id,
-            'product_name'       => 'Helpdesk Advance',
-            'regular_price'    => 10000,
-            'quantity'    => 1,
-            'tax_name'   => 'CGST+SGST',
-            'tax_percentage'  => 18,
-            'subtotal'=> 11800,
-            'domain'   => 'faveo.com',
-            'plan_id'  => 1 
-                ];
-        $this->call('post', 'plans', $params);
+    	$this->withoutMiddleware();
+    	// $user = factory(User::class)->create(['role' => 'user']);
+    	$this->getLoggedInUser();
+    	$user = $this->user;
+    	$user_id = $user->id;
 
-
-    public function testInvoices()
-    {
-    	$this->withuuMiddleware();
-    	$invoice = factory(Invoice::class)->create();
+    	$invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
     	$invoiceItem = InvoiceItem::create ([
             'invoice_id'       => $invoice->id,
             'product_name'       => 'Helpdesk Advance',
@@ -43,9 +37,12 @@ class InvoiceTest extends TestCase
             'subtotal'=> 11800,
             'domain'   => 'faveo.com',
             'plan_id'  => 1 
-                ]_;
-        $response = $this->call('PATCH', 'products/'.$product->id, [
-
-        ]);
+                ]);
+        $response = $this->call('GET', 'my-invoice/'.$invoice->id ,[
+         'invoice' => $invoice,
+         'items'   => $invoiceItem,
+         'user'    => $user,
+        ]) ;
+         $this->assertStringContainsSubstring($response->content(), 'Whoops');
     }
 }

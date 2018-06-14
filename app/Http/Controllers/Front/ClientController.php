@@ -304,7 +304,6 @@ class ClientController extends Controller
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                             ->make(true);
         } catch (Exception $ex) {
-            // dd($ex->getline());
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
@@ -416,7 +415,6 @@ class ClientController extends Controller
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
             $user = \Auth::user();
-
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -429,7 +427,6 @@ class ClientController extends Controller
     {
         try {
             $order = $this->order->findOrFail($id);
-            //dd($order);
             if ($order) {
                 $invoice = $order->invoice()->first();
                 $items = $order->invoice()->first()->invoiceItem()->get();
@@ -441,6 +438,7 @@ class ClientController extends Controller
                     $plan = $subscription->plan()->first();
                 }
                 $product = $order->product()->first();
+                
                 $price = $product->price()->first();
                 //dd($price);
                 $user = \Auth::user();

@@ -26,7 +26,6 @@ class OrderTest extends DBTestCase
     public function test_getOrder_viewingAllTheOrders()
     {
     	$this->withoutMiddleware();
-    	
     	$product = factory(Product::class)->create();
      	$this->getLoggedInUser();
     	$user = $this->user;
@@ -42,8 +41,7 @@ class OrderTest extends DBTestCase
             'tax_percentage'  => 18,
             'subtotal'=> 11800,
             'domain'   => 'faveo.com',
-            // 'plan_id'  => 1 
-                ]);
+             ]);
     	$order = factory(Order::class)->create(['invoice_id'=> $invoice->id,
     		                                   'invoice_item_id' => $invoiceItem ->id,
     		                                    'client'=> $user_id,

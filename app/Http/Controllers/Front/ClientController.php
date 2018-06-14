@@ -418,8 +418,7 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -438,7 +437,6 @@ class ClientController extends Controller
                     $plan = $subscription->plan()->first();
                 }
                 $product = $order->product()->first();
-                
                 $price = $product->price()->first();
                 //dd($price);
                 $user = \Auth::user();

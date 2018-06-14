@@ -709,7 +709,6 @@ class TemplateController extends Controller
             return $price;
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

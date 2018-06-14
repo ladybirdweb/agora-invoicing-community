@@ -370,7 +370,6 @@ class PageController extends Controller
         }
 
         $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
-
         $service_template = '';
         $trasform2 = [];
         if (count($service) > 0) {

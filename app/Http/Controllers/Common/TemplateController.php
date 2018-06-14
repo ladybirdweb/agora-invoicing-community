@@ -709,6 +709,7 @@ class TemplateController extends Controller
             return $price;
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -814,15 +815,13 @@ class TemplateController extends Controller
                 $days = $value->min('days');
 
                 $month = round($days / 30);
-                $price = $value->planPrice()->where('currency', $currency)->min('add_price');   
+                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
                 // $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            if ($currency == 'INR')
-            {
-                $symbol = '₹' ;
-            }
-            else{
+            if ($currency == 'INR') {
+                $symbol = '₹';
+            } else {
                 $symbol = '$';
             }
             $price = "$symbol $price";

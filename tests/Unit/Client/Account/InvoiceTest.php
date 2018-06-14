@@ -23,8 +23,8 @@ class InvoiceTest extends DBTestCase
     	$user = $this->user;
     	$user_id = $user->id;
         $invoice = factory(Invoice::class)->create(['user_id'=> $user_id]);
-    	$invoiceItem = InvoiceItem::create ([
-            'invoice_id'       => $invoice->id,
+    	$invoiceItem = InvoiceItem::create([
+            'invoice_id'         => $invoice->id,
             'product_name'       => 'Helpdesk Advance',
             'regular_price'      => 10000,
             'quantity'           => 1,

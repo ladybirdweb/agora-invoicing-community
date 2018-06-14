@@ -820,7 +820,6 @@ class CartController extends Controller
             } else {
                 return $price;
             }
-
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             // throw new \Exception('error in get tax priority');

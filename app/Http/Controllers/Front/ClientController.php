@@ -419,7 +419,8 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-             return redirect()->back()->with('fails', $ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

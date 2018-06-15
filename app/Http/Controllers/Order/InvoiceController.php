@@ -125,7 +125,7 @@ class InvoiceController extends Controller
                          })
 
                         ->addColumn('date', function ($model) {
-                            $date = $model->created_at;
+                            $date = date_create($model->created_at);
 
                             return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })

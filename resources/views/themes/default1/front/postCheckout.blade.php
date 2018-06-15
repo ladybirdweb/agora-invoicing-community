@@ -219,7 +219,7 @@ else{
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{$item->regular_price}}</span>
+                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -289,7 +289,7 @@ else{
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
                 @if ($attributes != null)
@@ -305,8 +305,8 @@ else{
                        
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],$subtotal)}} <br/>
                        
                        
                     </td>
@@ -323,7 +323,7 @@ else{
                      
                     </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],$subtotal)}} <br/>
                       
                     </td>
 
@@ -340,8 +340,8 @@ else{
                        
                     </th>
                     <td>
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],$subtotal)}} <br/>
                        
                     </td>
 
@@ -359,7 +359,7 @@ else{
                     </th>
                     <td>
                        
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
                          
                        
                     </td>
@@ -375,7 +375,7 @@ else{
                     </th>
                     <td>
                       
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
                          
                        
                     </td>
@@ -392,7 +392,7 @@ else{
                     </th>
                     <td>
                        
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
                          
                        
                     </td>
@@ -417,7 +417,7 @@ else{
                     </th>
                     <td>
                        
-                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
                          
                        
                     </td>
@@ -433,7 +433,7 @@ else{
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
                     </td>
                 </tr>
 

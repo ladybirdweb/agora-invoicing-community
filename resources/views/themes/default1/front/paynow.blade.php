@@ -115,7 +115,7 @@ Checkout
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{$item->regular_price}}</span>
+                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -190,7 +190,7 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
                  
@@ -212,7 +212,7 @@ Checkout
                         <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
                          </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                       {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
                         
                        
                        
@@ -228,7 +228,7 @@ Checkout
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
                     </td>
                 </tr>
             </tbody>

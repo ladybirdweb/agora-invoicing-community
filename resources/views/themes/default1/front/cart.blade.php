@@ -140,7 +140,7 @@ if (count($attributes) > 0) {
                                                     </td>
 
                                                     <td class="product-price">
-                                                         <span class="amount"><small>{!! $symbol !!}&nbsp;</small>
+                                                         <span class="amount">{!! $symbol !!}&nbsp;
                                                          {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
                                                      </span>
                                                       
@@ -155,7 +155,7 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
-                                                              <span class="amount"><small>{!! $symbol !!}&nbsp;</small>{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                                              <span class="amount">{!! $symbol !!}&nbsp;{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
                                                             
                                                     </td>
 

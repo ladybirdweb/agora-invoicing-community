@@ -179,7 +179,6 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
-        
 
         /*
          * Package Service Providers...
@@ -260,7 +259,7 @@ return [
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
-          'Markdown' => GrahamCampbell\Markdown\Facades\Markdown::class,
+          'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
 
     ],
 

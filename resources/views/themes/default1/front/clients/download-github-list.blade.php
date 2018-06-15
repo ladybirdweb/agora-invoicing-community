@@ -86,6 +86,7 @@
 
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+                <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
                 <script type="text/javascript">
                         function hideModal(){
                         $('#lists').modal('hide');
@@ -96,6 +97,7 @@
                         var maxLength = 300;
                         $("#github-version-table tbody tr td").each(function(){
                             var myStr = $(this).text();
+                            marked('myStr');
                             console.log(myStr);
                             if($.trim(myStr).length > maxLength){
                                 var newStr = myStr.substring(0, maxLength);

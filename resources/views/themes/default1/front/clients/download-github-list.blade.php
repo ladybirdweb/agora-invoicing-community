@@ -43,7 +43,7 @@
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
          <div class="modal-body" >
-
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="hideModal()"><span aria-hidden="true">&times;</span></button>
                 <?php
                 //All the versions of Uploades Files
                 $products = \App\Model\Product\Product::where('id', $productid)->pluck( 'name')->toArray();
@@ -55,10 +55,7 @@
                     <div class="col-md-12">
                         <div class="box">
                             <div class="box-header with-border">
-                               
-                                <h3 class="box-title">Product Versions</h3>
-                              
-
+                               <h3 class="box-title">Product Versions</h3>
                             </div>
                             <div class="box-body">
 
@@ -90,7 +87,12 @@
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
                 <script type="text/javascript">
-    function readmore(){
+                        function hideModal(){
+                        $('#lists').modal('hide');
+                        }
+
+
+                       function readmore(){
                         var maxLength = 300;
                         $("#github-version-table tbody tr td").each(function(){
                             var myStr = $(this).text();
@@ -103,7 +105,7 @@
                                 $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
                             }
                           }); 
-    }
+                         }
     function getTables($productid, $clientid, $invoiceid){
     $('#github-version-table').DataTable({
             destroy: true,

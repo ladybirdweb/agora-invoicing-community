@@ -105,7 +105,7 @@ class RazorpayController extends Controller
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
-                    $date = $date1->format('D ,M j,Y, g:i a ');
+                    $date = $date1->format('M j, Y, g:i a ');
                     $product = Product::where('id', $order->product)->select('id', 'name')->first();
 
                     \Cart::clear();
@@ -248,7 +248,7 @@ class RazorpayController extends Controller
                     $tz = \Auth::user()->timezone()->first()->name;
 
                     $date1->setTimezone(new DateTimeZone($tz));
-                    $date = $date1->format('D ,M j,Y, g:i a ');
+                    $date = $date1->format('M j, Y, g:i a ');
 
                     \Cart::clear();
                     $status = 'success';

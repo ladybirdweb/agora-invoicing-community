@@ -79,7 +79,7 @@ class ClientController extends Controller
             $invoices = Invoice::where('user_id', \Auth::user()->id)
                     ->select('number', 'created_at', 'grand_total', 'id', 'status');
 
-            return \DataTables::of($invoices)
+            return \DataTables::of($invoices->get())
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
@@ -249,7 +249,7 @@ class ClientController extends Controller
         try {
             $orders = Order:: where('client', \Auth::user()->id);
 
-            return \DataTables::of($orders)
+            return \DataTables::of($orders->get())
                             ->addColumn('id', function ($model) {
                                 return $model->id;
                             })
@@ -292,13 +292,7 @@ class ClientController extends Controller
                                 } else {
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
-
-                                // return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>  $url $listUrl</a>"
-                                //         .'&nbsp;
-
-                                //    </p>';
-
-                                return  '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
+                                  return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
@@ -415,12 +409,11 @@ class ClientController extends Controller
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
             $user = \Auth::user();
-
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
-        } catch (Exception $ex) {
+            } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
-        }
+            }
     }
 
     public function getOrder($id)

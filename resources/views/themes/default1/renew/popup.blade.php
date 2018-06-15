@@ -28,13 +28,13 @@
                    <div class="form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
-                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Select','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
 
                     </div>
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('cost',Lang::get('message.price'),['class'=>'required']) !!}
-                        {!! Form::text('cost',null,['class' => 'form-control','id'=>'price','readonly'=>'readonly']) !!}
+                        {!! Form::text('cost',null,['class' => 'form-control price','id'=>'price','readonly'=>'readonly']) !!}
 
                     </div>
 
@@ -59,8 +59,8 @@
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
             success: function (data) {
-                var price = data
-                $("#price").val(price);
+
+                $(".price").val(data);
             }
         });
     }

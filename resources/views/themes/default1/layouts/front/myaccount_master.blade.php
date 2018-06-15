@@ -380,7 +380,7 @@
 
             </div>
 
-            <footer id="footer">
+            <footer id="footer" style="margin-top:15px;">
                 <div class="container">
                     <div class="row">
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
@@ -477,7 +477,9 @@
         <script src="{{asset('cart/js/theme.js')}}"></script>
 
         <!-- Theme Custom -->
+        
         <script src="{{asset('cart/js/custom.js')}}"></script>
+
 
         <!-- Theme Initialization Files -->
          <script src="{{asset('js/theme.init.js')}}"></script>

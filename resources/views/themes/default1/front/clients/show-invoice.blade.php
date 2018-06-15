@@ -168,8 +168,8 @@ active
 
                                    
                                      
-                                    @if($tax_name !='null')
-                                   <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
+                                    @if($tax_name[0] !='null')
+                                     <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId);
                                      ?>
@@ -221,11 +221,11 @@ active
                                         @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
                                      <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}} %</strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} %</strong>
                                         </th>
                                         <td>
 
-                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
                                             
                                         </td>
 

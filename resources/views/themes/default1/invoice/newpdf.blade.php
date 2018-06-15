@@ -200,11 +200,11 @@
                                         @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
                                      <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}} %</strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} %</strong>
                                         </th>
                                         <td>
 
-                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
                                             
                                         </td>
 

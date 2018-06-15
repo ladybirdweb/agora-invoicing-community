@@ -12,6 +12,7 @@
         "chumper/zipper": "1.0.x",
         "darryldecode/cart": "dev-master",
         "ezyang/htmlpurifier": "^4.10",
+        "graham-campbell/markdown": "^9.0",
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.*",

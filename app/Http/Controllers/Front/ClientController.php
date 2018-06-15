@@ -13,6 +13,7 @@ use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use App\User;
 use Auth;
 use Bugsnag;
@@ -195,7 +196,8 @@ class ClientController extends Controller
                                 return ucfirst($link['name']);
                             })
                             ->addColumn('description', function ($link) {
-                                return ucfirst($link['body']);
+                                $markdown = Markdown::convertToHtml(ucfirst($link['body'])); 
+                                return $markdown;
                             })
                             ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();

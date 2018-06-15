@@ -13,13 +13,13 @@ use App\Model\Order\Payment;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
-use GrahamCampbell\Markdown\Facades\Markdown;
 use App\User;
 use Auth;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
 use Exception;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Hash;
 
 class ClientController extends Controller
@@ -196,7 +196,8 @@ class ClientController extends Controller
                                 return ucfirst($link['name']);
                             })
                             ->addColumn('description', function ($link) {
-                                $markdown = Markdown::convertToHtml(ucfirst($link['body'])); 
+                                $markdown = Markdown::convertToHtml(ucfirst($link['body']));
+
                                 return $markdown;
                             })
                             ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
@@ -294,7 +295,8 @@ class ClientController extends Controller
                                 } else {
                                     $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
-                                  return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
+
+                                return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             // ->orderColumns('id', 'created_at', 'ends_at', 'product')
@@ -411,12 +413,13 @@ class ClientController extends Controller
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
             $user = \Auth::user();
+
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
-            } catch (Exception $ex) {
+        } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
-            }
+        }
     }
 
     public function getOrder($id)

@@ -57,7 +57,7 @@ class Invoice extends BaseModel
 
         $date1->setTimezone(new DateTimeZone($tz));
 
-        $date = $date1->format('D ,M j,Y, g:i a ');
+        $date = $date1->format('M j, Y, g:i a ');
 
         return $date;
     }

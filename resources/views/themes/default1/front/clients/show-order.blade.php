@@ -47,8 +47,12 @@ active
                                     <table class="table">
                                         <tr class="info">
                                            
-                                            <td>
-                                                Date: {{$order->created_at}}
+                                            <td><?php
+                                                $date1 = new DateTime($order->created_at);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date1->setTimezone(new DateTimeZone($tz));
+                                                $date = $date1->format('M j, Y, g:i a ');?>
+                                                Date: {{$date}}
                                             </td>
                                             <td>
                                                 Invoice No: #{{$invoice->number}}
@@ -90,7 +94,7 @@ active
                                                     $tz = \Auth::user()->timezone()->first()->name;
                                                      $date->setTimezone(new DateTimeZone($tz));
                                                       
-                                                    $sub = $date->format('D ,M j,Y, g:i a ');
+                                                    $sub = $date->format('M j, Y, g:i a ');
                                                      // $sub = $sub2->setTimezone($tz);
 
 

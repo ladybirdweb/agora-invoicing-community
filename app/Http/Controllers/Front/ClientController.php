@@ -264,7 +264,7 @@ class ClientController extends Controller
                                         $ends = new DateTime($model->subscription()->first()->ends_at);
                                         $tz = \Auth::user()->timezone()->first()->name;
                                         $ends->setTimezone(new DateTimeZone($tz));
-                                        $date = $ends->format('D ,M j,Y, g:i a ');
+                                        $date = $ends->format('M j, Y, g:i a ');
                                         $end = $date;
                                         // dd($end);
                                     }
@@ -419,7 +419,6 @@ class ClientController extends Controller
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -489,7 +488,7 @@ class ClientController extends Controller
                             ->addColumn('date', function ($model) {
                                 $date = date_create($model->created_at);
 
-                                return date_format($date, 'D ,M j,Y, g:i a');
+                                return date_format($date, 'M j, Y, g:i a');
                             })
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
@@ -576,7 +575,7 @@ class ClientController extends Controller
                                    $date1 = new DateTime($model->created_at);
                                    $tz = \Auth::user()->timezone()->first()->name;
                                    $date1->setTimezone(new DateTimeZone($tz));
-                                   $date = $date1->format('D ,M j,Y, g:i a ');
+                                   $date = $date1->format('M j, Y, g:i a');
 
                                    return $date;
                                })

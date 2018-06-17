@@ -343,7 +343,7 @@
          * download
          */
       Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
-      Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
+      Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
 
         /*
          * testings

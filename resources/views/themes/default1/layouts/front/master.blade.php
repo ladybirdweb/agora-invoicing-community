@@ -240,6 +240,9 @@
 
                                                                                 <td class="product-actions">
                                                                                     <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
+                                                                                      <!--  @if(Session::has('items'))
+                                                                                       {{Session::forget('items')}}
+                                                                                       @endif -->
                                                                                         <i class="fa fa-times"></i>
                                                                                     </a>
                                                                                 </td>

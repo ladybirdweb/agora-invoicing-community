@@ -11,6 +11,8 @@ use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 
 class PromotionController extends Controller
 {
@@ -268,7 +270,7 @@ class PromotionController extends Controller
             $promo = $this->promotion->where('code', $code)->first();
             //check promotion code is valid
             if (!$promo) {
-                return redirect()->back()->with('fails', 'No Code');
+                return redirect()->back()->with('fails', 'Invalid Code');
             }
             $relation = $promo->relation()->get();
             //check the relation between code and product
@@ -296,20 +298,27 @@ class PromotionController extends Controller
                 'target' => 'item',
                 'value'  => $value,
             ]);
-
-            $items = \Cart::getContent();
-
-            foreach ($items as $item) {
+             
+        $userId = \Auth::user()->id;
+       \Cart::update($productid, array(
+           'id' => $productid,
+           'price' => $value,
+          'conditions' => $coupon,
+          
+           // new item price, price can also be a string format like so: '98.67'
+          ));
+          $items = \Cart::getContent();
+         \Session::put('items',$items);
+ 
+             foreach ($items as $item) {
                 if (count($item->conditions) == 2 || count($item->conditions) == 1) {
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }
             //dd($items);
 
-            return 'success';
+            return 'success' ;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
@@ -336,10 +345,10 @@ class PromotionController extends Controller
                 $product_price = $control->planCost($planid, $userid);
             }
             if (count(\Cart::getContent())) {
-                $product_price = \Cart::getSubTotal();
+                $product_price = \Cart::getSubTotalWithoutConditions();
+                // dd($product_price);
             }
-
-            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
+              $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
             // dd($updated_price);
             //dd([$product_price,$promotion_type,$updated_price]);
             return $updated_price;

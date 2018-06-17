@@ -55,8 +55,10 @@ if (count($attributes) > 0) {
         @if(Session::has('fails'))
         <div class="alert alert-danger alert-dismissable">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Something Went Wrong.
-            {{Session::get('fails')}}
+            <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
+            <ul>
+           <li> {{Session::get('fails')}} </li>
+        </ul>
         </div>
         @endif
 
@@ -99,7 +101,7 @@ if (count($attributes) > 0) {
                                             <tbody>
                                                 
                                                 @forelse($cartCollection as $key=>$item)
-
+                                               
                                                 <tr class="cart_table_item">
                                                     <td class="product-remove">
                                                         <a title="Remove this item" class="remove" href="#" onclick="removeItem('{{$item->id}}');">
@@ -207,7 +209,7 @@ if (count($attributes) > 0) {
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
                                         </td>
                                     </tr>
 

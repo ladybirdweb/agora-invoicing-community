@@ -89,12 +89,6 @@ class RazorpayController extends Controller
 
                 if ($control->checkRenew() == false) {
 
-                    // $invoicenumber=$invoice->number;
-                    // dd($invoice ,$invoicenumber);
-                    // $invoiceid = $request->input('orderNo');
-                    // dd( $invoiceid);
-                    // $invoice = $invoice->findOrFail($invoiceid);
-
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
 
                     $checkout_controller->checkoutAction($invoice);
@@ -103,7 +97,6 @@ class RazorpayController extends Controller
                     $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
                     $date1 = new DateTime($order->created_at);
                     $tz = \Auth::user()->timezone()->first()->name;
-
                     $date1->setTimezone(new DateTimeZone($tz));
                     $date = $date1->format('M j, Y, g:i a ');
                     $product = Product::where('id', $order->product)->select('id', 'name')->first();
@@ -211,7 +204,7 @@ class RazorpayController extends Controller
     <strong>
        '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$city.' - '.$zip.'<br> '.$state.' <br>
                    '.$phone.' <br><br>
-                     <a href= product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+                     <a href= product/download/'.$product->id.'/'.$invoice->number.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
             </strong>
 
     
@@ -236,6 +229,7 @@ class RazorpayController extends Controller
     
     </div>
     </div>';
+    \Session::forget('items');
                 } else {
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
@@ -317,9 +311,7 @@ class RazorpayController extends Controller
         </thead>
         
         <tbody>
-        <td>
-        <strong>'.$product->name.'</strong>×  <strong> '.$invoiceItem->quantity.' </strong>
-    </td>
+      
             <tr class="woocommerce-table__line-item order_item">
 
     <td class="woocommerce-table__product-name product-name">
@@ -354,7 +346,7 @@ class RazorpayController extends Controller
     <strong>
        '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$state.'<br> '.$zip.' <br>
                    '.$phone.' <br><br>
-                     <a href=" product/download/'.$product->id.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+                     <a href=" product/download/'.$product->id.'/'.$invoice->number.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
                    
             </strong>
 

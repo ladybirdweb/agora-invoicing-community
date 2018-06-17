@@ -361,7 +361,6 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -641,8 +640,6 @@ class InvoiceController extends Controller
             } else {
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }

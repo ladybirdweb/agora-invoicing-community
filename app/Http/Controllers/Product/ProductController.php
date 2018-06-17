@@ -437,12 +437,12 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
             //     return $input->type == 2 && $input->file == '' && $input->image == '';
             // });
-            $v->sometimes(['currency', 'price'], 'required', function ($input) {
-                return $input->subscription != 1;
-            });
-            if ($v->fails()) {
-                return redirect()->back()->with('errors', $v->errors());
-            }
+            // $v->sometimes(['currency', 'price'], 'required', function ($input) {
+            //     return $input->subscription != 1;
+            // });
+            // if ($v->fails()) {
+            //     return redirect()->back()->with('errors', $v->errors());
+            // }
 
             try {
                 $product = $this->product->where('id', $id)->first();
@@ -692,16 +692,26 @@ use App\Http\Controllers\Controller;
                 }
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
-                dd($e->getMessage());
-
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
 
-        public function adminDownload($id, $api = false)
+        public function adminDownload($id,$invoice='', $api = false)
         {
             try {
-                $release = $this->downloadProductAdmin($id);
+                $role= \Auth::user()->role;
+                if($role == "user"){
+                    if($invoice && $invoice!= ''){
+                         $release = $this->downloadProductAdmin($id);
+                     }
+                     else {
+                        throw new \Exception('This user has no permission for this action');
+                     }
+                }
+                elseif ($role == "admin"){
+
+                 $release = $this->downloadProductAdmin($id);
+             }
                 if (is_array($release) && array_key_exists('type', $release)) {
                     header('Location: '.$release['release']);
                     exit;

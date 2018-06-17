@@ -144,18 +144,17 @@ class CartController extends Controller
     public function showCart()
     {
         try {
-          $cartCollection = [];
-          $items= (\Session::get('items'));
-            
+            $cartCollection = [];
+            $items = (\Session::get('items'));
+
             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
-            if ($items == null){
-            $cartCollection = Cart::getContent();
-          }
-          else{
-            $cartCollection = $items;
-          }
+            if ($items == null) {
+                $cartCollection = Cart::getContent();
+            } else {
+                $cartCollection = $items;
+            }
             // dd($cartCollection);
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
@@ -647,7 +646,6 @@ class CartController extends Controller
     public function addProduct($id)
     {
         try {
-         
             $qty = 1;
 
             $currency = $this->currency();
@@ -676,8 +674,7 @@ class CartController extends Controller
 
                 return $items;
             }
-       
-      }catch (\Exception $e) {
+        } catch (\Exception $e) {
             dd($e);
             Bugsnag::notifyException($e);
         }
@@ -785,8 +782,9 @@ class CartController extends Controller
 
             return redirect()->back();
         } catch (\Exception $ex) {
-          Bugsnag::notifyException($ex);
-          return redirect()->back()->with('fails', $ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -1326,7 +1324,6 @@ class CartController extends Controller
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
                 $items = (\Session::get('items'));
 
-              
                 if ($plan) {
                     $currency = $this->currency($userid);
                     $price = $plan->planPrice()
@@ -1335,12 +1332,11 @@ class CartController extends Controller
                             ->add_price;
                     $days = $plan->days;
                     $months = $days / 30 / 12;
-                     if($items != null){
-                  $cost = $items[$productid]['price'];
-               }
-               else{
-                    $cost = round($months) * $price;
-                  }
+                    if ($items != null) {
+                        $cost = $items[$productid]['price'];
+                    } else {
+                        $cost = round($months) * $price;
+                    }
                 }
             }
 

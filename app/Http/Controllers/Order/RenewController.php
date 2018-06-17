@@ -377,7 +377,6 @@ class RenewController extends Controller
         Session::forget('subscription_id');
         Session::forget('plan_id');
         Session::forget('invoiceid');
- 
     }
 
     public function checkRenew()

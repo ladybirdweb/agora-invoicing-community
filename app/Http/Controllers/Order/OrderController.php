@@ -721,16 +721,15 @@ class OrderController extends Controller
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
-         $orders = new Order();
+        $orders = new Order();
         $order = $orders->where('id', $orderid)->first();
         $invoice = $this->invoice->find($order->invoice_id);
         $number = $invoice->number;
         $downloadurl = '';
-        if($user  && $order->order_status =='Executed'){
-        $downloadurl =  url('product/'.'download'.'/'.$productId.'/'.$number);
-
-       }
-       // $downloadurl = $this->downloadUrl($userid, $orderid,$productId);
+        if ($user && $order->order_status == 'Executed') {
+            $downloadurl = url('product/'.'download'.'/'.$productId.'/'.$number);
+        }
+        // $downloadurl = $this->downloadUrl($userid, $orderid,$productId);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $templates = new \App\Model\Common\Template();

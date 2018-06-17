@@ -5,14 +5,14 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PromotionRequest;
 use App\Model\Order\Invoice;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
-use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 
 class PromotionController extends Controller
 {
@@ -298,26 +298,26 @@ class PromotionController extends Controller
                 'target' => 'item',
                 'value'  => $value,
             ]);
-             
-        $userId = \Auth::user()->id;
-       \Cart::update($productid, array(
-           'id' => $productid,
-           'price' => $value,
+
+            $userId = \Auth::user()->id;
+            \Cart::update($productid, [
+           'id'        => $productid,
+           'price'     => $value,
           'conditions' => $coupon,
-          
+
            // new item price, price can also be a string format like so: '98.67'
-          ));
-          $items = \Cart::getContent();
-         \Session::put('items',$items);
- 
-             foreach ($items as $item) {
+          ]);
+            $items = \Cart::getContent();
+            \Session::put('items', $items);
+
+            foreach ($items as $item) {
                 if (count($item->conditions) == 2 || count($item->conditions) == 1) {
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }
             //dd($items);
 
-            return 'success' ;
+            return 'success';
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
@@ -348,7 +348,7 @@ class PromotionController extends Controller
                 $product_price = \Cart::getSubTotalWithoutConditions();
                 // dd($product_price);
             }
-              $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
+            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
             // dd($updated_price);
             //dd([$product_price,$promotion_type,$updated_price]);
             return $updated_price;

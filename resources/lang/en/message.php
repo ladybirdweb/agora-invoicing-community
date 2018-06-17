@@ -279,9 +279,9 @@ return [
     'apply-only-once-per-order'                                                                                                        => 'Apply only once per order',
     'apply-to-new-signups-only'                                                                                                        => 'Apply to new signups only',
     'apply-to-existing-clients-only'                                                                                                   => 'Apply to existing clients only',
-    'usage-of-code-expired' =>'Usage of Code Expired',
-    'no-product-related-to-this-code' => 'There is  no product related to this code',
-    'price-updated-successfully' =>'Price Updated Successfully',
+    'usage-of-code-expired'                                                                                                            => 'Usage of Code Expired',
+    'no-product-related-to-this-code'                                                                                                  => 'There is  no product related to this code',
+    'price-updated-successfully'                                                                                                       => 'Price Updated Successfully',
     /*
      * Bundle
      */

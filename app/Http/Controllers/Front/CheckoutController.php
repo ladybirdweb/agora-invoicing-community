@@ -5,21 +5,21 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
-use App\Model\Payment\TaxByState;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
+use App\Model\Payment\TaxByState;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use DateTime;
-use DateTimeZone;
 use App\User;
 use Bugsnag;
 use Cart;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -84,7 +84,7 @@ class CheckoutController extends Controller
         if (!\Auth::user()) {
             $url = $request->segments();
             $content = Cart::getContent();
-           
+
             \Session::put('session-url', $url[0]);
             $domain = $request->input('domain');
             if (count($domain) > 0) {
@@ -96,15 +96,13 @@ class CheckoutController extends Controller
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
-        if (\Session::has('items')){
+        if (\Session::has('items')) {
             $content = \Session::get('items');
-             $attributes = $this->getAttributes($content);
+            $attributes = $this->getAttributes($content);
+        } else {
+            $content = Cart::getContent();
+            $attributes = $this->getAttributes($content);
         }
-        else{
-       
-        $content = Cart::getContent();
-        $attributes = $this->getAttributes($content);
-    }
 
         $require = [];
 
@@ -236,16 +234,16 @@ class CheckoutController extends Controller
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
-                 $status = 'pending';
+                $status = 'pending';
                 if (!$payment_method) {
                     $payment_method = 'free';
                     $status = 'success';
                 }
                 $invoice_no = $invoice->number;
-                 $date1 = new DateTime($invoice->date);
-                    $tz = \Auth::user()->timezone()->first()->name;
-                    $date1->setTimezone(new DateTimeZone($tz));
-                    $date = $date1->format('M j, Y, g:i a ');
+                $date1 = new DateTime($invoice->date);
+                $tz = \Auth::user()->timezone()->first()->name;
+                $date1->setTimezone(new DateTimeZone($tz));
+                $date = $date1->format('M j, Y, g:i a ');
                 $invoiceid = $invoice->id;
 
                 $amount = $invoice->grand_total;
@@ -259,11 +257,9 @@ class CheckoutController extends Controller
                 // dd($items);
                 if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
-                     $product = $this->product($invoiceid);
+                    $product = $this->product($invoiceid);
                     $content = Cart::getContent();
                     $attributes = $this->getAttributes($content);
-
-                    
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -289,7 +285,7 @@ class CheckoutController extends Controller
                 $action = $this->checkoutAction($invoice);
 
                 $check_product_category = $this->product($invoiceid);
-               
+
                 $url = '';
                 if ($check_product_category->category) {
                     $url = '<div class="container">

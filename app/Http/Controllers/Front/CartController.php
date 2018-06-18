@@ -150,14 +150,12 @@ class CartController extends Controller
             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
- if ($items == null){
-            $cartCollection = Cart::getContent();
-          }
-          else{
-            $cartCollection = $items;
-          }
-             foreach ($cartCollection as $item) {
-
+            if ($items == null) {
+                $cartCollection = Cart::getContent();
+            } else {
+                $cartCollection = $items;
+            }
+            foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 $cart_currency = $attributes[0]['currency'];
                 $currency = $attributes[0]['currency'];

@@ -719,9 +719,7 @@ class CartController extends Controller
 
             return view('themes.default1.front.cart', compact('cartCollection'));
         } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception('Problem while adding licence to cart');
+             throw new \Exception('Problem while adding licence to cart');
         }
     }
 

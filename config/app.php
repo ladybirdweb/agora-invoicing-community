@@ -200,6 +200,7 @@ return [
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
+         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
 
     ],
 

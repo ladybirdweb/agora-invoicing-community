@@ -156,8 +156,7 @@ class CartController extends Controller
           else{
             $cartCollection = $items;
           }
-            // dd($cartCollection);
-            foreach ($cartCollection as $item) {
+             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 $cart_currency = $attributes[0]['currency'];
                 $currency = $attributes[0]['currency'];

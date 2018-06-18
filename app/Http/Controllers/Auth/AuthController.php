@@ -295,7 +295,6 @@ class AuthController extends Controller
                 throw new NotFoundHttpException();
             }
         } catch (\Exception $ex) {
-            // dd($ex);
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
 

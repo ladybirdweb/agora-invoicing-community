@@ -415,12 +415,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                           </div>
                                                     </div>
                                                 </div>
-                                                <div class="form-row">
-                                                  
-                                                <div class="pull-left obligatory-fields required" >
-                                                     </div>&nbsp;
-                                                  Required fields
-                                              </div>
+                                                
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6 ">
                                                         

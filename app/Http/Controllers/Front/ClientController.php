@@ -197,6 +197,7 @@ class ClientController extends Controller
                             })
                             ->addColumn('description', function ($link) {
                                 $markdown = Markdown::convertToHtml(ucfirst($link['body']));
+
                                 return $markdown;
                             })
                             ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {

@@ -221,7 +221,7 @@ active
                                         @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
                                      <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} %</strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
                                         </th>
                                         <td>
 

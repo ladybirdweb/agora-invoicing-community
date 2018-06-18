@@ -48,7 +48,7 @@ class ProfileRequest extends Request
             return [
                      'first_name'            => 'required|min:3|max:20',
                     'last_name'              => 'required|max:20',
-                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
+                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:20',
                     'mobile_code'            => 'required|numeric',
 
                     'zip'                   => 'required|numeric',

@@ -692,26 +692,24 @@ use App\Http\Controllers\Controller;
                 }
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
 
-        public function adminDownload($id,$invoice='', $api = false)
+        public function adminDownload($id, $invoice = '', $api = false)
         {
             try {
-                $role= \Auth::user()->role;
-                if($role == "user"){
-                    if($invoice && $invoice!= ''){
-                         $release = $this->downloadProductAdmin($id);
-                     }
-                     else {
+                $role = \Auth::user()->role;
+                if ($role == 'user') {
+                    if ($invoice && $invoice != '') {
+                        $release = $this->downloadProductAdmin($id);
+                    } else {
                         throw new \Exception('This user has no permission for this action');
-                     }
+                    }
+                } elseif ($role == 'admin') {
+                    $release = $this->downloadProductAdmin($id);
                 }
-                elseif ($role == "admin"){
-
-                 $release = $this->downloadProductAdmin($id);
-             }
                 if (is_array($release) && array_key_exists('type', $release)) {
                     header('Location: '.$release['release']);
                     exit;

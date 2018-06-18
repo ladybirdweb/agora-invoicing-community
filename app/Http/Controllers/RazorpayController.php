@@ -88,7 +88,6 @@ class RazorpayController extends Controller
                 $control = new \App\Http\Controllers\Order\RenewController();
 
                 if ($control->checkRenew() == false) {
-
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
 
                     $checkout_controller->checkoutAction($invoice);
@@ -229,7 +228,7 @@ class RazorpayController extends Controller
     
     </div>
     </div>';
-    \Session::forget('items');
+                    \Session::forget('items');
                 } else {
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();

@@ -28,7 +28,11 @@
                    <div class="form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
+<<<<<<< HEAD
                         {!! Form::select('payment_method',[''=>'Select','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
+=======
+                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
+>>>>>>> master
 
                     </div>
                      <div class="form-group {{ $errors->has('cost') ? 'has-error' : '' }}">

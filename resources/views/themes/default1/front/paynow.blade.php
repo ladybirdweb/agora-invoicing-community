@@ -155,7 +155,9 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
+
                          <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
+
                     </div>
                     
                     <div class="col-md-6">
@@ -196,7 +198,7 @@ Checkout
                  
                 @foreach($items->toArray() as $attribute)
                 
-                @if($attribute['tax_name']!='null,')
+                @if($attribute['tax_name']!='null,' && $symbol == "INR")
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";

@@ -45,9 +45,11 @@ if (count($attributes) > 0) {
         @if(Session::has('success'))
     </br>
 </br>
+
          <div class="alert alert-success">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+
             {{Session::get('success')}}
         </div>
         @endif
@@ -142,7 +144,9 @@ if (count($attributes) > 0) {
                                                     </td>
 
                                                     <td class="product-price">
+
                                                          <span class="amount">{!! $symbol !!}&nbsp;
+
                                                          {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
                                                      </span>
                                                       
@@ -157,7 +161,9 @@ if (count($attributes) > 0) {
                                                         @endif
                                                     </td>
                                                     <td class="product-subtotal">
+
                                                               <span class="amount">{!! $symbol !!}&nbsp;{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+
                                                             
                                                     </td>
 
@@ -196,7 +202,9 @@ if (count($attributes) > 0) {
                 </div>
 
                 <div class="col-md-4">
+
                    <div class="featured-box featured-box-primary text-left ">
+
                         <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-md">Cart Totals</h4>
                             <table class="cart-totals">
@@ -223,7 +231,9 @@ if (count($attributes) > 0) {
                                             <strong>Order Total</strong>
                                         </th>
                                         <td>
+
                                             <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+
                                         </td>
                                     </tr>
 
@@ -252,6 +262,7 @@ if (count($attributes) > 0) {
                                     <input type="submit" value="Update">
                                 </div>
                                 {!! Form::close() !!}
+                                </div>
                             </div>
                         </div>
                          </div>
@@ -271,7 +282,9 @@ if (count($attributes) > 0) {
                           
 
                         </div>
+
                       </div>
+
                 </div>
 
 

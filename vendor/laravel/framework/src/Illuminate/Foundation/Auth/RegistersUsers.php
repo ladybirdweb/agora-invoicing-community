@@ -472,7 +472,9 @@ trait RegistersUsers
 
         
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id','first_name')->toArray();
+
          if(count($managers)>0){
+
             $randomized[] = array_rand($managers);
         shuffle($randomized);
         $manager = $managers[$randomized[0]];

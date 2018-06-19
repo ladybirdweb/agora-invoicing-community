@@ -1456,8 +1456,9 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             url: "{{url('get-loginstate')}}/" + val,
               data: {'country_id':val,'_token':"{{csrf_token()}}"},//'country_id=' + val,
             success: function (data) {
-                 $("#state-list").html('<option value="">Please select Country</option>').val('');
+            $("#state-list").html('<option value="">Please select Country</option>').val('');
                 console.log()
+
               $("#state-list").html(data).val(state.id);
             }
         });

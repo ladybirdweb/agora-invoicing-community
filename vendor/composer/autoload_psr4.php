@@ -73,7 +73,9 @@ return array(
     'Bugsnag\\PsrLogger\\' => array($vendorDir . '/bugsnag/bugsnag-psr-logger/src'),
     'Bugsnag\\BugsnagLaravel\\' => array($vendorDir . '/bugsnag/bugsnag-laravel/src'),
     'Bugsnag\\' => array($vendorDir . '/bugsnag/bugsnag/src'),
+
     'Barryvdh\\LaravelIdeHelper\\' => array($vendorDir . '/barryvdh/laravel-ide-helper/src'),
+
     'Barryvdh\\DomPDF\\' => array($vendorDir . '/barryvdh/laravel-dompdf/src'),
     'App\\' => array($baseDir . '/app'),
 );

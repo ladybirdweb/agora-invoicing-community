@@ -12,12 +12,14 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
         '023d27dca8066ef29e6739335ea73bad' => __DIR__ . '/..' . '/symfony/polyfill-php70/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
+
         '0b47d6d4a00ca9112ba3953b49e7c9a4' => __DIR__ . '/..' . '/yajra/laravel-datatables-oracle/src/helper.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'f18cc91337d49233e5754e93f3ed9ec3' => __DIR__ . '/..' . '/laravelcollective/html/src/helpers.php',
         '2c102faa651ef8ea5874edb585946bce' => __DIR__ . '/..' . '/swiftmailer/swiftmailer/lib/swift_required.php',
+
         'bd9634f2d41831496de0d3dfe4c94881' => __DIR__ . '/..' . '/symfony/polyfill-php56/bootstrap.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         'e7223560d890eab89cda23685e711e2c' => __DIR__ . '/..' . '/psy/psysh/src/Psy/functions.php',
@@ -146,7 +148,9 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
             'Bugsnag\\PsrLogger\\' => 18,
             'Bugsnag\\BugsnagLaravel\\' => 23,
             'Bugsnag\\' => 8,
+
             'Barryvdh\\LaravelIdeHelper\\' => 26,
+
             'Barryvdh\\DomPDF\\' => 16,
         ),
         'A' => 
@@ -430,10 +434,12 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         array (
             0 => __DIR__ . '/..' . '/bugsnag/bugsnag/src',
         ),
+
         'Barryvdh\\LaravelIdeHelper\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src',
         ),
+
         'Barryvdh\\DomPDF\\' => 
         array (
             0 => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src',
@@ -726,6 +732,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
+
         'Barryvdh\\LaravelIdeHelper\\Alias' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Alias.php',
         'Barryvdh\\LaravelIdeHelper\\Console\\EloquentCommand' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Console/EloquentCommand.php',
         'Barryvdh\\LaravelIdeHelper\\Console\\GeneratorCommand' => __DIR__ . '/..' . '/barryvdh/laravel-ide-helper/src/Console/GeneratorCommand.php',
@@ -761,6 +768,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Barryvdh\\Reflection\\DocBlock\\Tag\\VarTag' => __DIR__ . '/..' . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Tag/VarTag.php',
         'Barryvdh\\Reflection\\DocBlock\\Tag\\VersionTag' => __DIR__ . '/..' . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Tag/VersionTag.php',
         'Barryvdh\\Reflection\\DocBlock\\Type\\Collection' => __DIR__ . '/..' . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Type/Collection.php',
+
         'Bugsnag\\Breadcrumbs\\Breadcrumb' => __DIR__ . '/..' . '/bugsnag/bugsnag/src/Breadcrumbs/Breadcrumb.php',
         'Bugsnag\\Breadcrumbs\\Recorder' => __DIR__ . '/..' . '/bugsnag/bugsnag/src/Breadcrumbs/Recorder.php',
         'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider' => __DIR__ . '/..' . '/bugsnag/bugsnag-laravel/src/BugsnagServiceProvider.php',
@@ -832,7 +840,9 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'CompanySize' => __DIR__ . '/../..' . '/database/seeds/CompanySize.php',
         'CompanyType' => __DIR__ . '/../..' . '/database/seeds/CompanyType.php',
         'Composer\\CaBundle\\CaBundle' => __DIR__ . '/..' . '/composer/ca-bundle/src/CaBundle.php',
+
         'Cpdf' => __DIR__ . '/..' . '/dompdf/dompdf/lib/Cpdf.php',
+
         'CreateAccountActivatesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_account_activates_table.php',
         'CreateBussinessesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_bussinesses_table.php',
         'CreateCcavanueTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_ccavanue_table.php',

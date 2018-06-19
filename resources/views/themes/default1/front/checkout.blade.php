@@ -24,7 +24,9 @@ if ($attributes[0]['currency'][0]['symbol'] == '') {
     $symbol = $attributes[0]['currency'][0]['symbol'];
 }
 $tax=  0;
+
 $sum = 0;
+
 
 ?>
 <div class="container">
@@ -128,10 +130,12 @@ $sum = 0;
                                 <td class="product-quantity">
                                     {{$item->quantity}}
                                 </td>
+
                                 <td class="product-price">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
                                    
                                     <span class="amount">{!! $symbol !!}   {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span>
+
                                 </td>
                             </tr>
                             @empty 
@@ -143,7 +147,9 @@ $sum = 0;
                     
                   
                     <div class="col-md-12">
+
                        
+
                         <hr class="tall">
                     </div>
 
@@ -160,11 +166,13 @@ $sum = 0;
                                                         $tax = $total-$sum;
                 ?>
                 <div class="form-group">
+
                    <div class="form-row">
                     <div class="col-md-6">
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                 </div>
+
                     
                 </div>
                 @endif
@@ -178,6 +186,7 @@ $sum = 0;
                 </div>
                 {!! Form::close() !!}
                 
+
 
            </div>
         </div>
@@ -193,6 +202,7 @@ $sum = 0;
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
+
                         <strong><span class="amount"> {{$symbol}}  @if($attributes[0]['currency'][0]['code'] == "INR")
 
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
@@ -226,14 +236,17 @@ $sum = 0;
                
                 @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' &&$attribute['status'] ==1)
                
+
                 <tr class="Taxes">
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
                      
                     </th>
                     <td>
+
                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
                       
+
                     </td>
 
 
@@ -318,11 +331,13 @@ $sum = 0;
                     </th>
                     <td>
 
+
                          @if($attributes[0]['currency'][0]['code'] == "INR")
                            
                                           {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @else
                                            {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
+
                                             @endif
 
                        

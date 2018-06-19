@@ -133,6 +133,7 @@
 
                                 {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control select2','multiple'=>true,'title'=>'Products for which coupon is Applied']) !!}
 
+
                             </div>
                         </td>
 

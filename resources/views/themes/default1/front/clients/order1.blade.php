@@ -51,7 +51,9 @@ active
                 @endif
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
              
+
                     <thead><tr>
                             <th>Product Name</th>
                             <th>Expiry</th>
@@ -94,7 +96,7 @@ active
             },
         });
     </script>
-    
+
 @stop
 
 

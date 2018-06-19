@@ -194,6 +194,7 @@ return array(
     'Barryvdh\\DomPDF\\Facade' => $vendorDir . '/barryvdh/laravel-dompdf/src/Facade.php',
     'Barryvdh\\DomPDF\\PDF' => $vendorDir . '/barryvdh/laravel-dompdf/src/PDF.php',
     'Barryvdh\\DomPDF\\ServiceProvider' => $vendorDir . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
+
     'Barryvdh\\LaravelIdeHelper\\Alias' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Alias.php',
     'Barryvdh\\LaravelIdeHelper\\Console\\EloquentCommand' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Console/EloquentCommand.php',
     'Barryvdh\\LaravelIdeHelper\\Console\\GeneratorCommand' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Console/GeneratorCommand.php',
@@ -229,6 +230,7 @@ return array(
     'Barryvdh\\Reflection\\DocBlock\\Tag\\VarTag' => $vendorDir . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Tag/VarTag.php',
     'Barryvdh\\Reflection\\DocBlock\\Tag\\VersionTag' => $vendorDir . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Tag/VersionTag.php',
     'Barryvdh\\Reflection\\DocBlock\\Type\\Collection' => $vendorDir . '/barryvdh/reflection-docblock/src/Barryvdh/Reflection/DocBlock/Type/Collection.php',
+
     'Bugsnag\\Breadcrumbs\\Breadcrumb' => $vendorDir . '/bugsnag/bugsnag/src/Breadcrumbs/Breadcrumb.php',
     'Bugsnag\\Breadcrumbs\\Recorder' => $vendorDir . '/bugsnag/bugsnag/src/Breadcrumbs/Recorder.php',
     'Bugsnag\\BugsnagLaravel\\BugsnagServiceProvider' => $vendorDir . '/bugsnag/bugsnag-laravel/src/BugsnagServiceProvider.php',
@@ -300,7 +302,9 @@ return array(
     'CompanySize' => $baseDir . '/database/seeds/CompanySize.php',
     'CompanyType' => $baseDir . '/database/seeds/CompanyType.php',
     'Composer\\CaBundle\\CaBundle' => $vendorDir . '/composer/ca-bundle/src/CaBundle.php',
+
     'Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
+
     'CreateAccountActivatesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_account_activates_table.php',
     'CreateBussinessesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_bussinesses_table.php',
     'CreateCcavanueTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_ccavanue_table.php',

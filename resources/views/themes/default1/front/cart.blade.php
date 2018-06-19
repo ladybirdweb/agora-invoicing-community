@@ -202,7 +202,21 @@ if (count($attributes) > 0) {
                             <table class="cart-totals">
                                 <tbody>
 
-                                     
+                                     <!--    @foreach($item->attributes['tax'] as $attribute)
+                                    @if($attribute['name']!='null')
+                                    <tr>
+                                        <th>
+                                            <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}%</strong>
+                                        </th>
+                                        <td>
+                                            
+                                            {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotal())}}
+                                        </td>
+
+                                    </tr>
+                                    @endif
+                                    @endforeach
+ -->
                                 
                                     <tr class="total">
                                         <th>

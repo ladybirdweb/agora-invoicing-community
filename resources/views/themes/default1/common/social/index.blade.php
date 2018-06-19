@@ -81,7 +81,7 @@
     
             columns: [
                
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'class', name: 'Class'},
                 {data: 'link', name: 'Link'},
                 {data: 'action', name: 'Action'}

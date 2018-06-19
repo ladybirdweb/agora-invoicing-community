@@ -28,6 +28,7 @@
           <!-- Vendor CSS -->
           <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
+             <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
@@ -55,7 +56,11 @@
           <!-- Head Libs -->
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
 
-          
+             <script type="text/javascript"> //<![CDATA[ 
+        var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
+        document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
+        //]]>
+       </script>
          
     
   
@@ -114,14 +119,7 @@
                                         <button class="btn header-btn-collapse-nav" data-toggle="collapse" data-target=".header-nav-main">
                                             <i class="fa fa-bars"></i>
                                         </button>
-                                        <ul class="header-social-icons social-icons hidden-xs">
-                                            <?php
-                                            $social = App\Model\Common\SocialMedia::get();
-                                            ?>
-                                            @foreach($social as $media)
-                                            <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
-                                            @endforeach
-                                        </ul>
+                                      
  
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
@@ -285,6 +283,14 @@
                                                 </ul>
                                             </nav>
                                         </div>
+                                          <ul class="header-social-icons social-icons hidden-xs">
+                                            <?php
+                                            $social = App\Model\Common\SocialMedia::get();
+                                            ?>
+                                            @foreach($social as $media)
+                                            <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
+                                            @endforeach
+                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -383,12 +389,13 @@
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
-                        </div>
-                        <div class="col-md-2">
+                            <br>
+                       
                         <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
-                        <br/>
-                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="SiteLock" title="SiteLock" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
+                        <br/> <br/>
+                        <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
                         </div>
+
 
                     </div>
                 </div>
@@ -494,7 +501,17 @@ s0.parentNode.insertBefore(s1,s0);
 </script> -->
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
+
 <script language="JavaScript" type="text/javascript">
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+(function(){
+var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+s1.async=true;
+s1.src='https://embed.tawk.to/57236f1bb27b7d1124b56794/default';
+s1.charset='UTF-8';
+s1.setAttribute('crossorigin','*');
+s0.parentNode.insertBefore(s1,s0);
+})();
 TrustLogo("https://www.faveohelpdesk.com/", "CL1", "none");
 
 </script>

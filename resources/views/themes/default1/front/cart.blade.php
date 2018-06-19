@@ -265,7 +265,7 @@ if (count($attributes) > 0) {
                                 </div>
                             </div>
                         </div>
-                         </div>
+                         <!-- </div> -->
                            <div class="row">
                         <div class=" col-md-6">
                             <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>

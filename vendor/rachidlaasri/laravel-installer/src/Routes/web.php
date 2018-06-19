@@ -9,7 +9,7 @@ Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 
         'as' => 'welcome',
         'uses' => 'WelcomeController@welcome'
     ]);
-}
+
 
 
     Route::get('environment', [

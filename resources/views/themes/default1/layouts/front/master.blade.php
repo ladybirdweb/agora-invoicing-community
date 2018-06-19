@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 
-<<<<<<< HEAD
+
     <head>
   
           <!-- Basic -->

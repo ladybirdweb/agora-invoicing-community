@@ -348,7 +348,6 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-
                 dd($e);
 
                 Bugsnag::notifyException($e);
@@ -655,13 +654,11 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
-
                     } elseif ($file) {
                         //If the Product is Downloaded from FileSystem
                         $fileName = $file->file;
                         $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
                         // $relese = '/home/faveo/products/'.$file->file;
-
 
                         return $relese;
                     }

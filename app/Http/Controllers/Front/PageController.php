@@ -381,7 +381,6 @@ class PageController extends Controller
                 // $trasform2[$value['id']]['subscription'] = $temp_controller->leastAmountService($value['id']);
                 $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-
                 $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $service_template = $this->transform('cart', $data, $trasform2);

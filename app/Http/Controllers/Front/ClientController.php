@@ -19,9 +19,7 @@ use Bugsnag;
 use DateTime;
 use DateTimeZone;
 use Exception;
-
 use GrahamCampbell\Markdown\Facades\Markdown;
-
 use Hash;
 
 class ClientController extends Controller
@@ -309,7 +307,6 @@ class ClientController extends Controller
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
-
     }
 
     public function subscriptions()

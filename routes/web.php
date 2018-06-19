@@ -82,7 +82,6 @@
         Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
         Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
 
-
         // Get Route For Show Razorpay Payment Form
         Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
         // Post Route For Make Razorpay Payment Request
@@ -225,7 +224,6 @@
         Route::post('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
-
 
         /*
          * Bundle

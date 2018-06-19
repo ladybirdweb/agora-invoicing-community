@@ -72,7 +72,6 @@ class RenewController extends Controller
     public function successRenew($invoice)
     {
         try {
-
             $invoice->status = 'success';
             $invoice->save();
 

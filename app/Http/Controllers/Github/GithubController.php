@@ -293,7 +293,6 @@ class GithubController extends Controller
         }
     }
 
-
     /**
      * Github Downoload for Clients.
      *
@@ -303,7 +302,6 @@ class GithubController extends Controller
      *
      * @return type
      */
-
     public function downloadLink($owner, $repo, $order_id)
     {
         try {
@@ -317,8 +315,6 @@ class GithubController extends Controller
             if ($repo == 'faveo-servicedesk-community') {
                 return $array = ['Location' => $url];
             }
-
-
 
             $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
             $url = "https://api.github.com/repos/$owner/$repo/releases";
@@ -334,7 +330,6 @@ class GithubController extends Controller
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
 
-
             //For Helpdesk Advanced
             if ($repo == 'Faveo-Helpdesk-Pro') {
                 $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
@@ -343,14 +338,12 @@ class GithubController extends Controller
             if ($repo == 'faveo-service-desk-pro') {
                 dd('dfd');
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
-
             }
 
             $link = $this->github_api->getCurl1($url);
 
             return $link['header'];
         } catch (Exception $ex) {
-
             dd($ex->getline());
 
             Bugsnag::notifyException($ex);

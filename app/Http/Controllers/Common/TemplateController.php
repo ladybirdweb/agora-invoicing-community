@@ -309,7 +309,6 @@ class TemplateController extends Controller
             //     $name = $fields->company;
             // }
 
-
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
 
@@ -318,7 +317,6 @@ class TemplateController extends Controller
             $transport->setPassword($mail_password);
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
-
 
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
@@ -347,7 +345,6 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-
             dd($ex);
 
             Bugsnag::notifyException($ex);
@@ -523,7 +520,6 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -753,7 +749,6 @@ class TemplateController extends Controller
             } else {
                 $price[$value->id] = '$'.' '.$cost;
             }
-
         }
         // dd($price);
         $this->leastAmount($id);
@@ -800,7 +795,6 @@ class TemplateController extends Controller
             // if ($product_cost != 0) {
             //     $cost = $currency.' '.$product_cost;
             // }
-
         }
 
         return $price;

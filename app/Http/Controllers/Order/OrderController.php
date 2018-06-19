@@ -15,9 +15,7 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-
 use Crypt;
-
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -480,7 +478,6 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
-
             dd($ex);
 
             Bugsnag::notifyException($ex);

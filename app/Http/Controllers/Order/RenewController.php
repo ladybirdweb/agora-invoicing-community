@@ -123,7 +123,7 @@ class RenewController extends Controller
             //dd($product);
             $user = $this->getUserById($order->client);
             if (!$user) {
-                  throw new Exception('User has removed from database');
+                throw new Exception('User has removed from database');
             }
             if (!$product) {
                 throw new Exception('Product has removed from database');

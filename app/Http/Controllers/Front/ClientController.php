@@ -147,12 +147,11 @@ class ClientController extends Controller
                                 return ucfirst($versions->description);
                             })
                             ->addColumn('file', function ($versions) use ($clientid, $invoiceid, $productid) {
-
-                                $invoice_id = Invoice::where('number',$invoiceid)->pluck('id')->first();
-                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
-                                 $order_id = $order->id;
+                                $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
+                                $order = Order::where('invoice_id', '=', $invoice_id)->first();
+                                $order_id = $order->id;
                                 $endDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
-                                     if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
+                                if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
                                     return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
                                             .'&nbsp;
 

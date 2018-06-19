@@ -113,7 +113,7 @@ main
                 </div> -->
                         
                        
-                        <input type="hidden" name="user_id" value="{{$user -> id}}" id="u_id">
+                        <input type="hidden" name="user_id" value="{{$user->id}}" id="u_id">
                             <div class="form-group col-lg-12">
                           
                         <div class="row" ng-hide="showOTP">
@@ -121,7 +121,7 @@ main
                              <label for="mobile" class="required">Mobile</label><br/>
                           
                          
-                           <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user-> mobile}}" id="u_mobile">
+                           <input type="text" class="form-control input-lg phonecode"  name="mobile" value="{{$user ->  mobile}}" id="u_mobile">
                             <input type="hidden"  name="oldno" value="{{$user -> mobile}}" id="oldno">
                             <h6 id = "mobcheck"></h6>
                            <div class="clear"></div>
@@ -381,30 +381,43 @@ main
 
     var telInput = $(".phonecode");
     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
+    // telInput.intlTelInput({
+        
+    //     geoIpLookup: function (callback) {
+    //         $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+    //             var countryCode = (resp && resp.country) ? resp.country : "";
+    //                 currentCountry=countryCode.toLowerCase()
+    //                 callback(countryCode);
+    //         });
+    //     },
+    //     initialCountry: "auto",
+    //       separateDialCode: true,
+    //     utilsScript: "{{asset('js/intl/js/utils.js')}}",
+    // });
+     telInput.intlTelInput({
         geoIpLookup: function (callback) {
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
+                 currentCountry=countryCode.toLowerCase()
+                callback(countryCode);
             });
         },
+        initialCountry: "auto",
         separateDialCode: false,
-        utilsScript: "{{asset('js/intl/js/utils.js')}}",
-    });
+        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
+    }); 
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);
     },500)
     $('.intl-tel-input').css('width', '100%');
 
-    telInput.on('blur', function () {
-        if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
-            }
-        }
-    });
+    // telInput.on('blur', function () {
+    //     if ($.trim(telInput.val())) {
+    //         if (!telInput.intlTelInput("isValidNumber")) {
+    //             telInput.parent().addClass('has-error');
+    //         }
+    //     }
+    // });
     $('input').on('focus', function () {
         $(this).parent().removeClass('has-error');
     });
@@ -567,10 +580,11 @@ main
                                             var res = "";
                                             $("#sendOTP").html("Send OTP");
                                             $('#error1').css('color', 'red');
-                                            $.each(data, function (idx, topic) {
-                                                res += "<li style='list-style-type:none'>" + topic + "</li>";
+                                             $.each(data.errors, function (idx, topic) {
+                                                res += '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+topic+'!.<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
                                             });
                                             $('#error1').html(res);
+                                            // $('#error1').html(res);
                                         })
                                       }
                                        else{

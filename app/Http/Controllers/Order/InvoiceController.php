@@ -709,7 +709,7 @@ class InvoiceController extends Controller
     public function getRate($productid, $taxs, $userid)
     {
         $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
-        $tax_value = '0%';
+        $tax_value = '0';
 
         $geoip_state = User::where('id', $userid)->pluck('state')->first();
         $geoip_country = User::where('id', $userid)->pluck('country')->first();
@@ -738,7 +738,7 @@ class InvoiceController extends Controller
              $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
                if ($taxClassId) {
                    $taxes = $cartController->getTaxByPriority($taxClassId);
-                   $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
+                    $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
                } else {
                    $taxes = [0];
                }
@@ -786,7 +786,8 @@ class InvoiceController extends Controller
         foreach ($taxes as $key => $tax) {
             if ($taxes[0]) {
                 $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
-                $rate += $tax->rate;
+                
+                $rate = $tax->rate;
 
                 $tax_value = $value;
             } else {
@@ -833,18 +834,22 @@ class InvoiceController extends Controller
     {
         try {
             $rates = explode(',', $rate);
-            //dd($rates);
+         
             //            $total = '';
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->inclusive == 0) {
                 foreach ($rates as $rate) {
+                    if($rate !=""){
+                         $rate = str_replace('%','',$rate);
                     $total += $total * ($rate / 100);
-                    // dd($total);
+                    }
+                   
+                    // dd(intval(round($total)));
                 }
             }
-            //dd($total);
-            return $total;
+            // dd($total);
+            return intval(round($total));
         } catch (\Exception $ex) {
             dd($ex);
 

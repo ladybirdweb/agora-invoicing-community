@@ -5,19 +5,25 @@ Agora | Orders
 @section('nav-orders')
 active
 @stop
+@section('page-heading')
+ <h1>My Account </h1>
+@stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
+<li class="active">My Account</li>
 <li class="active">Orders</li>
 @stop
 
 @section('content')
 
-<h2 class="mb-none"> My Orders</h2>
+
 
 <div class="col-md-12 pull-center">
+    <h2 class="mb-none"> My Orders</h2>
     @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -36,16 +42,19 @@ active
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
-                <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+               <div class="alert alert-danger alert-dismissable" role="alert">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                   <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.
+                    
                     {{Session::get('fails')}}
                 </div>
                 @endif
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-               @include('themes.default1.front.clients.download-list')
+
+
+             
+
                     <thead><tr>
                             <th>Product Name</th>
                             <th>Expiry</th>
@@ -60,7 +69,9 @@ active
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#order-table').DataTable({
+            destroy:true,
             processing: true,
+            stateSave: true,
             serverSide: true,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-my-orders') !!}',
@@ -85,21 +96,6 @@ active
                 $('.loader').css('display', 'block');
             },
         });
-    </script>
-    <script>
-        $('#download-list').on('show.bs.modal', function(e){
-        
-    })
-        function openEditPopup(e)
-        {
-             console.log(e)
-            $('#download-list').modal('toggle');
-             var url = "{{url('upload/')}}"+"/"+upload_id
-         
-          $("#upload-edit-form").attr('action', url)
-
-
-        }
     </script>
 
 

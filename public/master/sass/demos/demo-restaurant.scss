@@ -1,0 +1,283 @@
+//COMMON IMPORTS
+@import "../config/imports";
+
+/* Header */
+@media (min-width: 992px) {
+	#header {
+		.header-nav-main {
+			margin: 6px 0 0;
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								color: #CCC !important;
+								background: transparent !important;
+							}
+						}
+
+						&:hover, &.open {
+							> a {
+								&.active {
+									color: #FFF !important;
+									background: #CCC !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+/* Custom Icon */
+.thumb-info .thumb-info-custom-icon {
+	width: auto;
+	margin: -30px auto 0;
+	transform: none !important;
+}
+
+/* Custom Divider */
+.custom-divider {
+	height: 56px;
+	background: transparent url(../../img/custom-divider-1.png) no-repeat center center;
+}
+
+/* Custom Thumb Info */
+.thumb-info-custom {
+	position: relative;
+	overflow: visible;
+	z-index: 2;
+	&:before {
+		border: 1px solid #ddd;
+		bottom: -5px;
+		content: "";
+		height: 5px;
+		left: 2px;
+		position: absolute;
+		right: 2px;
+		width: auto;
+		z-index: 0;
+	}
+	&:after {
+		border: 1px solid #ddd;
+		bottom: -9px;
+		content: "";
+		height: 5px;
+		left: 5px;
+		position: absolute;
+		right: 5px;
+		width: auto;
+		z-index: 0;
+	}
+
+	.btn {
+		margin: 0 0 -45px;
+		position: relative;
+		z-index: 10;
+	}
+}
+
+/* Thumb Info Custom Icon */
+.thumb-info.thumb-info-centered-icons {
+	.thumb-info-action-custom {
+		top: 0;
+		margin-top: 0;
+		height: 100%;
+		left: 0;
+		width: 100%;
+		display: block;
+
+		a {
+			display: block;
+			width: 100%;
+			height: 100%;
+		}
+
+		.thumb-info-icon-custom {
+			&:before {
+				border-top: 1px solid #ddd;
+				content: "";
+				height: 1px;
+				#{$left}: 20%;
+				position: absolute;
+				#{$right}: 2px;
+				top: 50%;
+				width: 60%;
+			}
+			&:after {
+				border-left: 1px solid #ddd;
+				content: "";
+				height: 60%;
+				#{$left}: 50%;
+				position: absolute;
+				#{$right}: 2px;
+				top: 20%;
+				width: 1px;
+			}
+		}
+	}
+}
+
+/* Thumb Info Caption Text Custom */
+.thumb-info-caption-text-custom {
+	background: #F4f4f4;
+	margin: 0 !important;
+	padding: 14px !important;
+}
+
+.thumb-info {
+	.thumb-info-caption {
+		padding: 0;
+	}
+}
+
+/* Thumb Info Custom Blog */
+@media (max-width: 991px) {
+	.thumb-info-blog-custom img {
+		max-width: 120px;
+		margin-bottom: 10px !important;
+	}
+}
+
+/* Menu */
+.menu-title {
+	color: #a2a2a2;
+	font-size: 16px;
+	margin: 0 0 20px;
+	padding: 30px 0 10px;
+	text-transform: uppercase;
+}
+
+.menu-item {
+	margin-bottom: 40px;
+	h4 {
+		color: #444;
+		font-size: 16px;
+		font-weight: 600;
+		margin: 0;
+		padding: 0;
+		text-transform: uppercase;
+	}
+	.menu-item-price {
+		font-size: 16px;
+		color: #999;
+		float: $right;
+		margin: side-values(3px 15px 0 0);
+	}
+	p {
+		font-size: 14px;
+		color: #999;
+	}
+}
+
+/* Special Menu */
+.special-menu {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	text-align: $left;
+
+	li {
+		margin: side-values(0 0 32px 0);
+		padding: 0;
+		clear: both;
+	}
+
+	img {
+		float: $left;
+		margin: side-values(0 25px 0 0);
+		max-width: 68px;
+	}
+
+	h3 {
+		font-size: 24px;
+		padding: side-values(7px 0 4px 95px);
+		margin: 0;
+		text-transform: none;
+		font-family: Georgia, serif;
+		font-style: italic;
+		em {
+			font-size: 16px;
+		}
+	}
+
+	p {
+		font-size: 1.3em;
+		font-family: Georgia, serif;
+		font-style: italic;
+		margin: side-values(0 0 0 95px);
+		position: relative;
+		display: block;
+		span {
+			background: #FFF;
+			display: inline-block;
+			position: relative;
+			z-index: 2;
+			padding: side-values(0 10px 0 0);
+		}
+		&:before {
+			border-bottom: 2px dotted #ddd;
+			content: "";
+			height: 1px;
+			left: 0%;
+			position: absolute;
+			bottom: 5px;
+			width: 100%;
+			z-index: 1;
+		}
+	}
+
+	.special-menu-price {
+		background: #fff;
+		display: inline-block;
+		float: $right;
+		font-size: 22px;
+		margin-top: -26px;
+		padding: side-values(0 0 0 10px);
+		position: relative;
+		z-index: 3;
+	}
+}
+
+@media (max-width: 991px) {
+	.special-menu {
+		p {
+			padding-bottom: 35px;
+		}
+
+		.special-menu-price {
+			margin-top: -20px;
+		}
+	}
+}
+
+// Map
+.google-map.small {
+	max-width: 300px;
+	height: 200px;
+}
+
+// Footer
+#footer {
+	margin-top: 0;
+	.footer-copyright {
+		p {
+			color: rgba(255,255,255,0.25);
+			font-size: 15px;
+			padding: 45px 0 10px 0;
+			text-transform: uppercase;
+			a {
+				color: rgba(255,255,255,0.25);
+			}
+			.separator {
+				display: inline-block;
+				padding: 0 10px;
+				font-size: 10px;
+				position: relative;
+				top: -2px;
+			}
+		}
+	}
+}

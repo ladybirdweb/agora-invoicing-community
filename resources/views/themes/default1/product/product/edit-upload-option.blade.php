@@ -23,13 +23,18 @@
                       <input type="text" id="product-title" class="form-control" value="" name="title">
                  </div>
 
+                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
+                                    <!-- last name -->
+                                   
 
+                                    {!! Form::label('description',Lang::get('message.description')) !!}
+                                    <textarea type="text" class="form-control" id= "product-description" name="description"> </textarea>  
+                                   <!--  {!! Form::textarea('description',null,['class' => 'form-control','id'=>'product-description']) !!} -->
+                                   
 
-                <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                    <!-- name -->
-                    {!! Form::label('Description',Lang::get('Description'),['class'=>'required']) !!}
-                    <input type="text" id="product-description" class="form-control" name="description">
-                 </div>
+                  </div>
+
+               
                 
                 <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->

@@ -12,7 +12,7 @@
 @section('container')
 
     <p class="text-center">
-        {!! trans('installer_messages.environment.menu.desc') !!}
+        {!! trans('Please configure the apps <code>.env</code> file.') !!}
     </p>
     <div class="buttons">
         <a href="{{ route('LaravelInstaller::environmentWizard') }}" class="button button-wizard">

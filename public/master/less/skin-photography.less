@@ -1,0 +1,195 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #242E39;
+
+@color-secondary: #45586d;
+
+@color-tertiary: #EF4343;
+
+@color-quaternary: #182027;
+
+@import "skin";
+
+// Overlay Background
+.portfolio-grid-item, .portfolio-vertical-item, .horizontal-scroll-item, .portfolio-detail-image-item, .portfolio-item {
+	.thumb-info {
+		.thumb-info-wrapper {
+			&:after {
+				background: fade(@color-quaternary, 50%) !important;
+			}
+		}
+	}
+}
+
+// Parallax
+.portfolio-parallax:not(.portfolio-parallax-demo-2) {
+	&:hover {
+		&:before {
+			background: fade(@color-quaternary, 50%) !important;
+		}
+	}
+}
+
+// Custom Info Photographers
+.custom-thumb-info-photographers {
+
+	.thumb-info-wrapper {
+
+		&:before {
+			box-shadow: 0 50px 190px 110px @color-quaternary;
+		}
+
+		&:after {
+			background: fade(@color-quaternary, 50%) !important;
+		}
+
+	}
+}
+
+
+// Portfolio Detail Item
+.portfolio-detail-item {
+	.sub-item-description {
+		&:before {
+			box-shadow: 0 50px 130px 110px @color-quaternary;
+		}
+	}
+}
+
+// Portfolio - Stripes
+.portfolio-stripes {
+	.owl-item {
+		.portfolio-item {
+			.thumb-info {
+
+				.thumb-info-wrapper {
+
+					&::before {
+						box-shadow: 0 50px 190px 110px @color-quaternary;
+					}
+				}
+			}
+		}
+	}
+}
+
+// Rev Slider Arrows Background
+.tparrows {
+	background: fade(@color-quaternary, 50%) !important;
+
+	&:hover {
+		background: fade(@color-quaternary, 100%) !important;
+	}
+
+	// Demo 2
+	&.arrows-transparent-header-photography-1 {
+		background: transparent !important;
+
+		&:hover {
+			background: transparent !important;
+		}
+	}
+}
+
+// Magnific Popup Close Button Background
+#photographyLightbox {
+	.mfp-close {
+		background: @color-quaternary !important;
+	}	
+}
+
+// Demo 2
+html.photography-demo-2 {
+
+	&.sticky-header-enabled {
+
+		&.sticky-header-active {
+			#header {
+				.header-body {
+					background: @color-primary;
+				}
+			}
+		}
+
+	}
+
+	#header {
+
+		&.solid-header {
+			.header-body {
+				background: @color-primary;
+			}
+		}
+
+	}
+
+	.list {
+
+		&.list-icons {
+
+			&.list-icons-style-2 {
+				li {
+					&, a:first-child {
+						> .fa:first-child,
+						> .icons:first-child {
+							color: @color-primary;
+						}
+					}
+				}
+			}
+
+		}
+	}
+
+	// Custom Portfolio Parallax Demo 2
+	.portfolio-parallax-demo-2 {
+
+		&:before {
+			background: transparent linear-gradient(to top, @color-quaternary 0px, transparent 100%) repeat scroll 0 0;
+		}
+	}
+
+	// Custom Demo 2 Thumb Info 
+	.portfolio-vertical-item, .horizontal-scroll-item, .portfolio-detail-image-item, .portfolio-grid-item {
+		.thumb-info {
+			.thumb-info-wrapper {
+				&:before {
+					box-shadow: 0 50px 190px 110px @color-quaternary;
+				}
+			}
+		}
+	}
+}
+
+// Demo 3
+html.photography-demo-3 {
+	#main {
+		&:hover {
+			.portfolio-parallax {
+				&:before {
+					background: fade(@color-quaternary, 50%) !important;
+				}
+			}
+		}
+	}
+
+	.list {
+
+		&.list-icons {
+
+			&.list-icons-style-2 {
+				li {
+					&, a:first-child {
+						> .fa:first-child,
+						> .icons:first-child {
+							color: @color-primary;
+						}
+					}
+				}
+			}
+
+		}
+	}
+}

@@ -37,9 +37,7 @@ trait RegistersUsers
      */
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
-
-     
-        try {
+          try {
             $pass = $request->input('password');
             $country = $request->input('country');
             $currency = 'INR';
@@ -99,14 +97,15 @@ trait RegistersUsers
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
             if ($user) {
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
+                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
 
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             //return redirect()->back()->with('fails', $ex->getMessage());
             $result = [$ex->getMessage()];
-
+            
             return response()->json($result);
         }
 
@@ -192,7 +191,7 @@ trait RegistersUsers
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-                // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 // $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
@@ -200,7 +199,7 @@ trait RegistersUsers
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful.. Please login to access your account');
             } else {
                 throw new NotFoundHttpException();
             }
@@ -405,7 +404,7 @@ trait RegistersUsers
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' => 'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');
@@ -469,15 +468,20 @@ trait RegistersUsers
         // if ($account_count) {
         //     $manager = array_keys($account_count, min($account_count))[0];
         // }
+
+
         
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id','first_name')->toArray();
-        // dump($managers);
-        // dump(count($managers),$managers);
-        if(count($managers)>0){
+
+
+         if(count($managers)>0){
+
+
             $randomized[] = array_rand($managers);
         shuffle($randomized);
         $manager = $managers[$randomized[0]];
         }
+        
         else{
             $manager = '';
         }

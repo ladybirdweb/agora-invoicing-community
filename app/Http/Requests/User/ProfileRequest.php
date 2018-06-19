@@ -48,13 +48,14 @@ class ProfileRequest extends Request
             return [
                      'first_name'            => 'required|min:3|max:20',
                     'last_name'              => 'required|max:20',
-                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
+                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:20',
                     'mobile_code'            => 'required|numeric',
 
                     'zip'                   => 'required|numeric',
 
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
+                    // 'profile_pic'           => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
 
         ];
         }

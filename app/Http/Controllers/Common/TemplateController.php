@@ -285,6 +285,7 @@ class TemplateController extends Controller
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
+            // dd(json_encode($settings));
 
             /*Mail config*/
 
@@ -308,13 +309,14 @@ class TemplateController extends Controller
             //     $name = $fields->company;
             // }
 
-            // $https['ssl']['verify_peer'] = false;
-            // $https['ssl']['verify_peer_name'] = false;
-            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '587', 'tls');
-            // $transport->setUsername($email);
-            // $transport->setPassword($mail_password);
-            // $transport->setStreamOptions($https);
-            // $set = new \Swift_Mailer($transport);
+            $https['ssl']['verify_peer'] = false;
+            $https['ssl']['verify_peer_name'] = false;
+
+            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
+            $transport->setUsername($email);
+            $transport->setPassword($mail_password);
+            $transport->setStreamOptions($https);
+            $set = new \Swift_Mailer($transport);
 
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);
@@ -343,6 +345,8 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
+            dd($ex);
+
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
@@ -459,20 +463,12 @@ class TemplateController extends Controller
             $controller = new \App\Http\Controllers\Front\CartController();
 
             $currency = $controller->currency();
-            // $price = $controller->cost($productid);
-            //           $price = $product->price()->where('currency', $currency)->first()->sales_price;
-            //           if (!$price) {
-            //               $price = $product->price()->where('currency', $currency)->first()->price;
-            //           }
-            //
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
-            // dd(!$tax_relation);
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
             // dd($taxes);
             $taxes = $this->tax->where('tax_classes_id', $tax_relation->tax_class_id)->where('active', 1)->orderBy('created_at', 'asc')->get();
-            // dd($taxes);
             // dd(count($taxes) == 0);
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');
@@ -524,7 +520,6 @@ class TemplateController extends Controller
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
-            //dd($ex->getMessage(),$ex->getline(),$ex->getFile());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -748,7 +743,12 @@ class TemplateController extends Controller
             $months = round($value->days / 30 / 12);
             // dd($months);
             // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
-            $price[$value->id] = $currency.' '.$cost;
+
+            if ($currency == 'INR') {
+                $price[$value->id] = '₹'.' '.$cost;
+            } else {
+                $price[$value->id] = '$'.' '.$cost;
+            }
         }
         // dd($price);
         $this->leastAmount($id);
@@ -775,9 +775,15 @@ class TemplateController extends Controller
                 // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
 
                 $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                if ($currency == 'INR') {
+                    $symbol = '₹';
+                } else {
+                    $symbol = '$';
+                }
                 // dd($price);
             }
-            $cost = "$currency $price";
+
+            $cost = "$symbol $price";
         } else {
             $cost = 'Free';
             // dd($cost);
@@ -791,7 +797,7 @@ class TemplateController extends Controller
             // }
         }
 
-        return $cost;
+        return $price;
     }
 
     public function leastAmountService($id)
@@ -809,13 +815,15 @@ class TemplateController extends Controller
 
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-
-                // $price = \App\Http\Controllers\Front\CartController::calculateTax($id, $price, 1, 0, 1);
-
-                $price = \App\Http\Controllers\Front\CartController::rounding($price);
+                // $price = \App\Http\Controllers\Front\CartController::rounding($price);
                 // dd($price);
             }
-            $cost = "$currency $price /year";
+            if ($currency == 'INR') {
+                $symbol = '₹';
+            } else {
+                $symbol = '$';
+            }
+            $price = "$symbol $price";
         } else {
             $price = $cart_controller->productCost($id);
         }

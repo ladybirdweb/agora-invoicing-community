@@ -1,0 +1,221 @@
+/* Buttons */
+.btn-default {
+	color: #333;
+    background-color: #fff;
+    border-color: #ccc;
+    box-shadow: none !important;
+	
+	&:hover, &:active, &:focus  {
+    	color: #333;
+    	background-color: #e6e6e6;
+    	border-color: #adadad;
+    }
+}
+
+.btn {
+	font-size: 0.9rem;
+	padding: 0.47rem 0.75rem;
+	cursor: pointer;
+
+	&.btn-xs {
+		font-size: 0.7rem;
+		padding: 0.2rem 0.5rem;
+	}
+
+	&.btn-sm {
+		font-size: 0.8rem;
+		padding: 0.3rem 0.65rem;
+	}
+
+	&.btn-lg {
+		font-size: 1rem;
+		padding: 0.5rem 1rem;
+	}
+
+	&.btn-xl {
+		font-size: 1rem;
+		padding: 0.8rem 2rem;
+	}
+}
+
+/* Outline */
+.btn-outline {
+	border-width: 2px;
+}
+
+/* Rounded */
+.btn-rounded {
+	border-radius: 35px;
+}
+
+/* 3d */
+.btn-3d {
+	border-bottom-width: 3px;
+}
+
+/* Icons  */
+.btn-icon i {
+	margin-#{$right}: 10px;
+}
+
+.btn-icon-right i {
+	margin-#{$right}: 0;
+	margin-#{$left}: 10px;
+}
+
+/* Dropdown Button */
+.btn {
+	&.dropdown-toggle {
+		&:after {
+			margin-left: .155em;
+			vertical-align: .155em;
+		}
+	}
+}
+
+/* Colors */
+@each $state in $states {
+	$color: nth($state, 2);
+	$textColor: nth($state, 3);
+
+	.btn-#{nth($state,1)} {
+		background-color: $color;
+		border-color: $color $color darken($color, 10%);
+		color: $textColor;
+
+		&:hover,
+		&.hover {
+			background-color: lighten($color, 7.5%);
+			border-color: lighten($color, 10%) lighten($color, 10%) $color;
+			color: $textColor;
+		}
+
+		&:focus,
+		&.focus {
+			box-shadow: 0 0 0 3px rgba($color, .5);
+		}
+
+		&.disabled,
+		&:disabled {
+			background-color: $color;
+			border-color: $color $color darken($color, 10%);
+		}
+
+		&:active,
+		&.active,
+		.show > &.dropdown-toggle {
+			background-color: darken($color, 7.5%);
+			background-image: none;
+			border-color: darken($color, 10%) darken($color, 10%) darken($color, 20%);
+		}
+	}
+
+	.btn-outline.btn-#{nth($state,1)} {
+		color: $color;
+		background-color: transparent;
+		background-image: none;
+		border-color: $color;
+
+		&:hover,
+		&.hover {
+			color: $textColor;
+			background-color: $color;
+			border-color: $color;
+		}
+
+		&:focus,
+		&.focus {
+			box-shadow: 0 0 0 3px rgba($color, .5);
+		}
+
+		&.disabled,
+		&:disabled {
+			color: $color;
+			background-color: transparent;
+		}
+
+		&:active,
+		&.active,
+		.show > &.dropdown-toggle {
+			color: $textColor;
+			background-color: $color;
+			border-color: $color;
+		}
+	}
+}
+
+/* Button Light */
+html body {
+	.btn-light,
+	.btn-outline.btn-light {
+		border-color: darken(#FFF, 20%) darken(#FFF, 20%) darken(#FFF, 30%);
+		color: $color-font-default;
+
+		&:hover,
+		&.hover {
+			background-color: darken(#FFF, 5%);
+			border-color: darken(#FFF, 15%) darken(#FFF, 15%) darken(#FFF, 25%);
+			color: $color-font-default;
+		}
+
+		&:focus,
+		&.focus {
+			box-shadow: 0 0 0 3px rgba(darken(#FFF, 30%), .5);
+		}
+
+		&.disabled,
+		&:disabled {
+			border-color: darken(#FFF, 30%) darken(#FFF, 30%) darken(#FFF, 30%);
+		}
+
+		&:active,
+		&.active,
+		.show > &.dropdown-toggle {
+			border-color: darken(#FFF, 30%) darken(#FFF, 30%) darken(#FFF, 30%);
+		}
+	}
+
+	.btn-light-2,
+	.btn-outline.btn-light-2 {
+		border-color: #FFF;
+		color: #FFF;
+
+		&:hover,
+		&.hover {
+			background-color: #FFF;
+			border-color: #FFF;
+			color: #0e0e0e;
+		}
+
+		&:focus,
+		&.focus {
+			box-shadow: 0 0 0 3px rgba(darken(#FFF, 30%), .5);
+		}
+
+		&.disabled,
+		&:disabled {
+			border-color: darken(#FFF, 30%) darken(#FFF, 30%) darken(#FFF, 30%);
+		}
+
+		&:active,
+		&.active,
+		.show > &.dropdown-toggle {
+			border-color: #FFF;
+		}
+	}
+}
+
+html[dir="rtl"] {
+	.input-group .form-control:not(:first-child), 
+	.input-group-addon:not(:first-child), 
+	.input-group-btn:not(:first-child)>.btn, 
+	.input-group-btn:not(:first-child)>.btn-group>.btn, 
+	.input-group-btn:not(:first-child)>.dropdown-toggle, 
+	.input-group-btn:not(:last-child)>.btn-group:not(:first-child)>.btn, 
+	.input-group-btn:not(:last-child)>.btn:not(:first-child) {
+		border-top-right-radius: 0;
+    	border-bottom-right-radius: 0;
+    	border-top-left-radius: 4px;
+    	border-bottom-left-radius: 4px;
+	}
+}

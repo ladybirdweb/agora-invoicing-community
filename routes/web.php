@@ -12,7 +12,7 @@
 */
 
 // Route::get('/', function () {
-// 	dd('ok');
+//  dd('ok');
 //     return view('welcome');
 // });
 // Route::group(['middleware' => ['web']], function () {
@@ -79,6 +79,9 @@
         Route::patch('my-password', 'Front\ClientController@postPassword');
         Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
 
+        Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
+        Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
+
         // Get Route For Show Razorpay Payment Form
         Route::get('paywithrazorpay', 'RazorpayController@payWithRazorpay')->name('paywithrazorpay');
         // Post Route For Make Razorpay Payment Request
@@ -95,7 +98,7 @@
         /*
          * Tweeter api
          */
-        Route::get('twitter', 'Common\SocialMediaController@getTweets');
+        Route::get('twitter', 'Common\SocialMediaController@getTweets')->name('twitter');
 
         /*
          * Authentication
@@ -109,6 +112,8 @@
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
         Route::get('activate/{token}', 'Auth\AuthController@Activate');
+
+         Route::get('change/email', 'Auth\AuthController@updateUserEmail');
 
         /*
          * Profile Process
@@ -146,9 +151,8 @@
          * Product
          */
 
-        Route::resource('products', 'Product\ProductController');
-         Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
-
+         Route::resource('products', 'Product\ProductController');
+     Route::get('get-products', ['as' => 'get-products', 'uses' => 'Product\ProductController@getProducts']);
         // Route::get('get-products', 'Product\ProductController@GetProducts');
         Route::get('products-delete', 'Product\ProductController@destroy')->name('products-delete');
         Route::get('uploads-delete', 'Product\ProductController@fileDestroy')->name('uploads-delete');
@@ -203,10 +207,13 @@
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
         Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
 
+        Route::get('get-taxtable', ['as' => 'get-taxtable', 'uses' => 'Payment\TaxController@getTaxTable']);
+        Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
+
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
         Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
-        Route::patch('taxes/option', 'Payment\TaxController@options');
+        Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
         Route::post('taxes/option', 'Payment\TaxController@options');
 
         /*
@@ -214,9 +221,10 @@
          */
 
         Route::resource('promotions', 'Payment\PromotionController');
-        Route::post('get-code', 'Payment\PromotionController@getCode');
+
+        Route::post('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
-        Route::get('promotions-delete', 'Payment\PromotionController@destroy');
+        Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
 
         /*
          * Bundle
@@ -339,8 +347,8 @@
         /*
          * download
          */
-        Route::get('download/{userid}/{invoice_number}', 'Product\ProductController@userDownload');
-        Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
+      Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
+      Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
 
         /*
          * testings

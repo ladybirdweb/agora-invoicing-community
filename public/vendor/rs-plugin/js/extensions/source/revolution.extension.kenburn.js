@@ -1,17 +1,16 @@
 /********************************************
- * REVOLUTION 5.0 EXTENSION - KEN BURN
- * @version: 1.2 (2.11.2016)
+ * REVOLUTION 5.4.6.4 EXTENSION - KEN BURN
+ * @version: 1.3.1 (15.05.2017)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
-
 (function($) {
 "use strict";
 var _R = jQuery.fn.revolution,
 	extension = {	alias:"KenBurns Min JS",
 					name:"revolution.extensions.kenburn.min.js",
-					min_core: "5.0",
-					version:"1.2.0"
+					min_core: "5.4",
+					version:"1.3.1"
 			  };
 
 ///////////////////////////////////////////
@@ -45,12 +44,12 @@ jQuery.extend(true,_R, {
 
 		prgs = prgs || 0;
 
-
-
-		
+	
 		// NO KEN BURN IMAGE EXIST YET
 		if (l.find('.tp-kbimg').length==0) {
-			l.append('<div class="tp-kbimg-wrap" style="z-index:2;width:100%;height:100%;top:0px;left:0px;position:absolute;"><img class="tp-kbimg" src="'+s+'" style="position:absolute;" width="'+d.owidth+'" height="'+d.oheight+'"></div>');
+			var mediafilter = i.data('mediafilter');
+			mediafilter = mediafilter === undefined ? "" : mediafilter;
+			l.append('<div class="tp-kbimg-wrap '+mediafilter+'" style="z-index:2;width:100%;height:100%;top:0px;left:0px;position:absolute;"><img class="tp-kbimg" src="'+s+'" style="position:absolute;" width="'+d.owidth+'" height="'+d.oheight+'"></div>');
 			l.data('kenburn',l.find('.tp-kbimg'));
 		}
 
@@ -169,12 +168,26 @@ jQuery.extend(true,_R, {
 		
 		
 		kbtl.pause();
+
+
 		
 		anim.start.transformOrigin = "0% 0%";
 		anim.starto.transformOrigin = "0% 0%";	
 
 		kbtl.add(punchgs.TweenLite.fromTo(k,d.duration/1000,anim.start,anim.end),0);
 		kbtl.add(punchgs.TweenLite.fromTo(kw,d.duration/1000,anim.starto,anim.endo),0);
+
+		// ADD BLUR EFFECT ON THE ELEMENTS
+		if (d.blurstart!==undefined && d.blurend!==undefined &&  (d.blurstart!==0 || d.blurend!==0)) {
+			var blurElement = {a:d.blurstart},				
+				blurElementEnd = {a:d.blurend, ease:anim.endo.ease},
+				blurAnimation = new punchgs.TweenLite(blurElement, d.duration/1000, blurElementEnd);
+
+			blurAnimation.eventCallback("onUpdate", function(kw) {				
+				punchgs.TweenLite.set(kw,{filter:'blur('+blurElement.a+'px)',webkitFilter:'blur('+blurElement.a+'px)'});
+			},[kw]);
+			kbtl.add(blurAnimation,0);			
+		}
 			
 		kbtl.progress(prgs);
 		kbtl.play();	

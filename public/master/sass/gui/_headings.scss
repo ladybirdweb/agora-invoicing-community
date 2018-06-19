@@ -1,0 +1,297 @@
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+	color: $color-dark;
+	font-weight: 200;
+	letter-spacing: -1px;
+	margin: 0;
+}
+
+h1 {
+	font-size: 2.6em;
+	line-height: 44px;
+	margin: 0 0 32px 0;
+}
+
+h2 {
+	font-size: 2.2em;
+	font-weight: 300;
+	line-height: 42px;
+	margin: 0 0 32px 0;
+}
+
+h3 {
+	font-size: 1.8em;
+	font-weight: 400;
+	letter-spacing: normal;
+	line-height: 24px;
+	margin-bottom: 33px;
+	text-transform: uppercase;
+}
+
+h4 {
+	font-size: 1.4em;
+	font-weight: 400;
+	letter-spacing: normal;
+	line-height: 27px;
+	margin: 0 0 14px 0;
+}
+
+h5 {
+	font-size: 1em;
+	font-weight: 600;
+	letter-spacing: normal;
+	line-height: 18px;
+	margin: 0 0 14px 0;
+	text-transform: uppercase;
+}
+
+h6 {
+	color: #333;
+	font-size: 1em;
+	font-weight: 400;
+	letter-spacing: normal;
+	line-height: 18px;
+	margin: 0 0 14px 0;
+}
+
+h1 {
+	&.big {
+		font-size: 4.2em;
+		line-height: 54px;
+	}
+	&.small {
+		font-size: 2.2em;
+		line-height: 42px;
+		font-weight: 600;
+	}
+	&.short {
+		margin-bottom: 15px;
+	}
+}
+
+h2.short {
+	margin-bottom: 15px;
+}
+
+h3.short,
+h4.short,
+h5.short,
+h6.short {
+	margin-bottom: 9px;
+}
+
+h1.shorter,
+h2.shorter,
+h3.shorter,
+h4.shorter,
+h5.shorter,
+h6.shorter {
+	margin-bottom: 0;
+}
+
+h1.tall,
+h2.tall,
+h3.tall,
+h4.tall,
+h5.tall,
+h6.tall {
+	margin-bottom: 33px;
+}
+
+h1.taller,
+h2.taller,
+h3.taller,
+h4.taller,
+h5.taller,
+h6.taller {
+	margin-bottom: 44px;
+}
+
+h1.spaced,
+h2.spaced,
+h3.spaced,
+h4.spaced,
+h5.spaced,
+h6.spaced {
+	margin-top: 22px;
+}
+
+h1.more-spaced,
+h2.more-spaced,
+h3.more-spaced,
+h4.more-spaced,
+h5.more-spaced,
+h6.more-spaced {
+	margin-top: 44px;
+}
+
+h1.dark,
+h2.dark,
+h3.dark,
+h4.dark,
+h5.dark {
+	color: $color-dark;
+}
+
+h1.light,
+h2.light,
+h3.light,
+h4.light,
+h5.light,
+h6.light {
+	color: #FFF;
+}
+
+h1.text-shadow,
+h2.text-shadow,
+h3.text-shadow,
+h4.text-shadow,
+h5.text-shadow,
+h6.text-shadow {
+	text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Heading */
+.heading {
+	&.heading-border {
+		margin-bottom: 25px;
+		h1, h2, h3, h4, h5, h6 {
+			margin: 0;
+			padding: 0;
+		}
+	}
+
+	&.heading-bottom-border {
+		h1 {
+			border-bottom: 5px solid #DBDBDB;
+			padding-bottom: 10px;
+		}
+		h2, h3 {
+			border-bottom: 2px solid #DBDBDB;
+			padding-bottom: 10px;
+		}
+		h4, h5, h6 {
+			border-bottom: 1px solid #DBDBDB;
+			padding-bottom: 5px;
+		}
+	}
+
+	&.heading-bottom-double-border {
+		h1, h2, h3 {
+			border-bottom: 3px double #DBDBDB;
+			padding-bottom: 10px;
+		}
+		h4, h5, h6 {
+			border-bottom: 3px double #DBDBDB;
+			padding-bottom: 5px;
+		}
+	}
+
+	&.heading-middle-border {
+		position: relative;
+		&:before {
+			border-top: 1px solid #DBDBDB;
+			content: "";
+			height: 0;
+			left: auto;
+			position: absolute;
+			right: 0;
+			top: 50%;
+			width: 100%;
+		}
+		h1, h2, h3, h4, h5, h6 {
+			position: relative;
+			background: #FFF;
+			display: inline-block;
+		}
+		h1 {
+			padding-right: 15px;
+		}
+		h2, h3 {
+			padding-right: 10px;
+		}
+		h4, h5, h6 {
+			padding-right: 5px;
+		}
+	}
+
+	&.heading-middle-border-reverse {
+		text-align: right;
+		h1, h2, h3, h4, h5, h6 {
+			padding-right: 0;
+		}
+		h1 {
+			padding-left: 15px;
+		}
+		h2, h3 {
+			padding-left: 10px;
+		}
+		h4, h5, h6 {
+			padding-left: 5px;
+		}
+	}
+
+	&.heading-middle-border-center {
+		text-align: center;
+		h1 {
+			padding-left: 15px;
+			padding-right: 15px;
+		}
+		h2, h3 {
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		h4, h5, h6 {
+			padding-left: 5px;
+			padding-right: 5px;
+		}
+	}
+
+	&.heading-border-xs {
+		&:before {
+			border-top-width: 1px;
+		}
+	}
+
+	&.heading-border-sm {
+		&:before {
+			border-top-width: 2px;
+		}
+	}
+
+	&.heading-border-lg {
+		&:before {
+			border-top-width: 3px;
+		}
+	}
+
+	&.heading-border-xl {
+		&:before {
+			border-top-width: 5px;
+		}
+	}
+}
+
+/* Modal Titles */
+.modal-header h3 {
+	color: #333;
+	text-transform: none;
+}
+
+/* Responsive */
+@media (max-width: 575px) {
+
+	h2 {
+		line-height: 40px;
+	}
+
+}
+
+@media (max-width: 767px) {
+
+	h1.big {
+		font-size: 3.2em;
+		line-height: 42px;
+	}
+
+}

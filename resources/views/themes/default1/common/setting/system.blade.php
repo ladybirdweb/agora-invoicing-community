@@ -100,6 +100,48 @@
                         </td>
 
                     </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('City',Lang::get('message.city')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('city',null,['class' => 'form-control']) !!}
+                                <p><i> {{Lang::get('message.city')}}</i> </p>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                     <tr>
+
+                        <td><b>{!! Form::label('state',Lang::get('message.state')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('state',null,['class' => 'form-control']) !!}
+                                <p><i> {{Lang::get('message.state')}}</i> </p>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td><b>{!! Form::label('country',Lang::get('message.country')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('country',null,['class' => 'form-control']) !!}
+                                <p><i> {{Lang::get('message.country')}}</i> </p>
+
+                            </div>
+                        </td>
+
+                    </tr>
                     <tr>
 
                         <td><b>{!! Form::label('logo',Lang::get('message.logo')) !!}</b></td>

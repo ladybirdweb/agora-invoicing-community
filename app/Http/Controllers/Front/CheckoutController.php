@@ -6,17 +6,21 @@ use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
+use App\Model\Common\State;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
+use App\Model\Payment\TaxByState;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Cart;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -80,37 +84,30 @@ class CheckoutController extends Controller
         $cart_currency = 'INR';
         if (!\Auth::user()) {
             $url = $request->segments();
+            $content = Cart::getContent();
 
             \Session::put('session-url', $url[0]);
+            $domain = $request->input('domain');
+            if (count($domain) > 0) {
+                foreach ($domain as $key => $value) {
+                    \Session::put('domain'.$key, $value);
+                }
+            }
+            \Session::put('content', $content);
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
-        $content = Cart::getContent();
-        //dd($content[10]);
-        $require = [];
-        foreach ($content as $key => $item) {
-            $attributes[] = $item->attributes;
-            $cart_currency = $attributes[0]['currency'][0]['code'];
-            $user_currency = \Auth::user()->currency;
-            $currency = 'INR';
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-            if ($cart_currency != $currency) {
-                $id = $item->id;
-                Cart::remove($id);
-                $controller = new CartController();
-                $items = $controller->addProduct($id);
-                Cart::add($items);
-                //
-            }
 
-            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-            if ($require_domain == 1) {
-                $require[$key] = $item->id;
-            }
-            //$attributes[] = $item->attributes;
+        if (\Session::has('items')) {
+            $content = \Session::get('items');
+            $attributes = $this->getAttributes($content);
+        } else {
+            $content = Cart::getContent();
+            $attributes = $this->getAttributes($content);
         }
+
+        $require = [];
+
         //        if ($content->count() == 0) {
         //            return redirect('home');
         //        }
@@ -140,6 +137,35 @@ class CheckoutController extends Controller
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getAttributes($content)
+    {
+        foreach ($content as $key => $item) {
+            $attributes[] = $item->attributes;
+            $cart_currency = $attributes[0]['currency'][0]['code'];
+            $user_currency = \Auth::user()->currency;
+            $currency = 'INR';
+            if ($user_currency == 1 || $user_currency == 'USD') {
+                $currency = 'USD';
+            }
+            if ($cart_currency != $currency) {
+                $id = $item->id;
+                Cart::remove($id);
+                $controller = new CartController();
+                $items = $controller->addProduct($id);
+                Cart::add($items);
+                //
+            }
+
+            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+            if ($require_domain == 1) {
+                $require[$key] = $item->id;
+            }
+
+            return $attributes;
+            //$attributes[] = $item->attributes;
         }
     }
 
@@ -176,14 +202,30 @@ class CheckoutController extends Controller
         }
 
         $cost = $request->input('cost');
-        if (\Cart::getSubTotal() > 0 || $cost > 0) {
-            $v = $this->validate($request, [
-                'payment_gateway' => 'required',
-                    ], [
+        // if (\Cart::getSubTotal() > 0 || $cost > 0) {
+        //     //  {
+        //     $v = $this->validate($request, [
+        //         'payment_gateway' => 'required',
+        //             ], [
 
-                'payment_gateway.required' => 'Please choose a payment gateway',
-                    ]);
+        //         'payment_gateway.required' => 'Please choose a payment gateway',
+        //             ]);
+        // }
+        $email = \Auth::user()->email;
+        $country = \Auth::user()->country;
+        $stateCode = \Auth::user()->state;
+        if ($country != 'IN') {
+            $state = State::where('state_subdivision_code', $stateCode)->pluck('state_subdivision_name')->first();
+        } else {
+            $state = TaxByState::where('state_code', $stateCode)->pluck('state')->first();
         }
+        $phone = \Auth::user()->mobile;
+        $address = \Auth::user()->address;
+        $currency = \Auth::user()->currency;
+        $firstName = \Auth::user()->first_name;
+        $lastName = \Auth::user()->last_name;
+        $zip = \Auth::user()->zip;
+        $city = \Auth::user()->town;
 
         try {
             if (!$this->setting->where('id', 1)->first()) {
@@ -201,6 +243,11 @@ class CheckoutController extends Controller
                 }
                 $invoice_no = $invoice->number;
 
+                $date1 = new DateTime($invoice->date);
+                $tz = \Auth::user()->timezone()->first()->name;
+                $date1->setTimezone(new DateTimeZone($tz));
+                $date = $date1->format('M j, Y, g:i a ');
+
                 $invoiceid = $invoice->id;
 
                 $amount = $invoice->grand_total;
@@ -216,6 +263,8 @@ class CheckoutController extends Controller
                     $items = $invoice->invoiceItem()->get();
 
                     $product = $this->product($invoiceid);
+                    $content = Cart::getContent();
+                    $attributes = $this->getAttributes($content);
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -225,13 +274,18 @@ class CheckoutController extends Controller
                 $items = $invoice->invoiceItem()->get();
                 $product = $this->product($invoice_id);
                 $amount = $invoice->grand_total;
+                $content = Cart::getContent();
+                $attributes = $this->getAttributes($content);
             }
+
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }
-                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow'));
+
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
+
             // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 // dd('sdfds');
             } else {
@@ -241,13 +295,134 @@ class CheckoutController extends Controller
 
                 $url = '';
                 if ($check_product_category->category) {
-                    $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
+                    $url = '<div class="container">
+                            
+            
+            <div >
+
+            <!-- main content -->
+            <div >
+
+                            
+    <div id="content" role="main">
+                
+           <div class="page-content">
+                    <div>
+
+    
+        
+            <strong>Thank you. Your Faveo Community order is confirmed. A confirmation Mail has been sent to you on your registered
+                Email
+            </strong><br>
+
+            <ul class="">
+
+                <li class="">
+                    Invoice number:                    <strong>'.$invoice->number.'</strong>
+                </li>
+
+                <li class="woocommerce-order-overview__date date">
+                    Date:                    <strong>'.$date.'</strong>
+                </li>
+
+                                    <li class="woocommerce-order-overview__email email">
+                        Email:                        <strong>'.$email.'</strong>
+                    </li>
+                
+               
+
+                                    <li class="woocommerce-order-overview__payment-method method">
+                        Payment method:                        <strong>Razorpay</strong>
+                    </li>
+                
+            </ul>
+
+        
+       
+<section>
+    
+    <h2 style="margin-top:40px ; margin-bottom:10px;">Order Details</h2>
+    
+    <table class="table table-bordered table-striped">
+    
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            <tr>
+
+    <td>
+        <strong>'.$product->name.' ×   '.$items[0]->quantity.' </strong>
+    </td>
+
+    <td class="woocommerce-table__product-total product-total">
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$attributes[0]['currency'][0]['symbol'].'</span> '.$invoice->grand_total.'</span>    </td>
+
+</tr>
+
+        </tbody>
+        <tfoot>
+                                <tr>
+                        <th scope="row">Invoice No:</th>
+                        <td><span class="woocommerce-Price-amount amount"> '.$invoice->number.'</span></td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Payment method:</th>
+                        <td>Razorpay</td>
+                    </tr>
+                                        <tr>
+                        <th scope="row">Total:</th>
+                            <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">'.$attributes[0]['currency'][0]['symbol'].'</span> '.$invoice->grand_total.'</span></td>
+                    </tr>
+                            </tfoot>
+    </table>
+    <br>
+    
+            <section class="woocommerce-customer-details">
+
+    
+    <h2 style="margin-bottom:20px;">Billing address</h2>
+
+    <strong>
+       '.$firstName.' '.$lastName.'<br>'.$address.'<br>'.$city.' - '.$zip.'<br> '.$state.' <br>
+                   '.$phone.' <br><br>
+                     <a href= product/download/'.$product->id.'/'.$invoice->number.' " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
+            </strong>
+
+    
+</section>
+    
+
+</section>
+
+    
+
+</div>
+                </div>
+           
+
+        
+    </div>
+
+        
+
+</div>
+
+    
+    </div>
+    </div>';
                 }
                 \Cart::clear();
 
-                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
+                return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
+            dd($ex);
+
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -276,6 +451,8 @@ class CheckoutController extends Controller
                 //execute the order
                 $order = new \App\Http\Controllers\Order\OrderController();
                 $order->executeOrder($invoice->id, $order_status = 'executed');
+                $payment = new \App\Http\Controllers\Order\InvoiceController();
+                $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
             }
 
             return 'success';

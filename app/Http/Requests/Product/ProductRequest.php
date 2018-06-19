@@ -29,7 +29,7 @@ class ProductRequest extends Request
                 'group'             => 'required',
                 'subscription'      => 'required',
                 'currency'          => 'required',
-                'price'             => 'required',
+                // 'price'             => 'required',
                 'file'              => 'required_without_all:github_owner,github_repository|mimes:zip',
                 'image'             => 'required_without_all:github_owner,github_repository|mimes:png',
                 'github_owner'      => 'required_without_all:file,image',

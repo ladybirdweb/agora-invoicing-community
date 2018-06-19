@@ -46,11 +46,6 @@ class GithubController extends Controller
             dd($auth);
 
             return $auth;
-            //            if($auth!='true'){
-//                throw new Exception('can not authenticate with github', 401);
-//            }
-            //$authenticated = json_decode($auth);
-            //dd($authenticated);
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -96,7 +91,7 @@ class GithubController extends Controller
     }
 
     /**
-     * Authenticate a user for a perticular application.
+     * Authenticate a user for a particular application.
      *
      * @return type
      */
@@ -132,7 +127,6 @@ class GithubController extends Controller
             }
 
             return $release;
-
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
         } catch (Exception $ex) {
             dd($ex);
@@ -286,9 +280,9 @@ class GithubController extends Controller
     public function postSettings(Request $request)
     {
         $this->validate($request, [
-                'username' => 'required',
-                'password' => 'required',
-            ]);
+            'username' => 'required',
+            'password' => 'required',
+        ]);
 
         try {
             $this->github->fill($request->input())->save();
@@ -299,7 +293,15 @@ class GithubController extends Controller
         }
     }
 
-    //Github Download for Clients
+    /**
+     * Github Downoload for Clients.
+     *
+     * @param type $owner
+     * @param type $repo
+     * @param type $order_id
+     *
+     * @return type
+     */
     public function downloadLink($owner, $repo, $order_id)
     {
         try {
@@ -313,9 +315,10 @@ class GithubController extends Controller
             if ($repo == 'faveo-servicedesk-community') {
                 return $array = ['Location' => $url];
             }
-            $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
 
+            $order_end_date = Subscription::where('order_id', '=', $order_id)->select('ends_at')->first();
             $url = "https://api.github.com/repos/$owner/$repo/releases";
+
             $link = $this->github_api->getCurl1($url);
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
@@ -326,19 +329,23 @@ class GithubController extends Controller
             if ($repo == 'faveo-satellite-helpdesk-advance') {
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
+
             //For Helpdesk Advanced
-            if ($repo == 'faveo-helpdesk-advance') {
-                $url = 'https://api.github.com/repos/ladybirdweb/faveo-helpdesk-advance/zipball/'.$ver[0];
+            if ($repo == 'Faveo-Helpdesk-Pro') {
+                $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
             }
             //For Service Desk Advance
-            if ($repo == 'faveo-service-desk-advance') {
-                $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-advance/zipball/'.$ver[0];
+            if ($repo == 'faveo-service-desk-pro') {
+                dd('dfd');
+                $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
             }
 
             $link = $this->github_api->getCurl1($url);
 
             return $link['header'];
         } catch (Exception $ex) {
+            dd($ex->getline());
+
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

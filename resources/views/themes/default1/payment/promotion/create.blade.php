@@ -1,6 +1,21 @@
 @extends('themes.default1.layouts.master')
 @section('content')
-
+<style>
+    .tooltip {
+    background-color:#000;
+    border:1px solid #fff;
+    padding:10px 15px;
+    width:200px;
+    display:none;
+    color:#fff;
+    text-align:left;
+    font-size:12px;
+ 
+    /* outline radius for mozilla/firefox only */
+    -moz-box-shadow:0 0 10px #000;
+    -webkit-box-shadow:0 0 10px #000;
+}
+</style>
 <div class="row">
 
     <div class="col-md-12">
@@ -36,7 +51,7 @@
 
             </div>
             <div class="box-body">
-                {!! Form::open(['url'=>'promotions']) !!}
+                {!! Form::open(['url'=>'promotions','id'=>'myform']) !!}
 
                 <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.promotion')}}</h3>
@@ -55,7 +70,8 @@
 
                                 <div class='row'>
                                     <div class="col-md-6">
-                                        {!! Form::text('code',null,['class' => 'form-control','id'=>'code']) !!}
+                                        <!-- {!! Form::text('code',null,['class' => 'form-control','id'=>'code']) !!} -->
+                                         <input id="code" name="code" type="text" class="form-control" title="Generate Coupon Code"/>
                                     </div>
                                     <div class="col-md-6">
                                         <a href="#" class="btn btn-primary" onclick="getCode();">Generate Code</a>
@@ -74,7 +90,7 @@
                             <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
 
 
-                                {!! Form::select('type',[''=>'Select','Types'=>$type],null,['class' => 'form-control']) !!}
+                                {!! Form::select('type',[''=>'Select','Types'=>$type],null,['class' => 'form-control',  'title'=>"Type Of Coupon"]) !!}
 
 
                             </div>
@@ -88,7 +104,7 @@
                             <div class="form-group {{ $errors->has('value') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('value',null,['class' => 'form-control']) !!}
+                                {!! Form::text('value',null,['class' => 'form-control','title'=>'Value of the Coupon']) !!}
 
 
                             </div>
@@ -102,7 +118,7 @@
                             <div class="form-group {{ $errors->has('uses') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('uses',null,['class' => 'form-control']) !!}
+                                {!! Form::text('uses',null,['class' => 'form-control','title'=>'No. Of times the coupon can be Used']) !!}
 
 
                             </div>
@@ -115,7 +131,10 @@
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
 
-                                {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control select2','multiple'=>true]) !!}
+
+                                {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control select2','multiple'=>true,'title'=>'Products for which coupon is Applied']) !!}
+
+
 
                             </div>
                         </td>
@@ -127,7 +146,7 @@
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
 
-                                {!! Form::date('start',null,['class'=>'form-control']) !!}
+                                {!! Form::date('start',null,['class'=>'form-control','title'=>'Date from which Coupon is Valid']) !!}
 
                             </div>
                         </td>
@@ -142,7 +161,7 @@
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
 
-                                {!! Form::date('expiry',null,['class' => 'form-control']) !!}
+                                {!! Form::date('expiry',null,['class' => 'form-control','title'=>'Date on which Coupon Expires']) !!}
 
                             </div>
                         </td>
@@ -181,4 +200,20 @@
             }
         });
     }
+
+      $("#myform :input").tooltip({
+ 
+      // place tooltip on the right edge
+      position: "center right",
+ 
+      // a little tweaking of the position
+      offset: [-2, 10],
+ 
+      // use the built-in fadeIn/fadeOut effect
+      effect: "fade",
+ 
+      // custom opacity setting
+      opacity: 0.7
+ 
+      });
 </script>

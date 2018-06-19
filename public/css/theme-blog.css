@@ -1,7 +1,7 @@
 /*
 Name: 			theme-blog.css
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	5.7.2
+Theme Version:	6.2.0
 */
 /* Posts */
 .blog-posts article {
@@ -34,6 +34,7 @@ article.post .post-meta i {
 }
 
 article.post .post-date {
+	-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 	box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
 	float: left;
 	margin-right: 10px;
@@ -43,6 +44,7 @@ article.post .post-date {
 article.post .post-date .month {
 	background: #CCC;
 	border-radius: 0 0 2px 2px;
+	-webkit-box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.07) inset;
 	box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.07) inset;
 	color: #FFF;
 	font-size: 0.9em;
@@ -66,7 +68,6 @@ article.post .post-image .owl-carousel {
 
 article .post-video {
 	-webkit-transition: all 0.2s ease-in-out;
-	-moz-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
 	padding: 0;
 	background-color: #FFF;
@@ -95,7 +96,6 @@ article .post-video iframe {
 
 article .post-audio {
 	-webkit-transition: all 0.2s ease-in-out;
-	-moz-transition: all 0.2s ease-in-out;
 	transition: all 0.2s ease-in-out;
 	padding: 0;
 	background-color: #FFF;
@@ -105,7 +105,8 @@ article .post-audio {
 	height: auto;
 	position: relative;
 	margin: 0 0 30px 0;
-	padding-bottom: 25%;
+	padding-bottom: 35%;
+	min-height: 160px;
 }
 
 article .post-audio iframe {
@@ -324,6 +325,7 @@ ul.comments .comment-block .date {
 .recent-posts .date .month {
 	background: #CCC;
 	border-radius: 0 0 2px 2px;
+	-webkit-box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.07) inset;
 	box-shadow: 0 -1px 0 0 rgba(0, 0, 0, 0.07) inset;
 	color: #FFF;
 	font-size: 0.9em;
@@ -359,7 +361,7 @@ ul.simple-post-list li {
 ul.simple-post-list li::after {
 	clear: both;
 	content: "";
-	display: table;
+	display: block;
 }
 
 ul.simple-post-list li:last-child {
@@ -381,7 +383,7 @@ ul.simple-post-list .post-info {
 }
 
 /* Responsive */
-@media (max-width: 479px) {
+@media (max-width: 575px) {
 	ul.comments li {
 		border-left: 8px solid #DDDDDD;
 		clear: both;

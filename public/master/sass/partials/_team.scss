@@ -1,0 +1,22 @@
+/* Team List */
+ul.team-list {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+	.team-item {
+		margin-bottom: 35px;
+		.thumb-info-social-icons {
+			margin: 0 10px;
+		}
+	}
+}
+
+/* Responsive */
+@media (max-width: 991px) {
+
+	ul.team-list .team-item {
+		margin: 0 auto 35px;
+		max-width: 270px;
+	}
+
+}

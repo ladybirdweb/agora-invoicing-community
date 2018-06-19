@@ -6,8 +6,7 @@ use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
-    // use Input;
-
+    use App\Model\Payment\Period;
     use App\Model\Payment\Plan;
     use App\Model\Payment\Tax;
     use App\Model\Payment\TaxClass;
@@ -41,7 +40,7 @@ use App\Http\Controllers\Controller;
         public function __construct()
         {
             $this->middleware('auth');
-            $this->middleware('admin', ['except' => ['userDownload']]);
+            $this->middleware('admin', ['except' => ['adminDownload', 'userDownload']]);
 
             $product = new Product();
             $this->product = $product;
@@ -67,6 +66,9 @@ use App\Http\Controllers\Controller;
             $tax = new Tax();
             $this->tax = $tax;
 
+            $period = new Period();
+            $this->period = $period;
+
             $tax_relation = new TaxProductRelation();
             $this->tax_relation = $tax_relation;
 
@@ -87,6 +89,8 @@ use App\Http\Controllers\Controller;
             try {
                 return view('themes.default1.product.product.index');
             } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
                 return redirect('/')->with('fails', $e->getMessage());
             }
         }
@@ -98,11 +102,10 @@ use App\Http\Controllers\Controller;
          */
         public function getProducts()
         {
+            try {
+                $new_product = Product::select('id', 'name', 'type', 'group')->get();
 
-            // try {
-            $new_product = Product::select('id', 'name', 'type', 'group')->get();
-
-            return\ DataTables::of($new_product)
+                return\ DataTables::of($new_product)
             // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -143,20 +146,19 @@ use App\Http\Controllers\Controller;
                             ->addColumn('Action', function ($model) {
                                 $url = '';
                                 if ($model->type == 2) {
-                                    $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary'>Download</a>";
+                                    $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
                                 }
 
-                                return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>&nbsp;$url</p>";
+                                return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
                             })
 
                             ->rawColumns(['checkbox', 'name', 'type', 'group', 'price', 'currency', 'Action'])
                             ->make(true);
-            // ->searchColumns('name', 'email')
-                            // ->orderColumns('name', 'email')
-                            // ->make();
-    //        } catch (\Exception $e) {
-    //            return redirect()->back()->with('fails', $e->getMessage());
-    //        }
+            } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
+                return redirect()->back()->with('fails', $e->getMessage());
+            }
         }
 
         public function getUpload($id)
@@ -195,8 +197,6 @@ use App\Http\Controllers\Controller;
         // Save file Info in Modal popup
         public function save(Request $request)
         {
-
-            // dd($request->all());
             try {
                 $product_id = Product::where('name', '=', $request->input('product'))->select('id')->first();
 
@@ -217,7 +217,7 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                dd($e);
+                Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
             }
@@ -226,7 +226,6 @@ use App\Http\Controllers\Controller;
         //Update the File Info
         public function uploadUpdate($id, Request $request)
         {
-            // return phpinfo();
             $file_upload = ProductUpload::find($id);
 
             $file_upload->title = $request->input('title');
@@ -239,15 +238,10 @@ use App\Http\Controllers\Controller;
                 $request->file('file')->move($destination, $file);
                 $file_upload->file = $file;
             }
-
             $file_upload->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         }
-
-        // dd('ok');
-
-        // dd($request->all());
 
         /**
          * Show the form for creating a new resource.
@@ -261,20 +255,17 @@ use App\Http\Controllers\Controller;
                  * server url
                  */
                 $url = $this->GetMyUrl();
-                // dd($url);
                 $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
-                // dd($i);
                 $cartUrl = $url.'/pricing?id='.$i;
-                // dd($cartUrl);
                 $type = $this->type->pluck('name', 'id')->toArray();
                 $subscription = $this->plan->pluck('name', 'id')->toArray();
-                // dd($subscription);
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
+                $periods = $this->period->pluck('name', 'days')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
-
-                return view('themes.default1.product.product.create', compact('subscription', 'type', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
+                // dd($taxes);
+                return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -295,6 +286,7 @@ use App\Http\Controllers\Controller;
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
                         'group'   => 'required',
+                        // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
             // $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
@@ -307,14 +299,14 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['currency', 'price'], 'required', function ($input) {
             //     return $input->subscription != 1;
             // });
-            // if ($v->fails()) {
-            //     $currency = $input['currency'];
+            if ($v->fails()) {
+                //     $currency = $input['currency'];
 
-            //     return redirect()->back()
-            //             ->withErrors($v)
-            //             ->withInput()
-            //             ->with('currency');
-            // }
+                return redirect()->back()
+                        ->withErrors($v)
+                        ->withInput()
+                        ->with('currency');
+            }
 
             try {
                 if ($request->hasFile('image')) {
@@ -323,18 +315,11 @@ use App\Http\Controllers\Controller;
                     $request->file('image')->move($imagedestinationPath, $image);
                     $this->product->image = $image;
                 }
-                if ($request->hasFile('file')) {
-                    $file = $request->file('file')->getClientOriginalName();
-                    $filedestinationPath = storage_path().'/products';
-                    $request->file('file')->move($filedestinationPath, $file);
-                    $this->product->file = $file;
-                }
 
                 $product = $this->product;
-                // dd($request->except('image', 'file'));
                 $product->fill($request->except('image', 'file'))->save();
+                // Product::where('id',$product->id)->update(['name'=>$request->names]);
 
-                $this->updateVersionFromGithub($product->id);
                 $product_id = $product->id;
                 $subscription = $request->input('subscription');
 
@@ -343,20 +328,28 @@ use App\Http\Controllers\Controller;
 
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-                if (count($currencies) > 0) {
-                    foreach ($currencies as $key => $currency) {
-                        $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                    }
-                }
+                // if (count($currencies) > 0) {
+                //     foreach ($currencies as $key => $currency) {
+                //         $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
+                //     }
+                // }
 
                 $taxes = $request->input('tax');
                 // dd($taxes);
+
                 if ($taxes) {
-                    $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
+                    foreach ($taxes as $key=>$value) {
+                        $newtax = new TaxProductRelation();
+                        $newtax->product_id = $product_id;
+                        $newtax->tax_class_id = $value;
+                        $newtax->save();
+                    }
                 }
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
+                dd($e);
+
                 Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
@@ -391,6 +384,7 @@ use App\Http\Controllers\Controller;
                 $currency = $this->currency->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
+                $periods = $this->period->pluck('name', 'days')->toArray();
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
@@ -408,9 +402,9 @@ use App\Http\Controllers\Controller;
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
-                // dd($saved_taxes);
+                $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-                return view('themes.default1.product.product.edit', compact('product', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes'));
+                return view('themes.default1.product.product.edit', compact('product', 'periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -430,9 +424,10 @@ use App\Http\Controllers\Controller;
             $input = $request->all();
             // dd($input);
             $v = \Validator::make($input, [
-                        'name'  => 'required',
-                        'type'  => 'required',
-                        'group' => 'required',
+                        'name'    => 'required',
+                        'type'    => 'required',
+                        'group'   => 'required',
+                        'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
     //                    'subscription' => 'required',
     //                    'currency.*' => 'required',
     //                    'price.*' => 'required',
@@ -444,12 +439,12 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
             //     return $input->type == 2 && $input->file == '' && $input->image == '';
             // });
-            $v->sometimes(['currency', 'price'], 'required', function ($input) {
-                return $input->subscription != 1;
-            });
-            if ($v->fails()) {
-                return redirect()->back()->with('errors', $v->errors());
-            }
+            // $v->sometimes(['currency', 'price'], 'required', function ($input) {
+            //     return $input->subscription != 1;
+            // });
+            // if ($v->fails()) {
+            //     return redirect()->back()->with('errors', $v->errors());
+            // }
 
             try {
                 $product = $this->product->where('id', $id)->first();
@@ -489,16 +484,15 @@ use App\Http\Controllers\Controller;
                 $taxes = $request->input('tax');
                 // dd($taxes);
                 if ($taxes) {
-                    $saved_taxes = $this->tax_relation->where('product_id', $product_id)->first();
-                    // dd($saved_taxes);
-                    if ($saved_taxes) {
-                        $saved_taxes->tax_class_id = $taxes;
-                        $saved_taxes->save();
-                    } else {
-                        $this->tax_relation->create(['product_id' => $product_id, 'tax_class_id' => $taxes]);
+                    $this->tax_relation->where('product_id', $product_id)->delete();
+                    foreach ($taxes as $tax) {
+                        $newTax = new TaxProductRelation();
+                        $newTax->product_id = $product_id;
+                        $newTax->tax_class_id = $tax;
+                        $newTax->save();
                     }
                 }
-                // dd('sdg');
+
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
@@ -641,31 +635,31 @@ use App\Http\Controllers\Controller;
             return $server;
         }
 
-        public function downloadProduct($id, $invoice_id)
+        /*
+        *  Download Files from Filesystem/Github
+        */
+        public function downloadProduct($uploadid, $id, $invoice_id, $version_id = '')
         {
             try {
-                $product = $this->product->findOrFail($id);
+                $product = $this->product->findOrFail($uploadid);
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
-
-                $file = $this->product_upload->where('product_id', '=', $id)->select('file')->orderBy('created_at', 'desc')->first();
-                // dd($file);
-
+                $file = $this->product_upload->where('product_id', '=', $uploadid)->where('id', $version_id)->select('file')->first();
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
-
                 if ($type == 2) {
-                    if ($owner && $repository) {
+                    if ($owner && $repository) {//If the Product is downloaded from Github
                         $github_controller = new \App\Http\Controllers\Github\GithubController();
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
-                    } elseif ($file->file) {
-                        // dd($file->file);
-                        // $relese = storage_path().'\products'.'\\'.$file->file;
-                        $relese = '/home/faveo/products/'.$file->file;
-                        // dd($relese);
+                    } elseif ($file) {
+                        //If the Product is Downloaded from FileSystem
+                        $fileName = $file->file;
+                        $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
+                        // $relese = '/home/faveo/products/'.$file->file;
+
                         return $relese;
                     }
                 }
@@ -680,7 +674,6 @@ use App\Http\Controllers\Controller;
         {
             try {
                 $product = $this->product->findOrFail($id);
-                //dd($product);
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
@@ -700,16 +693,25 @@ use App\Http\Controllers\Controller;
                     }
                 }
             } catch (\Exception $e) {
-                dd($e->getMessage());
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
 
-        public function adminDownload($id, $api = false)
+        public function adminDownload($id, $invoice = '', $api = false)
         {
             try {
-                $release = $this->downloadProductAdmin($id);
+                $role = \Auth::user()->role;
+                if ($role == 'user') {
+                    if ($invoice && $invoice != '') {
+                        $release = $this->downloadProductAdmin($id);
+                    } else {
+                        throw new \Exception('This user has no permission for this action');
+                    }
+                } elseif ($role == 'admin') {
+                    $release = $this->downloadProductAdmin($id);
+                }
                 if (is_array($release) && array_key_exists('type', $release)) {
                     header('Location: '.$release['release']);
                     exit;
@@ -728,12 +730,13 @@ use App\Http\Controllers\Controller;
                 if ($api) {
                     return response()->json(['error'=>$e->getMessage()]);
                 }
+                Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
 
-        public function userDownload($userid, $invoice_number)
+        public function userDownload($uploadid, $userid, $invoice_number, $version_id = '')
         {
             try {
                 if (\Auth::user()->role != 'admin') {
@@ -743,6 +746,7 @@ use App\Http\Controllers\Controller;
                 }
                 $user = new \App\User();
                 $user = $user->findOrFail($userid);
+
                 $invoice = new \App\Model\Order\Invoice();
                 $invoice = $invoice->where('number', $invoice_number)->first();
 
@@ -751,7 +755,9 @@ use App\Http\Controllers\Controller;
                         $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                         $product_id = $order->product;
                         $invoice_id = $invoice->id;
-                        $release = $this->downloadProduct($product_id, $invoice_id);
+                        // $productUploadId= $this->product_upload->select('id')->get();
+                        // dd($productUploadId);
+                        $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                         if (is_array($release) && array_key_exists('type', $release)) {
                             $release = $release['release'];
 
@@ -774,6 +780,9 @@ use App\Http\Controllers\Controller;
                     return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
                 }
             } catch (\Exception $ex) {
+                dd($ex);
+                Bugsnag::notifyException($ex);
+
                 return redirect('auth/login')->with('fails', $ex->getMessage());
             }
         }
@@ -793,6 +802,7 @@ use App\Http\Controllers\Controller;
 
                 return response()->json($result);
             } catch (\Exception $ex) {
+                Bugsnag::notifyException($ex);
                 $result = ['price' => $ex->getMessage(), 'field' => ''];
 
                 return response()->json($result);
@@ -808,12 +818,12 @@ use App\Http\Controllers\Controller;
                     $product = $this->product->find($productid);
                     $github_controller = new \App\Http\Controllers\Github\GithubController();
                     $version = $github_controller->findVersion($owner, $repo);
-                    // dd($version);
                     $product->version = $version;
                     $product->save();
                 }
             } catch (\Exception $ex) {
-                // dd($ex);
+                Bugsnag::notifyException($ex);
+
                 throw new \Exception($ex->getMessage());
             }
         }
@@ -834,6 +844,8 @@ use App\Http\Controllers\Controller;
 
                 return $field;
             } catch (\Exception $ex) {
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -853,6 +865,8 @@ use App\Http\Controllers\Controller;
 
                 return $field;
             } catch (\Exception $ex) {
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -881,6 +895,8 @@ use App\Http\Controllers\Controller;
 
                 return response()->json($result);
             } catch (\Exception $ex) {
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -896,6 +912,8 @@ use App\Http\Controllers\Controller;
                     </div>";
                 }
             } catch (\Exception $ex) {
+                Bugsnag::notifyException($ex);
+
                 return $ex->getMessage();
             }
         }
@@ -914,6 +932,7 @@ use App\Http\Controllers\Controller;
 
                 return false;
             } catch (Exception $ex) {
+                Bugsnag::notifyException($ex);
             }
         }
 

@@ -43,7 +43,11 @@ class PlanController extends Controller
      */
     public function index()
     {
-        return view('themes.default1.product.plan.index');
+        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $periods = $this->period->pluck('name', 'days')->toArray();
+        $products = $this->product->pluck('name', 'id')->toArray();
+
+        return view('themes.default1.product.plan.index', compact('currency', 'periods', 'products'));
     }
 
     /**
@@ -76,7 +80,7 @@ class PlanController extends Controller
                             return ucfirst($response);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'action'])
                         ->make(true);
@@ -142,7 +146,6 @@ class PlanController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**

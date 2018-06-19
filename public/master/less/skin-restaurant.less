@@ -1,0 +1,57 @@
+@import "variables";
+
+@border-radius: 0;
+
+@color-primary: #e09b23;
+
+@color-secondary: #344257;
+
+@color-tertiary: #D1E7E7;
+
+@color-quaternary: #EDEADA;
+
+@import "skin";
+
+@media (min-width: 992px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								color: @color-primary !important;
+							}
+						}
+
+						&:hover, &.open {
+							> a {
+								&.active {
+									background: @color-primary !important;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+@media (max-width: 991px) {
+	#header {
+		.header-nav-main {
+			nav {
+				> ul {
+					> li {
+						> a {
+							&.active {
+								background-color: @color-primary !important;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

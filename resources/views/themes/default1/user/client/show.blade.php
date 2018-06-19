@@ -63,7 +63,7 @@
         <div class="dropdown">
 
             <a class="btn btn-block btn-primary btn-sm btn-flat dropdown-toggle" data-toggle="dropdown" href="#">
-                New Transation <span class="caret"></span>
+                New Transaction <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
                 <li role="presentation">

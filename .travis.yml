@@ -12,7 +12,11 @@ before_script:
   - composer install --prefer-source --no-interaction --dev
 
 # Commands you want to run that will verify your build.
-script: phpunit
+# script: phpunit
+
+# after_script:
+#   - wget https://scrutinizer-ci.com/ocular.phar
+#   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 # allow_failures: Allow this build to fail under the specified environments.
 # fast_finish: If your build fails do not continue trying to build, just stop.
 matrix:

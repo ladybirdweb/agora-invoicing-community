@@ -18,6 +18,9 @@ return [
      * Common for all
      */
     'save'                   => 'Save',
+    'city'                   => 'City',
+    'state'                  => 'State',
+    'country'                => 'Country',
     'update'                 => 'Update',
     'edit'                   => 'Edit',
     'alert'                  => 'Alert',
@@ -84,7 +87,7 @@ return [
     'remember-me'                   => 'Remember Me',
     'sign-in'                       => 'Sign In',
     'sign-up'                       => 'Sign Up',
-    'forgot-my-password'            => 'Forgot my Password',
+    'forgot-my-password'            => 'Forgot Password?',
     /*
      * Reset Password
      */
@@ -236,7 +239,7 @@ return [
      * Tax
      */
     'tax'                                             => 'Tax',
-    'tax-enable'                                      => 'Tax Enable',
+    'tax-enable'                                      => 'GST',
     'tax-type'                                        => 'Tax Type',
     'compound-tax'                                    => 'Compound Tax',
     'tick-this-box-to-enable-tax-support'             => 'Tick this box to enable tax support',
@@ -253,7 +256,7 @@ return [
     'prices-entered-with-tax'                         => 'Prices Entered With Tax',
     'display-prices-in-the-shop'                      => 'Display Prices in the Shop',
     'display-prices-during-cart-and-checkout'         => 'Display Prices During Cart and Checkout',
-    'rounding'                                        => 'Rounding',
+    'rounding'                                        => 'Rounding Tax At subtotal',
     'before-decimal'                                  => 'Before Decimal',
     'after-decimal'                                   => 'After Decimal',
     'round-tax-at-subtotal'                           => ' Round tax at subtotal',
@@ -276,6 +279,9 @@ return [
     'apply-only-once-per-order'                                                                                                        => 'Apply only once per order',
     'apply-to-new-signups-only'                                                                                                        => 'Apply to new signups only',
     'apply-to-existing-clients-only'                                                                                                   => 'Apply to existing clients only',
+    'usage-of-code-expired'                                                                                                            => 'Usage of Code Expired',
+    'no-product-related-to-this-code'                                                                                                  => 'There is  no product related to this code',
+    'price-updated-successfully'                                                                                                       => 'Price Updated Successfully',
     /*
      * Bundle
      */

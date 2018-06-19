@@ -37,7 +37,11 @@ Checkout
 }
 
     if ($symbol == 'INR'){
- $exchangeRate= '';  
+
+
+$exchangeRate= '';
+
+
 $orderData = [
     'receipt'         => 3456,
     'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
@@ -53,8 +57,12 @@ else
 {
      $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
      $exchange = json_decode(file_get_contents($url));
-      $exchangeRate = $exchange->quotes->USDINR;
-      $displayAmount =$exchangeRate * $invoice->grand_total ;
+
+     $exchangeRate = $exchange->quotes->USDINR;
+     // dd($exchangeRate);
+     $displayAmount =$exchangeRate * $invoice->grand_total ;
+
+
      $orderData = [
     'receipt'         => 3456,
     'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
@@ -70,7 +78,11 @@ $_SESSION['razorpay_order_id'] = $razorpayOrderId;
 $displayAmount = $amount = $orderData['amount'];
 
 $data = [
-    "key"               => 'rzp_live_BheQSJXMJNTCfm',
+
+
+    "key"               => 'rzp_test_GL0mtsOBCft5Tp',
+
+
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
      "prefill"=> [
@@ -79,7 +91,9 @@ $data = [
     ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
     
-    
+
+
+
      "notes"             => [
     "First Name"         => \Auth::user()->first_name,
     "Last Name"         =>  \Auth::user()->last_name,
@@ -90,9 +104,14 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
-     "Currency"          => \Auth::user()->currency,
-    "Amount Paid"       =>    $invoice->grand_total,
-    "Exchange Rate"     =>  $exchangeRate,
+
+
+    "Currency"          => \Auth::user()->currency,
+    "Amount Paid"   => $invoice->grand_total,
+    "Exchange Rate"   =>  $exchangeRate,
+
+
+
     "merchant_order_id" =>  $merchant_orderid,
     ],
     "theme"             => [
@@ -108,16 +127,31 @@ if ($displayCurrency !== 'INR')
     
 }
 $json = json_encode($data);
+
+
+if(\Auth::user()->currency == 'INR'){
+    $symbol = '₹';
+}
+else{
+    $symbol = '$';
+}
+
+
+
 ?>
 <div class="row">
 
     <div class="col-md-8">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h4 class="panel-title">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                        Review & Payment
-                    </a>
+
+
+         <div class="card card-default" style="margin-bottom: 40px;">
+            <div class="card-header">
+                <h4 class="card-title m-0">
+                   
+                        Payment
+                   
+
+
                 </h4>
             </div>
 
@@ -126,23 +160,37 @@ $json = json_encode($data);
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+
+
+         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+         <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                     {{Lang::get('message.success')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+
+
                     {!!Session::get('success')!!}
                 </div>
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
                 <div class="alert alert-danger alert-dismissable">
-                    <i class="fa fa-ban"></i>
+
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> 
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                   
+
+
                     {{Session::get('fails')}}
                 </div>
                 @endif
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+
+
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.<br><br>
+
+
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -208,7 +256,11 @@ $json = json_encode($data);
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{$item->regular_price}}</span>
+
+
+                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
+
+
                                 </td>
                             </tr>
                             @empty 
@@ -236,9 +288,13 @@ $json = json_encode($data);
                 </div>
                
                     <div class="col-md-12">
-                         <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4>
-                        <table class="cart-totals">
+
+
+                        <!--  <hr class="tall">
+                    <h4 class="heading-primary">Cart Totals</h4> -->
+                       <!--  <table class="cart-totals">
+
+
                             <tbody>
 
 
@@ -251,9 +307,13 @@ $json = json_encode($data);
                                     </td>
                                 </tr>
 
-                            </tbody>
-                        </table>
-                        <hr class="tall">
+
+
+                            </tbody> -->
+                      <!--   </table>
+                        <hr class="tall"> -->
+
+
                     </div>
                 
                 
@@ -278,51 +338,159 @@ $json = json_encode($data);
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
+
+
+                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-
-                @foreach($items->toArray() as $attribute)
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
-
-                <?php 
-                $tax_name = "";
-                $tax_percentage="";
-                if(str_finish($attribute['tax_name'], ',')){
-                    $tax_name = str_replace(',','',$attribute['tax_name']);
-                }
-
-                if(str_finish($attribute['tax_percentage'], ',')){
-                    $tax_percentage = str_replace(',','',$attribute['tax_percentage']);
-                }
-                ?>
-               
+                @if ($attributes != null)
+                 @foreach($attributes[0]['tax'] as $attribute)
+                  
+                  
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
+                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
                 <tr class="Taxes">
                     <th>
-                        <strong>{{ucfirst($tax_name)}}<span>@</span>{{$tax_percentage}}%</strong>
+                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
+                        <strong>SGST<span>@</span>{{$attribute['s_gst']}}%</strong><br/>
+                       
                     </th>
-                    <?php
-                    $price = $product->price()->where('currency',$symbol)->first();
-                    // dd($price);
-                    $cost = $price->sales_price;
-                    if(!$cost){
-                        $cost = $price->price;
-                    }
-                   
-                    ?>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],Cart::getSubTotalWithoutConditions())}}
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],$subtotal)}} <br/>
+                       
+                       
                     </td>
+
 
                 </tr>
                 @endif
+               
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
+               
+                <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
+                     
+                    </th>
+                    <td>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],$subtotal)}} <br/>
+                      
+                    </td>
+
+
+                </tr>
+                @endif
+
+                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' && $attribute['status'] ==1)
+              
+                <tr class="Taxes">
+                    <th>
+                       <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
+                        <strong>UTGST<span>@</span>{{$attribute['ut_gst']}}%</strong>
+                       
+                    </th>
+                    <td>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],$subtotal)}} <br/>
+                       
+                    </td>
+
+
+                </tr>
+                @endif
+                @endif
+
+                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+                 <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                         
+                       
+                    </td>
+                  </tr>
+                 @endif
+           
+                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
+                  <tr class="Taxes">
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                      
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
+                         
+                       
+                    </td>
+                  </tr>
+                 @endif
+                  @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+
+                  <tr class="Taxes">
+                  
+                    <th>
+                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                         
+                       
+                    </td>
+                  
+                  </tr>
+                 @endif
+
                 @endforeach
+                @endif
+                <?php
+                $items=$invoice->invoiceItem()->get();
+                ?>
+                   
+                @if ($attributes == null)
+                
+                @foreach ($items as $item)
+               <tr class="Taxes">
+                  <th>
+                        <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
+                       
+                         
+                    </th>
+                    <td>
+                       
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                         
+                       
+                    </td>
+                  
+                  </tr>
+                  @endforeach
+                @endif
+
+               
+               
+
+
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
+
+
+                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
+
+
                     </td>
                 </tr>
 

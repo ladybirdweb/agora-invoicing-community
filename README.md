@@ -1,51 +1,31 @@
-<p align="center"><img src="https://laravel.com/assets/img/components/logo-laravel.svg"></p>
+<h3>About Agora Invocing</h3>
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
 
-## About Laravel
+<a href="https://styleci.io/repos/51429040"><img src="https://styleci.io/repos/51429040/shield" alt="StyleCI"></a>&nbsp;<img src="https://img.shields.io/badge/License-OSL-blue.svg">&nbsp;<img src="https://scrutinizer-ci.com/g/ladybirdweb/agorainvoicing/badges/quality-score.png?b=master" alt="scrutinizerCI">&nbsp;<img src="https://travis-ci.org/ladybirdweb/agorainvoicing.svg?branch=master">&nbsp;&nbsp;<a href="http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/index.html" target="_blank"><img src="http://squizlabs.github.io/PHP_CodeSniffer/analysis/ladybirdweb/agorainvoicing/grade.svg"></a>&nbsp;
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
+Billing and subscription management for SaaS & other billing businesses. Handling signups, provisioning, billing and support
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Agora can also be customised according to requirement and we do undertake such request. 
 
-Laravel is accessible, yet powerful, providing tools needed for large, robust applications. A superb combination of simplicity, elegance, and innovation give you tools you need to build any application with which you are tasked.
+Agora is designed & developed by <a href="http://www.ladybirdweb.com/" target="_blank">Ladybird Web Solution Pvt Ltd</a>, and launched in March 2016.
 
-## Learning Laravel
+<h4>To run Agora your host just needs a couple of things:</h4>
+<ul>
+<li> Web Server: Apache or IIS or Nginx</li>
+<li> PHP Version: 7.0+</li>
+<li> PHP Extensions: Mcrypt, OpenSSL, Mbstring, Tokenizer</li>
+<li> Database: MySQL(5.0+) or Postgres or SQLite or SQL Server</li>
+<li> Web Server Extension: Pretty URLs or Search Engine Friendly URL's have to be enabled in your web server configuration</li>
+</ul>
+<h4>Credits</h4>
+<ul>
+<li>Laravel Framework</li>
+<li>Admin LTE Theme</li>
+</ul>
 
-Laravel has the most extensive and thorough documentation and video tutorial library of any modern web application framework. The [Laravel documentation](https://laravel.com/docs) is thorough, complete, and makes it a breeze to get started learning the framework.
+<h4>Agora Features</h4>
+https://github.com/ladybirdweb/agorainvoicing/wiki/Agora-Features
 
-If you're not in the mood to read, [Laracasts](https://laracasts.com) contains over 900 video tutorials on a range of topics including Laravel, modern PHP, unit testing, JavaScript, and more. Boost the skill level of yourself and your entire team by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for helping fund on-going Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](http://patreon.com/taylorotwell):
-
-- **[Vehikl](http://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Styde](https://styde.net)**
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](http://laravel.com/docs/contributions).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell at taylor@laravel.com. All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](http://opensource.org/licenses/MIT).
+<h3>Faveo Probe:</h3>
+<p>Helps verify whether your server can run Agora or not. 
+<a href="https://github.com/ladybirdweb/faveo-probe" target="_blank">Download here</a></p>

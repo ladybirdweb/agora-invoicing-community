@@ -5,24 +5,40 @@ Agora | Orders
 @section('nav-orders')
 active
 @stop
+@section('page-heading')
+ <h1>My Account </h1>
+@stop
+@section('breadcrumb')
+<li><a href="{{url('home')}}">Home</a></li>
+<li class="active">My Account</li>
+<li class="active">Orders</li>
+@stop
 
 @section('content')
 
 
 
-
+<style>
+        .table{table-layout:fixed}
+        .table td, .table th {
+    padding: 0.5rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+    </style>
 <div class="col-md-12">
-
+    
     <div class="featured-boxes">
-        <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+        <div class="row">
+            <h2 class="mb-none"> My Orders</h2>
+
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->
                         <section class="content-header">
 
-                            <h2>My Order</h2>
+                            <h2>Overview</h2>
 
                         </section>
                         <div class="row">
@@ -30,11 +46,13 @@ active
                                 <div class="col-md-12">
                                     <table class="table">
                                         <tr class="info">
-                                            <th scope="row">
-
-                                            </th>
-                                            <td>
-                                                Date: {{$order->created_at}}
+                                           
+                                            <td><?php
+                                                $date1 = new DateTime($order->created_at);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date1->setTimezone(new DateTimeZone($tz));
+                                                $date = $date1->format('M j, Y, g:i a ');?>
+                                                Date: {{$date}}
                                             </td>
                                             <td>
                                                 Invoice No: #{{$invoice->number}}
@@ -46,22 +64,25 @@ active
                                                 Status: {{$order->order_status}}
                                             </td>
                                         </tr>
-                                        </tbody>
+                                       
                                     </table>  
                                 </div>
 
                                 <div id="hide2">
-                                    <div class="col-md-6">
+                                    
                                         <table class="table table-hover">
+                                            <div class="col-md-6">
                                             <tbody><tr><td><b>Name:</b></td>   <td>{{ucfirst($user->first_name)}}</td></tr>
                                                 <tr><td><b>Email:</b></td>     <td>{{$user->email}}</td></tr>
                                                 <tr><td><b>Address:</b></td>   <td>{{$user->address}}</td></tr>
                                                 <tr><td><b>Country:</b></td>   <td>{{\App\Http\Controllers\Front\CartController::getCountryByCode($user->country)}}</td></tr>
 
-                                            </tbody></table>
-                                    </div>
-                                    <div class="col-md-6">
+                                            </tbody> </div>
+                                        </table>
+                                   
+                                    
                                         <table class="table table-hover">
+                                            <div class="col-md-6">
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Domain Name:</b></td>     <td>{{$order->domain}}</td></tr>
                                                 <?php
@@ -69,38 +90,47 @@ active
                                                 if (!$subscription || $subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
                                                     $sub = "--";
                                                 } else {
-                                                    $sub1 = $subscription->ends_at;
-                                                     $date = date_create($sub1);
-                                                    $sub = date_format($date,'l, F j, Y H:m A');
+                                                    $date = new DateTime($subscription->ends_at);
+                                                    $tz = \Auth::user()->timezone()->first()->name;
+                                                     $date->setTimezone(new DateTimeZone($tz));
+                                                      
+                                                    $sub = $date->format('M j, Y, g:i a ');
+                                                     // $sub = $sub2->setTimezone($tz);
+
+
                                                 }
                                                 ?>
                                                 <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
 
-                                            </tbody></table>
-                                    </div>
-                                </div></div>
+                                            </tbody>
+                                         </div>
+                                     </table>
+                                   
+                                </div>
+                            </div>
 
-                    </div>
+                   
                     <div class="control-sidebar-bg"></div>
                 </div><!-- ./wrapper -->
             </div> 
         </div>
     </div>
 </div>	
+</div>
 
 <div class="col-md-12">
 
     <div class="featured-boxes">
         <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->
                         <section class="content-header">
 
                             <h2>
-                                Transcation list
+                                Transaction list
 
                             </h2>
 
@@ -176,7 +206,7 @@ active
     <div class="featured-boxes">
         <div class="row">
 
-            <div class="featured-box featured-box-primary align-left mt-xlg">
+            <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
                     <div class="content-wrapper">
                         <!-- Content Header (Page header) -->

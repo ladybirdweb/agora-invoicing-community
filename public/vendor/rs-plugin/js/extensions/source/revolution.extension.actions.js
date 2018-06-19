@@ -1,6 +1,6 @@
 /********************************************
- * REVOLUTION 5.3 EXTENSION - ACTIONS
- * @version: 2.0.6 (15.12.2016)
+ * REVOLUTION 5.4.6.4 EXTENSION - ACTIONS
+ * @version: 2.1.1 (22.11.2017)
  * @requires jquery.themepunch.revolution.js
  * @author ThemePunch
 *********************************************/
@@ -10,8 +10,8 @@ var _R = jQuery.fn.revolution,
 	_ISM = _R.is_mobile(),
 	extension = {	alias:"Actions Min JS",
 					name:"revolution.extensions.actions.min.js",
-					min_core: "5.3",
-					version:"2.0.6"
+					min_core: "5.4.5",
+					version:"2.1.0"
 			  };
 
 
@@ -217,9 +217,9 @@ var actionSwitches = function(tnc,opt,a,_nc) {
 			var off=getOffContH(opt.fullScreenOffsetContainer) || 0,
 				aof = parseInt(a.offset,0) || 0;									 
 			off =  off - aof || 0;				
-			opt.scrollRoot = opt.scrollRoot === undefined ? getScrollRoot() : opt.scrollRoot;			
-			var sobj = {_y:opt.scrollRoot.scrollTop};
-			punchgs.TweenLite.to(sobj,a.speed/1000,{_y:(opt.c.offset().top+(jQuery(opt.li[0]).height())-off), ease:a.ease, onUpdate:function() { opt.scrollRoot.scrollTop = sobj._y}})			
+			opt.scrollRoot = jQuery(document);			
+			var sobj = {_y:opt.scrollRoot.scrollTop()};			
+			punchgs.TweenLite.to(sobj,a.speed/1000,{_y:(opt.c.offset().top+(jQuery(opt.li[0]).height())-off), ease:a.ease, onUpdate:function() { opt.scrollRoot.scrollTop(sobj._y)}})			
 		break;
 		case "callback":
 			eval(a.callback);							
@@ -335,37 +335,24 @@ var actionSwitches = function(tnc,opt,a,_nc) {
 		case "exitfullscreen":
 		case "togglefullscreen":
 			
-			if (jQuery('#rs-go-fullscreen').length>0 && (a.action=="togglefullscreen" || a.action=="exitfullscreen")) {
-				jQuery('#rs-go-fullscreen').appendTo(jQuery('#rs-was-here'));
-				var paw = opt.c.closest('.forcefullwidth_wrapper_tp_banner').length>0 ? opt.c.closest('.forcefullwidth_wrapper_tp_banner') : opt.c.closest('.rev_slider_wrapper');
-				paw.unwrap();
-				paw.unwrap();
+			if (jQuery('.rs-go-fullscreen').length>0 && (a.action=="togglefullscreen" || a.action=="exitfullscreen")) {
+				jQuery('.rs-go-fullscreen').removeClass("rs-go-fullscreen");
+				var gf = opt.c.closest('.forcefullwidth_wrapper_tp_banner').length>0 ? opt.c.closest('.forcefullwidth_wrapper_tp_banner') : opt.c.closest('.rev_slider_wrapper');				
 				opt.minHeight  = opt.oldminheight;
 				opt.infullscreenmode = false;
-				opt.c.revredraw();	
-				if (opt.playingvideos != undefined && opt.playingvideos.length>0) {			
-					jQuery.each(opt.playingvideos,function(i,_nc) {									
-						_R.playVideo(_nc,opt);
-					});
-				}
+				opt.c.revredraw();					
+				jQuery(window).trigger("resize");
 				_R.unToggleState(opt.fullscreentoggledby);
 
 			} else 
-			if (jQuery('#rs-go-fullscreen').length==0 && (a.action=="togglefullscreen" || a.action=="gofullscreen")) {
-				var paw = opt.c.closest('.forcefullwidth_wrapper_tp_banner').length>0 ? opt.c.closest('.forcefullwidth_wrapper_tp_banner') : opt.c.closest('.rev_slider_wrapper');
-				paw.wrap('<div id="rs-was-here"><div id="rs-go-fullscreen"></div></div>');
-				var gf = jQuery('#rs-go-fullscreen');
-				gf.appendTo(jQuery('body'));
-				gf.css({position:'fixed',width:'100%',height:'100%',top:'0px',left:'0px',zIndex:'9999999',background:'#ffffff'});
+			if (jQuery('.rs-go-fullscreen').length==0 && (a.action=="togglefullscreen" || a.action=="gofullscreen")) {
+				var gf = opt.c.closest('.forcefullwidth_wrapper_tp_banner').length>0 ? opt.c.closest('.forcefullwidth_wrapper_tp_banner') : opt.c.closest('.rev_slider_wrapper');				
+				gf.addClass("rs-go-fullscreen");				
 				opt.oldminheight = opt.minHeight;
 				opt.minHeight = jQuery(window).height();							
-				opt.infullscreenmode = true;
-				opt.c.revredraw();	
-				if (opt.playingvideos != undefined && opt.playingvideos.length>0) {			
-					jQuery.each(opt.playingvideos,function(i,_nc) {									
-						_R.playVideo(_nc,opt);
-					});
-				}	
+				opt.infullscreenmode = true;				
+				opt.c.revredraw();				
+				jQuery(window).trigger("resize");
 				_R.toggleState(opt.fullscreentoggledby);						
 			}	
 			

@@ -62,7 +62,7 @@
                 </div>
                 @endif
                 {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
-                <h4>{{Lang::get('message.product')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
        </div>
        <div class="box-body">
@@ -72,8 +72,7 @@
                     <ul class="nav nav-tabs">
                         <li class="active"><a href="#tab_1" data-toggle="tab">{{Lang::get('message.details')}}</a></li>
                         <li><a href="#tab_2" data-toggle="tab">{{Lang::get('message.price')}}</a></li>
-                        <li><a href="#tab_3" data-toggle="tab">Plans</a></li>
-                    </ul>
+                        </ul>
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab_1">
                             <div class="row">
@@ -100,7 +99,10 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite Helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins'],null,['class' => 'form-control']) !!}
+
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk'],null,['class' => 'form-control']) !!}
+
+
 
                                 </div>
 
@@ -109,18 +111,9 @@
                             <div class="row">
 
                                 <div class="col-md-6 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                                    <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
-                                    <script>
-                                        tinymce.init({
-                                            selector: 'textarea',
-                                            plugins: "code",
-                                            toolbar: "code",
-                                            menubar: "tools"
-                                        });
-                                    </script>
-
+                                    
                                     {!! Form::label('description',Lang::get('message.description')) !!}
-                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
+                                    {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
 
                                      </div>
                                    <div class="col-md-6">
@@ -216,31 +209,11 @@
 
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('stock_control') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('stock_control',Lang::get('message.stock_control')) !!}
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        {!! Form::hidden('stock_control', 0) !!}
-                                                        <p>{!! Form::checkbox('stock_control',1) !!}     {{Lang::get('message.enable-quantity-in-stock')}}       
-                                                            {!! Form::text('stock_qty',null) !!} </p>
-                                                    </div>
-                                                    <!--                                        <div class="col-md-3">
-                                                                                                {!! Form::text('stock_qty',null,['class'=>'form-control']) !!}
-                                                                                            </div>-->
-
-                                                </div>
-                                        </li>
+                                        
                                         <li>
                                             <div class="row">
 
-                                                <div class="col-md-4 form-group {{ $errors->has('sort_order') ? 'has-error' : '' }}">
-                                                    <!-- first name -->
-                                                    {!! Form::label('sort_order',Lang::get('message.sort_order')) !!}
-                                                    {!! Form::text('sort_order',null,['class'=>'form-control']) !!}
-
-                                                </div>
+                                              
 
                                                 <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
                                                     <!-- last name -->
@@ -249,17 +222,7 @@
                                                     <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
 
                                                 </div>
-
-                                            </div>
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li>
-                                            <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
+                                                <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
                                                 {!! Form::hidden('hidden', 0) !!}
@@ -272,20 +235,14 @@
                                                 <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
-                                        </li>
-                                        <li>
-                                            <div class="form-group {{ $errors->has('retired') ? 'has-error' : '' }}">
-                                                <!-- first name -->
-                                                {!! Form::label('retired','Description') !!}
-                                                {!! Form::hidden('retired', 0) !!}
-                                                <p>{!! Form::checkbox('retired',1) !!}  Tick to allow description to add invoice</p>
 
-                                            </div>  
+                                            </div>
                                         </li>
-                                        
+
 
                                     </ul>
                                 </div>
+                                
 
 
                             </div>
@@ -315,47 +272,7 @@
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
-                                    <td>
-
-                                        <table class="table table-responsive">
-                                            <tr>
-                                                <th></th>
-                                                <th>{{Lang::get('message.regular-price')}}</th>
-                                                <th>{{Lang::get('message.sales-price')}}</th>
-                                            </tr>
-
-                                            @foreach($currency as $key=>$value)
-
-                                            <!-- dd($currency); -->
-                                            <tr>
-                                                <td>
-
-                                                    <input type="hidden" name="currency[{{$key}}]" value="{{$key}}">
-                                                    <p>{{$value}}</p>
-
-                                                </td>
-
-                                                <td>
-
-                                                    {!! Form::text('price['.$key.']',$regular[$key]) !!}
-
-                                                </td>
-                                                <td>
-
-                                                    {!! Form::text('sales_price['.$key.']',$sales[$key]) !!}
-
-                                                </td>
-                                            </tr>
-                                            @endforeach
-
-
-                                        </table>
-
-                                    </td>
-                                </tr>
-
+                               
                                 <tr>
                                     <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
@@ -380,16 +297,7 @@
                                     </td>
                                  </tr>
 
-                                <tr>
-                                    <td><b>{!! Form::label('auto-terminate',Lang::get('message.auto-terminate')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('auto_terminate') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::text('auto_terminate',null) !!} {{Lang::get('message.enter-the-number-of-days-after-activation-to-automatically-terminate')}}</p>
-
-                                        </div>
-                                    </td>
-                                </tr>
+                                
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
                                     <td>
@@ -402,24 +310,40 @@
                                                         $saved[$tax->tax_class_id] = 'true';
                                                     }
                                                 }
-                                                
-                                                ?>
-                                                @forelse($taxes as $key=>$value)
+                                                else{
+                                                    $saved=[];
+                                                }
+                                               
+                                                if (count($saved) > 0) {
+                                               foreach ($saved as $key => $value) {
+                                                // dd($key);
+                                                   $savedkey[]=$key;
+                                               }
+                                               $saved1=$savedkey?$savedkey:[];
 
+                                                   }
+                                                   else{
+                                                    $saved1=[];
+                                                   }
+                                                  
+                                        
+                                                ?>
+                                                
+                                                        
                                                 <div class="col-md-2">
-                                                    @if(count($saved_taxes) != 0)
-                                                    @if(key_exists($key,$saved))
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '$saved[$key]' ? 'checked' : ''}}></b>
-                                                    @else
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
-                                                    @endif
-                                                    @else 
-                                                    <b>{{ucfirst($value)}}  <input type="radio"  name="tax" value="1" {{$key == '1' ? 'checked' : ''}}></b>
-                                                    @endif
+                                                   <select id="editTax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
+                                                      
+                                                       @foreach($taxes as $taxkey => $taxvalue)
+                                                  
+                                                        <option value={{$taxkey}} <?php echo (in_array($taxkey, $savedTaxes)) ?  "selected" : "" ;  ?>>{{$taxvalue}}</option> 
+                                                        
+                                                       @endforeach
+                                                    </select>
+                                                    
+                                                   
+                                                   
                                                 </div>
-                                                @empty 
-                                                <p>No taxes</p>
-                                                @endforelse
+                                               
                                             </div>
 
                                         </div>
@@ -427,13 +351,16 @@
                                 </tr>
 
                             </table>
-                        </div>
-                       
-                           <!-- /.tab-pane -->
-                         <div class="tab-pane" id="tab_3">
-                            <h3>
-                                Plans &nbsp;<a href="{{url('plans/create')}}" class="btn btn-default">Add new</a>
-                            </h3>
+                      
+                <!-- nav-tabs-custom -->
+
+           
+
+          {!! Form::close() !!}
+
+           <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+                           
+                            @include('themes.default1.product.plan.create') 
                             @if($product->plan())
                             <table class="table table-responsive">
                                 
@@ -449,23 +376,21 @@
                                     $months = $product->plan()->days / 30;
                                     ?>
                                     <td>{{round($months)}}</td> 
-                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary">Edit</a></td> 
+                                    <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
                                 </tr>
                                
                             </table>
                             @endif
-                        </div>
+                              </div>
+                       
+                           <!-- /.tab-pane -->
+                        
 
                         <!-- /.tab-pane -->
                     </div>
                     <!-- /.tab-content -->
                 </div>
                 </div>
-                <!-- nav-tabs-custom -->
-
-           
-
-          {!! Form::close() !!}
      
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
@@ -506,6 +431,30 @@
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
+<script>
+    $(function(){
+                                    tinymce.init({
+                                        selector: '#product-description',
+                                        plugins: "code",
+                                        toolbar: "code",
+                                        menubar: "tools"
+
+                                    });
+                                     tinymce.init({
+                                            selector: '#textarea1',
+                                            plugins: "code",
+                                            toolbar: "code",
+                                            menubar: "tools"
+                                        });
+                                     tinymce.init({
+                                        selector: '#textarea3',
+                                        plugins: "code",
+                                        toolbar: "code",
+                                        menubar: "tools"
+                                    });
+                                });
+                                    </script>
 <script type="text/javascript">
         $('#upload-table').DataTable({
             processing: true,
@@ -547,15 +496,17 @@
     })
      function openEditPopup(e){
          console.log(e)
+        
          $('#edit-uplaod-option').modal('toggle');
          var upload_id = $(e).data('id')
          var title = $(e).data('title')
-        var description = $(e).data('description')
+        
         var version= $(e).data('version')
         console.log(title,description,version)
 
+        var description = $(e).data('description') 
+        tinymce.get('product-description').setContent(description);
          $("#product-title").val(title)
-        $("#product-description").val(description)
         $("#product-version").val(version)
          var url = "{{url('upload/')}}"+"/"+upload_id
          
@@ -613,7 +564,21 @@
 </div>
 
 </div>
+ <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
+
+
+<script>
+    $(document).ready(function() {
+    $("#editTax").select2({
+        placeholder: 'Select Taxes',
+        tags:true
+    });
+});
+</script>
 
 
 @stop

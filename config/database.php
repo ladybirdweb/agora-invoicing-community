@@ -13,7 +13,8 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default'   => env('DB_CONNECTION', 'mysql'),
+    'DB_INSTALL'=> env('DB_INSTALL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,15 +44,17 @@ return [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
             'port'        => env('DB_PORT', ''),
-            'database'    => env('DB_DATABASE', 'new'),
+            'database'    => env('DB_DATABASE', null),
+
             'username'    => env('DB_USERNAME', 'root'),
             'password'    => env('DB_PASSWORD', ''),
+
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => 'utf8mb4',
             'collation'   => 'utf8mb4_unicode_ci',
             'prefix'      => '',
             'strict'      => false,
-            // 'engine'      => null,
+            'engine'      => env('DB_ENGINE', null),
         ],
 
         'pgsql' => [

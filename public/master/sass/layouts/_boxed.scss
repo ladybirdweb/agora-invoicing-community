@@ -1,0 +1,123 @@
+/* Boxed Layout */
+html.boxed {
+	body {
+		background-color: transparent;
+		background-position: 0 0;
+		background-repeat: repeat;
+	}
+	.body {
+		position: relative;
+		background-color: #FFF;
+		border-bottom: 5px solid $color-dark;
+		border-radius: 5px;
+		border-top: 5px solid #CCC;
+		box-shadow: 0 0 4px rgba(0, 0, 0, 0.15);
+		margin: 25px auto;
+		max-width: 1200px;
+		height: auto;
+	}
+	#header {
+		.header-body {
+			border-top-color: transparent;
+		}
+	}
+	.main {
+		overflow: hidden;
+	}
+}
+
+/* Responsive */
+@media (min-width: 1200px) {
+
+	// Sticky Header
+	html.boxed.sticky-header-active {
+		#header {
+			.header-body {
+				width: 100%;
+				max-width: 1200px;
+			}
+		}
+	}
+
+	// Transparent
+	html.boxed {
+		#header.header-transparent,
+		#header.header-semi-transparent,
+		#header.header-semi-transparent-light {
+			.header-body {
+				width: auto;
+			}
+		}
+	}
+
+}
+
+@media (min-width: 992px) {
+
+	html.boxed {
+
+		// Top Colored
+		#header {
+			.header-top.header-top-colored {
+				margin-top: -18px;
+				border-radius: 4px 4px 0 0;
+			}
+		}
+
+		// Transparent
+		#header.header-transparent,
+		#header.header-semi-transparent,
+		#header.header-semi-transparent-light {
+			.header-body {
+				position: absolute;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+		}
+
+		// Header Top
+		#header {
+			.header-top.header-top-style-2,
+			.header-top.header-top-style-3,
+			.header-top.header-top-style-4 {
+				margin-top: -13px;
+			}
+		}
+
+	}
+
+	// Sticky Header
+	html.boxed.sticky-header-active {
+		#header {
+			.header-body {
+				position: fixed !important;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+			.header-nav-bar {
+				margin: 0 -15px -9px;
+			}
+		}
+	}
+
+}
+
+@media (max-width: 991px) {
+
+	html.boxed {
+		.body {
+			margin: 0 auto;
+			border-radius: 0;
+		}
+	}
+
+}
+
+@media (max-width: 767px) {
+
+	/* Boxed */
+	html.boxed {
+		background: none !important;
+	}
+
+}

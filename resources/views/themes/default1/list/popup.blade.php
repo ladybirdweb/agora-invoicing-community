@@ -11,7 +11,12 @@
                 <!-- Form  -->
                 
                 <?php 
-                $plans = App\Model\Payment\Plan::pluck('name','id')->toArray();
+
+
+                // {{dump($product->name)}};
+                // $plans = App\Model\Payment\Plan::pluck('name','id')->toArray();
+
+
                 $userid = Auth::user()->id;
                 ?>
                 <div class="form-group {{ $errors->has('plan') ? 'has-error' : '' }}">

@@ -2,6 +2,14 @@
 @section('title')
 Agora | Invoice
 @stop
+@section('page-heading')
+ <h1>View Invoice </h1>
+@stop
+@section('breadcrumb')
+<li><a href="{{url('home')}}">Home</a></li>
+<li><a href="{{url('my-invoices')}}">My Account</a></li>
+<li class="active">Invoice</li> 
+@stop
 @section('nav-invoice')
 active
 @stop
@@ -10,7 +18,18 @@ active
 <div class="featured-boxes">
     <div class="row">
         <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
-        <div class="featured-box featured-box-primary align-left mt-xlg">
+           <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
+          ?>
+            <?php    
+            if($invoice->currency == 'INR'){
+                $symbol = '₹';
+             }
+             else{
+                $symbol = '$';
+             }
+                ?>
+            <div class="col-lg-12 order-1 order-lg-2">
+        <div class="featured-box featured-box-primary align-left mt-xlg"  style="text-align: left;">
             <div class="box-content">
                 <div class="content-wrapper">
                     <!-- Content Header (Page header) -->
@@ -19,6 +38,7 @@ active
                             Invoice
                             <small>#{{$invoice->number}}</small>
                         </h1>
+
 
                     </section>
 
@@ -34,7 +54,7 @@ active
                                 From
                                 <address>
                                     <strong>{{$set->company}}</strong><br>
-                                    {{$set->address}}
+                                    {{$set->address}}<br>
                                     Phone: {{$set->phone}}<br/>
                                     Email: {{$set->email}}
                                 </address>
@@ -56,6 +76,8 @@ active
                             </div><!-- /.col -->
                             <div class="col-sm-4 invoice-col">
                                 <b>Invoice   #{{$invoice->number}}</b><br/>
+                               
+                                 <b>GSTIN   #{{$gst->Gst_No}}</b><br/>
                                 <br/>
 
                             </div><!-- /.col -->
@@ -72,6 +94,7 @@ active
                                             <th>Price</th>
                                             <th>Taxes</th>
                                             <th>Tax Rates</th>
+                                             <th>Discount</th>
                                             <th>Subtotal</th>
                                         </tr>
                                     </thead>
@@ -102,6 +125,12 @@ active
                                                     @endif
                                                 </ul>
                                             </td>
+                                             <?php
+                                        $data=($item->discount)?$item->discount:'No discounts';
+                                        ?>
+                                        <td>
+                                            {{$data}}
+                                        </td>
                                             <td>{{$item->subtotal}}</td>
                                         </tr>
                                         @endforeach
@@ -116,7 +145,7 @@ active
 
                             </div><!-- /.col -->
                             <div class="col-xs-6">
-                                <p class="lead">Amount</p>
+                                <p class="lead">Subtotal</p>
                                 <div class="table-responsive">
                                     <table class="table">
                                          <?php 
@@ -124,7 +153,7 @@ active
                                     $tax_percentage = [];
                                         foreach($items as $key=>$item){
                                             if(str_finish(',', $item->tax_name)){
-                                                $name = substr_replace($item->tax_name,'',-1);
+                                                $name = $item->tax_name;
                      
                                             }
                                             if(str_finish(',', $item->tax_percentage)){
@@ -136,23 +165,77 @@ active
                                         }
                                         
                                     ?>
-                                    @for($i=0;$i < count($tax_name);$i++)
-                                    
-                                    @if($tax_name[$i]!='null')
-                                    <tr>
+
+                                   
+                                     
+                                    @if($tax_name[0] !='null')
+                                     <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
+                                   $taxInstance= new \App\Http\Controllers\Front\CartController();
+                                    $taxes= $taxInstance->checkTax($productId);
+                                     ?>
+
+                                   @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
+                                    @if($set->state == $user->state)
+                                             <tr class="Taxes">
+                            <th>
+                                <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
+                                <strong>SGST<span>@</span>{{$taxes['attributes']['tax'][0]['s_gst']}}%</strong><br/>
+                               
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}} <br/>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['s_gst'],$item->regular_price)}} <br/>
+                             </td>
+                              </tr>
+                                    @endif
+                                      @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] == "NULL")
+                                      <tr>
+                                      <th>
+                                <strong>IGST<span>@</span>{{$taxes['attributes']['tax'][0]['i_gst']}}%</strong><br/>
+                                  
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['i_gst'],$item->regular_price)}} <br/>
+                              
+                             </td>
+                         </tr>
+                                     @endif
+                                     <tr>
+                                     @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] != "NULL")
+                                     <th>
+                                 <strong>UTGST<span>@</span>{{$taxes['attributes']['tax'][0]['ut_gst']}}%</strong><br/>
+                                 <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
+
+                                  
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['ut_gst'],$item->regular_price)}} <br/>
+                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}}
+
+                              
+                             </td>
+                         </tr>
+                                     @endif
+                                     @endif
+                                      
+                                        @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
+                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
+
+                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
+                                            
                                         </td>
 
                                     </tr>
                                     @endif
-                                    @endfor
+                                    @endif
+                                   
                                         <tr>
                                             <th style="width:50%">Total:</th>
-                                            <td><small>{!! $invoice->currency !!}</small> {{$invoice->grand_total}}</td>
+                                            <td>{!! $symbol !!} {{$invoice->grand_total}}</td>
                                         </tr>
 
                                     </table>
@@ -161,10 +244,12 @@ active
                         </div><!-- /.row -->
 
                         <!-- this row will not appear when printing -->
-                        <div class="row no-print">
+                           <div class="row no-print">
                             <div class="col-xs-12">	
                                 <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
-                                 @if($item->subtotal!=0)
+
+                                
+                                 @if($invoice->status !='Success')
                             <a href="{{url('paynow/'.$invoice->id)}}"><button class="btn btn-primary" style="margin-right: 5px;"> Pay Now</button></a>
                       @endif
                             </div>
@@ -176,6 +261,7 @@ active
                 <div class="control-sidebar-bg"></div>
             </div><!-- ./wrapper -->
         </div> 
+    </div>
     </div>
 </div>
 

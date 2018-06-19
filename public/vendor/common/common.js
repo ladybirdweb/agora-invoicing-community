@@ -1,7 +1,7 @@
 /*
 Plugin Name: 	BrowserSelector
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	5.7.2
+Theme Version:	6.2.0
 */
 
 (function($) {
@@ -155,7 +155,90 @@ Plugin Name: 	Visible
 Written by: 	https://github.com/customd/jquery-visible/blob/master/jquery.visible.js
 Description: 	This is a jQuery plugin which allows us to quickly check if an element is within the browsers visual viewport.
 */
-!function(t){var i=t(window);t.fn.visible=function(t,e,o){if(!(this.length<1)){var r=this.length>1?this.eq(0):this,n=r.get(0),f=i.width(),h=i.height(),o=o?o:"both",l=e===!0?n.offsetWidth*n.offsetHeight:!0;if("function"==typeof n.getBoundingClientRect){var g=n.getBoundingClientRect(),u=g.top>=0&&g.top<h,s=g.bottom>0&&g.bottom<=h,c=g.left>=0&&g.left<f,a=g.right>0&&g.right<=f,v=t?u||s:u&&s,b=t?c||a:c&&a;if("both"===o)return l&&v&&b;if("vertical"===o)return l&&v;if("horizontal"===o)return l&&b}else{var d=i.scrollTop(),p=d+h,w=i.scrollLeft(),m=w+f,y=r.offset(),z=y.top,B=z+r.height(),C=y.left,R=C+r.width(),j=t===!0?B:z,q=t===!0?z:B,H=t===!0?R:C,L=t===!0?C:R;if("both"===o)return!!l&&p>=q&&j>=d&&m>=L&&H>=w;if("vertical"===o)return!!l&&p>=q&&j>=d;if("horizontal"===o)return!!l&&m>=L&&H>=w}}}}(jQuery);
+(function($){
+
+    /**
+     * Copyright 2012, Digital Fusion
+     * Licensed under the MIT license.
+     * http://teamdf.com/jquery-plugins/license/
+     *
+     * @author Sam Sehnert
+     * @desc A small plugin that checks whether elements are within
+     *       the user visible viewport of a web browser.
+     *       only accounts for vertical position, not horizontal.
+     */
+    var $w=$(window);
+    $.fn.visible = function(partial,hidden,direction,container){
+
+        if (this.length < 1)
+            return;
+	
+	// Set direction default to 'both'.
+	direction = direction || 'both';
+	    
+        var $t          = this.length > 1 ? this.eq(0) : this,
+						isContained = typeof container !== 'undefined' && container !== null,
+						$c				  = isContained ? $(container) : $w,
+						wPosition        = isContained ? $c.position() : 0,
+            t           = $t.get(0),
+            vpWidth     = $c.outerWidth(),
+            vpHeight    = $c.outerHeight(),
+            clientSize  = hidden === true ? t.offsetWidth * t.offsetHeight : true;
+
+        if (typeof t.getBoundingClientRect === 'function'){
+
+            // Use this native browser method, if available.
+            var rec = t.getBoundingClientRect(),
+                tViz = isContained ?
+												rec.top - wPosition.top >= 0 && rec.top < vpHeight + wPosition.top :
+												rec.top >= 0 && rec.top < vpHeight,
+                bViz = isContained ?
+												rec.bottom - wPosition.top > 0 && rec.bottom <= vpHeight + wPosition.top :
+												rec.bottom > 0 && rec.bottom <= vpHeight,
+                lViz = isContained ?
+												rec.left - wPosition.left >= 0 && rec.left < vpWidth + wPosition.left - 100 :
+												rec.left >= 0 && rec.left <  vpWidth - 100,
+                rViz = isContained ?
+												rec.right - wPosition.left > 0  && rec.right < vpWidth + wPosition.left - 100  :
+												rec.right > 0 && rec.right <= vpWidth - 100,
+                vVisible   = partial ? tViz || bViz : tViz && bViz,
+                hVisible   = partial ? lViz || rViz : lViz && rViz,
+		vVisible = (rec.top < 0 && rec.bottom > vpHeight) ? true : vVisible,
+                hVisible = (rec.left < 0 && rec.right > vpWidth) ? true : hVisible;
+
+            if(direction === 'both')
+                return clientSize && vVisible && hVisible;
+            else if(direction === 'vertical')
+                return clientSize && vVisible;
+            else if(direction === 'horizontal')
+                return clientSize && hVisible;
+        } else {
+
+            var viewTop 				= isContained ? 0 : wPosition,
+                viewBottom      = viewTop + vpHeight,
+                viewLeft        = $c.scrollLeft(),
+                viewRight       = viewLeft + vpWidth,
+                position          = $t.position(),
+                _top            = position.top,
+                _bottom         = _top + $t.height(),
+                _left           = position.left,
+                _right          = _left + $t.width(),
+                compareTop      = partial === true ? _bottom : _top,
+                compareBottom   = partial === true ? _top : _bottom,
+                compareLeft     = partial === true ? _right : _left,
+                compareRight    = partial === true ? _left : _right;
+
+            if(direction === 'both')
+                return !!clientSize && ((compareBottom <= viewBottom) && (compareTop >= viewTop)) && ((compareRight <= viewRight) && (compareLeft >= viewLeft));
+            else if(direction === 'vertical')
+                return !!clientSize && ((compareBottom <= viewBottom) && (compareTop >= viewTop));
+            else if(direction === 'horizontal')
+                return !!clientSize && ((compareRight <= viewRight) && (compareLeft >= viewLeft));
+        }
+    };
+
+})(jQuery);
+
 
 /*
 Plugin Name: 	afterResize.js
@@ -265,7 +348,7 @@ Description: 	Simple jQuery plugin designed to emulate an 'after resize' event.
 /*
 Plugin Name: 	matchHeight
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	5.7.2
+Theme Version:	6.2.0
 
 Based on:
 
@@ -607,7 +690,7 @@ Based on:
 /*
 Plugin Name: 	jQuery.pin
 Written by: 	Okler Themes - (http://www.okler.net)
-Theme Version:	5.7.2
+Theme Version:	6.2.0
 
 Based on:
 
@@ -754,89 +837,88 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
 (function( w, $ ) {
 
   fontSpy = function  ( fontName, conf ) {
-    var $html = $('html'),
-        $body = $('body'),
-        fontFamilyName = fontName;
+	var $html = $('html'),
+		$body = $('body'),
+		fontFamilyName = fontName;
 
-        // Throw error if fontName is not a string or not is left as an empty string
-        if (typeof fontFamilyName !== 'string' || fontFamilyName === '') {
-          throw 'A valid fontName is required. fontName must be a string and must not be an empty string.';
-        }
+		// Throw error if fontName is not a string or not is left as an empty string
+		if (typeof fontFamilyName !== 'string' || fontFamilyName === '') {
+		  throw 'A valid fontName is required. fontName must be a string and must not be an empty string.';
+		}
 
-    var defaults = {
-        font: fontFamilyName,
-        fontClass: fontFamilyName.toLowerCase().replace( /\s/g, '' ),
-        success: function() {},
-        failure: function() {},
-        testFont: 'Courier New',
-        testString: 'QW@HhsXJ',
-        glyphs: '',
-        delay: 50,
-        timeOut: 1000,
-        callback: $.noop
-    };
+	var defaults = {
+		font: fontFamilyName,
+		fontClass: fontFamilyName.toLowerCase().replace( /\s/g, '' ),
+		success: function() {},
+		failure: function() {},
+		testFont: 'Courier New',
+		testString: 'QW@HhsXJ',
+		glyphs: '',
+		delay: 50,
+		timeOut: 1000,
+		callback: $.noop
+	};
 
-    var config = $.extend( defaults, conf );
+	var config = $.extend( defaults, conf );
 
-    var $tester = $('<span>' + config.testString+config.glyphs + '</span>')
-        .css('position', 'absolute')
-        .css('top', '-9999px')
-        .css('left', '-9999px')
-        .css('visibility', 'hidden')
-        .css('fontFamily', config.testFont)
-        .css('fontSize', '250px');
+	var $tester = $('<span>' + config.testString+config.glyphs + '</span>')
+		.css('position', 'absolute')
+		.css('top', '-9999px')
+		.css('left', '-9999px')
+		.css('visibility', 'hidden')
+		.css('fontFamily', config.testFont)
+		.css('fontSize', '250px');
 
-    $body.append($tester);
+	$body.append($tester);
 
-    var fallbackFontWidth = $tester.outerWidth();
+	var fallbackFontWidth = $tester.outerWidth();
 
-    $tester.css('fontFamily', config.font + ',' + config.testFont);
+	$tester.css('fontFamily', config.font + ',' + config.testFont);
 
-    var failure = function () {
-      $html.addClass("no-"+config.fontClass);
-      if( config && config.failure ) {
-        config.failure();
-      }
-      config.callback(new Error('FontSpy timeout'));
-      $tester.remove();
-    };
+	var failure = function () {
+	  $html.addClass("no-"+config.fontClass);
+	  if( config && config.failure ) {
+		config.failure();
+	  }
+	  config.callback(new Error('FontSpy timeout'));
+	  $tester.remove();
+	};
 
-    var success = function () {
-      config.callback();
-      $html.addClass(config.fontClass);
-      if( config && config.success ) {
-        config.success();
-      }
-      $tester.remove();
-    };
+	var success = function () {
+	  config.callback();
+	  $html.addClass(config.fontClass);
+	  if( config && config.success ) {
+		config.success();
+	  }
+	  $tester.remove();
+	};
 
-    var retry = function () {
-      setTimeout(checkFont, config.delay);
-      config.timeOut = config.timeOut - config.delay;
-    };
+	var retry = function () {
+	  setTimeout(checkFont, config.delay);
+	  config.timeOut = config.timeOut - config.delay;
+	};
 
-    var checkFont = function () {
-      var loadedFontWidth = $tester.outerWidth();
+	var checkFont = function () {
+	  var loadedFontWidth = $tester.outerWidth();
 
-      if (fallbackFontWidth !== loadedFontWidth){
-        success();
-      } else if(config.timeOut < 0) {
-        failure();
-      } else {
-        retry();
-      }
-    }
+	  if (fallbackFontWidth !== loadedFontWidth){
+		success();
+	  } else if(config.timeOut < 0) {
+		failure();
+	  } else {
+		retry();
+	  }
+	}
 
-    checkFont();
-    }
+	checkFont();
+	}
   })( this, jQuery );
 
-/* waitForImages jQuery Plugin - v2.1.0 - 2016-01-04
+/* waitForImages jQuery Plugin - v2.4.0 - 2018-02-13
  * https://github.com/alexanderdickson/waitForImages
  *
  * Copyright (c) 2016 Alex Dickson; Licensed MIT
  */
-
 ;(function (factory) {
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
@@ -852,6 +934,11 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
     // Namespace all events.
     var eventNamespace = 'waitForImages';
 
+    // Is srcset supported by this browser?
+    var hasSrcset = (function(img) {
+        return img.srcset && img.sizes;
+    })(new Image());
+
     // CSS properties which contain references to images.
     $.waitForImages = {
         hasImageProperties: [
@@ -865,7 +952,7 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
     };
 
     // Custom selector to find all `img` elements with a valid `src` attribute.
-    $.expr[':']['has-src'] = function (obj) {
+    $.expr.pseudos['has-src'] = function (obj) {
         // Ensure we are dealing with an `img` element with a valid
         // `src` attribute.
         return $(obj).is('img[src][src!=""]');
@@ -873,7 +960,7 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
 
     // Custom selector to find images which are not already cached by the
     // browser.
-    $.expr[':'].uncached = function (obj) {
+    $.expr.pseudos.uncached = function (obj) {
         // Ensure we are dealing with an `img` element with a valid
         // `src` attribute.
         if (!$(obj).is(':has-src')) {
@@ -888,6 +975,16 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
         var allImgsLength = 0;
         var allImgsLoaded = 0;
         var deferred = $.Deferred();
+        var originalCollection = this;
+        var allImgs = [];
+
+        // CSS properties which may contain an image.
+        var hasImgProperties = $.waitForImages.hasImageProperties || [];
+        // Element attributes which may contain an image.
+        var hasImageAttributes = $.waitForImages.hasImageAttributes || [];
+        // To match `url()` references.
+        // Spec: http://www.w3.org/TR/CSS2/syndata.html#value-def-uri
+        var matchUrl = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
         var finishedCallback;
         var eachCallback;
@@ -917,7 +1014,7 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
         finishedCallback = finishedCallback || $.noop;
         eachCallback = eachCallback || $.noop;
 
-        // Convert waitForAll to Boolean
+        // Convert waitForAll to Boolean.
         waitForAll = !! waitForAll;
 
         // Ensure callbacks are functions.
@@ -929,14 +1026,6 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
             // Build a list of all imgs, dependent on what images will
             // be considered.
             var obj = $(this);
-            var allImgs = [];
-            // CSS properties which may contain an image.
-            var hasImgProperties = $.waitForImages.hasImageProperties || [];
-            // Element attributes which may contain an image.
-            var hasImageAttributes = $.waitForImages.hasImageAttributes || [];
-            // To match `url()` references.
-            // Spec: http://www.w3.org/TR/CSS2/syndata.html#value-def-uri
-            var matchUrl = /url\(\s*(['"]?)(.*?)\1\s*\)/g;
 
             if (waitForAll) {
 
@@ -999,57 +1088,181 @@ if (/iPad|iPhone|iPod/.test(navigator.platform)) {
                     });
                 });
             }
+        });
 
-            allImgsLength = allImgs.length;
-            allImgsLoaded = 0;
+        allImgsLength = allImgs.length;
+        allImgsLoaded = 0;
 
-            // If no images found, don't bother.
-            if (allImgsLength === 0) {
-                finishedCallback.call(obj[0]);
-                deferred.resolveWith(obj[0]);
-            }
+        // If no images found, don't bother.
+        if (allImgsLength === 0) {
+            finishedCallback.call(originalCollection);
+            deferred.resolveWith(originalCollection);
+        }
 
-            $.each(allImgs, function (i, img) {
+        // Now that we've found all imgs in all elements in this,
+        // load them and attach callbacks.
+        $.each(allImgs, function (i, img) {
 
-                var image = new Image();
-                var events =
-                  'load.' + eventNamespace + ' error.' + eventNamespace;
+            var image = new Image();
+            var events =
+              'load.' + eventNamespace + ' error.' + eventNamespace;
 
-                // Handle the image loading and error with the same callback.
-                $(image).one(events, function me (event) {
-                    // If an error occurred with loading the image, set the
-                    // third argument accordingly.
-                    var eachArguments = [
-                        allImgsLoaded,
-                        allImgsLength,
-                        event.type == 'load'
-                    ];
-                    allImgsLoaded++;
+            // Handle the image loading and error with the same callback.
+            $(image).one(events, function me (event) {
+                // If an error occurred with loading the image, set the
+                // third argument accordingly.
+                var eachArguments = [
+                    allImgsLoaded,
+                    allImgsLength,
+                    event.type == 'load'
+                ];
+                allImgsLoaded++;
 
-                    eachCallback.apply(img.element, eachArguments);
-                    deferred.notifyWith(img.element, eachArguments);
+                eachCallback.apply(img.element, eachArguments);
+                deferred.notifyWith(img.element, eachArguments);
 
-                    // Unbind the event listeners. I use this in addition to
-                    // `one` as one of those events won't be called (either
-                    // 'load' or 'error' will be called).
-                    $(this).off(events, me);
+                // Unbind the event listeners. I use this in addition to
+                // `one` as one of those events won't be called (either
+                // 'load' or 'error' will be called).
+                $(this).off(events, me);
 
-                    if (allImgsLoaded == allImgsLength) {
-                        finishedCallback.call(obj[0]);
-                        deferred.resolveWith(obj[0]);
-                        return false;
-                    }
-
-                });
-
-                if (img.srcset) {
-                    image.srcset = img.srcset;
+                if (allImgsLoaded == allImgsLength) {
+                    finishedCallback.call(originalCollection[0]);
+                    deferred.resolveWith(originalCollection[0]);
+                    return false;
                 }
-                image.src = img.src;
+
             });
+
+            if (hasSrcset && img.srcset) {
+                image.srcset = img.srcset;
+                image.sizes = img.sizes;
+            }
+            image.src = img.src;
         });
 
         return deferred.promise();
 
     };
 }));
+
+// Tooltip and Popover
+(function($) {
+	$('[data-toggle="tooltip"]').tooltip();
+	$('[data-toggle="popover"]').popover();
+})(jQuery);
+
+// Tabs
+$('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+	$(this).parents('.nav-tabs').find('.active').removeClass('active');
+	$(this).addClass('active').parent().addClass('active');
+});
+
+// On Load Scroll
+if( !$('html').hasClass('disable-onload-scroll') && window.location.hash ) {
+
+	window.scrollTo(0, 0);
+
+	$(window).on('load', function() {
+		setTimeout(function() {
+
+			var target = window.location.hash,
+				offset = ( $(window).width() < 768 ) ? 180 : 90;
+
+			$('body').addClass('scrolling');
+
+			$('html, body').animate({
+				scrollTop: $(target).offset().top - offset
+			}, 600, 'easeOutQuad', function() {
+				$('body').removeClass('scrolling');
+			});
+
+		}, 1);
+	});
+}
+
+/*
+* Footer Reveal
+*/
+(function($) {
+	var $footerReveal = {
+		$wrapper: $('.footer-reveal'),
+		init: function() {
+			var self = this;
+
+			self.build();
+			self.events();
+		},
+		build: function() {
+			var self = this, 
+				footer_height = self.$wrapper.outerHeight(true),
+				window_height = ( $(window).height() - $('.header-body').height() );
+
+			if( footer_height > window_height ) {
+				$('#footer').removeClass('footer-reveal');
+				$('.main').css('margin-bottom', 0);
+			} else {
+				$('#footer').addClass('footer-reveal');
+				$('.main').css('margin-bottom', footer_height);
+			}
+
+		},
+		events: function() {
+			var self = this,
+				$window = $(window);
+
+			$window.on('load', function(){
+				$window.afterResize(function(){
+					self.build();
+				});
+			});
+		}
+	}
+
+	if( $('.footer-reveal').get(0) ) {
+		$footerReveal.init();
+	}
+})(jQuery);
+
+/*
+* Notice Top bar
+*/
+(function($) {
+	var $noticeTopBar = {
+		$wrapper: $('.notice-top-bar'),
+		$body: $('.body'),
+		init: function() {
+			var self = this;
+
+			self.build();
+		},
+		build: function(){
+			var self = this;
+
+			$(window).on('load', function(){
+				setTimeout(function(){
+					self.$body.css({
+						'margin-top': self.$wrapper.outerHeight(),
+						'transition': 'ease margin 300ms'
+					});
+				}, 1000);
+			});
+		}
+	}
+
+	if( $('.notice-top-bar').get(0) ) {
+		$noticeTopBar.init();
+	}
+})(jQuery);
+
+/*
+* Notice Top bar
+*/
+(function($) {
+	$('.close-theme-switcher-bar').on('click', function(){
+		$(this).closest('.header-top').css({
+			height: 0,
+			overflow: 'hidden'
+		})
+	});
+})(jQuery);

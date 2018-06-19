@@ -1,0 +1,77 @@
+//COMMON IMPORTS
+@import "../config/imports";
+
+// Title With Video
+@media (min-width: 748px) {
+	.title-with-video-custom {
+		margin-top: -245px !important;
+
+		h1 {
+			color: #FFF;
+		}
+
+		p {
+			color: #e6e6e6;
+		}
+	}
+}
+
+// Section Custom Color
+section.section-color-custom {
+	border-top: 0;
+	background: #E8E8E8;
+}
+
+// Social Icons
+.social-icons {
+	li {
+		box-shadow: none;
+		a {
+			background: transparent;
+			color: #FFF !important;
+		}
+	}
+}
+
+// Divider
+.divider-top-section-custom {
+	margin-bottom: -50px !important;
+}
+
+// Google Map
+.google-map {
+	margin: 35px 0 -50px !important;
+}
+
+// Footer
+#footer {
+	.logo {
+		img {
+			max-width: 100px;
+			opacity: 0.5;
+		}
+	}
+
+	hr.solid {
+		background: #1b1b1b none repeat scroll 0 0;
+		margin-top: -10px;
+	}
+
+	h5 {
+		font-size: 15px;
+	}
+
+	.fa-phone {
+		position: relative;
+		top: 1px;
+		margin-right: 2px;
+	}
+
+	.footer-email-custom {
+		margin: 2px 10px 0 0;
+		font-size: 13px;
+		border-right: 1px solid #1b1b1b;
+		padding: 0 20px 3px 0 ;
+		display: block;
+	}
+}

@@ -13,7 +13,8 @@ return [
     */
 
     'name'      => env('APP_NAME', 'Laravel'),
-    'version'   => ' v1.0.13',
+
+    'version'   => ' v1.0.9',
 
     /*
     |--------------------------------------------------------------------------
@@ -200,6 +201,7 @@ return [
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
+         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
 
     ],
 
@@ -259,6 +261,7 @@ return [
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
+          'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
 
     ],
 

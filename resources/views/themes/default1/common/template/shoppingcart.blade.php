@@ -1,9 +1,12 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-pricing
+Pricing | Faveo Helpdesk
 @stop
 @section('page-header')
 Pricing
+@stop
+@section('page-heading')
+ <h1>Pricing</h1>
 @stop
 @section('breadcrumb')
 <li><a href="{{url('home')}}">Home</a></li>
@@ -22,7 +25,12 @@ main
   </br>
 </br>
                 <div class="alert alert-danger alert-dismissable">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+
+
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+
+
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -55,12 +63,14 @@ main
     <div class="row">
                         <div class="col-md-12">
                             
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold">Helpdesk Pricing</h4>
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:450px">Helpdesk Pricing</h4>
                         </div>
                     </div>
     <div class="col-md-12">
         <div class="pricing-table princig-table-flat">
+            <div class="row">
         {!! html_entity_decode($template) !!}
+    </div>
         </div>
     </div>
     <br/>    <br/>    <br/>    <br/>  <br/> <br/>
@@ -68,16 +78,18 @@ main
 
 
 
-  <div class="row">
+                    <div class="row">
                         <div class="col-md-12">
                             <!-- <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;"><strong><center>ServiceDesk Pricing</center></strong></h4>
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;margin-left:450px"><strong><center>ServiceDesk Pricing</center></strong></h4>
                         </div>
                     </div>
   <div class="col-md-12">
    <div class="pricing-table princig-table-flat">
+     <div class="row">
         {!! html_entity_decode($servicedesk_template) !!}
         </div>
+    </div>
 
 </div>
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
@@ -85,12 +97,14 @@ main
   <div class="row">
                         <div class="col-md-12">
                            <!--  <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;"><strong><center>Services Pricing</center></strong></h4>
+                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;margin-left:450px;"><strong><center>Services Pricing</center></strong></h4>
                         </div>
                     </div>
-<div class="col-md-12">
+<div class="col-md-12" style="margin-bottom:40px;">
    <div class="pricing-table princig-table-flat">
+    <div class= "row">
         {!! html_entity_decode($service_template) !!}
+    </div>
         </div>
 
 </div>
@@ -99,28 +113,19 @@ main
 
 </div>
 
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
 <script type="text/javascript">
+    
 
-        $(document).on("change", "select[name='subscription']", function () {
-              // var value = $(this).text();
-     // var index = $('li').index($(this));
-              // alert($(this).find('option:selected').text());
-              var amount=$(this).find('option:selected').text();
-              var amount= amount.substring(15,20);
+    $( document ).ready(function() {
+        var printitem= sessionStorage.getItem('successmessage');
 
-
-              // var product_id=$(this).find('option:selected').val();
-              // alert(product_id);
-// $(this).find('option:selected').parents().find('.plan').find('.price').text(amount)
-//           console.log($(this).find('option:selected').parents().find('.plan').find('.price').text(amount));
-
-             // alert(($(this).find('option:selected')).parents().find('.plan').find('.price').text(amount));
-
-                    });
-          
-
+         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
+         $('#alertMessage1').html(result);
+         sessionStorage.removeItem('successmessage');
+    
+});
 </script>
+
 
 @stop
 

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PromotionRequest;
 use App\Model\Order\Invoice;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
@@ -61,7 +63,7 @@ class PromotionController extends Controller
 
         return\ DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
-                                return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
+                                return "<input type='checkbox' class='promotion_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
                         ->addColumn('code', function ($model) {
                             return ucfirst($model->code);
@@ -82,7 +84,7 @@ class PromotionController extends Controller
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 
@@ -268,7 +270,7 @@ class PromotionController extends Controller
             $promo = $this->promotion->where('code', $code)->first();
             //check promotion code is valid
             if (!$promo) {
-                return redirect()->back()->with('fails', 'No Code');
+                return redirect()->back()->with('fails', 'Invalid Code');
             }
             $relation = $promo->relation()->get();
             //check the relation between code and product
@@ -288,7 +290,7 @@ class PromotionController extends Controller
                 return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-expired'));
             }
             $value = $this->findCostAfterDiscount($promo->id, $productid);
-            // dd($value);
+
             //dd($promo->code);
             //return the updated cartcondition
             $coupon = new CartCondition([
@@ -298,7 +300,16 @@ class PromotionController extends Controller
                 'value'  => $value,
             ]);
 
+            $userId = \Auth::user()->id;
+            \Cart::update($productid, [
+           'id'        => $productid,
+           'price'     => $value,
+          'conditions' => $coupon,
+
+           // new item price, price can also be a string format like so: '98.67'
+          ]);
             $items = \Cart::getContent();
+            \Session::put('items', $items);
 
             foreach ($items as $item) {
                 if (count($item->conditions) == 2 || count($item->conditions) == 1) {
@@ -309,8 +320,6 @@ class PromotionController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
@@ -331,17 +340,15 @@ class PromotionController extends Controller
                 $planid = \Session::get('plan');
             }
             if ($product->subscription != 1) {
-                $product_price = $product->price()->where('currency', $currency)->first()->sales_price;
-                if (!$product_price) {
-                    $product_price = $product->price()->where('currency', $currency)->first()->price;
-                }
+                $planId = Plan::where('product', $productid)->pluck('id')->first();
+                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
             } else {
                 $product_price = $control->planCost($planid, $userid);
             }
             if (count(\Cart::getContent())) {
-                $product_price = \Cart::getSubTotal();
+                $product_price = \Cart::getSubTotalWithoutConditions();
+                // dd($product_price);
             }
-
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
             // dd($updated_price);
             //dd([$product_price,$promotion_type,$updated_price]);
@@ -358,9 +365,9 @@ class PromotionController extends Controller
                 case 1:
                     $percentage = $price * ($value / 100);
 
-                    return '-'.$percentage;
+                    return  $price - $percentage;
                 case 2:
-                    return '-'.$value;
+                    return $price - $value;
                 case 3:
                     \Cart::update($productid, [
                         'price' => $value,

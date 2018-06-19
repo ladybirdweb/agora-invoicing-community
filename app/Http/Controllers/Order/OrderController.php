@@ -11,9 +11,11 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
+use Crypt;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -59,6 +61,9 @@ class OrderController extends Controller
 
         $price = new Price();
         $this->price = $price;
+
+        $product_upload = new ProductUpload();
+        $this->product_upload = $product_upload;
     }
 
     /**
@@ -152,11 +157,11 @@ class OrderController extends Controller
                             $url = '';
                             if ($status == 'success') {
                                 if ($sub) {
-                                    $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary'>Renew</a>";
+                                    $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh' style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
                                 }
                             }
 
-                            return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary'>View</a> $url</p>";
+                            return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
                         })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
@@ -384,19 +389,19 @@ class OrderController extends Controller
         try {
             $invoice_items = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user_id = $this->invoice->find($invoiceid)->user_id;
-            // dd($user_id);
             if (count($invoice_items) > 0) {
-                // dd($invoice_items);
                 foreach ($invoice_items as $item) {
                     if ($item) {
                         $product = $this->getProductByName($item->product_name)->id;
-                        // dd($product);
                         $version = $this->getProductByName($item->product_name)->version;
-                        // dd($version);
+                        if ($version == null) {
+                            $version = $this->product_upload->select('version')->where('product_id', $product)->first();
+                        }
                         $price = $item->subtotal;
 
                         $qty = $item->quantity;
                         $serial_key = $this->checkProductForSerialKey($product);
+
                         // $plan_id = $this->getPrice($product)->subscription;
                         $domain = $item->domain;
                         $plan_id = $this->plan($item->id);
@@ -416,7 +421,7 @@ class OrderController extends Controller
                         // dd($this->addOrderInvoiceRelation($invoiceid, $order->id));
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
                         if ($this->checkOrderCreateSubscription($order->id) == true) {
-                            $this->addSubscription($order->id, $plan_id, $version);
+                            $this->addSubscription($order->id, $plan_id, $version, $product);
                         }
                         $this->sendOrderMail($user_id, $order->id, $item->id);
                     }
@@ -451,24 +456,30 @@ class OrderController extends Controller
      *
      * @throws \Exception
      */
-    public function addSubscription($orderid, $planid, $version = '')
+    public function addSubscription($orderid, $planid, $version, $product)
     {
         try {
+            if ($version == null) {
+                $version = '';
+            }
+            // dd($orderid, $planid, $version, $product);
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
-                //dd($days);
+
                 if ($days > 0) {
                     $dt = \Carbon\Carbon::now();
-                    //dd($dt);
                     $user_id = \Auth::user()->id;
                     $ends_at = $dt->addDays($days);
                 } else {
                     $ends_at = '';
                 }
                 $user_id = $this->order->find($orderid)->client;
-                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version]);
+                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version, 'product_id' =>$product]);
+                // dd($product);
             }
         } catch (\Exception $ex) {
+            dd($ex);
+
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
@@ -507,7 +518,6 @@ class OrderController extends Controller
     public function getProductByName($name)
     {
         try {
-            // dd($name);
             return $this->product->where('name', $name)->first();
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -554,8 +564,8 @@ class OrderController extends Controller
             if ($product_type == 2) {
                 $str = str_random(16);
                 $str = strtoupper($str);
-                $str = \Crypt::encrypt($str);
-
+                $str = Crypt::encrypt($str);
+                // dd($str);
                 return $str;
             }
         } catch (\Exception $ex) {
@@ -718,12 +728,21 @@ class OrderController extends Controller
         //product
         $product = $this->product($itemid);
         //user
+        $productId = Product::where('name', $product)->pluck('id')->first();
         $users = new User();
         $user = $users->find($userid);
         //check in the settings
         $settings = new \App\Model\Common\Setting();
         $setting = $settings->where('id', 1)->first();
-        $downloadurl = $this->downloadUrl($userid, $orderid);
+        $orders = new Order();
+        $order = $orders->where('id', $orderid)->first();
+        $invoice = $this->invoice->find($order->invoice_id);
+        $number = $invoice->number;
+        $downloadurl = '';
+        if ($user && $order->order_status == 'Executed') {
+            $downloadurl = url('product/'.'download'.'/'.$productId.'/'.$number);
+        }
+        // $downloadurl = $this->downloadUrl($userid, $orderid,$productId);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
         $templates = new \App\Model\Common\Template();

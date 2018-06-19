@@ -8,18 +8,44 @@ class Utility
 
     public function verifyPaymentSignature($attributes)
     {
-        $expectedSignature = $attributes['razorpay_signature'];
-        $orderId = $attributes['razorpay_order_id'];
+
+
+        $actualSignature = $attributes['razorpay_signature'];
+
         $paymentId = $attributes['razorpay_payment_id'];
 
-        $payload = $orderId . '|' . $paymentId;
+        if (isset($attributes['razorpay_order_id']) === true)
+        {
+            $orderId = $attributes['razorpay_order_id'];
 
-        return self::verifySignature($payload, $expectedSignature);
+            $payload = $orderId . '|' . $paymentId;
+        }
+        else if (isset($attributes['razorpay_subscription_id']) === true)
+        {
+            $subscriptionId = $attributes['razorpay_subscription_id'];
+
+            $payload = $paymentId . '|' . $subscriptionId;
+        }
+        else
+        {
+            throw new Errors\SignatureVerificationError(
+                'Either razorpay_order_id or razorpay_subscription_id must be present.');
+        }
+
+        $secret = Api::getSecret();
+
+        self::verifySignature($payload, $actualSignature, $secret);
+
+
     }
 
     public function verifyWebhookSignature($payload, $actualSignature, $secret)
     {
-        return self::verifySignature($payload, $expectedSignature);
+
+
+        self::verifySignature($payload, $actualSignature, $secret);
+
+
     }
 
     public function verifySignature($payload, $actualSignature, $secret)

@@ -43,6 +43,8 @@
             <div class="col-md-12">
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
+                <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
+
                 <!-- Main content -->
                 <section class="invoice">
                     <!-- title row -->
@@ -87,6 +89,11 @@
                             <br/>
 
                         </div><!-- /.col -->
+                         <div class="col-sm-4 invoice-col">
+                            <b>GSTIN   &nbsp; #{{$gst->Gst_No}}</b><br/>
+                            <br/>
+
+                        </div><!-- /.col -->
                     </div><!-- /.row -->
 
                     <!-- Table row -->
@@ -100,6 +107,7 @@
                                         <th>Price</th>
                                         <th>Taxes</th>
                                         <th>Tax Rates</th>
+                                        <th>Discount</th>
                                         <th>Subtotal</th>
                                     </tr>
                                 </thead>
@@ -131,6 +139,12 @@
                                                 @endif
                                             </ul>
                                         </td>
+                                        <?php
+                                        $data=($item->discount)?$item->discount:'No discounts';
+                                        ?>
+                                        <td>
+                                            {{$data}}
+                                        </td>
                                         <td>{{$item->subtotal}}</td>
                                     </tr>
                                     @endforeach
@@ -153,10 +167,10 @@
                                     $tax_percentage = [];
                                     foreach ($invoiceItems as $key => $item) {
                                         if (str_finish(',', $item->tax_name)) {
-                                            $name = substr_replace($item->tax_name, '', -1);
+                                            $name = $item->tax_name;
                                         }
                                         if (str_finish(',', $item->tax_percentage)) {
-                                            $rate = substr_replace($item->tax_percentage, '', -1);
+                                            $rate = $item->tax_percentage;
                                         }
                                         $tax_name = explode(',', $name);
                                         $tax_percentage = explode(',', $rate);
@@ -170,7 +184,7 @@
                                             <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$invoice->grand_total)}}
+                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
                                         </td>
 
                                     </tr>

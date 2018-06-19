@@ -28,7 +28,7 @@
           <!-- Vendor CSS -->
           <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
-             <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
+          <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/simple-line-icons/css/simple-line-icons.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">

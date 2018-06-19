@@ -1071,9 +1071,11 @@ class CartController extends Controller
     public static function taxValue($rate, $price)
     {
         try {
+
             $rate = str_replace('%', '', $rate);
             $tax = $price * ($rate / 100);
             $result = $tax;
+
 
             $result = self::rounding($result);
 

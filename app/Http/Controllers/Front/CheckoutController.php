@@ -97,12 +97,14 @@ class CheckoutController extends Controller
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
+
         if (\Session::has('items')) {
             $content = \Session::get('items');
             $attributes = $this->getAttributes($content);
         } else {
             $content = Cart::getContent();
             $attributes = $this->getAttributes($content);
+
         }
 
         $require = [];
@@ -200,6 +202,7 @@ class CheckoutController extends Controller
             //$invoiceid = $request->input('invoice_id');
         }
 
+
         $cost = $request->input('cost');
         // if (\Cart::getSubTotal() > 0 || $cost > 0) {
         //     //  {
@@ -241,10 +244,12 @@ class CheckoutController extends Controller
                     $status = 'success';
                 }
                 $invoice_no = $invoice->number;
+
                 $date1 = new DateTime($invoice->date);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));
                 $date = $date1->format('M j, Y, g:i a ');
+
                 $invoiceid = $invoice->id;
 
                 $amount = $invoice->grand_total;
@@ -258,9 +263,11 @@ class CheckoutController extends Controller
                 // dd($items);
                 if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
+
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
                     $attributes = $this->getAttributes($content);
+
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -279,7 +286,9 @@ class CheckoutController extends Controller
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }
+
                 return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
+
             // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 // dd('sdfds');
             } else {
@@ -415,7 +424,9 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
+
             dd($ex);
+
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

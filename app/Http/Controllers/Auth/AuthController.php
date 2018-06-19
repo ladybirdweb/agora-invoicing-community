@@ -262,6 +262,7 @@ class AuthController extends Controller
 
                 $auth = '5930375bef3fe5e0a2b35945cbf3a644';
 
+
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
                 $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
@@ -281,8 +282,10 @@ class AuthController extends Controller
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
+
                 // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 // $r = $mailchimp->addSubscriber($user->email);
+
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
@@ -317,6 +320,7 @@ class AuthController extends Controller
                         <FL val="Last Name">'.$user->last_name.'</FL>
                         <FL val="Email">'.$user->email.'</FL>
                         <FL val="Manager">'.$user->manager.'</FL>
+
                         <FL val="Phone">'.$user->mobile_code.''.$user->mobile.'</FL>
                         <FL val="Mobile">'.$user->mobile_code.''.$user->mobile.'</FL>
                         <FL val="Industry">'.$user->bussiness.'</FL>
@@ -324,6 +328,7 @@ class AuthController extends Controller
                         <FL val="Street">'.$user->address.'</FL>
                         <FL val="State">'.$user->state.'</FL>
                         <FL val="Country">'.$user->country.'</FL>
+
                         <FL val="Zip Code">'.$user->zip.'</FL>
                          <FL val="No. of Employees">'.$user->company_size.'</FL>
                         </row>

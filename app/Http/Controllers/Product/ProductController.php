@@ -348,7 +348,9 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
+
                 dd($e);
+
                 Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());
@@ -405,7 +407,8 @@ use App\Http\Controllers\Controller;
 
                 return view('themes.default1.product.product.edit', compact('product', 'periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
             } catch (\Exception $e) {
-                // dd($e);
+                Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -652,11 +655,13 @@ use App\Http\Controllers\Controller;
                         $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
                         return ['release'=>$relese, 'type'=>'github'];
+
                     } elseif ($file) {
                         //If the Product is Downloaded from FileSystem
                         $fileName = $file->file;
                         $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
                         // $relese = '/home/faveo/products/'.$file->file;
+
 
                         return $relese;
                     }

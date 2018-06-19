@@ -103,6 +103,7 @@
                                     {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk'],null,['class' => 'form-control']) !!}
 
 
+
                                 </div>
 
                             </div>

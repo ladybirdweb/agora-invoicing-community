@@ -69,6 +69,7 @@
   
       </head>
 
+
     <body>
 
         <?php
@@ -393,12 +394,14 @@
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
+
                             <br>
                        
                         <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
                         <br/> <br/>
                         <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
                   </div>
+
                 </div>
                 <div class="footer-copyright">
                     <div class="container">
@@ -499,7 +502,7 @@ s1.charset='UTF-8';
 s1.setAttribute('crossorigin','*');
 s0.parentNode.insertBefore(s1,s0);
 })();
-<<<<<<< HEAD
+
 </script> -->
 
 <!--End of Tawk.to Script-->

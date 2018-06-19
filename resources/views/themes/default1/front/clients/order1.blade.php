@@ -52,6 +52,7 @@ active
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
+
              
 
                     <thead><tr>
@@ -96,6 +97,7 @@ active
             },
         });
     </script>
+
 
 @stop
 

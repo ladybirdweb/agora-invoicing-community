@@ -19,7 +19,9 @@ use Bugsnag;
 use DateTime;
 use DateTimeZone;
 use Exception;
+
 use GrahamCampbell\Markdown\Facades\Markdown;
+
 use Hash;
 
 class ClientController extends Controller
@@ -290,6 +292,7 @@ class ClientController extends Controller
                                     }
                                     //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                                 }
+
                                 $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
                                 if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
                                     $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->id, $productid);
@@ -306,6 +309,7 @@ class ClientController extends Controller
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
+
     }
 
     public function subscriptions()

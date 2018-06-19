@@ -131,7 +131,9 @@
                         <td>
                             <div class="form-group {{ $errors->has('applied') ? 'has-error' : '' }}">
 
+
                                 {!! Form::select('applied[]',[''=>$product],null,['class' => 'form-control select2','multiple'=>true,'title'=>'Products for which coupon is Applied']) !!}
+
 
 
                             </div>

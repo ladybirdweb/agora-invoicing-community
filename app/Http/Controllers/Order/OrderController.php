@@ -15,7 +15,9 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
+
 use Crypt;
+
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -93,6 +95,8 @@ class OrderController extends Controller
 
             return view('themes.default1.order.index', compact('products', 'order_no', 'product_id', 'expiry', 'from', 'till', 'domain'));
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
+
             return redirect('orders')->with('fails', $e->getMessage());
         }
     }
@@ -184,6 +188,8 @@ class OrderController extends Controller
 
             return view('themes.default1.order.create', compact('clients', 'product', 'subscription', 'promotion'));
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -212,6 +218,8 @@ class OrderController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -238,6 +246,8 @@ class OrderController extends Controller
 
             return view('themes.default1.order.show', compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyExeption($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -260,6 +270,8 @@ class OrderController extends Controller
 
             return view('themes.default1.order.edit', compact('clients', 'product', 'subscription', 'promotion', 'order'));
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -279,6 +291,8 @@ class OrderController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $e) {
+            Bugsnag::notifyExeption($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -466,7 +480,9 @@ class OrderController extends Controller
                 // dd($product);
             }
         } catch (\Exception $ex) {
+
             dd($ex);
+
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');

@@ -326,6 +326,7 @@ class HomeController extends Controller
 
     public function faveoVerification(Request $request)
     {
+
         try {
             $data = $request->input('data');
             $json = self::decryptByFaveoPrivateKey($data);

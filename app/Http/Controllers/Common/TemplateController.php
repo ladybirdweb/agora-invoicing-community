@@ -291,23 +291,24 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-            $fields = $settings;
-            $driver = '';
-            $port = '';
-            $host = '';
-            $enc = '';
-            $email = '';
-            $mail_password = '';
-            $name = '';
-            if ($fields) {
-                $driver = $fields->driver;
-                $port = $fields->port;
-                $host = $fields->host;
-                $enc = $fields->encryption;
-                $email = $fields->email;
-                $mail_password = $fields->password;
-                $name = $fields->company;
-            }
+            // $fields = $settings;
+            // $driver = '';
+            // $port = '';
+            // $host = '';
+            // $enc = '';
+            // $email = '';
+            // $mail_password = '';
+            // $name = '';
+            // if ($fields) {
+            //     $driver = $fields->driver;
+            //     $port = $fields->port;
+            //     $host = $fields->host;
+            //     $enc = $fields->encryption;
+            //     $email = $fields->email;
+            //     $mail_password = $fields->password;
+            //     $name = $fields->company;
+            // }
+
 
             $https['ssl']['verify_peer'] = false;
             $https['ssl']['verify_peer_name'] = false;
@@ -318,8 +319,9 @@ class TemplateController extends Controller
             $transport->setStreamOptions($https);
             $set = new \Swift_Mailer($transport);
 
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+
+            // // // Set the mailer
+            // \Mail::setSwiftMailer($set);
 
             /*Mail config ends*/
 
@@ -345,7 +347,9 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
+
             dd($ex);
+
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
@@ -507,18 +511,19 @@ class TemplateController extends Controller
         try {
             $rate = '';
             foreach ($taxes as $tax) {
+                // dd($tax->rate);
                 if ($tax->compound != 1) {
-                    $rate += $tax->rate;
+                    $rate = $tax->rate;
                 } else {
                     $rate = $tax->rate;
                 }
-                // dd($rate);
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
             // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
+
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -742,11 +747,13 @@ class TemplateController extends Controller
             $months = round($value->days / 30 / 12);
             // dd($months);
             // $price[$value->id] = $months.' Year at '.$currency.' '.$cost.'/year';
+
             if ($currency == 'INR') {
                 $price[$value->id] = '₹'.' '.$cost;
             } else {
                 $price[$value->id] = '$'.' '.$cost;
             }
+
         }
         // dd($price);
         $this->leastAmount($id);
@@ -780,6 +787,7 @@ class TemplateController extends Controller
                 }
                 // dd($price);
             }
+
             $cost = "$symbol $price";
         } else {
             $cost = 'Free';
@@ -792,9 +800,10 @@ class TemplateController extends Controller
             // if ($product_cost != 0) {
             //     $cost = $currency.' '.$product_cost;
             // }
+
         }
 
-        return $cost;
+        return $price;
     }
 
     public function leastAmountService($id)

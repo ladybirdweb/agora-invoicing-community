@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Model\Common\State;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -10,6 +11,7 @@ use App\Model\Payment\TaxByState;
 use App\Model\Product\Product;
 use DateTime;
 use DateTimeZone;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
@@ -66,6 +68,7 @@ class RazorpayController extends Controller
                 $error = 'Razorpay Error : '.$e->getMessage();
             }
         }
+
         $email = \Auth::user()->email;
         $country = \Auth::user()->country;
         $stateCode = \Auth::user()->state;
@@ -82,10 +85,12 @@ class RazorpayController extends Controller
         $zip = \Auth::user()->zip;
         $city = \Auth::user()->town;
         $invoice = Invoice::where('id', $invoice)->first();
+
         if ($success === true) {
             try {
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
+
 
                 if ($control->checkRenew() == false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
@@ -378,6 +383,7 @@ class RazorpayController extends Controller
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 dd($ex);
+
 
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }

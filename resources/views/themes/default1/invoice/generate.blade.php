@@ -156,7 +156,9 @@
     /* attach a submit handler to the form */
     $("#formoid").submit(function (event) {
 
+
       //   }
+
          /* stop form from submitting normally */
         event.preventDefault();
 

@@ -5,10 +5,12 @@ Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 
 
  
 
+
     Route::get('/', [
         'as' => 'welcome',
         'uses' => 'WelcomeController@welcome'
     ]);
+
 
 
 

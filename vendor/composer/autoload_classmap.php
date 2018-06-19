@@ -195,6 +195,7 @@ return array(
     'Barryvdh\\DomPDF\\PDF' => $vendorDir . '/barryvdh/laravel-dompdf/src/PDF.php',
     'Barryvdh\\DomPDF\\ServiceProvider' => $vendorDir . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
 
+
     'Barryvdh\\LaravelIdeHelper\\Alias' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Alias.php',
     'Barryvdh\\LaravelIdeHelper\\Console\\EloquentCommand' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Console/EloquentCommand.php',
     'Barryvdh\\LaravelIdeHelper\\Console\\GeneratorCommand' => $vendorDir . '/barryvdh/laravel-ide-helper/src/Console/GeneratorCommand.php',
@@ -303,7 +304,9 @@ return array(
     'CompanyType' => $baseDir . '/database/seeds/CompanyType.php',
     'Composer\\CaBundle\\CaBundle' => $vendorDir . '/composer/ca-bundle/src/CaBundle.php',
 
+
     'Cpdf' => $vendorDir . '/dompdf/dompdf/lib/Cpdf.php',
+
 
     'CreateAccountActivatesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_account_activates_table.php',
     'CreateBussinessesTable' => $baseDir . '/database/migrations/2017_06_10_062630_create_bussinesses_table.php',

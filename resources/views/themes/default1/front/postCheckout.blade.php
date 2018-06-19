@@ -38,7 +38,9 @@ Checkout
 
     if ($symbol == 'INR'){
 
+
 $exchangeRate= '';
+
 
 $orderData = [
     'receipt'         => 3456,
@@ -60,6 +62,7 @@ else
      // dd($exchangeRate);
      $displayAmount =$exchangeRate * $invoice->grand_total ;
 
+
      $orderData = [
     'receipt'         => 3456,
     'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
@@ -76,7 +79,9 @@ $displayAmount = $amount = $orderData['amount'];
 
 $data = [
 
+
     "key"               => 'rzp_test_GL0mtsOBCft5Tp',
+
 
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
@@ -86,6 +91,7 @@ $data = [
     ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
     
+
 
 
      "notes"             => [
@@ -99,9 +105,11 @@ $data = [
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
 
+
     "Currency"          => \Auth::user()->currency,
     "Amount Paid"   => $invoice->grand_total,
     "Exchange Rate"   =>  $exchangeRate,
+
 
 
     "merchant_order_id" =>  $merchant_orderid,
@@ -120,6 +128,7 @@ if ($displayCurrency !== 'INR')
 }
 $json = json_encode($data);
 
+
 if(\Auth::user()->currency == 'INR'){
     $symbol = '₹';
 }
@@ -128,10 +137,12 @@ else{
 }
 
 
+
 ?>
 <div class="row">
 
     <div class="col-md-8">
+
 
          <div class="card card-default" style="margin-bottom: 40px;">
             <div class="card-header">
@@ -139,6 +150,7 @@ else{
                    
                         Payment
                    
+
 
                 </h4>
             </div>
@@ -149,9 +161,11 @@ else{
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
 
+
          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
          <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                     {{Lang::get('message.success')}}.
+
 
                     {!!Session::get('success')!!}
                 </div>
@@ -165,14 +179,17 @@ else{
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
                    
 
+
                     {{Session::get('fails')}}
                 </div>
                 @endif
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
 
+
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.<br><br>
+
 
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -240,7 +257,9 @@ else{
                                 </td>
                                 <td class="product-name">
 
+
                                     <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
+
 
                                 </td>
                             </tr>
@@ -270,9 +289,11 @@ else{
                
                     <div class="col-md-12">
 
+
                         <!--  <hr class="tall">
                     <h4 class="heading-primary">Cart Totals</h4> -->
                        <!--  <table class="cart-totals">
+
 
                             <tbody>
 
@@ -287,9 +308,11 @@ else{
                                 </tr>
 
 
+
                             </tbody> -->
                       <!--   </table>
                         <hr class="tall"> -->
+
 
                     </div>
                 
@@ -315,6 +338,7 @@ else{
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
+
 
                         <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
@@ -456,13 +480,16 @@ else{
                
                
 
+
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
 
+
                         <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
+
 
                     </td>
                 </tr>

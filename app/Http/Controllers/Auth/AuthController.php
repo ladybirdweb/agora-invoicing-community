@@ -262,7 +262,6 @@ class AuthController extends Controller
 
                 $auth = '5930375bef3fe5e0a2b35945cbf3a644';
 
-
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
                 $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
@@ -285,7 +284,6 @@ class AuthController extends Controller
 
                 // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 // $r = $mailchimp->addSubscriber($user->email);
-
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');

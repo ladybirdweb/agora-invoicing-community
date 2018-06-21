@@ -104,7 +104,6 @@ class CheckoutController extends Controller
         } else {
             $content = Cart::getContent();
             $attributes = $this->getAttributes($content);
-
         }
 
         $require = [];
@@ -202,7 +201,6 @@ class CheckoutController extends Controller
             //$invoiceid = $request->input('invoice_id');
         }
 
-
         $cost = $request->input('cost');
         // if (\Cart::getSubTotal() > 0 || $cost > 0) {
         //     //  {
@@ -267,7 +265,6 @@ class CheckoutController extends Controller
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
                     $attributes = $this->getAttributes($content);
-
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
@@ -424,7 +421,6 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-
             dd($ex);
 
             Bugsnag::notifyException($ex);

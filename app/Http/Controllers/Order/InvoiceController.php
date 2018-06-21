@@ -255,9 +255,7 @@ class InvoiceController extends Controller
             }
 
             if ($code) {
-
                 $grand_total = $this->checkCode($code, $productid, $currency);
-
             } else {
                 if (!$total) {
                     $grand_total = $cost;
@@ -271,11 +269,9 @@ class InvoiceController extends Controller
 
             $tax = $this->checkTax($product->id, $user_id);
 
-
             $tax_name = '';
             $tax_rate = '';
             if (!empty($tax)) {
-
 
                     //dd($value);
                 $tax_name = $tax[0];
@@ -283,7 +279,6 @@ class InvoiceController extends Controller
             }
 
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
-
 
             // dd($grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
@@ -295,7 +290,6 @@ class InvoiceController extends Controller
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id);
             // dd($items);
-
 
             if ($items) {
                 $this->sendmailClientAgent($user_id, $items->invoice_id);
@@ -354,7 +348,6 @@ class InvoiceController extends Controller
 
                     // $grand_total = $cart->price;
                     $grand_total = \Cart::getSubTotal();
-
                 }
             }
             // dd($grand_total);
@@ -381,9 +374,7 @@ class InvoiceController extends Controller
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-
             Bugsnag::notifyException($ex);
-
 
             throw new \Exception('Can not Generate Invoice');
         }
@@ -410,7 +401,6 @@ class InvoiceController extends Controller
 
                 // $subtotal = $regular_price;
                 $subtotal = \App\Http\Controllers\Front\CartController::rounding($cart->getPriceSumWithConditions());
-
             }
 
             $tax_name = '';
@@ -502,9 +492,7 @@ class InvoiceController extends Controller
                 $tax_rate = $tax[1];
             }
 
-
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
-
 
             $domain = $this->domain($productid);
             $items = $this->invoiceItem->create([
@@ -674,8 +662,6 @@ class InvoiceController extends Controller
             } else {
             }
         } catch (\Exception $ex) {
-
-
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
@@ -696,7 +682,6 @@ class InvoiceController extends Controller
                 // }
 
                 if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-
                     $rate = $this->getRate($productid, $taxs[0], $userid);
                     // dd($rate);
                     $taxs = ([$rate['taxs']['0']['name'], $rate['taxs']['0']['rate']]);
@@ -734,13 +719,11 @@ class InvoiceController extends Controller
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
-
                 }
             }
 
             return $taxs;
         } catch (\Exception $ex) {
-
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -880,13 +863,11 @@ class InvoiceController extends Controller
             if ($rule->inclusive == 0) {
                 foreach ($rates as $rate) {
                     if ($rate != '') {
-
                         $rate = str_replace('%', '', $rate);
                         $total += $total * ($rate / 100);
                     }
 
                     // dd(intval(round($total)));
-
                 }
             }
             // dd($total);

@@ -309,6 +309,7 @@ class TemplateController extends Controller
             //     $name = $fields->company;
             // }
 
+
             // $https['ssl']['verify_peer'] = false;
             // $https['ssl']['verify_peer_name'] = false;
 
@@ -317,6 +318,7 @@ class TemplateController extends Controller
             // $transport->setPassword($mail_password);
             // $transport->setStreamOptions($https);
             // $set = new \Swift_Mailer($transport);
+
 
             // // // Set the mailer
             // \Mail::setSwiftMailer($set);

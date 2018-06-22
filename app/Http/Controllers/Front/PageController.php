@@ -341,7 +341,7 @@ class PageController extends Controller
         $template = '';
 
         if (count($helpdesk_products) > 0) {
-           foreach ($helpdesk_products as $key => $value) {
+            foreach ($helpdesk_products as $key => $value) {
                 $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];

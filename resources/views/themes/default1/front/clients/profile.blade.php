@@ -225,9 +225,9 @@ active
 <script>
 
                   
- function updateProfile() 
-                        {  
-                            
+                             function updateProfile() 
+                                                    {  
+                                                        
                           $("#update").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Updating...");
                                     var data = {
                                         "first_name":   $('#firstName').val(),

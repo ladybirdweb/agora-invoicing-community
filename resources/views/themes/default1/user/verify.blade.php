@@ -135,7 +135,7 @@ main
 
 
 
-                        <div class="row" ng-show="showOTP">
+                        <div ng-show="showOTP">
                                <label for="mobile" class="required">Enter OTP</label><br/>
 
                              <div class="row">
@@ -189,7 +189,7 @@ main
                        </div>
                        
                     </div>
-                      <div class="row otp-field" style="display: none;">
+                      <div class="otp-field" style="display: none;">
                                <label for="mobile" class="required">Enter OTP</label>
                                <div class="row">
                                     <div class="col-md-6">

@@ -61,10 +61,10 @@ main
                 </div>
                 @endif
     <div class="row">
-                        <div class="col-md-12">
+                        
                             
                             <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:450px">Helpdesk Pricing</h4>
-                        </div>
+                        
                     </div>
     <div class="col-md-12">
         <div class="pricing-table princig-table-flat">
@@ -79,10 +79,10 @@ main
 
 
                     <div class="row">
-                        <div class="col-md-12">
+                       
                             <!-- <hr class="tall mt-none"> -->
                             <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;margin-left:450px"><strong><center>ServiceDesk Pricing</center></strong></h4>
-                        </div>
+                      
                     </div>
   <div class="col-md-12">
    <div class="pricing-table princig-table-flat">
@@ -95,10 +95,10 @@ main
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
 
   <div class="row">
-                        <div class="col-md-12">
+                       
                            <!--  <hr class="tall mt-none"> -->
                             <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;margin-left:450px;"><strong><center>Services Pricing</center></strong></h4>
-                        </div>
+                      
                     </div>
 <div class="col-md-12" style="margin-bottom:40px;">
    <div class="pricing-table princig-table-flat">
@@ -128,4 +128,6 @@ main
 
 
 @stop
+
+
 

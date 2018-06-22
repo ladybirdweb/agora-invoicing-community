@@ -80,7 +80,6 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
-            dd($ex);
             $exe = json_decode($ex->getMessage(), true);
             if ($exe['status'] == 400) {
                 throw new Exception("$email is already subscribed to newsletter", 400);

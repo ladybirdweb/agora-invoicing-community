@@ -796,8 +796,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
  
     function verifyBySendOtp() {
-      alert('sd')
-       $('#enterotp').hide();
+      $('#enterotp').hide();
          if(verify_otp_check()) {
         $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
         var data = {
@@ -812,6 +811,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             data: data,
             success: function (response) {
                 $('#error2').hide(); 
+                 $('#error').hide(); 
                 $('#alertMessage2').show();
                 var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
                  // $('#alertMessage3').show();

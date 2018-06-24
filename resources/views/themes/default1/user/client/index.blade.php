@@ -111,7 +111,7 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
-                {!! Form::select('country',[''=>'select','Countries'=>DB::table('countries')->pluck('country_name','country_code_char2')->toarray()],null,['class' => 'form-control','id'=>'country']) !!}
+                {!! Form::select('country',[''=>'Choose','Countries'=>DB::table('countries')->pluck('country_name','country_code_char2')->toarray()],null,['class' => 'form-control','id'=>'country']) !!}
 
             </div>
 <div class="col-md-2 form-group">
@@ -119,22 +119,46 @@
                 {!! Form::label('industry','Industries') !!}
 
 <?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',]; ?>
-                {!! Form::select('industry',[''=>'select','New'=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','id'=>'industry']) !!}
+                {!! Form::select('industry',[''=>'Choose','New'=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','id'=>'industry']) !!}
 
             </div>
+
+             <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('Role','Role') !!}
+                 <select name="role"  class="form-control">
+                    <option value="">Choose</option>
+                   <option value="admin">Admin</option>
+                  <option value="client">Client</option>
+                  <option value="user">User</option>
+                 </select>
+             </div>
+             
+             <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('Position','Position') !!}
+                 <select name="position"  class="form-control">
+                  <option value="">Choose</option>
+                  <option value="manager">Manager</option>
+                  </select>
+             </div>
+
+            
+            
+
 </div>
 <div class='row'>
 
-            <div class="col-md-4 col-md-offset-4">
+            
+               <div class="col-md-4 col-md-offset-4">
                 <div class="col-md-6">
-                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
-                     <button name="Search" type="submit" id="reset" class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                    {!! Form::submit('Search',['class'=>'btn btn-primary']) !!}
                 </div>
                 <div class="col-md-6">
-                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
-                    <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+                    {!! Form::submit('Reset',['class'=>'btn btn-danger']) !!}
                 </div>
             </div>
+         
 </div>
                 <script type="text/javascript">
                     $(function () {
@@ -145,6 +169,7 @@
                         $('#email').val('');
                         $('#mobile').val('');
                         $('#username').val('');
+                        // $('#role').val('');
                     //     var uri = window.location.toString();
 
                     // if (uri.indexOf("?") > 0) {
@@ -237,7 +262,7 @@
             serverSide: true,
              stateSave: true,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry" ) !!}',
+            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position" ) !!}',
              
 
             "oLanguage": {

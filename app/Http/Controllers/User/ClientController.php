@@ -8,7 +8,6 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
 use App\User;
-use Spatie\Activitylog\Models\Activity;  
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -35,7 +34,7 @@ class ClientController extends Controller
      * @return Response
      */
     public function index(Request $request)
-    {    
+    {
         $name = $request->input('name');
         $username = $request->input('username');
         $company = $request->input('company');
@@ -53,14 +52,14 @@ class ClientController extends Controller
         $community = $this->soldEdition('faveo helpdesk community');
         $product_count = $this->productCount();
 
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count', 'industry', 'company_type', 'company_size','role','position'));
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count', 'industry', 'company_type', 'company_size', 'role', 'position'));
     }
 
     /**
      * Get Clients for chumper datatable.
      */
     public function GetClients(Request $request)
-    {  
+    {
         $name = $request->input('name');
         $username = $request->input('username');
         $company = $request->input('company');
@@ -73,7 +72,7 @@ class ClientController extends Controller
         $role = $request->input('role');
         $position = $request->input('position');
 
-        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size,$role,$position);
+        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
         return\ DataTables::of($user->get())
 
@@ -222,7 +221,7 @@ class ClientController extends Controller
      */
     public function update($id, ClientRequest $request)
     {
-         $user = $this->user->where('id', $id)->first();
+        $user = $this->user->where('id', $id)->first();
         $user->fill($request->input())->save();
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -282,7 +281,7 @@ class ClientController extends Controller
         return response()->json(compact('options'));
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '',$role='',$position='')
+    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = $this->user;
 
@@ -317,11 +316,11 @@ class ClientController extends Controller
         if ($role) {
             $join = $join->where('role', $role);
         }
-        if($position){
-            $join = $join->where('position',$position);
+        if ($position) {
+            $join = $join->where('position', $position);
         }
 
-        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified','role','position');
+        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
 
         return $join;
     }

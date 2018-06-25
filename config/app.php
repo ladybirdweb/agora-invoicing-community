@@ -264,7 +264,6 @@ return [
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
-          
 
     ],
 

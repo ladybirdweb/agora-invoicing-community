@@ -202,6 +202,7 @@ return [
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
          GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+         Spatie\Activitylog\ActivitylogServiceProvider::class,
 
     ],
 
@@ -219,6 +220,7 @@ return [
     'aliases' => [
 
         'App'          => Illuminate\Support\Facades\App::class,
+        'Activity'     => Spatie\Activitylog\ActivitylogFacade::class,
         'Artisan'      => Illuminate\Support\Facades\Artisan::class,
         'Auth'         => Illuminate\Support\Facades\Auth::class,
         'Blade'        => Illuminate\Support\Facades\Blade::class,
@@ -262,6 +264,7 @@ return [
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
+          
 
     ],
 

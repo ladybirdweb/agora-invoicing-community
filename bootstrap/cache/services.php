@@ -52,6 +52,7 @@
     48 => 'Yajra\\DataTables\\HtmlServiceProvider',
     49 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     50 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
+    51 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
   ),
   'eager' => 
   array (
@@ -89,6 +90,7 @@
     31 => 'Yajra\\DataTables\\HtmlServiceProvider',
     32 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     33 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
+    34 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
   ),
   'deferred' => 
   array (

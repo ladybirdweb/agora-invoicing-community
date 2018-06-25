@@ -27,9 +27,9 @@ class FractalTransformer
     /**
      * Transform output using the given transformer and serializer.
      *
-     * @param mixed $output
-     * @param mixed $transformer
-     * @param mixed $serializer
+     * @param  mixed $output
+     * @param  mixed $transformer
+     * @param  mixed $serializer
      * @return array
      */
     public function transform($output, $transformer, $serializer = null)
@@ -44,13 +44,15 @@ class FractalTransformer
                 $resource       = new Collection($output, $this->createTransformer($transform));
                 $collection     = $this->fractal->createData($resource)->toArray();
                 $transformed    = $collection['data'] ?? $collection;
-                $collector      = array_map(function ($item_collector, $item_transformed) {
-                    if ($item_collector === null) {
-                        $item_collector = [];
-                    }
+                $collector      = array_map(
+                    function ($item_collector, $item_transformed) {
+                        if ($item_collector === null) {
+                            $item_collector = [];
+                        }
 
-                    return array_merge($item_collector, $item_transformed);
-                }, $collector, $transformed);
+                        return array_merge($item_collector, $item_transformed);
+                    }, $collector, $transformed
+                );
             }
         }
 
@@ -60,7 +62,7 @@ class FractalTransformer
     /**
      * Get or create transformer serializer instance.
      *
-     * @param mixed $serializer
+     * @param  mixed $serializer
      * @return \League\Fractal\Serializer\SerializerAbstract
      */
     protected function createSerializer($serializer)
@@ -75,7 +77,7 @@ class FractalTransformer
     /**
      * Get or create transformer instance.
      *
-     * @param mixed $transformer
+     * @param  mixed $transformer
      * @return \League\Fractal\TransformerAbstract
      */
     protected function createTransformer($transformer)

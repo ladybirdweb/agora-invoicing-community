@@ -192,7 +192,7 @@ trait RegistersUsers
                 $user->active = 1;
                 $user->save();
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                // $r = $mailchimp->addSubscriber($user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 
@@ -472,11 +472,7 @@ trait RegistersUsers
 
         
         $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('id','first_name')->toArray();
-
-
          if(count($managers)>0){
-
-
             $randomized[] = array_rand($managers);
         shuffle($randomized);
         $manager = $managers[$randomized[0]];

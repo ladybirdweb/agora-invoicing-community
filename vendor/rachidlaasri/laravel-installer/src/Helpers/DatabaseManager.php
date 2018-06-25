@@ -37,7 +37,7 @@ class DatabaseManager
             Artisan::call('migrate', ["--force"=> true], $outputLog);
         }
         catch(Exception $e){
-            return $this->response($e->getMessage());
+            return $this->response($e->getMessage(), $outputLog);
         }
 
         return $this->seed($outputLog);
@@ -52,16 +52,10 @@ class DatabaseManager
     private function seed($outputLog)
     {
         try{
-           // $path = storage_path() . '\dummy-data.sql';
-           //      $path1= storage_path() . '\agora.sql';
-           //      $path2 = storage_path() . '\states.sql';
-           //      DB::unprepared(DB::raw(file_get_contents($path)));
-           //        DB::unprepared(DB::raw(file_get_contents($path1)));
-           //          DB::unprepared(DB::raw(file_get_contents($path2)));
-               Artisan::call('db:seed', [], $outputLog);
+            Artisan::call('db:seed', [], $outputLog);
         }
         catch(Exception $e){
-            return $this->response($e->getMessage());
+            return $this->response($e->getMessage(), $outputLog);
         }
 
         return $this->response(trans('installer_messages.final.finished'), 'success', $outputLog);
@@ -75,7 +69,7 @@ class DatabaseManager
      * @param collection $outputLog
      * @return array
      */
-    private function response($message, $status = 'danger', $outputLog)
+    private function response($message, $outputLog, $status = 'danger')
     {
         return [
             'status' => $status,

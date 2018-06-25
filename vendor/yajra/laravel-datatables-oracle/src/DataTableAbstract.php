@@ -3,8 +3,8 @@
 namespace Yajra\DataTables;
 
 use Illuminate\Support\Str;
+use Psr\Log\LoggerInterface;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\Logging\Log;
 use Yajra\DataTables\Utilities\Helper;
 use Illuminate\Support\Traits\Macroable;
 use Yajra\DataTables\Contracts\DataTable;
@@ -32,7 +32,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     public $request;
 
     /**
-     * @var \Illuminate\Contracts\Logging\Log
+     * @var \Psr\Log\LoggerInterface
      */
     protected $logger;
 
@@ -349,6 +349,20 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Add with query callback value on response.
+     *
+     * @param string   $key
+     * @param callable $value
+     * @return $this
+     */
+    public function withQuery($key, callable $value)
+    {
+        $this->appends[$key] = $value;
+
+        return $this;
+    }
+
+    /**
      * Override default ordering method with a closure callback.
      *
      * @param callable $closure
@@ -409,6 +423,19 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     public function setTotalRecords($total)
     {
         $this->totalRecords = $total;
+
+        return $this;
+    }
+
+    /**
+     * Set filtered records manually.
+     *
+     * @param int $total
+     * @return $this
+     */
+    public function setFilteredRecords($total)
+    {
+        $this->filteredRecords = $total;
 
         return $this;
     }
@@ -541,6 +568,16 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     }
 
     /**
+     * Count filtered items.
+     *
+     * @return int
+     */
+    protected function filteredCount()
+    {
+        return $this->filteredRecords ? $this->filteredRecords : $this->count();
+    }
+
+    /**
      * Perform necessary filters.
      *
      * @return void
@@ -556,7 +593,7 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
         }
 
         $this->columnSearch();
-        $this->filteredRecords = $this->isFilterApplied ? $this->count() : $this->totalRecords;
+        $this->filteredRecords = $this->isFilterApplied ? $this->filteredCount() : $this->totalRecords;
     }
 
     /**
@@ -660,12 +697,12 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
      */
     protected function render(array $data)
     {
-        $output = array_merge([
+        $output = $this->attachAppends([
             'draw'            => (int) $this->request->input('draw'),
             'recordsTotal'    => $this->totalRecords,
             'recordsFiltered' => $this->filteredRecords,
             'data'            => $data,
-        ], $this->appends);
+        ]);
 
         if ($this->config->isDebugging()) {
             $output = $this->showDebugger($output);
@@ -677,6 +714,17 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
             $this->config->get('datatables.json.header', []),
             $this->config->get('datatables.json.options', 0)
         );
+    }
+
+    /**
+     * Attach custom with meta on response.
+     *
+     * @param array $data
+     * @return array
+     */
+    protected function attachAppends(array $data)
+    {
+        return array_merge($data, $this->appends);
     }
 
     /**
@@ -720,11 +768,11 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Get monolog/logger instance.
      *
-     * @return \Illuminate\Contracts\Logging\Log
+     * @return \Psr\Log\LoggerInterface
      */
     public function getLogger()
     {
-        $this->logger = $this->logger ?: app(Log::class);
+        $this->logger = $this->logger ?: app(LoggerInterface::class);
 
         return $this->logger;
     }
@@ -732,10 +780,10 @@ abstract class DataTableAbstract implements DataTable, Arrayable, Jsonable
     /**
      * Set monolog/logger instance.
      *
-     * @param \Illuminate\Contracts\Logging\Log $logger
+     * @param \Psr\Log\LoggerInterface $logger
      * @return $this
      */
-    public function setLogger(Log $logger)
+    public function setLogger(LoggerInterface $logger)
     {
         $this->logger = $logger;
 

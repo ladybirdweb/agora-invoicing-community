@@ -21,11 +21,8 @@
         "pingplusplus/pingpp-php": "dev-master",
         "rachidlaasri/laravel-installer": "^3.2",
         "razorpay/razorpay": "^2.2",
-
-
+        "spatie/laravel-activitylog": "^2.7",
         "symfony/polyfill-iconv": "^1.8",
-
-
         "thomaswelton/laravel-gravatar": "~1.0",
         "yajra/laravel-datatables": "^1.0"
     },

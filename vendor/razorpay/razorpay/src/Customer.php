@@ -12,6 +12,11 @@ class Customer extends Entity
         return parent::fetch($id);
     }
 
+    public function all($options = array())
+    {
+        return parent::all($options);
+    }
+
     public function create($attributes = array())
     {
         return parent::create($attributes);

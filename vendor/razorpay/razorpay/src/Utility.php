@@ -8,8 +8,6 @@ class Utility
 
     public function verifyPaymentSignature($attributes)
     {
-
-
         $actualSignature = $attributes['razorpay_signature'];
 
         $paymentId = $attributes['razorpay_payment_id'];
@@ -35,17 +33,11 @@ class Utility
         $secret = Api::getSecret();
 
         self::verifySignature($payload, $actualSignature, $secret);
-
-
     }
 
     public function verifyWebhookSignature($payload, $actualSignature, $secret)
     {
-
-
         self::verifySignature($payload, $actualSignature, $secret);
-
-
     }
 
     public function verifySignature($payload, $actualSignature, $secret)

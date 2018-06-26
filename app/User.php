@@ -9,7 +9,6 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
 //use App\Model\Common\Website;
@@ -18,8 +17,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 {
     use Authenticatable,
         CanResetPassword;
-
-        use LogsActivity;
+    use LogsActivity;
 
     // use Billable;
     // use CustomerBillableTrait;
@@ -42,13 +40,13 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
-          protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
+    protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
         'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
-        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager',];
+        'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
-         protected static $logOnlyDirty = true;
+    protected static $logOnlyDirty = true;
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -8,6 +8,7 @@ use App\Model\Common\Template;
 use App\Model\Plugin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Spatie\Activitylog\Models\Activity;
 
 class SettingsController extends Controller
 {
@@ -469,6 +470,60 @@ class SettingsController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+     public function settingsActivity(Activity $activities)
+    {
+        try {
+            $activity = $activities->all();
+
+            return view('themes.default1.common.Activity-Log', compact('activity'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+       public function getActivity()
+        {
+            try {
+                $activity_log = Activity::select('log_name', 'description','subject_id', 'subject_type','causer_id','causer_type', 'properties','created_at')->get();
+
+                return\ DataTables::of($activity_log)
+            // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+                           ->addColumn('name', function ($model) {
+                                return ucfirst($model->log_name);
+                            })
+                             ->addColumn('description', function ($model) {
+                                return ucfirst($model->description);
+                            })
+                            ->addColumn('subject_id', function ($model) {
+                                return ucfirst($model->subject_id);
+                            })
+                             ->addColumn('subject_type', function ($model) {
+                                return ucfirst($model->subject_type);
+                            })
+                             ->addColumn('causer_id', function ($model) {
+                                return ucfirst($model->causer_id);
+                            })
+                              ->addColumn('causer_type', function ($model) {
+                                return ucfirst($model->causer_type);
+                            })
+                               ->addColumn('properties', function ($model) {
+                                return ucfirst($model->properties);
+                            })
+                                ->addColumn('created_at', function ($model) {
+                                return ucfirst($model->created_at);
+                            })
+
+                            
+
+                            ->rawColumns(['checkbox', 'name', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type','properties','created_at'])
+                            ->make(true);
+            } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
+                return redirect()->back()->with('fails', $e->getMessage());
+            }
+        }
 
     public function settingsBugsnag(Setting $settings)
     {

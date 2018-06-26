@@ -20,6 +20,7 @@ use App\Http\Controllers\Controller;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
+    use Spatie\Activitylog\Models\Activity; 
 
     // use Input;
 
@@ -492,6 +493,8 @@ use App\Http\Controllers\Controller;
                         $newTax->save();
                     }
                 }
+                
+                    $lastActivity = Activity::all()->last(); //returns the last logged activity
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {

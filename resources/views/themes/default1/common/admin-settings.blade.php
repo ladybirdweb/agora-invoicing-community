@@ -65,6 +65,19 @@
                     </div>
                 </div>
 
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('settings/activitylog') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Activity Log</p>
+                    </div>
+                </div>
+
                  <!--/.col-md-2-->
                   
             </div>

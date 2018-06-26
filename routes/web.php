@@ -135,6 +135,8 @@
         Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
         Route::get('settings/error', 'Common\SettingsController@settingsError');
         Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
+        Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
+         Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
 
         /*
          * Client

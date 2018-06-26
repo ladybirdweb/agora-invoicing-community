@@ -3,14 +3,23 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
 {
+    use LogsActivity;
     protected $table = 'products';
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
         'stock_control',  'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden',  'auto_terminate',
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner', 'github_repository',
         'deny_after_subscription', 'version', 'parent', 'subscription', ];
+
+          protected static $logAttributes = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
+        'stock_control',  'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden',  'auto_terminate',
+        'setup_order_placed', 'setup_first_payment', 'setup_accept_manually', 'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner', 'github_repository',
+        'deny_after_subscription', 'version', 'parent', 'subscription',];
+
+        protected static $logOnlyDirty = true;
 
     public function order()
     {

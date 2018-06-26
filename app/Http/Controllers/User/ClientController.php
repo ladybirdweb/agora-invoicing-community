@@ -221,12 +221,10 @@ class ClientController extends Controller
      */
     public function update($id, ClientRequest $request)
     {
-<<<<<<< HEAD
+
 
          $user = $this->user->where('id', $id)->first();
-=======
-        $user = $this->user->where('id', $id)->first();
->>>>>>> c1cbae48d78adb922570d5497dec67dda593d383
+
         $user->fill($request->input())->save();
         // activity()->log('Look mum, I logged something');
         $lastActivity = Activity::all()->last(); //returns the last logged activity

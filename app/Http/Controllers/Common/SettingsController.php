@@ -471,7 +471,7 @@ class SettingsController extends Controller
         }
     }
 
-     public function settingsActivity(Activity $activities)
+    public function settingsActivity(Activity $activities)
     {
         try {
             $activity = $activities->all();
@@ -482,48 +482,46 @@ class SettingsController extends Controller
         }
     }
 
-       public function getActivity()
-        {
-            try {
-                $activity_log = Activity::select('log_name', 'description','subject_id', 'subject_type','causer_id','causer_type', 'properties','created_at')->get();
+    public function getActivity()
+    {
+        try {
+            $activity_log = Activity::select('log_name', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type', 'properties', 'created_at')->get();
 
-                return\ DataTables::of($activity_log)
+            return\ DataTables::of($activity_log)
             // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                            ->addColumn('name', function ($model) {
-                                return ucfirst($model->log_name);
-                            })
+                               return ucfirst($model->log_name);
+                           })
                              ->addColumn('description', function ($model) {
-                                return ucfirst($model->description);
-                            })
+                                 return ucfirst($model->description);
+                             })
                             ->addColumn('subject_id', function ($model) {
                                 return ucfirst($model->subject_id);
                             })
                              ->addColumn('subject_type', function ($model) {
-                                return ucfirst($model->subject_type);
-                            })
+                                 return ucfirst($model->subject_type);
+                             })
                              ->addColumn('causer_id', function ($model) {
-                                return ucfirst($model->causer_id);
-                            })
+                                 return ucfirst($model->causer_id);
+                             })
                               ->addColumn('causer_type', function ($model) {
-                                return ucfirst($model->causer_type);
-                            })
+                                  return ucfirst($model->causer_type);
+                              })
                                ->addColumn('properties', function ($model) {
-                                return ucfirst($model->properties);
-                            })
+                                   return ucfirst($model->properties);
+                               })
                                 ->addColumn('created_at', function ($model) {
-                                return ucfirst($model->created_at);
-                            })
+                                    return ucfirst($model->created_at);
+                                })
 
-                            
-
-                            ->rawColumns(['checkbox', 'name', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type','properties','created_at'])
+                            ->rawColumns(['checkbox', 'name', 'description', 'subject_id', 'subject_type', 'causer_id', 'causer_type', 'properties', 'created_at'])
                             ->make(true);
-            } catch (\Exception $e) {
-                Bugsnag::notifyException($e);
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
 
-                return redirect()->back()->with('fails', $e->getMessage());
-            }
+            return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
 
     public function settingsBugsnag(Setting $settings)
     {

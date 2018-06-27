@@ -9,42 +9,36 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Invoice extends BaseModel
 {
-     use LogsActivity;
+    use LogsActivity;
     protected $table = 'invoices';
     protected $fillable = ['user_id', 'number', 'date', 'coupon_code', 'grand_total', 'currency', 'status', 'description'];
     protected $dates = ['date'];
     protected static $logName = 'Invoice';
-   
-     protected static $logAttributes = ['user_id', 'number', 'date', 'coupon_code', 'grand_total', 'currency', 'status', 'description' ];
-      protected static $logOnlyDirty = true;
-      public function getDescriptionForEvent(string $eventName): string
+
+    protected static $logAttributes = ['user_id', 'number', 'date', 'coupon_code', 'grand_total', 'currency', 'status', 'description'];
+    protected static $logOnlyDirty = true;
+
+    public function getDescriptionForEvent(string $eventName): string
     {
-        
+
         // dd(Activity::where('subject_id',)->pluck('subject_id'));
-         if ($eventName == 'created')
-    {
-        return 'Invoice No.  <strong> ' . $this->number . ' </strong> was created';
-    }
+        if ($eventName == 'created') {
+            return 'Invoice No.  <strong> '.$this->number.' </strong> was created';
+        }
 
-    if ($eventName == 'updated')
-    {
-        return 'Invoice No. <strong> ' . $this->number . '</strong> was updated';
-    }
+        if ($eventName == 'updated') {
+            return 'Invoice No. <strong> '.$this->number.'</strong> was updated';
+        }
 
-    if ($eventName == 'deleted')
-    {
-        return 'Invoice No. <strong> ' . $this->number . ' </strong> was deleted';
-    }
+        if ($eventName == 'deleted') {
+            return 'Invoice No. <strong> '.$this->number.' </strong> was deleted';
+        }
 
-
-    return '';
-
+        return '';
 
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
-
     }
-
 
     public function invoiceItem()
     {

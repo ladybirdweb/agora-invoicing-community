@@ -86,9 +86,8 @@ class AuthController extends Controller
         $auth = \Auth::attempt($credentials, $request->has('remember'));
 
         if ($auth) {
-            dd($this->redirectPath());
-
-            return redirect()->intended($this->redirectPath());
+            
+              return redirect()->intended($this->redirectPath());
         }
 
         $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();

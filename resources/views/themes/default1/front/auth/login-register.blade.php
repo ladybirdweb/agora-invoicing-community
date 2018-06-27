@@ -1746,7 +1746,7 @@ function prevTab(elem) {
             });
         },
         initialCountry: "auto",
-        separateDialCode: false,
+        separateDialCode: true,
         utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');

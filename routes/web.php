@@ -137,6 +137,8 @@
         Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
         Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
          Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
+         Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
+
 
         /*
          * Client
@@ -217,6 +219,7 @@
         Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
         Route::patch('taxes/option', 'Payment\TaxController@options')->name('taxes/option');
         Route::post('taxes/option', 'Payment\TaxController@options');
+
 
         /*
          * Promotion

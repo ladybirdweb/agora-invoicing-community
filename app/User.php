@@ -8,6 +8,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\Models\Activity;
 
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
@@ -40,6 +41,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
+     protected static $logName = 'User';
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
@@ -47,6 +49,37 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
     protected static $logOnlyDirty = true;
+    public function getDescriptionForEvent(string $eventName): string
+    { 
+        $lastActivity = Activity::all()->last();
+       
+        // dd(Activity::where('subject_id',)->pluck('subject_id'));
+         if ($eventName == 'created')
+    {
+          return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was created';
+    }
+
+    if ($eventName == 'updated')
+    {  
+        if ($lastActivity == null){
+     activity()->log('Logged In');
+    }
+    else{
+        return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was updated';
+    }
+    }
+
+    if ($eventName == 'deleted')
+    {
+        return 'User <strong> ' . $this->first_name .' '. $this->last_name . ' </strong> was deleted';
+    }
+
+    return '';
+
+        // return "Product  has been {$eventName}";
+         // \Auth::user()->activity;
+
+    }
 
     /**
      * The attributes excluded from the model's JSON form.

@@ -17,23 +17,20 @@ class Subscription extends Model
 
     public function getDescriptionForEvent(string $eventName): string
     {
-         if ($eventName == 'created')
-    {
-        // dd($this->user()->get()->toArray(), 'cxzc');
-        return 'Subscription for User_Id   <strong> ' . $this->user_id . ' </strong> was created';
-    }
+        if ($eventName == 'created') {
+            // dd($this->user()->get()->toArray(), 'cxzc');
+            return 'Subscription for User_Id   <strong> '.$this->user_id.' </strong> was created';
+        }
 
-    if ($eventName == 'updated')
-    {
-        return 'Subscription for User <strong> ' .  $this->user_id . '</strong> was updated';
-    }
+        if ($eventName == 'updated') {
+            return 'Subscription for User <strong> '.$this->user_id.'</strong> was updated';
+        }
 
-    if ($eventName == 'deleted')
-    {
-        return 'Subscription for User <strong> ' . $this->user_id . ' </strong> was deleted';
-    }
+        if ($eventName == 'deleted') {
+            return 'Subscription for User <strong> '.$this->user_id.' </strong> was deleted';
+        }
 
-     return '';
+        return '';
     }
 
     public function plan()

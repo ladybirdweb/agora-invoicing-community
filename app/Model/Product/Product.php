@@ -3,8 +3,8 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
 {
@@ -17,38 +17,32 @@ class Product extends BaseModel
 
     protected static $logName = 'Product';
 
-    protected static $logAttributes = ['name', 'description', 'type', 'file', 'category',  
-         'github_owner', 'github_repository'
-        , 'version',  'subscription' ];
-        
-        protected static $logOnlyDirty = true;
-        public function getDescriptionForEvent(string $eventName): string
+    protected static $logAttributes = ['name', 'description', 'type', 'file', 'category',
+         'github_owner', 'github_repository', 'version',  'subscription', ];
+
+    protected static $logOnlyDirty = true;
+
+    public function getDescriptionForEvent(string $eventName): string
     {
         // dd(Activity::where('subject_id',)->pluck('subject_id'));
-         if ($eventName == 'created')
-    {
-        return 'Product ' . $this->name . ' was created';
-    }
+        if ($eventName == 'created') {
+            return 'Product '.$this->name.' was created';
+        }
 
-    if ($eventName == 'updated')
-    {
-        return 'Product  <strong> ' . $this->name . '</strong> was updated';
-    }
+        if ($eventName == 'updated') {
+            return 'Product  <strong> '.$this->name.'</strong> was updated';
+        }
 
-    if ($eventName == 'deleted')
-    {
-        return 'Product <strong> ' . $this->name . ' </strong> was deleted';
-    }
+        if ($eventName == 'deleted') {
+            return 'Product <strong> '.$this->name.' </strong> was deleted';
+        }
 
-    return '';
+        return '';
 
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
-
     }
 
-
-    
     // protected static $recordEvents = ['deleted'];
 
     public function order()

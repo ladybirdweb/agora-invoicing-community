@@ -493,9 +493,8 @@ use App\Http\Controllers\Controller;
                         $newTax->save();
                     }
                 }
-               
 
-                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -554,9 +553,7 @@ use App\Http\Controllers\Controller;
                     //echo \Lang::get('message.select-a-row');
                 }
                 $lastActivity = Activity::all()->last();
-            } 
-              
-              catch (\Exception $e) {
+            } catch (\Exception $e) {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
@@ -565,7 +562,6 @@ use App\Http\Controllers\Controller;
                 </div>';
             }
         }
-
 
         /**
          * Remove the specified resource from storage.

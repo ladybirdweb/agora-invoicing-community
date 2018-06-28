@@ -7,30 +7,27 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class TaxClass extends BaseModel
 {
-	use LogsActivity;
+    use LogsActivity;
     protected $table = 'tax_classes';
     protected $fillable = ['name'];
     protected static $logName = 'Tax Class';
     protected static $logAttributes = ['name'];
     protected static $logOnlyDirty = true;
 
-     public function getDescriptionForEvent(string $eventName): string
+    public function getDescriptionForEvent(string $eventName): string
     {
-         if ($eventName == 'created')
-    {
-        return 'Tax Class  <strong> ' . $this->name . ' </strong> was created';
-    }
+        if ($eventName == 'created') {
+            return 'Tax Class  <strong> '.$this->name.' </strong> was created';
+        }
 
-    if ($eventName == 'updated')
-    {
-        return 'Tax Class<strong> ' . $this->name . '</strong> was updated';
-    }
+        if ($eventName == 'updated') {
+            return 'Tax Class<strong> '.$this->name.'</strong> was updated';
+        }
 
-    if ($eventName == 'deleted')
-    {
-        return 'Tax Class<strong> ' . $this->name . ' </strong> was deleted';
-    }
+        if ($eventName == 'deleted') {
+            return 'Tax Class<strong> '.$this->name.' </strong> was deleted';
+        }
 
-	 return '';
-	}
+        return '';
+    }
 }

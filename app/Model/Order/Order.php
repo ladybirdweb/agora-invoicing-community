@@ -16,30 +16,24 @@ class Order extends BaseModel
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
     protected static $logAttributes = ['client', 'order_status', 'invoice_item_id',
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
-     protected static $logOnlyDirty = true;
-      public function getDescriptionForEvent(string $eventName): string
+    protected static $logOnlyDirty = true;
+
+    public function getDescriptionForEvent(string $eventName): string
     {
-        
-        if ($eventName == 'created')
-    {
-        return 'Order No.  <strong> ' . $this->number . ' </strong> was created';
+        if ($eventName == 'created') {
+            return 'Order No.  <strong> '.$this->number.' </strong> was created';
+        }
+
+        if ($eventName == 'updated') {
+            return 'Order No. <strong> '.$this->number.'</strong> was updated';
+        }
+
+        if ($eventName == 'deleted') {
+            return 'Order No. <strong> '.$this->number.' </strong> was deleted';
+        }
+
+        return '';
     }
-
-    if ($eventName == 'updated')
-    {
-        return 'Order No. <strong> ' . $this->number . '</strong> was updated';
-    }
-
-    if ($eventName == 'deleted')
-    {
-        return 'Order No. <strong> ' . $this->number . ' </strong> was deleted';
-    }
-
-
-    return '';
-
- }
-
 
     public function invoice()
     {

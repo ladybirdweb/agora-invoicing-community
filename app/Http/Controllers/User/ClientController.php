@@ -7,10 +7,11 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
-use Spatie\Activitylog\Models\Activity; 
 use App\User;
 use Illuminate\Http\Request;
+
 use DB;
+
 
 class ClientController extends Controller
 {

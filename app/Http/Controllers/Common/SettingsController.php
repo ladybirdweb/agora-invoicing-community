@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
+use App\User;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Activity;
-use App\User;
-use DateTimeZone;
-use DateTime;
 
 class SettingsController extends Controller
 {
@@ -488,12 +488,13 @@ class SettingsController extends Controller
     public function getActivity()
     {
         try {
-            $activity_log = Activity::select('id','log_name', 'description', 'subject_id', 'subject_type', 'causer_id',  'properties', 'created_at')->get();
+            $activity_log = Activity::select('id', 'log_name', 'description', 'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
+
             return\ DataTables::of($activity_log)
             // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
                      ->addColumn('checkbox', function ($model) {
-                     return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
-                            })
+                         return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+                     })
                            ->addColumn('name', function ($model) {
                                return ucfirst($model->log_name);
                            })
@@ -508,72 +509,70 @@ class SettingsController extends Controller
                              // })
                              ->addColumn('username', function ($model) {
                                  $causer_id = $model->causer_id;
-                                 $names = User::where('id',$causer_id)->pluck('last_name','first_name');
+                                 $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
                                  foreach ($names as $key => $value) {
-                                    $fullName= $key .' '.$value;
+                                     $fullName = $key.' '.$value;
+
                                      return $fullName;
                                  }
                                  // return $fullName;
-
                              })
                               ->addColumn('role', function ($model) {
-                                $causer_id = $model->causer_id;
-                                $role = User::where('id',$causer_id)->pluck('role');
-                                return json_decode($role);
-                             })
+                                  $causer_id = $model->causer_id;
+                                  $role = User::where('id', $causer_id)->pluck('role');
+
+                                  return json_decode($role);
+                              })
                               // ->addColumn('causer_type', function ($model) {
                               //     return ucfirst($model->causer_type);
                               // })
                                 ->addColumn('new', function ($model) {
-                                   $properties= ($model->properties);
-                                   $properties= (array_key_exists("attributes",$properties->toArray()))?($model->properties['attributes']): null ;
-                                   if($properties!= null){
-                                   if(array_key_exists("parent",$properties)){
-                                    unset($properties['parent']);
-                                   }
-                            
-                                   foreach ($properties as $key => $value) {
-                                     $display[] ='<strong>' . 'ucfirst'($key).'</strong>' .' : '.$value .'<br/>';
-                                     
-                                     }
+                                    $properties = ($model->properties);
+                                    $properties = (array_key_exists('attributes', $properties->toArray())) ? ($model->properties['attributes']) : null;
+                                    if ($properties != null) {
+                                        if (array_key_exists('parent', $properties)) {
+                                            unset($properties['parent']);
+                                        }
 
-                                   $updated= (count($properties) > 0) ? implode("", $display):'--';
-                                   return $updated;
-                               }else
-                               return '--';
-                                  
-                               })
+                                        foreach ($properties as $key => $value) {
+                                            $display[] = '<strong>'.'ucfirst'($key).'</strong>'.' : '.$value.'<br/>';
+                                        }
+
+                                        $updated = (count($properties) > 0) ? implode('', $display) : '--';
+
+                                        return $updated;
+                                    } else {
+                                        return '--';
+                                    }
+                                })
                                 ->addColumn('old', function ($model) {
-                                $data= ($model->properties);
-                                 $oldData= (array_key_exists("old",$data->toArray()))?($model->properties['old']): null ;
-                                 if($oldData != null) {
-                                 if((count($oldData) > 0)){
-                                    foreach ($oldData as $key => $value) {
-                                     $display[] ='<strong>' . 'ucfirst'($key).'</strong>' .' : '.$value .'<br/>';
-                                     
-                                     }
-                                 }
-                                   
+                                    $data = ($model->properties);
+                                    $oldData = (array_key_exists('old', $data->toArray())) ? ($model->properties['old']) : null;
+                                    if ($oldData != null) {
+                                        if ((count($oldData) > 0)) {
+                                            foreach ($oldData as $key => $value) {
+                                                $display[] = '<strong>'.'ucfirst'($key).'</strong>'.' : '.$value.'<br/>';
+                                            }
+                                        }
 
-                                   $old= (count($oldData) > 0) ? implode("", $display):'--';
-                                   return $old;
-                               }
-                               else{
-                                return '--';
-                            }
-                                  
-                               })
+                                        $old = (count($oldData) > 0) ? implode('', $display) : '--';
+
+                                        return $old;
+                                    } else {
+                                        return '--';
+                                    }
+                                })
                                 ->addColumn('created_at', function ($model) {
-                                    
-                                   $created = new DateTime($model->created_at);
-                                        $tz = \Auth::user()->timezone()->first()->name;
-                                        $created->setTimezone(new DateTimeZone($tz));
-                                        $date = $created->format('M j, Y, g:i a ');
-                                        $newDate = $date;
-                                        return $newDate;
-                                    })
+                                    $created = new DateTime($model->created_at);
+                                    $tz = \Auth::user()->timezone()->first()->name;
+                                    $created->setTimezone(new DateTimeZone($tz));
+                                    $date = $created->format('M j, Y, g:i a ');
+                                    $newDate = $date;
 
-                            ->rawColumns(['checkbox', 'name', 'description',   'username','role','new', 'old', 'created_at'])
+                                    return $newDate;
+                                })
+
+                            ->rawColumns(['checkbox', 'name', 'description',   'username', 'role', 'new', 'old', 'created_at'])
                             ->make(true);
         } catch (\Exception $e) {
             dd($e->getMessage());
@@ -583,8 +582,7 @@ class SettingsController extends Controller
         }
     }
 
-
-     public function destroy(Request $request)
+    public function destroy(Request $request)
     {
         try {
             $ids = $request->input('select');
@@ -592,8 +590,8 @@ class SettingsController extends Controller
                 foreach ($ids as $id) {
                     $activity = Activity::where('id', $id)->first();
                     if ($activity) {
-                                $activity->delete();
-                            }  else {
+                        $activity->delete();
+                    } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
@@ -627,8 +625,6 @@ class SettingsController extends Controller
                     </div>';
         }
     }
-  
-
 
     public function settingsBugsnag(Setting $settings)
     {

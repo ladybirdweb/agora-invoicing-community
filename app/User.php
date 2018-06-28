@@ -7,6 +7,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
+
 use Spatie\Activitylog\Traits\LogsActivity;
 
 //use Laravel\Cashier\Billable;
@@ -40,7 +41,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
-     protected static $logName = 'User';
+    protected static $logName = 'User';
     protected static $logAttributes = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
@@ -48,6 +49,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
     protected static $logOnlyDirty = true;
+
 
 
     // protected static  $logAttributesToIgnore = ['user_name','company','zip','password','town','profile_pic','company_type','address','company_size', 'mobile_verified','timezone_id','bussiness','ip', 'skype'];
@@ -70,16 +72,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was updated';
     }
 
-    if ($eventName == 'deleted')
-    {
-        return 'User <strong> ' . $this->first_name .' '. $this->last_name . ' </strong> was deleted';
-    }
 
-    return '';
+        if ($eventName == 'deleted') {
+            return 'User <strong> '.$this->first_name.' '.$this->last_name.' </strong> was deleted';
+        }
+
+        return '';
 
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
-
     }
 
     /**

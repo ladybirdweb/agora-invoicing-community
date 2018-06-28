@@ -108,7 +108,6 @@ trait AuthenticatesUsers
             
             
            }else{
-                 
                  return redirect()->intended($this->redirectPath());
             
         }
@@ -267,8 +266,7 @@ trait AuthenticatesUsers
         $this->guard()->logout();
 
         $request->session()->invalidate();
-        activity()->log('Logged Out');
-        return redirect('/');
+          return redirect('/');
     }
 
     /**

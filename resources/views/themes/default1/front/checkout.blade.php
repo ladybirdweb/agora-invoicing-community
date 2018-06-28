@@ -136,7 +136,7 @@ $sum = 0;
                                 <td class="product-price">
                                     <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
                                    
-                                    <span class="amount">{!! $symbol !!}   {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span>
+                                    <span class="amount">{!! $symbol !!}    {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
 
 
                                 </td>

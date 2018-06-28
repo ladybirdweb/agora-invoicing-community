@@ -10,6 +10,7 @@ use App\Model\User\AccountActivate;
 use Spatie\Activitylog\Models\Activity; 
 use App\User;
 use Illuminate\Http\Request;
+use DB;
 
 class ClientController extends Controller
 {
@@ -74,7 +75,7 @@ class ClientController extends Controller
         $position = $request->input('position');
 
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
-
+           // $user = DB::table('users');
         return\ DataTables::of($user->get())
 
                         ->addColumn('checkbox', function ($model) {
@@ -226,10 +227,7 @@ class ClientController extends Controller
 
         $user->fill($request->input())->save();
         // activity()->log('Look mum, I logged something');
-        $lastActivity = Activity::all()->last(); //returns the last logged activity
-
-       // $lastActivity->description;
-
+       
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
@@ -289,7 +287,7 @@ class ClientController extends Controller
 
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = $this->user;
+        $join = DB::table('users')->orderBy('created_at','desc');
 
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')

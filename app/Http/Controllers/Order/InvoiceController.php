@@ -300,7 +300,7 @@ class InvoiceController extends Controller
             }
         } catch (\Exception $ex) {
 
-            // die;
+            dd($ex);
             Bugsnag::notifyExeption($ex);
             $result = ['fails' => $ex->getMessage()];
         }

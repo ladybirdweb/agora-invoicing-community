@@ -220,7 +220,7 @@
                                                                     <table class="cart">
                                                                         <tbody>
                                                                             @forelse(Cart::getContent() as $key=>$item)
-                                                                            
+                                                                             
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {

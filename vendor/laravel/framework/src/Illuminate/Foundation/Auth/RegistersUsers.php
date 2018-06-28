@@ -93,9 +93,15 @@ trait RegistersUsers
             $user->ip = $location['query'];
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
+            // $activity = Activity::all()->last();
+
+            // $activity->description; //returns 'updated'
+            // $activity->subject; 
+             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
             $user->fill($request->except('password'))->save();
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
+
             if ($user) {
                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
 

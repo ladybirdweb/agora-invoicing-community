@@ -443,9 +443,9 @@ use App\Http\Controllers\Controller;
             // $v->sometimes(['currency', 'price'], 'required', function ($input) {
             //     return $input->subscription != 1;
             // });
-            // if ($v->fails()) {
-            //     return redirect()->back()->with('errors', $v->errors());
-            // }
+            if ($v->fails()) {
+                return redirect()->back()->with('errors', $v->errors());
+            }
 
             try {
                 $product = $this->product->where('id', $id)->first();

@@ -7,7 +7,6 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
-
 use Spatie\Activitylog\Traits\LogsActivity;
 
 //use Laravel\Cashier\Billable;
@@ -50,28 +49,23 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     protected static $logOnlyDirty = true;
 
-
-
     // protected static  $logAttributesToIgnore = ['user_name','company','zip','password','town','profile_pic','company_type','address','company_size', 'mobile_verified','timezone_id','bussiness','ip', 'skype'];
 
-    
     public function getDescriptionForEvent(string $eventName): string
     {
 
         // dd(Activity::where('subject_id',)->pluck('subject_id'));
-    //      if ($eventName == 'created')
-    // {
-          
-    //       return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was created';
-    // }
+        //      if ($eventName == 'created')
+        // {
 
+        //       return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was created';
+        // }
 
-    if ($eventName == 'updated')
-    {
-         $this->enableLogging();
-        return 'User  <strong> ' . $this->first_name .' '. $this->last_name . '</strong> was updated';
-    }
+        if ($eventName == 'updated') {
+            $this->enableLogging();
 
+            return 'User  <strong> '.$this->first_name.' '.$this->last_name.'</strong> was updated';
+        }
 
         if ($eventName == 'deleted') {
             return 'User <strong> '.$this->first_name.' '.$this->last_name.' </strong> was deleted';

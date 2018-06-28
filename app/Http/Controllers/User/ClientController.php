@@ -8,10 +8,8 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
 use App\User;
-use Illuminate\Http\Request;
-
 use DB;
-
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -76,7 +74,7 @@ class ClientController extends Controller
         $position = $request->input('position');
 
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
-           // $user = DB::table('users');
+        // $user = DB::table('users');
         return\ DataTables::of($user->get())
 
                         ->addColumn('checkbox', function ($model) {
@@ -228,7 +226,7 @@ class ClientController extends Controller
 
         $user->fill($request->input())->save();
         // activity()->log('Look mum, I logged something');
-       
+
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
@@ -288,7 +286,7 @@ class ClientController extends Controller
 
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = DB::table('users')->orderBy('created_at','desc');
+        $join = DB::table('users')->orderBy('created_at', 'desc');
 
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')

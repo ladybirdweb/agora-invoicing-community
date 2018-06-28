@@ -6,8 +6,8 @@ use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxClass;
@@ -1287,8 +1287,8 @@ class CartController extends Controller
             $product = $this->product->find($productid);
 
             // $price = $product->price()->where('currency', $currency)->first();
-            $plan_id = Plan::where('product',$productid)->pluck('id')->first();
-            $price = PlanPrice::where('plan_id',$plan_id)->where('currency',$currency)->pluck('add_price')->first();
+            $plan_id = Plan::where('product', $productid)->pluck('id')->first();
+            $price = PlanPrice::where('plan_id', $plan_id)->where('currency', $currency)->pluck('add_price')->first();
             if ($price) {
                 $sales = $price;
                 // if ($sales == 0) {

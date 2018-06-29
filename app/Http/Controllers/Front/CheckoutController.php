@@ -231,7 +231,7 @@ class CheckoutController extends Controller
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
             }
-            if ($paynow == false) {
+            if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
                  */

@@ -429,13 +429,18 @@ class SettingsController extends Controller
 
     public function postSettingsEmail(Setting $settings, Request $request)
     {
+         $this->validate($request,[
+                'email'    => 'required',
+                'password' => 'required',
+            ]);
+
         try {
             $setting = $settings->find(1);
             $setting->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

@@ -757,8 +757,6 @@ use App\Http\Controllers\Controller;
                         $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                         $product_id = $order->product;
                         $invoice_id = $invoice->id;
-                        // $productUploadId= $this->product_upload->select('id')->get();
-                        // dd($productUploadId);
                         $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                         if (is_array($release) && array_key_exists('type', $release)) {
                             $release = $release['release'];
@@ -773,7 +771,7 @@ use App\Http\Controllers\Controller;
                             //ob_clean();
                             flush();
                             readfile("$release");
-                            exit;
+                        
                         }
                     } else {
                         return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));

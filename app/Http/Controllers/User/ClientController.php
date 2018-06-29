@@ -7,11 +7,10 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
+use Spatie\Activitylog\Models\Activity; 
 use App\User;
 use Illuminate\Http\Request;
-
 use DB;
-
 
 class ClientController extends Controller
 {
@@ -76,7 +75,7 @@ class ClientController extends Controller
         $position = $request->input('position');
 
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
-           // $user = DB::table('users');
+
         return\ DataTables::of($user->get())
 
                         ->addColumn('checkbox', function ($model) {
@@ -288,7 +287,7 @@ class ClientController extends Controller
 
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = DB::table('users')->orderBy('created_at','desc');
+        $join = DB::table('users');
 
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')

@@ -20,6 +20,7 @@ use App\Model\Product\Subscription;
 use Bugsnag;
 use Config;
 use Illuminate\Http\Request;
+use DB;
 
 class TemplateController extends Controller
 {
@@ -76,26 +77,30 @@ class TemplateController extends Controller
 
         $currency = new Currency();
         $this->currency = $currency;
-        // $this->smtp();
+        $this->smtp();
     }
 
     public function smtp()
     {
         $settings = new Setting();
         $fields = $settings->find(1);
-        $driver = '';
-        $port = '';
-        $host = '';
-        $enc = '';
-        $email = '';
+        // $driver = '';
+        // $port = '';
+        // $host = '';
+        // $enc = '';
+        // $email = '';
         $password = '';
-        $name = '';
+        // $name = '';
         if ($fields) {
             $driver = $fields->driver;
             $port = $fields->port;
             $host = $fields->host;
             $enc = $fields->encryption;
             $email = $fields->email;
+            // $passwords = DB::table('settings')->value('password');
+            //  foreach ($passwords as $key=>$value){
+            //     $password = \Crypt::decrypt($value);
+            // }
             $password = $fields->password;
             $name = $fields->company;
         }
@@ -112,7 +117,8 @@ class TemplateController extends Controller
         Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
-        dump(Config::get('mail'));
+        // dd(Config::get('mail'));
+        // dump(Config::get('mail'));
 
         return 'success';
     }
@@ -291,35 +297,35 @@ class TemplateController extends Controller
 
             // // // Set the mailer
 
-            $fields = $settings;
-            $driver = '';
-            $port = '';
-            $host = '';
-            $enc = '';
-            $email = '';
-            $mail_password = '';
-            $name = '';
-            if ($fields) {
-                $driver = $fields->driver;
-                $port = $fields->port;
-                $host = $fields->host;
-                $enc = $fields->encryption;
-                $email = $fields->email;
-                $mail_password = $fields->password;
-                $name = $fields->company;
-            }
+            // $fields = $settings;
+            // $driver = '';
+            // $port = '';
+            // $host = '';
+            // $enc = '';
+            // $email = '';
+            // $mail_password = '';
+            // $name = '';
+            // if ($fields) {
+            //     $driver = $fields->driver;
+            //     $port = $fields->port;
+            //     $host = $fields->host;
+            //     $enc = $fields->encryption;
+            //     $email = $fields->email;
+            //     $mail_password = $fields->password;
+            //     $name = $fields->company;
+            // }
 
-            $https['ssl']['verify_peer'] = false;
-            $https['ssl']['verify_peer_name'] = false;
+            // $https['ssl']['verify_peer'] = false;
+            // $https['ssl']['verify_peer_name'] = false;
 
-            $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
-            $transport->setUsername($email);
-            $transport->setPassword($mail_password);
-            $transport->setStreamOptions($https);
-            $set = new \Swift_Mailer($transport);
+            // $transport = new \Swift_SmtpTransport('smtp.gmail.com', '465', 'ssl');
+            // $transport->setUsername($email);
+            // $transport->setPassword($mail_password);
+            // $transport->setStreamOptions($https);
+            // $set = new \Swift_Mailer($transport);
 
-            // // Set the mailer
-            \Mail::setSwiftMailer($set);
+            // // // Set the mailer
+            // \Mail::setSwiftMailer($set);
 
             /*Mail config ends*/
 

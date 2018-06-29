@@ -460,7 +460,8 @@ function tln_deent(&$attvalue, $regex, $hex = false)
     preg_match_all($regex, $attvalue, $matches);
     if (is_array($matches) && count($matches[0]) > 0) {
         $repl = [];
-        for ($i = 0; $i < count($matches[0]); $i++) {
+        $c= count($matches[0]);
+        for ($i = 0; $i < $c ; $i++) {
             $numval = $matches[1][$i];
             if ($hex) {
                 $numval = hexdec($numval);
@@ -744,7 +745,7 @@ function tln_fixstyle($body, $pos, $trans_image_path, $block_external_images)
                 break;
         }
     }
-    if ($bSucces == false) {
+    if ($bSucces === false) {
         return [false, strlen($body)];
     }
 
@@ -920,7 +921,7 @@ function tln_sanitize(
             }
             continue;
         }
-        if ($skip_content == false) {
+        if ($skip_content === false) {
             $trusted .= $free_content;
         }
         if ($tagname != false) {

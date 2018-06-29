@@ -460,8 +460,8 @@ function tln_deent(&$attvalue, $regex, $hex = false)
     preg_match_all($regex, $attvalue, $matches);
     if (is_array($matches) && count($matches[0]) > 0) {
         $repl = [];
-        $c= count($matches[0]);
-        for ($i = 0; $i < $c ; $i++) {
+        $c = count($matches[0]);
+        for ($i = 0; $i < $c; $i++) {
             $numval = $matches[1][$i];
             if ($hex) {
                 $numval = hexdec($numval);

@@ -668,7 +668,7 @@ class InvoiceController extends Controller
     public function checkTax($productid, $userid)
     {
         try {
-            $taxs = array();
+            $taxs = [];
             $taxs[0] = ['name' => 'null', 'rate' => 0];
             $geoip_state = User::where('id', $userid)->pluck('state')->first();
             $geoip_country = User::where('id', $userid)->pluck('country')->first();

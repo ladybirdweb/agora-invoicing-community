@@ -7,11 +7,10 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
-use Spatie\Activitylog\Models\Activity; 
 use App\User;
-use Illuminate\Http\Request;
 use DB;
-
+use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
 
 class ClientController extends Controller
 {
@@ -289,7 +288,6 @@ class ClientController extends Controller
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = DB::table('users');
-
 
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')

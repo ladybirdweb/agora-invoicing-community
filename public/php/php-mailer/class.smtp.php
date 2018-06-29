@@ -443,7 +443,7 @@ class SMTP
                 return false;
             }
 
-            self::/** @scrutinizer ignore-call */ 
+            self::/* @scrutinizer ignore-call */
             edebug('Auth method requested: '.($authtype ? $authtype : 'UNKNOWN'), self::DEBUG_LOWLEVEL);
             self::edebug(
                 'Auth methods available on the server: '.implode(',', $this->server_caps['AUTH']),

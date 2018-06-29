@@ -19,8 +19,8 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Config;
-use Illuminate\Http\Request;
 use DB;
+use Illuminate\Http\Request;
 
 class TemplateController extends Controller
 {

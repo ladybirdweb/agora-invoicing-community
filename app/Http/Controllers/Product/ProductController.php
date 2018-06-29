@@ -771,7 +771,6 @@ use App\Http\Controllers\Controller;
                             //ob_clean();
                             flush();
                             readfile("$release");
-                        
                         }
                     } else {
                         return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));

@@ -12,6 +12,7 @@ use App\User;
 use Illuminate\Http\Request;
 use DB;
 
+
 class ClientController extends Controller
 {
     public $user;
@@ -227,7 +228,7 @@ class ClientController extends Controller
 
         $user->fill($request->input())->save();
         // activity()->log('Look mum, I logged something');
-       
+
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
@@ -288,6 +289,7 @@ class ClientController extends Controller
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = DB::table('users');
+
 
         if ($name) {
             $join = $join->where('first_name', 'LIKE', '%'.$name.'%')

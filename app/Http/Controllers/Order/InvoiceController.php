@@ -299,7 +299,6 @@ class InvoiceController extends Controller
                 $result = ['fails' => \Lang::get('message.can-not-generate-invoice')];
             }
         } catch (\Exception $ex) {
-
             dd($ex);
             Bugsnag::notifyExeption($ex);
             $result = ['fails' => $ex->getMessage()];

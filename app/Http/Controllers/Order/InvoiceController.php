@@ -169,7 +169,7 @@ class InvoiceController extends Controller
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -288,7 +288,7 @@ class InvoiceController extends Controller
             //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             //            }
 
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id,$tax_name,$tax_rate);
             // dd($items);
 
             if ($items) {
@@ -300,7 +300,7 @@ class InvoiceController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
             $result = ['fails' => $ex->getMessage()];
         }
 
@@ -460,7 +460,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '', $userid = '')
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '', $userid = '',$tax_name='',$tax_rate = '')
     {
         try {
             $discount = '';
@@ -481,15 +481,15 @@ class InvoiceController extends Controller
                 $discount = $price - $subtotal;
             }
             $userid = \Auth::user()->id;
-            $tax = $this->checkTax($product->id, $userid);
-            $tax_name = '';
-            $tax_rate = '';
-            if (!empty($tax)) {
+            // $tax = $this->checkTax($product->id, $userid);
+            // $tax_name = '';
+            // $tax_rate = '';
+            // if (!empty($tax)) {
 
-                    //dd($value);
-                $tax_name = $tax[0];
-                $tax_rate = $tax[1];
-            }
+            //         //dd($value);
+            //     $tax_name = $tax[0];
+            //     $tax_rate = $tax[1];
+            // }
 
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
 
@@ -510,7 +510,7 @@ class InvoiceController extends Controller
 
             return $items;
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -721,7 +721,7 @@ class InvoiceController extends Controller
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }
-
+            // dd($taxs);
             return $taxs;
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-tax-error'));

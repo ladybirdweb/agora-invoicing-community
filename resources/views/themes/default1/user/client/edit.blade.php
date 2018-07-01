@@ -202,7 +202,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                        {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">

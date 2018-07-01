@@ -426,7 +426,7 @@ else{
                     </th>
                     <td>
                       
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
                          
                        
                     </td>
@@ -435,7 +435,7 @@ else{
                   @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
-                  
+                
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
                        

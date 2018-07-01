@@ -38,7 +38,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('themes.default1.layouts.master');
+        return view('themes.default1.common.dashboard');
     }
 
     public function version(Request $request, Product $product)

@@ -123,7 +123,7 @@
 
                                     @foreach($invoiceItems as $item)
                                     <tr>
-
+                         
                                         <td>{{$item->product_name}}</td>
                                         <td>{{$item->quantity}}</td>
                                         <td>{{$item->regular_price}}</td>
@@ -173,11 +173,14 @@
                                 $tax_name = [];
                                 $tax_percentage = [];
                                 foreach ($invoiceItems as $key => $item) {
+
                                     if (str_finish(',', $item->tax_name)) {
-                                        $name = substr_replace($item->tax_name, '', -1);
+                                        $name = ($item->tax_name);
+                                       
                                     }
                                     if (str_finish(',', $item->tax_percentage)) {
                                         $rate = substr_replace($item->tax_percentage, '', -1);
+                                        
                                     }
                                     $tax_name = explode(',', $name);
                                     $tax_percentage = explode(',', $rate);
@@ -189,7 +192,6 @@
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId);
                                      ?>
-
                                    @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
                                     @if($set->state == $user->state)
                                              <tr class="Taxes">

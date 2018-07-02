@@ -1,72 +1,18 @@
 @extends('themes.default1.layouts.master')
 @section('content')
-<div class="row">
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-aqua"><i class="fa fa-users"></i></span>
 
-            <div class="info-box-content">
-                <span class="info-box-text">Total users</span>
-                <span class="info-box-number">3545</span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-red"><i class="fa fa-trophy"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Pro Edition</span>
-                <span class="info-box-number">24</span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-
-    <!-- fix for small devices only -->
-    <div class="clearfix visible-sm-block"></div>
-
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-green"><i class="fa fa-briefcase"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Community Edition</span>
-                <span class="info-box-number">1567</span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-    <div class="col-md-3 col-sm-6 col-xs-12">
-        <div class="info-box">
-            <span class="info-box-icon bg-yellow"><i class="fa fa-tags"></i></span>
-
-            <div class="info-box-content">
-                <span class="info-box-text">Products/Services Registered</span>
-                <span class="info-box-number">3</span>
-            </div>
-            <!-- /.info-box-content -->
-        </div>
-        <!-- /.info-box -->
-    </div>
-    <!-- /.col -->
-</div>
-
-    <div class="row">
+   <div class="row">
         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
               <h4>Total Sales</h4>
-              <span>INR:   25,00,000</span><br/>
-               <span>USD:  2,345 </span>
+              <?php
+              $rupeeSum = number_format($totalSalesINR,2);
+              $dollarSum = number_format($totalSalesUSD);
+              ?>
+              <span>INR: &nbsp;  ₹ {{$rupeeSum}}</span><br/>
+               <span>USD: &nbsp;  $ {{$dollarSum}} </span>
             </div>
 
             <div class="icon">
@@ -80,8 +26,12 @@
           <div class="small-box bg-green">
             <div class="inner">
             	<h4>Yearly Sales</h4>
-              <span>INR:   2,50,000</span><br/>
-               <span>USD:  345 </span>
+                <?php
+              $rupeeYearlySum = number_format($yearlySalesINR,2);
+              $dollarYearlySum = number_format($yearlySalesUSD,2);
+              ?>
+              <span>INR:&nbsp;  ₹ {{$rupeeYearlySum}}   </span><br/>
+               <span>USD:&nbsp; $ {{$dollarYearlySum}} </span>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
@@ -94,8 +44,12 @@
           <div class="small-box bg-red">
             <div class="inner">
             	<h4>Monthly Sales</h4>
-              <span>INR:   1,00,000</span><br/>
-               <span>USD:  100 </span>
+               <?php
+              $rupeeMonthlySum = number_format($monthlySalesINR,2);
+              $dollarMonthlySum = number_format($monthlySalesUSD,2);
+              ?>
+              <span>INR:&nbsp;  ₹  {{$rupeeMonthlySum}}</span><br/>
+              <span>USD:&nbsp; $ {{$dollarMonthlySum}}</span>
             </div>
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
@@ -112,9 +66,9 @@
               <!-- USERS LIST -->
               <div class="box box-primary">
                 <div class="box-header with-border">
-                  <h3 class="box-title">Latest Registered Users</h3>
-
-                  <div class="box-tools pull-right">
+                  <h3 class="box-title">Total Users: <span><strong>{{$count_users}}</strong></span></h3><br/>
+                  <h3 class="box-title">Recently Registered Users</h3><br/>
+                   <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                     </button>
                     <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
@@ -122,54 +76,37 @@
                   </div>
                 </div>
                 <!-- /.box-header -->
+
+
+                   <?php
+                   $mytime = Carbon\Carbon::now();
+                   $yesterday = Carbon\Carbon::yesterday();
+                   ?>
                 <div class="box-body no-padding">
+                 
                   <ul class="users-list clearfix">
+                    @foreach($users as $user)
                     <li>
-                      <img src="dist/img/user1-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Alexander Pierce</a>
+                      <img src="{{$user['profile_pic']}}" alt="User Image">
+                      <a class="users-list-name" href="#">{{$user['first_name']." ".$user['last_name']}}</a>
+
+                      @if ($user['created_at']->toDateString() < $mytime->toDateString())
+                      <span class="users-list-date">{{$user['created_at']->format('M j')}}</span>
+                      @elseif ($user['created_at']->toDateString() < $yesterday->toDateString())
+                       <span class="users-list-date">Yesterday</span>
+                      @else
                       <span class="users-list-date">Today</span>
+                      @endif
                     </li>
-                    <li>
-                      <img src="dist/img/user8-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Norman</a>
-                      <span class="users-list-date">Yesterday</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user7-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Jane</a>
-                      <span class="users-list-date">12 Jan</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user6-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">John</a>
-                      <span class="users-list-date">12 Jan</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user2-160x160.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Alexander</a>
-                      <span class="users-list-date">13 Jan</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user5-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Sarah</a>
-                      <span class="users-list-date">14 Jan</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user4-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Nora</a>
-                      <span class="users-list-date">15 Jan</span>
-                    </li>
-                    <li>
-                      <img src="dist/img/user3-128x128.jpg" alt="User Image">
-                      <a class="users-list-name" href="#">Nadia</a>
-                      <span class="users-list-date">15 Jan</span>
-                    </li>
-                  </ul>
+                    @endforeach
+                   </ul>
+
                   <!-- /.users-list -->
                 </div>
+
                 <!-- /.box-body -->
                 <div class="box-footer text-center">
-                  <a href="javascript:void(0)" class="uppercase">View All Users</a>
+                  <a href="{{url('clients')}}" class="uppercase">View All Users</a>
                 </div>
                 <!-- /.box-footer -->
               </div>
@@ -201,7 +138,7 @@
                        	<strong> Last Purchase: </strong>
                           18 Oct, 2018, 11:52AM
                         </span>
-                   
+
                   </div>
                 </li>
                 <!-- /.item -->
@@ -238,7 +175,7 @@
                     <img src="dist/img/advance.png" alt="Product Image">
                   </div>
                   <div class="product-info">
-                    <a href="javascript:void(0)" class="product-title">ServiceDesk Advance <strong> x 1</strong> 
+                    <a href="javascript:void(0)" class="product-title">ServiceDesk Advance <strong> x 1</strong>
                       <span class="label label-success pull-right">$399</span></a>
                     <span class="product-description">
                        	<strong> Last Purchase: </strong>
@@ -326,7 +263,7 @@
             <!-- /.box-footer -->
             </div>
           </div>
-        
+
          	<div class="col-md-6">
          	  <div class="box box-info">
             <div class="box-header with-border">
@@ -373,9 +310,9 @@
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
-           
+
             <!-- /.box-footer -->
             </div>
           </div>
-         </div> 
+         </div>
 @stop

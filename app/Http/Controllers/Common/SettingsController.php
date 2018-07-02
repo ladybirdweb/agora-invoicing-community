@@ -12,6 +12,7 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Activity;
+use Bugsnag;
 
 class SettingsController extends Controller
 {
@@ -50,7 +51,7 @@ class SettingsController extends Controller
                                     $settings = ' ';
                                 } else {
                                     $settings = '<a href='.url($model['settings']).'>Settings</a> | ';
-                                    $activate = '<a href='.url('plugin/status/'.$model['path']).'>Deactivate</a>';
+                                    $activate = '<a href='./** @scrutinizer ignore-type */url('plugin/status/'.$model['path']).'>Deactivate</a>';
                                 }
 
                                 $delete = '<a href=  id=delete'.$model['path'].' data-toggle=modal data-target=#del'.$model['path']."><span style='color:red'>Delete</span></a>"
@@ -63,7 +64,7 @@ class SettingsController extends Controller
                                                     <div class=modal-body>
                                                        <p>Are you Sure ?</p>
                                                         <div class=modal-footer>
-                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
+                                                            <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>"./** @scrutinizer ignore-type */\Lang::get('lang.close').'</button>
                                                             <a href='.url('plugin/delete/'.$model['path'])."><button class='btn btn-danger'>Delete</button></a>
                                                         </div>
 
@@ -580,8 +581,7 @@ class SettingsController extends Controller
                             ->rawColumns(['checkbox', 'name', 'description',   'username', 'role', 'new', 'old', 'created_at'])
                             ->make(true);
         } catch (\Exception $e) {
-            dd($e->getMessage());
-            Bugsnag::notifyException($e);
+             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -599,9 +599,9 @@ class SettingsController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.no-record').'
+                            './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                     </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
@@ -610,14 +610,14 @@ class SettingsController extends Controller
                         <i class='fa fa-ban'></i>
                         <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.deleted-successfully').'
+                            './** @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
                         <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.select-a-row').'
+                            './** @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';
                 //echo \Lang::get('message.select-a-row');
             }

@@ -108,7 +108,7 @@
     // // 'password' => 'Auth\PasswordController',
     //     ]);
         Route::auth();
-        Route::get('/', 'HomeController@index');
+        Route::get('/', 'DashboardController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
         Route::get('activate/{token}', 'Auth\AuthController@Activate');

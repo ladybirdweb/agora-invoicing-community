@@ -6,6 +6,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
 use Illuminate\Http\Request;
+use App\Model\Order\Invoice;
 
 class HomeController extends Controller
 {
@@ -38,8 +39,17 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $totalSales = $this->getTotalSales();
         return view('themes.default1.common.dashboard');
     }
+
+     public function getTotalSales()
+     {
+        $invoice = new Invoice;
+        $total = $invoice->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+        return $grandTotal;
+     }
 
     public function version(Request $request, Product $product)
     {

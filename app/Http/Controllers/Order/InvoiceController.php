@@ -288,7 +288,7 @@ class InvoiceController extends Controller
             //                $this->doPayment('online payment', $invoice->id, $grand_total, '', $user_id);
             //            }
 
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id,$tax_name,$tax_rate);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             // dd($items);
 
             if ($items) {
@@ -460,7 +460,7 @@ class InvoiceController extends Controller
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '', $userid = '',$tax_name='',$tax_rate = '')
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
     {
         try {
             $discount = '';

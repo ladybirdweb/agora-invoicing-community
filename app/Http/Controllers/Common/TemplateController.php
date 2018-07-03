@@ -809,7 +809,7 @@ class TemplateController extends Controller
     {
         $cost = 'Free';
         $plan = new Plan();
-        $price= '';
+        $price = '';
         $plans = $plan->where('product', $id)->get();
 
         $cart_controller = new \App\Http\Controllers\Front\CartController();

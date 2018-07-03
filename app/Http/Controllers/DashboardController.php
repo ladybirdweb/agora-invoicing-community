@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Model\Order\Invoice;
-use App\User;
 use App\Model\Order\Order;
+use App\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-
 
 class DashboardController extends Controller
 {
@@ -30,14 +28,12 @@ class DashboardController extends Controller
         $productSoldlists = $this->recentProductSold();
         $productNameList =array(); 
         foreach ($productSoldlists as $productSoldlist) {
-          $productNameList[] = $productSoldlist->name;
-          }
-          $arraylists=array_count_values($productNameList);
-         
-		return view('themes.default1.common.dashboard',compact('totalSalesINR','totalSalesUSD','yearlySalesINR'
-                ,'yearlySalesUSD','monthlySalesINR','monthlySalesUSD','users','count_users','arraylists','productSoldlists'));
-     }
+            $productNameList[] = $productSoldlist->name;
+        }
+        $arraylists = array_count_values($productNameList);
 
+        return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD', 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users', 'count_users', 'arraylists', 'productSoldlists'));
+    }
 
     /**
      * Get Total Sales in Indian Currency.
@@ -132,21 +128,23 @@ class DashboardController extends Controller
                 ->where('currency', 'USD')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
+
         return $grandTotal;
     }
 
-
-     /**
-      * Get the list of previous 8 registered users
-      * @return type
-      */
-     public function getAllUsers()
-     {
-      $user = new User();
-      $allUsers = $user->orderBy('created_at','desc')->where('active',1)->where('mobile_verified',1)
+    /**
+     * Get the list of previous 8 registered users.
+     *
+     * @return type
+     */
+    public function getAllUsers()
+    {
+        $user = new User();
+        $allUsers = $user->orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
               ->take(8)
               ->get()
               ->toArray();
+
        return $allUsers; 
  
      }

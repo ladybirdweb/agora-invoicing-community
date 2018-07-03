@@ -26,7 +26,7 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
-        $productNameList =array(); 
+        $productNameList = [];
         foreach ($productSoldlists as $productSoldlist) {
             $productNameList[] = $productSoldlist->name;
         }
@@ -145,26 +145,24 @@ class DashboardController extends Controller
               ->get()
               ->toArray();
 
-       return $allUsers; 
- 
-     }
+        return $allUsers;
+    }
 
+    /**
+     * List of products sold in past 30 days.
+     *
+     * @return type
+     */
+    public function recentProductSold()
+    {
+        $dayUtc = new Carbon('-30 days');
+        $minus30Day = $dayUtc->toDateTimeString();
+        $product = [];
+        $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
+        foreach ($orders as $order) {
+            $product[] = $order->product()->first();
+        }
 
-     /**
-      * List of products sold in past 30 days
-      * @return type
-      */
-     public function recentProductSold()
-     {
- 	     $dayUtc = new Carbon('-30 days');
- 	     $minus30Day = $dayUtc->toDateTimeString();
- 	     $product = array();
-     	 $orders = Order::where('order_status','executed')->where('created_at' ,'>', $minus30Day)->get();
-     	 foreach ($orders as $order) {
-         	$product[] = $order->product()->first();
-         }
-          return $product;
-
-     }
-
+        return $product;
+    }
 }

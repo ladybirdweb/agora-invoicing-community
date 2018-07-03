@@ -123,7 +123,7 @@ class SocialMediaController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -137,7 +137,7 @@ class SocialMediaController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.no-record').'
                 </div>';
@@ -146,7 +146,7 @@ class SocialMediaController extends Controller
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
@@ -155,7 +155,7 @@ class SocialMediaController extends Controller
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
@@ -182,7 +182,6 @@ class SocialMediaController extends Controller
             $twitter = new TwitterOAuth($consumer_key, $consumer_secrete, $access_token, $access_token_secrete);
 
             // Migrate over to SSL/TLS
-            $twitter->ssl_verifypeer = true;
             // Load the Tweets
             $tweets = $twitter->get('statuses/user_timeline', ['screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit]);
             //dd($tweets);

@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Model\Product;
-
 use App\BaseModel;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;

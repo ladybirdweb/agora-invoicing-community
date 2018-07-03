@@ -81,9 +81,10 @@
                    <?php
                    $mytime = Carbon\Carbon::now();
                    $yesterday = Carbon\Carbon::yesterday();
-                   ?>
+                   $productSold=[];
+                  ?>
                 <div class="box-body no-padding">
-                 
+
                   <ul class="users-list clearfix">
                     @foreach($users as $user)
                     <li>
@@ -116,7 +117,7 @@
              <div class="col-md-6">
              	         <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title"> Products Sold  (Past 30 Days)</h3>
+              <h3 class="box-title"> Products Sold  (Last 30 Days)</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -127,68 +128,43 @@
             <!-- /.box-header -->
             <div class="box-body">
               <ul class="products-list product-list-in-box">
-                <li class="item">
+                   @foreach($arraylists as $key => $value)
+                   <?php
+                   $dayUtc = Carbon\Carbon::now()->subMonth();
+                    $minus30Day = $dayUtc->toDateTimeString();
+                   $imgLink= \App\Model\Product\Product::where('name',$key)->value('image');
+                   $productId = \App\Model\Product\Product::where('name',$key)->value('id');
+                   $dateUtc = \App\Model\Order\Order::where('product',$productId)->orderBy('created_at','desc')->pluck('created_at')->first();
+                    $date1 = new DateTime($dateUtc);
+                    $date = $date1->format('M j, Y, g:i a ');
+                    $orderPrice = \App\Model\Order\Order::where('product',$productId)->where('created_at', '>',$minus30Day )->orderBy('created_at','desc')->pluck('price_override')->all();
+                    $orderSum = array_sum($orderPrice);
+                     ?>
+                    <li class="item">
                   <div class="product-img">
-                    <img src="dist/img/advance.png" alt="Product Image">
+                    <img src="{{$imgLink}}" alt="Product Image">
                   </div>
                   <div class="product-info">
-                    <a href="javascript:void(0)" class="product-title">Helpdesk Community <strong> x 6</strong>
-                      <span class="label label-warning pull-right">$1800</span></a>
+                   
+                    <a href="javascript:void(0)" class="product-title">{{$key}}<strong> x {{$value}}</strong>
+                      <span class="label label-warning pull-right">{{$orderSum}}</span></a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
-                          18 Oct, 2018, 11:52AM
+                          {{$date}}
                         </span>
 
                   </div>
                 </li>
+                  @endforeach
+              
                 <!-- /.item -->
-                <li class="item">
-                  <div class="product-img">
-                    <img src="dist/img/advance.png" alt="Product Image">
-                  </div>
-                  <div class="product-info">
-                    <a href="javascript:void(0)" class="product-title">Helpdesk Pro <strong> x 2</strong>
-                      <span class="label label-info pull-right">$700</span></a>
-                     <span class="product-description">
-                       	<strong> Last Purchase: </strong>
-                          18 Oct, 2018, 11:52AM
-                        </span>
-                  </div>
-                </li>
-                <!-- /.item -->
-                <li class="item">
-                  <div class="product-img">
-                    <img src="dist/img/advance.png" alt="Product Image">
-                  </div>
-                  <div class="product-info">
-                    <a href="javascript:void(0)" class="product-title">Helpdesk Advance <strong> x 1</strong>  <span
-                        class="label label-danger pull-right">$350</span></a>
-                    <span class="product-description">
-                       	<strong> Last Purchase: </strong>
-                          18 Sep, 2018, 11:52AM
-                        </span>
-                  </div>
-                </li>
-                <!-- /.item -->
-                <li class="item">
-                  <div class="product-img">
-                    <img src="dist/img/advance.png" alt="Product Image">
-                  </div>
-                  <div class="product-info">
-                    <a href="javascript:void(0)" class="product-title">ServiceDesk Advance <strong> x 1</strong>
-                      <span class="label label-success pull-right">$399</span></a>
-                    <span class="product-description">
-                       	<strong> Last Purchase: </strong>
-                          3 Oct, 2018, 11:52AM
-                        </span>
-                  </div>
-                </li>
+               
                 <!-- /.item -->
               </ul>
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-center">
-              <a href="javascript:void(0)" class="uppercase">View All Products</a>
+              <a href="{{url('products')}}" class="uppercase">View All Products</a>
             </div>
             <!-- /.box-footer -->
           </div>

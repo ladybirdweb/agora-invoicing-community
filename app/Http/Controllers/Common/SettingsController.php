@@ -535,6 +535,7 @@ class SettingsController extends Controller
                                 ->addColumn('new', function ($model) {
                                     $properties = ($model->properties);
                                     $properties = (array_key_exists('attributes', $properties->toArray())) ? ($model->properties['attributes']) : null;
+                                    $display = '';
                                     if ($properties != null) {
                                         if (array_key_exists('parent', $properties)) {
                                             unset($properties['parent']);
@@ -599,7 +600,7 @@ class SettingsController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */     \Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                     </div>';

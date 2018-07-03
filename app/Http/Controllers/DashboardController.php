@@ -28,6 +28,7 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
+        $productNameList =array(); 
         foreach ($productSoldlists as $productSoldlist) {
           $productNameList[] = $productSoldlist->name;
           }
@@ -159,6 +160,7 @@ class DashboardController extends Controller
      {
  	     $dayUtc = new Carbon('-30 days');
  	     $minus30Day = $dayUtc->toDateTimeString();
+ 	     $product = array();
      	 $orders = Order::where('order_status','executed')->where('created_at' ,'>', $minus30Day)->get();
      	 foreach ($orders as $order) {
          	$product[] = $order->product()->first();

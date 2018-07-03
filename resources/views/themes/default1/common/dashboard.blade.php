@@ -89,7 +89,7 @@
                     @foreach($users as $user)
                     <li>
                       <img src="{{$user['profile_pic']}}" alt="User Image">
-                      <a class="users-list-name" href="#">{{$user['first_name']." ".$user['last_name']}}</a>
+                      <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
 
                       @if ($user['created_at']->toDateString() < $mytime->toDateString())
                       <span class="users-list-date">{{$user['created_at']->format('M j')}}</span>
@@ -137,8 +137,8 @@
                    $dateUtc = \App\Model\Order\Order::where('product',$productId)->orderBy('created_at','desc')->pluck('created_at')->first();
                     $date1 = new DateTime($dateUtc);
                     $date = $date1->format('M j, Y, g:i a ');
-                    $orderPrice = \App\Model\Order\Order::where('product',$productId)->where('created_at', '>',$minus30Day )->orderBy('created_at','desc')->pluck('price_override')->all();
-                    $orderSum = array_sum($orderPrice);
+                    // $orderPrice = \App\Model\Order\Order::where('product',$productId)->where('created_at', '>',$minus30Day )->orderBy('created_at','desc')->pluck('price_override')->all();
+                    // $orderSum = array_sum($orderPrice);
                      ?>
                     <li class="item">
                   <div class="product-img">
@@ -146,8 +146,9 @@
                   </div>
                   <div class="product-info">
                    
-                    <a href="javascript:void(0)" class="product-title">{{$key}}<strong> x {{$value}}</strong>
-                      <span class="label label-warning pull-right">{{$orderSum}}</span></a>
+                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
+                    
+                    </a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
                           {{$date}}

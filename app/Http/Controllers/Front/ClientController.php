@@ -403,10 +403,9 @@ class ClientController extends Controller
             }
         } catch (\Exception $e) {
             $result = [$e->getMessage()];
-
+             Bugsnag::notifyException($e);
             return response()->json(compact('result'), 500);
-            Bugsnag::notifyException($e);
-        }
+         }
     }
 
     public function getInvoice($id)

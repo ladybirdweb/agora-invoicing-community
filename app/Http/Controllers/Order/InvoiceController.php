@@ -730,7 +730,7 @@ class InvoiceController extends Controller
 
     public function getRate($productid, $taxs, $userid)
     {
-        $tax_attribute = array();
+        $tax_attribute = [];
         $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
         $tax_value = '0';
 

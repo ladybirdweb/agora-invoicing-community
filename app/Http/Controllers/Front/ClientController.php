@@ -179,7 +179,8 @@ class ClientController extends Controller
     {
         try {
             $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
-            $owner=''; $repo ='';
+            $owner = '';
+            $repo = '';
             foreach ($products as $product) {
                 $owner = $product->github_owner;
                 $repo = $product->github_repository;

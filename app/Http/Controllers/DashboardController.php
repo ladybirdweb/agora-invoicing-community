@@ -27,7 +27,9 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
+
         $productNameList =array();
+
         foreach ($productSoldlists as $productSoldlist) {
             $productNameList[] = $productSoldlist->name;
         }
@@ -150,6 +152,7 @@ class DashboardController extends Controller
               ->get()
               ->toArray();
 
+
        return $allUsers;
 
      }
@@ -169,9 +172,10 @@ class DashboardController extends Controller
          	$product[] = $order->product()->first();
          }
           return $product;
-
      }
 
+ 
+ 
      /**
       * List of orders of past 30 days
       */
@@ -196,4 +200,5 @@ class DashboardController extends Controller
           $subsEnds = Subscription::where('ends_at', '>' , $today)->where('ends_at','<=',$plus30Day)->get();
           return $subsEnds;
       }
+
 }

@@ -142,6 +142,7 @@ class CheckoutController extends Controller
 
     public function getAttributes($content)
     {
+        $attributes = array();
         foreach ($content as $key => $item) {
             $attributes[] = $item->attributes;
             $cart_currency = $attributes[0]['currency'][0]['code'];
@@ -160,6 +161,7 @@ class CheckoutController extends Controller
             }
 
             $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+            $require = array();
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
             }

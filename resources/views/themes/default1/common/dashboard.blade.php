@@ -145,9 +145,9 @@
                     <img src="{{$imgLink}}" alt="Product Image">
                   </div>
                   <div class="product-info">
-                   
+
                     <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
-                    
+
                     </a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
@@ -157,9 +157,9 @@
                   </div>
                 </li>
                   @endforeach
-              
+
                 <!-- /.item -->
-               
+
                 <!-- /.item -->
               </ul>
             </div>
@@ -177,7 +177,7 @@
          	<div class="col-md-6">
          	  <div class="box box-info">
             <div class="box-header with-border">
-              <h3 class="box-title">Recent Orders (Past 30 Days)</h3>
+              <h3 class="box-title">Recent Paid Orders (Last 30 Days)</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -193,49 +193,42 @@
                   <tr>
                     <th>Order No</th>
                     <th>Item</th>
-                    <th>Order Status</th>
-                    <th>Invoice No.</th>
-                    <th>Payment Status</th>
+                    <th>Date</th>
+                    <th>Client</th>
+                    <th>Total</th>
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td><a href="pages/examples/invoice.html">2333456</a></td>
-                    <td>Helpdesk Community</td>
-                    <td><span class="label label-success">Executed</span></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">3545355</div>
-                    </td>
-                    <td><span class="label label-success">Success</span></td>
-                  </tr>
+                    @foreach($orders as $order)
+                    <?php
+                    $clientName = \App\User::where('id',$order->client)->select('first_name','last_name')->first();
+                    $productName = \App\Model\Product\Product::where('id',$order->product)->value('name');
+                    $dateUtc = $order->created_at;
+                     $date1 = new DateTime($dateUtc);
+                    $date = $date1->format('M j, Y, g:i a ');
+                    ?>
                    <tr>
-                    <td><a href="pages/examples/invoice.html">233454456</a></td>
-                    <td>Helpdesk Advance</td>
-                    <td><span class="label label-success">Executed</span></td>
+                       <td><a href="{{url('orders/'.$order->id)}}">{{$order->number}}</a></td>
+                    <td>{{$productName}}</td>
+                    <td>{{$date}}</td>
                     <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">3532455</div>
+                      <a href="{{url('clients/'.$order->client)}}" class="sparkbar" data-color="#00a65a" data-height="20">{{$clientName->first_name}}{{$clientName->last_name}}</a>
                     </td>
-                     <td><span class="label label-warning">Pending</span></td>
+                    <td><span class="label label-success">{{$order->price_override}}</span></td>
+                    
                   </tr>
-                    <tr>
-                    <td><a href="pages/examples/invoice.html">233454456</a></td>
-                    <td>ServiceDesk Advance</td>
-                    <td><span class="label label-success">Executed</span></td>
-                    <td>
-                      <div class="sparkbar" data-color="#00a65a" data-height="20">3532455</div>
-                    </td>
-                    <td><span class="label label-success">Success</span></td>
-                  </tr>
+                   @endforeach
 
-				 </tbody>
+
+                   </tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
+              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
             </div>
             <!-- /.box-footer -->
             </div>
@@ -265,23 +258,40 @@
                     <th>Product</th>
                    </tr>
                   </thead>
-                  <tbody>
-                  <tr>
-                    <td><a href="">Ashutosh Pthak</a></td>
-                    <td>1323445</td>
-                    <td>8 July, 2018, 12:30PM</td>
-                    <td>12</td>
-                     <td>Helpdesk Advance</td>
-                  </tr>
-                  <tr>
-                    <td><a href="">Aniel Simmons</a></td>
-                    <td>1323445</td>
-                    <td>12 August, 2018, 8:30PM</td>
-                    <td>8</td>
-                     <td>Helpdesk Pro</td>
-                  </tr>
+                    
 
-				 </tbody>
+                  <tbody>
+                    @if(count($subscriptions)==0)
+                    <tr>
+                      <td></td> <td></td>
+                  <td><h5>No Orders Expiring in Next 30 Days</h5></td>
+                     <td></td>
+                    </tr>
+                   @endif
+                    
+                  @foreach($subscriptions as $subscription)
+                   <?php
+                  $todayDate = Carbon\Carbon::now();
+                  $clientName = \App\User::where('id', $subscription->user_id)->select('first_name','last_name')->first();
+                  $orderNo = \App\Model\Order\Order::where('id',$subscription->order_id)->value('number');
+                  $expiry = $subscription->ends_at;
+                  $date = new DateTime($expiry); 
+                  $expDate = $date->format('M j, Y ');
+                   $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
+                    $daysLeft = date_diff($todayDate,$expiry)->format('%a days');
+                    ?>
+
+                  <tr>
+                    <td><a href="{{url('clients/'.$subscription->user_id)}}">{{$clientName->first_name}} {{$clientName->last_name}}</a></td>
+                    <td><a href="{{url('orders/'.$subscription->order_id)}}">{{$orderNo}}</a></td>
+                    <td>{{$expDate}}</td>
+                    <td>{{$daysLeft}}</td>
+                     <td>{{$product}}</td>
+                  </tr>
+                  @endforeach
+                  
+               
+				           </tbody>
                 </table>
               </div>
               <!-- /.table-responsive -->

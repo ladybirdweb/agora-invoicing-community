@@ -6,6 +6,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\User;
 use Carbon\Carbon;
+use App\Model\Product\Subscription;
 
 class DashboardController extends Controller
 {
@@ -26,13 +27,17 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
-        $productNameList =array(); 
+        $productNameList =array();
         foreach ($productSoldlists as $productSoldlist) {
             $productNameList[] = $productSoldlist->name;
         }
         $arraylists = array_count_values($productNameList);
+        $orders = $this->getRecentOrders();
+        $subscriptions = $this->expiringSubscription();
 
-        return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD', 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users', 'count_users', 'arraylists', 'productSoldlists'));
+        return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
+                'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
+                'count_users', 'arraylists', 'productSoldlists','orders','subscriptions'));
     }
 
     /**
@@ -145,8 +150,8 @@ class DashboardController extends Controller
               ->get()
               ->toArray();
 
-       return $allUsers; 
- 
+       return $allUsers;
+
      }
 
 
@@ -167,4 +172,28 @@ class DashboardController extends Controller
 
      }
 
+     /**
+      * List of orders of past 30 days
+      */
+     public function getRecentOrders()
+     {
+         $dayUtc = new Carbon('-30 days');
+         $minus30Day = $dayUtc->toDateTimeString();
+         $recentOrders = Order::where('created_at' ,'>', $minus30Day)->orderBy('created_at','desc')
+                 ->where('price_override','>', 0)->get();
+         return $recentOrders;
+     }
+
+
+     /**
+      * List of orders expiring in next 30 days
+     */
+      public function expiringSubscription()
+      {
+          $dayUtc = new Carbon('+30 days');
+          $today = Carbon::now()->toDateTimeString();
+          $plus30Day = $dayUtc->toDateTimeString();
+          $subsEnds = Subscription::where('ends_at', '>' , $today)->where('ends_at','<=',$plus30Day)->get();
+          return $subsEnds;
+      }
 }

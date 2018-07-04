@@ -179,6 +179,7 @@ class ClientController extends Controller
     {
         try {
             $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
+            $owner=''; $repo ='';
             foreach ($products as $product) {
                 $owner = $product->github_owner;
                 $repo = $product->github_repository;
@@ -201,7 +202,7 @@ class ClientController extends Controller
 
                                 return $markdown;
                             })
-                            ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
+                            ->addColumn('file', function ($link) use ($invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
                                 $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();

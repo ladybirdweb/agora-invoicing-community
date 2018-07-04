@@ -83,7 +83,7 @@ use App\Http\Controllers\Controller;
         /**
          * Display a listing of the resource.
          *
-         * @return Response
+         * @return \Response
          */
         public function index()
         {
@@ -522,15 +522,15 @@ use App\Http\Controllers\Controller;
                             } else {
                                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                                 //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                             }
                             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
@@ -539,7 +539,7 @@ use App\Http\Controllers\Controller;
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.can-not-delete-default').'
+                        './** @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default').'
                 </div>';
                         }
                     }
@@ -583,15 +583,15 @@ use App\Http\Controllers\Controller;
                             } else {
                                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */ \Lang::get('message.no-record').'
                 </div>';
                                 //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                             }
                             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
@@ -726,7 +726,7 @@ use App\Http\Controllers\Controller;
                     //ob_clean();
                     flush();
                     readfile("$release");
-                    exit;
+                   
                 }
             } catch (\Exception $e) {
                 if ($api) {
@@ -835,7 +835,7 @@ use App\Http\Controllers\Controller;
                 if ($product) {
                     if ($product->require_domain == 1) {
                         $field .= "<div class='col-md-4 form-group'>
-                            <label class='required'>".\Lang::get('message.domain')."</label>
+                            <label class='required'>"./** @scrutinizer ignore-type */ \Lang::get('message.domain')."</label>
                             <input type='text' name='domain' class='form-control' id='domain' placeholder='http://example.com'>
                     </div>";
                     }
@@ -857,7 +857,7 @@ use App\Http\Controllers\Controller;
 
                 if ($product->retired == 1) {
                     $field .= "<div class='col-md-4 form-group'>
-                            <label class='required'>".\Lang::get('message.description')."</label>
+                            <label class='required'>"./** @scrutinizer ignore-type */ \Lang::get('message.description')."</label>
                             <textarea name='description' class='form-control' id='description' placeholder='Description'></textarea>
                     </div>";
                 }
@@ -865,24 +865,23 @@ use App\Http\Controllers\Controller;
                 return $field;
             } catch (\Exception $ex) {
                 Bugsnag::notifyException($ex);
-
                 return $ex->getMessage();
             }
         }
 
-        public function getSubscriptionCheck($productid)
+        public function getSubscriptionCheck($productid, Request $request)
         {
             try {
                 $controller = new \App\Http\Controllers\Front\CartController();
                 $check = $controller->allowSubscription($productid);
                 $field = '';
                 $price = '';
-                if ($check == true) {
+                if ($check === true) {
                     $plan = new Plan();
                     $plans = $plan->pluck('name', 'id')->toArray();
                     $script = ''; //$this->getSubscriptionCheckScript();
                     $field = "<div class='col-md-4 form-group'>
-                            <label class='required'>".\Lang::get('message.subscription').'</label>
+                            <label class='required'>"./** @scrutinizer ignore-type */ \Lang::get('message.subscription').'</label>
                            '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
                     </div>'.$script;
                 } else {
@@ -906,7 +905,7 @@ use App\Http\Controllers\Controller;
                 $check = self::checkMultiProduct($productid);
                 if ($check == true) {
                     return "<div class='col-md-4 form-group'>
-                            <label class='required'>".\Lang::get('message.quantity')."</label>
+                            <label class='required'>"./** @scrutinizer ignore-type */\Lang::get('message.quantity')."</label>
                             <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
                     </div>";
                 }
@@ -930,7 +929,7 @@ use App\Http\Controllers\Controller;
                 }
 
                 return false;
-            } catch (Exception $ex) {
+            } catch (\Exception $ex) {
                 Bugsnag::notifyException($ex);
             }
         }

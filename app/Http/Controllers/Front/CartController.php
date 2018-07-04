@@ -676,8 +676,7 @@ class CartController extends Controller
                 return $items;
             }
         } catch (\Exception $e) {
-            dd($e);
-            Bugsnag::notifyException($e);
+          Bugsnag::notifyException($e);
         }
     }
 

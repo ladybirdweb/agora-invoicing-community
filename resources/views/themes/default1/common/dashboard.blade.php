@@ -302,4 +302,134 @@
             </div>
           </div>
          </div>
+
+         <div class= row>
+          <div class="col-md-6">
+            <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Recent Invoices(Past 30 Days)</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="table-responsive">
+                <table class="table no-margin">
+                  <thead>
+                  <tr>
+                    <th>Invoice No.</th>
+                    <th>Total</th>
+                    <th>Received Amount </th>
+                    <th>Pending Amount</th>
+                    <th>Status</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                    @if(count($invoices)==0)
+                    <tr>
+                      <td></td> <td></td>
+                  <td><h5>No Paid Invoices in Last 30 Days</h5></td>
+                     <td></td>
+                    </tr>
+                   @endif
+                    @foreach($invoices as $invoice)
+                    <?php
+                    if($invoice->currency == 'INR')
+                    $currency = '₹';
+                    else
+                    $currency = '$'; 
+                   $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
+                   $c=count($payment);
+                   $sum= 0;
+                   for($i=0 ;  $i <= $c-1 ; $i++)
+                   {
+                     $sum = $sum + $payment[$i]->amount;
+                   }
+                    $pendingAmount = ($invoice->grand_total)-($sum);
+                   if($pendingAmount <= 0)
+                    $status =$pendingAmount <= 0 ? 'Success' :'Pending';
+                   ?>
+                  <tr>
+                    <td><a href="pages/examples/invoice.html">{{$invoice->number}}</a></td>
+                    <td>{{$currency}} {{$invoice->grand_total}}</td>
+                    <td>{{$currency}} {{$sum}}</td>
+                    <td>
+                      <div class="sparkbar" data-color="#00a65a" data-height="20">{{$currency}} {{$pendingAmount}}</div>
+                    </td>
+                   @if ($status == 'Success')
+                    <td><span class="label label-success">{{$status}}</span></td>
+                   @elseif ($status == 'Pending')
+                    <td><span class="label label-danger">{{$status}}</span></td>
+                   @endif
+                   
+                  </tr>
+                    @endforeach
+                  </tbody>
+                </table>
+              </div>
+              <!-- /.table-responsive -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix">
+              <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
+              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+            </div>
+            <!-- /.box-footer -->
+          </div>
+        </div>
+             
+             <div class="col-md-6">
+             <div class="box box-default">
+            <div class="box-header with-border">
+              <h3 class="box-title">Browser Usage</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="chart-responsive">
+                    <canvas id="pieChart" height="150"></canvas>
+                  </div>
+                  <!-- ./chart-responsive -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-4">
+                  <ul class="chart-legend clearfix">
+                    <li><i class="fa fa-circle-o text-red"></i> Chrome</li>
+                    <li><i class="fa fa-circle-o text-green"></i> IE</li>
+                    <li><i class="fa fa-circle-o text-yellow"></i> FireFox</li>
+                    <li><i class="fa fa-circle-o text-aqua"></i> Safari</li>
+                    <li><i class="fa fa-circle-o text-light-blue"></i> Opera</li>
+                    <li><i class="fa fa-circle-o text-gray"></i> Navigator</li>
+                  </ul>
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer no-padding">
+              <ul class="nav nav-pills nav-stacked">
+                <li><a href="#">United States of America
+                  <span class="pull-right text-red"><i class="fa fa-angle-down"></i> 12%</span></a></li>
+                <li><a href="#">India <span class="pull-right text-green"><i class="fa fa-angle-up"></i> 4%</span></a>
+                </li>
+                <li><a href="#">China
+                  <span class="pull-right text-yellow"><i class="fa fa-angle-left"></i> 0%</span></a></li>
+              </ul>
+            </div>
+            <!-- /.footer -->
+          </div>
+        </div>
+         </div>
 @stop

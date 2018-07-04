@@ -27,19 +27,18 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
-
         $productNameList =array();
-
         foreach ($productSoldlists as $productSoldlist) {
             $productNameList[] = $productSoldlist->name;
         }
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
+        $invoices = $this->getRecentInvoices();
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
-                'count_users', 'arraylists', 'productSoldlists','orders','subscriptions'));
+                'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices'));
     }
 
     /**
@@ -151,9 +150,8 @@ class DashboardController extends Controller
               ->take(8)
               ->get()
               ->toArray();
-
-
-       return $allUsers;
+        
+        return $allUsers;
 
      }
 
@@ -199,6 +197,19 @@ class DashboardController extends Controller
           $plus30Day = $dayUtc->toDateTimeString();
           $subsEnds = Subscription::where('ends_at', '>' , $today)->where('ends_at','<=',$plus30Day)->get();
           return $subsEnds;
+      }
+
+
+       /**
+      * List of Invoices of past 30 ays
+     */
+      public function getRecentInvoices()
+      {
+          $dayUtc = new Carbon('-30 days');
+          $minus30Day = $dayUtc->toDateTimeString();
+          $recentInvoice = Invoice::where('created_at' ,'>', $minus30Day)->orderBy('created_at','desc')
+                        ->where('grand_total','>', 0)->get();
+          return $recentInvoice;
       }
 
 }

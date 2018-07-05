@@ -37,19 +37,17 @@ class DashboardController extends Controller
         $subscriptions = $this->expiringSubscription();
         $invoices = $this->getRecentInvoices();
         $products = $this->totalProductsSold();
-        $productName = array();
-         foreach ($products as $product) {
+        $productName = [];
+        foreach ($products as $product) {
             $productName[] = $product->name;
         }
-         $arrayCountList = array_count_values($productName);
-          
+        $arrayCountList = array_count_values($productName);
+
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
 
                  'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products','arrayCountList'));
-
-
+                 'products', 'arrayCountList'));
     }
 
     /**
@@ -206,10 +204,8 @@ class DashboardController extends Controller
         $recentInvoice = Invoice::where('created_at', '>', $minus30Day)->orderBy('created_at', 'desc')
                         ->where('grand_total', '>', 0)->get();
 
-
         return $recentInvoice;
     }
-
 
     /**
      * List of orders expiring in next 30 days.
@@ -224,19 +220,17 @@ class DashboardController extends Controller
         return $subsEnds;
     }
 
-
-      /**
+    /**
      * List of the products sold.
      */
     public function totalProductsSold()
     {
-         $product = array();
-         $orders = Order::where('order_status','executed')->get();
-         foreach ($orders as $order) {
+        $product = [];
+        $orders = Order::where('order_status', 'executed')->get();
+        foreach ($orders as $order) {
             $product[] = $order->product()->first();
-         }
-          return $product;
+        }
+
+        return $product;
     }
-
-
 }

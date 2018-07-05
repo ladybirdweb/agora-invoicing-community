@@ -66,11 +66,7 @@
 
     <div class="box-tools pull-right col-md-2 col-sm-4 padfull paddownfive">
         
-
-        <!--                <a data-toggle="modal" data-target="#editdetail" class="btn btn-block btn-default btn-sm btn-flat ">
-                            Edit 
-                        </a>-->
-        <a href="{{url('clients/'.$client->id.'/edit')}}" class="btn btn-block btn-default btn-sm btn-flat ">
+          <a href="{{url('clients/'.$client->id.'/edit')}}" class="btn btn-block btn-default btn-sm btn-flat ">
             {{Lang::get('message.edit')}}
         </a>
         <div class="dropdown">

@@ -106,8 +106,7 @@ class Twitter_Extractor extends Twitter_Regex
         preg_match_all(self::REGEX_USERNAME_MENTION, $this->tweet, $matches);
         list($all, $before, $username, $after) = array_pad($matches, 4, '');
         $usernames = [];
-        
-        for ($i = 0; $c= count($username); $i < $c; $i++) {
+        for ($i = 0; $i < count($username); $i++) {
             // If $after is not empty, there is an invalid character.
             if (!empty($after[$i])) {
                 continue;

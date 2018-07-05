@@ -323,8 +323,9 @@
                   <tr>
                     <th>Invoice No.</th>
                     <th>Total</th>
-                    <th>Received Amount </th>
-                    <th>Pending Amount</th>
+                    <th>Client</th>
+                    <th>Received </th>
+                    <th>Pending</th>
                     <th>Status</th>
                   </tr>
                   </thead>
@@ -350,12 +351,13 @@
                      $sum = $sum + $payment[$i]->amount;
                    }
                     $pendingAmount = ($invoice->grand_total)-($sum);
-                   if($pendingAmount <= 0)
-                    $status =$pendingAmount <= 0 ? 'Success' :'Pending';
-                   ?>
+                    $status =($pendingAmount <= 0) ? 'Success' :'Pending';
+                    $clientName = \App\User::where('id',$invoice->user_id)->select('first_name','last_name')->first();
+                    ?>
                   <tr>
-                    <td><a href="pages/examples/invoice.html">{{$invoice->number}}</a></td>
+                    <td><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a></td>
                     <td>{{$currency}} {{$invoice->grand_total}}</td>
+                     <td>{{$clientName->first_name}} {{$clientName->last_name}}</td>
                     <td>{{$currency}} {{$sum}}</td>
                     <td>
                       <div class="sparkbar" data-color="#00a65a" data-height="20">{{$currency}} {{$pendingAmount}}</div>
@@ -383,9 +385,9 @@
         </div>
              
              <div class="col-md-6">
-             <div class="box box-default">
+             <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Browser Usage</h3>
+              <h3 class="box-title">Total Sold Products</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -395,40 +397,39 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <div class="row">
-                <div class="col-md-8">
-                  <div class="chart-responsive">
-                    <canvas id="pieChart" height="150"></canvas>
+              <ul class="products-list product-list-in-box">
+                 @foreach($arrayCountList as $key => $value)
+                 <?php
+                 $imgLink= \App\Model\Product\Product::where('name',$key)->value('image');
+                  $productId = \App\Model\Product\Product::where('name',$key)->value('id');
+                  $dateUtc = \App\Model\Order\Order::where('product',$productId)->orderBy('created_at','desc')->pluck('created_at')->first();
+                  $date1 = new DateTime($dateUtc);
+                  $date = $date1->format('M j, Y, g:i a ');
+                 ?>
+                <li class="item">
+                  <div class="product-img">
+                    <img src="{{$imgLink}}" alt="Product Image">
                   </div>
-                  <!-- ./chart-responsive -->
-                </div>
-                <!-- /.col -->
-                <div class="col-md-4">
-                  <ul class="chart-legend clearfix">
-                    <li><i class="fa fa-circle-o text-red"></i> Chrome</li>
-                    <li><i class="fa fa-circle-o text-green"></i> IE</li>
-                    <li><i class="fa fa-circle-o text-yellow"></i> FireFox</li>
-                    <li><i class="fa fa-circle-o text-aqua"></i> Safari</li>
-                    <li><i class="fa fa-circle-o text-light-blue"></i> Opera</li>
-                    <li><i class="fa fa-circle-o text-gray"></i> Navigator</li>
-                  </ul>
-                </div>
-                <!-- /.col -->
-              </div>
-              <!-- /.row -->
-            </div>
-            <!-- /.box-body -->
-            <div class="box-footer no-padding">
-              <ul class="nav nav-pills nav-stacked">
-                <li><a href="#">United States of America
-                  <span class="pull-right text-red"><i class="fa fa-angle-down"></i> 12%</span></a></li>
-                <li><a href="#">India <span class="pull-right text-green"><i class="fa fa-angle-up"></i> 4%</span></a>
+                   <div class="product-info">
+
+                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
+
+                    </a>
+                       <span class="product-description">
+                        <strong> Last Purchase: </strong>
+                          {{$date}}
+                        </span>
+
+                  </div>
                 </li>
-                <li><a href="#">China
-                  <span class="pull-right text-yellow"><i class="fa fa-angle-left"></i> 0%</span></a></li>
+                @endforeach
               </ul>
             </div>
-            <!-- /.footer -->
+            <!-- /.box-body -->
+            <div class="box-footer text-center">
+              <a href="javascript:void(0)" class="uppercase">View All Products</a>
+            </div>
+            <!-- /.box-footer -->
           </div>
         </div>
          </div>

@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'thomaswelton\\GravatarLib\\' => array($vendorDir . '/thomaswelton/gravatarlib'),
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
+    'ShvetsGroup\\LaravelEmailDatabaseLog\\' => array($vendorDir . '/shvetsgroup/laravel-email-database-log/src'),
     'Sabberworm\\CSS' => array($vendorDir . '/sabberworm/php-css-parser/lib'),
     'Requests' => array($vendorDir . '/rmccue/requests/library'),
     'Prophecy\\' => array($vendorDir . '/phpspec/prophecy/src'),
@@ -18,7 +19,9 @@ return array(
     'JakubOnderka\\PhpConsoleHighlighter' => array($vendorDir . '/jakub-onderka/php-console-highlighter/src'),
     'JakubOnderka\\PhpConsoleColor' => array($vendorDir . '/jakub-onderka/php-console-color/src'),
     'HTMLPurifier' => array($vendorDir . '/ezyang/htmlpurifier/library'),
+    'Doctrine\\DBAL\\' => array($vendorDir . '/doctrine/dbal/lib'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
+    'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),
     'Chumper\\Datatable' => array($vendorDir . '/chumper/datatable/src'),
     'Barryvdh' => array($vendorDir . '/barryvdh/reflection-docblock/src'),
 );

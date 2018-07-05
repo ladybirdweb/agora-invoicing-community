@@ -324,8 +324,8 @@
                     <th>Invoice No.</th>
                     <th>Total</th>
                     <th>Client</th>
-                    <th>Received </th>
-                    <th>Pending</th>
+                    <th>Paid </th>
+                    <th>Balance</th>
                     <th>Status</th>
                   </tr>
                   </thead>

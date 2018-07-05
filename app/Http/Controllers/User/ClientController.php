@@ -7,10 +7,12 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\User\AccountActivate;
+use App\Model\Order\Payment;
 use App\User;
 use DB;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
+use Bugsnag;
 
 class ClientController extends Controller
 {
@@ -177,15 +179,61 @@ class ClientController extends Controller
             $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+            $invoiceSum= $this->getTotalInvoice($invoices); 
+            $amountReceived = $this->getAmountPaid($id);
+            $pendingAmount = $invoiceSum - $amountReceived ;
             $client = $this->user->where('id', $id)->first();
             $orders = $order->where('client', $id)->get();
             //dd($client);
 
-            return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders'));
+            return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders','payments'
+                ,'invoiceSum','amountReceived','pendingAmount'));
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+
+    /**
+    * Get total Amount paid for a particular invoice
+    */
+    public function getAmountPaid($userId)
+    {
+        try{
+             $amounts = Payment::where('user_id',$userId)->select('amount')->get();
+             $paidSum=0;
+            foreach($amounts as $amount)
+            {
+                $paidSum = $paidSum + $amount->amount;
+            }
+            return $paidSum;
+        } catch (\Exception $ex){
+            Bugsnag::notifyException($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
+     /**
+    * Get total of the Invoices for a User
+    */
+     public function getTotalInvoice($invoices)
+     {
+        try {
+             $sum = 0;
+              foreach($invoices as $invoice){
+            $sum = $sum + $invoice->grand_total;
+            }
+            return $sum;
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+            return redirect()->back()->with('fails',$e->getMessage());
+        }
+       
+     }
+
+
 
     /**
      * Show the form for editing the specified resource.

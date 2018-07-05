@@ -156,6 +156,8 @@ return [
     'customer_detail'   => 'Customer Detail',
     'order_detail'      => 'Order Detail',
     'payment_detail'    => 'Payment Detail',
+    'amount_received'   => 'Paid',
+    'amount_pending'    => 'Balance',
     /*
      * Plan
      */

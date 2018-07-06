@@ -176,35 +176,35 @@ class GithubController extends Controller
      *
      * @return type
      */
-    public function getReleaseByTag($owner, $repo)
-    {
-        try {
-            $tag = \Input::get('tag');
-            $all_releases = $this->listRepositories($owner, $repo);
+    // public function getReleaseByTag($owner, $repo)
+    // {
+    //     try {
+    //         $tag = \Input::get('tag');
+    //         $all_releases = $this->listRepositories($owner, $repo);
 
-            $this->download($result['header']['Location']);
-            if ($tag) {
-                foreach ($all_releases as $key => $release) {
-                    //dd($release);
-                    if (in_array($tag, $release)) {
-                        $version[$tag] = $this->getReleaseById($release['id']);
-                    }
-                }
-            } else {
-                $version[0] = $all_releases[0];
-            }
-            //            dd($version);
-            //execute download
+    //         $this->download($result['header']['Location']);
+    //         if ($tag) {
+    //             foreach ($all_releases as $key => $release) {
+    //                 //dd($release);
+    //                 if (in_array($tag, $release)) {
+    //                     $version[$tag] = $this->getReleaseById($release['id']);
+    //                 }
+    //             }
+    //         } else {
+    //             $version[0] = $all_releases[0];
+    //         }
+    //         //            dd($version);
+    //         //execute download
 
-            if ($this->download($version) == 'success') {
-                return 'success';
-            }
-            //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
-        } catch (Exception $ex) {
-            //dd($ex);
-            return redirect('/')->with('fails', $ex->getMessage());
-        }
-    }
+    //         if ($this->download($version) == 'success') {
+    //             return 'success';
+    //         }
+    //         //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
+    //     } catch (Exception $ex) {
+    //         //dd($ex);
+    //         return redirect('/')->with('fails', $ex->getMessage());
+    //     }
+    // }
 
     /**
      * List only one release by id.

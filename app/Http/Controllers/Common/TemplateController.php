@@ -286,6 +286,7 @@ class TemplateController extends Controller
     public function mailing($from, $to, $data, $subject, $replace = [], $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
+            $transform = array();
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);
@@ -512,6 +513,7 @@ class TemplateController extends Controller
     {
         try {
             $rate = '';
+            $tax_amount = '';
             foreach ($taxes as $tax) {
                 if ($tax->compound != 1) {
                     $rate += $tax->rate;
@@ -522,11 +524,9 @@ class TemplateController extends Controller
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
-            // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

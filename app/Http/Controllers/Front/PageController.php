@@ -260,7 +260,8 @@ class PageController extends Controller
         foreach ($trasform as $trans) {
             $array[] = $this->checkConfigKey($config, $trans);
         }
-        for ($i = 0; $i < count($array); $i++) {
+        $c = count($array);
+        for ($i = 0; $i < $c; $i++) {
             $array1 = $this->keyArray($array[$i]);
             $array2 = $this->valueArray($array[$i]);
             $result .= str_replace($array1, $array2, $data);

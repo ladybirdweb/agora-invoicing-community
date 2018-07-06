@@ -195,6 +195,7 @@ class CartController extends Controller
     public function checkTax($productid)
     {
         try {
+            $tax_condition = array();
             $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
@@ -502,93 +503,88 @@ class CartController extends Controller
             $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
         }
 
-        // $value= $taxes->toArray()[0]['active'] ?
-        //  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() != 0) ?
-        //  $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-
         $value = $otherRate.'%';
-
         return $value;
     }
 
-    public function checkTaxOld($isTaxApply, $id)
-    {
-        try {
-            $rate1 = 0;
-            $rate2 = 0;
-            $name1 = 'null';
-            $name2 = 'null';
+    // public function checkTaxOld($isTaxApply, $id)
+    // {
+    //     try {
+    //         $rate1 = 0;
+    //         $rate2 = 0;
+    //         $name1 = 'null';
+    //         $name2 = 'null';
 
-            if ($ruleEnabled) {
-                $enabled = $ruleEnabled->status;
-                $type = $ruleEnabled->type;
-                $compound = $ruleEnabled->compound;
-                if ($enabled == 1 && $type == 'exclusive') {
-                    if ($isTaxApply == 1) {
-                        $tax1 = $this->tax->where('level', 1)->first();
-                        $tax2 = $this->tax->where('level', 2)->first();
-                        if ($tax1) {
-                            $name1 = $tax1->name;
-                            $rate1 = $tax1->rate;
-                            $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name1,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate1.'%',
-                            ]);
-                        } else {
-                            $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name1,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate1,
-                            ]);
-                        }
-                        if ($tax2) {
-                            $name2 = $tax2->name;
-                            $rate2 = $tax2->rate;
-                            $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name2,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate2.'%',
-                            ]);
-                        } else {
-                            $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name2,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate2,
-                            ]);
-                        }
-                    } else {
-                        $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                            'name'   => $name1,
-                            'type'   => 'tax',
-                            'target' => 'item',
-                            'value'  => $rate1,
-                        ]);
-                        $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                            'name'   => $name2,
-                            'type'   => 'tax',
-                            'target' => 'item',
-                            'value'  => $rate2,
-                        ]);
-                    }
-                    $currency_attribute = $this->addCurrencyAttributes($id);
-                    if ($compound == 1) {
-                        return ['conditions' => [$taxCondition1, $taxCondition2], 'attributes' => ['tax' => [['name' => $name1, 'rate' => $rate1], ['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
-                    } else {
-                        return ['conditions' => $taxCondition2, 'attributes' => ['tax' => [['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
-                    }
-                }
-            }
-        } catch (\Exception $ex) {
-            dd($ex);
+    //         if ($ruleEnabled) {
+    //             $enabled = $ruleEnabled->status;
+    //             $type = $ruleEnabled->type;
+    //             $compound = $ruleEnabled->compound;
+    //             if ($enabled == 1 && $type == 'exclusive') {
+    //                 if ($isTaxApply == 1) {
+    //                     $tax1 = $this->tax->where('level', 1)->first();
+    //                     $tax2 = $this->tax->where('level', 2)->first();
+    //                     if ($tax1) {
+    //                         $name1 = $tax1->name;
+    //                         $rate1 = $tax1->rate;
+    //                         $taxCondition1 = new \Darryldecode\Cart\CartCondition([
+    //                             'name'   => $name1,
+    //                             'type'   => 'tax',
+    //                             'target' => 'item',
+    //                             'value'  => $rate1.'%',
+    //                         ]);
+    //                     } else {
+    //                         $taxCondition1 = new \Darryldecode\Cart\CartCondition([
+    //                             'name'   => $name1,
+    //                             'type'   => 'tax',
+    //                             'target' => 'item',
+    //                             'value'  => $rate1,
+    //                         ]);
+    //                     }
+    //                     if ($tax2) {
+    //                         $name2 = $tax2->name;
+    //                         $rate2 = $tax2->rate;
+    //                         $taxCondition2 = new \Darryldecode\Cart\CartCondition([
+    //                             'name'   => $name2,
+    //                             'type'   => 'tax',
+    //                             'target' => 'item',
+    //                             'value'  => $rate2.'%',
+    //                         ]);
+    //                     } else {
+    //                         $taxCondition2 = new \Darryldecode\Cart\CartCondition([
+    //                             'name'   => $name2,
+    //                             'type'   => 'tax',
+    //                             'target' => 'item',
+    //                             'value'  => $rate2,
+    //                         ]);
+    //                     }
+    //                 } else {
+    //                     $taxCondition1 = new \Darryldecode\Cart\CartCondition([
+    //                         'name'   => $name1,
+    //                         'type'   => 'tax',
+    //                         'target' => 'item',
+    //                         'value'  => $rate1,
+    //                     ]);
+    //                     $taxCondition2 = new \Darryldecode\Cart\CartCondition([
+    //                         'name'   => $name2,
+    //                         'type'   => 'tax',
+    //                         'target' => 'item',
+    //                         'value'  => $rate2,
+    //                     ]);
+    //                 }
+    //                 $currency_attribute = $this->addCurrencyAttributes($id);
+    //                 if ($compound == 1) {
+    //                     return ['conditions' => [$taxCondition1, $taxCondition2], 'attributes' => ['tax' => [['name' => $name1, 'rate' => $rate1], ['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
+    //                 } else {
+    //                     return ['conditions' => $taxCondition2, 'attributes' => ['tax' => [['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
+    //                 }
+    //             }
+    //         }
+    //     } catch (\Exception $ex) {
+    //         dd($ex);
 
-            throw new \Exception('Can not check the tax');
-        }
-    }
+    //         throw new \Exception('Can not check the tax');
+    //     }
+    // }
 
     public function cartRemove(Request $request)
     {
@@ -656,7 +652,7 @@ class CartController extends Controller
                 $currency = $this->currency();
                 $productName = $product->name;
                 $planid = 0;
-                if ($this->checkPlanSession() == true) {
+                if ($this->checkPlanSession() === true) {
                     $planid = Session::get('plan');
                 }
                 $isTaxApply = $product->tax_apply;
@@ -769,6 +765,7 @@ class CartController extends Controller
         try {
             $code = \Input::get('coupon');
             $cart = Cart::getContent();
+            $id = '';
             foreach ($cart as $item) {
                 $id = $item->id;
             }
@@ -1223,7 +1220,7 @@ class CartController extends Controller
     {
         try {
             $currency = 'INR';
-            if ($this->checkCurrencySession() == true) {
+            if ($this->checkCurrencySession() === true) {
                 $currency = Session::get('currency');
             }
 
@@ -1320,7 +1317,7 @@ class CartController extends Controller
                 $planid = Session::get('plan');
             }
 
-            if ($subscription == true) {
+            if ($subscription === true) {
                 $plan = new \App\Model\Payment\Plan();
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
                 $items = (\Session::get('items'));

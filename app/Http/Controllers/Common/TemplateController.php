@@ -352,7 +352,6 @@ class TemplateController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');

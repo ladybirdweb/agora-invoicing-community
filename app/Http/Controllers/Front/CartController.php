@@ -196,7 +196,7 @@ class CartController extends Controller
     {
         try {
             $tax_condition = array();
-            $tax_attribute = [];
+            $tax_attribute = array();
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',

@@ -286,7 +286,7 @@ class TemplateController extends Controller
     public function mailing($from, $to, $data, $subject, $replace = [], $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
-            $transform = array();
+            $transform = [];
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);
@@ -523,9 +523,11 @@ class TemplateController extends Controller
 
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
+
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

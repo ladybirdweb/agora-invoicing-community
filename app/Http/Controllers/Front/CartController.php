@@ -195,7 +195,7 @@ class CartController extends Controller
     public function checkTax($productid)
     {
         try {
-            $tax_condition = array();
+            $tax_condition = [];
             $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
@@ -504,6 +504,7 @@ class CartController extends Controller
         }
 
         $value = $otherRate.'%';
+
         return $value;
     }
 

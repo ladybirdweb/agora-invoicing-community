@@ -50,7 +50,7 @@ class SettingsController extends Controller
                                     $activate = '<a href='.url('plugin/status/'.$model['path']).'>Activate</a>';
                                     $settings = ' ';
                                 } else {
-                                    $settings = '<a href='./** @scrutinizer ignore-type */url($model['settings']).'>Settings</a> | ';
+                                    $settings = '<a href='./* @scrutinizer ignore-type */url($model['settings']).'>Settings</a> | ';
                                     $activate = '<a href='./* @scrutinizer ignore-type */url('plugin/status/'.$model['path']).'>Deactivate</a>';
                                 }
 
@@ -611,14 +611,14 @@ class SettingsController extends Controller
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
+                        <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';

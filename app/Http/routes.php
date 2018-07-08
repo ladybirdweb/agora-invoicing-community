@@ -358,7 +358,8 @@ Route::get('country-count', 'WelcomeController@countryCount');
 /*
  * Api
  */
-Route::group(['prefix' => 'api'], function () {
+Route::/** @scrutinizer ignore-call */ 
+group(['prefix' => 'api'], function () {
     /*
      * Unautherised requests
      */

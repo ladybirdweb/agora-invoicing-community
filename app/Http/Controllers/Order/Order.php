@@ -16,6 +16,7 @@ class Order extends Controller
 
     public function getOrder()
     {
+        /** @scrutinizer ignore-call */ 
         $order = self::find($this->orderid);
 
         return $order;

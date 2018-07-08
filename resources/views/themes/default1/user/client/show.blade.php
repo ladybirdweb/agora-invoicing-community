@@ -48,15 +48,21 @@
     <div class="col-md-2 col-sm-4 padzero">
         
           
-          
+          <?php
+
+         if($currency == 'INR')
+            $currency = '₹';
+            else
+            $currency = '$'; 
+          ?>
                    
                       
         <div class="padright">
+             
             
-            
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$invoiceSum}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">Balance </span><br>{{$pendingAmount}}</h6> 
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$currency }}{{$invoiceSum}}</h6> 
+            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$currency }} {{$amountReceived}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">Balance </span><br>{{$currency }} {{$pendingAmount}}</h6> 
           
         </div>
      
@@ -163,14 +169,14 @@
                                         <td>
                                             {{$invoice->date}}
                                         </td>
-                                        <td>
+                                        <td class="invoice-number">
                                             <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                         </td>
-                                        <td>
-                                            {{$currency}} {{$invoice->grand_total}}
+                                        <td contenteditable="true" class="invoice-total"> 
+                                           {{$invoice->grand_total}}
                                         </td>
-                                        <td>{{$currency}} {{$sum}}</td>
-                                        <td>{{$currency}} {{$pendingAmount}}</td>
+                                        <td>{{$sum}}</td>
+                                        <td>{{$pendingAmount}}</td>
                                         <td>
                                             {{ucfirst($invoice->status)}}
                                         </td>
@@ -510,5 +516,28 @@
 
 
     });
+</script>
+<script>
+
+    $(".invoice-total").blur(function () {
+        var data = $(this).text().trim();
+        var number = $(this).siblings('.invoice-number').find('a').text().trim();
+
+
+        $.ajax({
+        type: "GET",
+                url: "{{route('change-invoiceTotal')}}",
+                data: {'total':data,'number':number},
+                success: function () {
+                    alert('Invoice Total Updated');
+                },
+                error: function () {
+                    alert('Invalid URL');
+                }
+
+        });
+    });
+
+
 </script>
 @stop

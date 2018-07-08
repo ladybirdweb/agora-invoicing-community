@@ -282,6 +282,10 @@
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
 
+        Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 'uses' => 'Order\InvoiceController@invoiceTotalChange']);
+
+
+
         /*
          * Payment
          */

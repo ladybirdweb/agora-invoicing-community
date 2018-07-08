@@ -100,7 +100,7 @@ class InvoiceController extends Controller
             //dd($this->invoice->get());
             return view('themes.default1.invoice.index');
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -201,7 +201,7 @@ class InvoiceController extends Controller
 
             return view('themes.default1.invoice.generate', compact('user', 'products', 'currency'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -299,12 +299,24 @@ class InvoiceController extends Controller
                 $result = ['fails' => \Lang::get('message.can-not-generate-invoice')];
             }
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             $result = ['fails' => $ex->getMessage()];
         }
 
         return response()->json(compact('result'));
+    }
+
+    /**
+    * Edit Invoice Total
+    */
+    public function invoiceTotalChange(Request $request)
+    {   
+        $total = $request->input('total');
+        $number = $request->input('number');
+        $invoiceId = Invoice::where('number',$number)->value('id');
+        $invoiceItem = $this->invoiceItem->where('invoice_id',$invoiceId)->update(['subtotal'=>$total]);
+        $invoices = $this->invoice->where('number',$number)->update(['grand_total'=>$total]);
+        
     }
 
     public function sendmailClientAgent($userid, $invoiceid)
@@ -320,7 +332,8 @@ class InvoiceController extends Controller
                 $this->sendMail($userid, $invoiceid);
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            dd($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -427,7 +440,7 @@ class InvoiceController extends Controller
 
             return $invoiceItem;
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');
         }
@@ -454,7 +467,7 @@ class InvoiceController extends Controller
                 $this->updateInvoice($invoiceid);
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -555,7 +568,7 @@ class InvoiceController extends Controller
                 return $price;
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
@@ -578,7 +591,7 @@ class InvoiceController extends Controller
 
             return $updated_price;
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception(\Lang::get('message.find-discount-error'));
         }
@@ -600,7 +613,7 @@ class InvoiceController extends Controller
                     return 0;
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception(\Lang::get('message.find-cost-error'));
         }
@@ -621,7 +634,7 @@ class InvoiceController extends Controller
                 return 'fails';
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception(\Lang::get('message.find-cost-error'));
         }
@@ -847,7 +860,7 @@ class InvoiceController extends Controller
 
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -874,7 +887,7 @@ class InvoiceController extends Controller
             // dd($total);
             return intval(round($total));
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -939,7 +952,7 @@ class InvoiceController extends Controller
             }
             \Session::put('domain'.$productid, $domain);
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -956,7 +969,7 @@ class InvoiceController extends Controller
 
             return $domain;
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
         }
     }
 
@@ -981,7 +994,7 @@ class InvoiceController extends Controller
 
             $invoice->save();
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -1013,7 +1026,7 @@ class InvoiceController extends Controller
 
             return $payment;
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -1048,7 +1061,7 @@ class InvoiceController extends Controller
 
             return redirect()->back();
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -1072,7 +1085,7 @@ class InvoiceController extends Controller
                 return redirect()->back()->with('success', 'Payment Accepted Successfully');
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -1103,7 +1116,7 @@ class InvoiceController extends Controller
 
             return $this->sendInvoiceMail($userid, $number, $total, $invoiceid);
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
@@ -1149,7 +1162,7 @@ class InvoiceController extends Controller
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
-            Bugsnag::notifyExeption($e);
+            Bugsnag::notifyException($e);
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
@@ -1171,7 +1184,7 @@ class InvoiceController extends Controller
 
             return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
         } catch (\Exception $e) {
-            Bugsnag::notifyExeption($e);
+            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -1195,7 +1208,7 @@ class InvoiceController extends Controller
 
             return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
         } catch (\Exception $e) {
-            Bugsnag::notifyExeption($e);
+            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -1218,7 +1231,7 @@ class InvoiceController extends Controller
 
             return $response;
         } catch (\Exception $e) {
-            Bugsnag::notifyExeption($e);
+            Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
         }

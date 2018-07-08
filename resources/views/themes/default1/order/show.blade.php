@@ -260,7 +260,7 @@
                     url: "{{url('change-domain')}}",
                     data: {'domain':value, 'id':id},
                     success: function () {
-                        alert('Updated');
+                        alert('Domain Name Updated');
                     },
                     error: function () {
                         alert('Invalid URL');

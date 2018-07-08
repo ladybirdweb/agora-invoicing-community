@@ -171,8 +171,6 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -180,8 +178,8 @@ class MailChimpController extends Controller
     public function addFieldsToAgora()
     {
         try {
+            /** @scrutinizer ignore-call */ 
             $fields = $this->getMergeFields($this->list_id);
-            //dd($fields);
             $mailchimp_field_in_agora = $this->mailchimp_field_model->get();
             if (count($mailchimp_field_in_agora) > 0) {
                 foreach ($mailchimp_field_in_agora as $field) {

@@ -622,8 +622,8 @@ class AuthController extends Controller
             $states = \App\Model\Common\State::where('country_code_char2', $id)->orderBy('state_subdivision_name', 'asc')->get();
             // return $states;
             // echo '<option value=>Select a State</option>';
-            foreach ($states as $state) {
-                echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
+            foreach ($states as $stateList) {
+                echo '<option value='.$stateList->state_subdivision_code.'>'.$stateList->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";

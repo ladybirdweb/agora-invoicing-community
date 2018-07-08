@@ -381,9 +381,9 @@ class ClientController extends Controller
             // return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             $result = [$ex->getMessage()];
-
-            return response()->json(compact('result'), 500);
             Bugsnag::notifyException($ex);
+            return response()->json(compact('result'), 500);
+         
         }
     }
 

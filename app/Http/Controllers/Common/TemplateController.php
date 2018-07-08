@@ -286,7 +286,7 @@ class TemplateController extends Controller
     public function mailing($from, $to, $data, $subject, $replace = [], $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
-            $transform = [];
+            $transform = array();
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);

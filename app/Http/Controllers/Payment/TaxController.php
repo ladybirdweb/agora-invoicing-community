@@ -132,7 +132,7 @@ class TaxController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -144,7 +144,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -156,7 +156,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -193,7 +193,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, Request $request)
     {
@@ -242,7 +242,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -317,7 +317,7 @@ class TaxController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
 
     /**

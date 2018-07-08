@@ -382,8 +382,8 @@ class ClientController extends Controller
         } catch (Exception $ex) {
             $result = [$ex->getMessage()];
             Bugsnag::notifyException($ex);
+
             return response()->json(compact('result'), 500);
-         
         }
     }
 

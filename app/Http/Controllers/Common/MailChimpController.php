@@ -178,7 +178,7 @@ class MailChimpController extends Controller
     public function addFieldsToAgora()
     {
         try {
-            /** @scrutinizer ignore-call */ 
+            /** @scrutinizer ignore-call */
             $fields = $this->getMergeFields($this->list_id);
             $mailchimp_field_in_agora = $this->mailchimp_field_model->get();
             if (count($mailchimp_field_in_agora) > 0) {

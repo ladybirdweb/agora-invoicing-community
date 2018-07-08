@@ -183,11 +183,11 @@ class ClientController extends Controller
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
             $client = $this->user->where('id', $id)->first();
-            $currency= $client->currency;
+            $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
             //dd($client);
 
-            return view('themes.default1.user.client.show', compact('id','client', 'invoices', 'model_popup', 'orders', 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount','currency'));
+            return view('themes.default1.user.client.show', compact('id', 'client', 'invoices', 'model_popup', 'orders', 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

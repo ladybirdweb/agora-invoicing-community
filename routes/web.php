@@ -284,8 +284,6 @@
 
         Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 'uses' => 'Order\InvoiceController@invoiceTotalChange']);
 
-
-
         /*
          * Payment
          */

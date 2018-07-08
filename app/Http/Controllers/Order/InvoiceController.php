@@ -307,16 +307,15 @@ class InvoiceController extends Controller
     }
 
     /**
-    * Edit Invoice Total
-    */
+     * Edit Invoice Total.
+     */
     public function invoiceTotalChange(Request $request)
-    {   
+    {
         $total = $request->input('total');
         $number = $request->input('number');
-        $invoiceId = Invoice::where('number',$number)->value('id');
-        $invoiceItem = $this->invoiceItem->where('invoice_id',$invoiceId)->update(['subtotal'=>$total]);
-        $invoices = $this->invoice->where('number',$number)->update(['grand_total'=>$total]);
-        
+        $invoiceId = Invoice::where('number', $number)->value('id');
+        $invoiceItem = $this->invoiceItem->where('invoice_id', $invoiceId)->update(['subtotal'=>$total]);
+        $invoices = $this->invoice->where('number', $number)->update(['grand_total'=>$total]);
     }
 
     public function sendmailClientAgent($userid, $invoiceid)

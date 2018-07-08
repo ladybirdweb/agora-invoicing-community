@@ -586,7 +586,6 @@ class OrderController extends Controller
 
     public function domainChange(Request $request)
     {
-        
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = $this->order->find($id);

@@ -201,13 +201,14 @@ class CheckoutController extends Controller
         $paynow = $this->getPaynow($invoiceId);
         $cost = $request->input('cost');
         $state = $this->getState();
+
         try {
             if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
-                $pay = $this->payment($payment_method,$status='pending');
+                $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
                 $invoice_no = $invoice->number;
@@ -262,54 +263,58 @@ class CheckoutController extends Controller
     }
 
     /**
-     * Get User State
+     * Get User State.
+     *
      * @return type
      */
     public function getState()
     {
-       if (\Auth::user()->country != 'IN') {
-            $states = State::where('state_subdivision_code',  \Auth::user()->state)
+        if (\Auth::user()->country != 'IN') {
+            $states = State::where('state_subdivision_code', \Auth::user()->state)
             ->pluck('state_subdivision_name')->first();
         } else {
-            $states = TaxByState::where('state_code',  \Auth::user()->state)->pluck('state')->first();
+            $states = TaxByState::where('state_code', \Auth::user()->state)->pluck('state')->first();
         }
+
         return $states;
     }
 
-   /**
-    * Wheather appicable for payment
-    * @param type $invoiceid
-    */
+    /**
+     * Wheather appicable for payment.
+     *
+     * @param type $invoiceid
+     */
     public function getPaynow($invoiceid)
     {
         $paynow = false;
         if ($invoiceid) {
             $paynow = true;
         }
+
         return $paynow;
     }
 
-
-    public function payment($payment_method,$status)
+    public function payment($payment_method, $status)
     {
-         if (!$payment_method) {
+        if (!$payment_method) {
             $payment_method = 'free';
             $status = 'success';
         }
-        return ['payment'=>$payment_method,'status'=>$status];
+
+        return ['payment'=>$payment_method, 'status'=>$status];
     }
-    
+
     /**
-    * Get The Date
-    */
+     * Get The Date.
+     */
     public function getDate($invoice)
     {
         $date1 = new DateTime($invoice->date);
         $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
         $date = $date1->format('M j, Y, g:i a ');
+
         return $date;
     }
-
 
     public function checkoutAction($invoice)
     {

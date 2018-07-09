@@ -197,38 +197,23 @@ class CheckoutController extends Controller
     {
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $payment_method = $request->input('payment_gateway');
-        $paynow = false;
-        if ($request->input('invoice_id')) {
-            $paynow = true;
-        }
-
+        $invoiceId = $request->input('invoice_id');
+        $paynow = $this->getPaynow($invoiceId);
         $cost = $request->input('cost');
-        if (\Auth::user()->country != 'IN') {
-            $state = State::where('state_subdivision_code',  \Auth::user()->state)
-            ->pluck('state_subdivision_name')->first();
-        } else {
-            $state = TaxByState::where('state_code',  \Auth::user()->state)->pluck('state')->first();
-        }
+        $state = $this->getState();
         try {
-            if (!$this->setting->where('id', 1)->first()) {
-                return redirect()->back()->with('fails', 'Complete your settings');
-            }
             if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
-                $status = 'pending';
-                if (!$payment_method) {
-                    $payment_method = 'free';
-                    $status = 'success';
-                }
+                $pay = $this->payment($payment_method,$status='pending');
+                $payment_method = $pay['payment'];
+                $status = $pay['status'];
                 $invoice_no = $invoice->number;
 
-                $date1 = new DateTime($invoice->date);
-                 $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
-                $date = $date1->format('M j, Y, g:i a ');
-
+               
+                $date = $this->getDate($invoice);
                 $invoiceid = $invoice->id;
                 $amount = $invoice->grand_total;
                 $url = '';
@@ -243,7 +228,6 @@ class CheckoutController extends Controller
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
-                $cart = [];
                 $invoice_id = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoice_id);
                 $items = $invoice->invoiceItem()->get();
@@ -276,6 +260,56 @@ class CheckoutController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
+    /**
+     * Get User State
+     * @return type
+     */
+    public function getState()
+    {
+       if (\Auth::user()->country != 'IN') {
+            $states = State::where('state_subdivision_code',  \Auth::user()->state)
+            ->pluck('state_subdivision_name')->first();
+        } else {
+            $states = TaxByState::where('state_code',  \Auth::user()->state)->pluck('state')->first();
+        }
+        return $states;
+    }
+
+   /**
+    * Wheather appicable for payment
+    * @param type $invoiceid
+    */
+    public function getPaynow($invoiceid)
+    {
+        $paynow = false;
+        if ($invoiceid) {
+            $paynow = true;
+        }
+        return $paynow;
+    }
+
+
+    public function payment($payment_method,$status)
+    {
+         if (!$payment_method) {
+            $payment_method = 'free';
+            $status = 'success';
+        }
+        return ['payment'=>$payment_method,'status'=>$status];
+    }
+    
+    /**
+    * Get The Date
+    */
+    public function getDate($invoice)
+    {
+        $date1 = new DateTime($invoice->date);
+        $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
+        $date = $date1->format('M j, Y, g:i a ');
+        return $date;
+    }
+
 
     public function checkoutAction($invoice)
     {

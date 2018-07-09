@@ -112,68 +112,6 @@ class AuthController extends Controller
         return view('auth.new_register');
     }
 
-    /**
-     * Handle a registration request for the application.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function postRegister(ProfileRequest $request, User $user, AccountActivate $activate)
-    {
-        return $request->all();
-
-        try {
-            $pass = $request->input('password');
-            $country = $request->input('country');
-            $currency = 'INR';
-            $ip = $request->ip();
-            // $location = \GeoIP::getLocation($ip);
-           if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-      $ip = $_SERVER['HTTP_CLIENT_IP'];
-           } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-               $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-           } else {
-               $ip = $_SERVER['REMOTE_ADDR'];
-           }
-
-            if ($ip != '::1') {
-                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-            } else {
-                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-            }
-            if ($country == 'IN') {
-                $currency = 'INR';
-            } else {
-                $currency = 'USD';
-            }
-            if (\Session::has('currency')) {
-                $currency = \Session::get('currency');
-            }
-            $account_manager = $this->accountManager();
-            $password = \Hash::make($pass);
-            $user->password = $password;
-            $user->role = 'user';
-            $user->manager = $account_manager;
-            $user->ip = $location['ip'];
-            $user->currency = $currency;
-            $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
-            $user->fill($request->except('password'))->save();
-            //$this->sendActivation($user->email, $request->method(), $pass);
-            $this->accountManagerMail($user);
-            if ($user) {
-                $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Registered Successfully...'];
-
-                return response()->json($response);
-            }
-        } catch (\Exception $ex) {
-            //return redirect()->back()->with('fails', $ex->getMessage());
-            $result = [$ex->getMessage()];
-
-            return response()->json($result);
-        }
-    }
-
     public function sendActivationByGet($email, Request $request)
     {
         try {
@@ -295,9 +233,7 @@ class AuthController extends Controller
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
-
-                return redirect($url);
-            }
+             }
 
             return redirect($url)->with('fails', $ex->getMessage());
         }

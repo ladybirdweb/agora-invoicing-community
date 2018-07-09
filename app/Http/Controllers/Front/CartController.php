@@ -312,8 +312,7 @@ class CartController extends Controller
                         }
                            }
                        } else {//If user from other Country
-
-                           $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+                         $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
 
                            if ($taxClassId) { //if state equals the user State or country equals user country
 

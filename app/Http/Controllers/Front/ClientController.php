@@ -254,7 +254,6 @@ class ClientController extends Controller
     {
         try {
             $orders = Order:: where('client', \Auth::user()->id);
-
             return \DataTables::of($orders->get())
                             ->addColumn('id', function ($model) {
                                 return $model->id;
@@ -264,25 +263,13 @@ class ClientController extends Controller
                             })
                             ->addColumn('expiry', function ($model) {
                                 $tz = \Auth::user()->timezone()->first()->name;
-                                $end = '--';
-                                if ($model->subscription()->first()) {
-                                    if ($end != '0000-00-00 00:00:00' || $end != null) {
-                                        $ends = new DateTime($model->subscription()->first()->ends_at);
-                                        $tz = \Auth::user()->timezone()->first()->name;
-                                        $ends->setTimezone(new DateTimeZone($tz));
-                                        $date = $ends->format('M j, Y, g:i a ');
-                                        $end = $date;
-                                        // dd($end);
-                                    }
-                                }
-
+                                 $end = $this->getExpiryDate($model);
                                 return $end;
-                            })
+                             })
 
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();
                                 $order = Order::where('id', $model->id)->select('product')->first();
-                                $productid = $order->product;
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
@@ -290,25 +277,57 @@ class ClientController extends Controller
                                     if ($sub) {
                                         $url = $this->renewPopup($sub->id, $productid);
                                     }
-                                    //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
                                 }
-
-                                $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
-                                if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->id, $productid);
-                                } else {
-                                    $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
-                                }
-
+                                $listUrl = $this->getPopup($model,$order->product);
                                 return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
-                            // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
+    }
+
+    /**
+     * Get expiry Date for order
+     * @param type $orders
+     * @return type
+     */
+
+    public function getExpiryDate($orders)
+    {
+         $end = '--';
+          if ($orders->subscription()->first()) {
+            if ($end != '0000-00-00 00:00:00' || $end != null) {
+                $ends = new DateTime($orders->subscription()->first()->ends_at);
+                $tz = \Auth::user()->timezone()->first()->name;
+                $ends->setTimezone(new DateTimeZone($tz));
+                $date = $ends->format('M j, Y, g:i a ');
+                $end = $date;
+                // dd($end);
+            }
+        }
+         return $end;
+
+    }
+
+    /**
+     * Get the version list popup for the Product
+     * @param type $orders
+     * @param type $productid
+     * @return type
+     */
+    public function getPopup($orders,$productid)
+    {
+         $productCheck = $orders->product()->select('github_owner', 'github_repository')->where('id', $orders->product)->first();
+        if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+            $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
+        } else {
+            $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
+        }
+
+        return $listUrl;
     }
 
     public function subscriptions()

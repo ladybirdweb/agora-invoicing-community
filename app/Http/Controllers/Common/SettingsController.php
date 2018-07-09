@@ -50,7 +50,7 @@ class SettingsController extends Controller
             $model = $apikeys->find(1);
 
             return view('themes.default1.common.apikey', compact('model'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }

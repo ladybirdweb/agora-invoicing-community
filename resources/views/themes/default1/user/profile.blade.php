@@ -29,7 +29,9 @@
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.profile')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                <h4>{{Lang::get('message.profile')}}	
+                <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+
 
             </div>
 
@@ -79,9 +81,8 @@
                 <div class="form-group">
                     <!-- email -->
                     {!! Form::label('email',Lang::get('message.email')) !!}
-                    <div>
-                        {{$user->email}}
-                    </div>
+                     {!! Form::text('email',null,['class' => 'form-control']) !!}
+                  
                 </div>
 
                 <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
@@ -99,7 +100,7 @@
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                     <label class="required">Country code</label>
-                    {!! Form::text('mobile_code',null,['class'=>'form-control']) !!}
+                    {!! Form::text('mobile_code',null,['class'=>'form-control', 'id'=>'mobile_code']) !!}
                 </div>
                 <div class="form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                     <!-- mobile -->
@@ -139,7 +140,7 @@
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);']) !!}
+                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -191,7 +192,7 @@
 
             <div class="content-header">
 
-                <h4>{{Lang::get('message.change-password')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+                <h4>{{Lang::get('message.change-password')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
             </div>
 
@@ -240,15 +241,72 @@
 
 {!! Form::close() !!}
 <script>
+           $(document).ready(function(){ 
+    var country = $('#country').val();
+    var telInput = $('#mobile_code');
+     let currentCountry="";
+    telInput.intlTelInput({
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                  resp.country = country;
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
+            });
+        },
+        separateDialCode: false,
+        utilsScript: "{{asset('js/intl/js/utils.js')}}",
+    });
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+});
+</script>
+<script>
+       function getCountryAttr(val) {
+        getState(val);
+        getCode(val);
+//        getCurrency(val);
+
+    }
+
     function getState(val) {
 
 
         $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
+            type: "GET",
+              url: "{{url('get-state')}}/" + val,
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
+            }
+        });
+    }
+    function getCode(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-code')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#mobile_code").val(data);
+                $("#mobile_code_hidden").val(data);
             }
         });
     }

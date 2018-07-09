@@ -28,7 +28,7 @@ class DashboardController extends Controller
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
         $productNameList = [];
-        if ($productNameList) {
+        if (! empty($productNameList)) {
             foreach ($productSoldlists as $productSoldlist) {
                 $productNameList[] = $productSoldlist->name;
             }
@@ -39,7 +39,7 @@ class DashboardController extends Controller
         $invoices = $this->getRecentInvoices();
         $products = $this->totalProductsSold();
         $productName = [];
-        if ($productName) {
+        if (! empty($productName)) {
             foreach ($products as $product) {
                 $productName[] = $product->name;
             }

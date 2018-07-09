@@ -36,8 +36,7 @@ class ProfileRequest extends Request
                     'zip'              => 'required|numeric',
                     'user_name'        => 'required|unique:users,user_name,'.$userid,
                     'bussiness'        => 'required',
-                    'company_type'     => 'required',
-                    'company_size'     => 'required',
+                   
 
         ];
         }

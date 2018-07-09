@@ -13,6 +13,7 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
+use App\ApiKey;
 use Redirect;
 
 class RazorpayController extends Controller
@@ -47,12 +48,10 @@ class RazorpayController extends Controller
 
         $success = true;
         $error = 'Payment Failed';
+        $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+        $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
 
-        //get API Configuration
-
-        //get API Configuration
-
-        $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
+        $api = new Api($rzp_key, $rzp_secret);
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
 
         if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature

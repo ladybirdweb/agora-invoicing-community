@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -233,7 +232,7 @@ class AuthController extends Controller
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
-             }
+            }
 
             return redirect($url)->with('fails', $ex->getMessage());
         }

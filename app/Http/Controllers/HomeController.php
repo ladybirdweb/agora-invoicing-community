@@ -437,12 +437,11 @@ class HomeController extends Controller
             $this_order = $order->where('number', $order_number)->first();
             if ($this_order) {
                 $product_id = $this_order->product;
-                    $this_product = $product->where('id', $product_id)->first();
-                    if ($this_product) {
-                        $version = str_replace('v', '', $this_product->version);
+                $this_product = $product->where('id', $product_id)->first();
+                if ($this_product) {
+                    $version = str_replace('v', '', $this_product->version);
 
-                        return ['status' => 'success', 'message' => 'this-is-a-valid-request', 'version' => $version];
-                    
+                    return ['status' => 'success', 'message' => 'this-is-a-valid-request', 'version' => $version];
                 }
             }
 

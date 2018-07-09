@@ -727,7 +727,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'rzp_key'=>'', 'rzp_secret'=>'', 'apilayer_key'=>'', 'bugsnag_api_key'=>''
+        Github::create(['id' => 1, 'rzp_key'=>'', 'rzp_secret'=>'', 'apilayer_key'=>'', 'bugsnag_api_key'=>'',
             'zoho_api_key'=>'','msg91_auth_key'=>'']);
     }
 }

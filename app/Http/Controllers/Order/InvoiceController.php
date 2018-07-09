@@ -109,10 +109,10 @@ class InvoiceController extends Controller
     public function getInvoices()
     {
         //dd($this->invoice->get());
-        //$invoice = \DB::table('invoices');
-        $new_invoice = Invoice::select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at')->get();
+        $invoice = \DB::table('invoices');
+        // $new_invoice = $invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at');
 
-        return \DataTables::of($new_invoice)
+        return \DataTables::of($invoice->get())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' value=".$model->id.' name=select[] id=check>';
                         })

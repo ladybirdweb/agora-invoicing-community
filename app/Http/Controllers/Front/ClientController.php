@@ -270,6 +270,7 @@ class ClientController extends Controller
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();
                                 $order = Order::where('id', $model->id)->select('product')->first();
+                                $productid= $order->product;
                                 $order_cont = new \App\Http\Controllers\Order\OrderController();
                                 $status = $order_cont->checkInvoiceStatusByOrderId($model->id);
                                 $url = '';
@@ -278,7 +279,7 @@ class ClientController extends Controller
                                         $url = $this->renewPopup($sub->id, $productid);
                                     }
                                 }
-                                $listUrl = $this->getPopup($model,$order->product);
+                                $listUrl = $this->getPopup($model,$productid);
                                 return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])

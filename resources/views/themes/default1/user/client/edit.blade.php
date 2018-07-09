@@ -311,7 +311,7 @@
             data: 'country_id=' + val,
             success: function (data) {
                 $("#mobile_code").val(data);
-                $("#mobile_code_hidden").val(data);
+                // $("#mobile_code_hidden").val(data);
             }
         });
     }

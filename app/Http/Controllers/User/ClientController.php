@@ -229,7 +229,6 @@ class ClientController extends Controller
             return $sum;
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
@@ -269,8 +268,8 @@ class ClientController extends Controller
      * @return Response
      */
     public function update($id, ClientRequest $request)
-    {
-        $user = $this->user->where('id', $id)->first();
+    { 
+     $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();
         // activity()->log('Look mum, I logged something');

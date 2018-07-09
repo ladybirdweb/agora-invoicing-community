@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Http\Controller\Common\CronExtensionController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use App\Http\Controller\Common\CronExtensionController;
 use App\User;
 use Carbon\Carbon;
 
@@ -192,9 +192,6 @@ class CronController extends Controller
         return $users;
     }
 
-   
-   
-
     public function get30DaysOrders()
     {
         $users = [];
@@ -358,8 +355,6 @@ class CronController extends Controller
 
         return $user;
     }
-
-  
 
     public function eachSubscription()
     {

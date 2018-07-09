@@ -204,11 +204,12 @@ class CheckoutController extends Controller
 
         $cost = $request->input('cost');
         if (\Auth::user()->country != 'IN') {
-            $state = State::where('state_subdivision_code',  \Auth::user()->state)
+            $state = State::where('state_subdivision_code', \Auth::user()->state)
             ->pluck('state_subdivision_name')->first();
         } else {
-            $state = TaxByState::where('state_code',  \Auth::user()->state)->pluck('state')->first();
+            $state = TaxByState::where('state_code', \Auth::user()->state)->pluck('state')->first();
         }
+
         try {
             if (!$this->setting->where('id', 1)->first()) {
                 return redirect()->back()->with('fails', 'Complete your settings');
@@ -226,7 +227,7 @@ class CheckoutController extends Controller
                 $invoice_no = $invoice->number;
 
                 $date1 = new DateTime($invoice->date);
-                 $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
+                $date1->setTimezone(new DateTimeZone(\Auth::user()->timezone()->first()->name));
                 $date = $date1->format('M j, Y, g:i a ');
 
                 $invoiceid = $invoice->id;
@@ -234,8 +235,8 @@ class CheckoutController extends Controller
                 $url = '';
                 $cart = Cart::getContent();
                 $invoices = $this->invoice->find($invoiceid);
-                 $items = new \Illuminate\Support\Collection();
-                 if ($invoices) {
+                $items = new \Illuminate\Support\Collection();
+                if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
@@ -257,22 +258,24 @@ class CheckoutController extends Controller
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
+
                 return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method','phone', 'invoice', 'items', 'product', 'paynow', 'attributes','rzp_key','rzp_secret',
                     'apilayer_key'));
-
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
                 $url = '';
                 if ($check_product_category->category) {
-                    $url= view('themes.default1.front.postCheckoutTemplate',compact('invoice','date',
-                        'product','items','attributes','state'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',
+                        'product', 'items', 'attributes', 'state'))->render();
                 }
                 \Cart::clear();
-                 return redirect()->back()->with('success', $url);
+
+                return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -2,24 +2,23 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
-use App\ApiKey;
 use App\Model\Plugin;
 use App\User;
-use Illuminate\Support\Facades\Input;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
-
 
 class SettingsController extends Controller
 {
-     public $apikey; 
+    public $apikey;
 
     public function __construct()
     {
@@ -47,8 +46,9 @@ class SettingsController extends Controller
 
     public function getKeys(ApiKey $apikeys)
     {
-         try {
+        try {
             $model = $apikeys->find(1);
+
             return view('themes.default1.common.apikey', compact('model'));
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -57,15 +57,14 @@ class SettingsController extends Controller
 
     public function postKeys(ApiKey $apikeys, Request $request)
     {
-       try{
-        $keys = $apikeys->find(1);
-        $keys->fill($request->input())->save();
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        try {
+            $keys = $apikeys->find(1);
+            $keys->fill($request->input())->save();
 
-       } catch(Exception $ex){
-         return redirect()->back()->with('fails',$ex->getMessage());
-           
-       }
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function getPlugin()

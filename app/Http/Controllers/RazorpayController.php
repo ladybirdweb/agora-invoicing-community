@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ApiKey;
 use App\Model\Common\State;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -13,7 +14,6 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Razorpay\Api\Api;
-use App\ApiKey;
 use Redirect;
 
 class RazorpayController extends Controller

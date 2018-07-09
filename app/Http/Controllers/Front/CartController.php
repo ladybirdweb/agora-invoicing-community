@@ -195,8 +195,8 @@ class CartController extends Controller
     public function checkTax($productid)
     {
         try {
-            $tax_condition = [];
-            $tax_attribute = [];
+            $tax_condition = array();
+            $tax_attribute = array();
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -732,6 +732,7 @@ class CartController extends Controller
                     ]
             );
         } catch (\Exception $ex) {
+          throw new \Exception($ex->getMessage());
         }
     }
 
@@ -754,6 +755,7 @@ class CartController extends Controller
 
             return $currency;
         } catch (\Exception $ex) {
+          throw new \Exception($ex->getMessage());
         }
     }
 
@@ -951,11 +953,9 @@ class CartController extends Controller
     public static function findStateByRegionId($iso)
     {
         try {
-            if ($iso) {
+            
                 $states = \App\Model\Common\State::where('country_code_char2', $iso)->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            } else {
-                $states = [];
-            }
+           
 
             return $states;
         } catch (\Exception $ex) {
@@ -1001,13 +1001,11 @@ class CartController extends Controller
     {
         try {
             $result = ['id' => '', 'name' => ''];
-            if ($code) {
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                     //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
                 }
-            }
 
             return $result;
         } catch (\Exception $ex) {
@@ -1313,7 +1311,7 @@ class CartController extends Controller
         try {
             $cost = 0;
             $subscription = $this->allowSubscription($productid);
-            if ($this->checkPlanSession() == true) {
+            if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
 

@@ -483,13 +483,6 @@ class ClientController extends Controller
         }
     }
 
-    public function getSubscription($id)
-    {
-        try {
-        } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function getInvoicesByOrderId($orderid, $userid)
     {

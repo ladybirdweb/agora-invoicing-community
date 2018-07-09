@@ -35,7 +35,7 @@ class HomeController extends Controller
     /**
      * Show the application dashboard to the user.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -188,7 +188,7 @@ class HomeController extends Controller
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);
             if (!$privateKey = openssl_pkey_get_private($key_content)) {
-                die('Private Key failed');
+                dd('Private Key failed');
             }
             $a_key = openssl_pkey_get_details($privateKey);
 
@@ -201,7 +201,7 @@ class HomeController extends Controller
                 $encrypted = substr($encrypted, $chunkSize);
                 $decrypted = '';
                 if (!openssl_private_decrypt($chunk, $decrypted, $privateKey)) {
-                    die('Failed to decrypt data');
+                    dd('Failed to decrypt data');
                 }
                 $output .= $decrypted;
             }
@@ -437,13 +437,12 @@ class HomeController extends Controller
             $this_order = $order->where('number', $order_number)->first();
             if ($this_order) {
                 $product_id = $this_order->product;
-                if ($product_id) {
                     $this_product = $product->where('id', $product_id)->first();
                     if ($this_product) {
                         $version = str_replace('v', '', $this_product->version);
 
                         return ['status' => 'success', 'message' => 'this-is-a-valid-request', 'version' => $version];
-                    }
+                    
                 }
             }
 
@@ -458,6 +457,7 @@ class HomeController extends Controller
         try {
             \Log::info('requests', $request->all());
         } catch (Exception $ex) {
+            dd($ex);
         }
     }
 

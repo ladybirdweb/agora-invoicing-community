@@ -7,6 +7,7 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
+use App\Http\Controller\Common\CronExtensionController;
 use App\User;
 use Carbon\Carbon;
 
@@ -17,11 +18,15 @@ class CronController extends Controller
     protected $user;
     protected $template;
     protected $invoice;
+    protected $cron
 
     public function __construct()
     {
         $subscription = new Subscription();
         $this->sub = $subscription;
+
+        $cron = new CronExtensionController();
+        $this->cron = $cron;
 
         $order = new Order();
         $this->order = $order;
@@ -187,61 +192,8 @@ class CronController extends Controller
         return $users;
     }
 
-    public function get30DaysUsers()
-    {
-        //$users = [];
-        $users = $this->get30DaysExpiryUsers();
-        //dd($users);
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
-
-    public function get15DaysUsers()
-    {
-        $users = [];
-        $users = $this->get15DaysExpiryUsers();
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
-
-    public function get1DaysUsers()
-    {
-        $users = [];
-        $users = $this->getOneDayExpiryUsers();
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
-
-    public function get0DaysUsers()
-    {
-        $users = [];
-        $users = $this->getOnDayExpiryUsers();
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
-
-    public function getPlus1Users()
-    {
-        $users = [];
-        $users = $this->getExpiredUsers();
-        if (count($users) > 0) {
-            return $users[0]['users'];
-        }
-
-        return $users;
-    }
+   
+   
 
     public function get30DaysOrders()
     {
@@ -356,16 +308,16 @@ class CronController extends Controller
     public function getUsers()
     {
         $users = [];
-        if (count($this->get30DaysUsers())) {
+        if (count($this->cron->get30DaysUsers())) {
             array_push($users, $this->get30DaysUsers());
         }
-        if (count($this->get15DaysUsers())) {
+        if (count($this->$cron->get15DaysUsers())) {
             array_push($users, $this->get15DaysUsers());
         }
-        if (count($this->get1DaysUsers())) {
+        if (count($this->$cron->get1DaysUsers())) {
             array_push($users, $this->get1DaysUsers());
         }
-        if (count($this->get0DaysUsers())) {
+        if (count($this->$cron->get0DaysUsers())) {
             array_push($users, $this->get0DaysUsers());
         }
         if (count($this->getPlus1Users())) {
@@ -407,28 +359,7 @@ class CronController extends Controller
         return $user;
     }
 
-    public function getOrderById($id)
-    {
-        $order = $this->order->find($id);
-
-        return $order;
-    }
-
-    public function getInvoiceItemByInvoiceId($invoiceid)
-    {
-        $invoice = $this->invoice->find($invoiceid);
-        $item_id = $invoice->invoiceItem()->first();
-
-        return $item_id;
-    }
-
-    public function getInvoiceByOrderId($orderid)
-    {
-        $order = $this->order->find($orderid);
-        $invoice = $order->invoice()->first();
-
-        return $invoice;
-    }
+  
 
     public function eachSubscription()
     {
@@ -438,9 +369,9 @@ class CronController extends Controller
             $userid = $value->user_id;
             $user = $this->getUserById($userid);
             $end = $value->ends_at;
-            $order = $this->getOrderById($value->order_id);
-            $invoice = $this->getInvoiceByOrderId($value->order_id);
-            $item = $this->getInvoiceItemByInvoiceId($invoice->id);
+            $order = $this->$cron->getOrderById($value->order_id);
+            $invoice = $this->$cron->getInvoiceByOrderId($value->order_id);
+            $item = $this->$cron->getInvoiceItemByInvoiceId($invoice->id);
             $product = $item->product_name;
             $this->mail($user, $end, $product, $order, $value->id);
         }

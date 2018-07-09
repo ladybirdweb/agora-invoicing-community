@@ -181,7 +181,7 @@ class PageController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -225,7 +225,8 @@ class PageController extends Controller
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';

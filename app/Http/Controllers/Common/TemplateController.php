@@ -255,7 +255,7 @@ class TemplateController extends Controller
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
@@ -269,7 +269,8 @@ class TemplateController extends Controller
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
@@ -422,7 +423,8 @@ class TemplateController extends Controller
                                     </div>
                                     <div class='modal-footer'>
                                         <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value=".\Lang::get('message.save').'>
+                                        <input type=submit class='btn btn-primary' value="./** @scrutinizer ignore-type */
+                                        \Lang::get('message.save').'>
                                     </div>
                                     '.\Form::close().'
                                 </div>

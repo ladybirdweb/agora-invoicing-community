@@ -228,7 +228,7 @@ class GithubController extends Controller
     /**
      * Get the count of download of the release.
      *
-     * @return array||redirect
+     * @return array
      */
     public function getDownloadCount()
     {
@@ -264,7 +264,7 @@ class GithubController extends Controller
     /**
      * get the settings page for github.
      *
-     * @return view
+     * @return \view
      */
     public function getSettings()
     {

@@ -420,14 +420,11 @@
             Route::get('check-url', 'Api\ApiController@checkDomain');
         });
 
-        
         /*
          * Api Keys
          */
         Route::get('apikeys', 'Common\SettingsController@getKeys');
         Route::patch('apikeys', 'Common\SettingsController@postKeys');
-
-
 
         Route::get('otp/send', 'Auth\AuthController@requestOtp');
         Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');

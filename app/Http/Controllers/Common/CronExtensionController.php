@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 
 class CronExtensionController extends CronController
 {
-     public function getOrderById($id)
+    public function getOrderById($id)
     {
         $order = Order::find($id);
 
         return $order;
     }
 
-     public function getInvoiceByOrderId($orderid)
+    public function getInvoiceByOrderId($orderid)
     {
         $order = Order::find($orderid);
         $invoice = $order->invoice()->first();
@@ -23,7 +21,7 @@ class CronExtensionController extends CronController
         return $invoice;
     }
 
-     public function getInvoiceItemByInvoiceId($invoiceid)
+    public function getInvoiceItemByInvoiceId($invoiceid)
     {
         $invoice = $this->invoice->find($invoiceid);
         $item_id = $invoice->invoiceItem()->first();
@@ -31,8 +29,7 @@ class CronExtensionController extends CronController
         return $item_id;
     }
 
-
-     public function get30DaysUsers()
+    public function get30DaysUsers()
     {
         //$users = [];
         $users = $this->get30DaysExpiryUsers();
@@ -43,7 +40,6 @@ class CronExtensionController extends CronController
 
         return $users;
     }
-
 
     public function get15DaysUsers()
     {
@@ -56,7 +52,6 @@ class CronExtensionController extends CronController
         return $users;
     }
 
-
     public function get1DaysUsers()
     {
         $users = [];
@@ -68,8 +63,7 @@ class CronExtensionController extends CronController
         return $users;
     }
 
-
-     public function get0DaysUsers()
+    public function get0DaysUsers()
     {
         $users = [];
         $users = $this->getOnDayExpiryUsers();
@@ -80,8 +74,7 @@ class CronExtensionController extends CronController
         return $users;
     }
 
-
-     public function getPlus1Users()
+    public function getPlus1Users()
     {
         $users = [];
         $users = $this->getExpiredUsers();
@@ -91,6 +84,4 @@ class CronExtensionController extends CronController
 
         return $users;
     }
-
-
 }

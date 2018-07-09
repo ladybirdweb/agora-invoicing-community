@@ -483,7 +483,6 @@ class ClientController extends Controller
         }
     }
 
-
     public function getInvoicesByOrderId($orderid, $userid)
     {
         try {

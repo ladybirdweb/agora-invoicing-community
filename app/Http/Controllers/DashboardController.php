@@ -27,8 +27,7 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
-         if (! empty($productSoldlists)) {
-
+        if (!empty($productSoldlists)) {
             foreach ($productSoldlists as $productSoldlist) {
                 $productNameList[] = $productSoldlist->name;
             }

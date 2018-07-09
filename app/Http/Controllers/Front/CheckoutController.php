@@ -211,16 +211,14 @@ class CheckoutController extends Controller
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
                 $invoice_no = $invoice->number;
-
-               
                 $date = $this->getDate($invoice);
                 $invoiceid = $invoice->id;
                 $amount = $invoice->grand_total;
                 $url = '';
                 $cart = Cart::getContent();
                 $invoices = $this->invoice->find($invoiceid);
-                 $items = new \Illuminate\Support\Collection();
-                 if ($invoices) {
+                $items = new \Illuminate\Support\Collection();
+                if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
@@ -241,22 +239,24 @@ class CheckoutController extends Controller
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
+
                 return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method','phone', 'invoice', 'items', 'product', 'paynow', 'attributes','rzp_key','rzp_secret',
                     'apilayer_key'));
-
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
                 $url = '';
                 if ($check_product_category->category) {
-                    $url= view('themes.default1.front.postCheckoutTemplate',compact('invoice','date',
-                        'product','items','attributes','state'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',
+                        'product', 'items', 'attributes', 'state'))->render();
                 }
                 \Cart::clear();
-                 return redirect()->back()->with('success', $url);
+
+                return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

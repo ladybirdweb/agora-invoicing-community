@@ -13,15 +13,12 @@ use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
-use App\Model\Payment\TaxByState;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
 use Cart;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
 
 class CheckoutController extends Controller
@@ -202,7 +199,7 @@ class CheckoutController extends Controller
         $paynow = $info_cont->getPaynow($invoiceId);
         $cost = $request->input('cost');
 
-        $state =$info_cont->getState();
+        $state = $info_cont->getState();
 
         try {
             if ($paynow === false) {
@@ -211,7 +208,7 @@ class CheckoutController extends Controller
                  */
                 $invoice = $invoice_controller->generateInvoice();
 
-                $pay = $info_cont->payment($payment_method,$status='pending');
+                $pay = $info_cont->payment($payment_method, $status = 'pending');
                 // $pay = $this->payment($payment_method,$status='pending');
 
                 $payment_method = $pay['payment'];
@@ -266,9 +263,6 @@ class CheckoutController extends Controller
         }
     }
 
-
-   
-
     public function checkoutAction($invoice)
     {
         try {
@@ -314,6 +308,7 @@ class CheckoutController extends Controller
             return $product;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

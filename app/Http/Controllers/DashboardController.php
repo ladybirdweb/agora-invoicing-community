@@ -27,20 +27,23 @@ class DashboardController extends Controller
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productSoldlists = $this->recentProductSold();
-        $productNameList = [];
-
+        $productNameList = array();
+        if($productNameList){
         foreach ($productSoldlists as $productSoldlist) {
             $productNameList[] = $productSoldlist->name;
         }
+    }
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
         $invoices = $this->getRecentInvoices();
         $products = $this->totalProductsSold();
         $productName = [];
+        if ($productName){
         foreach ($products as $product) {
             $productName[] = $product->name;
         }
+    }
         $arrayCountList = array_count_values($productName);
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',

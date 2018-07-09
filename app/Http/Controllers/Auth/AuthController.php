@@ -8,6 +8,7 @@ use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use App\ApiKey;
 use Validator;
 
 class AuthController extends Controller
@@ -235,9 +236,7 @@ class AuthController extends Controller
 
             return $mail;
         } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception($ex->getMessage());
+        throw new \Exception($ex->getMessage());
         }
     }
 
@@ -257,8 +256,8 @@ class AuthController extends Controller
                 $user->save();
 
                 $zoho = $this->reqFields($user, $email);
-
-                $auth = '5930375bef3fe5e0a2b35945cbf3a644';
+               
+                $auth = ApiKey::where('id',1)->value('zoho_api_key');
 
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
@@ -386,8 +385,9 @@ class AuthController extends Controller
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
+        $key = ApiKey::where('id',1)->value('msg91_auth_key');
         $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number],
+            'query' => ['authkey' => $key, 'mobile' => $number],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);
@@ -402,8 +402,9 @@ class AuthController extends Controller
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
+        $key = ApiKey::where('id',1)->value('msg91_auth_key');
         $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number],
+            'query' => ['authkey' => $key, 'mobile' => $number],
         ]);
         $send = $response->getBody()->getContents();
         $array = json_decode($send, true);

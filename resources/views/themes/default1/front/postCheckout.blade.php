@@ -25,8 +25,8 @@ Checkout
     }
     return $randomString;
 }
+     $api = new Api($rzp_key, $rzp_secret);
 
-    $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
     $displayCurrency=$invoice->currency;;
     $symbol = $invoice->currency;
  if ($symbol !== 'INR')
@@ -55,7 +55,7 @@ $orderData = [
 }
 else
 {
-     $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
+     $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
      $exchange = json_decode(file_get_contents($url));
 
      $exchangeRate = $exchange->quotes->USDINR;
@@ -80,7 +80,7 @@ $displayAmount = $amount = $orderData['amount'];
 $data = [
 
 
-    "key"               => 'rzp_test_GL0mtsOBCft5Tp',
+    "key"               => $rzp_key,
 
 
     "name"              => 'Faveo Helpdesk',

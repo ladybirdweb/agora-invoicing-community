@@ -12,6 +12,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
+use App\ApiKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -40,6 +41,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call('GroupTableSeeder');
         $this->command->info('Product Group table seeded!');
+
+        $this->call('ApiKeyTableSeeder');
+        $this->command->info('Api Key table seeded!');
 
         $this->call('ProductTypesTableSeeder');
         $this->command->info('Product Types table seeded!');
@@ -713,6 +717,18 @@ class GitHubTableSeeder extends Seeder
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+    }
+}
+
+class ApiKeyTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('api_keys')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        Github::create(['id' => 1, 'rzp_key'=>'', 'rzp_secret'=>'', 'apilayer_key'=>'', 'bugsnag_api_key'=>''
+            'zoho_api_key'=>'','msg91_auth_key'=>'']);
     }
 }
 

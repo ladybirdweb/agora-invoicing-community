@@ -691,6 +691,9 @@ INSERT INTO `template_types` (`id`,`name`,`created_at`, `updated_at`) VALUES
 INSERT INTO `githubs` (`id`,`client_id`,`client_secret`,`username`,`password`,`created_at`, `updated_at`) VALUES
 (1, '','','','','2018-04-13 12:53:58','2018-04-13 12:53:58');
 
+INSERT INTO `api_keys` (`id`,`rzp_key`,`rzp_secret`,`apilayer_key`,`bugsnag_api_key`,`zoho_api_key`,`msg91_auth_key`,`created_at`, `updated_at`) VALUES
+(1, '','','','','','','2018-04-13 12:53:58','2018-04-13 12:53:58');
+
 
 
 

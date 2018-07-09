@@ -345,6 +345,16 @@ return [
     'licences'          => 'Licences',
     'number_of_sla'     => 'Number of SLAs',
     'shoping_cart_link' => 'Shoping Cart Link',
+     /*
+     * Api Keys
+     */
+     'rzp_key'        => 'Razorpay Key',
+     'rzp_secret'     => 'Razorpay Secret',
+     'apilayer'       => 'ApiLayer Access Key',
+     'zoho_key'       => 'Zoho Key',
+     'key'            => 'API Keys',
+     'msg91key'       => 'Msg91 Auth Key',
+
     /*
      * Slas
      */

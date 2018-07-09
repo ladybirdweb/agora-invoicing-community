@@ -108,8 +108,6 @@ trait RegistersUsers
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
-            dd($ex);
-            //return redirect()->back()->with('fails', $ex->getMessage());
             $result = [$ex->getMessage()];
             
             return response()->json($result);
@@ -178,7 +176,6 @@ trait RegistersUsers
 
             return $mail;
         } catch (\Exception $ex) {
-            dd($e);
             throw new \Exception($ex->getMessage());
         }
     }

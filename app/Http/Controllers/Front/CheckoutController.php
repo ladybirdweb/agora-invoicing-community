@@ -201,16 +201,19 @@ class CheckoutController extends Controller
         $invoiceId = $request->input('invoice_id');
         $paynow = $info_cont->getPaynow($invoiceId);
         $cost = $request->input('cost');
-       
+
         $state =$info_cont->getState();
+
         try {
             if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
+
                 $pay = $info_cont->payment($payment_method,$status='pending');
                 // $pay = $this->payment($payment_method,$status='pending');
+
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
                 $invoice_no = $invoice->number;
@@ -237,7 +240,6 @@ class CheckoutController extends Controller
                 $content = Cart::getContent();
                 $attributes = $this->getAttributes($content);
             }
-
             if (Cart::getSubTotal() != 0 || $cost > 0) {
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
@@ -264,7 +266,9 @@ class CheckoutController extends Controller
         }
     }
 
+
    
+
     public function checkoutAction($invoice)
     {
         try {

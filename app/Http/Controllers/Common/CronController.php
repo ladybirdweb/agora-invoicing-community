@@ -18,7 +18,7 @@ class CronController extends Controller
     protected $user;
     protected $template;
     protected $invoice;
-    protected $cron
+    protected $cron;
 
     public function __construct()
     {

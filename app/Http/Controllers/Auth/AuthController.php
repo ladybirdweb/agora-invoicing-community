@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
-use App\ApiKey;
 use Validator;
 
 class AuthController extends Controller
@@ -236,7 +236,7 @@ class AuthController extends Controller
 
             return $mail;
         } catch (\Exception $ex) {
-        throw new \Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -256,8 +256,8 @@ class AuthController extends Controller
                 $user->save();
 
                 $zoho = $this->reqFields($user, $email);
-               
-                $auth = ApiKey::where('id',1)->value('zoho_api_key');
+
+                $auth = ApiKey::where('id', 1)->value('zoho_api_key');
 
                 // $url ="https://crm.zoho.com/crm/private/xml/Contacts/insertRecords";
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
@@ -385,7 +385,7 @@ class AuthController extends Controller
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
-        $key = ApiKey::where('id',1)->value('msg91_auth_key');
+        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $response = $client->request('GET', 'https://control.msg91.com/api/sendotp.php', [
             'query' => ['authkey' => $key, 'mobile' => $number],
         ]);
@@ -402,7 +402,7 @@ class AuthController extends Controller
     {
         $client = new \GuzzleHttp\Client();
         $number = $code.$mobile;
-        $key = ApiKey::where('id',1)->value('msg91_auth_key');
+        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $response = $client->request('GET', 'https://control.msg91.com/api/retryotp.php', [
             'query' => ['authkey' => $key, 'mobile' => $number],
         ]);

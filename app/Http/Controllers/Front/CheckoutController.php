@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,6 @@ use App\Model\Payment\TaxByState;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\ApiKey;
 use App\User;
 use Bugsnag;
 use Cart;
@@ -283,9 +283,9 @@ class CheckoutController extends Controller
 
             //trasfer the control to event if cart price is not equal 0
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                $rzp_key = ApiKey::where('id',1)->value('rzp_key');
-                $rzp_secret = ApiKey::where('id',1)->value('rzp_secret');
-                $apilayer_key = ApiKey::where('id',1)->value('apilayer_key');
+                $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+                $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
+                $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
                 //                if ($paynow == true) {
                 //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
                 //                }

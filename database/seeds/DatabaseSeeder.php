@@ -12,7 +12,6 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
-use App\ApiKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -728,7 +727,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'rzp_key'=>'', 'rzp_secret'=>'', 'apilayer_key'=>'', 'bugsnag_api_key'=>'',
-            'zoho_api_key'=>'','msg91_auth_key'=>'']);
+            'zoho_api_key'   => '', 'msg91_auth_key'=>'', ]);
     }
 }
 

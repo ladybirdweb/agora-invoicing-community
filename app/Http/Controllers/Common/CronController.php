@@ -7,7 +7,6 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use App\Http\Controller\Common\CronExtensionController;
 use App\User;
 use Carbon\Carbon;
 

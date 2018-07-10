@@ -18,9 +18,9 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use Log;
 use Cart;
 use Illuminate\Http\Request;
+use Log;
 
 class CheckoutController extends Controller
 {
@@ -260,7 +260,7 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-           app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -296,7 +296,7 @@ class CheckoutController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -314,9 +314,10 @@ class CheckoutController extends Controller
 
             return $product;
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -333,7 +334,7 @@ class CheckoutController extends Controller
                 $this->AddProductToOrder($id);
             }
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -362,7 +363,7 @@ class CheckoutController extends Controller
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -385,7 +386,7 @@ class CheckoutController extends Controller
             }
             $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -406,7 +407,7 @@ class CheckoutController extends Controller
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -435,7 +436,7 @@ class CheckoutController extends Controller
 
             $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
         } catch (\Exception $ex) {
-              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 

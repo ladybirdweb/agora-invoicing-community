@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -52,7 +51,7 @@ class ClientController extends AdvanceSearchController
         $role = $request->input('role');
         $position = $request->input('position');
 
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country',  'industry', 'company_type', 'company_size', 'role', 'position'));
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
     }
 
     /**
@@ -90,8 +89,9 @@ class ClientController extends AdvanceSearchController
                                   $date = date_create($ends);
                                   $end = date_format($date, 'l, F j, Y H:m');
                               }
-                            return $end;
-                        })
+
+                              return $end;
+                          })
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -206,6 +206,7 @@ class ClientController extends AdvanceSearchController
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -345,9 +346,6 @@ class ClientController extends AdvanceSearchController
 
         return $join;
     }
-
-
-   
 
     public function sendWelcomeMail($user)
     {

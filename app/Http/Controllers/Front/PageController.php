@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
 use App\Model\Front\FrontendPage;
 use Illuminate\Http\Request;
 
@@ -245,7 +244,6 @@ class PageController extends GetPageTemplateController
         }
     }
 
-
     public function transform($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");
@@ -270,9 +268,6 @@ class PageController extends GetPageTemplateController
             return true;
         }
     }
-
-
-
 
     public function cart()
     {
@@ -304,8 +299,8 @@ class PageController extends GetPageTemplateController
         $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
         $trasform2 = [];
 
-        $service_template = $this->getServiceTemplate($service,$data,$trasform2);
+        $service_template = $this->getServiceTemplate($service, $data, $trasform2);
+
         return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
     }
-
 }

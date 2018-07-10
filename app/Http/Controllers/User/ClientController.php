@@ -344,17 +344,21 @@ class ClientController extends Controller
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = DB::table('users');
+        $join = $this->getNamUserCom($join,$name,$username,$company);
+        $join = $this->getMobEmCoun($join,$mobile,$email,$country);
+        $join = $this->getInCtCs($join,$industry,$company_type,$company_size);
+        $join = $this->getRolPos($join,$role,$position);
+       
+         $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
 
-        if ($name) {
-            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
-                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
-        }
-        if ($username) {
-            $join = $join->where('user_name', 'LIKE', '%'.$username.'%');
-        }
-        if ($company) {
-            $join = $join->where('company', 'LIKE', '%'.$company.'%');
-        }
+        return $join;
+    }
+
+    /**
+    * Serach for Mobile,Email,Country
+    */
+    public function getMobEmCoun($join,$mobile,$email,$country)
+    {
         if ($mobile) {
             $join = $join->where('mobile', $mobile);
         }
@@ -364,7 +368,16 @@ class ClientController extends Controller
         if ($country) {
             $join = $join->where('country', $country);
         }
-        if ($industry) {
+        return $join;
+    }
+
+     
+     /**
+    * Serach for industry,company_type,company_size
+    */
+     public function getInCtCs($join,$industry,$company_type,$company_size)
+    {
+       if ($industry) {
             $join = $join->where('bussiness', $industry);
         }
         if ($company_type) {
@@ -373,15 +386,39 @@ class ClientController extends Controller
         if ($company_size) {
             $join = $join->where('company_size', $company_size);
         }
-        if ($role) {
+        return $join;
+    }
+
+
+    /**
+    * Serach for Role,Position
+    */
+     public function getRolPos($join,$role,$position)
+    {
+      if ($role) {
             $join = $join->where('role', $role);
         }
         if ($position) {
             $join = $join->where('position', $position);
         }
+        return $join;
+    }
 
-        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
-
+     /**
+    * Serach for Name,UserName,Company
+    */
+     public function getNamUserCom($join,$name,$username,$company)
+    {
+     if ($name) {
+            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
+                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
+        }
+        if ($username) {
+            $join = $join->where('user_name', 'LIKE', '%'.$username.'%');
+        }
+        if ($company) {
+            $join = $join->where('company', 'LIKE', '%'.$company.'%');
+        }
         return $join;
     }
 

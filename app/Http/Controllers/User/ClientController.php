@@ -11,8 +11,8 @@ use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
 use DB;
-use Log;
 use Illuminate\Http\Request;
+use Log;
 use Spatie\Activitylog\Models\Activity;
 
 class ClientController extends Controller
@@ -177,7 +177,6 @@ class ClientController extends Controller
     public function show($id)
     {
         try {
-
             $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
@@ -194,6 +193,7 @@ class ClientController extends Controller
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -215,6 +215,7 @@ class ClientController extends Controller
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -232,7 +233,7 @@ class ClientController extends Controller
 
             return $sum;
         } catch (\Exception $e) {
-             app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($e->getMessage());
             Bugsnag::notifyException($e);
 
@@ -263,8 +264,9 @@ class ClientController extends Controller
 
             return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
-             app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -333,7 +335,7 @@ class ClientController extends Controller
 
     public function getUsers(Request $request)
     {
-         $options = $this->user
+        $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
                 ->select('email AS text', 'id AS value')
                 ->get();

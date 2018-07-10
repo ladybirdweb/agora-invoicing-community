@@ -273,7 +273,7 @@ main
 
          function verify_number_check(){
             var userNumber = $('#u_mobile').val();
-            if (userNumber.length < 10){
+            if (userNumber.length < 5){
                 $('#mobilecheck').show();
                 $('#mobilecheck').html("Please Enter Your Mobile No.");
                 $('#mobilecheck').focus();
@@ -328,7 +328,7 @@ main
 
          function verify_mobnumber_check(){
             var userNumber = $('#u_mobile').val();
-            if (userNumber.length < 10){
+            if (userNumber.length < 5){
                 $('#mobcheck').show();
                 $('#mobcheck').html("Please Enter Your Mobile No.");
                 $('#mobcheck').focus();
@@ -403,7 +403,7 @@ main
             });
         },
         initialCountry: "auto",
-        separateDialCode: false,
+        separateDialCode: true,
         utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     }); 
     setTimeout(()=>{

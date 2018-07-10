@@ -1,0 +1,48 @@
+[2018-07-10 11:20:53] local.INFO: Undefined variable: invoice_controller  
+[2018-07-10 11:24:04] local.INFO: Undefined variable: invoice_controller  
+[2018-07-10 11:24:09] local.INFO: Undefined variable: invoice_controller  
+[2018-07-10 11:24:43] local.INFO: Undefined variable: payment_method  
+[2018-07-10 11:37:42] local.INFO: Undefined variable: payment_method  
+[2018-07-10 11:38:11] local.INFO: Undefined variable: payment_method  
+[2018-07-10 11:54:26] local.INFO:   
+[2018-07-10 11:54:27] local.INFO:   
+[2018-07-10 11:54:36] local.INFO: Undefined variable: invoiceId  
+[2018-07-10 11:55:00] local.INFO:   
+[2018-07-10 11:55:00] local.INFO:   
+[2018-07-10 11:55:01] local.INFO:   
+[2018-07-10 11:55:11] local.INFO:   
+[2018-07-10 11:55:11] local.INFO:   
+[2018-07-10 11:55:11] local.INFO:   
+[2018-07-10 11:55:16] local.INFO:   
+[2018-07-10 11:55:16] local.INFO:   
+[2018-07-10 11:55:16] local.INFO:   
+[2018-07-10 11:55:18] local.INFO: Method [getPayzxcnow] does not exist on [App\Http\Controllers\Front\InfoController].  
+[2018-07-10 11:56:27] local.INFO:   
+[2018-07-10 11:56:27] local.INFO:   
+[2018-07-10 11:56:27] local.INFO:   
+[2018-07-10 11:57:49] local.INFO:   
+[2018-07-10 11:57:49] local.INFO:   
+[2018-07-10 11:57:49] local.INFO:   
+[2018-07-10 11:57:55] local.INFO: Call to undefined function App\Http\Controllers\Front\product()  
+[2018-07-10 11:58:34] local.INFO: Call to undefined function App\Http\Controllers\Front\product()  
+[2018-07-10 11:58:36] local.INFO:   
+[2018-07-10 11:58:37] local.INFO:   
+[2018-07-10 11:58:44] local.INFO:   
+[2018-07-10 11:58:44] local.INFO:   
+[2018-07-10 11:58:47] local.INFO:   
+[2018-07-10 11:58:47] local.INFO:   
+[2018-07-10 11:58:48] local.INFO:   
+[2018-07-10 11:58:50] local.INFO:   
+[2018-07-10 11:58:51] local.INFO:   
+[2018-07-10 11:58:51] local.INFO:   
+[2018-07-10 11:58:58] local.INFO: Call to undefined function App\Http\Controllers\Front\product()  
+[2018-07-10 11:59:15] local.INFO:   
+[2018-07-10 11:59:16] local.INFO:   
+[2018-07-10 11:59:16] local.INFO:   
+[2018-07-10 12:00:11] local.INFO:   
+[2018-07-10 12:00:12] local.INFO:   
+[2018-07-10 12:00:12] local.INFO:   
+[2018-07-10 12:00:17] local.INFO: Undefined variable: ordesdfdfsr  
+[2018-07-10 12:02:43] local.INFO:   
+[2018-07-10 12:02:43] local.INFO:   
+[2018-07-10 12:10:11] local.INFO: Undefined variable: pendingAmount (View: C:\wamp64\www\agora\neww\agorainvoicing\resources\views\themes\default1\user\client\show.blade.php)  

@@ -52,6 +52,131 @@
         ]
     },
     {
+        "name": "arcanedev/log-viewer",
+        "version": "4.4.2",
+        "version_normalized": "4.4.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ARCANEDEV/LogViewer.git",
+            "reference": "b409f3cfb05a93d18385aa2339b2d198133e03d3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ARCANEDEV/LogViewer/zipball/b409f3cfb05a93d18385aa2339b2d198133e03d3",
+            "reference": "b409f3cfb05a93d18385aa2339b2d198133e03d3",
+            "shasum": ""
+        },
+        "require": {
+            "arcanedev/support": "~4.1",
+            "php": ">=7.0",
+            "psr/log": "~1.0"
+        },
+        "require-dev": {
+            "orchestra/testbench": "~3.5.0",
+            "phpunit/phpcov": "~4.0",
+            "phpunit/phpunit": "~6.0"
+        },
+        "time": "2018-03-05T15:10:36+00:00",
+        "type": "library",
+        "extra": {
+            "laravel": {
+                "providers": [
+                    "Arcanedev\\LogViewer\\LogViewerServiceProvider"
+                ]
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Arcanedev\\LogViewer\\": "src/"
+            },
+            "files": [
+                "constants.php",
+                "helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "ARCANEDEV",
+                "email": "arcanedev.maroc@gmail.com",
+                "homepage": "https://github.com/arcanedev-maroc",
+                "role": "Developer"
+            }
+        ],
+        "description": "Provides a Log Viewer for Laravel 5",
+        "homepage": "https://github.com/ARCANEDEV/LogViewer",
+        "keywords": [
+            "arcanedev",
+            "arcanesoft",
+            "laravel",
+            "log",
+            "log viewer",
+            "log-viewer",
+            "logviewer"
+        ]
+    },
+    {
+        "name": "arcanedev/support",
+        "version": "4.2.2",
+        "version_normalized": "4.2.2.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/ARCANEDEV/Support.git",
+            "reference": "525166d89920e83b07efbb2fbccc5b128484cf0f"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/ARCANEDEV/Support/zipball/525166d89920e83b07efbb2fbccc5b128484cf0f",
+            "reference": "525166d89920e83b07efbb2fbccc5b128484cf0f",
+            "shasum": ""
+        },
+        "require": {
+            "illuminate/filesystem": "~5.5.0",
+            "illuminate/support": "~5.5.0",
+            "php": ">=7.0"
+        },
+        "require-dev": {
+            "orchestra/testbench": "~3.5.0",
+            "phpunit/phpcov": "~4.0",
+            "phpunit/phpunit": "~6.0"
+        },
+        "time": "2018-02-07T18:22:19+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Arcanedev\\Support\\": "src/"
+            },
+            "files": [
+                "constants.php",
+                "helpers.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "ARCANEDEV",
+                "email": "arcanedev.maroc@gmail.com",
+                "homepage": "https://github.com/arcanedev-maroc"
+            }
+        ],
+        "description": "ARCANEDEV Support Helpers",
+        "homepage": "https://github.com/ARCANEDEV/Support",
+        "keywords": [
+            "arcanedev",
+            "arcanesoft",
+            "laravel",
+            "support"
+        ]
+    },
+    {
         "name": "barryvdh/laravel-dompdf",
         "version": "v0.8.2",
         "version_normalized": "0.8.2.0",

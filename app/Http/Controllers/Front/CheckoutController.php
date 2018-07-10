@@ -18,6 +18,7 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
+use Log;
 use Cart;
 use Illuminate\Http\Request;
 
@@ -132,6 +133,8 @@ class CheckoutController extends Controller
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -257,6 +260,8 @@ class CheckoutController extends Controller
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
+           app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -291,6 +296,8 @@ class CheckoutController extends Controller
 
             return 'success';
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -307,8 +314,9 @@ class CheckoutController extends Controller
 
             return $product;
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -325,6 +333,8 @@ class CheckoutController extends Controller
                 $this->AddProductToOrder($id);
             }
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order');
@@ -352,6 +362,8 @@ class CheckoutController extends Controller
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order for Product');
@@ -373,6 +385,8 @@ class CheckoutController extends Controller
             }
             $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
@@ -392,6 +406,8 @@ class CheckoutController extends Controller
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -419,6 +435,8 @@ class CheckoutController extends Controller
 
             $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
         } catch (\Exception $ex) {
+              app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');

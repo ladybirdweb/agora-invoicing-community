@@ -52,10 +52,23 @@
                 </div>
                 <!--/.col-md-2-->
                  <!--col-md-2-->
-                <div class="col-md-2 col-sm-6">
+               <!--  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{ url('settings/error') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Error Log</p>
+                    </div>
+                </div> -->
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('log-viewer') }}">
                                 <span class="fa-stack fa-2x">
                                     <i class="fa fa-bug fa-stack-1x"></i>
                                 </span>

@@ -282,25 +282,24 @@ class PageController extends Controller
         }
     }
 
-
     public function getLocation()
     {
-         if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
-          } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-              $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-          } else {
-              $ip = $_SERVER['REMOTE_ADDR'];
-          }
+        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
+            $ip = $_SERVER['HTTP_CLIENT_IP'];
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
+            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            $ip = $_SERVER['REMOTE_ADDR'];
+        }
 
-         if ($ip != '::1') {
+        if ($ip != '::1') {
             $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
         } else {
             $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
         }
+
         return $location;
     }
-
 
     public function getCurrency($location)
     {
@@ -309,13 +308,14 @@ class PageController extends Controller
         } else {
             $currency = 'USD';
         }
-         if (\Auth::user()) {
+        if (\Auth::user()) {
             $currency = 'INR';
             $user_currency = \Auth::user()->currency;
             if ($user_currency == 1 || $user_currency == 'USD') {
                 $currency = 'USD';
             }
         }
+
         return $currency;
     }
 
@@ -328,8 +328,8 @@ class PageController extends Controller
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-        $currency=$this->getCurrency($location);
-        
+        $currency = $this->getCurrency($location);
+
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
@@ -341,86 +341,84 @@ class PageController extends Controller
         $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         $trasform = [];
-        $template = $this->getHelpdeskTemplate($helpdesk_products,$data,$trasform);
+        $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
         $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
         $trasform1 = [];
-        $servicedesk_template =$this->getServiceDeskdeskTemplate($sevice_desk_products,$data,$trasform1);
-       
+        $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
+
         $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
         $trasform2 = [];
-        $service_template = $this->getServiceTemplate($service,$data,$trasform2);
-       
-       
+        $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
         return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
     }
 
-    
     /**
-    * Get  Template For Helpdsk Products
-    */
-    public function getHelpdeskTemplate($helpdesk_products,$data,$trasform)
+     * Get  Template For Helpdsk Products.
+     */
+    public function getHelpdeskTemplate($helpdesk_products, $data, $trasform)
     {
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-         if (count($helpdesk_products) > 0) {
+        if (count($helpdesk_products) > 0) {
             foreach ($helpdesk_products as $key => $value) {
-            $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-            $trasform[$value['id']]['name'] = $value['name'];
-            $trasform[$value['id']]['feature'] = $value['description'];
-            $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-            $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform[$value['id']]['name'] = $value['name'];
+                $trasform[$value['id']]['feature'] = $value['description'];
+                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
-         }else{
-        $template = '';
-    }
-         return $template;
+        } else {
+            $template = '';
+        }
+
+        return $template;
     }
 
     /**
-    * Get  Template For Service Desk Products
-    */
-    public function getServiceDeskdeskTemplate($sevice_desk_products,$data,$trasform1)
+     * Get  Template For Service Desk Products.
+     */
+    public function getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1)
     {
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-          if (count($sevice_desk_products) > 0) {
+        if (count($sevice_desk_products) > 0) {
             foreach ($sevice_desk_products as $key => $value) {
-            $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-            $trasform1[$value['id']]['name'] = $value['name'];
-            $trasform1[$value['id']]['feature'] = $value['description'];
-            $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform1[$value['id']]['name'] = $value['name'];
+                $trasform1[$value['id']]['feature'] = $value['description'];
+                $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-            $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $servicedesk_template = $this->transform('cart', $data, $trasform1);
-        } else{
-        $servicedesk_template = '';
-    }
-         return $servicedesk_template;
+        } else {
+            $servicedesk_template = '';
+        }
+
+        return $servicedesk_template;
     }
 
-
-     /**
-    * Get  Template For Services
-    */
-    public function getServiceTemplate($service,$data,$trasform2)
+    /**
+     * Get  Template For Services.
+     */
+    public function getServiceTemplate($service, $data, $trasform2)
     {
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-          if (count($service) > 0) {
+        if (count($service) > 0) {
             foreach ($service as $key => $value) {
-        $trasform2[$value['id']]['price'] = $temp_controller->leastAmountService($value['id']);
-        $trasform2[$value['id']]['name'] = $value['name'];
-        $trasform2[$value['id']]['feature'] = $value['description'];
-         $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform2[$value['id']]['price'] = $temp_controller->leastAmountService($value['id']);
+                $trasform2[$value['id']]['name'] = $value['name'];
+                $trasform2[$value['id']]['feature'] = $value['description'];
+                $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-        $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
             }
             $service_template = $this->transform('cart', $data, $trasform2);
+        } else {
+            $service_template = '';
         }
-        else{
-        $service_template = '';
-    }
-         return $service_template;
+
+        return $service_template;
     }
 
     public function checkConfigKey($config, $transform)

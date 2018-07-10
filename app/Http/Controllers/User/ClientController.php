@@ -336,17 +336,19 @@ class ClientController extends AdvanceSearchController
     public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = DB::table('users');
-        $join = $this->getNamUserCom($join,$name,$username,$company);
-        $join = $this->getMobEmCoun($join,$mobile,$email,$country);
-        $join = $this->getInCtCs($join,$industry,$company_type,$company_size);
-        $join = $this->getRolPos($join,$role,$position);
-       
-         $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
+        $join = $this->getNamUserCom($join, $name, $username, $company);
+        $join = $this->getMobEmCoun($join, $mobile, $email, $country);
+        $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
+        $join = $this->getRolPos($join, $role, $position);
+
+        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
 
         return $join;
     }
 
+
    
+
     public function sendWelcomeMail($user)
     {
         $activate_model = new AccountActivate();

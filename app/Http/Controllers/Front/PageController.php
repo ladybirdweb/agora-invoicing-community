@@ -272,6 +272,8 @@ class PageController extends GetPageTemplateController
     }
 
 
+
+
     public function cart()
     {
         $location = $this->getLocation();
@@ -281,8 +283,8 @@ class PageController extends GetPageTemplateController
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-        $currency=$this->getCurrency($location);
-        
+        $currency = $this->getCurrency($location);
+
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
@@ -294,13 +296,14 @@ class PageController extends GetPageTemplateController
         $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         $trasform = [];
-        $template = $this->getHelpdeskTemplate($helpdesk_products,$data,$trasform);
+        $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
         $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
         $trasform1 = [];
-        $servicedesk_template =$this->getServiceDeskdeskTemplate($sevice_desk_products,$data,$trasform1);
-       
+        $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
+
         $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
         $trasform2 = [];
+
         $service_template = $this->getServiceTemplate($service,$data,$trasform2);
         return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
     }

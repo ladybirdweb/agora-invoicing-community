@@ -15,7 +15,7 @@ use Illuminate\Http\Request;
 use Log;
 use Spatie\Activitylog\Models\Activity;
 
-class ClientController extends Controller
+class ClientController extends AdvanceSearchController
 {
     public $user;
     public $activate;
@@ -52,12 +52,7 @@ class ClientController extends Controller
         $role = $request->input('role');
         $position = $request->input('position');
 
-        $count_users = $this->user->get()->count();
-        $pro_editions = $this->soldEdition('Faveo Helpdesk Pro');
-        $community = $this->soldEdition('faveo helpdesk community');
-        $product_count = $this->productCount();
-
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count', 'industry', 'company_type', 'company_size', 'role', 'position'));
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country',  'industry', 'company_type', 'company_size', 'role', 'position'));
     }
 
     /**
@@ -80,7 +75,6 @@ class ClientController extends Controller
         $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
         return\ DataTables::of($user->get())
-
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -96,11 +90,8 @@ class ClientController extends Controller
                                   $date = date_create($ends);
                                   $end = date_format($date, 'l, F j, Y H:m');
                               }
-
-                              return $end;
-
-                              //   return $model->created_at;
-                          })
+                            return $end;
+                        })
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
@@ -212,10 +203,9 @@ class ClientController extends Controller
 
             return $paidSum;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -356,91 +346,7 @@ class ClientController extends Controller
         return $join;
     }
 
-    /**
-    * Serach for Mobile,Email,Country
-    */
-    public function getMobEmCoun($join,$mobile,$email,$country)
-    {
-        if ($mobile) {
-            $join = $join->where('mobile', $mobile);
-        }
-        if ($email) {
-            $join = $join->where('email', 'LIKE', '%'.$email.'%');
-        }
-        if ($country) {
-            $join = $join->where('country', $country);
-        }
-        return $join;
-    }
-
-     
-     /**
-    * Serach for industry,company_type,company_size
-    */
-     public function getInCtCs($join,$industry,$company_type,$company_size)
-    {
-       if ($industry) {
-            $join = $join->where('bussiness', $industry);
-        }
-        if ($company_type) {
-            $join = $join->where('company_type', $company_type);
-        }
-        if ($company_size) {
-            $join = $join->where('company_size', $company_size);
-        }
-        return $join;
-    }
-
-
-    /**
-    * Serach for Role,Position
-    */
-     public function getRolPos($join,$role,$position)
-    {
-      if ($role) {
-            $join = $join->where('role', $role);
-        }
-        if ($position) {
-            $join = $join->where('position', $position);
-        }
-        return $join;
-    }
-
-     /**
-    * Serach for Name,UserName,Company
-    */
-     public function getNamUserCom($join,$name,$username,$company)
-    {
-     if ($name) {
-            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
-                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
-        }
-        if ($username) {
-            $join = $join->where('user_name', 'LIKE', '%'.$username.'%');
-        }
-        if ($company) {
-            $join = $join->where('company', 'LIKE', '%'.$company.'%');
-        }
-        return $join;
-    }
-
-    public function soldEdition($name)
-    {
-        $invoice = new \App\Model\Order\InvoiceItem();
-        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->pluck('invoice_id');
-        $order = new Order();
-        $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
-
-        return $orders;
-    }
-
-    public function productCount()
-    {
-        $products = $this->product->get()->count();
-
-        return $products;
-    }
-
+   
     public function sendWelcomeMail($user)
     {
         $activate_model = new AccountActivate();

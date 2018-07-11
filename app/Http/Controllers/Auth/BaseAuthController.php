@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\ApiKey;
-use App\User;
+use App\Http\Controllers\Controller;
 use App\Model\User\AccountActivate;
+use App\User;
+use Illuminate\Http\Request;
 
 class BaseAuthController extends Controller
 {
-	//Required Fields for Zoho
+    //Required Fields for Zoho
     public function reqFields($user, $email)
     {
         $user = $user->where('email', $email)->first();
@@ -42,11 +42,11 @@ class BaseAuthController extends Controller
     }
 
     /**
-    * Add User ToZoho
-    */
-    public function addToZoho($auth,$zoho)
+     * Add User ToZoho.
+     */
+    public function addToZoho($auth, $zoho)
     {
-    	$zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
+        $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
         $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $zohoUrl);
@@ -65,11 +65,10 @@ class BaseAuthController extends Controller
         $response = curl_exec($ch);
         curl_close($ch);
     }
-    
 
     /**
-    * Sends Otp
-    */
+     * Sends Otp.
+     */
     public static function sendOtp($mobile, $code)
     {
         $client = new \GuzzleHttp\Client();
@@ -87,9 +86,9 @@ class BaseAuthController extends Controller
         return $array['type'];
     }
 
-      /**
-    * ReSends Otp
-    */
+    /**
+     * ReSends Otp.
+     */
     public function sendForReOtp($mobile, $code)
     {
         $client = new \GuzzleHttp\Client();
@@ -106,11 +105,10 @@ class BaseAuthController extends Controller
 
         return $array['type'];
     }
-    
 
-     /**
-    * Sends otp and email for confirmatiob
-    */
+    /**
+     * Sends otp and email for confirmatiob.
+     */
     public function requestOtpFromAjax(Request $request)
     {
         // dd($request->allow());
@@ -201,7 +199,6 @@ class BaseAuthController extends Controller
         }
     }
 
-
     /**
      * Get the post register / login redirect path.
      *
@@ -217,5 +214,4 @@ class BaseAuthController extends Controller
             return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
         }
     }
-
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Order\TaxRatesAndCodeExpiryController;
 use App\Model\Common\Setting;
@@ -17,15 +16,14 @@ use App\Model\Payment\PLanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
-use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
-use Log;
 use Illuminate\Http\Request;
 use Input;
+use Log;
 
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
@@ -153,7 +151,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
-
     }
 
     public function show(Request $request)
@@ -166,7 +163,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user'));
         } catch (\Exception $ex) {
-
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -201,6 +197,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -208,6 +205,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $qty = 1;
+
         try {
             if ($user_id == '') {
                 $user_id = \Request::input('user');
@@ -230,10 +228,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($cost != $total) {
                 $grand_total = $total;
             }
-            $grand_total = $this->getGrandTotal($code,$total,$cost,$productid,$currency);
+            $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
             $grand_total = $qty * $grand_total;
-            
-            
+
             $tax = $this->checkTax($product->id, $user_id);
             $tax_name = '';
             $tax_rate = '';
@@ -249,21 +246,20 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             // dd($items);
-            $result = $this->getMessage($items,$user_id);
-         
+            $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
-             app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
             $result = ['fails' => $ex->getMessage()];
         }
-         return response()->json(compact('result'));
+
+        return response()->json(compact('result'));
     }
 
-
-     /* 
-     *Edit Invoice Total.
-     */
+    /*
+    *Edit Invoice Total.
+    */
     public function invoiceTotalChange(Request $request)
     {
         $total = $request->input('total');
@@ -286,7 +282,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->sendMail($userid, $invoiceid);
             }
         } catch (\Exception $ex) {
-             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -341,10 +337,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
-             throw new \Exception('Can not Generate Invoice');
+
+            throw new \Exception('Can not Generate Invoice');
         }
     }
 
@@ -361,8 +358,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $planid = \Session::get('plan');
             }
             $user_currency = \Auth::user()->currency;
-            $subtotal = $this->getSubtotal($user_currency,$cart);
-            
+            $subtotal = $this->getSubtotal($user_currency, $cart);
+
             $tax_name = '';
             $tax_percentage = '';
 
@@ -371,7 +368,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $tax_percentage .= $tax['rate'].',';
             }
 
-             $invoiceItem = $this->invoiceItem->create([
+            $invoiceItem = $this->invoiceItem->create([
                 'invoice_id'     => $invoiceid,
                 'product_name'   => $product_name,
                 'regular_price'  => $regular_price,
@@ -383,7 +380,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'plan_id'        => $planid,
             ]);
 
-          return $invoiceItem;
+            return $invoiceItem;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -425,7 +422,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $mode = '';
             $product = $this->product->findOrFail($productid);
             $price_model = $this->price->where('product_id', $product->id)->where('currency', $currency)->first();
-            $price = $this->getPrice($price,$price_model);
+            $price = $this->getPrice($price, $price_model);
             $subtotal = $qty * $price;
             //dd($subtotal);
             if ($code) {
@@ -434,7 +431,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $discount = $price - $subtotal;
             }
             $userid = \Auth::user()->id;
-         
+
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
 
             $domain = $this->domain($productid);
@@ -460,7 +457,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    
     public function findCostAfterDiscount($promoid, $productid, $currency)
     {
         try {
@@ -470,7 +466,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $promotion_value = $promotion->value;
             $planId = Plan::where('product', $productid)->pluck('id')->first();
             // dd($planId);
-        $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
+            $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
 
             return $updated_price;
@@ -487,6 +483,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             switch ($type) {
                 case 1:
                     $percentage = $price * ($value / 100);
+
                      return $price - $percentage;
                 case 2:
                     return $price - $value;
@@ -583,9 +580,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $end = $promotion->expiry;
                 //dd($end);
                 $now = \Carbon\Carbon::now();
-                $getExpiryStatus = $this->getExpiryStatus($start,$end,$now);
+                $getExpiryStatus = $this->getExpiryStatus($start, $end, $now);
+
                 return $getExpiryStatus;
-              
             } else {
             }
         } catch (\Exception $ex) {
@@ -603,39 +600,36 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $product = $this->product->findOrFail($productid);
             $cartController = new CartController();
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
-               if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
-                $taxs= $this->getTaxWhenEnable($productid, $taxs[0], $userid);
-                   
+                if ($this->tax_option->findOrFail(1)->tax_enable == 1) {
+                    $taxs = $this->getTaxWhenEnable($productid, $taxs[0], $userid);
                 } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
-                    
-                     $taxClassId = Tax::where('country', '')->where('state', 'Any State')
+
+                    $taxClassId = Tax::where('country', '')->where('state', 'Any State')
                      ->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
                     if ($taxClassId) {
-                     $rate= $this->getTotalRate($taxClassId, $productid, $taxs);
-                      
-                   } elseif ($geoip_country != 'IN') {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
+                        $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
+                    } elseif ($geoip_country != 'IN') {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
 
-                       $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
-                            if ($taxClassId) { //if state equals the user State
-                                $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
-                     }
-                       $taxs = ([$taxes[0]['name'], $taxes[0]['rate']]);
-                   }
+                        $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+                        if ($taxClassId) { //if state equals the user State
+                            $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
+                        }
+                        $taxs = ([$taxes[0]['name'], $taxes[0]['rate']]);
+                    }
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
             }
-             return $taxs;
+
+            return $taxs;
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
 
-
-
     public function getRate($productid, $taxs, $userid)
-      {
+    {
         $tax_attribute = [];
         $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
         $tax_value = '0';
@@ -657,15 +651,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $ut_gst = 0;
         $state_code = '';
         if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user
-             $tax = $this->getTaxWhenState($user_state,$productid, $origin_state );
-             $taxes = $tax['taxes'];
-              $value= $tax['value'];
+            $tax = $this->getTaxWhenState($user_state, $productid, $origin_state);
+            $taxes = $tax['taxes'];
+            $value = $tax['value'];
         } else {//If user from other Country
-             $tax = $this->getTaxWhenOtherCountry($geoip_state,$geoip_country,$productid);
-             $taxes = $tax['taxes'];
-             $value = $tax['value'];
-             $rate = $tax['rate'];
-           
+            $tax = $this->getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid);
+            $taxes = $tax['taxes'];
+            $value = $tax['value'];
+            $rate = $tax['rate'];
         }
 
         foreach ($taxes as $key => $tax) {
@@ -683,7 +676,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
-     
 
     public function pdf(Request $request)
     {
@@ -715,8 +707,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-    
 
     /**
      * Remove the specified resource from storage.
@@ -927,7 +917,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();
             $amount = $grand_total;
             $paymentRenewal = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
-             return redirect()->back()->with('success', 'Payment Accepted Successfully');
+
+            return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -992,7 +983,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             Bugsnag::notifyException($e);
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'

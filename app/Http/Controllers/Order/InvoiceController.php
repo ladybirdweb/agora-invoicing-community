@@ -8,7 +8,6 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
-
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\PLan;
@@ -431,19 +430,18 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $discount = $price - $subtotal;
             }
             $userid = \Auth::user()->id;
-            if(\Auth::user()->role == 'user'){
-            $tax = $this->checkTax($product->id, $userid);
-            $tax_name = '';
-            $tax_rate = '';
-            if (!empty($tax)) {
+            if (\Auth::user()->role == 'user') {
+                $tax = $this->checkTax($product->id, $userid);
+                $tax_name = '';
+                $tax_rate = '';
+                if (!empty($tax)) {
 
                     //dd($value);
-                $tax_name = $tax[0];
-                $tax_rate = $tax[1];
-             }
-          }
+                    $tax_name = $tax[0];
+                    $tax_rate = $tax[1];
+                }
+            }
 
-              
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
 
             $domain = $this->domain($productid);
@@ -503,7 +501,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 case 4:
                     return 0;
             }
-       
     }
 
     public function checkNumberOfUses($code)
@@ -911,8 +908,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
             $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
+
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
-            } catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

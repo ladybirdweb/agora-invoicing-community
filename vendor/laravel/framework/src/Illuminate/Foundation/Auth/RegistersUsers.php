@@ -316,66 +316,7 @@ trait RegistersUsers
         }
     }
 
-    // public function requestOtpFromAjax(Request $request)
-    // {
-    //     $this->validate($request, [
-    //         'email'  => 'required|email',
-    //         'code'   => 'required|numeric',
-    //         'mobile' => 'required|numeric',
-    //     ]);
 
-    //     try {
-    //         $code = $request->input('code');
-    //         $mobile = $request->input('mobile');
-    //         $userid = $request->input('id');
-    //         $email = $request->input('email');
-    //         $pass = $request->input('password');
-    //         $number = $code.$mobile;
-    //         $result = $this->sendOtp($mobile, $code);
-    //         $method = 'POST';
-    //         $this->sendActivation($email, $method, $pass);
-    //         $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'<br>OTP has been sent to '.$number];
-
-    //         return response()->json($response);
-    //     } catch (\Exception $ex) {
-    //         $result = [$ex->getMessage()];
-
-    //         return response()->json(compact('result'), 500);
-    //     }
-    // }
-
-    // public function retryOTP($request)
-    // {
-    //     $this->validate($request, [
-    //         'code'   => 'required|numeric',
-    //         'mobile' => 'required|numeric',
-    //     ]);
-
-    //     try {
-    //         $code = $request->input('code');
-    //         $mobile = $request->input('mobile');
-    //         $number = $code.$mobile;
-    //         $result = $this->sendForReOtp($mobile, $code);
-    //         $response = ['type' => 'success', 'message' => 'OTP has been sent to '.$number.' via voice call..'];
-
-    //         return response()->json($response);
-    //     } catch (\Exception $ex) {
-    //         $result = [$ex->getMessage()];
-
-    //         return response()->json(compact('result'), 500);
-    //     }
-    // }
-
-    // public function verifyOtp($mobile, $code, $otp)
-    // {
-    //     $client = new \GuzzleHttp\Client();
-    //     $number = $code.$mobile;
-    //     $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
-    //         'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp],
-    //     ]);
-
-    //     return $response->getBody()->getContents();
-    // }
 
     public function postOtp(Request $request)
     {

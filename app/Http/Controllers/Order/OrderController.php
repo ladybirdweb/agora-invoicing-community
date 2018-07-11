@@ -69,7 +69,7 @@ class OrderController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index(Request $request)
     {
@@ -421,7 +421,7 @@ class OrderController extends Controller
                         ]);
                         // dd($this->addOrderInvoiceRelation($invoiceid, $order->id));
                         $this->addOrderInvoiceRelation($invoiceid, $order->id);
-                        if ($this->checkOrderCreateSubscription($order->id) == true) {
+                        if ($this->checkOrderCreateSubscription($order->id) === true) {
                             $this->addSubscription($order->id, $plan_id, $version, $product);
                         }
                         $this->sendOrderMail($user_id, $order->id, $item->id);
@@ -518,7 +518,7 @@ class OrderController extends Controller
     {
         try {
             return $this->product->where('name', $name)->first();
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());

@@ -6,7 +6,7 @@ use App\Model\Common\State;
 use DateTime;
 use DateTimeZone;
 
-class InfoController extends CheckoutController
+class InfoController extends Controller
 {
     /**
      * Get User State.

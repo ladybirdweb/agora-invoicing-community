@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Front\InfoController;
 use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\State;
@@ -22,7 +23,7 @@ use Cart;
 use Illuminate\Http\Request;
 use Log;
 
-class CheckoutController extends Controller
+class CheckoutController extends InfoController
 {
     public $subscription;
     public $plan;
@@ -199,10 +200,10 @@ class CheckoutController extends Controller
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
         $invoiceId = $request->input('invoice_id');
-        $paynow = $info_cont->getPaynow($invoiceId);
+        $paynow = $this->getPaynow($invoiceId);
         $cost = $request->input('cost');
 
-        $state = $info_cont->getState();
+        $state = $this->getState();
 
         try {
             if ($paynow === false) {
@@ -211,13 +212,13 @@ class CheckoutController extends Controller
                  */
                 $invoice = $invoice_controller->generateInvoice();
 
-                $pay = $info_cont->payment($payment_method, $status = 'pending');
+                $pay = $this->payment($payment_method, $status = 'pending');
                 // $pay = $this->payment($payment_method,$status='pending');
 
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
                 $invoice_no = $invoice->number;
-                $date = $info_cont->getDate($invoice);
+                $date = $this->getDate($invoice);
                 $invoiceid = $invoice->id;
                 $amount = $invoice->grand_total;
                 $url = '';

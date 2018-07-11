@@ -8,6 +8,7 @@ use App\Http\Controllers\Front\CartController;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
+use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends Controller
 {
@@ -155,9 +156,7 @@ class TaxRatesAndCodeExpiryController extends Controller
     {
         try {
             $rates = explode(',', $rate);
-
-            //            $total = '';
-            $rule = new TaxOption();
+			$rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->inclusive == 0) {
                 foreach ($rates as $rate) {
@@ -177,23 +176,57 @@ class TaxRatesAndCodeExpiryController extends Controller
 
     public function getExpiryStatus($start,$end,$now)
     {
-//both not set, always true
-    if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
-        return 'success';
+    	$whenDateNotSet = $this->whenDateNotSet($start,$end);
+    	if($whenDateNotSet){
+    	return $whenDateNotSet;
     }
+        $whenStartDateSet =$this->whenStartDateSet($start,$end,$now);
+        if($whenStartDateSet){
+        return $whenStartDateSet;
+    }
+        $whenEndDateSet = $this->whenEndDateSet($start,$end,$now);
+        if($whenEndDateSet){
+        return $whenEndDateSet;
+    }
+        $whenBothAreSet = $this->whenBothSet($start,$end,$now);
+        if($whenBothAreSet){
+        return $whenBothAreSet;
+    }
+   
+    }
+
+    public function whenDateNotSet($start,$end)
+    { 
+    	//both not set, always true
+     if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) 
+     	 {
+        return 'success';
+       }
+    }
+
+    public function whenStartDateSet($start,$end,$now)
+    {
     //only starting date set, check the date is less or equel to today
-    if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+         if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
         if ($start <= $now) {
             return 'success';
         }
     }
-    //only ending date set, check the date is greater or equel to today
+    }
+
+    public function whenEndDateSet($start,$end,$now)
+    {
+     //only ending date set, check the date is greater or equel to today
     if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
         if ($end >= $now) {
             return 'success';
         }
     }
-    //both set
+    }
+
+    public function whenBothSet($start,$end,$now)
+    {
+     //both set
     if (($end != null || $start != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
         if ($end >= $now && $start <= $now) {
             return 'success';
@@ -202,51 +235,6 @@ class TaxRatesAndCodeExpiryController extends Controller
     }
 
 
-    public function checkCode($code, $productid, $currency)
-    {
-        try {
-            if ($code != '') {
-                $promo = $this->promotion->where('code', $code)->first();
-                //check promotion code is valid
-                if (!$promo) {
-                    throw new \Exception(\Lang::get('message.no-such-code'));
-                }
-                $relation = $promo->relation()->get();
-                //check the relation between code and product
-                if (count($relation) == 0) {
-                    throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
-                }
-                //check the usess
-                $uses = $this->checkNumberOfUses($code);
-                //dd($uses);
-                if ($uses != 'success') {
-                    throw new \Exception(\Lang::get('message.usage-of-code-completed'));
-                }
-                //check for the expiry date
-                $expiry = $this->checkExpiry($code);
-                //dd($expiry);
-                if ($expiry != 'success') {
-                    throw new \Exception(\Lang::get('message.usage-of-code-expired'));
-                }
-                $value = $this->findCostAfterDiscount($promo->id, $productid, $currency);
-
-                return $value;
-            } else {
-                $product = $this->product->find($productid);
-                $price = $product->price()->sales_price;
-                if (!$price) {
-                    $price = $product->price()->price;
-                }
-
-                return $price;
-            }
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.check-code-error'));
-        }
-    }
-   
 
     public function getPrice($price,$price_model)
     {

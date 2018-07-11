@@ -33,23 +33,23 @@ class LicenceOrderController extends Controller
         }
     }
 
-    public function getOrders()
-    {
-        return \Datatable::collection($this->LicencedOrg->get())
-                        ->addColumn('organization', function ($model) {
-                            $org = $this->org->where('id', $model->organization_id)->first();
+    // public function getOrders()
+    // {
+    //     return \Datatable::collection($this->LicencedOrg->get())
+    //                     ->addColumn('organization', function ($model) {
+    //                         $org = $this->org->where('id', $model->organization_id)->first();
 
-                            return '<a href='.url('organization/'.$org->id).'>'.ucfirst($org->name).'</a>';
-                        })
-                        ->showColumns('licence_name', 'licence_description', 'number_of_sla', 'price', 'payment_status')
-                        ->addColumn('action', function ($model) {
-                            return '<a href='.url('licence-orders/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
-                        })
+    //                         return '<a href='.url('organization/'.$org->id).'>'.ucfirst($org->name).'</a>';
+    //                     })
+    //                     ->showColumns('licence_name', 'licence_description', 'number_of_sla', 'price', 'payment_status')
+    //                     ->addColumn('action', function ($model) {
+    //                         return '<a href='.url('licence-orders/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+    //                     })
 
-                        ->searchColumns('licence_name')
-                        ->orderColumns('licence_name')
-                        ->make();
-    }
+    //                     ->searchColumns('licence_name')
+    //                     ->orderColumns('licence_name')
+    //                     ->make();
+    // }
 
     //    public function create() {
 //        try {

@@ -14,7 +14,7 @@ use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
-class PromotionController extends Controller
+class PromotionController extends BasePromotionController
 {
     public $promotion;
     public $product;
@@ -130,17 +130,6 @@ class PromotionController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -155,22 +144,11 @@ class PromotionController extends Controller
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->pluck('name', 'id')->toArray();
             $type = $this->type->pluck('name', 'id')->toArray();
-            //            if ($promotion->start != null) {
-            //                $start = $promotion->start;
-            //            } else {
-            //                $start = null;
-            //            }
-            //            if ($promotion->expiry != null) {
-            //                $expiry=$promotion->expiry;
-            //            } else {
-            //                $expiry = null;
-            //            }
             $selectedProduct = $this->promoRelation->where('promotion_id', $id)->pluck('product_id', 'product_id')->toArray();
             //dd($selectedProduct);
             return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {
-            dd($ex);
-            //return redirect()->back()->with('fails',$ex->getMessage());
+             return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 
@@ -257,46 +235,15 @@ class PromotionController extends Controller
         }
     }
 
-    public function getCode()
-    {
-        try {
-            $code = str_random(6);
-            echo strtoupper($code);
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function checkCode($code, $productid)
     {
         try {
-            $promo = $this->promotion->where('code', $code)->first();
-            //check promotion code is valid
-            if (!$promo) {
-                return redirect()->back()->with('fails', 'Invalid Code');
-            }
-            $relation = $promo->relation()->get();
-            //check the relation between code and product
-            if (count($relation) == 0) {
-                return redirect()->back()->with('fails', \Lang::get('message.no-product-related-to-this-code'));
-            }
-            //check the usess
-            $uses = $this->checkNumberOfUses($code);
-            //dd($uses);
-            if ($uses != 'success') {
-                return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-completed'));
-            }
-            //check for the expiry date
-            $expiry = $this->checkExpiry($code);
-            //dd($expiry);
-            if ($expiry != 'success') {
-                return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-expired'));
-            }
+            $inv_cont = new \App\Http\Controllers\Orders\InvoiceController() ;
+            $promo = $inv_cont->getPromotionDetails($code);
             $value = $this->findCostAfterDiscount($promo->id, $productid);
 
-            //dd($promo->code);
-            //return the updated cartcondition
-            $coupon = new CartCondition([
+             $coupon = new CartCondition([
                 'name'   => $promo->code,
                 'type'   => 'coupon',
                 'target' => 'item',
@@ -319,72 +266,13 @@ class PromotionController extends Controller
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }
-            //dd($items);
-
             return 'success';
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
 
-    public function findCostAfterDiscount($promoid, $productid)
-    {
-        try {
-            $promotion = $this->promotion->findOrFail($promoid);
-            $product = $this->product->findOrFail($productid);
-            $promotion_type = $promotion->type;
-            $promotion_value = $promotion->value;
-            $product_price = 0;
-            $userid = \Auth::user()->id;
-            $control = new \App\Http\Controllers\Order\RenewController();
-            $cart_control = new \App\Http\Controllers\Front\CartController();
-            $currency = $cart_control->checkCurrencySession();
-            if ($cart_control->checkPlanSession() == true) {
-                $planid = \Session::get('plan');
-            }
-            if ($product->subscription != 1) {
-                $planId = Plan::where('product', $productid)->pluck('id')->first();
-                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
-            } else {
-                $product_price = $control->planCost($planid, $userid);
-            }
-            if (count(\Cart::getContent())) {
-                $product_price = \Cart::getSubTotalWithoutConditions();
-                // dd($product_price);
-            }
-            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
-            // dd($updated_price);
-            //dd([$product_price,$promotion_type,$updated_price]);
-            return $updated_price;
-        } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.find-discount-error'));
-        }
-    }
-
-    public function findCost($type, $value, $price, $productid)
-    {
-        try {
-            switch ($type) {
-                case 1:
-                    $percentage = $price * ($value / 100);
-
-                    return  $price - $percentage;
-                case 2:
-                    return $price - $value;
-                case 3:
-                    \Cart::update($productid, [
-                        'price' => $value,
-                    ]);
-
-                    return '-0';
-                case 4:
-                    return '-'.$price;
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.find-cost-error'));
-        }
-    }
-
+   
     public function checkNumberOfUses($code)
     {
         try {
@@ -412,32 +300,11 @@ class PromotionController extends Controller
             $end = $promotion->expiry;
             //dd($end);
             $now = \Carbon\Carbon::now();
-            //both not set, always true
-            if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
-                return 'success';
-            }
-            //only starting date set, check the date is less or equel to today
-            if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
-                if ($start <= $now) {
-                    return 'success';
-                }
-            }
-            //only ending date set, check the date is greater or equel to today
-            if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
-                if ($end >= $now) {
-                    return 'success';
-                }
-            }
-            //both set
-            if (($end != null || $end != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
-                if ($end >= $now && $start <= $now) {
-                    return 'success';
-                }
-            }
-        } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception(\Lang::get('message.check-expiry'));
+            $inv_cont = new \App\Http\Controllers\Order\InvoiceController() ;
+             $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);
+             return $getExpiryStatus;
+        }   catch (\Exception $ex) {
+           throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
 }

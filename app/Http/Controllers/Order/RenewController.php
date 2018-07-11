@@ -255,10 +255,8 @@ class RenewController extends Controller
             }
 
             return $user->currency;
-        } catch (Exception $ex) {
-            dd($ex);
-
-            throw new Exception($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -275,11 +273,11 @@ class RenewController extends Controller
                 $tax_name .= $tax[0].',';
                 $tax_rate .= $tax[1].',';
             }
-            //dd('dsjcgv');
             $grand_total = $controller->calculateTotal($tax_rate, $cost);
 
             return \App\Http\Controllers\Front\CartController::rounding($grand_total);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
+             throw new \Exception($ex->getMessage());
         }
     }
 
@@ -330,6 +328,7 @@ class RenewController extends Controller
 
             return $this->planCost($planid, $userid);
         } catch (Exception $ex) {
+             throw new \Exception($ex->getMessage());
         }
     }
 
@@ -342,6 +341,7 @@ class RenewController extends Controller
 
             return $price;
         } catch (Exception $ex) {
+             throw new \Exception($ex->getMessage());
         }
     }
 
@@ -365,6 +365,7 @@ class RenewController extends Controller
 
             return redirect('paynow/'.$invoiceid);
         } catch (Exception $ex) {
+             throw new \Exception($ex->getMessage());
         }
     }
 

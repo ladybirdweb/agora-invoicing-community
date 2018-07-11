@@ -11,6 +11,9 @@ use App\Model\Order\Order;
 use App\Model\Order\Invoice;
 use DateTime;
 use DateTimeZone;
+use Bugsnag;
+use Exception;
+use Hash;
 
 class BaseClientController extends Controller
 {

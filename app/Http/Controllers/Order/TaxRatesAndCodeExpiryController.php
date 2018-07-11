@@ -179,20 +179,12 @@ class TaxRatesAndCodeExpiryController extends Controller
     }
 
 
-    public function whenDateNotSet($start,$end)
-    { 
-    	//both not set, always true
-     if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) 
-     	 {
-        return 'success';
-       }
-
-    }
-
+  
     public function whenDateNotSet($start, $end)
     {
         //both not set, always true
-        if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+        if (($start == null || $start == '0000-00-00 00:00:00') &&
+         ($end == null || $end == '0000-00-00 00:00:00')) {
             return 'success';
         }
     }
@@ -200,7 +192,8 @@ class TaxRatesAndCodeExpiryController extends Controller
     public function whenStartDateSet($start, $end, $now)
     {
         //only starting date set, check the date is less or equel to today
-        if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+        if (($start != null || $start != '0000-00-00 00:00:00')
+         && ($end == null || $end == '0000-00-00 00:00:00')) {
             if ($start <= $now) {
                 return 'success';
             }

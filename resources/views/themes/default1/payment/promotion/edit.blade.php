@@ -42,7 +42,8 @@
 
                 <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.promotion')}}</h3>
-                    {!! Form::submit(Lang::get('message.save'),['class'=>'btn btn-primary pull-right'])!!}
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                    
                 </div>
 
                 <table class="table table-condensed">

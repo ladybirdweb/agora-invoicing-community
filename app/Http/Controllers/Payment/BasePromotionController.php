@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Payment;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Promotion;
-use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 
 class BasePromotionController extends Controller
 {
-    
     public function getCode()
     {
         try {
@@ -21,13 +18,13 @@ class BasePromotionController extends Controller
         }
     }
 
-
     public function findCost($type, $value, $price, $productid)
     {
         try {
             switch ($type) {
                 case 1:
                     $percentage = $price * ($value / 100);
+
                     return  $price - $percentage;
                 case 2:
                     return $price - $value;
@@ -45,8 +42,7 @@ class BasePromotionController extends Controller
         }
     }
 
-
-        public function findCostAfterDiscount($promoid, $productid)
+    public function findCostAfterDiscount($promoid, $productid)
     {
         try {
             $promotion = Promotion::findOrFail($promoid);

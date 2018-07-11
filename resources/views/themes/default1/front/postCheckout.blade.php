@@ -225,8 +225,7 @@ else{
                             </tr>
                         </thead>
                         <tbody>
-                            
-                            @forelse($items as $item)
+                             @forelse($items as $item)
                             
                             <tr class="cart_table_item">
 
@@ -456,10 +455,11 @@ else{
                 <?php
                 $items=$invoice->invoiceItem()->get();
                 ?>
-                   
+                    
                 @if ($attributes == null)
-                
+                 
                 @foreach ($items as $item)
+                
                <tr class="Taxes">
                   <th>
                         <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>

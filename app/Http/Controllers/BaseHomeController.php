@@ -42,8 +42,8 @@ class BaseHomeController extends Controller
             } else {
                 return $this_order->domain;
             }
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 
@@ -72,7 +72,7 @@ class BaseHomeController extends Controller
     public function verifyOrder($order_number, $serial_key, $domain)
     {
         if (ends_with($domain, '/')) {
-            $domain = substr_replace($value, '', -1, 1);
+            $domain = substr_replace($domain, '', -1, 1);
         }
         //dd($domain);
         try {

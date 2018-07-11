@@ -199,8 +199,7 @@ Checkout
                 </tr>
                  
                 @foreach($items->toArray() as $attribute)
-                
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
+                 @if($attribute['tax_name']!='null,' && $currency == "INR")
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";

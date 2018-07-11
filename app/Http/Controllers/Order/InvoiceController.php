@@ -8,6 +8,7 @@ use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
+
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\PLan;
@@ -353,7 +354,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $quantity = $cart->quantity;
             $domain = $this->domain($cart->id);
             $cart_cont = new \App\Http\Controllers\Front\CartController();
-            if ($cart_cont->checkPlanSession() == true) {
+            if ($cart_cont->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
             }
             $user_currency = \Auth::user()->currency;
@@ -430,7 +431,19 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $discount = $price - $subtotal;
             }
             $userid = \Auth::user()->id;
+            if(\Auth::user()->role == 'user'){
+            $tax = $this->checkTax($product->id, $userid);
+            $tax_name = '';
+            $tax_rate = '';
+            if (!empty($tax)) {
 
+                    //dd($value);
+                $tax_name = $tax[0];
+                $tax_rate = $tax[1];
+             }
+          }
+
+              
             $subtotal = $this->calculateTotal($tax_rate, $subtotal);
 
             $domain = $this->domain($productid);
@@ -478,8 +491,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function findCost($type, $value, $price, $productid)
     {
-        try {
-            switch ($type) {
+        switch ($type) {
                 case 1:
                     $percentage = $price * ($value / 100);
 
@@ -491,11 +503,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 case 4:
                     return 0;
             }
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.find-cost-error'));
-        }
+       
     }
 
     public function checkNumberOfUses($code)
@@ -717,7 +725,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -903,10 +911,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
             $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
-            if ($payment) {
-                return redirect()->back()->with('success', 'Payment Accepted Successfully');
-            }
-        } catch (\Exception $ex) {
+            return redirect()->back()->with('success', 'Payment Accepted Successfully');
+            } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

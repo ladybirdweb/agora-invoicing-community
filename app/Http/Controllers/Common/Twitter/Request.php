@@ -209,7 +209,7 @@ class Request
                 throw new TwitterOAuthException('Arrays not supported in headers');
             }
             $out .= ($first) ? ' ' : ', ';
-            $out .= /** @scrutinizer ignore-type */Util::urlencodeRfc3986($k).'="'.Util::urlencodeRfc3986($v).'"';
+            $out .= /* @scrutinizer ignore-type */Util::urlencodeRfc3986($k).'="'.Util::urlencodeRfc3986($v).'"';
             $first = false;
         }
 

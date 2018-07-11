@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use App\Http\Controllers\Common\BaseCronController;
 use App\User;
 use Carbon\Carbon;
 
@@ -37,8 +35,6 @@ class CronController extends BaseCronController
         $this->invoice = $invoice;
     }
 
-    
-  
     public function getExpiredInfoByOrderId($orderid)
     {
         $yesterday = new Carbon('today');
@@ -128,7 +124,6 @@ class CronController extends BaseCronController
         return $users;
     }
 
- 
     public function get30DaysOrders()
     {
         $users = [];
@@ -183,7 +178,6 @@ class CronController extends BaseCronController
 
         return $users;
     }
-
 
     public function get15DaysSubscription()
     {
@@ -251,7 +245,6 @@ class CronController extends BaseCronController
         return $users;
     }
 
-    
     public function eachSubscription()
     {
         $sub = $this->getSubscriptions();
@@ -267,5 +260,4 @@ class CronController extends BaseCronController
             $this->mail($user, $end, $product, $order, $value->id);
         }
     }
-
 }

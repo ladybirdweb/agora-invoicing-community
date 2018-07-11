@@ -159,7 +159,7 @@ class TaxRatesAndCodeExpiryController extends Controller
     {
         try {
             $rates = explode(',', $rate);
-			$rule = new TaxOption();
+            $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->inclusive == 0) {
                 foreach ($rates as $rate) {
@@ -186,38 +186,46 @@ class TaxRatesAndCodeExpiryController extends Controller
      	 {
         return 'success';
        }
+
     }
 
-    public function whenStartDateSet($start,$end,$now)
+    public function whenDateNotSet($start, $end)
     {
-    //only starting date set, check the date is less or equel to today
-         if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
-        if ($start <= $now) {
+        //both not set, always true
+        if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
             return 'success';
         }
     }
-    }
 
-    public function whenEndDateSet($start,$end,$now)
+    public function whenStartDateSet($start, $end, $now)
     {
-     //only ending date set, check the date is greater or equel to today
-    if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
-        if ($end >= $now) {
-            return 'success';
+        //only starting date set, check the date is less or equel to today
+        if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+            if ($start <= $now) {
+                return 'success';
+            }
         }
     }
+
+    public function whenEndDateSet($start, $end, $now)
+    {
+        //only ending date set, check the date is greater or equel to today
+        if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
+            if ($end >= $now) {
+                return 'success';
+            }
+        }
     }
 
-    public function whenBothSet($start,$end,$now)
+    public function whenBothSet($start, $end, $now)
     {
-     //both set
-    if (($end != null || $start != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
-        if ($end >= $now && $start <= $now) {
-            return 'success';
-
-         }
-       }
-     }
+        //both set
+        if (($end != null || $start != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
+            if ($end >= $now && $start <= $now) {
+                return 'success';
+            }
+        }
+    }
 
  
 }

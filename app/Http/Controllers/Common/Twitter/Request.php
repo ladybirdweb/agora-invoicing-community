@@ -210,7 +210,7 @@ class Request
             }
             $out .= ($first) ? ' ' : ', ';
             $out .= /* @scrutinizer ignore-type */Util::urlencodeRfc3986($k).'="'.
-            /** @scrutinizer ignore-type */Util::urlencodeRfc3986($v).'"';
+            /* @scrutinizer ignore-type */Util::urlencodeRfc3986($v).'"';
             $first = false;
         }
 

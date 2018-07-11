@@ -2,45 +2,44 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
-use App\User;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
+use App\User;
 use Carbon\Carbon;
-
 
 class BaseCronController extends Controller
 {
     public function getUserById($id)
     {
-    $user = User::find($id);
-    return $user;
+        $user = User::find($id);
+
+        return $user;
     }
 
     public function getOrderById($id)
     {
-    $order = Order::find($id);
-	 return $order;
+        $order = Order::find($id);
+
+        return $order;
     }
 
-     public function getInvoiceByOrderId($orderid)
+    public function getInvoiceByOrderId($orderid)
     {
-    $order =Order::find($orderid);
-    $invoice = $order->invoice()->first();
+        $order = Order::find($orderid);
+        $invoice = $order->invoice()->first();
 
-    return $invoice;
+        return $invoice;
     }
 
     public function getInvoiceItemByInvoiceId($invoiceid)
     {
-        $invoice =Invoice::find($invoiceid);
+        $invoice = Invoice::find($invoiceid);
         $item_id = $invoice->invoiceItem()->first();
 
         return $item_id;
     }
-
 
     public function getSubscriptions()
     {
@@ -67,7 +66,7 @@ class BaseCronController extends Controller
         return $sub;
     }
 
-     public function get30DaysSubscription()
+    public function get30DaysSubscription()
     {
         $users = [];
         $users = $this->get30DaysExpiryUsers();
@@ -78,14 +77,15 @@ class BaseCronController extends Controller
         return $users;
     }
 
-     public function get15DaysUsers()
+    public function get15DaysUsers()
     {
-	    $users = [];
-	    $users = $this->get15DaysExpiryUsers();
-	    if (count($users) > 0) {
-	        return $users[0]['users'];
-	    }
-	    return $users;
+        $users = [];
+        $users = $this->get15DaysExpiryUsers();
+        if (count($users) > 0) {
+            return $users[0]['users'];
+        }
+
+        return $users;
     }
 
     public function get1DaysUsers()
@@ -95,10 +95,11 @@ class BaseCronController extends Controller
         if (count($users) > 0) {
             return $users[0]['users'];
         }
+
         return $users;
     }
 
-     public function get0DaysUsers()
+    public function get0DaysUsers()
     {
         $users = [];
         $users = $this->getOnDayExpiryUsers();
@@ -109,7 +110,6 @@ class BaseCronController extends Controller
         return $users;
     }
 
-
     public function getPlus1Users()
     {
         $users = [];
@@ -117,13 +117,13 @@ class BaseCronController extends Controller
         if (count($users) > 0) {
             return $users[0]['users'];
         }
+
         return $users;
     }
 
-
-     public function get30DaysUsers()
+    public function get30DaysUsers()
     {
-       $users = $this->get30DaysExpiryUsers();
+        $users = $this->get30DaysExpiryUsers();
         //dd($users);
         if (count($users) > 0) {
             return $users[0]['users'];
@@ -143,17 +143,16 @@ class BaseCronController extends Controller
         return $sub;
     }
 
-     public function getOnDayExpiryInfo()
+    public function getOnDayExpiryInfo()
     {
-    $yesterday = new Carbon('yesterday');
-    $tomorrow = new Carbon('tomorrow');
-    $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
+        $yesterday = new Carbon('yesterday');
+        $tomorrow = new Carbon('tomorrow');
+        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
             ->whereNotNull('ends_at')
             ->whereBetween('ends_at', [$yesterday, $tomorrow]);
 
-    return $sub;
+        return $sub;
     }
-
 
     public function getOneDayExpiryInfo()
     {
@@ -166,33 +165,28 @@ class BaseCronController extends Controller
         return $sub;
     }
 
-
-      public function get15DaysExpiryInfo()
+    public function get15DaysExpiryInfo()
     {
-    $plus14days = new Carbon('+14 days');
-    $plus16days = new Carbon('+16 days');
-    $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
+        $plus14days = new Carbon('+14 days');
+        $plus16days = new Carbon('+16 days');
+        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
             ->whereNotNull('ends_at')
             ->whereBetween('ends_at', [$plus14days, $plus16days]);
 
-    return $sub;
+        return $sub;
     }
-
 
     public function get30DaysExpiryInfo()
     {
-    $plus29days = new Carbon('+29 days');
-    $plus31days = new Carbon('+31 days');
+        $plus29days = new Carbon('+29 days');
+        $plus31days = new Carbon('+31 days');
 
-    $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
+        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
             ->whereNotNull('ends_at')
             ->whereBetween('ends_at', [$plus29days, $plus31days]);
-    return $sub;
+
+        return $sub;
     }
-
-
-
-
 
     public function mail($user, $end, $product, $order, $sub)
     {
@@ -232,5 +226,4 @@ class BaseCronController extends Controller
 
         return $mail;
     }
-
 }

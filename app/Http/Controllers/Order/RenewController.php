@@ -180,7 +180,7 @@ class RenewController extends Controller
             $controller = new InvoiceController();
             $currency = \Auth::user()->currency;
             if ($code != '') {
-                $product_cost = $controller->checkCode($code, $product->id,$currency);
+                $product_cost = $controller->checkCode($code, $product->id, $currency);
             }
             if ($cost != '') {
                 $product_cost = $this->planCost($planid, $user->id);

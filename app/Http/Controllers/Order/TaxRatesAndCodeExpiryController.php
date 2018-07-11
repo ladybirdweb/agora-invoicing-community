@@ -105,7 +105,8 @@ class TaxRatesAndCodeExpiryController extends Controller
             $status = 0;
         }
         $rate = $value;
-        return ['rate'=>$rate ,'taxes'=>$taxs];
+
+        return ['rate'=>$rate, 'taxes'=>$taxs];
     }
 
     /**
@@ -178,15 +179,12 @@ class TaxRatesAndCodeExpiryController extends Controller
         }
     }
 
-
-    public function whenDateNotSet($start,$end)
-    { 
-    	//both not set, always true
-     if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) 
-     	 {
-        return 'success';
-       }
-
+    public function whenDateNotSet($start, $end)
+    {
+        //both not set, always true
+        if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+            return 'success';
+        }
     }
 
     public function whenDateNotSet($start, $end)
@@ -226,6 +224,4 @@ class TaxRatesAndCodeExpiryController extends Controller
             }
         }
     }
-
- 
 }

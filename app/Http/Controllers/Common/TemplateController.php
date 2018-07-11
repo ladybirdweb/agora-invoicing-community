@@ -671,11 +671,10 @@ class TemplateController extends Controller
 
     public function calculateTotal($rate, $price)
     {
-        
         $tax_amount = $price * ($rate / 100);
         $total = $price + $tax_amount;
+
         return $total;
-        
     }
 
     public function calculateSub($rate, $price, $cart, $shop)

@@ -507,8 +507,6 @@ class CartController extends Controller
         return $value;
     }
 
-
-
     public function cartRemove(Request $request)
     {
         $id = $request->input('id');

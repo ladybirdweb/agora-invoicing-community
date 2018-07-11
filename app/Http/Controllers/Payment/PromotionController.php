@@ -2,11 +2,8 @@
 
 namespace App\Http\Controllers\Payment;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PromotionRequest;
 use App\Model\Order\Invoice;
-use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
@@ -130,7 +127,6 @@ class PromotionController extends BasePromotionController
         }
     }
 
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -148,7 +144,7 @@ class PromotionController extends BasePromotionController
             //dd($selectedProduct);
             return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {
-             return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -235,15 +231,14 @@ class PromotionController extends BasePromotionController
         }
     }
 
-
     public function checkCode($code, $productid)
     {
         try {
-            $inv_cont = new \App\Http\Controllers\Orders\InvoiceController() ;
+            $inv_cont = new \App\Http\Controllers\Orders\InvoiceController();
             $promo = $inv_cont->getPromotionDetails($code);
             $value = $this->findCostAfterDiscount($promo->id, $productid);
 
-             $coupon = new CartCondition([
+            $coupon = new CartCondition([
                 'name'   => $promo->code,
                 'type'   => 'coupon',
                 'target' => 'item',
@@ -266,13 +261,13 @@ class PromotionController extends BasePromotionController
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }
+
             return 'success';
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
 
-   
     public function checkNumberOfUses($code)
     {
         try {
@@ -300,11 +295,12 @@ class PromotionController extends BasePromotionController
             $end = $promotion->expiry;
             //dd($end);
             $now = \Carbon\Carbon::now();
-            $inv_cont = new \App\Http\Controllers\Order\InvoiceController() ;
-             $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);
-             return $getExpiryStatus;
-        }   catch (\Exception $ex) {
-           throw new \Exception(\Lang::get('message.check-expiry'));
+            $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
+            $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);
+
+            return $getExpiryStatus;
+        } catch (\Exception $ex) {
+            throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
 }

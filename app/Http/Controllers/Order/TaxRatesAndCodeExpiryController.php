@@ -179,7 +179,6 @@ class TaxRatesAndCodeExpiryController extends Controller
         }
     }
 
-
     public function whenDateNotSet($start, $end)
     {
         //both not set, always true

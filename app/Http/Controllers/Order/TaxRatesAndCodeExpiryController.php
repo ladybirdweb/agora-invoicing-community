@@ -105,8 +105,7 @@ class TaxRatesAndCodeExpiryController extends Controller
             $status = 0;
         }
         $rate = $value;
-
-        return $rate;
+        return ['rate'=>$rate ,'taxes'=>$taxs];
     }
 
     /**
@@ -179,27 +178,6 @@ class TaxRatesAndCodeExpiryController extends Controller
         }
     }
 
-    public function getExpiryStatus($start, $end, $now)
-    {
-
-    	$whenDateNotSet = $this->whenDateNotSet($start,$end);
-    	if($whenDateNotSet){
-    	return $whenDateNotSet;
-    }
-        $whenStartDateSet =$this->whenStartDateSet($start,$end,$now);
-        if($whenStartDateSet){
-        return $whenStartDateSet;
-    }
-        $whenEndDateSet = $this->whenEndDateSet($start,$end,$now);
-        if($whenEndDateSet){
-        return $whenEndDateSet;
-    }
-        $whenBothAreSet = $this->whenBothSet($start,$end,$now);
-        if($whenBothAreSet){
-        return $whenBothAreSet;
-    }
-   
-    }
 
     public function whenDateNotSet($start,$end)
     { 
@@ -241,15 +219,5 @@ class TaxRatesAndCodeExpiryController extends Controller
        }
      }
 
-    public function getPrice($price, $price_model)
-    {
-        if ($price == '') {
-            $price = $price_model->sales_price;
-            if (!$price) {
-                $price = $price_model->price;
-            }
-        }
-
-        return $price;
-    }
+ 
 }

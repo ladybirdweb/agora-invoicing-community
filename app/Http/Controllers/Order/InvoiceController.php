@@ -529,10 +529,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 return $value;
             } else {
                 $product = $this->product->find($productid);
-                $price = $product->price()->sales_price;
-                if (!$price) {
-                    $price = $product->price()->price;
-                }
+                $planId = Plan::where('product',$product)->pluck('id')->first();
+                $price = PlanPrice::where('plan_id',$planId)->pluck('add_price')->first();
+               
 
                 return $price;
             }
@@ -608,15 +607,21 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                      ->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
                     if ($taxClassId) {
                         $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
+                       $taxs = $rate['taxes'];
+                     $rate = $rate['rate'];
                     } elseif ($geoip_country != 'IN') {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
 
                         $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
                         if ($taxClassId) { //if state equals the user State
                             $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
+                            $taxs = $rate['taxes'];
+                            $rate = $rate['rate'];
                         }
-                        $taxs = ([$taxes[0]['name'], $taxes[0]['rate']]);
-                    }
+                        $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
+                        return $taxs;
+                    } 
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
+
                 } else {
                     $taxs = ([$taxs[0]['name'], $taxs[0]['rate']]);
                 }
@@ -1031,6 +1036,41 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+
+
+    public function getPrice($price, $price_model)
+    {
+        if ($price == '') {
+            $price = $price_model->sales_price;
+            if (!$price) {
+                $price = $price_model->price;
+            }
+        }
+
+        return $price;
+    }
+
+     public function getExpiryStatus($start, $end, $now)
+    {
+
+        $whenDateNotSet = $this->whenDateNotSet($start,$end);
+        if($whenDateNotSet){
+        return $whenDateNotSet;
+    }
+        $whenStartDateSet =$this->whenStartDateSet($start,$end,$now);
+        if($whenStartDateSet){
+        return $whenStartDateSet;
+    }
+        $whenEndDateSet = $this->whenEndDateSet($start,$end,$now);
+        if($whenEndDateSet){
+        return $whenEndDateSet;
+    }
+        $whenBothAreSet = $this->whenBothSet($start,$end,$now);
+        if($whenBothAreSet){
+        return $whenBothAreSet;
+    }
+   
     }
 
     public function checkExecution($invoiceid)

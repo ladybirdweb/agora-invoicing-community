@@ -671,16 +671,11 @@ class TemplateController extends Controller
 
     public function calculateTotal($rate, $price)
     {
-        try {
-            $tax_amount = $price * ($rate / 100);
-            $total = $price + $tax_amount;
-
-            return $total;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
+        
+        $tax_amount = $price * ($rate / 100);
+        $total = $price + $tax_amount;
+        return $total;
+        
     }
 
     public function calculateSub($rate, $price, $cart, $shop)

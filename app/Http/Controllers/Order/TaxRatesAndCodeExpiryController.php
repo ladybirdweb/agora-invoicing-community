@@ -105,7 +105,8 @@ class TaxRatesAndCodeExpiryController extends Controller
             $status = 0;
         }
         $rate = $value;
-        return ['rate'=>$rate ,'taxes'=>$taxs];
+
+        return ['rate'=>$rate, 'taxes'=>$taxs];
     }
 
     /**
@@ -179,7 +180,6 @@ class TaxRatesAndCodeExpiryController extends Controller
     }
 
 
-  
     public function whenDateNotSet($start, $end)
     {
         //both not set, always true
@@ -219,6 +219,4 @@ class TaxRatesAndCodeExpiryController extends Controller
             }
         }
     }
-
- 
 }

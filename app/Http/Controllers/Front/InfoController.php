@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Model\Common\State;
 use App\Http\Controllers\Controller;
+use App\Model\Common\State;
 use App\Model\Payment\TaxByState;
 use DateTime;
 use DateTimeZone;

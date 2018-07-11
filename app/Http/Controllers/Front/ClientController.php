@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\Front\BaseClientController;
-use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Timezone;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
@@ -21,7 +18,6 @@ use DateTime;
 use DateTimeZone;
 use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use Hash;
 
 class ClientController extends BaseClientController
 {
@@ -208,11 +204,12 @@ class ClientController extends BaseClientController
                                 $order_id = $order->id;
                                 $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
-                                    $actionButton = $this->getActionButton($link,$orderEndDate);
+                                    $actionButton = $this->getActionButton($link, $orderEndDate);
+
                                     return $actionButton;
-                                    
                                 } elseif (!$orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
+
                                     return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'>Download  </a>"
                                             .'&nbsp;
 
@@ -286,8 +283,6 @@ class ClientController extends BaseClientController
         }
     }
 
-    
-
     public function subscriptions()
     {
         try {
@@ -298,7 +293,6 @@ class ClientController extends BaseClientController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function profile()
     {
@@ -318,8 +312,6 @@ class ClientController extends BaseClientController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-   
 
     public function getInvoice($id)
     {
@@ -366,8 +358,6 @@ class ClientController extends BaseClientController
         }
     }
 
-
-
     public function getPaymentByOrderId($orderid, $userid)
     {
         try {
@@ -382,6 +372,7 @@ class ClientController extends BaseClientController
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
+
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
                                 if (\Input::get('client') != 'true') {
@@ -443,5 +434,4 @@ class ClientController extends BaseClientController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
 }

@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Product\Subscription;
-use App\Http\Controllers\Github\GithubApiController;
 use App\Http\Requests\User\ProfileRequest;
-use App\Model\Order\Order;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
+use App\Model\Product\Subscription;
 use DateTime;
 use DateTimeZone;
 use Bugsnag;
@@ -17,7 +15,7 @@ use Hash;
 
 class BaseClientController extends Controller
 {
-     /**
+    /**
      * Get the version list popup for the Product.
      *
      * @param type $orders
@@ -63,42 +61,40 @@ class BaseClientController extends Controller
 
     public function downloadPopup($clientid, $invoiceid, $productid)
     {
-        return view('themes.default1.front.clients.download-list', 
-        	compact('clientid', 'invoiceid', 'productid'));
+        return view('themes.default1.front.clients.download-list',
+            compact('clientid', 'invoiceid', 'productid'));
     }
 
     public function downloadGithubPopup($clientid, $invoiceid, $productid)
     {
-        return view('themes.default1.front.clients.download-github-list', 
-        	compact('clientid', 'invoiceid', 'productid'));
+        return view('themes.default1.front.clients.download-github-list',
+            compact('clientid', 'invoiceid', 'productid'));
     }
 
-     public function renewPopup($id, $productid)
+    public function renewPopup($id, $productid)
     {
-      return view('themes.default1.renew.popup', compact('id', 'productid'));
+        return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
-
-
-    public function getActionButton($link,$orderEndDate)
+    public function getActionButton($link, $orderEndDate)
     {
-    	if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
-    		$githubApi = new \App\Http\Controllers\Github\GithubApiController;
+        if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+            $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
-        $link = $githubApi->getCurl1($link['zipball_url']);
+            $link = $githubApi->getCurl1($link['zipball_url']);
 
-        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
+            return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
                 .'&nbsp;
 
       </p>';
-    } else {
-        return '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
+        } else {
+            return '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
         }
     }
 
     /**
-    * Update Profile
-    */ 
+     * Update Profile.
+     */
     public function postProfile(ProfileRequest $request)
     {
         try {
@@ -123,10 +119,9 @@ class BaseClientController extends Controller
         }
     }
 
-
     /**
-    * Update Password
-    */ 
+     * Update Password.
+     */
     public function postPassword(ProfileRequest $request)
     {
         try {
@@ -151,11 +146,10 @@ class BaseClientController extends Controller
         }
     }
 
-
     public function getInvoicesByOrderId($orderid, $userid)
     {
         try {
-            $order =Order::where('id', $orderid)->where('client', $userid)->first();
+            $order = Order::where('id', $orderid)->where('client', $userid)->first();
 
             $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
             $invoice = new Invoice();
@@ -206,7 +200,6 @@ class BaseClientController extends Controller
         }
     }
 
-
     // public function getSubscriptions()
     // {
     //     try {
@@ -228,8 +221,4 @@ class BaseClientController extends Controller
     //         echo $ex->getMessage();
     //     }
     // }
-
-
-
-
 }

@@ -41,7 +41,6 @@ class BaseAuthController extends Controller
         }
     }
 
-  
     /**
      * Sends Otp.
      */

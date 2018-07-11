@@ -237,8 +237,9 @@ class TaxRatesAndCodeExpiryController extends Controller
         if ($end >= $now && $start <= $now) {
             return 'success';
 
-        }
-    }
+         }
+       }
+     }
 
     public function getPrice($price, $price_model)
     {

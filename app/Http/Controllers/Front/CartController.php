@@ -796,7 +796,7 @@ class CartController extends Controller
     {
         try {
             $taxe_relation = $this->tax->where('tax_classes_id', $taxClassId)->get();
-
+           
             return $taxe_relation;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

@@ -133,7 +133,7 @@ class CheckoutController extends Controller
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 

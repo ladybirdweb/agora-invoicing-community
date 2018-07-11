@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use App\Http\Controllers\Auth\BaseAuthController;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -36,13 +35,10 @@ class AuthController extends BaseAuthController
 
     //protected $loginPath = 'login';
 
-   
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
     }
-
-   
 
     public function sendActivationByGet($email, Request $request)
     {
@@ -55,8 +51,6 @@ class AuthController extends BaseAuthController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-    
 
     public function Activate($token, AccountActivate $activate, Request $request, User $user)
     {
@@ -75,8 +69,8 @@ class AuthController extends BaseAuthController
 
                 $zoho = $this->reqFields($user, $email);
                 $auth = ApiKey::where('id', 1)->value('zoho_api_key');
-                $addToZoho = $this->addToZoho($auth,$zoho);
-                
+                $addToZoho = $this->addToZoho($auth, $zoho);
+
                 // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 // $r = $mailchimp->addSubscriber($user->email);
 
@@ -85,7 +79,8 @@ class AuthController extends BaseAuthController
 
                     return redirect($url);
                 }
-         return redirect($url)->with('success', 'Email verification successful.Please login to access your account !!');
+
+                return redirect($url)->with('success', 'Email verification successful.Please login to access your account !!');
             } else {
                 throw new NotFoundHttpException();
             }
@@ -93,11 +88,12 @@ class AuthController extends BaseAuthController
             if ($ex->getCode() == 400) {
                 return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
             }
+
             return redirect($url)->with('fails', $ex->getMessage());
         }
     }
 
-   /**
+    /**
      * Get a validator for an incoming registration request.
      *
      * @param array $data
@@ -129,7 +125,6 @@ class AuthController extends BaseAuthController
         ]);
     }
 
-   
     public function requestOtp(Request $request)
     {
         $this->validate($request, [
@@ -155,8 +150,6 @@ class AuthController extends BaseAuthController
             return response()->json(compact('result'), 500);
         }
     }
-
-
 
     public function retryOTP(Request $request)
     {
@@ -220,7 +213,7 @@ class AuthController extends BaseAuthController
                 $user->save();
             }
             $check = $this->checkVerify($user);
-         $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified..'];
+            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');
@@ -254,8 +247,7 @@ class AuthController extends BaseAuthController
             $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
-
-             } catch (\Exception $ex) {
+        } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
 
             return response()->json(compact('result'), 500);
@@ -295,7 +287,7 @@ class AuthController extends BaseAuthController
             $id = $state;
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
-             foreach ($states as $stateList) {
+            foreach ($states as $stateList) {
                 echo '<option value='.$stateList->state_subdivision_code.'>'.$stateList->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {

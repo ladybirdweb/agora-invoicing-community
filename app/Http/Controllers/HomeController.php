@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\BaseHomeController;
 
 class HomeController extends BaseHomeController
 {
@@ -38,7 +36,6 @@ class HomeController extends BaseHomeController
      *
      * @return \Response
      */
-
     public function version(Request $request, Product $product)
     {
         $url = $request->input('response_url');
@@ -80,8 +77,6 @@ class HomeController extends BaseHomeController
 
         return str_replace('v', '', $product->version);
     }
-
-
 
     public function serialV2(Request $request, Order $order)
     {
@@ -186,7 +181,6 @@ class HomeController extends BaseHomeController
         }
     }
 
-   
     public function createEncryptionKeys()
     {
         try {
@@ -211,8 +205,6 @@ class HomeController extends BaseHomeController
         }
     }
 
-   
-
     public function checkOrder($faveo_decrypted_order)
     {
         try {
@@ -230,7 +222,6 @@ class HomeController extends BaseHomeController
         }
     }
 
-   
     public function faveoVerification(Request $request)
     {
         try {
@@ -287,7 +278,6 @@ class HomeController extends BaseHomeController
         echo"<script language='javascript'>document.redirect.submit();</script>";
     }
 
-
     public function checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version)
     {
         try {
@@ -329,7 +319,6 @@ class HomeController extends BaseHomeController
         }
     }
 
-   
     public static function encryptByPublicKey($data)
     {
         $path = storage_path().DIRECTORY_SEPARATOR.'app'.DIRECTORY_SEPARATOR.'public.key';
@@ -347,7 +336,6 @@ class HomeController extends BaseHomeController
 
         return json_encode($result);
     }
-
 
     public function downloadForFaveo(Request $request, Order $order)
     {

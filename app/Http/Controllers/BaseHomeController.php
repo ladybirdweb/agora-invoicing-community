@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 
 class BaseHomeController extends Controller
 {
-     public static function decryptByFaveoPrivateKey($encrypted)
+    public static function decryptByFaveoPrivateKey($encrypted)
     {
         $encrypted = json_decode($encrypted);
         $sealed_data = $encrypted->seal;
@@ -31,7 +31,6 @@ class BaseHomeController extends Controller
         return $grandTotal;
     }
 
-
     public function checkDomain($request_url)
     {
         try {
@@ -46,7 +45,6 @@ class BaseHomeController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
-
 
     public function checkSerialKey($faveo_encrypted_key, $order_number)
     {
@@ -68,7 +66,6 @@ class BaseHomeController extends Controller
         }
     }
 
-
     public function verifyOrder($order_number, $serial_key, $domain)
     {
         if (ends_with($domain, '/')) {
@@ -89,7 +86,6 @@ class BaseHomeController extends Controller
         }
     }
 
-
     public function hook(Request $request)
     {
         try {
@@ -99,26 +95,23 @@ class BaseHomeController extends Controller
         }
     }
 
-
     public function index()
     {
         $totalSales = $this->getTotalSales();
-		return view('themes.default1.common.dashboard');
-    }
 
+        return view('themes.default1.common.dashboard');
+    }
 
     public function getDomain($url)
     {
-    $pieces = parse_url($url);
-    $domain = isset($pieces['host']) ? $pieces['host'] : '';
-    if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
-        return $regs['domain'];
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
+        }
+
+        return $domain;
     }
-
-     return $domain;
-    }
-
-
 
     public function verificationResult($order_number, $serial_key, $domain)
     {
@@ -137,7 +130,6 @@ class BaseHomeController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
-
 
     public function getEncryptedData(Request $request)
     {

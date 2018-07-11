@@ -7,9 +7,9 @@ use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
+use Bugsnag;
 use DateTime;
 use DateTimeZone;
-use Bugsnag;
 use Exception;
 use Hash;
 

@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Front\InfoController;
-use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\State;
 use App\Model\Common\Template;

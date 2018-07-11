@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
-use App\Http\Controllers\Order\TaxRatesAndCodeExpiryController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
@@ -520,13 +519,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
     public function checkCode($code, $productid, $currency)
     {
         try {
             if ($code != '') {
                 $promo = $this->getPromotionDetails($code);
                 $value = $this->findCostAfterDiscount($promo->id, $productid, $currency);
+
                 return $value;
             } else {
                 $product = $this->product->find($productid);
@@ -539,10 +538,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
-
 
     public function getPromotionDetails($code)
     {
@@ -568,6 +567,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         if ($expiry != 'success') {
             throw new \Exception(\Lang::get('message.usage-of-code-expired'));
         }
+
         return $promo;
     }
 

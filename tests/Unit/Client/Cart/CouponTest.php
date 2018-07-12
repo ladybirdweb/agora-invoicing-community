@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Client\Cart;
 
+
 use Tests\TestCase;
 use App\User;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -13,22 +14,26 @@ use App\Model\Product\Product;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\PromoProductRelation;
+
 use Tests\DBTestCase;
 
 class CouponTest extends DBTestCase
 {
+
 	use DatabaseTransactions;
 
      
 
       /** @group coupon */
     public function test_addCouponUpdate_whenCouponProvided()
+
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $product = factory(Product::class)->create();
+
         $promotionType= PromotionType::create(['name'=>'Fixed Amount']);
         $promotion = Promotion::create(['code'=>'FAVEOCOUPON',
         	'type'=>$promotionType->id,
@@ -121,5 +126,6 @@ class CouponTest extends DBTestCase
         dd($response);//How to assert the exception message
        $response->assertStatus(0);
         // $this->assertNotEquals($response,'success');
+
     }
 }

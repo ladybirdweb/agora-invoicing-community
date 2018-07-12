@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Payment;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Product;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 
 class BasePromotionController extends Controller
 {
@@ -68,8 +70,6 @@ class BasePromotionController extends Controller
                 // dd($product_price);
             }
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
-            // dd($updated_price);
-            //dd([$product_price,$promotion_type,$updated_price]);
             return $updated_price;
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.find-discount-error'));

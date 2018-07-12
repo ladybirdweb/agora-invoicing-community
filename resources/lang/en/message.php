@@ -267,6 +267,7 @@ return [
     /*
      * Promotion
      */
+    'check-code-error' => 'Please Check Code',
     'promotion'                                                                                                                        => 'Promotion',
     'promotions'                                                                                                                       => 'Promotions',
     'coupons'                                                                                                                          => 'Coupons',

@@ -10,6 +10,8 @@ use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Front\CartController;
+
 
 class PromotionController extends BasePromotionController
 {
@@ -234,7 +236,7 @@ class PromotionController extends BasePromotionController
     public function checkCode($code, $productid)
     {
         try {
-            $inv_cont = new \App\Http\Controllers\Orders\InvoiceController();
+            $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
             $promo = $inv_cont->getPromotionDetails($code);
             $value = $this->findCostAfterDiscount($promo->id, $productid);
 
@@ -264,7 +266,11 @@ class PromotionController extends BasePromotionController
 
             return 'success';
         } catch (\Exception $ex) {
+            if(!\Auth::user()){
+                throw new \Exception('Please Login');
+            }else{
             throw new \Exception(\Lang::get('message.check-code-error'));
+        }
         }
     }
 

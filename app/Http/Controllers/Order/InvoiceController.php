@@ -525,22 +525,45 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function checkCode($code, $productid, $currency)
-    {
+       {
         try {
             if ($code != '') {
-                $promo = $this->getPromotionDetails($code);
+                $promo = $this->promotion->where('code', $code)->first();
+                //check promotion code is valid
+                if (!$promo) {
+                    throw new \Exception(\Lang::get('message.no-such-code'));
+                }
+                $relation = $promo->relation()->get();
+                //check the relation between code and product
+                if (count($relation) == 0) {
+                    throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
+                }
+                //check the usess
+                $uses = $this->checkNumberOfUses($code);
+                //dd($uses);
+                if ($uses != 'success') {
+                    throw new \Exception(\Lang::get('message.usage-of-code-completed'));
+                }
+                //check for the expiry date
+                $expiry = $this->checkExpiry($code);
+                //dd($expiry);
+                if ($expiry != 'success') {
+                    throw new \Exception(\Lang::get('message.usage-of-code-expired'));
+                }
                 $value = $this->findCostAfterDiscount($promo->id, $productid, $currency);
 
                 return $value;
             } else {
                 $product = $this->product->find($productid);
-                $planId = Plan::where('product', $product)->pluck('id')->first();
-                $price = PlanPrice::where('plan_id', $planId)->pluck('add_price')->first();
+                $price = $product->price()->sales_price;
+                if (!$price) {
+                    $price = $product->price()->price;
+                }
 
                 return $price;
             }
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
+            dd($ex);
 
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
@@ -549,7 +572,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function getPromotionDetails($code)
     {
         $promo = $this->promotion->where('code', $code)->first();
-        //check promotion code is valid
+         //check promotion code is valid
         if (!$promo) {
             throw new \Exception(\Lang::get('message.no-such-code'));
         }

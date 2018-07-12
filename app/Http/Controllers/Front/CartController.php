@@ -684,7 +684,7 @@ class CartController extends Controller
         try {
             $code = \Input::get('coupon');
             $cart = Cart::getContent();
-            $id = '';
+             $id = '';
             foreach ($cart as $item) {
                 $id = $item->id;
             }
@@ -696,7 +696,7 @@ class CartController extends Controller
 
             return redirect()->back();
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
+           Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

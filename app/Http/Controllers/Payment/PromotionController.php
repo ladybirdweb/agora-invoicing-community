@@ -10,8 +10,6 @@ use App\Model\Payment\PromotionType;
 use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Front\CartController;
-
 
 class PromotionController extends BasePromotionController
 {
@@ -266,11 +264,11 @@ class PromotionController extends BasePromotionController
 
             return 'success';
         } catch (\Exception $ex) {
-            if(!\Auth::user()){
+            if (!\Auth::user()) {
                 throw new \Exception('Please Login');
-            }else{
-            throw new \Exception(\Lang::get('message.check-code-error'));
-        }
+            } else {
+                throw new \Exception(\Lang::get('message.check-code-error'));
+            }
         }
     }
 

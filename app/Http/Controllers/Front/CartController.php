@@ -153,7 +153,6 @@ class CartController extends Controller
             $attributes = [];
             if ($items == null) {
                 $cartCollection = Cart::getContent();
-             
             } else {
                 $cartCollection = $items;
             }
@@ -180,7 +179,8 @@ class CartController extends Controller
                     }
                 }
             }
-           return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
+
+            return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
             //dd($ex);
 
@@ -697,6 +697,7 @@ class CartController extends Controller
             return redirect()->back();
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

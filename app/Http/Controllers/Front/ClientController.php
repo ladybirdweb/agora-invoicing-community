@@ -319,6 +319,7 @@ class ClientController extends BaseClientController
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
             $user = \Auth::user();
+
             return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

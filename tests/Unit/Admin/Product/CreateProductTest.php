@@ -27,8 +27,8 @@ class CreateProductTest extends TestCase
 
         // $this->assertTrue(true);
     }
-     
-     /* group ProductController */
+
+    /* group ProductController */
     public function test_productController_storeProductWithoutName()
     {
         $this->withoutMiddleware();

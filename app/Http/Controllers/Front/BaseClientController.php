@@ -7,7 +7,6 @@ use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use Illuminate\Http\Request;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
@@ -97,7 +96,7 @@ class BaseClientController extends Controller
      * Update Profile.
      */
     public function postProfile(ProfileRequest  $request)
-    { 
+    {
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
@@ -111,7 +110,7 @@ class BaseClientController extends Controller
             $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
 
             return $response;
-         } catch (Exception $ex) {
+        } catch (Exception $ex) {
             $result = [$ex->getMessage()];
             Bugsnag::notifyException($ex);
 
@@ -123,7 +122,7 @@ class BaseClientController extends Controller
      * Update Password.
      */
     public function postPassword(ProfileRequest $request)
-    {  
+    {
         try {
             $user = \Auth::user();
             $oldpassword = $request->input('old_password');

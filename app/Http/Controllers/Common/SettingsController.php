@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
-use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
 
@@ -48,6 +44,7 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $model = $apikeys->find(1);
+
             return view('themes.default1.common.apikey', compact('model'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
@@ -66,13 +63,13 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-
     public static function checkPaymentGateway($currency)
     {
         try {
             $plugins = new Plugin();
             $models = [];
             $gateways = 'Razorpay';
+
             return $gateways;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -189,8 +186,8 @@ class SettingsController extends BaseSettingsController
 
             return\ DataTables::of($activity_log)
              ->addColumn('checkbox', function ($model) {
-                         return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
-                     })
+                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+             })
                            ->addColumn('name', function ($model) {
                                return ucfirst($model->log_name);
                            })
@@ -198,31 +195,35 @@ class SettingsController extends BaseSettingsController
                                  return ucfirst($model->description);
                              })
                           ->addColumn('username', function ($model) {
-                                 $causer_id = $model->causer_id;
-                                 $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
-                                 foreach ($names as $key => $value) {
-                                     $fullName = $key.' '.$value;
-                                     return $fullName;
-                                 }
-                             })
+                              $causer_id = $model->causer_id;
+                              $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
+                              foreach ($names as $key => $value) {
+                                  $fullName = $key.' '.$value;
+
+                                  return $fullName;
+                              }
+                          })
                               ->addColumn('role', function ($model) {
                                   $causer_id = $model->causer_id;
                                   $role = User::where('id', $causer_id)->pluck('role');
+
                                   return json_decode($role);
                               })
                                ->addColumn('new', function ($model) {
-                                    $properties = ($model->properties);
-                                    $newEntry = $this->getNewEntry($properties,$model);
-                                    return $newEntry;
-                                    
-                                })
+                                   $properties = ($model->properties);
+                                   $newEntry = $this->getNewEntry($properties, $model);
+
+                                   return $newEntry;
+                               })
                                 ->addColumn('old', function ($model) {
                                     $data = ($model->properties);
-                                    $oldEntry = $this->getOldEntry($data,$model);
+                                    $oldEntry = $this->getOldEntry($data, $model);
+
                                     return $oldEntry;
                                 })
                                 ->addColumn('created_at', function ($model) {
                                     $newDate = $this->getDate($model->created_at);
+
                                     return $newDate;
                                 })
 
@@ -234,8 +235,6 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
-    
 
     public function destroy(Request $request)
     {
@@ -283,8 +282,6 @@ class SettingsController extends BaseSettingsController
                     </div>';
         }
     }
-
-  
 
     public function postSettingsError(Setting $settings, Request $request)
     {

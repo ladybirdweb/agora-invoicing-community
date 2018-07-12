@@ -23,12 +23,12 @@ class CreateProductTest extends TestCase
         'require_domain' => 1,
 
         ]);
-        // dd($response);
         $response->assertSessionHas('success');
 
         // $this->assertTrue(true);
     }
-
+     
+     /* group ProductController */
     public function test_productController_storeProductWithoutName()
     {
         $this->withoutMiddleware();

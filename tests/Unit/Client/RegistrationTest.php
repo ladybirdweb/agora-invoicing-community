@@ -98,8 +98,6 @@ class RegistrationTest extends DBTestCase
             $message->to('testmail@gmail.com');
         });
 
-        // dd(json_decode($response->content())->type);
-        // $success = session('success');
         $this->assertEmailWasSent();
         $this->assertEquals(json_decode($response->content())->type, 'success');
         $this->assertEquals(json_decode($response->content())->message, 'Registered Successfully...');

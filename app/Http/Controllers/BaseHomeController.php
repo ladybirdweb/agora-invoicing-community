@@ -61,8 +61,8 @@ class BaseHomeController extends Controller
             }
 
             return;
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 

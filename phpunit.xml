@@ -13,16 +13,16 @@
             <directory suffix="Test.php">./tests/Feature</directory>
         </testsuite>
 
-            <!-- <testsuite name="Unit">
+            <testsuite name="Unit">
                 <directory suffix="Test.php">./tests/Unit</directory>
-            </testsuite> -->
+            </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">
             <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
-    <!-- <php>
+    <php>
         <env name="APP_ENV" value="testing"/>
         <env name="DB_DATABASE" value="db_testing"/>
         <env name="CACHE_DRIVER" value="array"/>
@@ -33,5 +33,5 @@
          <env name="DB_PORT" value="3306"/>
           <env name="DB_USERNAME" value="root"/>
            <env name="DB_PASSWORD" value=""/>
-    </php> -->
+    </php>
 </phpunit>

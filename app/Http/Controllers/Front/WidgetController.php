@@ -82,13 +82,11 @@ class WidgetController extends Controller
         $this->validate($request, [
             'name'    => 'required',
             'publish' => 'required',
-
             'content' => 'required',
         ]);
 
         try {
             $this->widget->fill($request->input())->save();
-
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -100,14 +98,12 @@ class WidgetController extends Controller
         $this->validate($request, [
             'name'    => 'required',
             'publish' => 'required',
-
             'content' => 'required',
         ]);
 
         try {
             $widget = $this->widget->where('id', $id)->first();
             $widget->fill($request->input())->save();
-
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -151,7 +147,7 @@ class WidgetController extends Controller
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';

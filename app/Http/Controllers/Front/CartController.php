@@ -191,8 +191,8 @@ class CartController extends Controller
     public function checkTax($productid)
     {
         try {
-            $tax_condition = [];
-            $tax_attribute = [];
+            $tax_condition = array();
+            $tax_attribute = array();
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -216,7 +216,6 @@ class CartController extends Controller
             } else {
                 $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
             }
-
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
@@ -228,7 +227,7 @@ class CartController extends Controller
             $geoip_country = '';
             $geoip_state = '';
             if (\Auth::user()) {
-                $geoip_country = \Auth::user()->country;
+               $geoip_country = \Auth::user()->country;
                 $geoip_state = \Auth::user()->state;
             }
             if ($geoip_country == '') {

@@ -90,11 +90,11 @@ class Order extends BaseModel
 
     public function getCreatedAtAttribute($value)
     {
-        // $tz = \Auth::user()->timezone()->first()->name;
-        // $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
-        // $d = $date->setTimezone($tz);
+        $tz = \Auth::user()->timezone()->first()->name;
+        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
+        $d = $date->setTimezone($tz);
 
-        // return $d;
+        return $d;
     }
 
     public function getSerialKeyAttribute($value)

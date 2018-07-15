@@ -249,16 +249,11 @@ class GithubController extends Controller
      */
     public function download($release)
     {
-        try {
-            //dd($release);
-            echo "<form action=$release method=get name=download>";
-            echo '</form>';
-            echo"<script language='javascript'>document.download.submit();</script>";
+        echo "<form action=$release method=get name=download>";
+        echo '</form>';
+        echo"<script language='javascript'>document.download.submit();</script>";
 
-            //return "success";
-        } catch (Exception $ex) {
-            return redirect('/')->with('fails', $ex->getMessage());
-        }
+        //return "success";
     }
 
     /**

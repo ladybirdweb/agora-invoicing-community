@@ -5008,6 +5008,8 @@ return array(
     'Tests\\Unit\\Admin\\User\\InvoiceTest' => $baseDir . '/tests/Unit/Admin/User/InvoiceTest.php',
     'Tests\\Unit\\Client\\Account\\InvoiceTest' => $baseDir . '/tests/Unit/Client/Account/InvoiceTest.php',
     'Tests\\Unit\\Client\\Account\\OrderTest' => $baseDir . '/tests/Unit/Client/Account/OrderTest.php',
+    'Tests\\Unit\\Client\\Account\\ProfileTest' => $baseDir . '/tests/Unit/Client/Account/ProfileTest.php',
+    'Tests\\Unit\\Client\\Cart\\CouponTest' => $baseDir . '/tests/Unit/Client/Cart/CouponTest.php',
     'Tests\\Unit\\Client\\RegistrationTest' => $baseDir . '/tests/Unit/Client/RegistrationTest.php',
     'Tests\\Unit\\ExampleTest' => $baseDir . '/tests/Unit/ExampleTest.php',
     'Tests\\Unit\\LoginTest' => $baseDir . '/tests/Unit/LoginTest.php',

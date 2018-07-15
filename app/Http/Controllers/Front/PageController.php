@@ -146,20 +146,20 @@ class PageController extends GetPageTemplateController
         return $segment;
     }
 
-    public function generate(Request $request)
-    {
-        // dd($request->all());
-        if ($request->has('slug')) {
-            $slug = $request->input('slug');
+    // public function generate(Request $request)
+    // {
+    //     // dd($request->all());
+    //     if ($request->has('slug')) {
+    //         $slug = $request->input('slug');
 
-            return $this->getSlug($slug);
-        }
-        if ($request->has('url')) {
-            $slug = $request->input('url');
+    //         return $this->getSlug($slug);
+    //     }
+    //     if ($request->has('url')) {
+    //         $slug = $request->input('url');
 
-            return $this->getPageUrl($slug);
-        }
-    }
+    //         return $this->getPageUrl($slug);
+    //     }
+    // }
 
     public function show($slug)
     {

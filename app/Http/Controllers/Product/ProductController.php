@@ -349,8 +349,6 @@ use App\Http\Controllers\Controller;
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
-                dd($e);
-
                 Bugsnag::notifyException($e);
 
                 return redirect()->with('fails', $e->getMessage());

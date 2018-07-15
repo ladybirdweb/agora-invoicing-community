@@ -81,8 +81,8 @@ class BaseHomeController extends Controller
                     ->first();
 
             return $this_order;
-        } catch (Exception $ex) {
-            throw new Exception($ex->getMessage());
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
         }
     }
 

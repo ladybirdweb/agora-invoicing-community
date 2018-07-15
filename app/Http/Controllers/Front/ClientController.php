@@ -332,8 +332,7 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->findOrFail($id);
-            if ($order) {
-                $invoice = $order->invoice()->first();
+            $invoice = $order->invoice()->first();
                 $items = $order->invoice()->first()->invoiceItem()->get();
                 $subscription = '';
                 $plan = '';
@@ -348,8 +347,7 @@ class ClientController extends BaseClientController
                 $user = \Auth::user();
 
                 return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
-            }
-
+            
             throw new Exception('Sorry! We can not find your order');
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

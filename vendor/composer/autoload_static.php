@@ -5612,6 +5612,8 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Tests\\Unit\\Admin\\User\\InvoiceTest' => __DIR__ . '/../..' . '/tests/Unit/Admin/User/InvoiceTest.php',
         'Tests\\Unit\\Client\\Account\\InvoiceTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/InvoiceTest.php',
         'Tests\\Unit\\Client\\Account\\OrderTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/OrderTest.php',
+        'Tests\\Unit\\Client\\Account\\ProfileTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Account/ProfileTest.php',
+        'Tests\\Unit\\Client\\Cart\\CouponTest' => __DIR__ . '/../..' . '/tests/Unit/Client/Cart/CouponTest.php',
         'Tests\\Unit\\Client\\RegistrationTest' => __DIR__ . '/../..' . '/tests/Unit/Client/RegistrationTest.php',
         'Tests\\Unit\\ExampleTest' => __DIR__ . '/../..' . '/tests/Unit/ExampleTest.php',
         'Tests\\Unit\\LoginTest' => __DIR__ . '/../..' . '/tests/Unit/LoginTest.php',

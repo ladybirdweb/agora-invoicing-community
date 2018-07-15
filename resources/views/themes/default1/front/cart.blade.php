@@ -36,6 +36,7 @@ if (count($attributes) > 0) {
              <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
+                
                 <li>{{ $error }}</li>
                 @endforeach
             </ul>

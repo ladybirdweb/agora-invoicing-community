@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
@@ -19,7 +18,6 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Config;
-use DB;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -108,7 +106,7 @@ class TemplateController extends BaseTemplateController
         Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
-       
+
         return 'success';
     }
 
@@ -139,7 +137,6 @@ class TemplateController extends BaseTemplateController
                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);
-        
     }
 
     public function create()
@@ -308,12 +305,12 @@ class TemplateController extends BaseTemplateController
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
+
             throw new \Exception('mailing problem');
         }
     }
-    
 
-        public function popup($title, $body, $width = '897', $name = '', $modelid = '', $class = 'null', $trigger = false)
+    public function popup($title, $body, $width = '897', $name = '', $modelid = '', $class = 'null', $trigger = false)
     {
         try {
             if ($modelid == '') {
@@ -351,7 +348,6 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-
     public function checkPriceWithTaxClass($productid, $currency)
     {
         try {
@@ -369,6 +365,7 @@ class TemplateController extends BaseTemplateController
             return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -376,8 +373,8 @@ class TemplateController extends BaseTemplateController
     public function checkTax($productid, $price, $cart = 0, $cart1 = 0, $shop = 0)
     {
         try {
-           $product = $this->product->findOrFail($productid);
-           $controller = new \App\Http\Controllers\Front\CartController();
+            $product = $this->product->findOrFail($productid);
+            $controller = new \App\Http\Controllers\Front\CartController();
 
             $currency = $controller->currency();
             $tax_relation = $this->tax_relation->where('product_id', $productid)->first();
@@ -388,16 +385,13 @@ class TemplateController extends BaseTemplateController
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');
             }
-            $tax_amount = $this->getTaxAmount($cart,$taxes, $price, $cart1, $shop);
-          
+            $tax_amount = $this->getTaxAmount($cart, $taxes, $price, $cart1, $shop);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 
     public function plans($url, $id)
     {
@@ -407,13 +401,13 @@ class TemplateController extends BaseTemplateController
         $plans = $this->prices($id);
         if (count($plans) > 0) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
-            }
+        }
         $form = \Form::open(['method' => 'get', 'url' => $url]).
         $plan_form.
         \Form::hidden('id', $id);
+
         return $form;
     }
-
 
     public function leastAmount($id)
     {
@@ -467,7 +461,7 @@ class TemplateController extends BaseTemplateController
 
                 $month = round($days / 30);
                 $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-               }
+            }
             if ($currency == 'INR') {
                 $symbol = '₹';
             } else {
@@ -477,6 +471,7 @@ class TemplateController extends BaseTemplateController
         } else {
             $price = $cart_controller->productCost($id);
         }
+
         return $price;
     }
 }

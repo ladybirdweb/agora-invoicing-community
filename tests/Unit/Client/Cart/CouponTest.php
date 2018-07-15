@@ -2,14 +2,14 @@
 
 namespace Tests\Unit\Client\Cart;
 
+
 use Tests\TestCase;
 use App\User;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+
 use App\Model\Order\Invoice;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use App\Http\Controllers\Order\InvoiceController;
-use App\Model\Product\Product;
+use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\PromoProductRelation;
@@ -17,12 +17,14 @@ use Tests\DBTestCase;
 
 class CouponTest extends DBTestCase
 {
+    use DatabaseTransactions;
+
 
 	use DatabaseTransactions;
 
        /** @group coupon */
-    public function test_addCouponUpdate_whenCouponProvided()
 
+    public function test_addCouponUpdate_whenCouponProvided()
     {
         $this->withoutMiddleware();
         $this->getLoggedInUser();
@@ -30,61 +32,61 @@ class CouponTest extends DBTestCase
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $product = factory(Product::class)->create();
 
-        $promotionType= PromotionType::create(['name'=>'Fixed Amount']);
-        $promotion = Promotion::create(['code'=>'FAVEOCOUPON',
-        	'type'=>$promotionType->id,
-        	'uses'=>'1',
-        	'value'=>'100',
-        	'start'=> '2018-06-30 00:00:00',
-        	'expiry'=> '2018-07-30 00:00:00',
+        $promotionType = PromotionType::create(['name'=>'Fixed Amount']);
+        $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
+            'type'                            => $promotionType->id,
+            'uses'                            => '1',
+            'value'                           => '100',
+            'start'                           => '2018-06-30 00:00:00',
+            'expiry'                          => '2018-07-30 00:00:00',
         ]);
-        \Cart::add(array(
-		    'id' => $product->id,
-		    'name' => $product->name,
-		    'price' => $invoice->grand_total,
-		    'quantity' => 1,
-		    'attributes' => array()
-		));
-        $response = $this->call('POST','pricing/update',[
+        \Cart::add([
+            'id'         => $product->id,
+            'name'       => $product->name,
+            'price'      => $invoice->grand_total,
+            'quantity'   => 1,
+            'attributes' => [],
+        ]);
+        $response = $this->call('POST', 'pricing/update', [
         'coupon' => 'FAVEOCOUPON',
         ]);
-       $response->assertStatus(302);
-
+        $response->assertStatus(302);
     }
 
     /** @group coupon */
     public function test_checkCode_whenValidCouponProvided()
     {
-    	$this->withoutMiddleware();
+        $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-         $promotionTypeName= PromotionType::find(2);
-         $promotionType = $promotionTypeName->name;
+        $promotionTypeName = PromotionType::find(2);
+        $promotionType = $promotionTypeName->name;
         $product = factory(Product::class)->create();
-         $promotion = Promotion::create(['code'=>'FAVEOCOUPON',
-        	'type'=>$promotionTypeName->id,
-        	'uses'=>'100',
-        	'value'=>'100',
-        	'start'=> '2018-06-30 00:00:00',
-        	'expiry'=> '2018-07-30 00:00:00',
+        $promotion = Promotion::create(['code'=> 'FAVEOCOUPON',
+            'type'                            => $promotionTypeName->id,
+            'uses'                            => '100',
+            'value'                           => '100',
+            'start'                           => '2018-06-30 00:00:00',
+            'expiry'                          => '2018-07-30 00:00:00',
         ]);
 
-          $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
-        	'product_id'=>$product->id,
+        $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
+            'product_id'                                         => $product->id,
         ]);
-         \Cart::add(array(
-		    'id' => $product->id,
-		    'name' => $product->name,
-		    'price' => $invoice->grand_total,
-		    'quantity' => 1,
-		    'attributes' => array()
-		));
-         $controller = new \App\Http\Controllers\Payment\PromotionController();
-        $response = $controller->checkCode('FAVEOCOUPON',$product->id);
-         $this->assertEquals($response,'success');
+        \Cart::add([
+            'id'         => $product->id,
+            'name'       => $product->name,
+            'price'      => $invoice->grand_total,
+            'quantity'   => 1,
+            'attributes' => [],
+        ]);
+        $controller = new \App\Http\Controllers\Payment\PromotionController();
+        $response = $controller->checkCode('FAVEOCOUPON', $product->id);
+        $this->assertEquals($response, 'success');
     }
+
 
 
      /** @group coupon 
@@ -94,12 +96,13 @@ class CouponTest extends DBTestCase
     {
     	$this->expectException(\Exception::class);
     	$this->withoutMiddleware();
+
         $this->getLoggedInUser();
         $user = $this->user;
         $currency = $user->currency;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
-         $promotionTypeName= PromotionType::find(2);
-         $promotionType = $promotionTypeName->name;
+        $promotionTypeName = PromotionType::find(2);
+        $promotionType = $promotionTypeName->name;
         $product = factory(Product::class)->create();
         $promotion = Promotion::create(['code'=>'FAVEOCOUPON',
         	'type'=>$promotionTypeName->id,
@@ -107,11 +110,13 @@ class CouponTest extends DBTestCase
         	'value'=>'100',
         	'start'=> '2017-06-30 00:00:00',
         	'expiry'=> '2017-07-30 00:00:00',
+
         ]);
 
-          $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
-        	'product_id'=>$product->id,
+        $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,
+            'product_id'                                         => $product->id,
         ]);
+
          \Cart::add(array(
 		    'id' => $product->id,
 		    'name' => $product->name,
@@ -159,6 +164,7 @@ class CouponTest extends DBTestCase
 		));
          $controller = new \App\Http\Controllers\Payment\PromotionController();
 		 $response = $controller->checkCode('FAVEOCOUPON123',$product->id);
+
 
     }
 }

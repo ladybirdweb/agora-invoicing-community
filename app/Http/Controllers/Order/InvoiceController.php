@@ -525,7 +525,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function checkCode($code, $productid, $currency)
-       {
+    {
         try {
             if ($code != '') {
                 $promo = $this->promotion->where('code', $code)->first();
@@ -572,7 +572,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function getPromotionDetails($code)
     {
         $promo = $this->promotion->where('code', $code)->first();
-         //check promotion code is valid
+        //check promotion code is valid
         if (!$promo) {
             throw new \Exception(\Lang::get('message.no-such-code'));
         }

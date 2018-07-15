@@ -267,10 +267,12 @@ return [
     /*
      * Promotion
      */
+
     'check-code-error' => 'Please Check Code',
     'no-such-code'     => 'No such Code',
     'usage-of-code-completed'=>'Usage of ocde Completed',
     'usage-of-code-expired'=>'Usage of code expired', 
+
     'promotion'                                                                                                                        => 'Promotion',
     'promotions'                                                                                                                       => 'Promotions',
     'coupons'                                                                                                                          => 'Coupons',

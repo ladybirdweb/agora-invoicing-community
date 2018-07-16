@@ -148,13 +148,13 @@ class ProcessController extends Controller
             \Session::forget('invoiceid');
             if ($order_status == 'Success') {
                 $control = new \App\Http\Controllers\Order\RenewController();
-                if ($control->checkRenew() == false) {
+                if ($control->checkRenew() === false) {
                     $invoice = new \App\Model\Order\Invoice();
                     $invoice = $invoice->findOrFail($invoiceid);
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                 } else {
-                    $control->successRenew();
+                    $control->/** @scrutinizer ignore-call */successRenew();
                 }
                 \Cart::clear();
                 $status = 'success';

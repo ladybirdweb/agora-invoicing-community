@@ -33,13 +33,13 @@ class BundleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
         try {
             return view('themes.default1.product.bundle.index');
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -80,7 +80,7 @@ class BundleController extends Controller
             $products = $this->product->lists('name', 'id')->toArray();
 
             return view('themes.default1.product.bundle.create', compact('products'));
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -102,7 +102,7 @@ class BundleController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -185,7 +185,7 @@ class BundleController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $e) {
+        } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -208,25 +208,26 @@ class BundleController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }

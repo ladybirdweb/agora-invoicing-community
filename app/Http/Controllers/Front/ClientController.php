@@ -348,10 +348,8 @@ class ClientController extends BaseClientController
 
             return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
 
-            throw new Exception('Sorry! We can not find your order');
-        } catch (Exception $ex) {
+            } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }

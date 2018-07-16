@@ -28,7 +28,7 @@ class AddonController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -39,35 +39,35 @@ class AddonController extends Controller
         }
     }
 
-    public function getAddons()
-    {
-        return \Datatable::collection($this->addon->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
-                        })
-                        ->showColumns('name', 'regular_price', 'selling_price')
-                        ->addColumn('associated', function ($model) {
-                            $relations = new ProductAddonRelation();
-                            $relations = $relations->where('addon_id', $model->id)->get();
-                            $products = [];
-                            foreach ($relations as $key => $relation) {
-                                $products[$key] = $this->product->where('id', $relation->product_id)->first()->name;
-                            }
+    // public function getAddons()
+    // {
+    //     return \Datatable::collection($this->addon->get())
+    //                     ->addColumn('#', function ($model) {
+    //                         return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+    //                     })
+    //                     ->showColumns('name', 'regular_price', 'selling_price')
+    //                     ->addColumn('associated', function ($model) {
+    //                         $relations = new ProductAddonRelation();
+    //                         $relations = $relations->where('addon_id', $model->id)->get();
+    //                         $products = [];
+    //                         foreach ($relations as $key => $relation) {
+    //                             $products[$key] = $this->product->where('id', $relation->product_id)->first()->name;
+    //                         }
 
-                            return implode(',', $products);
-                        })
-                        ->addColumn('action', function ($model) {
-                            return '<a href='.url('addons/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
-                        })
-                        ->searchColumns('name')
-                        ->orderColumns('name')
-                        ->make();
-    }
+    //                         return implode(',', $products);
+    //                     })
+    //                     ->addColumn('action', function ($model) {
+    //                         return '<a href='.url('addons/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+    //                     })
+    //                     ->searchColumns('name')
+    //                     ->orderColumns('name')
+    //                     ->make();
+    // }
 
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -76,7 +76,7 @@ class AddonController extends Controller
             $subscription = $this->plan->pluck('name', 'id')->toArray();
             //dd($subscription);
             return view('themes.default1.product.addon.create', compact('product', 'subscription'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -194,25 +194,27 @@ class AddonController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }

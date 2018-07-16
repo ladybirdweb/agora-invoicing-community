@@ -33,7 +33,7 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -107,8 +107,8 @@ class GroupController extends Controller
             $prices = $request->input('price');
             $title = $request->input('title');
             $type = $request->input('type');
-
-            for ($i = 0; $i < count($prices); $i++) {
+            $c = count($prices);
+            for ($i = 0; $i < $c; $i++) {
                 $this->config->create(['group_id' => $this->group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
             }
 
@@ -197,8 +197,8 @@ class GroupController extends Controller
             $prices = $request->input('price');
             $title = $request->input('title');
             $type = $request->input('type');
-
-            for ($i = 0; $i < count($prices); $i++) {
+            $c = count($prices);
+            for ($i = 0; $i < $c; $i++) {
                 $this->config->create(['group_id' => $group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
             }
 
@@ -227,16 +227,17 @@ class GroupController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
@@ -245,7 +246,7 @@ class GroupController extends Controller
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }

@@ -10,8 +10,8 @@ use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Model\Payment\PLan;
-use App\Model\Payment\PLanPrice;
+use App\Model\Payment\Plan;
+use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
@@ -555,17 +555,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 return $value;
             } else {
                 $product = $this->product->find($productid);
-                $price = $product->price()->sales_price;
-                if (!$price) {
-                    $price = $product->price()->price;
-                }
-
+                $plans = Plan::where('product',$product)->pluck('id')->first();
+                $price = PlanPrice::where('currency',$currency)->where('plan_id',$plans)->pluck('add_price')->first();
+                
                 return $price;
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception(\Lang::get('message.check-code-error'));
+             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
 

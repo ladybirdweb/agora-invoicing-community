@@ -23,7 +23,7 @@ class CurrencyController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -47,7 +47,8 @@ class CurrencyController extends Controller
                             //return "<a href=" . url('products/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
                             //return "<a href=#create class='btn btn-primary pull-right' data-toggle=modal data-target=#edit".$model->id.">".\Lang::get('message.create')."</a>".  include base_path(). '/resources/views/themes/default1/payment/currency/edit.blade.php';
 
-                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' data-target=#edit".$model->id.'>'.\Lang::get('message.edit')."</a>
+                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' data-target=#edit".$model->id.'>'.
+                            /** @scrutinizer ignore-type */\Lang::get('message.edit')."</a>
         <div class='modal fade' id=edit".$model->id.">
 <div class='modal-dialog'>
     <div class='modal-content'>
@@ -88,7 +89,7 @@ class CurrencyController extends Controller
         </div>
         <div class='modal-footer'>
             <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-            <input type=submit class='btn btn-primary' value=".\Lang::get('message.save').'>
+            <input type=submit class='btn btn-primary' value="./** @scrutinizer ignore-type */\Lang::get('message.save').'>
                 
         </div>
        
@@ -185,7 +186,8 @@ class CurrencyController extends Controller
             $currency->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 
@@ -209,33 +211,36 @@ class CurrencyController extends Controller
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */
+                    \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                             //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                         }
                         echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.can-not-delete-default').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.can-not-delete-default').'
                 </div>';
                     }
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }

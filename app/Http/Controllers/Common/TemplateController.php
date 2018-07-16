@@ -335,7 +335,8 @@ class TemplateController extends BaseTemplateController
                                     </div>
                                     <div class='modal-footer'>
                                         <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value=".\Lang::get('message.save').'>
+                                        <input type=submit class='btn btn-primary' value="./** @scrutinizer ignore-type */
+                                        \Lang::get('message.save').'>
                                     </div>
                                     '.\Form::close().'
                                 </div>

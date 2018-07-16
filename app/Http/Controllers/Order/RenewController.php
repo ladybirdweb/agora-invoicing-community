@@ -364,7 +364,7 @@ class RenewController extends Controller
             $this->setSession($id, $planid);
 
             return redirect('paynow/'.$invoiceid);
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }

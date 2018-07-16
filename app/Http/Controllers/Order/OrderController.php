@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Order\OrderRequest;
-use App\Http\Controllers\Order\BaseOrderController;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -74,7 +72,7 @@ class OrderController extends BaseOrderController
      */
     public function index(Request $request)
     {
-      try {
+        try {
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
@@ -100,7 +98,8 @@ class OrderController extends BaseOrderController
         $till = $request->input('till');
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
-         return\ DataTables::of($query->get())
+
+        return\ DataTables::of($query->get())
 
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
@@ -130,20 +129,20 @@ class OrderController extends BaseOrderController
                         // ->showColumns('number', 'price_override', 'order_status')
                         ->addColumn('ends_at', function ($model) {
                             $end = $this->getEndDate($model);
+
                             return $end;
-                    
                         })
                         ->addColumn('action', function ($model) {
                             $sub = $model->subscription()->first();
                             $status = $this->checkInvoiceStatusByOrderId($model->id);
-                             $url = $this->getUrl($model,$status,$sub);
-                             return $url;
-                           
+                            $url = $this->getUrl($model, $status, $sub);
+
+                            return $url;
                         })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number', 'price_override', 'order_status', 'ends_at', 'action'])
                         ->make(true);
-        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -171,8 +170,6 @@ class OrderController extends BaseOrderController
      *
      * @return \Response
      */
-
-
     public function show($id)
     {
         try {
@@ -311,11 +308,11 @@ class OrderController extends BaseOrderController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
- 
     /**
      * generating serial key if product type is downloadable.
      *
@@ -464,7 +461,6 @@ class OrderController extends BaseOrderController
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function product($itemid)
     {

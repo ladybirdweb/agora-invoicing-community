@@ -15,7 +15,7 @@ $factory->define(App\User::class, function (Faker $faker) {
        'company_size' => '2-50',
        'country'      => $faker->country,
        'mobile'       => $faker->e164PhoneNumber,
-       'currency'     =>'INR',
+       'currency'     => 'INR',
        'address'      => $faker->address,
        'town'         => $faker->city,
        'state'        => $faker->state,

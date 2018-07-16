@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Order;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\User;
-use App\Model\Order\Order;
 use Bugsnag;
 
 class BaseOrderController extends Controller
 {
     public function getEndDate($model)
     {
-	    $end = '--';
+        $end = '--';
         $ends = $model->subscription()->first();
         if ($ends) {
             if ($ends->ends_at != '0000-00-00 00:00:00') {
@@ -22,23 +21,23 @@ class BaseOrderController extends Controller
                 $end = date_format($date, 'l, F j, Y H:m');
             }
         }
+
         return $end;
     }
 
-    public function getUrl($model,$status,$sub)
+    public function getUrl($model, $status, $sub)
     {
-    	$url = '';
-    	 if ($status == 'success') {
+        $url = '';
+        if ($status == 'success') {
             if ($sub) {
                 $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh' style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
             }
         }
+
         return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
-       
     }
 
-
-        /**
+    /**
      * inserting the values to orders table.
      *
      * @param type $invoiceid
@@ -56,7 +55,7 @@ class BaseOrderController extends Controller
             if (count($invoice_items) > 0) {
                 foreach ($invoice_items as $item) {
                     if ($item) {
-                    	$items = $this->getIfItemPresent($item,$invoiceid,$user_id,$order_status);
+                        $items = $this->getIfItemPresent($item, $invoiceid, $user_id, $order_status);
                     }
                 }
             }
@@ -69,10 +68,9 @@ class BaseOrderController extends Controller
         }
     }
 
-
-    public function getIfItemPresent($item,$invoiceid,$user_id,$order_status)
+    public function getIfItemPresent($item, $invoiceid, $user_id, $order_status)
     {
-     $product = $this->getProductByName($item->product_name)->id;
+        $product = $this->getProductByName($item->product_name)->id;
         $version = $this->getProductByName($item->product_name)->version;
         if ($version == null) {
             $version = $this->product_upload->select('version')->where('product_id', $product)->first();
@@ -83,7 +81,7 @@ class BaseOrderController extends Controller
 
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
-   
+
         $order = $this->order->create([
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
@@ -103,8 +101,7 @@ class BaseOrderController extends Controller
         $this->sendOrderMail($user_id, $order->id, $item->id);
     }
 
-
-     /**
+    /**
      * get the product model by name.
      *
      * @param type $name
@@ -124,7 +121,7 @@ class BaseOrderController extends Controller
         }
     }
 
-        /**
+    /**
      * inserting the values to subscription table.
      *
      * @param type $orderid
@@ -159,8 +156,6 @@ class BaseOrderController extends Controller
         }
     }
 
-
-    
     public function addOrderInvoiceRelation($invoiceid, $orderid)
     {
         try {
@@ -193,9 +188,7 @@ class BaseOrderController extends Controller
         return $result;
     }
 
-
-
-      /**
+    /**
      * check wheather the product require serial key or not.
      *
      * @param type $product_id
@@ -217,7 +210,6 @@ class BaseOrderController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function sendOrderMail($userid, $orderid, $itemid)
     {
@@ -243,12 +235,10 @@ class BaseOrderController extends Controller
         // $downloadurl = $this->downloadUrl($userid, $orderid,$productId);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
-        $mail = $this->getMail($setting,$user,$downloadurl,$invoiceurl,$order,$product,$orderid);
-       
-    } 
+        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid);
+    }
 
-
-    public function getMail($setting,$user,$downloadurl,$invoiceurl,$order,$product,$orderid)
+    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid)
     {
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->order_mail;
@@ -278,7 +268,6 @@ class BaseOrderController extends Controller
         return $mail;
     }
 
-
     public function invoiceUrl($orderid)
     {
         $orders = new Order();
@@ -289,7 +278,7 @@ class BaseOrderController extends Controller
         return $url;
     }
 
-        /**
+    /**
      * get the price of a product by id.
      *
      * @param type $product_id
@@ -309,8 +298,6 @@ class BaseOrderController extends Controller
         }
     }
 
-
-       
     public function downloadUrl($userid, $orderid)
     {
         $orders = new Order();
@@ -321,6 +308,4 @@ class BaseOrderController extends Controller
 
         return $url;
     }
-
-
 }

@@ -264,13 +264,11 @@ class PromotionController extends BasePromotionController
 
             return 'success';
         } catch (\Exception $ex) {
-
-             if(!\Auth::user()){
+            if (!\Auth::user()) {
                 throw new \Exception('Please Login');
-            }else{
-            throw new \Exception($ex->getMessage());
-        }
-
+            } else {
+                throw new \Exception($ex->getMessage());
+            }
         }
     }
 

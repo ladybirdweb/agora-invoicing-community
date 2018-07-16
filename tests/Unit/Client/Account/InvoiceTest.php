@@ -18,7 +18,7 @@ class InvoiceTest extends DBTestCase
     /** @group ClientController */
     public function test_Invoices()
     {
-         $this->expectException(\Exception::class);
+        $this->expectException(\Exception::class);
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;

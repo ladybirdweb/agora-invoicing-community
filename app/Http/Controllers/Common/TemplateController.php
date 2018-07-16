@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Product\ProductController;
-use App\Http\Controllers\Common\BaseTemplateController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;

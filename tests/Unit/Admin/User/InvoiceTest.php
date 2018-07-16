@@ -83,7 +83,7 @@ class InvoiceTest extends DBTestCase
            'description'  => '',
 
            ]);
-      $response->assertStatus(200);
+        $response->assertStatus(200);
         // $this->assertEquals(json_decode($response->content())->result->success, 'Invoice generated successfully');
     }
 
@@ -205,7 +205,7 @@ class InvoiceTest extends DBTestCase
         $this->assertEquals($response[1], '18%');
     }
 
-   /** @group InvoiceController */
+    /** @group InvoiceController */
     public function test_invoiceController_checkTaxWhenGstIsEnable_whenUserIsFromIndiaFromUnionTerritory()
     {
         $this->withoutMiddleware();
@@ -235,7 +235,7 @@ class InvoiceTest extends DBTestCase
         $this->assertEquals($response[1], '18%');
     }
 
-   /** @group InvoiceController */
+    /** @group InvoiceController */
     public function test_checkTax_WhenGstIsEnable_whenUserIsFromOtherCountry()
     {
         $this->withoutMiddleware();

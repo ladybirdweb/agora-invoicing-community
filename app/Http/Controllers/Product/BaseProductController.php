@@ -2,17 +2,16 @@
 
 namespace App\Http\Controllers\Product;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\Model\Payment\Plan;
 use Bugsnag;
-use Spatie\Activitylog\Models\Activity;
+use Illuminate\Http\Request;
 
 class BaseProductController extends Controller
 {
-   public function getMyUrl()
+    public function getMyUrl()
     {
         $server = new Request();
         $url = $_SERVER['REQUEST_URI'];
@@ -26,21 +25,22 @@ class BaseProductController extends Controller
         return $server;
     }
 
-	public function getProductQtyCheck($productid)
-	    {
-	      try {
-	            $check = self::checkMultiProduct($productid);
-	            if ($check == true) {
-	                return "<div class='col-md-4 form-group'>
+    public function getProductQtyCheck($productid)
+    {
+        try {
+            $check = self::checkMultiProduct($productid);
+            if ($check == true) {
+                return "<div class='col-md-4 form-group'>
 	                        <label class='required'>"./* @scrutinizer ignore-type */\Lang::get('message.quantity')."</label>
 	                        <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
 	                </div>";
-	            }
-	        } catch (\Exception $ex) {
-	            Bugsnag::notifyException($ex);
-	            return $ex->getMessage();
-	        }
-	    }
+            }
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return $ex->getMessage();
+        }
+    }
 
     public function getSubscriptionCheck($productid, Request $request)
     {
@@ -67,6 +67,7 @@ class BaseProductController extends Controller
             return response()->json($result);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return $ex->getMessage();
         }
     }
@@ -113,16 +114,16 @@ class BaseProductController extends Controller
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect('auth/login')->with('fails', $ex->getMessage());
         }
     }
 
-
-    public function getRelease($owner,$repository)
+    public function getRelease($owner, $repository)
     {
-     if ($owner && $repository) {//If the Product is downloaded from Github
-        $github_controller = new \App\Http\Controllers\Github\GithubController();
-        $relese = $github_controller->listRepositories($owner, $repository, $order_id);
+        if ($owner && $repository) {//If the Product is downloaded from Github
+            $github_controller = new \App\Http\Controllers\Github\GithubController();
+            $relese = $github_controller->listRepositories($owner, $repository, $order_id);
 
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file) {
@@ -137,31 +138,31 @@ class BaseProductController extends Controller
 
     public function getReleaseAdmin($owner, $repository)
     {
-     if ($owner && $repository) {
-        $github_controller = new \App\Http\Controllers\Github\GithubController();
-        $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
+        if ($owner && $repository) {
+            $github_controller = new \App\Http\Controllers\Github\GithubController();
+            $relese = $github_controller->listRepositoriesAdmin($owner, $repository);
 
-        return ['release'=>$relese, 'type'=>'github'];
-            } elseif ($file->file) {
-        // $relese = storage_path().'\products'.'\\'.$file->file;
-        $relese = '/home/faveo/products/'.$file->file;
-        return $relese;
-            }
+            return ['release'=>$relese, 'type'=>'github'];
+        } elseif ($file->file) {
+            // $relese = storage_path().'\products'.'\\'.$file->file;
+            $relese = '/home/faveo/products/'.$file->file;
+
+            return $relese;
+        }
     }
 
-
-    public function getLinkToDownload($role,$invoice,$id)
+    public function getLinkToDownload($role, $invoice, $id)
     {
-	  if ($role == 'user') {
-        if ($invoice && $invoice != '') {
-            return $this->downloadProductAdmin($id);
-             } else {
-            throw new \Exception('This user has no permission for this action');
+        if ($role == 'user') {
+            if ($invoice && $invoice != '') {
+                return $this->downloadProductAdmin($id);
+            } else {
+                throw new \Exception('This user has no permission for this action');
+            }
         }
-       }
-       return $this->downloadProductAdmin($id);
-	 }
-     
+
+        return $this->downloadProductAdmin($id);
+    }
 
     public function downloadProductAdmin($id)
     {
@@ -175,17 +176,18 @@ class BaseProductController extends Controller
             ->first();
 
             if ($type == 2) {
-                $relese = $this->getReleaseAdmin($owner,$repository);
+                $relese = $this->getReleaseAdmin($owner, $repository);
+
                 return $relese;
             }
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
-
-     public function getPrice(Request $request)
+    public function getPrice(Request $request)
     {
         try {
             $id = $request->input('product');
@@ -202,11 +204,10 @@ class BaseProductController extends Controller
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             $result = ['price' => $ex->getMessage(), 'field' => ''];
+
             return response()->json($result);
         }
     }
-
-
 
     public function updateVersionFromGithub($productid)
     {
@@ -226,7 +227,6 @@ class BaseProductController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-    
 
     public static function checkMultiProduct($productid)
     {
@@ -239,32 +239,31 @@ class BaseProductController extends Controller
                     return true;
                 }
             }
+
             return false;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
         }
     }
-     
 
-	 public function getDescriptionField($productid)
-	    {
-	        try {
-	            $product = Product::find($productid);
-	            $field = '';
+    public function getDescriptionField($productid)
+    {
+        try {
+            $product = Product::find($productid);
+            $field = '';
 
-	            if ($product->retired == 1) {
-	                $field .= "<div class='col-md-4 form-group'>
+            if ($product->retired == 1) {
+                $field .= "<div class='col-md-4 form-group'>
 	                        <label class='required'>"./* @scrutinizer ignore-type */ \Lang::get('message.description')."</label>
 	                        <textarea name='description' class='form-control' id='description' placeholder='Description'></textarea>
 	                </div>";
-	            }
+            }
 
-	            return $field;
-	        } catch (\Exception $ex) {
-	            Bugsnag::notifyException($ex);
+            return $field;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
 
-	            return $ex->getMessage();
-	        }
-	    }
-
+            return $ex->getMessage();
+        }
+    }
 }

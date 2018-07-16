@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
 // use Illuminate\Http\Request;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
@@ -355,7 +354,6 @@ use App\Http\Controllers\Controller;
             }
         }
 
-
         /**
          * Show the form for editing the specified resource.
          *
@@ -419,7 +417,7 @@ use App\Http\Controllers\Controller;
     //                    'currency.*' => 'required',
     //                    'price.*' => 'required',
             ]);
- 
+
             if ($v->fails()) {
                 return redirect()->back()->with('errors', $v->errors());
             }
@@ -561,7 +559,7 @@ use App\Http\Controllers\Controller;
                             } else {
                                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */ \Lang::get('message.no-record').'
@@ -602,8 +600,6 @@ use App\Http\Controllers\Controller;
             }
         }
 
-       
-
         /*
         *  Download Files from Filesystem/Github
         */
@@ -618,23 +614,24 @@ use App\Http\Controllers\Controller;
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
                 if ($type == 2) {
+
                     $relese = $this->getRelease($owner,$repository,$order_id,$file);
+
                     return $relese;
                 }
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
 
-       
-      
         public function adminDownload($id, $invoice = '', $api = false)
         {
             try {
                 $role = \Auth::user()->role;
-                $release = $this->getLinkToDownload($role,$invoice,$id);
-             
+                $release = $this->getLinkToDownload($role, $invoice, $id);
+
                 if (is_array($release) && array_key_exists('type', $release)) {
                     header('Location: '.$release['release']);
                     exit;
@@ -651,11 +648,10 @@ use App\Http\Controllers\Controller;
                     return response()->json(['error'=>$e->getMessage()]);
                 }
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
-
-    
 
         public function getProductField($productid)
         {
@@ -678,9 +674,6 @@ use App\Http\Controllers\Controller;
                 return $ex->getMessage();
             }
         }
-
-       
-
 
         public function getSubscriptionCheckScript()
         {

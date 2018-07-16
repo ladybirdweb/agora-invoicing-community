@@ -346,9 +346,9 @@ class ClientController extends BaseClientController
             $user = \Auth::user();
 
             return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
-
-            } catch (Exception $ex) {
+        } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }

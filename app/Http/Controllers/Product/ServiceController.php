@@ -16,8 +16,8 @@ class ServiceController extends Controller
         $this->middleware('admin');
         $product = new Product();
         $this->product = $product;
-               $plan = new Plan();
-               $this->plan = $plan;
+        $plan = new Plan();
+        $this->plan = $plan;
         $service = new Service();
         $this->service = $service;
     }
@@ -135,20 +135,22 @@ class ServiceController extends Controller
                 } else {
                     echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './** @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
+
                     <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /** @scrutinizer ignore-type */\Lang::get('message.success').'
+
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
         } else {
             echo "<div class='alert alert-danger alert-dismissable'>
@@ -156,7 +158,7 @@ class ServiceController extends Controller
                     <b>".\Lang::get('message.alert').'!</b> '.
                     /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
             //echo \Lang::get('message.select-a-row');
         }

@@ -11,7 +11,7 @@ php:
 #   - composer self-update
 #   - composer install --prefer-source --no-interaction --dev
 
-# Commands you want to run that will verify your build.
+#Commands you want to run that will verify your build.
 # script: phpunit
 
 # after_script:

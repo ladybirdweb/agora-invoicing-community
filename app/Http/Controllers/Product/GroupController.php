@@ -77,7 +77,7 @@ class GroupController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -237,14 +237,15 @@ class GroupController extends Controller
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';

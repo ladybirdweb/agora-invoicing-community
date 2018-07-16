@@ -123,7 +123,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -138,7 +138,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
     public function store(ClientRequest $request)
     {
@@ -163,7 +163,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -237,7 +237,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -267,7 +267,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, ClientRequest $request)
     {
@@ -284,7 +284,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

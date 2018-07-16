@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Order\TaxRatesAndCodeExpiryController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;

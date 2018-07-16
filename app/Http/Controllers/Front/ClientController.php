@@ -343,7 +343,6 @@ class ClientController extends BaseClientController
             }
             $product = $order->product()->first();
             $price = $product->price()->first();
-            //dd($price);
             $user = \Auth::user();
 
             return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));

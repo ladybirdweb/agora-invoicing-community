@@ -614,8 +614,7 @@ namespace App\Http\Controllers\Product;
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
                 if ($type == 2) {
-
-                    $relese = $this->getRelease($owner,$repository,$order_id,$file);
+                    $relese = $this->getRelease($owner, $repository, $order_id, $file);
 
                     return $relese;
                 }

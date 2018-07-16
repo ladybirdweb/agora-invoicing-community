@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 
 class BaseTemplateController extends Controller
 {
-
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {
@@ -19,7 +17,7 @@ class BaseTemplateController extends Controller
             $result = $price;
             $controller = new \App\Http\Controllers\Front\GetPageTemplateController();
             $location = $controller->getLocation();
-          
+
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
@@ -43,8 +41,7 @@ class BaseTemplateController extends Controller
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
-        $result = $this->getResult($country,$geoip_country,$state,$geoip_state,$shop,$cart,$cart1, $shop1,$rate,$product,$price);
-          
+            $result = $this->getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -52,100 +49,103 @@ class BaseTemplateController extends Controller
         }
     }
 
-    public function getResult($country,$geoip_country,$state,$geoip_state,$shop,$cart,$cart1, $shop1,$rate,$product,$price)
+    public function getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price)
     {
-    	  if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
-            $result = $this->getCartResult($product,$shop,$cart,$rate,$price,$cart1,$shop1);
-           
-          }
-         return $result;
+        if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
+            $result = $this->getCartResult($product, $shop, $cart, $rate, $price, $cart1, $shop1);
+        }
+
+        return $result;
     }
 
-    public function getCartResult($product,$shop,$cart,$rate,$price,$cart1,$shop1)
+    public function getCartResult($product, $shop, $cart, $rate, $price, $cart1, $shop1)
     {
-        if ($product==1)
-        {
-            $result = $this->getTotalSub($shop,$cart,$rate,$price,$cart1,$shop1);
+        if ($product == 1) {
+            $result = $this->getTotalSub($shop, $cart, $rate, $price, $cart1, $shop1);
         }
-         
-        if ($product == 0){
-            $result= $this->getTotalCart($shop,$cart,$price,$cart1,$shop1,$shop);
+
+        if ($product == 0) {
+            $result = $this->getTotalCart($shop, $cart, $price, $cart1, $shop1, $shop);
         }
-            
-            return $result;
+
+        return $result;
     }
 
-    public function getTotalCart($shop,$cart,$rate,$price,$cart1,$shop1)
+    public function getTotalCart($shop, $cart, $rate, $price, $cart1, $shop1)
     {
         if ($shop == 0 && $cart == 0) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
-            }
-            if ($shop == 1 && $cart == 1) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1);
-            }
-            if ($shop == 1 && $cart == 0) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1);
-            }
-            if ($shop == 0 && $cart == 1) {
-                $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
-            }
-            return $result;
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
+        }
+        if ($shop == 1 && $cart == 1) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1);
+        }
+        if ($shop == 1 && $cart == 0) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1);
+        }
+        if ($shop == 0 && $cart == 1) {
+            $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
+        }
+
+        return $result;
     }
 
-
-    public function getTotalSub($shop,$cart,$rate,$price,$cart1,$shop1)
+    public function getTotalSub($shop, $cart, $rate, $price, $cart1, $shop1)
     {
         if ($shop == 1 && $cart == 1) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
-            }
-            if ($shop == 0 && $cart == 0) {
-                $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
-            }
-            if ($shop == 1 && $cart == 0) {
-                $result = $this->calculateSub($rate, $price, $cart1, $shop1 = 0);
-            }
-            if ($shop == 0 && $cart == 1) {
-                $result = $this->calculateSub($rate, $price, $cart1 = 0, $shop1);
-            }
-            return $result;
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
+        }
+        if ($shop == 0 && $cart == 0) {
+            $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
+        }
+        if ($shop == 1 && $cart == 0) {
+            $result = $this->calculateSub($rate, $price, $cart1, $shop1 = 0);
+        }
+        if ($shop == 0 && $cart == 1) {
+            $result = $this->calculateSub($rate, $price, $cart1 = 0, $shop1);
+        }
 
+        return $result;
     }
 
-     public function calculateTotalcart($rate, $price, $cart, $shop)
+    public function calculateTotalcart($rate, $price, $cart, $shop)
     {
         if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
             $tax_amount = $price * ($rate / 100);
             $total = $price + $tax_amount;
+
             return $total;
         }
-		 return $price;
+
+        return $price;
     }
 
-
-     public function calculateSub($rate, $price, $cart, $shop)
+    public function calculateSub($rate, $price, $cart, $shop)
     {
         if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
             $total = $price / (($rate / 100) + 1);
+
             return $total;
         }
+
         return $price;
     }
 
-    public function getPrice($price,$currency,$value,$cost)
+    public function getPrice($price, $currency, $value, $cost)
     {
-	 if ($currency == 'INR') {
-         $price[$value->id] = '₹'.' '.$cost;
+        if ($currency == 'INR') {
+            $price[$value->id] = '₹'.' '.$cost;
         } else {
-          $price[$value->id] = '$'.' '.$cost;
+            $price[$value->id] = '$'.' '.$cost;
         }
+
         return $price;
     }
 
-     public function prices($id)
+    public function prices($id)
     {
         $plan = new Plan();
         $plans = $plan->where('product', $id)->get();
-        $price = array();
+        $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
 
@@ -154,10 +154,9 @@ class BaseTemplateController extends Controller
 
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30 / 12);
-            $price = $this->getPrice($price,$currency,$value,$cost);
-           
+            $price = $this->getPrice($price, $currency, $value, $cost);
         }
-         $this->leastAmount($id);
+        $this->leastAmount($id);
 
         return $price;
     }
@@ -168,13 +167,14 @@ class BaseTemplateController extends Controller
             $product = $this->product->findOrFail($productid);
             $controller = new \App\Http\Controllers\Front\CartController();
             $price = $controller->cost($productid);
-             return $price;
+
+            return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function taxProcess($taxes, $price, $cart, $shop)
     {
@@ -189,6 +189,7 @@ class BaseTemplateController extends Controller
                 }
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
+
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -197,31 +198,31 @@ class BaseTemplateController extends Controller
         }
     }
 
-    public function getTaxAmount($cart,$taxes, $price, $cart1, $shop)
+    public function getTaxAmount($cart, $taxes, $price, $cart1, $shop)
     {
-	  if ($cart == 1) {
+        if ($cart == 1) {
             $tax_amount = $this->taxProcess($taxes, $price, $cart1, $shop);
         } else {
             $rate = '';
-             foreach ($taxes as $tax) {
+            foreach ($taxes as $tax) {
                 if ($tax->compound != 1) {
                     $rate += $tax->rate;
                 } else {
                     $rate = $tax->rate;
-                   $price = $this->calculateTotal($rate, $price);
+                    $price = $this->calculateTotal($rate, $price);
                 }
                 $tax_amount = $this->calculateTotal($rate, $price);
-          }
+            }
         }
+
         return $tax_amount;
     }
 
-
-
     public function calculateTotal($rate, $price)
     {
-	    $tax_amount = $price * ($rate / 100);
-	    $total = $price + $tax_amount;
-	    return $total;
+        $tax_amount = $price * ($rate / 100);
+        $total = $price + $tax_amount;
+
+        return $total;
     }
 }

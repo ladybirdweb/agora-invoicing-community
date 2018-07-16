@@ -35,7 +35,7 @@ class TaxOptionTest extends TestCase
      ]);
         $response->assertSessionHas('success');
     }
-    
+
     /** @group taxController */
     public function test_options_whenTaxClassIsCreated_whenTaxTypeIsGst()
     {

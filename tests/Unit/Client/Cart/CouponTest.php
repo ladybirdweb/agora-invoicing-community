@@ -4,6 +4,7 @@ namespace Tests\Unit\Client\Cart;
 
 use App\Model\Order\Invoice;
 use App\Model\Payment\PromoProductRelation;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use Tests\DBTestCase;
@@ -11,8 +12,7 @@ use Tests\DBTestCase;
 class CouponTest extends DBTestCase
 {
     use DatabaseTransactions;
-    use DatabaseTransactions;
-
+  
     /** @group coupon */
     public function test_addCouponUpdate_whenCouponProvided()
     {

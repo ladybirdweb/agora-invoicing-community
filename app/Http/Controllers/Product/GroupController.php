@@ -91,7 +91,7 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
     public function store(GroupRequest $request)
     {
@@ -123,7 +123,7 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -134,7 +134,7 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -156,7 +156,7 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, GroupRequest $request)
     {
@@ -212,7 +212,7 @@ class GroupController extends Controller
      * Remove the specified resource from storage.
      *
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

@@ -618,7 +618,7 @@ use App\Http\Controllers\Controller;
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
                 if ($type == 2) {
-                    $relese = $this->getRelease($owner,$repository);
+                    $relese = $this->getRelease($owner,$repository,$order_id,$file);
                     return $relese;
                 }
             } catch (\Exception $e) {

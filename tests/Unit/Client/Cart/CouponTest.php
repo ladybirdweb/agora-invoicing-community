@@ -4,7 +4,6 @@ namespace Tests\Unit\Client\Cart;
 
 use App\Model\Order\Invoice;
 use App\Model\Payment\PromoProductRelation;
-use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use Tests\DBTestCase;

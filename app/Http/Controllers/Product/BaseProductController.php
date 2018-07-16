@@ -119,10 +119,7 @@ class BaseProductController extends Controller
         }
     }
 
-
-
-    public function getRelease($owner,$repository,$order_id,$file)
-
+    public function getRelease($owner, $repository, $order_id, $file)
     {
         if ($owner && $repository) {//If the Product is downloaded from Github
             $github_controller = new \App\Http\Controllers\Github\GithubController();
@@ -139,7 +136,7 @@ class BaseProductController extends Controller
         }
     }
 
-    public function getReleaseAdmin($owner, $repository,$file)
+    public function getReleaseAdmin($owner, $repository, $file)
     {
         if ($owner && $repository) {
             $github_controller = new \App\Http\Controllers\Github\GithubController();
@@ -179,7 +176,7 @@ class BaseProductController extends Controller
             ->first();
 
             if ($type == 2) {
-    		$relese = $this->getReleaseAdmin($owner,$repository,$file);
+                $relese = $this->getReleaseAdmin($owner, $repository, $file);
 
                 return $relese;
             }

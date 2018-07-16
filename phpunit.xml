@@ -23,7 +23,7 @@
         </whitelist>
     </filter>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <env name="APP_ENV" value="tests"/>
         <env name="DB_DATABASE" value="db_testing"/>
         <env name="CACHE_DRIVER" value="array"/>
         <env name="SESSION_DRIVER" value="array"/>

@@ -555,13 +555,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 return $value;
             } else {
                 $product = $this->product->find($productid);
-                $plans = Plan::where('product',$product)->pluck('id')->first();
-                $price = PlanPrice::where('currency',$currency)->where('plan_id',$plans)->pluck('add_price')->first();
-                
+                $plans = Plan::where('product', $product)->pluck('id')->first();
+                $price = PlanPrice::where('currency', $currency)->where('plan_id', $plans)->pluck('add_price')->first();
+
                 return $price;
             }
         } catch (\Exception $ex) {
-             throw new \Exception(\Lang::get('message.check-code-error'));
+            throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
 

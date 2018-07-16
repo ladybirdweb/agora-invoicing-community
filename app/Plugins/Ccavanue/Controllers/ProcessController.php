@@ -154,7 +154,7 @@ class ProcessController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
                 } else {
-                    $control->/** @scrutinizer ignore-call */successRenew();
+                    $control->/* @scrutinizer ignore-call */successRenew();
                 }
                 \Cart::clear();
                 $status = 'success';

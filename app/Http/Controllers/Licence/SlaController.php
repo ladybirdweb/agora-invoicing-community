@@ -57,8 +57,6 @@ class SlaController extends Controller
         }
     }
 
-
-
     public function update($id, Request $request)
     {
         try {

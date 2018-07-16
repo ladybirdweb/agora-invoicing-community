@@ -51,44 +51,41 @@ class BaseTemplateController extends Controller
 
     public function getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price)
     {
+        if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
+            $result = $this->getCartResult($product, $shop, $cart, $rate, $price, $cart1, $shop1);
+        }
 
-    	  if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
-            $result = $this->getCartResult($product,$shop,$cart,$rate,$price,$cart1,$shop1);
-           
-          }
-         return $result;
+        return $result;
     }
 
-    public function getCartResult($product,$shop,$cart,$rate,$price,$cart1,$shop1)
+    public function getCartResult($product, $shop, $cart, $rate, $price, $cart1, $shop1)
     {
-         if ($product == 1 && $shop == 1 && $cart == 1) {
+        if ($product == 1 && $shop == 1 && $cart == 1) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
+        }
+        if ($product == 1 && $shop == 0 && $cart == 0) {
+            $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
+        }
+        if ($product == 1 && $shop == 1 && $cart == 0) {
+            $result = $this->calculateSub($rate, $price, $cart1, $shop1 = 0);
+        }
+        if ($product == 1 && $shop == 0 && $cart == 1) {
+            $result = $this->calculateSub($rate, $price, $cart1 = 0, $shop1);
+        }
+        if ($product == 0 && $shop == 0 && $cart == 0) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
+        }
+        if ($product == 0 && $shop == 1 && $cart == 1) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1);
+        }
+        if ($product == 0 && $shop == 1 && $cart == 0) {
+            $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1);
+        }
+        if ($product == 0 && $shop == 0 && $cart == 1) {
+            $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
+        }
 
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
-            }
-            if ($product == 1 && $shop == 0 && $cart == 0) {
-                $result = $this->calculateSub($rate, $price, $cart1 = 1, $shop1 = 1);
-            }
-            if ($product == 1 && $shop == 1 && $cart == 0) {
-                $result = $this->calculateSub($rate, $price, $cart1, $shop1 = 0);
-            }
-            if ($product == 1 && $shop == 0 && $cart == 1) {
-                $result = $this->calculateSub($rate, $price, $cart1 = 0, $shop1);
-            }
-            if ($product == 0 && $shop == 0 && $cart == 0) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1 = 0);
-            }
-            if ($product == 0 && $shop == 1 && $cart == 1) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1, $shop1);
-            }
-            if ($product == 0 && $shop == 1 && $cart == 0) {
-                $result = $this->calculateTotalcart($rate, $price, $cart1 = 0, $shop1);
-            }
-            if ($product == 0 && $shop == 0 && $cart == 1) {
-                $result = $this->calculateTotalcart($rate, $price, $cart = 1, $shop = 1);
-            }
-
-            return $result;
-
+        return $result;
     }
 
     public function calculateTotalcart($rate, $price, $cart, $shop)

@@ -16,7 +16,7 @@ before_script:
 
 
 #Commands you want to run that will verify your build.
-script: vendor/bin/phpunit
+script: phpunit
 
 # after_script:
 #   - wget https://scrutinizer-ci.com/ocular.phar

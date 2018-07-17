@@ -8,15 +8,17 @@ php:
 
 # Commands to be run before your environment runs.
 before_script:
-  - mysql -e 'create database db_testing;'
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
-  - php artisan migrate --database db_testing
+  - cp .env.travis .env
+- mysql -e 'create database db_testing;'
+- composer self-update
+- composer install --no-interaction
+- php artisan key:generate
+- php artisan migrate --seed
 
 
 
 #Commands you want to run that will verify your build.
-script: phpunit/phpunit
+script: vendor/bin/phpunit
 
 # after_script:
 #   - wget https://scrutinizer-ci.com/ocular.phar

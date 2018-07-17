@@ -288,11 +288,24 @@ class PageController extends GetPageTemplateController
         $data = $pages->content;
 
         $product = new \App\Model\Product\Product();
-        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
+        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')
+        ->orderBy('created_at','asc')
+        ->get()
+        ->toArray();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         $trasform = [];
         $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
-        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
+
+        $helpdesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk vps')
+         ->get()
+        ->toArray();
+        $trasform3 = [];
+        $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
+
+        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')
+        ->orderBy('created_at','asc')
+        ->get()
+        ->toArray();
         $trasform1 = [];
         $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
 
@@ -301,6 +314,6 @@ class PageController extends GetPageTemplateController
 
         $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
-        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
+        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2','helpdesk_vps_template','trasform3'));
     }
 }

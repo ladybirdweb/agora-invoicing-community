@@ -57,19 +57,17 @@ return [
             'engine'      => env('DB_ENGINE', null),
         ],
 
-        'mysql' => [
-            'driver'    => 'mysql',
-            'host'      => env('DB_HOST', '127.0.0.1'),
-            'port'      => env('DB_PORT', '3306'),
-            'database'  => env('DB_DATABASE', 'db_testing'),
-            'username'  => env('DB_USERNAME', 'root'),
-            'password'  => env('DB_PASSWORD', ''),
-            'charset'   => 'utf8',
-            'collation' => 'utf8_unicode_ci',
-            'prefix'    => '',
-            'strict'    => false,
-            'engine'    => null,
-        ],
+        'testing' => [
+        'driver' => 'mysql',
+        'host' => env('DB_TEST_HOST', 'localhost'),
+        'database' => env('DB_TEST_DATABASE', 'db_testing'),
+        'username' => env('DB_TEST_USERNAME', 'root'),
+        'password' => env('DB_TEST_PASSWORD', ''),
+        'charset' => 'utf8',
+        'collation' => 'utf8_unicode_ci',
+        'prefix' => '',
+        'strict' => false,
+    ],
 
         'pgsql' => [
             'driver'   => 'pgsql',

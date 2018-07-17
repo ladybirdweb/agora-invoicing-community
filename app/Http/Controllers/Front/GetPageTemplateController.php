@@ -18,7 +18,7 @@ class GetPageTemplateController extends Controller
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
                 $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-                $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
         } else {
@@ -26,6 +26,29 @@ class GetPageTemplateController extends Controller
         }
 
         return $template;
+    }
+
+
+     /**
+     * Get  Template For Helpdesk Products.
+     */
+    public function getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3)
+    {
+        $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+        if (count($helpdesk_vps_product) > 0) {
+            foreach ($helpdesk_vps_product as $key => $value) {
+                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform[$value['id']]['name'] = $value['name'];
+                $trasform[$value['id']]['feature'] = $value['description'];
+                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
+            }
+            $helpdeskVpstemplate = $this->transform('cart', $data, $trasform3);
+        } else {
+            $helpdeskVpstemplate = '';
+        }
+
+        return $helpdeskVpstemplate;
     }
 
     /**
@@ -41,7 +64,7 @@ class GetPageTemplateController extends Controller
                 $trasform1[$value['id']]['feature'] = $value['description'];
                 $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-                $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform1[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
             $servicedesk_template = $this->transform('cart', $data, $trasform1);
         } else {
@@ -64,7 +87,7 @@ class GetPageTemplateController extends Controller
                 $trasform2[$value['id']]['feature'] = $value['description'];
                 $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
 
-                $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
+                $trasform2[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
             $service_template = $this->transform('cart', $data, $trasform2);
         } else {

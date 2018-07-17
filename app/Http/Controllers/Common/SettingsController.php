@@ -11,6 +11,7 @@ use Bugsnag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
+use GrahamCampbell\Markdown\Facades\Markdown;
 
 class SettingsController extends BaseSettingsController
 {
@@ -179,6 +180,16 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+
+    public function settingsMail()
+    {
+        try {
+           return view('themes.default1.common.email-log');
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function getActivity()
     {
         try {
@@ -228,6 +239,58 @@ class SettingsController extends BaseSettingsController
                                 })
 
                             ->rawColumns(['checkbox', 'name', 'description',   'username', 'role', 'new', 'old', 'created_at'])
+                            ->make(true);
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+
+    public function getMails()
+    {
+        try {
+            $email_log = \DB::table('email_log')->get();
+
+            return\ DataTables::of($email_log)
+             ->addColumn('checkbox', function ($model) {
+                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+             })
+                           ->addColumn('date', function ($model) {
+                               return ucfirst($model->date);
+                           })
+                             ->addColumn('from', function ($model) {
+                                $from =  Markdown::convertToHtml(ucfirst($model->from));
+                                 return $from;
+                             })
+                              ->addColumn('to', function ($model) {
+                                  $to = Markdown::convertToHtml(ucfirst($model->to));
+                                   return $to;
+                             })
+                             ->addColumn('cc', function ($model) {
+                                 $cc ='--';
+                                 return $cc;
+                                
+                             })
+                         
+                               ->addColumn('subject', function ($model) {
+                                  return ucfirst($model->subject);
+                               
+                              })
+                               
+                              ->addColumn('headers', function ($model) {
+                                  $headers= Markdown::convertToHtml(ucfirst($model->headers));
+                                  return $headers;
+                               
+                              })
+                              ->addColumn('status', function ($model) {
+                                   return ucfirst($model->status);
+                               
+                              })
+                            
+
+                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc', 'bcc', 'subject', 'headers','status'])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

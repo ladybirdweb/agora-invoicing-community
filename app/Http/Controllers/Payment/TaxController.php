@@ -129,27 +129,6 @@ class TaxController extends Controller
                           ->make(true);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -174,9 +153,7 @@ class TaxController extends Controller
             }
             $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
 
-            //  $classes=($txClass->name== 'others')?1:($txClass->name== 'Intra State GST')?2:($txClass->name== 'Inter State GST')?3:($txClass->name== 'Union Territory GST')?4:[];
-            // dd($classes);
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
+             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();
@@ -357,8 +334,6 @@ class TaxController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.created-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -28,8 +28,7 @@ class GetPageTemplateController extends Controller
         return $template;
     }
 
-
-     /**
+    /**
      * Get  Template For Helpdesk Products.
      */
     public function getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3)

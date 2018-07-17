@@ -7,10 +7,10 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class PlanPrice extends Model
 {
-	use LogsActivity;
+    use LogsActivity;
     protected $table = 'plan_prices';
     protected $fillable = ['plan_id', 'currency', 'add_price', 'renew_price'];
-     protected static $logName = 'Plan Price';
+    protected static $logName = 'Plan Price';
     protected static $logAttributes = ['plan_id', 'currency', 'add_price', 'renew_price'];
     protected static $logOnlyDirty = true;
 

@@ -264,6 +264,7 @@ namespace App\Http\Controllers\Product;
                 $products = $this->product->pluck('name', 'id')->toArray();
                 $periods = $this->period->pluck('name', 'days')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
+
                 return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);

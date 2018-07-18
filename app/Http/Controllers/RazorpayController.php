@@ -75,19 +75,24 @@ class RazorpayController extends Controller
                 if ($control->checkRenew() === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
+
                     $view = $this->getViewMessageAfterPayment($invoice);
                     $status = $view['status'];
                     $message = $view['message'];
+
                     \Session::forget('items');
                 } else {
                     $control->successRenew($invoice);
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
+
                     $view = $this->getViewMessageAfterRenew($invoice);
                     $status = $view['status'];
                     $message = $view['message'];
                    
+
                 }
+
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 dd($ex);

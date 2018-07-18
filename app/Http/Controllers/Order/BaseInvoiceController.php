@@ -142,8 +142,6 @@ class BaseInvoiceController extends Controller
         return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
     }
 
-
-
     public function whenDateNotSet($start, $end)
     {
         //both not set, always true
@@ -206,8 +204,6 @@ class BaseInvoiceController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     public function setDomain($productid, $domain)
     {

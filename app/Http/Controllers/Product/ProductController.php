@@ -425,13 +425,12 @@ namespace App\Http\Controllers\Product;
                 $cost = $request->input('price');
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-            
+
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
                 if ($taxes) {
-                    $saveTax = $this->saveTax($taxes,$product_id);
-                    }
-                
+                    $saveTax = $this->saveTax($taxes, $product_id);
+                }
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
@@ -441,8 +440,9 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-        public function saveTax($taxes,$product_id)
+        public function saveTax($taxes, $product_id)
         {
+
         $this->tax_relation->where('product_id', $product_id)->delete();
         foreach ($taxes as $tax) {
             $newTax = new TaxProductRelation();
@@ -450,6 +450,7 @@ namespace App\Http\Controllers\Product;
             $newTax->tax_class_id = $tax;
             $newTax->save();
             return ;
+
             }
         }
 

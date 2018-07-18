@@ -213,6 +213,7 @@ namespace App\Http\Controllers\Product;
                     $this->product_upload->file = $file;
                 }
                 $this->product_upload->save();
+
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
@@ -287,7 +288,7 @@ namespace App\Http\Controllers\Product;
                         // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
-          if ($v->fails()) {
+            if ($v->fails()) {
                 //     $currency = $input['currency'];
 
                 return redirect()->back()
@@ -317,7 +318,7 @@ namespace App\Http\Controllers\Product;
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
                 $taxes = $request->input('tax');
-                 if ($taxes) {
+                if ($taxes) {
                     foreach ($taxes as $key=>$value) {
                         $newtax = new TaxProductRelation();
                         $newtax->product_id = $product_id;
@@ -450,6 +451,7 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -482,7 +484,7 @@ namespace App\Http\Controllers\Product;
                             }
                             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */
                     \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
@@ -500,10 +502,10 @@ namespace App\Http\Controllers\Product;
                 } else {
                     echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                     //echo \Lang::get('message.select-a-row');
                 }

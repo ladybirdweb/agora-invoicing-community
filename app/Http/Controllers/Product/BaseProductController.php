@@ -25,20 +25,19 @@ class BaseProductController extends Controller
         return $server;
     }
 
-
-        /**
-         * Remove the specified resource from storage.
-         *
-         * @param int $id
-         *
-         * @return Response
-         */
-   public function fileDestroy(Request $request)
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function fileDestroy(Request $request)
     {
         $ids = $request->input('select');
         if (!empty($ids)) {
             foreach ($ids as $id) {
-                  $product = ProductUpload::where('id', $id)->first();
+                $product = ProductUpload::where('id', $id)->first();
                 if ($product) {
                     $product->delete();
                 } else {

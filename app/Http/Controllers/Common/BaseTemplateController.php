@@ -22,7 +22,6 @@ class BaseTemplateController extends Controller
         return 'success';
     }
 
-
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {
@@ -58,9 +57,11 @@ class BaseTemplateController extends Controller
                 }
             }
             $result = $this->getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price);
+
             return $result;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -123,7 +124,6 @@ class BaseTemplateController extends Controller
         return $result;
     }
 
-   
     public function getPrice($price, $currency, $value, $cost)
     {
         if ($currency == 'INR') {
@@ -186,6 +186,7 @@ class BaseTemplateController extends Controller
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

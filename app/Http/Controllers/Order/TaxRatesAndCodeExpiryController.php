@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
+use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
-use App\Model\Order\Order;
-use App\Model\Order\Invoice;
 use App\User;
 use Bugsnag;
 
@@ -314,13 +314,10 @@ class TaxRatesAndCodeExpiryController extends Controller
         return $mail;
     }
 
-    
     public function invoiceUrl($invoiceid)
     {
         $url = url('my-invoice/'.$invoiceid);
 
         return $url;
     }
-
-
 }

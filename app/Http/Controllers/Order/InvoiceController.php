@@ -701,6 +701,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $tax_value = '0%';
             }
         }
+
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
@@ -998,7 +999,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'

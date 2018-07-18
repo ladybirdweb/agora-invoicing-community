@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Payment\TaxProductRelation;
 use App\Model\Payment\Tax;
+use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use Bugsnag;
 
@@ -50,7 +49,6 @@ class ExtendedBaseTemplateController extends Controller
         }
     }
 
-
     public function calculateTotalcart($rate, $price, $cart, $shop)
     {
         if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
@@ -92,6 +90,7 @@ class ExtendedBaseTemplateController extends Controller
             $tax_amount = $this->getTaxAmount($cart, $taxes, $price, $cart1, $shop);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

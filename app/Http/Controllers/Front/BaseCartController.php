@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;

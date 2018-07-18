@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
-use App\Model\Order\Payment;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\Model\Payment\Promotion;
@@ -275,6 +275,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
+
     public function getPromotionDetails($code)
     {
         $promo = Prmotion::where('code', $code)->first();
@@ -303,5 +304,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         return $promo;
     }
+
 
 }

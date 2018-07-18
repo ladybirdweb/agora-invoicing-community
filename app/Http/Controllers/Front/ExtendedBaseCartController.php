@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Product\Product;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
+use App\Model\Product\Product;
 use Cart;
 use Session;
 use Bugsnag;
 
 class ExtendedBaseCartController extends Controller
 {
-     /**
+    /**
      * @return type
      */
     public function addCouponUpdate()
@@ -39,7 +38,7 @@ class ExtendedBaseCartController extends Controller
         }
     }
 
-        /**
+    /**
      * @return type
      */
     public function clearCart()
@@ -57,7 +56,7 @@ class ExtendedBaseCartController extends Controller
         return redirect('show/cart');
     }
 
-     /**
+    /**
      * @throws \Exception
      */
     public function removePlanSession()
@@ -71,7 +70,7 @@ class ExtendedBaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      * @throws \Exception
      *
      * @return bool
@@ -89,7 +88,7 @@ class ExtendedBaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      * @param type $iso
      *
      * @throws \Exception
@@ -112,9 +111,6 @@ class ExtendedBaseCartController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
-
-     
 
     /**
      * @param type $productid
@@ -192,7 +188,4 @@ class ExtendedBaseCartController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
-
-
 }

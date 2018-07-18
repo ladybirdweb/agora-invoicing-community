@@ -222,7 +222,6 @@ class BaseInvoiceController extends Controller
         }
     }
 
-
     public function pdf(Request $request)
     {
         try {
@@ -281,7 +280,4 @@ class BaseInvoiceController extends Controller
             Bugsnag::notifyException($ex);
         }
     }
-
-
-
 }

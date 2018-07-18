@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use Bugsnag;
 use Config;
@@ -206,6 +205,4 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
         return $total;
     }
-
-
 }

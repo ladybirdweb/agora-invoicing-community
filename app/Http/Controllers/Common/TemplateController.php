@@ -92,7 +92,7 @@ class TemplateController extends BaseTemplateController
             $email = $fields->email;
             $password = $fields->password;
             $name = $fields->company;
-    }
+        }
 
         return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
@@ -309,7 +309,6 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-
     public function checkPriceWithTaxClass($productid, $currency)
     {
         try {
@@ -331,8 +330,6 @@ class TemplateController extends BaseTemplateController
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 
     public function plans($url, $id)
     {
@@ -411,6 +408,4 @@ class TemplateController extends BaseTemplateController
 
         return $price;
     }
-
-
 }

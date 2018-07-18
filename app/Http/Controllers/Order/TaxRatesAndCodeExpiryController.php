@@ -2,21 +2,18 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Payment;
 use App\Model\Order\Order;
 use App\Model\Payment\Tax;
-use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
-
-     /**
+    /**
      * Get tax when enabled.
      */
     public function getTaxWhenEnable($productid, $taxs, $userid)
@@ -112,7 +109,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function getPrice($price, $price_model)
     {

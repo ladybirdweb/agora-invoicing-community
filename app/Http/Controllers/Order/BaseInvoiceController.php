@@ -2,20 +2,17 @@
 
 namespace App\Http\Controllers\Order;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
-use App\Model\Order\Invoice;
-use App\Model\Order\Order;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
-use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
+use Illuminate\Http\Request;
 
 class BaseInvoiceController extends Controller
 {
-        /**
+    /**
      *Tax When state is not empty.
      */
     public function getTaxWhenState($user_state, $productid, $origin_state)
@@ -56,8 +53,7 @@ class BaseInvoiceController extends Controller
         return ['taxes'=>$taxes, 'value'=>$value];
     }
 
-
-        /**
+    /**
      *Tax When from other Country.
      */
     public function getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid)
@@ -86,7 +82,6 @@ class BaseInvoiceController extends Controller
 
         return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
     }
-
 
     public function getExpiryStatus($start, $end, $now)
     {
@@ -171,6 +166,7 @@ class BaseInvoiceController extends Controller
         }
     }
 
+
     public function pdf(Request $request)
     {
         try {
@@ -229,6 +225,7 @@ class BaseInvoiceController extends Controller
             Bugsnag::notifyException($ex);
         }
     }
+
 
 
 }

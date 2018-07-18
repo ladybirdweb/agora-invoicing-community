@@ -12,80 +12,10 @@ use App\Model\Payment\TaxOption;
 use App\User;
 use Bugsnag;
 
-class TaxRatesAndCodeExpiryController extends Controller
+class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 {
-    /**
-     *Tax When state is not empty.
-     */
-    public function getTaxWhenState($user_state, $productid, $origin_state)
-    {
-        $cartController = new CartController();
-        $c_gst = $user_state->c_gst;
-        $s_gst = $user_state->s_gst;
-        $i_gst = $user_state->i_gst;
-        $ut_gst = $user_state->ut_gst;
-        $state_code = $user_state->state_code;
-        if ($state_code == $origin_state) {//If user and origin state are same
-             $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
-               if ($taxClassId) {
-                   $taxes = $cartController->getTaxByPriority($taxClassId);
-                   $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
-               } else {
-                   $taxes = [0];
-               }
-        } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
 
-            $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
-            if ($taxClassId) {
-                $taxes = $cartController->getTaxByPriority($taxClassId);
-                $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
-            } else {
-                $taxes = [0];
-            }
-        } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
-        $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
-         if ($taxClassId) {
-             $taxes = $cartController->getTaxByPriority($taxClassId);
-             $value = $cartController->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
-         } else {
-             $taxes = [0];
-         }
-        }
-
-        return ['taxes'=>$taxes, 'value'=>$value];
-    }
-
-    /**
-     *Tax When from other Country.
-     */
-    public function getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid)
-    {
-        $cartController = new CartController();
-        $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
-        $value = '';
-        $rate = '';
-        if ($taxClassId) { //if state equals the user State
-
-            $taxes = $cartController->getTaxByPriority($taxClassId);
-
-            // $taxes = $this->cartController::getTaxByPriority($taxClassId);
-            $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
-            $rate = $value;
-        } else {//if Tax is selected for Any State Any Country
-            $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
-            if ($taxClassId) {
-                $taxes = $cartController->getTaxByPriority($taxClassId);
-                $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
-                $rate = $value;
-            } else {
-                $taxes = [0];
-            }
-        }
-
-        return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
-    }
-
-    /**
+     /**
      * Get tax when enabled.
      */
     public function getTaxWhenEnable($productid, $taxs, $userid)
@@ -182,45 +112,6 @@ class TaxRatesAndCodeExpiryController extends Controller
         }
     }
 
-    public function whenDateNotSet($start, $end)
-    {
-        //both not set, always true
-        if (($start == null || $start == '0000-00-00 00:00:00') &&
-         ($end == null || $end == '0000-00-00 00:00:00')) {
-            return 'success';
-        }
-    }
-
-    public function whenStartDateSet($start, $end, $now)
-    {
-        //only starting date set, check the date is less or equel to today
-        if (($start != null || $start != '0000-00-00 00:00:00')
-         && ($end == null || $end == '0000-00-00 00:00:00')) {
-            if ($start <= $now) {
-                return 'success';
-            }
-        }
-    }
-
-    public function whenEndDateSet($start, $end, $now)
-    {
-        //only ending date set, check the date is greater or equel to today
-        if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
-            if ($end >= $now) {
-                return 'success';
-            }
-        }
-    }
-
-    public function whenBothSet($start, $end, $now)
-    {
-        //both set
-        if (($end != null || $start != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
-            if ($end >= $now && $start <= $now) {
-                return 'success';
-            }
-        }
-    }
 
     public function getPrice($price, $price_model)
     {

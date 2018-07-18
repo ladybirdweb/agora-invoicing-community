@@ -4,17 +4,16 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
+use App\Model\Order\Invoice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
-use App\Model\Order\Invoice;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseInvoiceController extends Controller
 {
-
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
         $qty = 1;
@@ -68,6 +67,7 @@ class BaseInvoiceController extends Controller
 
         return response()->json(compact('result'));
     }
+
     /**
      *Tax When state is not empty.
      */

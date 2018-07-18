@@ -4,11 +4,9 @@ namespace App\Http\Controllers\Common;
 
 use App\Model\Payment\Plan;
 use Bugsnag;
-use Config;
 
 class BaseTemplateController extends ExtendedBaseTemplateController
 {
-   
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {

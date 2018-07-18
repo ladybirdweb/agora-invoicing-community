@@ -6,10 +6,10 @@ use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Payment\Currency;
+use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
-use App\Model\Payment\Promotion;
-use App\Model\Payment\Currency;
 use App\User;
 use Bugsnag;
 
@@ -74,9 +74,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         return $result;
     }
-
-
-  
 
     public function currency($invoiceid)
     {
@@ -275,7 +272,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-
     public function getPromotionDetails($code)
     {
         $promo = Prmotion::where('code', $code)->first();
@@ -304,6 +300,4 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         return $promo;
     }
-
-
 }

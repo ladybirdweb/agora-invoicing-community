@@ -155,8 +155,8 @@ class CartController extends BaseCartController
     public function checkTax($productid)
     {
         try {
-            $tax_condition = array();
-            $tax_attribute = array();
+            $tax_condition = [];
+            $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -369,10 +369,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
-   
-
     /**
      * @param type $price
      *
@@ -545,7 +541,6 @@ class CartController extends BaseCartController
         }
     }
 
-   
     /**
      * @param type $productid
      * @param type $userid
@@ -644,7 +639,6 @@ class CartController extends BaseCartController
         }
     }
 
-   
     /**
      * @throws \Exception
      *

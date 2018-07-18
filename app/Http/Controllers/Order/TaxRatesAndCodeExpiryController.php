@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
-use App\Model\Order\Payment;
 use App\Model\Order\Order;
+use App\Model\Order\Payment;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
 use App\User;
@@ -233,7 +233,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-      public function deleleById($id)
+    public function deleleById($id)
     {
         try {
             $invoice = Invoice::find($id);
@@ -250,5 +250,4 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
 }

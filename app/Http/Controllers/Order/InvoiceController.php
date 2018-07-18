@@ -705,8 +705,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
-    
-
     /**
      * Remove the specified resource from storage.
      *
@@ -760,8 +758,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 </div>';
         }
     }
-
-
 
     public function updateInvoice($invoiceid)
     {
@@ -939,9 +935,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 </div>';
         }
     }
-
-
-  
 
     public function currency($invoiceid)
     {

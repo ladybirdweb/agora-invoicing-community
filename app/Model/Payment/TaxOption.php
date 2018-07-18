@@ -4,18 +4,15 @@ namespace App\Model\Payment;
 
 use App\BaseModel;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\Activitylog\Models\Activity;
 
 class TaxOption extends BaseModel
 {
     use LogsActivity;
     protected $table = 'tax_rules';
-     protected $fillable = ['tax_enable', 'inclusive', 'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no'];
+    protected $fillable = ['tax_enable', 'inclusive', 'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no'];
     protected static $logName = 'Tax Class';
     protected static $logAttributes = ['tax_enable', 'inclusive', 'shop_inclusive', 'cart_inclusive', 'rounding', 'Gst_no'];
     protected static $logOnlyDirty = true;
-   
-
 
     public function getDescriptionForEvent(string $eventName): string
     {

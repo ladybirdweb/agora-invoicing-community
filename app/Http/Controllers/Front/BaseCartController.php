@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Front;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
@@ -10,21 +9,23 @@ use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
 use Exception;
+use Illuminate\Http\Request;
 use Session;
 
 class BaseCartController extends Controller
 {
-	public function getCartCollection($items)
-	{
-    if ($items == null) {
-    $cartCollection = Cart::getContent();
-    } else {
-        $cartCollection = $items;
-    }
-    return $cartCollection;
-	}
+    public function getCartCollection($items)
+    {
+        if ($items == null) {
+            $cartCollection = Cart::getContent();
+        } else {
+            $cartCollection = $items;
+        }
 
-	/**
+        return $cartCollection;
+    }
+
+    /**
      * @param type $tax_class_id
      *
      * @throws \Exception
@@ -44,7 +45,7 @@ class BaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      *   Get tax value for Same State.
      *
      * @param type $productid
@@ -69,7 +70,7 @@ class BaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      *   Get tax value for Other States.
      *
      * @param type $productid
@@ -85,7 +86,7 @@ class BaseCartController extends Controller
 
         return $value;
     }
-     
+
     /**
      *  Get tax value for Union Territory States.
      *
@@ -103,7 +104,6 @@ class BaseCartController extends Controller
         return $value;
     }
 
-
     public function getValueForOthers($productid, $taxClassId, $taxes)
     {
         $otherRate = 0;
@@ -116,7 +116,7 @@ class BaseCartController extends Controller
 
         return $value;
     }
-    
+
     /**
      * @param type $id
      *
@@ -140,7 +140,7 @@ class BaseCartController extends Controller
         }
     }
 
-        /**
+    /**
      * @param Request $request
      *
      * @return type
@@ -169,6 +169,7 @@ class BaseCartController extends Controller
 
             $subject = 'Faveo billing enquiry';
             $this->templateController->mailing($from, $to, $data, $subject, [], $fromname, $toname);
+
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -243,7 +244,7 @@ class BaseCartController extends Controller
         }
     }
 
-        /**
+    /**
      * @param type $userid
      *
      * @throws \Exception
@@ -273,13 +274,14 @@ class BaseCartController extends Controller
                     $currency = 'INR';
                 }
             }
+
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
-        /**
+    /**
      * @param type $productid
      *
      * @throws \Exception
@@ -321,7 +323,7 @@ class BaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      * @param type $iso
      *
      * @throws \Exception
@@ -342,7 +344,7 @@ class BaseCartController extends Controller
         }
     }
 
-     /**
+    /**
      * @param type $iso
      *
      * @throws \Exception
@@ -359,6 +361,4 @@ class BaseCartController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 }

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
@@ -16,7 +15,6 @@ use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
-use Exception;
 use Illuminate\Http\Request;
 use Session;
 
@@ -79,14 +77,15 @@ class CartController extends BaseCartController
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
         $currency = $cont->getCurrency($location);
-       
+
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
-           }
+        }
 
         try {
             $page_controller = new PageController();
+
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -110,7 +109,7 @@ class CartController extends BaseCartController
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-             return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -149,15 +148,15 @@ class CartController extends BaseCartController
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
-          return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function checkTax($productid)
     {
         try {
-            $tax_condition = array();
-            $tax_attribute = array();
+            $tax_condition = [];
+            $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -167,7 +166,7 @@ class CartController extends BaseCartController
             ]);
             $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
             $location = $cont->getLocation();
-           
+
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
@@ -361,14 +360,16 @@ class CartController extends BaseCartController
             }
 
             $currency_attribute = $this->addCurrencyAttributes($productid);
-         return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
+
+            return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception('Can not check the tax');
         }
     }
 
-     /**
+    /**
      * @return type
      */
     public function clearCart()
@@ -385,8 +386,6 @@ class CartController extends BaseCartController
 
         return redirect('show/cart');
     }
-
-
 
     /**
      * @return type
@@ -414,7 +413,6 @@ class CartController extends BaseCartController
         }
     }
 
-    
     /**
      * @param type $price
      *
@@ -437,7 +435,7 @@ class CartController extends BaseCartController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-      }
+        }
     }
 
     /**
@@ -451,9 +449,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
-   
 
     /**
      * @param type $code
@@ -473,7 +468,6 @@ class CartController extends BaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     /**
      * @param type $name
@@ -590,8 +584,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     /**
      * @param type $iso
@@ -764,6 +756,4 @@ class CartController extends BaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 }

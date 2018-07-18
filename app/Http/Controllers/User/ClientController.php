@@ -217,11 +217,11 @@ class ClientController extends AdvanceSearchController
     public function getTotalInvoice($invoices)
     {
         $sum = 0;
-            foreach ($invoices as $invoice) {
-                $sum = $sum + $invoice->grand_total;
-            }
+        foreach ($invoices as $invoice) {
+            $sum = $sum + $invoice->grand_total;
+        }
 
-            return $sum;
+        return $sum;
     }
 
     /**
@@ -307,12 +307,12 @@ class ClientController extends AdvanceSearchController
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ 
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
-            }
+        }
     }
 
     public function getUsers(Request $request)

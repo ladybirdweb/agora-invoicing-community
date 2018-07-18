@@ -70,7 +70,7 @@ class PromotionController extends BasePromotionController
                         })
                         ->addColumn('products', function ($model) {
                             $selected = $this->promoRelation->select('product_id')->where('promotion_id', $model->id)->get();
-                            $result = array(); 
+                            $result = [];
                             foreach ($selected as $key => $select) {
                                 $result[$key] = $this->product->where('id', $select->product_id)->first()->name;
                             }

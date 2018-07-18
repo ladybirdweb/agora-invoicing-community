@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -93,11 +92,6 @@ class RenewController extends BaseRenewController
 
     //Tuesday, June 13, 2017 08:06 AM
 
-    
-
-
-
-
     public function getProductById($id)
     {
         try {
@@ -121,8 +115,6 @@ class RenewController extends BaseRenewController
             throw new Exception($ex->getMessage());
         }
     }
-
-
 
     public function createOrderInvoiceRelation($orderid, $invoiceid)
     {
@@ -235,9 +227,6 @@ class RenewController extends BaseRenewController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
- 
-    
 
     public function renewByClient($id, Request $request)
     {

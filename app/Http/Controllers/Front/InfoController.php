@@ -39,8 +39,6 @@ class InfoController extends Controller
         return $date;
     }
 
-   
-
     public function payment($payment_method, $status)
     {
         if (!$payment_method) {

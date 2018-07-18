@@ -199,7 +199,7 @@ class CheckoutController extends InfoController
         $paynow = false;
         if ($request->input('invoice_id')) {
             $paynow = true;
-            }
+        }
         $cost = $request->input('cost');
         $state = $this->getState();
 

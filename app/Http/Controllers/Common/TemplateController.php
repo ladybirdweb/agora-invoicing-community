@@ -17,7 +17,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Config;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -97,8 +96,6 @@ class TemplateController extends BaseTemplateController
         return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
-   
-
     public function index()
     {
         try {
@@ -174,6 +171,7 @@ class TemplateController extends BaseTemplateController
             $cartUrl = $url.'/'.$i;
             $template = $this->template->where('id', $id)->first();
             $type = $this->type->pluck('name', 'id')->toArray();
+
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -198,6 +196,7 @@ class TemplateController extends BaseTemplateController
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -329,6 +328,7 @@ class TemplateController extends BaseTemplateController
                         </div>';
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -346,6 +346,7 @@ class TemplateController extends BaseTemplateController
                     $price = $product->price()->where('currency', $currency)->first()->price;
                 }
             }
+
             return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -372,6 +373,7 @@ class TemplateController extends BaseTemplateController
             $tax_amount = $this->getTaxAmount($cart, $taxes, $price, $cart1, $shop);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

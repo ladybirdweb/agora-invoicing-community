@@ -95,7 +95,7 @@ class RazorpayController extends Controller
                     \Cart::clear();
                     $status = 'success';
                     $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','order',
-                        'product','invoiceItem'))->render();
+                        'product', 'invoiceItem'))->render();
                     \Session::forget('items');
                 } else {
                     $control->successRenew($invoice);
@@ -114,9 +114,10 @@ class RazorpayController extends Controller
                     \Cart::clear();
                     $status = 'success';
 
-                    $message =view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
-                        'product','invoiceItem'))->render(); 
+                    $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
+                        'product', 'invoiceItem'))->render();
                 }
+
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());

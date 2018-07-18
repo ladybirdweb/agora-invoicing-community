@@ -64,7 +64,8 @@ class RazorpayController extends Controller
                 $error = 'Razorpay Error : '.$e->getMessage();
             }
         }
-        $state = $this->getState(\Auth::user()->state);
+        $stateCode = \Auth::user()->state;
+        $state = $this->getState($stateCode);
         $invoice = Invoice::where('id', $invoice)->first();
 
         if ($success === true) {

@@ -194,7 +194,7 @@ class BundleController extends Controller
      * Remove the specified resource from storage.
      *
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

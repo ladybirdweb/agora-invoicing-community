@@ -10,6 +10,7 @@ use App\Model\Product\Product;
 use App\Model\Payment\Plan;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
+use Exception;
 
 class BaseRenewController extends Controller
 {

@@ -238,7 +238,7 @@ class BaseInvoiceController extends Controller
     {
         try {
             if ($code != '') {
-                $promotion =Promotin::where('code', $code)->first();
+                $promotion =Promotion::where('code', $code)->first();
                 $start = $promotion->start;
                 $end = $promotion->expiry;
                 $now = \Carbon\Carbon::now();
@@ -252,39 +252,5 @@ class BaseInvoiceController extends Controller
         }
     }
 
-    public function findCostAfterDiscount($promoid, $productid, $currency)
-    {
-        try {
-            $promotion = Promotion::findOrFail($promoid);
-            $product = Product::findOrFail($productid);
-            $promotion_type = $promotion->type;
-            $promotion_value = $promotion->value;
-            $planId = Plan::where('product', $productid)->pluck('id')->first();
-            // dd($planId);
-            $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
-            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
-
-            return $updated_price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.find-discount-error'));
-        }
-    }
-
-    public function findCost($type, $value, $price, $productid)
-    {
-        switch ($type) {
-                case 1:
-                    $percentage = $price * ($value / 100);
-
-                     return $price - $percentage;
-                case 2:
-                    return $price - $value;
-                case 3:
-                    return $value;
-                case 4:
-                    return 0;
-            }
-    }
+ 
 }

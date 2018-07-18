@@ -120,38 +120,14 @@ class MailChimpController extends Controller
             $user = new User();
             $user = $user->where('email', $email)->first();
             if ($user) {
+                $fields = ['first_name','last_name','company','mobile','address','town','state','zip','active','role'];
                 $relation = $this->relation;
-                $merge_fields = [];
-                if ($relation->first_name) {
-                    //dd($user->first_name);
-                    $merge_fields[$relation->first_name] = $user->first_name;
-                }
-                if ($relation->last_name) {
-                    $merge_fields[$relation->last_name] = $user->last_name;
-                }
-                if ($relation->company) {
-                    $merge_fields[$relation->company] = $user->company;
-                }
-                if ($relation->mobile) {
-                    $merge_fields[$relation->mobile] = $user->mobile;
-                }
-                if ($relation->address) {
-                    $merge_fields[$relation->address] = $user->address;
-                }
-                if ($relation->town) {
-                    $merge_fields[$relation->town] = $user->town;
-                }
-                if ($relation->state) {
-                    $merge_fields[$relation->state] = $user->state;
-                }
-                if ($relation->zip) {
-                    $merge_fields[$relation->zip] = $user->zip;
-                }
-                if ($relation->active) {
-                    $merge_fields[$relation->active] = $user->active;
-                }
-                if ($relation->role) {
-                    $merge_fields[$relation->role] = $user->role;
+                $merge_fields = array();
+                foreach ($fields as $field) {
+                    if($relation->$field){
+                    $merge_fields[$relation->field] = $user->field;
+
+                    }
                 }
 
                 return $merge_fields;

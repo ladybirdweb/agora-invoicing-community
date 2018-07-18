@@ -91,7 +91,7 @@ class PromotionController extends BasePromotionController
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -172,7 +172,7 @@ class PromotionController extends BasePromotionController
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -214,7 +214,8 @@ class PromotionController extends BasePromotionController
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';

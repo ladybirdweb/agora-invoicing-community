@@ -171,5 +171,64 @@ class BaseInvoiceController extends Controller
         }
     }
 
+    public function pdf(Request $request)
+    {
+        try {
+            $id = $request->input('invoiceid');
+            if (!$id) {
+                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
+            }
+            $invoice = $this->invoice->where('id', $id)->first();
+            if (!$invoice) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
+            if ($invoiceItems->count() == 0) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $user = $this->user->find($invoice->user_id);
+            if (!$user) {
+                return redirect()->back()->with('fails', 'No User');
+            }
+            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+
+            return $pdf->download($user->first_name.'-invoice.pdf');
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function setDomain($productid, $domain)
+    {
+        try {
+            if (\Session::has('domain'.$productid)) {
+                \Session::forget('domain'.$productid);
+            }
+            \Session::put('domain'.$productid, $domain);
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function domain($id)
+    {
+        try {
+            if (\Session::has('domain'.$id)) {
+                $domain = \Session::get('domain'.$id);
+            } else {
+                $domain = '';
+            }
+
+            return $domain;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+        }
+    }
+
 
 }

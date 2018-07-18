@@ -705,35 +705,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
-    public function pdf(Request $request)
-    {
-        try {
-            $id = $request->input('invoiceid');
-            if (!$id) {
-                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-            }
-            $invoice = $this->invoice->where('id', $id)->first();
-            if (!$invoice) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-            if ($invoiceItems->count() == 0) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $user = $this->user->find($invoice->user_id);
-            if (!$user) {
-                return redirect()->back()->with('fails', 'No User');
-            }
-            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
-            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
-
-            return $pdf->download($user->first_name.'-invoice.pdf');
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+    
 
     /**
      * Remove the specified resource from storage.
@@ -789,34 +761,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function setDomain($productid, $domain)
-    {
-        try {
-            if (\Session::has('domain'.$productid)) {
-                \Session::forget('domain'.$productid);
-            }
-            \Session::put('domain'.$productid, $domain);
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    public function domain($id)
-    {
-        try {
-            if (\Session::has('domain'.$id)) {
-                $domain = \Session::get('domain'.$id);
-            } else {
-                $domain = '';
-            }
-
-            return $domain;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-        }
-    }
 
     public function updateInvoice($invoiceid)
     {
@@ -997,50 +942,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function deleleById($id)
-    {
-        try {
-            $invoice = $this->invoice->find($id);
-            if ($invoice) {
-                $invoice->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    public function paymentDeleleById($id)
-    {
-        try {
-            $invoice_no = '';
-            $payment = $this->payment->find($id);
-            if ($payment) {
-                $invoice_id = $payment->invoice_id;
-                $invoice = $this->invoice->find($invoice_id);
-                if ($invoice) {
-                    $invoice_no = $invoice->number;
-                }
-                $payment->delete();
-            } else {
-                return redirect()->back()->with('fails', 'Can not delete');
-            }
-
-            return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    
-
+  
     public function currency($invoiceid)
     {
         $invoice = $this->invoice->find($invoiceid);

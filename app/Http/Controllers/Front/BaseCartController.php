@@ -12,7 +12,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Session;
 
-class BaseCartController extends Controller
+class BaseCartController extends ExtendedBaseCartController
 {
     public function getCartCollection($items)
     {

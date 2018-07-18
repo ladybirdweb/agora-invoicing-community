@@ -7,7 +7,7 @@ use App\Model\Payment\Plan;
 use Bugsnag;
 use Config;
 
-class BaseTemplateController extends Controller
+class BaseTemplateController extends ExtendedBaseTemplateController
 {
     public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
     {
@@ -218,4 +218,6 @@ class BaseTemplateController extends Controller
 
         return $total;
     }
+
+
 }

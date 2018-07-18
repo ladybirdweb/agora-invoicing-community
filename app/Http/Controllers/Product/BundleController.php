@@ -124,7 +124,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -185,7 +185,7 @@ class BundleController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

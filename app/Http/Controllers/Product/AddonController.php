@@ -145,7 +145,7 @@ class AddonController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, AddonRequest $request)
     {
@@ -180,7 +180,7 @@ class AddonController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

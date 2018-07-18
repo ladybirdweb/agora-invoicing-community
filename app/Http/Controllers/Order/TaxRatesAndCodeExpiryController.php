@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
+use App\Model\Order\Payment;
 use App\Model\Order\Order;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
@@ -211,4 +212,47 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
         return $url;
     }
+
+    public function paymentDeleleById($id)
+    {
+        try {
+            $invoice_no = '';
+            $payment = Payment::find($id);
+            if ($payment) {
+                $invoice_id = $payment->invoice_id;
+                $invoice = Invoice::find($invoice_id);
+                if ($invoice) {
+                    $invoice_no = $invoice->number;
+                }
+                $payment->delete();
+            } else {
+                return redirect()->back()->with('fails', 'Can not delete');
+            }
+
+            return redirect()->back()->with('success', "Payment for invoice no: $invoice_no has Deleted Successfully");
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+      public function deleleById($id)
+    {
+        try {
+            $invoice = Invoice::find($id);
+            if ($invoice) {
+                $invoice->delete();
+            } else {
+                return redirect()->back()->with('fails', 'Can not delete');
+            }
+
+            return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
 }

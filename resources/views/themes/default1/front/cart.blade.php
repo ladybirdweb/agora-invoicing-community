@@ -184,28 +184,7 @@ if (count($attributes) > 0) {
                                 </div>
                             </div>
                        
-                        <?php $addons = \App\Http\Controllers\Front\CartController::addons();
-              
-                        ?>
-                        @if(count($addons)>0)
-                        <li>
-
-
-                            @foreach($addons as $addon)
-                            <div class="col-md-3">
-                                <div class="featured-box featured-box-primary">
-                                    <div class="box-content">
-                                        <span><img width="50" height="50" alt="" class="img-responsive" src="{{$addon->image}}"></span>
-                                        <span>{{ucfirst($addon->name)}}</span>
-                                        <span><a href="{{$addon->shoping_cart_link}}" class="btn btn-small btn-primary">Buy</a></span>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-
-                        </li>
-                        @endif
-                    
+                       
                 </div>
 
                 <div class="col-md-4">

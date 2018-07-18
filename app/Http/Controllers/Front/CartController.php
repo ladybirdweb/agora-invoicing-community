@@ -155,8 +155,8 @@ class CartController extends BaseCartController
     public function checkTax($productid)
     {
         try {
-            $tax_condition = [];
-            $tax_attribute = [];
+            $tax_condition = array();
+            $tax_attribute = array();
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -167,12 +167,12 @@ class CartController extends BaseCartController
             $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
             $location = $cont->getLocation();
 
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $country = $this->findCountryByGeoip($location['countryCode']);
+            $states = $this->findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['countryCode'].'-'.$location['region'];
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+            $state = $this->getStateByCode($state_code);
+            $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
             $country_iso = $location['countryCode'];
             $geoip_country = '';
             $geoip_state = '';
@@ -369,49 +369,9 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @return type
-     */
-    public function clearCart()
-    {
-        foreach (Cart::getContent() as $item) {
-            if (\Session::has('domain'.$item->id)) {
-                \Session::forget('domain'.$item->id);
-            }
-        }
-        $this->removePlanSession();
-        $renew_control = new \App\Http\Controllers\Order\RenewController();
-        $renew_control->removeSession();
-        Cart::clear();
 
-        return redirect('show/cart');
-    }
 
-    /**
-     * @return type
-     */
-    public function addCouponUpdate()
-    {
-        try {
-            $code = \Input::get('coupon');
-            $cart = Cart::getContent();
-            $id = '';
-            foreach ($cart as $item) {
-                $id = $item->id;
-            }
-            $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
-            $result = $promo_controller->checkCode($code, $id);
-            if ($result == 'success') {
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            }
-
-            return redirect()->back();
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+   
 
     /**
      * @param type $price
@@ -585,30 +545,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @param type $iso
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getMobileCodeByIso($iso)
-    {
-        try {
-            $code = '';
-            if ($iso != '') {
-                $mobile = \DB::table('mobile')->where('iso', $iso)->first();
-                if ($mobile) {
-                    $code = $mobile->phonecode;
-                }
-            }
-
-            return $code;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
+   
     /**
      * @param type $productid
      * @param type $userid
@@ -707,38 +644,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function removePlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                Session::forget('plan');
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkPlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
+   
     /**
      * @throws \Exception
      *

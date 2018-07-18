@@ -6,9 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
+use Bugsnag;
 use Cart;
 use Session;
-use Bugsnag;
 
 class ExtendedBaseCartController extends Controller
 {

@@ -201,7 +201,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
     /*
     *Edit Invoice Total.
     */
@@ -449,8 +448,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
     }
 
-   
-
     public function checkCode($code, $productid, $currency)
     {
         try {
@@ -491,8 +488,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
-
- 
 
     public function checkExpiry($code = '')
     {
@@ -836,7 +831,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 </div>';
         }
     }
-
-
-
 }

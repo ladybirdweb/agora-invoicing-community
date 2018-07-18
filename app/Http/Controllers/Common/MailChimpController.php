@@ -124,14 +124,12 @@ class MailChimpController extends Controller
                 $relation = $this->relation;
                 $merge_fields = [];
                 foreach ($fields as $field) {
-
-                    if($relation->$field){
-                    $merge_fields[$relation->$field] = $user->$field;
-
-
+                    if ($relation->$field) {
+                        $merge_fields[$relation->$field] = $user->$field;
                     }
                 }
-                 return $merge_fields;
+
+                return $merge_fields;
             } else {
                 return redirect()->back()->with('fails', 'user not found');
             }

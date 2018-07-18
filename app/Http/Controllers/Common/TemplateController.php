@@ -106,10 +106,9 @@ class TemplateController extends BaseTemplateController
         Config::set('mail.from', ['address' => $email, 'name' => $name]);
         Config::set('mail.port', intval($port));
         Config::set('mail.host', $host);
-        
+
         return 'success';
     }
-
 
     public function index()
     {

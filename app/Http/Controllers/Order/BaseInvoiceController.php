@@ -139,25 +139,7 @@ class BaseInvoiceController extends Controller
         return ['taxes'=>$taxes, 'value'=>$value, 'rate'=>$rate];
     }
 
-    public function getExpiryStatus($start, $end, $now)
-    {
-        $whenDateNotSet = $this->whenDateNotSet($start, $end);
-        if ($whenDateNotSet) {
-            return $whenDateNotSet;
-        }
-        $whenStartDateSet = $this->whenStartDateSet($start, $end, $now);
-        if ($whenStartDateSet) {
-            return $whenStartDateSet;
-        }
-        $whenEndDateSet = $this->whenEndDateSet($start, $end, $now);
-        if ($whenEndDateSet) {
-            return $whenEndDateSet;
-        }
-        $whenBothAreSet = $this->whenBothSet($start, $end, $now);
-        if ($whenBothAreSet) {
-            return $whenBothAreSet;
-        }
-    }
+
 
     public function whenDateNotSet($start, $end)
     {
@@ -222,35 +204,7 @@ class BaseInvoiceController extends Controller
         }
     }
 
-    public function pdf(Request $request)
-    {
-        try {
-            $id = $request->input('invoiceid');
-            if (!$id) {
-                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-            }
-            $invoice = $this->invoice->where('id', $id)->first();
-            if (!$invoice) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-            if ($invoiceItems->count() == 0) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $user = $this->user->find($invoice->user_id);
-            if (!$user) {
-                return redirect()->back()->with('fails', 'No User');
-            }
-            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
-            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
 
-            return $pdf->download($user->first_name.'-invoice.pdf');
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function setDomain($productid, $domain)
     {

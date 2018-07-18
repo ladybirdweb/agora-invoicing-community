@@ -30,7 +30,7 @@ class BaseProductController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function fileDestroy(Request $request)
     {

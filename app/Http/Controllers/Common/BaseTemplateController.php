@@ -69,7 +69,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         }
 
         if ($product == 0) {
-            $result = $this->getTotalCart($shop, $cart, $price, $cart1, $shop1);
+            $result = $this->getTotalCart($shop, $cart,$rate, $price, $cart1, $shop1);
         }
 
         return $result;

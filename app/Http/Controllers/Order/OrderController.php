@@ -284,7 +284,8 @@ class OrderController extends BaseOrderController
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
@@ -391,26 +392,19 @@ class OrderController extends BaseOrderController
             $join = $join->where('ends_at', 'LIKE', '%'.$expiry.'%');
         }
         if ($from) {
+           
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
-            if ($till) {
-                $todate = date_create($till);
-                $tills = date_format($todate, 'Y-m-d H:m:i');
-            }
-
-            $join = $join->whereBetween('orders.created_at', [$from, $tills]);
+             $tillDate = $this->getTillDate($from,$till,$tills);
+            $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
         }
         if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = $this->order->first()->created_at;
-            if ($from) {
-                $fromdate = date_create($from);
-                $froms = date_format($fromdate, 'Y-m-d H:m:i');
-            }
-
-            $join = $join->whereBetween('orders.created_at', [$froms, $till]);
+            $fromDate = $this->getFromDate($from,$froms);
+            $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);
         }
         if ($domain) {
             if (str_finish($domain, '/')) {
@@ -422,6 +416,25 @@ class OrderController extends BaseOrderController
         $join = $join->select('orders.id', 'orders.created_at', 'client', 'price_override', 'order_status', 'number', 'serial_key');
 
         return $join;
+    }
+
+    public function getTillDate($from,$till,$tills)
+    {
+         if ($till) 
+         {
+            $todate = date_create($till);
+            $tills = date_format($todate, 'Y-m-d H:m:i');
+         }
+         return $tills;
+    }
+
+    public function getFromDate($from,$froms)
+    {
+     if ($from) {
+            $fromdate = date_create($from);
+            $froms = date_format($fromdate, 'Y-m-d H:m:i');
+        }
+        return $froms;
     }
 
     public function plan($invoice_item_id)

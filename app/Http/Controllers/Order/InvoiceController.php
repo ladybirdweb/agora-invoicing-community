@@ -635,25 +635,25 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './** @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
@@ -716,6 +716,56 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function pdf(Request $request)
+    {
+        try {
+            $id = $request->input('invoiceid');
+            if (!$id) {
+                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
+            }
+            $invoice = $this->invoice->where('id', $id)->first();
+            if (!$invoice) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
+            if ($invoiceItems->count() == 0) {
+                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
+            }
+            $user = $this->user->find($invoice->user_id);
+            if (!$user) {
+                return redirect()->back()->with('fails', 'No User');
+            }
+            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+            // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
+
+            return $pdf->download($user->first_name.'-invoice.pdf');
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getExpiryStatus($start, $end, $now)
+    {
+        $whenDateNotSet = $this->whenDateNotSet($start, $end);
+        if ($whenDateNotSet) {
+            return $whenDateNotSet;
+        }
+        $whenStartDateSet = $this->whenStartDateSet($start, $end, $now);
+        if ($whenStartDateSet) {
+            return $whenStartDateSet;
+        }
+        $whenEndDateSet = $this->whenEndDateSet($start, $end, $now);
+        if ($whenEndDateSet) {
+            return $whenEndDateSet;
+        }
+        $whenBothAreSet = $this->whenBothSet($start, $end, $now);
+        if ($whenBothAreSet) {
+            return $whenBothAreSet;
         }
     }
 

@@ -245,7 +245,7 @@ namespace App\Http\Controllers\Product;
         /**
          * Show the form for creating a new resource.
          *
-         * @return Response
+         * @return \Response
          */
         public function create()
         {
@@ -275,7 +275,7 @@ namespace App\Http\Controllers\Product;
         /**
          * Store a newly created resource in storage.
          *
-         * @return Response
+         * @return \Response
          */
         public function store(Request $request)
         {
@@ -340,7 +340,7 @@ namespace App\Http\Controllers\Product;
          *
          * @param int $id
          *
-         * @return Response
+         * @return \Response
          */
         public function edit($id)
         {
@@ -384,7 +384,7 @@ namespace App\Http\Controllers\Product;
          *
          * @param int $id
          *
-         * @return Response
+         * @return \Response
          */
         public function update($id, Request $request)
         {
@@ -425,28 +425,13 @@ namespace App\Http\Controllers\Product;
                 $cost = $request->input('price');
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-                $prices = $this->price->where('product_id', $product->id)->get();
-
-                if (count($currencies) > 0) {
-                    foreach ($prices as $price) {
-                        $price->delete();
-                    }
-
-                    foreach ($currencies as $key => $currency) {
-                        $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'price' => $cost[$key], 'sales_price' => $sales_price[$key]]);
-                    }
-                }
+            
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
                 if ($taxes) {
-                    $this->tax_relation->where('product_id', $product_id)->delete();
-                    foreach ($taxes as $tax) {
-                        $newTax = new TaxProductRelation();
-                        $newTax->product_id = $product_id;
-                        $newTax->tax_class_id = $tax;
-                        $newTax->save();
+                    $saveTax = $this->saveTax($taxes,$product_id);
                     }
-                }
+                
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
@@ -456,12 +441,23 @@ namespace App\Http\Controllers\Product;
             }
         }
 
+        public function saveTax($taxes,$product_id)
+        {
+        $this->tax_relation->where('product_id', $product_id)->delete();
+        foreach ($taxes as $tax) {
+            $newTax = new TaxProductRelation();
+            $newTax->product_id = $product_id;
+            $newTax->tax_class_id = $tax;
+            $newTax->save();
+            }
+        }
+
         /**
          * Remove the specified resource from storage.
          *
          * @param int $id
          *
-         * @return Response
+         * @return \Response
          */
         public function destroy(Request $request)
         {

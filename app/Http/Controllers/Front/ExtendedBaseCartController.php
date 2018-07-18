@@ -5,12 +5,9 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
 use App\Model\Payment\Tax;
-use App\Model\Payment\TaxByState;
 use App\Model\Payment\TaxClass;
-use App\Model\Payment\TaxOption;
-use App\Model\Payment\TaxProductRelation;
+use App\Model\Product\Product;
 use Bugsnag;
 use Cart;
 use Session;
@@ -196,76 +193,78 @@ class ExtendedBaseCartController extends Controller
 
     public function getGeoipCountry($country_iso)
     {
-    $geoip_country = '';
-    if (\Auth::user()) {
-    $geoip_country = \Auth::user()->country;
-      }
-   if ($geoip_country == '') {
-        $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
-    }
-    return $geoip_country;
+        $geoip_country = '';
+        if (\Auth::user()) {
+            $geoip_country = \Auth::user()->country;
+        }
+        if ($geoip_country == '') {
+            $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
+        }
+
+        return $geoip_country;
     }
 
     public function getGeoipState($state_code)
     {
-     $geoip_state = '';
-     $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-      if (\Auth::user()) {
-        $geoip_state = \Auth::user()->state;
+        $geoip_state = '';
+        $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+        if (\Auth::user()) {
+            $geoip_state = \Auth::user()->state;
         }
         if ($geoip_state == '') {
             if (array_key_exists('id', $geoip_state_array)) {
                 $geoip_state = $geoip_state_array['id'];
             }
         }
+
         return $geoip_state;
     }
-    
-    /**
-    * When from same Indian State
-    */
-    public function getTaxWhenIndianSameState($user_state,$origin_state,$productid,$c_gst,$s_gst,$state_code,$status)
-    {
-           $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
-           if ($taxClassId) {
-               $taxes = $this->getTaxByPriority($taxClassId);
-               $value = $this->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
-
-               if ($value == '') {
-                   $status = 0;
-               }
-           } else {
-               $taxes = [0];
-               $value ='';  
-           }
-       
-       return ['taxes'=>$taxes,'status'=>$status,'value'=>$value];
-    }
-    
 
     /**
-    * When from other Indian State
-    */
-    public function getTaxWhenIndianOtherState($user_state,$origin_state,$productid,$i_gst,$state_code,$status)
+     * When from same Indian State.
+     */
+    public function getTaxWhenIndianSameState($user_state, $origin_state, $productid, $c_gst, $s_gst, $state_code, $status)
     {
-       $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
-       if ($taxClassId) {
-           $taxes = $this->getTaxByPriority($taxClassId);
-           $value = $this->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
-           if ($value == '') {
-               $status = 0;
-           }
-       } else {
-           $taxes = [0];
-           $value ='';  
-       }
-       return ['taxes'=>$taxes,'status'=>$status,'value'=>$value];
+        $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
+        if ($taxClassId) {
+            $taxes = $this->getTaxByPriority($taxClassId);
+            $value = $this->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
+
+            if ($value == '') {
+                $status = 0;
+            }
+        } else {
+            $taxes = [0];
+            $value = '';
+        }
+
+        return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
     }
 
-     /**
-    * When from Union Territory
-    */
-    public function getTaxWhenUnionTerritory($user_state,$origin_state,$productid,$c_gst, $ut_gst,$state_code,$status)
+    /**
+     * When from other Indian State.
+     */
+    public function getTaxWhenIndianOtherState($user_state, $origin_state, $productid, $i_gst, $state_code, $status)
+    {
+        $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
+        if ($taxClassId) {
+            $taxes = $this->getTaxByPriority($taxClassId);
+            $value = $this->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
+            if ($value == '') {
+                $status = 0;
+            }
+        } else {
+            $taxes = [0];
+            $value = '';
+        }
+
+        return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
+    }
+
+    /**
+     * When from Union Territory.
+     */
+    public function getTaxWhenUnionTerritory($user_state, $origin_state, $productid, $c_gst, $ut_gst, $state_code, $status)
     {
         $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
@@ -276,37 +275,40 @@ class ExtendedBaseCartController extends Controller
             }
         } else {
             $taxes = [0];
-             $value ='';  
+            $value = '';
         }
-         return ['taxes'=>$taxes,'status'=>$status,'value'=>$value];
+
+        return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
     }
 
-     /**
-    * When from Other Country and tax is applied for that country or state
-    */
-     public function getTaxForSpecificCountry($taxClassId,$productid,$status)
-     {
-       $taxes = $this->getTaxByPriority($taxClassId);
-       $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
-       if ($value == '') {
-           $status = 0;
-       }
-       $rate = $value;
-       return ['taxes'=>$taxes , 'status'=>$status,'value'=>$value,'rate'=>$value];
-     }
+    /**
+     * When from Other Country and tax is applied for that country or state.
+     */
+    public function getTaxForSpecificCountry($taxClassId, $productid, $status)
+    {
+        $taxes = $this->getTaxByPriority($taxClassId);
+        $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+        if ($value == '') {
+            $status = 0;
+        }
+        $rate = $value;
 
-      /**
-    * When from Other Country and tax is applied for Any country and state
-    */
-     public function getTaxForAnyCountry($taxClassId,$productid,$status)
-     {
-       $taxForAnyCountry = $this->getTaxForAnyCountry($taxClassId,$productid,$status);
-       $taxes = $this->getTaxByPriority($taxClassId);
-       $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
-       if ($value == '') {
-           $status = 0;
-       }
-       $rate = $value;
-       return ['taxes'=>$taxes , 'status'=>$status,'value'=>$value,'rate'=>$value];
-     }
+        return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value, 'rate'=>$value];
+    }
+
+    /**
+     * When from Other Country and tax is applied for Any country and state.
+     */
+    public function getTaxForAnyCountry($taxClassId, $productid, $status)
+    {
+        $taxForAnyCountry = $this->getTaxForAnyCountry($taxClassId, $productid, $status);
+        $taxes = $this->getTaxByPriority($taxClassId);
+        $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
+        if ($value == '') {
+            $status = 0;
+        }
+        $rate = $value;
+
+        return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value, 'rate'=>$value];
+    }
 }

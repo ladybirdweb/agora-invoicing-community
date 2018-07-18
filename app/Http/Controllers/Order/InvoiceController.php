@@ -412,8 +412,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
-
     public function checkCode($code, $productid, $currency)
     {
         try {
@@ -454,8 +452,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             throw new \Exception(\Lang::get('message.check-code-error'));
         }
     }
-
- 
 
     public function checkTax($productid, $userid)
     {
@@ -587,7 +583,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Order;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 use Bugsnag;
 use Crypt;
+use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
 {
-        public function advanceSearch($order_no = '', $product_id = '', $expiry = '', $from = '', $till = '', $domain = '')
+    public function advanceSearch($order_no = '', $product_id = '', $expiry = '', $from = '', $till = '', $domain = '')
     {
         $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
         if ($order_no) {
@@ -23,18 +23,17 @@ class ExtendedOrderController extends Controller
             $join = $join->where('ends_at', 'LIKE', '%'.$expiry.'%');
         }
         if ($from) {
-           
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
-             $tillDate = $this->getTillDate($from,$till,$tills);
+            $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
         }
         if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Order::first()->created_at;
-            $fromDate = $this->getFromDate($from,$froms);
+            $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);
         }
         if ($domain) {
@@ -49,26 +48,27 @@ class ExtendedOrderController extends Controller
         return $join;
     }
 
-    public function getTillDate($from,$till,$tills)
+    public function getTillDate($from, $till, $tills)
     {
-         if ($till) 
-         {
+        if ($till) {
             $todate = date_create($till);
             $tills = date_format($todate, 'Y-m-d H:m:i');
-         }
-         return $tills;
+        }
+
+        return $tills;
     }
 
-    public function getFromDate($from,$froms)
+    public function getFromDate($from, $froms)
     {
-     if ($from) {
+        if ($from) {
             $fromdate = date_create($from);
             $froms = date_format($fromdate, 'Y-m-d H:m:i');
         }
+
         return $froms;
     }
 
-        /**
+    /**
      * Create orders.
      *
      * @param Request $request
@@ -92,7 +92,7 @@ class ExtendedOrderController extends Controller
         }
     }
 
-     /**
+    /**
      * generating serial key if product type is downloadable.
      *
      * @param type $product_type
@@ -108,7 +108,8 @@ class ExtendedOrderController extends Controller
                 $str = str_random(16);
                 $str = strtoupper($str);
                 $str = Crypt::encrypt($str);
-                 return $str;
+
+                return $str;
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -134,7 +135,4 @@ class ExtendedOrderController extends Controller
         $order->domain = $domain;
         $order->save();
     }
-
-
-
 }

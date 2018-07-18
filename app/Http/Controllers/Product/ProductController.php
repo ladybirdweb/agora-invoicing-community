@@ -442,15 +442,14 @@ namespace App\Http\Controllers\Product;
 
         public function saveTax($taxes, $product_id)
         {
+            $this->tax_relation->where('product_id', $product_id)->delete();
+            foreach ($taxes as $tax) {
+                $newTax = new TaxProductRelation();
+                $newTax->product_id = $product_id;
+                $newTax->tax_class_id = $tax;
+                $newTax->save();
 
-        $this->tax_relation->where('product_id', $product_id)->delete();
-        foreach ($taxes as $tax) {
-            $newTax = new TaxProductRelation();
-            $newTax->product_id = $product_id;
-            $newTax->tax_class_id = $tax;
-            $newTax->save();
-            return ;
-
+                return;
             }
         }
 

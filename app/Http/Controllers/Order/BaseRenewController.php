@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Order;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Model\Product\Subscription;
-use App\Model\Order\Order;
-use App\Model\Product\Product;
-use App\Model\Payment\Plan;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
+
 use Exception;
+
 
 class BaseRenewController extends Controller
 {
@@ -49,10 +46,9 @@ class BaseRenewController extends Controller
 
             return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '');
         } catch (Exception $ex) {
-          throw new Exception($ex->getMessage());
+            throw new Exception($ex->getMessage());
         }
     }
-    
 
     public function getProductByName($name)
     {
@@ -66,7 +62,7 @@ class BaseRenewController extends Controller
         }
     }
 
-   public function getCost(Request $request)
+    public function getCost(Request $request)
     {
         try {
             $planid = $request->input('plan');
@@ -90,7 +86,6 @@ class BaseRenewController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '')
     {

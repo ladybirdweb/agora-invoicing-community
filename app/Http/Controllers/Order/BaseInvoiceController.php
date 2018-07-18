@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
@@ -238,8 +237,7 @@ class BaseInvoiceController extends Controller
     {
         try {
             if ($code != '') {
-
-                $promotion =Promotion::where('code', $code)->first();
+                $promotion = Promotion::where('code', $code)->first();
 
                 $start = $promotion->start;
                 $end = $promotion->expiry;
@@ -253,6 +251,4 @@ class BaseInvoiceController extends Controller
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }
-
- 
 }

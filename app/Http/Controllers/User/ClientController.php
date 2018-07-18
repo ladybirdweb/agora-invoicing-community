@@ -216,20 +216,12 @@ class ClientController extends AdvanceSearchController
      */
     public function getTotalInvoice($invoices)
     {
-        try {
-            $sum = 0;
+        $sum = 0;
             foreach ($invoices as $invoice) {
                 $sum = $sum + $invoice->grand_total;
             }
 
             return $sum;
-        } catch (\Exception $e) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($e->getMessage());
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
     }
 
     /**
@@ -315,13 +307,12 @@ class ClientController extends AdvanceSearchController
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ 
+                    \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
-            //echo \Lang::get('message.select-a-row');
-        }
+            }
     }
 
     public function getUsers(Request $request)

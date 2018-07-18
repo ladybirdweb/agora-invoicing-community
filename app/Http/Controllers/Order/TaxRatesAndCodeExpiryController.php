@@ -7,6 +7,9 @@ use App\Http\Controllers\Front\CartController;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
+use App\Model\Order\Order;
+use App\Model\Order\Invoice;
+use App\User;
 use Bugsnag;
 
 class TaxRatesAndCodeExpiryController extends Controller
@@ -163,10 +166,10 @@ class TaxRatesAndCodeExpiryController extends Controller
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
             if ($rule->inclusive == 0) {
-                foreach ($rates as $rate) {
-                    if ($rate != '') {
-                        $rate = str_replace('%', '', $rate);
-                        $total += $total * ($rate / 100);
+                foreach ($rates as $rate1) {
+                    if ($rate1 != '') {
+                        $rateTotal = str_replace('%', '', $rate1);
+                        $total += $total * ($rateTotal / 100);
                     }
                 }
             }
@@ -218,4 +221,106 @@ class TaxRatesAndCodeExpiryController extends Controller
             }
         }
     }
+
+    public function getPrice($price, $price_model)
+    {
+        if ($price == '') {
+            $price = $price_model->sales_price;
+            if (!$price) {
+                $price = $price_model->price;
+            }
+        }
+
+        return $price;
+    }
+
+    public function checkExecution($invoiceid)
+    {
+        try {
+            $response = false;
+            $invoice = Invoice::find($invoiceid);
+            // dd($invoice);
+            $order = Order::where('invoice_id', $invoiceid);
+            // dd($order);
+            $order_invoice_relation = $invoice->orderRelation()->first();
+            if ($order_invoice_relation) {
+                $response = true;
+            } elseif ($order->get()->count() > 0) {
+                $response = true;
+            }
+
+            return $response;
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
+    public function invoiceContent($invoiceid)
+    {
+        $invoice = $this->invoice->find($invoiceid);
+        $items = $invoice->invoiceItem()->get();
+        $content = '';
+        if ($items->count() > 0) {
+            foreach ($items as $item) {
+                $content .= '<tr>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$invoice->number.'</td>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$item->product_name.'</td>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$this->currency($invoiceid).' '.$item->subtotal.'</td>'.
+                        '</tr>';
+            }
+        }
+
+        return $content;
+    }
+
+    public function sendInvoiceMail($userid, $number, $total, $invoiceid)
+    {
+
+        //user
+        $users = new User();
+        $user = $users->find($userid);
+        //check in the settings
+        $settings = new \App\Model\Common\Setting();
+        $setting = $settings->where('id', 1)->first();
+        $invoiceurl = $this->invoiceUrl($invoiceid);
+        //template
+        $templates = new \App\Model\Common\Template();
+        $temp_id = $setting->invoice;
+        $template = $templates->where('id', $temp_id)->first();
+        $from = $setting->email;
+        $to = $user->email;
+        $subject = $template->name;
+        $data = $template->data;
+        $replace = [
+            'name'       => $user->first_name.' '.$user->last_name,
+            'number'     => $number,
+            'address'    => $user->address,
+            'invoiceurl' => $invoiceurl,
+            'content'    => $this->invoiceContent($invoiceid),
+            'currency'   => $this->currency($invoiceid),
+        ];
+        $type = '';
+        if ($template) {
+            $type_id = $template->type;
+            $temp_type = new \App\Model\Common\TemplateType();
+            $type = $temp_type->where('id', $type_id)->first()->name;
+        }
+        //dd($type);
+        $templateController = new \App\Http\Controllers\Common\TemplateController();
+        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
+
+        return $mail;
+    }
+
+    
+    public function invoiceUrl($invoiceid)
+    {
+        $url = url('my-invoice/'.$invoiceid);
+
+        return $url;
+    }
+
+
 }

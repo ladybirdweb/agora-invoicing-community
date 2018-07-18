@@ -101,7 +101,7 @@ class AddonController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -123,7 +123,7 @@ class AddonController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -204,7 +204,8 @@ class AddonController extends Controller
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';

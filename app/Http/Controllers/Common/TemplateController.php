@@ -97,18 +97,7 @@ class TemplateController extends BaseTemplateController
         return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
 
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
-    {
-        Config::set('mail.driver', $driver);
-        Config::set('mail.password', $password);
-        Config::set('mail.username', $email);
-        Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => $name]);
-        Config::set('mail.port', intval($port));
-        Config::set('mail.host', $host);
-
-        return 'success';
-    }
+   
 
     public function index()
     {
@@ -165,7 +154,6 @@ class TemplateController extends BaseTemplateController
         ]);
 
         try {
-            //dd($request);
             $this->template->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
@@ -184,10 +172,8 @@ class TemplateController extends BaseTemplateController
 
             $i = $this->template->orderBy('created_at', 'desc')->first()->id + 1;
             $cartUrl = $url.'/'.$i;
-            //dd($cartUrl);
             $template = $this->template->where('id', $id)->first();
             $type = $this->type->pluck('name', 'id')->toArray();
-
             return view('themes.default1.common.template.edit', compact('type', 'template', 'cartUrl'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -212,7 +198,6 @@ class TemplateController extends BaseTemplateController
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -344,7 +329,6 @@ class TemplateController extends BaseTemplateController
                         </div>';
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -362,7 +346,6 @@ class TemplateController extends BaseTemplateController
                     $price = $product->price()->where('currency', $currency)->first()->price;
                 }
             }
-            // dd($price);
             return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -389,7 +372,6 @@ class TemplateController extends BaseTemplateController
             $tax_amount = $this->getTaxAmount($cart, $taxes, $price, $cart1, $shop);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -471,6 +453,29 @@ class TemplateController extends BaseTemplateController
             $price = "$symbol $price";
         } else {
             $price = $cart_controller->productCost($id);
+        }
+
+        return $price;
+    }
+
+    public function calculateTotalcart($rate, $price, $cart, $shop)
+    {
+        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
+            $tax_amount = $price * ($rate / 100);
+            $total = $price + $tax_amount;
+
+            return $total;
+        }
+
+        return $price;
+    }
+
+    public function calculateSub($rate, $price, $cart, $shop)
+    {
+        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
+            $total = $price / (($rate / 100) + 1);
+
+            return $total;
         }
 
         return $price;

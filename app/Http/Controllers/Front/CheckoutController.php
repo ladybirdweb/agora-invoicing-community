@@ -196,10 +196,11 @@ class CheckoutController extends InfoController
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
-        $invoiceId = $request->input('invoice_id');
-        $paynow = $this->getPaynow($invoiceId);
+        $paynow = false;
+        if ($request->input('invoice_id')) {
+            $paynow = true;
+            }
         $cost = $request->input('cost');
-
         $state = $this->getState();
 
         try {
@@ -210,8 +211,6 @@ class CheckoutController extends InfoController
                 $invoice = $invoice_controller->generateInvoice();
 
                 $pay = $this->payment($payment_method, $status = 'pending');
-                // $pay = $this->payment($payment_method,$status='pending');
-
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
                 $invoice_no = $invoice->number;

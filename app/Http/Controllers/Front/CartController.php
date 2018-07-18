@@ -20,7 +20,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Session;
 
-class CartController extends Controller
+class CartController extends BaseCartController
 {
     public $templateController;
     public $product;
@@ -65,19 +65,8 @@ class CartController extends Controller
     public function productList(Request $request)
     {
         try {
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
-
-            if ($ip != '::1') {
-                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-            } else {
-                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-            }
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
         } catch (\Exception $ex) {
             $location = false;
             $error = $ex->getMessage();
@@ -89,28 +78,15 @@ class CartController extends Controller
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-
-        if ($location['country'] == 'India') {
-            $currency = 'INR';
-        } else {
-            $currency = 'USD';
-        }
-        if (\Auth::user()) {
-            $currency = 'INR';
-            $user_currency = \Auth::user()->currency;
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-        }
+        $currency = $cont->getCurrency($location);
+       
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
-            //dd(\Session::get('currency'));
-        }
+           }
 
         try {
             $page_controller = new PageController();
-
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -121,24 +97,20 @@ class CartController extends Controller
     {
         try {
             $plan = '';
-
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
-
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
 
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-
                 Cart::add($items);
             }
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            // dd($ex);
-            return redirect()->back()->with('fails', $ex->getMessage());
+             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -151,11 +123,7 @@ class CartController extends Controller
             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
-            if ($items == null) {
-                $cartCollection = Cart::getContent();
-            } else {
-                $cartCollection = $items;
-            }
+            $cartCollection = $this->getCartCollection($items);
             foreach ($cartCollection as $item) {
                 $attributes[] = $item->attributes;
                 $cart_currency = $attributes[0]['currency'];
@@ -175,24 +143,21 @@ class CartController extends Controller
                         $items = $this->addProduct($id);
 
                         Cart::add($items);
-                        //
                     }
                 }
             }
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
-            //dd($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+          return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function checkTax($productid)
     {
         try {
-            $tax_condition = [];
-            $tax_attribute = [];
+            $tax_condition = array();
+            $tax_attribute = array();
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -200,22 +165,9 @@ class CartController extends Controller
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-
-            // $product = $this->product->findOrFail($productid);
-            // dd($product);
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-                $ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-                $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-            } else {
-                $ip = $_SERVER['REMOTE_ADDR'];
-            }
-
-            if ($ip != '::1') {
-                $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-            } else {
-                $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-            }
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+           
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
@@ -223,7 +175,6 @@ class CartController extends Controller
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
             $country_iso = $location['countryCode'];
-            // $state_code = $location['isoCode'].'-'.$location['state'];
             $geoip_country = '';
             $geoip_state = '';
             if (\Auth::user()) {
@@ -246,7 +197,7 @@ class CartController extends Controller
                 $cart = $tax_rule->cart_inclusive;
                 $tax_enable = $this->tax_option->findOrFail(1)->tax_enable;
                 //Check the state of user for calculating GST(cgst,igst,utgst,sgst)
-                $user_state = $this->tax_by_state::where('state_code', $geoip_state)->first();
+                $user_state = TaxByState::where('state_code', $geoip_state)->first();
                 $origin_state = $this->setting->first()->state; //Get the State of origin
                 $tax_class_id = TaxProductRelation::where('product_id', $productid)->pluck('tax_class_id')->toArray();
 
@@ -410,189 +361,14 @@ class CartController extends Controller
             }
 
             $currency_attribute = $this->addCurrencyAttributes($productid);
-
-            // dd($taxCondition,$tax_attribute);
-            return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
+         return ['conditions' => $taxCondition, 'attributes' => ['tax' => $tax_attribute, 'currency' => $currency_attribute]];
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
-
             throw new \Exception('Can not check the tax');
         }
     }
 
-    /**
-     *   Get tax value for Same State.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $s_gst
-     *                        return type
-     */
-    public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
-    {
-        try {
-            $value = '';
-            $value = $taxes->toArray()[0]['active'] ?
-
-                  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $c_gst + $s_gst.'%' : 0) : 0;
-
-            return $value;
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     *   Get tax value for Other States.
-     *
-     * @param type $productid
-     * @param type $i_gst
-     *                        return type
-     */
-    public function getValueForOtherState($productid, $i_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ? //If the Current Class is active
-              (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $i_gst.'%' : 0) : 0; //IGST
-
-        return $value;
-    }
-
-    /**
-     *  Get tax value for Union Territory States.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $ut_gst
-     *                        return type
-     */
-    public function getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ?
-             (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
-
-        return $value;
-    }
-
-    public function otherRate($productid)
-    {
-        // $taxClassOther = TaxClass::where('name', 'Others')->pluck('id')->toArray();
-        // $otherRate = TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassOther)->count() ? Tax::where('tax_classes_id', $taxClassOther)->first()->rate : '';
-        $otherRate = '';
-
-        return $otherRate;
-    }
-
-    public function getValueForOthers($productid, $taxClassId, $taxes)
-    {
-        $otherRate = 0;
-        $status = $taxes->toArray()[0]['active'];
-        if ($status && (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() > 0)) {
-            $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-        }
-
-        $value = $otherRate.'%';
-
-        return $value;
-    }
-
-    public function cartRemove(Request $request)
-    {
-        $id = $request->input('id');
-        Cart::remove($id);
-
-        return 'success';
-    }
-
-    public function reduseQty(Request $request)
-    {
-        $id = $request->input('id');
-        Cart::update($id, [
-            'quantity' => -1, // so if the current product has a quantity of 4, it will subtract 1 and will result to 3
-        ]);
-
-        return 'success';
-    }
-
-    public function updateQty(Request $request)
-    {
-        $id = $request->input('productid');
-        $qty = $request->input('qty');
-        Cart::update($id, [
-            'quantity' => [
-                'relative' => false,
-                'value'    => $qty,
-            ],
-        ]);
-
-        return 'success';
-    }
-
-    public function addAddons($id)
-    {
-        $addon = $this->addons->where('id', $id)->first();
-        $isTaxApply = $addon->tax_addon;
-        $taxConditions = $this->CheckTax($isTaxApply);
-        $items = ['id' => 'addon'.$addon->id, 'name' => $addon->name, 'price' => $addon->selling_price, 'quantity' => 1];
-        $items = array_merge($items, $taxConditions);
-
-        return $items;
-    }
-
-    public function getProductAddons($productId)
-    {
-        $addons = [];
-        if ($this->addonRelation->where('product_id', $productId)->count() > 0) {
-            $addid = $this->addonRelation->where('product_id', $productId)->pluck('addon_id')->toArray();
-            $addons = $this->addons->whereIn('id', $addid)->get();
-        }
-
-        return $addons;
-    }
-
-    public function addProduct($id)
-    {
-        try {
-            $qty = 1;
-
-            $currency = $this->currency();
-            $product = $this->product->where('id', $id)->first();
-            if ($product) {
-                $actualPrice = $this->cost($product->id);
-                $currency = $this->currency();
-                $productName = $product->name;
-                $planid = 0;
-                if ($this->checkPlanSession() === true) {
-                    $planid = Session::get('plan');
-                }
-                $isTaxApply = $product->tax_apply;
-                $taxConditions = $this->checkTax($id);
-
-                /*
-                 * Check if this product allow multiple qty
-                 */
-                if ($product->multiple_qty == 1) {
-                    // Allow
-                } else {
-                    $qty = 1;
-                }
-                $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice, 'quantity' => $qty, 'attributes' => ['currency' => [[$currency]]]];
-                $items = array_merge($items, $taxConditions);
-
-                return $items;
-            }
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-        }
-    }
-
-    /**
+     /**
      * @return type
      */
     public function clearCart()
@@ -610,70 +386,7 @@ class CartController extends Controller
         return redirect('show/cart');
     }
 
-    /**
-     * @param type $id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function licenceCart($id)
-    {
-        try {
-            $licence = $this->licence->where('id', $id)->first();
-            $isTaxApply = 0;
-            $taxConditions = $this->CheckTax($isTaxApply);
-            $items = ['id' => $licence->id, 'name' => $licence->name, 'price' => $licence->price, 'quantity' => 1, 'attributes' => ['number_of_sla' => $licence->number_of_sla]];
-            $items = array_merge($items, $taxConditions);
-            Cart::clear();
-            Cart::add($items);
 
-            return view('themes.default1.front.cart', compact('cartCollection'));
-        } catch (\Exception $ex) {
-            throw new \Exception('Problem while adding licence to cart');
-        }
-    }
-
-    /**
-     * @param type $id
-     * @param type $key
-     * @param type $value
-     */
-    public function cartUpdate($id, $key, $value)
-    {
-        try {
-            Cart::update(
-                    $id, [
-                $key => $value, // new item name
-                    ]
-            );
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $id
-     *
-     * @return array
-     */
-    public function addCurrencyAttributes($id)
-    {
-        try {
-            $currency = $this->currency();
-            $product = $this->product->where('id', $id)->first();
-            if ($product) {
-                $productCurrency = $this->currency();
-                $currency = $this->currency->where('code', $productCurrency)->get()->toArray();
-            } else {
-                $currency = [];
-            }
-
-            return $currency;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @return type
@@ -701,26 +414,7 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @param type $tax_class_id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getTaxByPriority($taxClassId)
-    {
-        try {
-            $taxe_relation = $this->tax->where('tax_classes_id', $taxClassId)->get();
-
-            return $taxe_relation;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('error in get tax priority');
-        }
-    }
-
+    
     /**
      * @param type $price
      *
@@ -743,8 +437,7 @@ class CartController extends Controller
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-            // throw new \Exception('error in get tax priority');
-        }
+      }
     }
 
     /**
@@ -759,86 +452,8 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @param Request $request
-     *
-     * @return type
-     */
-    public function postContactUs(Request $request)
-    {
-        $this->validate($request, [
-            'name'    => 'required',
-            'email'   => 'required|email',
-            'message' => 'required',
-        ]);
 
-        $set = new \App\Model\Common\Setting();
-        $set = $set->findOrFail(1);
-
-        try {
-            $from = $set->email;
-            $fromname = $set->company;
-            $toname = '';
-            $to = 'support@faveohelpdesk.com';
-            $data = '';
-            $data .= 'Name: '.$request->input('name').'<br/s>';
-            $data .= 'Email: '.$request->input('email').'<br/>';
-            $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('Mobile').'<br/>';
-
-            $subject = 'Faveo billing enquiry';
-            $this->templateController->Mailing($from, $to, $data, $subject, [], $fromname, $toname);
-            //$this->templateController->Mailing($from, $to, $data, $subject);
-            return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $slug
-     *
-     * @return type
-     */
-    public function addCartBySlug($slug)
-    {
-        try {
-            $sub = '';
-            if ($slug == 'helpdesk-with-kb-pro-edition') {
-                $id = 8;
-                $sub = 13;
-            }
-            if ($slug == 'helpdesk-and-kb-community') {
-                $id = 7;
-            }
-            $url = url("pricing?id=$id&subscription=$sub");
-
-            return \Redirect::to($url);
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $iso
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public static function findCountryByGeoip($iso)
-    {
-        try {
-            $country = \App\Model\Common\Country::where('country_code_char2', $iso)->first();
-            if ($country) {
-                return $country->country_code_char2;
-            } else {
-                return '';
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
+   
 
     /**
      * @param type $code
@@ -859,23 +474,6 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @param type $iso
-     *
-     * @throws \Exception
-     *
-     * @return array
-     */
-    public static function findStateByRegionId($iso)
-    {
-        try {
-            $states = \App\Model\Common\State::where('country_code_char2', $iso)->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-
-            return $states;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @param type $name
@@ -993,109 +591,7 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @return type
-     */
-    public static function addons()
-    {
-        try {
-            $items = Cart::getContent();
-            $cart_productids = [];
-            if (count($items) > 0) {
-                foreach ($items as $key => $item) {
-                    $cart_productids[] = $key;
-                }
-            }
-            $_this = new self();
-            $products = $_this->products($cart_productids);
 
-            return $products;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $ids
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function products($ids)
-    {
-        $parents_string = [];
-        $parent = [];
-        $productid = [];
-
-        try {
-            $parents = $this->product
-                    ->whereNotNull('parent')
-                    ->where('parent', '!=', 0)
-                    ->where('category', 'addon')
-                    ->pluck('parent', 'id')
-                    ->toArray();
-            foreach ($parents as $key => $parent) {
-                if (is_array($parent)) {
-                    $parent = implode(',', $parent);
-                }
-                $parents_string[$key] = $parent;
-            }
-            if (count($parents_string) > 0) {
-                foreach ($parents_string as $key => $value) {
-                    if (strpos($value, ',') !== false) {
-                        $value = explode(',', $value);
-                    }
-                    $parent[$key] = $value;
-                }
-            }
-
-            foreach ($parent as $key => $id) {
-                if (in_array($id, $ids)) {
-                    $productid[] = $key;
-                }
-                if (is_array($id)) {
-                    foreach ($id as $i) {
-                        if (in_array($i, $ids)) {
-                            $productid[] = $key;
-                        }
-                    }
-                }
-            }
-            $parent_products = $this->getProductById($productid);
-
-            return $parent_products;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $ids
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getProductById($ids)
-    {
-        try {
-            $products = [];
-            if (count($ids) > 0) {
-                $products = $this->product
-                        ->whereIn('id', $ids)
-                        ->get();
-            }
-
-            return $products;
-        } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @param type $iso
@@ -1116,43 +612,6 @@ class CartController extends Controller
             }
 
             return $code;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $userid
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function currency($userid = '')
-    {
-        try {
-            $currency = 'INR';
-            if ($this->checkCurrencySession() === true) {
-                $currency = Session::get('currency');
-            }
-
-            if (\Auth::user()) {
-                $currency = \Auth::user()->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                }
-            }
-            if ($userid != '') {
-                $user = new \App\User();
-                $currency = $user->find($userid)->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                } else {
-                    $currency = 'INR';
-                }
-            }
-            // dd($currency);
-            return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -1306,27 +765,5 @@ class CartController extends Controller
         }
     }
 
-    /**
-     * @param type $productid
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function allowSubscription($productid)
-    {
-        try {
-            $reponse = false;
-            $product = $this->product->find($productid);
-            if ($product) {
-                if ($product->subscription == 1) {
-                    $reponse = true;
-                }
-            }
 
-            return $reponse;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 }

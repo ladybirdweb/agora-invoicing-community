@@ -701,7 +701,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $tax_value = '0%';
             }
         }
-
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
@@ -724,7 +723,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if (!$user) {
                 return redirect()->back()->with('fails', 'No User');
             }
-            //return view('themes.default1.invoice.pdfinvoice', compact('invoiceItems', 'invoice', 'user'));
             $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
             // $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user'));
 
@@ -1000,7 +998,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
@@ -1060,18 +1059,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function getPrice($price, $price_model)
-    {
-        if ($price == '') {
-            $price = $price_model->sales_price;
-            if (!$price) {
-                $price = $price_model->price;
-            }
-        }
-
-        return $price;
-    }
-
     public function getExpiryStatus($start, $end, $now)
     {
         $whenDateNotSet = $this->whenDateNotSet($start, $end);
@@ -1090,93 +1077,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         if ($whenBothAreSet) {
             return $whenBothAreSet;
         }
-    }
-
-    public function checkExecution($invoiceid)
-    {
-        try {
-            $response = false;
-            $invoice = $this->invoice->find($invoiceid);
-            // dd($invoice);
-            $order = $this->order->where('invoice_id', $invoiceid);
-            // dd($order);
-            $order_invoice_relation = $invoice->orderRelation()->first();
-            if ($order_invoice_relation) {
-                $response = true;
-            } elseif ($order->get()->count() > 0) {
-                $response = true;
-            }
-
-            return $response;
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    public function sendInvoiceMail($userid, $number, $total, $invoiceid)
-    {
-
-        //user
-        $users = new User();
-        $user = $users->find($userid);
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-        $invoiceurl = $this->invoiceUrl($invoiceid);
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->invoice;
-        $template = $templates->where('id', $temp_id)->first();
-        $from = $setting->email;
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = [
-            'name'       => $user->first_name.' '.$user->last_name,
-            'number'     => $number,
-            'address'    => $user->address,
-            'invoiceurl' => $invoiceurl,
-            'content'    => $this->invoiceContent($invoiceid),
-            'currency'   => $this->currency($invoiceid),
-        ];
-        $type = '';
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
-        //dd($type);
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
-        return $mail;
-    }
-
-    public function invoiceUrl($invoiceid)
-    {
-        $url = url('my-invoice/'.$invoiceid);
-
-        return $url;
-    }
-
-    public function invoiceContent($invoiceid)
-    {
-        $invoice = $this->invoice->find($invoiceid);
-        $items = $invoice->invoiceItem()->get();
-        $content = '';
-        if ($items->count() > 0) {
-            foreach ($items as $item) {
-                $content .= '<tr>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$invoice->number.'</td>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$item->product_name.'</td>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$this->currency($invoiceid).' '.$item->subtotal.'</td>'.
-                        '</tr>';
-            }
-        }
-
-        return $content;
     }
 
     public function currency($invoiceid)

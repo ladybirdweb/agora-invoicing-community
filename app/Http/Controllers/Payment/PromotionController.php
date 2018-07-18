@@ -43,7 +43,7 @@ class PromotionController extends BasePromotionController
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -70,7 +70,7 @@ class PromotionController extends BasePromotionController
                         })
                         ->addColumn('products', function ($model) {
                             $selected = $this->promoRelation->select('product_id')->where('promotion_id', $model->id)->get();
-
+                            $result = array(); 
                             foreach ($selected as $key => $select) {
                                 $result[$key] = $this->product->where('id', $select->product_id)->first()->name;
                             }
@@ -122,7 +122,7 @@ class PromotionController extends BasePromotionController
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -132,7 +132,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -153,7 +153,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, PromotionRequest $request)
     {
@@ -182,7 +182,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

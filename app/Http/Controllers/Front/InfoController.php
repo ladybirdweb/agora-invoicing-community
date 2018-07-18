@@ -39,20 +39,7 @@ class InfoController extends Controller
         return $date;
     }
 
-    /**
-     * Wheather appicable for payment.
-     *
-     * @param type $invoiceid
-     */
-    public function getPaynow($invoiceid)
-    {
-        $paynow = false;
-        if ($invoiceid) {
-            $paynow = true;
-        }
-
-        return $paynow;
-    }
+   
 
     public function payment($payment_method, $status)
     {

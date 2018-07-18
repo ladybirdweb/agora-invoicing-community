@@ -4,9 +4,25 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
+use Bugsnag;
+use Config;
 
 class BaseTemplateController extends Controller
 {
+    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
+    {
+        Config::set('mail.driver', $driver);
+        Config::set('mail.password', $password);
+        Config::set('mail.username', $email);
+        Config::set('mail.encryption', $enc);
+        Config::set('mail.from', ['address' => $email, 'name' => $name]);
+        Config::set('mail.port', intval($port));
+        Config::set('mail.host', $host);
+
+        return 'success';
+    }
+
+
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {
@@ -42,9 +58,9 @@ class BaseTemplateController extends Controller
                 }
             }
             $result = $this->getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price);
+            return $result;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -65,7 +81,7 @@ class BaseTemplateController extends Controller
         }
 
         if ($product == 0) {
-            $result = $this->getTotalCart($shop, $cart, $price, $cart1, $shop1, $shop);
+            $result = $this->getTotalCart($shop, $cart, $price, $cart1, $shop1);
         }
 
         return $result;
@@ -107,29 +123,7 @@ class BaseTemplateController extends Controller
         return $result;
     }
 
-    public function calculateTotalcart($rate, $price, $cart, $shop)
-    {
-        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
-            $tax_amount = $price * ($rate / 100);
-            $total = $price + $tax_amount;
-
-            return $total;
-        }
-
-        return $price;
-    }
-
-    public function calculateSub($rate, $price, $cart, $shop)
-    {
-        if (($cart == 1 && $shop == 1) || ($cart == 1 && $shop == 0) || ($cart == 0 && $shop == 1)) {
-            $total = $price / (($rate / 100) + 1);
-
-            return $total;
-        }
-
-        return $price;
-    }
-
+   
     public function getPrice($price, $currency, $value, $cost)
     {
         if ($currency == 'INR') {
@@ -151,7 +145,6 @@ class BaseTemplateController extends Controller
 
         foreach ($plans as $value) {
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
-
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             $months = round($value->days / 30 / 12);
             $price = $this->getPrice($price, $currency, $value, $cost);
@@ -193,7 +186,6 @@ class BaseTemplateController extends Controller
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

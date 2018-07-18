@@ -205,7 +205,6 @@ namespace App\Http\Controllers\Product;
                 $this->product_upload->description = $request->input('description');
                 $this->product_upload->version = $request->input('version');
 
-                // dd($request->hasFi le('file'));
                 if ($request->file) {
                     $file = $request->file('file')->getClientOriginalName();
 
@@ -214,7 +213,6 @@ namespace App\Http\Controllers\Product;
                     $this->product_upload->file = $file;
                 }
                 $this->product_upload->save();
-
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
@@ -288,17 +286,7 @@ namespace App\Http\Controllers\Product;
                         // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
-            // $v->sometimes(['file', 'image', 'version'], 'required', function ($input) {
-            //     return $input->type == 2 && $input->github_owner == '' && $input->github_repository == '';
-            // });
-
-            // $v->sometimes(['github_owner', 'github_repository'], 'required', function ($input) {
-            //     return $input->type == 2 && $input->file == '' && $input->image == '';
-            // });
-            // $v->sometimes(['currency', 'price'], 'required', function ($input) {
-            //     return $input->subscription != 1;
-            // });
-            if ($v->fails()) {
+          if ($v->fails()) {
                 //     $currency = $input['currency'];
 
                 return redirect()->back()
@@ -327,16 +315,8 @@ namespace App\Http\Controllers\Product;
 
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-                // if (count($currencies) > 0) {
-                //     foreach ($currencies as $key => $currency) {
-                //         $this->price->create(['product_id' => $product_id, 'currency' => $currency, 'subscription' => $subscription, 'price' => $price[$key], 'sales_price' => $sales_price[$key]]);
-                //     }
-                // }
-
                 $taxes = $request->input('tax');
-                // dd($taxes);
-
-                if ($taxes) {
+                 if ($taxes) {
                     foreach ($taxes as $key=>$value) {
                         $newtax = new TaxProductRelation();
                         $newtax->product_id = $product_id;
@@ -443,7 +423,6 @@ namespace App\Http\Controllers\Product;
                 $cost = $request->input('price');
                 $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
-
                 $prices = $this->price->where('product_id', $product->id)->get();
 
                 if (count($currencies) > 0) {
@@ -457,7 +436,6 @@ namespace App\Http\Controllers\Product;
                 }
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-                // dd($taxes);
                 if ($taxes) {
                     $this->tax_relation->where('product_id', $product_id)->delete();
                     foreach ($taxes as $tax) {
@@ -471,7 +449,6 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
-
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
@@ -504,7 +481,8 @@ namespace App\Http\Controllers\Product;
                             }
                             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
+                    <b>"./** @scrutinizer ignore-type */
+                    \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
@@ -521,9 +499,10 @@ namespace App\Http\Controllers\Product;
                 } else {
                     echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /** @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\/* @scrutinizer ignore-type */Lang::get('message.select-a-row').'
+                        './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                     //echo \Lang::get('message.select-a-row');
                 }
@@ -532,67 +511,6 @@ namespace App\Http\Controllers\Product;
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
-            }
-        }
-
-        /**
-         * Remove the specified resource from storage.
-         *
-         * @param int $id
-         *
-         * @return Response
-         */
-        public function fileDestroy(Request $request)
-        {
-            try {
-                $ids = $request->input('select');
-                if (!empty($ids)) {
-                    foreach ($ids as $id) {
-                        if ($id != 1) {
-                            $product = $this->product_upload->where('id', $id)->first();
-                            if ($product) {
-                                $product->delete();
-                            } else {
-                                echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */ \Lang::get('message.no-record').'
-                </div>';
-                                //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                            }
-                            echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
-                        } else {
-                            echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.can-not-delete-default').'
-                </div>';
-                        }
-                    }
-                } else {
-                    echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
-                    //echo \Lang::get('message.select-a-row');
-                }
-            } catch (\Exception $e) {
-                echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';

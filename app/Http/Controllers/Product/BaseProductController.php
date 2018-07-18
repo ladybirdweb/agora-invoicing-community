@@ -25,6 +25,52 @@ class BaseProductController extends Controller
         return $server;
     }
 
+
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param int $id
+         *
+         * @return Response
+         */
+   public function fileDestroy(Request $request)
+    {
+        $ids = $request->input('select');
+        if (!empty($ids)) {
+            foreach ($ids as $id) {
+                  $product = ProductUpload::where('id', $id)->first();
+                if ($product) {
+                    $product->delete();
+                } else {
+                    echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                </div>';
+                    //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                }
+            }
+            echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                </div>';
+        } else {
+            echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */ \Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                </div>';
+            //echo \Lang::get('message.select-a-row');
+        }
+    }
+
     public function getProductQtyCheck($productid)
     {
         try {

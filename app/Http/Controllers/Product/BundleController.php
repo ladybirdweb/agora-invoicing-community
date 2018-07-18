@@ -112,7 +112,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -146,8 +146,8 @@ class BundleController extends Controller
             }
 
             return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
-        } catch (Exception $e) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
         } catch (\InvalidArgumentException $e) {
             if ($e->getMessage() == 'Unexpected data found.') {
                 $till = null;

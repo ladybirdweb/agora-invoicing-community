@@ -56,7 +56,7 @@ class BasePromotionController extends Controller
             $control = new \App\Http\Controllers\Order\RenewController();
             $cart_control = new \App\Http\Controllers\Front\CartController();
             $currency = $cart_control->checkCurrencySession();
-            if ($cart_control->checkPlanSession() == true) {
+            if ($cart_control->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
             }
             if ($product->subscription != 1) {

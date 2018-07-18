@@ -90,7 +90,7 @@ class BaseHomeController extends Controller
     {
         try {
             \Log::info('requests', $request->all());
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             dd($ex);
         }
     }

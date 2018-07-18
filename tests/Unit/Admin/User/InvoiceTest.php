@@ -49,7 +49,7 @@ class InvoiceTest extends DBTestCase
         return $params;
     }
 
-    /** @group InvoiceController **/
+    /** @group InvoiceController */
     public function test_invoiceController_visitingCreateInvoicePage()
     {
         $this->withoutMiddleware();

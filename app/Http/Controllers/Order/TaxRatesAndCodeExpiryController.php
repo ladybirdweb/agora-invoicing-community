@@ -8,6 +8,8 @@ use App\Model\Order\Payment;
 use App\Model\Order\Order;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxOption;
+use App\Model\Payment\Promotion;
+use App\Model\Payment\Currency;
 use App\User;
 use Bugsnag;
 
@@ -71,6 +73,28 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
 
         return $result;
+    }
+
+
+  
+
+    public function currency($invoiceid)
+    {
+        $invoice = Invoice::find($invoiceid);
+        $currency_code = $invoice->currency;
+        $cur = ' ';
+        if ($invoice->grand_total == 0) {
+            return $cur;
+        }
+        $currency = Currency::where('code', $currency_code)->first();
+        if ($currency) {
+            $cur = $currency->symbol;
+            if (!$cur) {
+                $cur = $currency->code;
+            }
+        }
+
+        return $cur;
     }
 
     /**
@@ -233,7 +257,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-      public function deleleById($id)
+    public function deleleById($id)
     {
         try {
             $invoice = Invoice::find($id);
@@ -249,6 +273,35 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return redirect()->back()->with('fails', $e->getMessage());
         }
+    }
+
+    public function getPromotionDetails($code)
+    {
+        $promo = Prmotion::where('code', $code)->first();
+        //check promotion code is valid
+        if (!$promo) {
+            throw new \Exception(\Lang::get('message.no-such-code'));
+        }
+        $relation = $promo->relation()->get();
+        //check the relation between code and product
+        if (count($relation) == 0) {
+            throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
+        }
+        //check the usess
+        $cont = new \App\Http\Controllers\Payment\PromotionController();
+        $uses = $cont->checkNumberOfUses($code);
+        //dd($uses);
+        if ($uses != 'success') {
+            throw new \Exception(\Lang::get('message.usage-of-code-completed'));
+        }
+        //check for the expiry date
+        $expiry = $this->checkExpiry($code);
+        //dd($expiry);
+        if ($expiry != 'success') {
+            throw new \Exception(\Lang::get('message.usage-of-code-expired'));
+        }
+
+        return $promo;
     }
 
 }

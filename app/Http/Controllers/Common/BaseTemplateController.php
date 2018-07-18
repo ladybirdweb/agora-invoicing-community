@@ -9,19 +9,7 @@ use Config;
 
 class BaseTemplateController extends ExtendedBaseTemplateController
 {
-    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
-    {
-        Config::set('mail.driver', $driver);
-        Config::set('mail.password', $password);
-        Config::set('mail.username', $email);
-        Config::set('mail.encryption', $enc);
-        Config::set('mail.from', ['address' => $email, 'name' => $name]);
-        Config::set('mail.port', intval($port));
-        Config::set('mail.host', $host);
-
-        return 'success';
-    }
-
+   
     public function ifStatement($rate, $price, $cart1, $shop1, $country = '', $state = '')
     {
         try {

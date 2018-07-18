@@ -201,60 +201,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function invoiceGenerateByForm(Request $request, $user_id = '')
-    {
-        $qty = 1;
-
-        try {
-            if ($user_id == '') {
-                $user_id = \Request::input('user');
-            }
-            $productid = $request->input('product');
-            $code = $request->input('code');
-            $total = $request->input('price');
-            $plan = $request->input('plan');
-            $description = $request->input('description');
-            if ($request->has('domain')) {
-                $domain = $request->input('domain');
-                $this->setDomain($productid, $domain);
-            }
-            $controller = new \App\Http\Controllers\Front\CartController();
-            $currency = $controller->currency($user_id);
-            $number = rand(11111111, 99999999);
-            $date = \Carbon\Carbon::now();
-            $product = $this->product->find($productid);
-            $cost = $controller->cost($productid, $user_id, $plan);
-            if ($cost != $total) {
-                $grand_total = $total;
-            }
-            $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
-            $grand_total = $qty * $grand_total;
-
-            $tax = $this->checkTax($product->id, $user_id);
-            $tax_name = '';
-            $tax_rate = '';
-            if (!empty($tax)) {
-                $tax_name = $tax[0];
-                $tax_rate = $tax[1];
-            }
-
-            $grand_total = $this->calculateTotal($tax_rate, $grand_total);
-            $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
-
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
-
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
-            // dd($items);
-            $result = $this->getMessage($items, $user_id);
-        } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $result = ['fails' => $ex->getMessage()];
-        }
-
-        return response()->json(compact('result'));
-    }
 
     /*
     *Edit Invoice Total.
@@ -503,26 +449,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
     }
 
-    public function checkNumberOfUses($code)
-    {
-        try {
-            $promotion = $this->promotion->where('code', $code)->first();
-            $uses = $promotion->uses;
-            if ($uses == 0) {
-                return 'success';
-            }
-            $used_number = $this->invoice->where('coupon_code', $code)->count();
-            if ($uses >= $used_number) {
-                return 'success';
-            } else {
-                return 'fails';
-            }
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.find-cost-error'));
-        }
-    }
+   
 
     public function checkCode($code, $productid, $currency)
     {
@@ -565,33 +492,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function getPromotionDetails($code)
-    {
-        $promo = $this->promotion->where('code', $code)->first();
-        //check promotion code is valid
-        if (!$promo) {
-            throw new \Exception(\Lang::get('message.no-such-code'));
-        }
-        $relation = $promo->relation()->get();
-        //check the relation between code and product
-        if (count($relation) == 0) {
-            throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
-        }
-        //check the usess
-        $uses = $this->checkNumberOfUses($code);
-        //dd($uses);
-        if ($uses != 'success') {
-            throw new \Exception(\Lang::get('message.usage-of-code-completed'));
-        }
-        //check for the expiry date
-        $expiry = $this->checkExpiry($code);
-        //dd($expiry);
-        if ($expiry != 'success') {
-            throw new \Exception(\Lang::get('message.usage-of-code-expired'));
-        }
-
-        return $promo;
-    }
+ 
 
     public function checkExpiry($code = '')
     {
@@ -941,24 +842,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
 
-  
-
-    public function currency($invoiceid)
-    {
-        $invoice = $this->invoice->find($invoiceid);
-        $currency_code = $invoice->currency;
-        $cur = ' ';
-        if ($invoice->grand_total == 0) {
-            return $cur;
-        }
-        $currency = $this->currency->where('code', $currency_code)->first();
-        if ($currency) {
-            $cur = $currency->symbol;
-            if (!$cur) {
-                $cur = $currency->code;
-            }
-        }
-
-        return $cur;
-    }
 }

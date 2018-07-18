@@ -91,7 +91,7 @@
                     </div>
                 </div>
 
-                 <div class="col-md-2 col-sm-6">
+                 <!-- <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{ url('settings/maillog') }}">
@@ -102,7 +102,7 @@
                         </div>
                         <p class="box-title" >Email Log</p>
                     </div>
-                </div>
+                </div> -->
 
                  <!--/.col-md-2-->
                   

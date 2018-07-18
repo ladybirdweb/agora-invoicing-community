@@ -17,6 +17,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
+use Config;
 use Illuminate\Http\Request;
 
 class TemplateController extends BaseTemplateController
@@ -95,6 +96,20 @@ class TemplateController extends BaseTemplateController
 
         return $this->smtpConfig($driver, $port, $host, $enc, $email, $password, $name);
     }
+
+    public function smtpConfig($driver, $port, $host, $enc, $email, $password, $name)
+    {
+        Config::set('mail.driver', $driver);
+        Config::set('mail.password', $password);
+        Config::set('mail.username', $email);
+        Config::set('mail.encryption', $enc);
+        Config::set('mail.from', ['address' => $email, 'name' => $name]);
+        Config::set('mail.port', intval($port));
+        Config::set('mail.host', $host);
+        
+        return 'success';
+    }
+
 
     public function index()
     {

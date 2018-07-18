@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-
 use Exception;
-
 
 class BaseRenewController extends Controller
 {

@@ -1099,7 +1099,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return $cur;
     }
 
-    
     public function whenDateNotSet($start, $end)
     {
         //both not set, always true

@@ -14,7 +14,6 @@ use App\Model\Product\ProductUpload;
 use App\Model\Product\Subscription;
 use App\User;
 use Bugsnag;
-use Crypt;
 use Illuminate\Http\Request;
 
 class OrderController extends BaseOrderController
@@ -292,8 +291,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-
-
     public function deleleById($id)
     {
         try {
@@ -312,8 +309,6 @@ class OrderController extends BaseOrderController
         }
     }
 
-
-    
     public function plan($invoice_item_id)
     {
         try {

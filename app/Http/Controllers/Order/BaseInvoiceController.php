@@ -5,12 +5,12 @@ namespace App\Http\Controllers\Order;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
 use App\Model\Order\Invoice;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxClass;
-use App\Model\Product\Product;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
+use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -238,7 +238,7 @@ class BaseInvoiceController extends Controller
     {
         try {
             if ($code != '') {
-                $promotion =Promotin::where('code', $code)->first();
+                $promotion = Promotin::where('code', $code)->first();
                 $start = $promotion->start;
                 $end = $promotion->expiry;
                 $now = \Carbon\Carbon::now();

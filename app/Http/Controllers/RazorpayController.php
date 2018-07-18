@@ -59,7 +59,7 @@ class RazorpayController extends Controller
             //Fetch payment information by razorpay_payment_id
             try {
                 $response = $api->payment->fetch($input['razorpay_payment_id']);
-                } catch (SignatureVerificationError $e) {
+            } catch (SignatureVerificationError $e) {
                 $success = false;
                 $error = 'Razorpay Error : '.$e->getMessage();
             }
@@ -89,13 +89,12 @@ class RazorpayController extends Controller
                     $view = $this->getViewMessageAfterRenew($invoice);
                     $status = $view['status'];
                     $message = $view['message'];
-                   
-
                 }
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 dd($ex);
+
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }
@@ -103,11 +102,11 @@ class RazorpayController extends Controller
 
     public function getState($stateCode)
     {
-       if (\Auth::user()->country != 'IN') {
+        if (\Auth::user()->country != 'IN') {
             $state = State::where('state_subdivision_code', $stateCode)->pluck('state_subdivision_name')->first();
         } else {
             $state = TaxByState::where('state_code', \Auth::user()->state)->pluck('state')->first();
-        } 
+        }
     }
 
     public function getViewMessageAfterPayment($invoice)
@@ -123,7 +122,8 @@ class RazorpayController extends Controller
         \Cart::clear();
         $status = 'success';
         $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','order',
-            'product','invoiceItem'))->render();
+            'product', 'invoiceItem'))->render();
+
         return ['status'=>$status, 'message'=>$message];
     }
 
@@ -141,8 +141,9 @@ class RazorpayController extends Controller
         \Cart::clear();
         $status = 'success';
 
-        $message =view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
-            'product','invoiceItem'))->render(); 
+        $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
+            'product', 'invoiceItem'))->render();
+
         return ['status'=>$status, 'message'=>$message];
     }
 }

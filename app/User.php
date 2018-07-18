@@ -7,8 +7,8 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 //use Laravel\Cashier\Billable;
 //use LinkThrow\Billing\CustomerBillableTrait;
@@ -55,9 +55,8 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getDescriptionForEvent(string $eventName): string
     {
         $lastActivity = Activity::all()->last(); //returns the last logged activity
-        if ($lastActivity->description == 'Logged In')
-        {
-             $this->disableLogging();
+        if ($lastActivity->description == 'Logged In') {
+            $this->disableLogging();
         }
         if ($eventName == 'updated') {
             $this->enableLogging();

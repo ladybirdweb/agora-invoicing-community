@@ -129,7 +129,6 @@ class TaxController extends Controller
                           ->make(true);
     }
 
-
     /**
      * Show the form for editing the specified resource.
      *
@@ -153,7 +152,7 @@ class TaxController extends Controller
             }
             $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
 
-             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();

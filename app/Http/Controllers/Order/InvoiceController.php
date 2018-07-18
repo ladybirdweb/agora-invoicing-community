@@ -412,41 +412,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function findCostAfterDiscount($promoid, $productid, $currency)
-    {
-        try {
-            $promotion = $this->promotion->findOrFail($promoid);
-            $product = $this->product->findOrFail($productid);
-            $promotion_type = $promotion->type;
-            $promotion_value = $promotion->value;
-            $planId = Plan::where('product', $productid)->pluck('id')->first();
-            // dd($planId);
-            $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
-            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
 
-            return $updated_price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception(\Lang::get('message.find-discount-error'));
-        }
-    }
-
-    public function findCost($type, $value, $price, $productid)
-    {
-        switch ($type) {
-                case 1:
-                    $percentage = $price * ($value / 100);
-
-                     return $price - $percentage;
-                case 2:
-                    return $price - $value;
-                case 3:
-                    return $value;
-                case 4:
-                    return 0;
-            }
-    }
 
     public function checkCode($code, $productid, $currency)
     {
@@ -489,24 +455,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function checkExpiry($code = '')
-    {
-        try {
-            if ($code != '') {
-                $promotion = $this->promotion->where('code', $code)->first();
-                $start = $promotion->start;
-                $end = $promotion->expiry;
-                //dd($end);
-                $now = \Carbon\Carbon::now();
-                $getExpiryStatus = $this->getExpiryStatus($start, $end, $now);
-
-                return $getExpiryStatus;
-            } else {
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.check-expiry'));
-        }
-    }
+ 
 
     public function checkTax($productid, $userid)
     {
@@ -638,7 +587,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './** @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';

@@ -8,7 +8,7 @@ use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
 
-class BaseOrderController extends Controller
+class BaseOrderController extends ExtendedOrderController
 {
     public function getEndDate($model)
     {

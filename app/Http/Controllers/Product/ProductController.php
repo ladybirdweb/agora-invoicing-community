@@ -449,6 +449,7 @@ namespace App\Http\Controllers\Product;
             $newTax->product_id = $product_id;
             $newTax->tax_class_id = $tax;
             $newTax->save();
+            return ;
             }
         }
 

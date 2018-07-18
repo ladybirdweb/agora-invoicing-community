@@ -56,7 +56,7 @@ class BaseRenewController extends Controller
     public function getProductByName($name)
     {
         try {
-            $product = Product::('name', $name)->first();
+            $product = Product::where('name', $name)->first();
             if ($product) {
                 return $product;
             }

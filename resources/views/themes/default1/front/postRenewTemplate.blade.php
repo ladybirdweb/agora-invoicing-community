@@ -35,7 +35,7 @@
                     </li>
                 
                 <li class="woocommerce-order-overview__total total">
-                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{\Auth::user()->email}}</span> {{$invoiceItem->subtotal}}</span></strong>
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"></span> {{$invoiceItem->subtotal}}</span></strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__payment-method method">

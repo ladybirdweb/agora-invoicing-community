@@ -163,7 +163,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, BundleRequest $request)
     {

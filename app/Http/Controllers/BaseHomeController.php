@@ -127,7 +127,7 @@ class BaseHomeController extends Controller
                 return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];
             }
         } catch (\Exception $ex) {
-            throw new Exception($ex->getMessage());
+            throw new \Exception($ex->getMessage());
         }
     }
 

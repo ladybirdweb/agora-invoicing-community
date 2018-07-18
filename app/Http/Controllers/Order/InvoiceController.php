@@ -912,8 +912,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-
-
     public function postRazorpayPayment($invoiceid, $grand_total)
     {
         try {
@@ -1039,8 +1037,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    
-
     public function currency($invoiceid)
     {
         $invoice = $this->invoice->find($invoiceid);
@@ -1059,5 +1055,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return $cur;
     }
-
 }

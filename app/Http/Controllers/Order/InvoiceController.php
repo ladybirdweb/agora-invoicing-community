@@ -1060,6 +1060,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return $cur;
     }
 
-    
-
 }

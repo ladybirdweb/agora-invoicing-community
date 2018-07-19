@@ -12,7 +12,6 @@ use Bugsnag;
 use DB;
 use Illuminate\Http\Request;
 use Log;
-use Spatie\Activitylog\Models\Activity;
 
 class ClientController extends AdvanceSearchController
 {
@@ -262,10 +261,11 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function update($id, ClientRequest $request)
-    { 
-         $user = $this->user->where('id', $id)->first();
+    {
+        $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();
+
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 

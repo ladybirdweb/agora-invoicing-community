@@ -2,15 +2,11 @@
 
 namespace Tests\Unit\Admin\User;
 
-use App\User;
-use Tests\TestCase;
-use Tests\DBTestCase;
-use App\Model\Order\Order;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
+use App\Model\Order\Order;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Tests\DBTestCase;
 
 class InvoiceAndPaymentCalculationTest extends DBTestCase
 {
@@ -19,18 +15,18 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
     /** @group InvoiceAndPayment */
     public function test_change_invoiceTotal_whenInvoiceIsUpdated()
     {
-    	$this->withoutMiddleware();
+        $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
         $user_id = $user->id;
-    	$invoice = factory(Invoice::class)->create(['user_id'=>$user_id,'grand_total'=>'10000']);
-    	$response = $this->call('GET','change-invoiceTotal',[
-        'total' => '12000',
-        'number' => $invoice->number,
-        'user_id' =>$user_id,
-    	]);
-    	
-    	$response->assertStatus(200);
+        $invoice = factory(Invoice::class)->create(['user_id'=>$user_id, 'grand_total'=>'10000']);
+        $response = $this->call('GET', 'change-invoiceTotal', [
+        'total'   => '12000',
+        'number'  => $invoice->number,
+        'user_id' => $user_id,
+        ]);
+
+        $response->assertStatus(200);
     }
 
     /** @group InvoiceAndPayment */
@@ -53,16 +49,15 @@ class InvoiceAndPaymentCalculationTest extends DBTestCase
             'domain'             => 'faveo.com',
             'plan_id'            => 1,
                 ]);
-        $order = factory(Order::class)->create(['invoice_id'=>$invoice->id,
-            'invoice_item_id'=>$invoiceItem->id,'client'=>$user_id]);
-        
-         $response = $this->call('GET','clients/'.$user_id,[
-        'total' => '12000',
-        'number' => $invoice->number,
-        'user_id' =>$user_id,
+        $order = factory(Order::class)->create(['invoice_id'=> $invoice->id,
+            'invoice_item_id'                               => $invoiceItem->id, 'client'=>$user_id, ]);
+
+        $response = $this->call('GET', 'clients/'.$user_id, [
+        'total'   => '12000',
+        'number'  => $invoice->number,
+        'user_id' => $user_id,
         ]);
         $this->assertStringContainsSubstring($response->content(), '<!DOCTYPE html>');
-         $response->setExpectedException(\Exception::class);
-        
+        $response->setExpectedException(\Exception::class);
     }
 }

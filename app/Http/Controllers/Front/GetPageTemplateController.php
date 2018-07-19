@@ -46,7 +46,7 @@ class GetPageTemplateController extends Controller
         } else {
             $helpdeskVpstemplate = '';
         }
-        
+
         return $helpdeskVpstemplate;
     }
 

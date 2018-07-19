@@ -274,7 +274,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
     public function getPromotionDetails($code)
     {
-        $promo = Prmotion::where('code', $code)->first();
+        $promo = Promotion::where('code', $code)->first();
         //check promotion code is valid
         if (!$promo) {
             throw new \Exception(\Lang::get('message.no-such-code'));

@@ -36,17 +36,17 @@ class GetPageTemplateController extends Controller
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         if (count($helpdesk_vps_product) > 0) {
             foreach ($helpdesk_vps_product as $key => $value) {
-                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-                $trasform[$value['id']]['name'] = $value['name'];
-                $trasform[$value['id']]['feature'] = $value['description'];
-                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-                $trasform[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
+                $trasform3[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform3[$value['id']]['name'] = $value['name'];
+                $trasform3[$value['id']]['feature'] = $value['description'];
+                $trasform3[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform3[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
             $helpdeskVpstemplate = $this->transform('cart', $data, $trasform3);
         } else {
             $helpdeskVpstemplate = '';
         }
-
+        
         return $helpdeskVpstemplate;
     }
 

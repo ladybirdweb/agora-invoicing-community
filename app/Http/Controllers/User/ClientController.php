@@ -262,12 +262,10 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function update($id, ClientRequest $request)
-    {
-        $user = $this->user->where('id', $id)->first();
+    { 
+         $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();
-        // activity()->log('Look mum, I logged something');
-
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 

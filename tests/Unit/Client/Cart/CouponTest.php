@@ -7,6 +7,7 @@ use App\Model\Payment\PromoProductRelation;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Model\Product\Product;
 use Tests\DBTestCase;
 
 class CouponTest extends DBTestCase
@@ -40,7 +41,7 @@ class CouponTest extends DBTestCase
         $response = $this->call('POST', 'pricing/update', [
         'coupon' => 'FAVEOCOUPON',
         ]);
-        $response->assertStatus(302);
+       $response->assertStatus(302);
     }
 
     /** @group coupon */

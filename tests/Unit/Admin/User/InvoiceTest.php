@@ -68,7 +68,9 @@ class InvoiceTest extends DBTestCase
     public function test_invoiceController_generateInvoiceWithoutPromoCode()
     {
         $this->withoutMiddleware();
-        $user = factory(User::class)->create(['currency'=> 'INR']);
+        $this->getLoggedInUser();
+        $user = $this->user->create(['currency'=> 'INR']);
+        $user_id = $user->id;
         $product = factory(Product::class)->create();
         $plan = factory(Plan::class)->create(['product'=>$product->id]);
         $planPrice = $this->planPrices($plan);

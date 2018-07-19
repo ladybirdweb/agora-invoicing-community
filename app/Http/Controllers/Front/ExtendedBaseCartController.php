@@ -50,12 +50,12 @@ class ExtendedBaseCartController extends Controller
                 \Session::forget('domain'.$item->id);
             }
         }
+
         $this->removePlanSession();
         $renew_control = new \App\Http\Controllers\Order\RenewController();
         $renew_control->removeSession();
         Cart::clear();
-
-        return redirect('show/cart');
+          return redirect('show/cart');
     }
 
     /**

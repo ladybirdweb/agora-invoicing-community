@@ -207,9 +207,9 @@
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
-                        {!! Form::hidden('mobile_code',null,['id'=>'']) !!}
+                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
                          <!-- <input class="form-control" id="mobilecode" name="mobile" type="tel"> -->
-                        {!! Form::text('mobile_code',null,['class'=>'form-control','id'=>'mobile_code']) !!}
+                        {!! Form::text('mobil',null,['class'=>'form-control','id'=>'mobile_code']) !!}
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
@@ -257,8 +257,8 @@
                     callback(countryCode);
             });
         },
-        separateDialCode: false,
-        utilsScript: "{{asset('js/intl/js/utils.js')}}",
+        separateDialCode: true,
+        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);

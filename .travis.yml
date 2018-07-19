@@ -6,6 +6,12 @@ php:
   - 7.0
   - hhvm
 
+services:
+- mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+
 # Commands to be run before your environment runs.
 before_script:
   - cp .env.travis .env

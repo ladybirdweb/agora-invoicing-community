@@ -62,7 +62,7 @@
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
             success: function (data) {
-
+                  console.log(data)
                 $(".price").val(data);
             }
         });

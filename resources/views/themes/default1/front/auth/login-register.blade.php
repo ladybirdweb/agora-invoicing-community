@@ -696,7 +696,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
          function verify_number_check(){
             var userNumber = $('#verify_number').val();
-            if (userNumber.length < 10){
+            if (userNumber.length < 5){
                 $('#conmobile').show();
                 $('#conmobile').html("Please Enter Your Mobile No.");
                 $('#conmobile').focus();

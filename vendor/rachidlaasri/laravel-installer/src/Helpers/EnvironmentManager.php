@@ -104,7 +104,9 @@ class EnvironmentManager
         'DB_PORT=' . $request->database_port . "\n" .
         'DB_DATABASE=' . $request->database_name . "\n" .
         'DB_USERNAME=' . $request->database_username . "\n" .
+
         'DB_PASSWORD=' . $request->database_password . "\n\n" .
+        'DB_INSTALL='  ."0". "\n".
         'BROADCAST_DRIVER=' . $request->broadcast_driver . "\n" .
         'CACHE_DRIVER=' . $request->cache_driver . "\n" .
         'SESSION_DRIVER=' . $request->session_driver . "\n" .

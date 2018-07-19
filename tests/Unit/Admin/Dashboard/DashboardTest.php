@@ -36,7 +36,6 @@ class DashboardTest extends DBTestCase
         $invoice = factory(Invoice::class, 3)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getYearlySalesInInr();
-        dd($response);
         $this->assertEquals($response, '30000');
 
         // dd($response);

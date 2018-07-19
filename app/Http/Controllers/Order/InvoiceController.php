@@ -427,14 +427,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     throw new \Exception(\Lang::get('message.no-product-related-to-this-code'));
                 }
                 //check the usess
-                $uses = $this->checkNumberOfUses($code);
-                //dd($uses);
+                $cont = new \App\Http\Controllers\Payment\PromotionController();
+                $uses = $cont->checkNumberOfUses($code);
                 if ($uses != 'success') {
                     throw new \Exception(\Lang::get('message.usage-of-code-completed'));
                 }
                 //check for the expiry date
                 $expiry = $this->checkExpiry($code);
-                //dd($expiry);
                 if ($expiry != 'success') {
                     throw new \Exception(\Lang::get('message.usage-of-code-expired'));
                 }
@@ -449,7 +448,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 return $price;
             }
         } catch (\Exception $ex) {
-            throw new \Exception(\Lang::get('message.check-code-error'));
+            throw new \Exception($ex->getMessage());
         }
     }
 

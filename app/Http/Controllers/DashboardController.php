@@ -39,7 +39,7 @@ class DashboardController extends Controller
         $invoices = $this->getRecentInvoices();
         $products = $this->totalProductsSold();
         $productName = [];
-        if (!empty($productName)) {
+        if (!empty($products)) {
             foreach ($products as $product) {
                 $productName[] = $product->name;
             }

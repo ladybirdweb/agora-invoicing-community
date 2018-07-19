@@ -41,9 +41,7 @@ class DatabaseSeeder extends Seeder
         $this->call('GroupTableSeeder');
         $this->command->info('Product Group table seeded!');
 
-        $this->call('ApiKeyTableSeeder');
-        $this->command->info('Api Key table seeded!');
-
+        
         $this->call('ProductTypesTableSeeder');
         $this->command->info('Product Types table seeded!');
 
@@ -128,6 +126,7 @@ class CurrencyTableSeeder extends Seeder
         \DB::table('currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
+        Currency::create(['id' => 2, 'code' => 'INR', 'symbol' => '₹', 'name' => 'Indian Rupee', 'base_conversion' => '1.0']);
     }
 }
 
@@ -719,17 +718,7 @@ class GitHubTableSeeder extends Seeder
     }
 }
 
-class ApiKeyTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('api_keys')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'rzp_key'=>'', 'rzp_secret'=>'', 'apilayer_key'=>'', 'bugsnag_api_key'=>'',
-            'zoho_api_key'   => '', 'msg91_auth_key'=>'', ]);
-    }
-}
+
 
 class UserTableSeeder extends Seeder
 {

@@ -1,6 +1,11 @@
 @extends('themes.default1.layouts.master')
 @section('content')
-
+<style>
+.scrollit {
+    overflow:scroll;
+    height:300px;
+}
+</style>
    <div class="row">
         <div class="col-lg-4 col-xs-6">
           <!-- small box -->
@@ -84,7 +89,7 @@
                    $productSold=[];
                   ?>
                 <div class="box-body no-padding">
-
+                  <div class="scrollit">
                   <ul class="users-list clearfix">
                     @foreach($users as $user)
                     <li>
@@ -101,6 +106,7 @@
                     </li>
                     @endforeach
                    </ul>
+                 </div>
 
                   <!-- /.users-list -->
                 </div>
@@ -127,6 +133,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+              <div class="scrollit">
               <ul class="products-list product-list-in-box">
                    @foreach($arraylists as $key => $value)
                    <?php
@@ -163,6 +170,7 @@
                 <!-- /.item -->
               </ul>
             </div>
+            </div>
             <!-- /.box-body -->
             <div class="box-footer text-center">
               <a href="{{url('products')}}" class="uppercase">View All Products</a>
@@ -188,6 +196,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
+                <div class="scrollit">
                 <table class="table no-margin">
                   <thead>
                   <tr>
@@ -195,7 +204,7 @@
                     <th>Item</th>
                     <th>Date</th>
                     <th>Client</th>
-                    <th>Total</th>
+                    <!-- <th>Total</th> -->
                   </tr>
                   </thead>
                   <tbody>
@@ -214,7 +223,7 @@
                     <td>
                       <a href="{{url('clients/'.$order->client)}}" class="sparkbar" data-color="#00a65a" data-height="20">{{$clientName->first_name}}{{$clientName->last_name}}</a>
                     </td>
-                    <td><span class="label label-success">{{$order->price_override}}</span></td>
+                    <!-- <td><span class="label label-success">{{$order->price_override}}</span></td> -->
                     
                   </tr>
                    @endforeach
@@ -222,6 +231,7 @@
 
                    </tbody>
                 </table>
+              </div>
               </div>
               <!-- /.table-responsive -->
             </div>
@@ -248,6 +258,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
+                 <div class="scrollit">
                 <table class="table no-margin">
                   <thead>
                   <tr>
@@ -294,6 +305,7 @@
 				           </tbody>
                 </table>
               </div>
+              </div>
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
@@ -318,6 +330,7 @@
             <!-- /.box-header -->
             <div class="box-body">
               <div class="table-responsive">
+                 <div class="scrollit">
                 <table class="table no-margin">
                   <thead>
                   <tr>
@@ -373,6 +386,7 @@
                   </tbody>
                 </table>
               </div>
+              </div>
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
@@ -397,6 +411,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+              <div class="scrollit">
               <ul class="products-list product-list-in-box">
                  @foreach($arrayCountList as $key => $value)
                  <?php
@@ -424,6 +439,7 @@
                 </li>
                 @endforeach
               </ul>
+            </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-center">

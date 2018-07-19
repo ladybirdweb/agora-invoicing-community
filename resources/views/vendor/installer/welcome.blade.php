@@ -5,7 +5,7 @@
 @endsection
 
 @section('title')
-    {{ trans('Agora Billing Installer') }}
+    {{ trans('Agora Invoicing Installer') }}
 @endsection
 
 @section('container')

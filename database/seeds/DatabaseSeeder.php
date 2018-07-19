@@ -41,7 +41,6 @@ class DatabaseSeeder extends Seeder
         $this->call('GroupTableSeeder');
         $this->command->info('Product Group table seeded!');
 
-        
         $this->call('ProductTypesTableSeeder');
         $this->command->info('Product Types table seeded!');
 
@@ -717,8 +716,6 @@ class GitHubTableSeeder extends Seeder
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
     }
 }
-
-
 
 class UserTableSeeder extends Seeder
 {

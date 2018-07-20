@@ -35,8 +35,8 @@ before_script:
 
 
 
-Commands you want to run that will verify your build.
-script: vendor/bin/phpunit
+# Commands you want to run that will verify your build.
+# script: vendor/bin/phpunit
 
 # after_script:
 # vendor/bin/phpunit --coverage-clover=coverage.clover

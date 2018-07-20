@@ -6,19 +6,19 @@ php:
   - 7.0
   - hhvm
 
-services:
-- mysql
+# services:
+# - mysql
 
-addons:
-  apt:
-    sources:
-      - mysql-5.7-trusty
-    packages:
-      - mysql-server
-      - mysql-client
+# addons:
+#   apt:
+#     sources:
+#       - mysql-5.7-trusty
+#     packages:
+#       - mysql-server
+#       - mysql-client
 
 before_install:
-  - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+  # - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
 
 # Commands to be run before your environment runs.
 before_script:

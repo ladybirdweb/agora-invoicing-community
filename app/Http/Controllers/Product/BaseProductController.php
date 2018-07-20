@@ -157,7 +157,7 @@ class BaseProductController extends Controller
             } else {
                 return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
-        } catch (\Exception $ex)  {
+        } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
             return redirect('auth/login')->with('fails', $ex->getMessage());

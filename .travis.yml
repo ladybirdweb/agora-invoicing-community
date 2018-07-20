@@ -13,6 +13,9 @@ php:
 #   - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
 
 # Commands to be run before your environment runs.
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
 # before_script:
 #   - cp .env.travis .env
 # - mysql -e 'create database db_testing;'

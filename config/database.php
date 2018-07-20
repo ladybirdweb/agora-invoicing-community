@@ -58,16 +58,16 @@ return [
         ],
 
         'testing' => [
-        'driver'    => 'mysql',
-        'host'      => env('DB_HOST', 'localhost'),
-        'database'  => env('DB_DATABASE', 'db_testing'),
-        'username'  => env('DB_USERNAME', 'root'),
+        'driver'      => 'mysql',
+        'host'        => env('DB_HOST', 'localhost'),
+        'database'    => env('DB_DATABASE', 'db_testing'),
+        'username'    => env('DB_USERNAME', 'root'),
         'engine'      => env('DB_ENGINE', 'Innodb'),
-        'password'  => env('DB', ''),
-        'charset'   => 'utf8',
-        'collation' => 'utf8_unicode_ci',
-        'prefix'    => '',
-        'strict'    => false,
+        'password'    => env('DB', ''),
+        'charset'     => 'utf8',
+        'collation'   => 'utf8_unicode_ci',
+        'prefix'      => '',
+        'strict'      => false,
     ],
 
         'pgsql' => [

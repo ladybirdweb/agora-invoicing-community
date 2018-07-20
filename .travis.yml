@@ -36,13 +36,13 @@ before_script:
 
 
 Commands you want to run that will verify your build.
-script: vendor/phpunit/phpunit/phpunit
+script: vendor/phpunit/phpunit
 
 # # after_script:
 #   - wget https://scrutinizer-ci.com/ocular.phar
 #   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-allow_failures: Allow this build to fail under the specified environments.
-fast_finish: If your build fails do not continue trying to build, just stop.
+# allow_failures: Allow this build to fail under the specified environments.
+# fast_finish: If your build fails do not continue trying to build, just stop.
 matrix:
   allow_failures:
     - php: '5.6'

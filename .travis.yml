@@ -39,7 +39,7 @@ before_script:
 script: vendor/bin/phpunit
 
 # after_script:
-vendor/phpunit/php-code-coverage --coverage-clover=travis.yml
+vendor/phpunit/php-code-coverage/travis.yml --coverage-clover=coverage.xml
 # wget https://scrutinizer-ci.com/ocular.phar
 # php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar

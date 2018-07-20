@@ -22,7 +22,7 @@
             <directory suffix=".php">./app</directory>
         </whitelist>
     </filter>
-    <php>
+   <!--  <php>
         <env name="DB_CONNECTION" value="testing"/>
         <env name="APP_ENV" value="testing"/>
         <env name="DB_DATABASE" value="db_testing"/>
@@ -34,5 +34,5 @@
         <env name="DB_PORT" value="3306"/>
           <env name="DB_USERNAME" value="root"/>
            <env name="DB_PASSWORD" value=""/>
-    </php>
+    </php> -->
 </phpunit>

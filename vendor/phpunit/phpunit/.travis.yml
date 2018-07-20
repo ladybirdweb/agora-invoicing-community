@@ -35,25 +35,6 @@ install:
   - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS; fi
   - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
 
-before_script:
-  - echo 'zend.assertions=1' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-  - echo 'assert.exception=On' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
-    - cp .env.travis .env
-- mysql -e 'create database db_testing;'
-- composer self-update
-- composer install --no-interaction
-- php artisan key:generate
-- php artisan migrate --seed
-
-
-
-
-#Commands you want to run that will verify your build.
-script: vendor/phpunit/phpunit/phpunit
-
-# after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 
 script:
   - ./phpunit --coverage-clover=coverage.xml

@@ -36,9 +36,12 @@ before_script:
 
 
 Commands you want to run that will verify your build.
-script: vendor/phpunit/phpunit
+script: vendor/bin/phpunit
 
-# # after_script:
+# after_script:
+vendor/bin/phpunit --coverage-clover=coverage.clover
+wget https://scrutinizer-ci.com/ocular.phar
+php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar
 #   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 # allow_failures: Allow this build to fail under the specified environments.

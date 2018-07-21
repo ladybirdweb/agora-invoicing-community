@@ -37,11 +37,14 @@ before_script:
 
 # Commands you want to run that will verify your build.
 script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - phpunit --coverage-text --coverage-clover=coverage.clover
+  # - vendor/bin/phpunit --coverage-clover=clover.xml 
 
 # after_script:
 after_script:
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  # - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
 # wget https://scrutinizer-ci.com/ocular.phar
 # php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar

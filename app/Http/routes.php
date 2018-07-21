@@ -11,7 +11,7 @@
   |
  */
 //Route::group(['middleware' => ['web']], function () {
- Route::get('/', 'HomeController@index');
+ // Route::get('/', 'HomeController@index');
 
 /*
  * Front end

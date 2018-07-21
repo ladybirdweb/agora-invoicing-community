@@ -37,7 +37,9 @@ before_script:
 
 # Commands you want to run that will verify your build.
 script:
-  - phpunit --coverage-text --coverage-clover=coverage.clover
+    -vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
+
+  # - phpunit --coverage-text --coverage-clover=coverage.clover
   # - vendor/bin/phpunit --coverage-clover=clover.xml 
 
 # after_script:

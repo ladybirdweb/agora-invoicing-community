@@ -22,7 +22,7 @@
             <directory suffix=".php">./app</directory>
              <exclude>
             <directory suffix=".php">./src/database</directory>
-            <file>app/Http/routes.php</file>
+            <file>./src/routes.php</file>
         </exclude>
         </whitelist>
     </filter>

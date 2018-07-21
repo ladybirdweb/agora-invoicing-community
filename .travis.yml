@@ -22,16 +22,16 @@ before_install:
 
 # Commands to be run before your environment runs.
 before_script:
-  - composer self-update
-  - composer install --prefer-source --no-interaction --dev
+  # - composer self-update
+  # - composer install --prefer-source --no-interaction --dev
   # - mysql -e 'create database db_testing;'
-# before_script:
-#   - cp .env.travis .env
-# - mysql -e 'create database db_testing;'
-# - composer self-update
-# - composer install --no-interaction
-# - php artisan key:generate
-# - php artisan migrate --seed
+before_script:
+  - cp .env.travis .env
+- mysql -e 'create database db_testing;'
+- composer self-update
+- composer install --no-interaction
+- php artisan key:generate
+- php artisan migrate --seed
 
 
 

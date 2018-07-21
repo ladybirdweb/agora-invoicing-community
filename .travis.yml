@@ -22,31 +22,26 @@ before_install:
 
 # Commands to be run before your environment runs.
 before_script:
-  # - composer self-update
-  # - composer install --prefer-source --no-interaction --dev
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
   # - mysql -e 'create database db_testing;'
-before_script:
-  - cp .env.travis .env
-- mysql -e 'create database db_testing;'
-- composer self-update
-- composer install --no-interaction
-- php artisan key:generate
-- php artisan migrate --seed
+# before_script:
+#   - cp .env.travis .env
+# - mysql -e 'create database db_testing;'
+# - composer self-update
+# - composer install --no-interaction
+# - php artisan key:generate
+# - php artisan migrate --seed
 
 
 
 # Commands you want to run that will verify your build.
 script:
-    -vendor/bin/phpunit --coverage-text --coverage-clover ./build/logs/clover.xml
-
-  # - phpunit --coverage-text --coverage-clover=coverage.clover
-  # - vendor/bin/phpunit --coverage-clover=clover.xml 
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 # after_script:
 after_script:
-  - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-  # - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
 # wget https://scrutinizer-ci.com/ocular.phar
 # php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar

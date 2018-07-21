@@ -150,9 +150,9 @@ return [
 
     'providers' => [
 
-            'App\Plugins\Paypal\ServiceProvider',
+            // 'App\Plugins\Paypal\ServiceProvider',
 
-            'App\Plugins\Ccavanue\ServiceProvider',
+            // 'App\Plugins\Ccavanue\ServiceProvider',
 
         /*
          * Laravel Framework Service Providers...

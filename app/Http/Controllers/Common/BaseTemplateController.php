@@ -41,7 +41,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
-            $result = $this->getResult($country, $geoip_country, $state, $geoip_state, 
+            $result = $this->getResult($country, $geoip_country, $state, $geoip_state,
                 $shop, $cart, $cart1, $shop1, $rate, $product, $price);
 
             return $result;

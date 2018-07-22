@@ -349,7 +349,7 @@ class ClientController extends BaseClientController
             $price = $product->price()->first();
             $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-order', 
+            return view('themes.default1.front.clients.show-order',
                 compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -388,7 +388,7 @@ class ClientController extends BaseClientController
                                 return $model->grand_total;
                             })
                             ->rawColumns(['checkbox', 'number', 'total',
-                             'payment_method', 'payment_status', 'created_at'])
+                             'payment_method', 'payment_status', 'created_at', ])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

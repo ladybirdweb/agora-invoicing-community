@@ -18,7 +18,10 @@ php:
 #       - mysql-client
 
 before_install:
-  # - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+  - php artisan key:generate
+- php artisan migrate --seed
+
 
 # Commands to be run before your environment runs.
 before_script:
@@ -27,11 +30,11 @@ before_script:
   # - mysql -e 'create database db_testing;'
 # before_script:
 #   - cp .env.travis .env
-- mysql -e 'create database db_testing;'
-- composer self-update
-- composer install --no-interaction
-- php artisan key:generate
-- php artisan migrate --seed
+# - mysql -e 'create database db_testing;'
+# - composer self-update
+# - composer install --no-interaction
+# - php artisan key:generate
+# - php artisan migrate --seed
 
 
 
@@ -42,8 +45,8 @@ script:
 # after_script:
 after_script:
   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
-wget https://scrutinizer-ci.com/ocular.phar
-php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+# wget https://scrutinizer-ci.com/ocular.phar
+# php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar
 #   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 # allow_failures: Allow this build to fail under the specified environments.

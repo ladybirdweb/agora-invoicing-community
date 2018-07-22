@@ -269,8 +269,8 @@ namespace App\Http\Controllers\Product;
                 $periods = $this->period->pluck('name', 'days')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
 
-                return view('themes.default1.product.product.create', 
-                    compact('subscription', 'type', 'periods', 'currency', 
+                return view('themes.default1.product.product.create',
+                    compact('subscription', 'type', 'periods', 'currency',
                         'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
@@ -378,9 +378,9 @@ namespace App\Http\Controllers\Product;
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-                return view('themes.default1.product.product.edit', 
-                    compact('product', 'periods', 'type', 'subscription', 
-                        'currency', 'group', 'price', 'cartUrl', 'products', 
+                return view('themes.default1.product.product.edit',
+                    compact('product', 'periods', 'type', 'subscription',
+                        'currency', 'group', 'price', 'cartUrl', 'products',
                         'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);

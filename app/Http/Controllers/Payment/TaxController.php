@@ -158,8 +158,8 @@ class TaxController extends Controller
                 $classes = $this->tax_class->get();
             }
 
-            return view('themes.default1.payment.tax.edit', 
-                compact('tax', 'classes', 'txClass', 'states', 'state', 
+            return view('themes.default1.payment.tax.edit',
+                compact('tax', 'classes', 'txClass', 'states', 'state',
                     'defaultValue'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -204,8 +204,8 @@ class TaxController extends Controller
                 $country = 'IN';
                 $state = '';
                 $rate = '';
-                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId, 
-                    'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
+                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId,
+                    'country'                                         => $country, 'state'=>$state, 'rate'=>$rate, ]);
             }
 
             // $tax->fill($request->input())->save();

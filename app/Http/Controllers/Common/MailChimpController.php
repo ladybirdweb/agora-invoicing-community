@@ -121,7 +121,7 @@ class MailChimpController extends Controller
             $user = $user->where('email', $email)->first();
             if ($user) {
                 $fields = ['first_name', 'last_name', 'company', 'mobile',
-                 'address', 'town', 'state', 'zip', 'active', 'role'];
+                 'address', 'town', 'state', 'zip', 'active', 'role', ];
                 $relation = $this->relation;
                 $merge_fields = [];
                 foreach ($fields as $field) {

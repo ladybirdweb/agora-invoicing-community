@@ -317,7 +317,7 @@ class PageController extends GetPageTemplateController
 
         $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
-        return view('themes.default1.common.template.shoppingcart', 
+        return view('themes.default1.common.template.shoppingcart',
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
                 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3'));
     }

@@ -206,20 +206,20 @@ class CartController extends BaseCartController
                            $state_code = $user_state->state_code;
 
                            if ($state_code == $origin_state) {//If user and origin state are same
-                               $rateForSameState = $this->getTaxWhenIndianSameState($user_state, 
+                               $rateForSameState = $this->getTaxWhenIndianSameState($user_state,
                                 $origin_state, $productid, $c_gst, $s_gst, $state_code, $status);
 
                                $taxes = $rateForSameState['taxes'];
                                $status = $rateForSameState['status'];
                                $value = $rateForSameState['value'];
                            } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
-                               $rateForOtherState = $this->getTaxWhenIndianOtherState($user_state, 
+                               $rateForOtherState = $this->getTaxWhenIndianOtherState($user_state,
                                 $origin_state, $productid, $i_gst, $state_code, $status);
                                $taxes = $rateForOtherState['taxes'];
                                $status = $rateForOtherState['status'];
                                $value = $rateForOtherState['value'];
                            } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
-                               $rateForUnionTerritory = $this->getTaxWhenUnionTerritory($user_state, 
+                               $rateForUnionTerritory = $this->getTaxWhenUnionTerritory($user_state,
                                 $origin_state, $productid, $c_gst, $ut_gst, $state_code, $status);
                                $taxes = $rateForUnionTerritory['taxes'];
                                $status = $rateForUnionTerritory['status'];
@@ -255,10 +255,10 @@ class CartController extends BaseCartController
 
                                     //All the da a attribute that is sent to the checkout Page if tax_compound=0
                            if ($taxes[0]) {
-                               $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst, 
-                               's_gst'=>$s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
-                                'state'=>$state_code, 'origin_state'=>$origin_state,
-                                 'tax_enable'=>$tax_enable, 'rate'=>$value, 'status'=>$status];
+                               $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
+                               's_gst'                        => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
+                                'state'                       => $state_code, 'origin_state'=>$origin_state,
+                                 'tax_enable'                 => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
 
                                $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
 
@@ -300,9 +300,9 @@ class CartController extends BaseCartController
                                             'value'  => $value,
                                         ]);
                                }
-                           } else {//In case of other country 
-                            //when tax is available and tax is not enabled
-                            //(Applicable when Global Tax class for any country and state is not there)
+                           } else {//In case of other country
+                               //when tax is available and tax is not enabled
+                               //(Applicable when Global Tax class for any country and state is not there)
                                $taxClassId = Tax::where('state', $geoip_state)
                                ->orWhere('country', $geoip_country)
                                ->pluck('tax_classes_id')->first();
@@ -340,9 +340,9 @@ class CartController extends BaseCartController
 
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
-            return ['conditions' => $taxCondition, 
-            'attributes' => ['tax' => $tax_attribute, 
-            'currency' => $currency_attribute]];
+            return ['conditions' => $taxCondition,
+            'attributes'         => ['tax' => $tax_attribute,
+            'currency'                     => $currency_attribute, ], ];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

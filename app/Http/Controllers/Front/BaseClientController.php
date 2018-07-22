@@ -85,7 +85,7 @@ class BaseClientController extends Controller
 
             return '<p><a href='.$link['header']['Location']." 
             class='btn btn-sm btn-primary'><i class='fa fa-download'>
-            </i>&nbsp;&nbsp;Download</a>" .'&nbsp;
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
       </p>';
         } else {

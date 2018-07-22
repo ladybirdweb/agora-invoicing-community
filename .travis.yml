@@ -28,8 +28,8 @@ before_script:
 # before_script:
 #   - cp .env.travis .env
 # - mysql -e 'create database db_testing;'
-- composer self-update
-- composer install --no-interaction
+# - composer self-update
+# - composer install --no-interaction
 # - php artisan key:generate
 # - php artisan migrate --seed
 

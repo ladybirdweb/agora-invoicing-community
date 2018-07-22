@@ -50,7 +50,9 @@ class ClientController extends AdvanceSearchController
         $role = $request->input('role');
         $position = $request->input('position');
 
-        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
+        return view('themes.default1.user.client.index', 
+            compact('name', 'username', 'company', 'mobile', 'email', 
+                'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
     }
 
     /**
@@ -70,7 +72,8 @@ class ClientController extends AdvanceSearchController
         $role = $request->input('role');
         $position = $request->input('position');
 
-        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
+        $user = $this->advanceSearch($name, $username, $company,
+         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
         return\ DataTables::of($user->get())
                         ->addColumn('checkbox', function ($model) {
@@ -178,7 +181,9 @@ class ClientController extends AdvanceSearchController
             $orders = $order->where('client', $id)->get();
             //dd($client);
 
-            return view('themes.default1.user.client.show', compact('id', 'client', 'invoices', 'model_popup', 'orders', 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+            return view('themes.default1.user.client.show', 
+                compact('id', 'client', 'invoices', 'model_popup', 'orders',
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
@@ -287,7 +292,8 @@ class ClientController extends AdvanceSearchController
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -297,7 +303,8 @@ class ClientController extends AdvanceSearchController
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
@@ -323,7 +330,9 @@ class ClientController extends AdvanceSearchController
         return response()->json(compact('options'));
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '', $role = '', $position = '')
+    public function advanceSearch($name = '', $username = '', $company = '',
+     $mobile = '', $email = '', $country = '', $industry = '',
+      $company_type = '', $company_size = '', $role = '', $position = '')
     {
         $join = DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);

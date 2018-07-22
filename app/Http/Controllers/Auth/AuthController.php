@@ -96,7 +96,8 @@ class AuthController extends BaseAuthController
                     return redirect($url);
                 }
 
-                return redirect($url)->with('success', 'Email verification successful.Please login to access your account !!');
+                return redirect($url)->with('success', 'Email verification successful.
+                    Please login to access your account !!');
             } else {
                 throw new NotFoundHttpException();
             }
@@ -229,7 +230,8 @@ class AuthController extends BaseAuthController
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 'user_id' => $userid, 'message' =>'Mobile verified..'];
+            $response = ['type' => 'success', 'proceed' => $check, 
+            'user_id' => $userid, 'message' =>'Mobile verified..'];
 
             return response()->json($response);
             // return redirect('/login');

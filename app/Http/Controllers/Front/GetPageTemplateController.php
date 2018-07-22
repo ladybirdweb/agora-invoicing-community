@@ -17,7 +17,8 @@ class GetPageTemplateController extends Controller
                 $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
-                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform[$value['id']]['subscription'] = $temp_controller
+                ->plans($value['shoping_cart_link'], $value['id']);
                 $trasform[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
@@ -61,7 +62,8 @@ class GetPageTemplateController extends Controller
                 $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform1[$value['id']]['name'] = $value['name'];
                 $trasform1[$value['id']]['feature'] = $value['description'];
-                $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform1[$value['id']]['subscription'] = $temp_controller
+                ->plans($value['shoping_cart_link'], $value['id']);
 
                 $trasform1[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }
@@ -84,7 +86,8 @@ class GetPageTemplateController extends Controller
                 $trasform2[$value['id']]['price'] = $temp_controller->leastAmountService($value['id']);
                 $trasform2[$value['id']]['name'] = $value['name'];
                 $trasform2[$value['id']]['feature'] = $value['description'];
-                $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+                $trasform2[$value['id']]['subscription'] = $temp_controller
+                ->plans($value['shoping_cart_link'], $value['id']);
 
                 $trasform2[$value['id']]['url'] = "<input type='submit' value='Order Now' class='btn btn-primary'></form>";
             }

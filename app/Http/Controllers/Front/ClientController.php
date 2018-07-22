@@ -128,7 +128,9 @@ class ClientController extends BaseClientController
     public function getVersionList($productid, $clientid, $invoiceid)
     {
         try {
-            $versions = ProductUpload::where('product_id', $productid)->select('id', 'product_id', 'version', 'title', 'description', 'file', 'created_at')->get();
+            $versions = ProductUpload::where('product_id', $productid)
+            ->select('id', 'product_id', 'version',
+             'title', 'description', 'file', 'created_at')->get();
 
             return \DataTables::of($versions)
                             ->addColumn('id', function ($versions) {
@@ -242,7 +244,7 @@ class ClientController extends BaseClientController
     public function getOrders()
     {
         try {
-            $orders = Order:: where('client', \Auth::user()->id);
+            $orders = Order::where('client', \Auth::user()->id);
 
             return \DataTables::of($orders->get())
                             ->addColumn('id', function ($model) {
@@ -273,7 +275,9 @@ class ClientController extends BaseClientController
 
                                 $listUrl = $this->getPopup($model, $productid);
 
-                                return '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
+                                return '<a href='.url('my-order/'.$model->id)." 
+                                class='btn  btn-primary btn-xs' style='margin-right:5px;'>
+                                <i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             ->make(true);
@@ -345,7 +349,8 @@ class ClientController extends BaseClientController
             $price = $product->price()->first();
             $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
+            return view('themes.default1.front.clients.show-order', 
+                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -371,7 +376,8 @@ class ClientController extends BaseClientController
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
                                 if (\Input::get('client') != 'true') {
-                                    return "<input type='checkbox' class='payment_checkbox' value=".$model->id.' name=select[] id=check>';
+                                    return "<input type='checkbox' class='payment_checkbox' 
+                                    value=".$model->id.' name=select[] id=check>';
                                 }
                             })
                             ->addColumn('number', function ($model) {
@@ -381,7 +387,8 @@ class ClientController extends BaseClientController
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['checkbox', 'number', 'total', 'payment_method', 'payment_status', 'created_at'])
+                            ->rawColumns(['checkbox', 'number', 'total',
+                             'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

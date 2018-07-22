@@ -83,12 +83,14 @@ class BaseClientController extends Controller
 
             $link = $githubApi->getCurl1($link['zipball_url']);
 
-            return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
-                .'&nbsp;
+            return '<p><a href='.$link['header']['Location']." 
+            class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>" .'&nbsp;
 
       </p>';
         } else {
-            return '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
+            return '<button class="btn btn-primary btn-sm disabled tooltip">
+            Download <span class="tooltiptext">Please Renew!!</span></button>';
         }
     }
 

@@ -359,7 +359,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, $currency, $qty, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, 
+        $currency, $qty, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
     {
         try {
             $discount = '';
@@ -472,7 +473,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
                         $taxs = $rate['taxes'];
                         $rate = $rate['rate'];
-                    } elseif ($geoip_country != 'IN') {//In case of other country when tax is available and tax is not enabled(Applicable when Global Tax class for any country and state is not there)
+                    } elseif ($geoip_country != 'IN') {//In case of other country
+                    // when tax is available and tax is not enabled(Applicable 
+                        //when Global Tax class for any country and state is not there)
 
                         $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
                         if ($taxClassId) { //if state equals the user State
@@ -531,7 +534,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         foreach ($taxes as $key => $tax) {
             if ($taxes[0]) {
-                $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1, 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code, 'origin_state'=>$origin_state];
+                $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1,
+                 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 
+                 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 
+                 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
+                  'origin_state'=>$origin_state];
 
                 $rate = $tax->rate;
 
@@ -564,7 +571,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -574,7 +582,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
@@ -827,7 +836,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> 
+                    './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
@@ -836,7 +846,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'

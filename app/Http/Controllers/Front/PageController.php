@@ -195,7 +195,8 @@ class PageController extends GetPageTemplateController
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -206,7 +207,8 @@ class PageController extends GetPageTemplateController
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
 
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
@@ -315,6 +317,8 @@ class PageController extends GetPageTemplateController
 
         $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
-        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3'));
+        return view('themes.default1.common.template.shoppingcart', 
+            compact('template', 'trasform', 'servicedesk_template', 'trasform1',
+                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3'));
     }
 }

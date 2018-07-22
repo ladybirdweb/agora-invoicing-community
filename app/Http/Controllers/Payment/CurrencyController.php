@@ -89,7 +89,8 @@ class CurrencyController extends Controller
         </div>
         <div class='modal-footer'>
             <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-            <input type=submit class='btn btn-primary' value="./* @scrutinizer ignore-type */\Lang::get('message.save').'>
+            <input type=submit class='btn btn-primary' value=".
+            /* @scrutinizer ignore-type */\Lang::get('message.save').'>
                 
         </div>
        
@@ -211,8 +212,8 @@ class CurrencyController extends Controller
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
-                    \Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
@@ -250,7 +251,8 @@ class CurrencyController extends Controller
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
                     \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'

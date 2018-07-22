@@ -163,7 +163,9 @@ namespace App\Http\Controllers\Product;
 
         public function getUpload($id)
         {
-            $new_upload = ProductUpload::where('product_id', '=', $id)->select('id', 'product_id', 'title', 'description', 'version', 'file')->get();
+            $new_upload = ProductUpload::where('product_id', '=', $id)
+            ->select('id', 'product_id', 'title', 'description', 'version', 'file')
+            ->get();
 
             return \DataTables::of($new_upload)
         ->addColumn('checkbox', function ($model) {
@@ -188,7 +190,10 @@ namespace App\Http\Controllers\Product;
             return $model->file;
         })
         ->addColumn('action', function ($model) {
-            return '<a href='.('#edit-upload-option/'.$model->id).'  class=" btn btn-sm btn-primary " data-title="'.$model->title.'" data-description="'.$model->description.'" data-version="'.$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
+            return '<a href='.('#edit-upload-option/'.$model->id).' 
+             class=" btn btn-sm btn-primary " data-title="'.$model->title.'"
+              data-description="'.$model->description.'" data-version="'
+              .$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
         })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
@@ -264,7 +269,9 @@ namespace App\Http\Controllers\Product;
                 $periods = $this->period->pluck('name', 'days')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
 
-                return view('themes.default1.product.product.create', compact('subscription', 'type', 'periods', 'currency', 'group', 'cartUrl', 'products', 'taxes'));
+                return view('themes.default1.product.product.create', 
+                    compact('subscription', 'type', 'periods', 'currency', 
+                        'group', 'cartUrl', 'products', 'taxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -371,7 +378,10 @@ namespace App\Http\Controllers\Product;
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
                 $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-                return view('themes.default1.product.product.edit', compact('product', 'periods', 'type', 'subscription', 'currency', 'group', 'price', 'cartUrl', 'products', 'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
+                return view('themes.default1.product.product.edit', 
+                    compact('product', 'periods', 'type', 'subscription', 
+                        'currency', 'group', 'price', 'cartUrl', 'products', 
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -473,7 +483,8 @@ namespace App\Http\Controllers\Product;
                             } else {
                                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
@@ -528,7 +539,9 @@ namespace App\Http\Controllers\Product;
                 $type = $product->type;
                 $owner = $product->github_owner;
                 $repository = $product->github_repository;
-                $file = $this->product_upload->where('product_id', '=', $uploadid)->where('id', $version_id)->select('file')->first();
+                $file = $this->product_upload
+                ->where('product_id', '=', $uploadid)
+                ->where('id', $version_id)->select('file')->first();
                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                 $order_id = $order->id;
                 if ($type == 2) {
@@ -578,8 +591,10 @@ namespace App\Http\Controllers\Product;
                 if ($product) {
                     if ($product->require_domain == 1) {
                         $field .= "<div class='col-md-4 form-group'>
-                            <label class='required'>"./* @scrutinizer ignore-type */ \Lang::get('message.domain')."</label>
-                            <input type='text' name='domain' class='form-control' id='domain' placeholder='http://example.com'>
+                            <label class='required'>"./* @scrutinizer ignore-type */
+                             \Lang::get('message.domain')."</label>
+                            <input type='text' name='domain' class='form-control' 
+                            id='domain' placeholder='http://example.com'>
                     </div>";
                     }
                 }

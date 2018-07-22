@@ -192,7 +192,8 @@ class SettingsController extends BaseSettingsController
     public function getActivity()
     {
         try {
-            $activity_log = Activity::select('id', 'log_name', 'description', 'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
+            $activity_log = Activity::select('id', 'log_name', 'description', 
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
 
             return\ DataTables::of($activity_log)
              ->addColumn('checkbox', function ($model) {
@@ -237,7 +238,8 @@ class SettingsController extends BaseSettingsController
                                     return $newDate;
                                 })
 
-                            ->rawColumns(['checkbox', 'name', 'description',   'username', 'role', 'new', 'old', 'created_at'])
+                            ->rawColumns(['checkbox', 'name', 'description',   
+                                'username', 'role', 'new', 'old', 'created_at'])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
@@ -287,7 +289,8 @@ class SettingsController extends BaseSettingsController
                                   return ucfirst($model->status);
                               })
 
-                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc', 'bcc', 'subject', 'headers', 'status'])
+                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc', 
+                                'bcc', 'subject', 'headers', 'status'])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
@@ -309,7 +312,8 @@ class SettingsController extends BaseSettingsController
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
-                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
 
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -319,14 +323,16 @@ class SettingsController extends BaseSettingsController
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.success').'
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
+                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
                     </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
+                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
                     </div>';

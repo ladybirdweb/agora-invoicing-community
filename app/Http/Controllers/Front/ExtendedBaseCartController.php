@@ -224,7 +224,8 @@ class ExtendedBaseCartController extends Controller
     /**
      * When from same Indian State.
      */
-    public function getTaxWhenIndianSameState($user_state, $origin_state, $productid, $c_gst, $s_gst, $state_code, $status)
+    public function getTaxWhenIndianSameState($user_state, $origin_state, 
+        $productid, $c_gst, $s_gst, $state_code, $status)
     {
         $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
@@ -265,7 +266,8 @@ class ExtendedBaseCartController extends Controller
     /**
      * When from Union Territory.
      */
-    public function getTaxWhenUnionTerritory($user_state, $origin_state, $productid, $c_gst, $ut_gst, $state_code, $status)
+    public function getTaxWhenUnionTerritory($user_state, $origin_state, 
+        $productid, $c_gst, $ut_gst, $state_code, $status)
     {
         $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {

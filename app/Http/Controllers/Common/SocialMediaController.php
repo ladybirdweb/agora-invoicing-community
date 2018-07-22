@@ -137,7 +137,8 @@ class SocialMediaController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> 
+                    './* @scrutinizer ignore-type */
                     \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
@@ -148,7 +149,8 @@ class SocialMediaController extends Controller
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
-                    <b>"./* @scrutinizer ignore-type */  \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
+                    <b>"./* @scrutinizer ignore-type */  \Lang::get('message.alert').
+                    '!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
 
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'

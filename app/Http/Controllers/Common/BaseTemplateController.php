@@ -41,7 +41,8 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                     $geoip_state = $geoip_state_array['id'];
                 }
             }
-            $result = $this->getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price);
+            $result = $this->getResult($country, $geoip_country, $state, $geoip_state, 
+                $shop, $cart, $cart1, $shop1, $rate, $product, $price);
 
             return $result;
         } catch (\Exception $ex) {
@@ -51,7 +52,8 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         }
     }
 
-    public function getResult($country, $geoip_country, $state, $geoip_state, $shop, $cart, $cart1, $shop1, $rate, $product, $price)
+    public function getResult($country, $geoip_country, $state, $geoip_state,
+     $shop, $cart, $cart1, $shop1, $rate, $product, $price)
     {
         if ($country == $geoip_country || $state == $geoip_state || ($country == '' && $state == '')) {
             $result = $this->getCartResult($product, $shop, $cart, $rate, $price, $cart1, $shop1);

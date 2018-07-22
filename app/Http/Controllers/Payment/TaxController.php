@@ -158,7 +158,9 @@ class TaxController extends Controller
                 $classes = $this->tax_class->get();
             }
 
-            return view('themes.default1.payment.tax.edit', compact('tax', 'classes', 'txClass', 'states', 'state', 'defaultValue'));
+            return view('themes.default1.payment.tax.edit', 
+                compact('tax', 'classes', 'txClass', 'states', 'state', 
+                    'defaultValue'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -202,7 +204,8 @@ class TaxController extends Controller
                 $country = 'IN';
                 $state = '';
                 $rate = '';
-                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId, 'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
+                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId, 
+                    'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
             }
 
             // $tax->fill($request->input())->save();
@@ -235,7 +238,8 @@ class TaxController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.failed').'
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!
+                        </b> './* @scrutinizer ignore-type */ \Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                     </div>';
@@ -322,7 +326,8 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-                $this->tax_class->fill($request->except('tax-name', 'level', 'active', 'country', 'country1', 'rate'))->save();
+                $this->tax_class->fill($request
+                    ->except('tax-name', 'level', 'active', 'country', 'country1', 'rate'))->save();
                 $country = ($request->input('rate')) ? $request->input('country') : $request->input('country1');
 
                 $this->tax->fill($request->except('tax-name', 'name', 'country'))->save();

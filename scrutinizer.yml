@@ -158,3 +158,18 @@ checks:
         argument_type_checks: true
         avoid_aliased_php_functions: true
         deadlock_detection_in_loops: true
+
+        build:
+    nodes:
+        coverage:
+            tests:
+                override:
+                    -
+                        command: 'vendor/bin/phpunit --coverage-clover=clover.xml'
+                        coverage:
+                            file: 'clover.xml'
+                            format: 'clover'
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run

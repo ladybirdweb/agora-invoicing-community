@@ -50,8 +50,8 @@ class ClientController extends AdvanceSearchController
         $role = $request->input('role');
         $position = $request->input('position');
 
-        return view('themes.default1.user.client.index', 
-            compact('name', 'username', 'company', 'mobile', 'email', 
+        return view('themes.default1.user.client.index',
+            compact('name', 'username', 'company', 'mobile', 'email',
                 'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
     }
 
@@ -181,7 +181,7 @@ class ClientController extends AdvanceSearchController
             $orders = $order->where('client', $id)->get();
             //dd($client);
 
-            return view('themes.default1.user.client.show', 
+            return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
                  'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
         } catch (\Exception $ex) {

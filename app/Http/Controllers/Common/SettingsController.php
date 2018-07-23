@@ -194,7 +194,7 @@ class SettingsController extends BaseSettingsController
     public function getActivity()
     {
         try {
-            $activity_log = Activity::select('id', 'log_name', 'description', 
+            $activity_log = Activity::select('id', 'log_name', 'description',
                 'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
 
             return\ DataTables::of($activity_log)
@@ -240,8 +240,8 @@ class SettingsController extends BaseSettingsController
                                     return $newDate;
                                 })
 
-                            ->rawColumns(['checkbox', 'name', 'description',   
-                                'username', 'role', 'new', 'old', 'created_at'])
+                            ->rawColumns(['checkbox', 'name', 'description',
+                                'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
@@ -291,8 +291,8 @@ class SettingsController extends BaseSettingsController
                                   return ucfirst($model->status);
                               })
 
-                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc', 
-                                'bcc', 'subject', 'headers', 'status'])
+                            ->rawColumns(['checkbox', 'date', 'from', 'to', 'cc',
+                                'bcc', 'subject', 'headers', 'status', ])
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);

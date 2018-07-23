@@ -230,8 +230,8 @@ class AuthController extends BaseAuthController
                 $user->save();
             }
             $check = $this->checkVerify($user);
-            $response = ['type' => 'success', 'proceed' => $check, 
-            'user_id' => $userid, 'message' =>'Mobile verified..'];
+            $response = ['type' => 'success', 'proceed' => $check,
+            'user_id'           => $userid, 'message' =>'Mobile verified..', ];
 
             return response()->json($response);
             // return redirect('/login');

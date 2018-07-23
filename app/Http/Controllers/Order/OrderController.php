@@ -140,7 +140,7 @@ class OrderController extends BaseOrderController
                         })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'ends_at', 'action'])
+                          'price_override', 'order_status', 'ends_at', 'action', ])
                         ->make(true);
     }
 

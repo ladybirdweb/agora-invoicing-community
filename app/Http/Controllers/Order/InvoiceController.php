@@ -359,7 +359,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price, 
+    public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,
         $currency, $qty, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
     {
         try {
@@ -474,7 +474,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         $taxs = $rate['taxes'];
                         $rate = $rate['rate'];
                     } elseif ($geoip_country != 'IN') {//In case of other country
-                    // when tax is available and tax is not enabled(Applicable 
+                        // when tax is available and tax is not enabled(Applicable
                         //when Global Tax class for any country and state is not there)
 
                         $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
@@ -535,10 +535,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         foreach ($taxes as $key => $tax) {
             if ($taxes[0]) {
                 $tax_attribute[$key] = ['name' => $tax->name, 'name1' => $name1,
-                 'name2'=> $name2, 'name3' => $name3, 'name4' => $name4, 
-                 'rate' => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst, 
-                 'rate3'=>$i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
-                  'origin_state'=>$origin_state];
+                 'name2'                       => $name2, 'name3' => $name3, 'name4' => $name4,
+                 'rate'                        => $value, 'rate1'=>$c_gst, 'rate2'=>$s_gst,
+                 'rate3'                       => $i_gst, 'rate4'=>$ut_gst, 'state'=>$state_code,
+                  'origin_state'               => $origin_state, ];
 
                 $rate = $tax->rate;
 

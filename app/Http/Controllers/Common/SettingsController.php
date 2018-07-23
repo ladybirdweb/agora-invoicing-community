@@ -425,6 +425,14 @@ class SettingsController extends Controller
 
     public function postSettingsEmail(Setting $settings, Request $request)
     {
+         $this->validate($request, [
+                'email'    => 'required',
+                'password' => 'required',
+                'driver'   => 'required',
+
+            ]);
+
+
         try {
             $setting = $settings->find(1);
             $setting->fill($request->input())->save();

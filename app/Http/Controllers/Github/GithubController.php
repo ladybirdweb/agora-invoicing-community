@@ -275,10 +275,10 @@ class GithubController extends Controller
     public function postSettings(Request $request)
     {
         $this->validate($request, [
-            'username' => 'required',
-            'password' => 'required',
-            'client_id'=>'required',
-            'client_secret'=>'required'
+            'username'     => 'required',
+            'password'     => 'required',
+            'client_id'    => 'required',
+            'client_secret'=> 'required',
         ]);
 
         try {

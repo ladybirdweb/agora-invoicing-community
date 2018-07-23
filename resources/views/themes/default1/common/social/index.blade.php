@@ -47,8 +47,7 @@
                     <thead><tr>
                          <th>Name</th>
                           <th>Type</th>
-                          <th>Created At</th>
-                          <th>Content</th>
+                           <th>Content</th>
                           <th>Action</th>
                         </tr></thead>
                      </table>

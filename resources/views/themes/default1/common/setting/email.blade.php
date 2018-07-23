@@ -49,7 +49,7 @@
                             <div class="form-group {{ $errors->has('driver') ? 'has-error' : '' }}">
 
 
-                                {!! Form::select('driver',['mail'=>'Mail','smtp'=>'SMTP'],null,['class' => 'form-control']) !!}
+                                {!! Form::select('driver',[''=>'Select','smtp'=>'SMTP'],null,['class' => 'form-control']) !!}
                                 <p><i> {{Lang::get('message.select-email-driver')}}</i> </p>
 
 

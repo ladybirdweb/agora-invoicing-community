@@ -429,6 +429,9 @@ class SettingsController extends Controller
                 'email'    => 'required',
                 'password' => 'required',
                 'driver'   => 'required',
+                'port'     => 'required',
+                'encryption'=>'required',
+                
 
             ]);
 

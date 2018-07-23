@@ -285,6 +285,59 @@
 <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
+<!-- <script>
+    // Jquery validation for Product Creation
+    $(document).ready(function(){
+        $('#namecheck').hide();
+        $('#descheck').hide();
+
+        var nameErr= true;
+        var desErr = true;
+
+        $('#createproduct').submit(function(){
+            function name_check(){
+                var name = $('#productname').val();
+                if (name.length == ''){
+                   $('#namecheck').show(); 
+                   $('#namecheck').html('This field is required'); 
+                   $('#namecheck').focus();
+                   $('#productname').css("border-color","red");
+                   $('#namecheck').css({"color":"red","margin-top":"5px"});
+                }
+                 else{
+                     $('#namecheck').hide();
+                      $('#productname').css("border-color","");
+                     return true;
+                     }
+            }
+
+            function des_check(){
+                var des = $('#textarea').val();
+                if (des.length == ''){
+                    $('#descheck').show();
+                    $('#descheck').html('This field is required');
+                    $('#descheck').focus();
+                    $('#textarea').css("border-color","red");
+                    $('#descheck').css({"color":"red","margin-top":"5px"});
+                }
+                else{
+                     $('#descheck').hide();
+                     $('#textarea').css("border-color","");
+                     return true;
+                }
+            }
+            name_check();
+            des_check();
+             if(name_check() && des_check()){
+                return true;
+             }
+            else{
+            return false;
+          }
+        });
+    });
+</script> -->
+
 
 
 <script>

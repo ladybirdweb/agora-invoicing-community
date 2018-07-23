@@ -286,6 +286,7 @@ use App\Http\Controllers\Controller;
                         'name'    => 'required|unique:products,name',
                         'type'    => 'required',
                         'group'   => 'required',
+                        'description'=>'required',
                         // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
@@ -508,6 +509,7 @@ use App\Http\Controllers\Controller;
          */
         public function destroy(Request $request)
         {
+
             try {
                 $ids = $request->input('select');
                 if (!empty($ids)) {
@@ -556,7 +558,9 @@ use App\Http\Controllers\Controller;
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
+
             }
+             
         }
 
         /**

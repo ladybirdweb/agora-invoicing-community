@@ -705,6 +705,7 @@ class InvoiceController extends Controller
 
             return $taxs;
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -731,59 +732,16 @@ class InvoiceController extends Controller
         $ut_gst = 0;
         $state_code = '';
         if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user
-            $c_gst = $user_state->c_gst;
-            $s_gst = $user_state->s_gst;
-            $i_gst = $user_state->i_gst;
-            $ut_gst = $user_state->ut_gst;
-            $state_code = $user_state->state_code;
 
-            if ($state_code == $origin_state) {//If user and origin state are same
-             $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
-               if ($taxClassId) {
-                   $taxes = $cartController->getTaxByPriority($taxClassId);
-                   $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
-               } else {
-                   $taxes = [0];
-               }
-            } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
+            $tax = $this->getTaxWhenState($user_state, $productid, $origin_state);
+            $taxes = $tax['taxes'];
+            $value = $tax['value'];
+             } else {//If user from other Country
+            $tax = $this->getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid);
+            $taxes = $tax['taxes'];
+            $value = $tax['value'];
+            $rate = $tax['rate'];
 
-                $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
-                if ($taxClassId) {
-                    $taxes = $cartController->getTaxByPriority($taxClassId);
-                    $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
-                } else {
-                    $taxes = [0];
-                }
-            } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
-        $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
-         if ($taxClassId) {
-             $taxes = $cartController->getTaxByPriority($taxClassId);
-             $value = $cartController->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
-         } else {
-             $taxes = [0];
-         }
-            }
-        } else {//If user from other Country
-
-            $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
-
-            if ($taxClassId) { //if state equals the user State
-
-                $taxes = $cartController->getTaxByPriority($taxClassId);
-
-                // $taxes = $this->cartController::getTaxByPriority($taxClassId);
-                $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
-                $rate = $value;
-            } else {//if Tax is selected for Any State Any Country
-                $taxClassId = Tax::where('country', '')->where('state', 'Any State')->pluck('tax_classes_id')->first();
-                if ($taxClassId) {
-                    $taxes = $cartController->getTaxByPriority($taxClassId);
-                    $value = $cartController->getValueForOthers($productid, $taxClassId, $taxes);
-                    $rate = $value;
-                } else {
-                    $taxes = [0];
-                }
-            }
         }
 
         foreach ($taxes as $key => $tax) {

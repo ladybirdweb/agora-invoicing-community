@@ -19,6 +19,7 @@
                       <select name="name" id="gst" class="form-control">
                       <option value="Others">Others</option>
                        @if($taxType[0]==1)
+                       
                       <option value="Intra State GST">Intra State GST</option>
                       <option value="Inter State GST">Inter State GST</option>
                       <option value="Union Territory GST">Union Territory GST</option>
@@ -82,7 +83,13 @@
                  <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
+<<<<<<< HEAD
                     {!! Form::text('rate',null,['class' => 'form-control']) !!}
+=======
+                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
+                    <h6 id="ratecheck"> </h6>
+                  
+>>>>>>> ddca1e27... bug fixes
 
                 </div>
                   
@@ -131,4 +138,62 @@
     });
 });
 </script>
+<<<<<<< HEAD
+=======
+
+<script>
+     $(document).ready(function(){
+        $('#namecheck').hide();
+      
+      $('#taxClass').submit(function(){
+        function tax_nameCheck()
+        {
+            var tax_name = $('#taxname').val();
+            if (tax_name.length == ''){
+                   $('#namecheck').show(); 
+                   $('#namecheck').html('This field is required'); 
+                   $('#namecheck').focus();
+                   $('#taxname').css("border-color","red");
+                   $('#namecheck').css({"color":"red","margin-top":"5px"});
+            }
+            else{
+                 $('#namecheck').hide();
+                 $('#taxname').css("border-color","");
+                 return true;
+            }
+        }
+
+        function ratecheck()
+        {
+            var rate = $('#rate').val();
+            if (rate.length == ''){
+                   $('#ratecheck').show(); 
+                   $('#ratecheck').html('This field is required'); 
+                   $('#ratecheck').focus();
+                   $('#rate').css("border-color","red");
+                   $('#ratecheck').css({"color":"red","margin-top":"5px"});
+            }
+            else{
+                 $('#ratecheck').hide();
+                 $('#rate').css("border-color","");
+                 return true;
+            }
+        }
+
+        
+        tax_nameCheck();
+        // ratecheck();
+       
+       
+        if(tax_nameCheck()){
+                return true;
+             }
+            else{
+            return false;
+          }
+      });
+
+    });
+</script>
+>>>>>>> ddca1e27... bug fixes
 {!! Form::close()  !!}

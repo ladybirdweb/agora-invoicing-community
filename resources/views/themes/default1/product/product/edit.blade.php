@@ -407,7 +407,7 @@
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                           <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
                     <thead><tr>
-                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                         <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Version</th>

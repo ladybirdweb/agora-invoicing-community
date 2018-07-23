@@ -266,33 +266,5 @@
     <!-- ./box-body -->
 </div>
 
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">Plugins</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <div class="row">
-            <div class="col-md-12">
-                <!--/.col-md-2-->
-                <div class="col-md-2 col-sm-6">
-                    <div class="settingiconblue">
-                        <div class="settingdivblue">
-                            <a href="{{ url('plugin') }}">
-                                <span class="fa-stack fa-2x">
-                                    <i class="fa fa-plug fa-stack-1x"></i>
-                                </span>
-                            </a>
-                        </div>
-                        <p class="box-title" >Plugins</p>
-                    </div>
-                </div>
-                <!--/.col-md-2-->
 
-            </div>
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- ./box-body -->
-</div>
 @stop

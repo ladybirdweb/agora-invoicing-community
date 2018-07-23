@@ -46,11 +46,11 @@
                    <table id="widgets-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
+                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Name</th>
                           <th>Type</th>
                           <th>Created At</th>
-                          <th>Content</th>
-                          <th>Action</th>
+                           <th>Action</th>
                         </tr></thead>
                      </table>
                 
@@ -81,7 +81,7 @@
      
             columns: [
                
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
                 {data: 'created_at', name: 'Created At'},
                 {data: 'action', name: 'Action'}

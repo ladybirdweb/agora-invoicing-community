@@ -51,7 +51,7 @@
                     <table id="plan-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
-                             <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                             <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
                             <th>Months</th>
                             <th>Product</th>

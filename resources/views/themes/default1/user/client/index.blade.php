@@ -140,6 +140,7 @@
                     $(function () {
                     $('#reset').on('click', function () {
                         $('#country').val('');
+                        $('#company').val('');
                         $('#industry').val('');
                         $('#name').val('');
                         $('#email').val('');

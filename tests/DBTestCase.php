@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\User;
 use DB;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use ReflectionClass;
 
 /**
@@ -12,8 +11,6 @@ use ReflectionClass;
  */
 class DBTestCase extends TestCase
 {
-    use DatabaseTransactions;
-
     protected $user;
     protected $token;
     protected $organization;

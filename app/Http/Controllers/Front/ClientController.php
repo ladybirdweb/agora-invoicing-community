@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Github\GithubApiController;
+use App\Http\Requests\User\ProfileRequest;
 use App\Model\Common\Timezone;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
@@ -14,12 +16,10 @@ use App\Model\Product\Subscription;
 use App\User;
 use Auth;
 use Bugsnag;
-use DateTime;
-use DateTimeZone;
 use Exception;
-use GrahamCampbell\Markdown\Facades\Markdown;
+use Hash;
 
-class ClientController extends BaseClientController
+class ClientController extends Controller
 {
     public $user;
     public $invoice;
@@ -77,7 +77,7 @@ class ClientController extends BaseClientController
             $invoices = Invoice::where('user_id', \Auth::user()->id)
                     ->select('number', 'created_at', 'grand_total', 'id', 'status');
 
-            return \DataTables::of($invoices->get())
+            return \DataTables::of($invoices)
                             ->addColumn('number', function ($model) {
                                 return $model->number;
                             })
@@ -128,9 +128,7 @@ class ClientController extends BaseClientController
     public function getVersionList($productid, $clientid, $invoiceid)
     {
         try {
-            $versions = ProductUpload::where('product_id', $productid)
-            ->select('id', 'product_id', 'version',
-             'title', 'description', 'file', 'created_at')->get();
+            $versions = ProductUpload::where('product_id', $productid)->select('id', 'product_id', 'version', 'title', 'description', 'file', 'created_at')->get();
 
             return \DataTables::of($versions)
                             ->addColumn('id', function ($versions) {
@@ -146,12 +144,11 @@ class ClientController extends BaseClientController
                                 return ucfirst($versions->description);
                             })
                             ->addColumn('file', function ($versions) use ($clientid, $invoiceid, $productid) {
-                                $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
-                                $order = Order::where('invoice_id', '=', $invoice_id)->first();
-                                $order_id = $order->id;
-                                $endDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
+                                // $clientid=\Auth::User()->id;
+                                $endDate = Subscription::select('ends_at')->where('product_id', $productid)->first();
+
                                 if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
-                                    return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
+                                    return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'>Download</a>"
                                             .'&nbsp;
 
                                    </p>';
@@ -178,8 +175,6 @@ class ClientController extends BaseClientController
     {
         try {
             $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
-            $owner = '';
-            $repo = '';
             foreach ($products as $product) {
                 $owner = $product->github_owner;
                 $repo = $product->github_repository;
@@ -191,24 +186,30 @@ class ClientController extends BaseClientController
 
             return \DataTables::of($link)
                             ->addColumn('version', function ($link) {
+                                // dd($link['tag_name']);
                                 return ucfirst($link['tag_name']);
                             })
                             ->addColumn('name', function ($link) {
                                 return ucfirst($link['name']);
                             })
                             ->addColumn('description', function ($link) {
-                                $markdown = Markdown::convertToHtml(ucfirst($link['body']));
-
-                                return $markdown;
+                                return ucfirst($link['body']);
                             })
-                            ->addColumn('file', function ($link) use ($invoiceid, $productid) {
+                            ->addColumn('file', function ($link) use ($clientid, $invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
                                 $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
-                                    $actionButton = $this->getActionButton($link, $orderEndDate);
+                                    if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+                                        $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                                    return $actionButton;
+                                        return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
+                                                .'&nbsp;
+
+                                   </p>';
+                                    } else {
+                                        return '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
+                                    }
                                 } elseif (!$orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
@@ -244,9 +245,9 @@ class ClientController extends BaseClientController
     public function getOrders()
     {
         try {
-            $orders = Order::where('client', \Auth::user()->id);
+            $orders = Order:: where('client', \Auth::user()->id);
 
-            return \DataTables::of($orders->get())
+            return \DataTables::of($orders)
                             ->addColumn('id', function ($model) {
                                 return $model->id;
                             })
@@ -255,11 +256,18 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('expiry', function ($model) {
                                 $tz = \Auth::user()->timezone()->first()->name;
-                                $end = $this->getExpiryDate($model);
+                                $end = '--';
+                                if ($model->subscription()->first()) {
+                                    if ($end != '0000-00-00 00:00:00' || $end != null) {
+                                        $ends = $model->subscription()->first()->ends_at;
+                                        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $ends, 'UTC');
+                                        $end = $date;
+                                        // dd($end);
+                                    }
+                                }
 
-                                return $end;
+                                return $end->setTimezone($tz);
                             })
-
                             ->addColumn('Action', function ($model) {
                                 $sub = $model->subscription()->first();
                                 $order = Order::where('id', $model->id)->select('product')->first();
@@ -271,17 +279,27 @@ class ClientController extends BaseClientController
                                     if ($sub) {
                                         $url = $this->renewPopup($sub->id, $productid);
                                     }
+                                    //$url = '<a href=' . url('renew/' . $sub->id) . " class='btn btn-sm btn-primary' title='Renew the order'>Renew</a>";
+                                }
+                                $productCheck = $model->product()->select('github_owner', 'github_repository')->where('id', $model->product)->first();
+                                if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+                                    $listUrl = $this->downloadGithubPopup($model->client, $model->invoice()->first()->id, $productid);
+                                } else {
+                                    $listUrl = $this->downloadPopup($model->client, $model->invoice()->first()->number, $productid);
                                 }
 
-                                $listUrl = $this->getPopup($model, $productid);
+                                // return '<p><a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i>  $url $listUrl</a>"
+                                //         .'&nbsp;
 
-                                return '<a href='.url('my-order/'.$model->id)." 
-                                class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
+                                //    </p>';
+
+                                return  '<a href='.url('my-order/'.$model->id)." class='btn  btn-primary btn-xs' style='margin-right:5px;'><i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
+                            // ->orderColumns('id', 'created_at', 'ends_at', 'product')
                             ->make(true);
         } catch (Exception $ex) {
+            // dd($ex->getline());
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
@@ -295,6 +313,28 @@ class ClientController extends BaseClientController
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getSubscriptions()
+    {
+        try {
+            $subscriptions = $this->subscription->where('user_id', \Auth::user()->id)->get();
+
+            return \Datatable::collection($subscriptions)
+                            ->addColumn('id', function ($model) {
+                                return $model->id;
+                            })
+                            ->showColumns('created_at')
+                            ->addColumn('ends_at', function ($model) {
+                                return $model->subscription()->first()->ends_at;
+                            })
+                            ->searchColumns('id', 'created_at', 'ends_at')
+                            ->orderColumns('created_at', 'ends_at')
+                            ->make();
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+            echo $ex->getMessage();
         }
     }
 
@@ -317,6 +357,54 @@ class ClientController extends BaseClientController
         }
     }
 
+    public function postProfile(ProfileRequest $request)
+    {
+        try {
+            $user = \Auth::user();
+            if ($request->hasFile('profile_pic')) {
+                $name = \Input::file('profile_pic')->getClientOriginalName();
+                $destinationPath = 'dist/app/users';
+                $fileName = rand(0000, 9999).'.'.$name;
+                \Input::file('profile_pic')->move($destinationPath, $fileName);
+                $user->profile_pic = $fileName;
+            }
+            $user->fill($request->input())->save();
+            $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
+
+            return $response;
+            // return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (Exception $e) {
+            $result = [$ex->getMessage()];
+
+            return response()->json(compact('result'), 500);
+            Bugsnag::notifyException($e);
+        }
+    }
+
+    public function postPassword(ProfileRequest $request)
+    {
+        try {
+            $user = \Auth::user();
+            $oldpassword = $request->input('old_password');
+            $currentpassword = $user->getAuthPassword();
+            $newpassword = $request->input('new_password');
+            if (\Hash::check($oldpassword, $currentpassword)) {
+                $user->password = Hash::make($newpassword);
+                $user->save();
+                $response = ['type'=>'success', 'message'=>'Password Updated Successfully'];
+
+                return $response;
+            } else {
+                $response = ['type'=>'error', 'message'=>'Password Not Updated'];
+            }
+        } catch (\Exception $e) {
+            $result = [$e->getMessage()];
+
+            return response()->json(compact('result'), 500);
+            Bugsnag::notifyException($e);
+        }
+    }
+
     public function getInvoice($id)
     {
         try {
@@ -336,25 +424,92 @@ class ClientController extends BaseClientController
     {
         try {
             $order = $this->order->findOrFail($id);
-            $invoice = $order->invoice()->first();
-            $items = $order->invoice()->first()->invoiceItem()->get();
-            $subscription = '';
-            $plan = '';
-            if ($order->subscription) {
-                $subscription = $order->subscription;
+            //dd($order);
+            if ($order) {
+                $invoice = $order->invoice()->first();
+                $items = $order->invoice()->first()->invoiceItem()->get();
+                $subscription = '';
+                $plan = '';
+                if ($order->subscription) {
+                    $subscription = $order->subscription;
 
-                $plan = $subscription->plan()->first();
+                    $plan = $subscription->plan()->first();
+                }
+                $product = $order->product()->first();
+                $price = $product->price()->first();
+                //dd($price);
+                $user = \Auth::user();
+
+                return view('themes.default1.front.clients.show-order', compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
             }
-            $product = $order->product()->first();
-            $price = $product->price()->first();
-            $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription'));
+            throw new Exception('Sorry! We can not find your order');
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 
             return redirect('/')->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getSubscription($id)
+    {
+        try {
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getInvoicesByOrderId($orderid, $userid)
+    {
+        try {
+            $order = $this->order->where('id', $orderid)->where('client', $userid)->first();
+
+            $relation = $order->invoiceRelation()->pluck('invoice_id')->toArray();
+            $invoices = $this->invoice
+                    ->select('number', 'created_at', 'grand_total', 'id', 'status')
+                    ->whereIn('id', $relation);
+            if ($invoices->get()->count() == 0) {
+                $invoices = $order->invoice()
+                        ->select('number', 'created_at', 'grand_total', 'id', 'status');
+            }
+
+            return \DataTables::of($invoices->get())
+                            ->addColumn('number', function ($model) {
+                                return $model->number;
+                            })
+                            ->addColumn('products', function ($model) {
+                                $invoice = $this->invoice->find($model->id);
+                                $products = $invoice->invoiceItem()->pluck('product_name')->toArray();
+
+                                return ucfirst(implode(',', $products));
+                            })
+                            ->addColumn('date', function ($model) {
+                                $date = date_create($model->created_at);
+
+                                return $date;
+                                // return date_format($date, 'l, F j, Y H:m A');
+                            })
+                            ->addColumn('total', function ($model) {
+                                return $model->grand_total;
+                            })
+                            ->addColumn('status', function ($model) {
+                                return ucfirst($model->status);
+                            })
+                            ->addColumn('action', function ($model) {
+                                if (\Auth::user()->role == 'admin') {
+                                    $url = '/invoices/show?invoiceid='.$model->id;
+                                } else {
+                                    $url = 'my-invoice';
+                                }
+
+                                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                            })
+                            ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
+                            ->make(true);
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -372,12 +527,11 @@ class ClientController extends BaseClientController
             }
             $payments = $this->payment->whereIn('invoice_id', $invoices)
                     ->select('id', 'invoice_id', 'user_id', 'amount', 'payment_method', 'payment_status', 'created_at');
-
+            //dd(\Input::all());
             return \DataTables::of($payments->get())
                             ->addColumn('checkbox', function ($model) {
                                 if (\Input::get('client') != 'true') {
-                                    return "<input type='checkbox' class='payment_checkbox' 
-                                    value=".$model->id.' name=select[] id=check>';
+                                    return "<input type='checkbox' class='payment_checkbox' value=".$model->id.' name=select[] id=check>';
                                 }
                             })
                             ->addColumn('number', function ($model) {
@@ -387,8 +541,7 @@ class ClientController extends BaseClientController
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
-                            ->rawColumns(['checkbox', 'number', 'total',
-                             'payment_method', 'payment_status', 'created_at', ])
+                            ->rawColumns(['checkbox', 'number', 'total', 'payment_method', 'payment_status', 'created_at'])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -418,12 +571,10 @@ class ClientController extends BaseClientController
                                   return $model->amount;
                               })
                                ->addColumn('created_at', function ($model) {
-                                   $date1 = new DateTime($model->created_at);
                                    $tz = \Auth::user()->timezone()->first()->name;
-                                   $date1->setTimezone(new DateTimeZone($tz));
-                                   $date = $date1->format('M j, Y, g:i a');
+                                   $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $model->created_at, 'UTC');
 
-                                   return $date;
+                                   return $date->setTimezone($tz);
                                })
 
                             ->addColumn('payment_method', 'payment_status', 'created_at')
@@ -435,5 +586,20 @@ class ClientController extends BaseClientController
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    public function renewPopup($id, $productid)
+    {
+        return view('themes.default1.renew.popup', compact('id', 'productid'));
+    }
+
+    public function downloadPopup($clientid, $invoiceid, $productid)
+    {
+        return view('themes.default1.front.clients.download-list', compact('clientid', 'invoiceid', 'productid'));
+    }
+
+    public function downloadGithubPopup($clientid, $invoiceid, $productid)
+    {
+        return view('themes.default1.front.clients.download-github-list', compact('clientid', 'invoiceid', 'productid'));
     }
 }

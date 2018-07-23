@@ -2,14 +2,6 @@
 
 ## Changelog
 
-### v1.2.1 - 2018-06-12
-
-- TransformerMakeCommand namespace typo [#14](https://github.com/yajra/laravel-datatables-fractal/pull/14)
-
-### v1.2.0 - 2018-03-28
-
-- Add make:transformer command [#13](https://github.com/yajra/laravel-datatables-fractal/pull/13)
-
 ### v1.1.1 - 2017-12-26
 
 - Use collection if data key is not set. [#11](https://github.com/yajra/laravel-datatables-fractal/pull/11)

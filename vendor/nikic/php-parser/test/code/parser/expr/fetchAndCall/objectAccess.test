@@ -19,161 +19,122 @@ $a->b(){'c'}; // invalid PHP: drop Support?
 -----
 !!php5
 array(
-    0: Stmt_Expression(
-        expr: Expr_PropertyFetch(
-            var: Expr_Variable(
-                name: a
-                comments: array(
-                    0: // property fetch variations
-                )
-            )
-            name: Identifier(
-                name: b
-            )
+    0: Expr_PropertyFetch(
+        var: Expr_Variable(
+            name: a
             comments: array(
                 0: // property fetch variations
             )
         )
+        name: b
         comments: array(
             0: // property fetch variations
         )
     )
-    1: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_PropertyFetch(
-                var: Expr_Variable(
-                    name: a
-                )
-                name: Identifier(
-                    name: b
-                )
-            )
-            dim: Scalar_String(
-                value: c
-            )
-        )
-    )
-    2: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_PropertyFetch(
-                var: Expr_Variable(
-                    name: a
-                )
-                name: Identifier(
-                    name: b
-                )
-            )
-            dim: Scalar_String(
-                value: c
-            )
-        )
-    )
-    3: Stmt_Expression(
-        expr: Expr_MethodCall(
+    1: Expr_ArrayDimFetch(
+        var: Expr_PropertyFetch(
             var: Expr_Variable(
                 name: a
-                comments: array(
-                    0: // method call variations
-                )
             )
-            name: Identifier(
-                name: b
+            name: b
+        )
+        dim: Scalar_String(
+            value: c
+        )
+    )
+    2: Expr_ArrayDimFetch(
+        var: Expr_PropertyFetch(
+            var: Expr_Variable(
+                name: a
             )
-            args: array(
-            )
+            name: b
+        )
+        dim: Scalar_String(
+            value: c
+        )
+    )
+    3: Expr_MethodCall(
+        var: Expr_Variable(
+            name: a
             comments: array(
                 0: // method call variations
             )
+        )
+        name: b
+        args: array(
         )
         comments: array(
             0: // method call variations
         )
     )
-    4: Stmt_Expression(
-        expr: Expr_MethodCall(
-            var: Expr_Variable(
-                name: a
-            )
-            name: Scalar_String(
-                value: b
-            )
-            args: array(
-            )
+    4: Expr_MethodCall(
+        var: Expr_Variable(
+            name: a
+        )
+        name: Scalar_String(
+            value: b
+        )
+        args: array(
         )
     )
-    5: Stmt_Expression(
-        expr: Expr_MethodCall(
+    5: Expr_MethodCall(
+        var: Expr_Variable(
+            name: a
+        )
+        name: Expr_Variable(
+            name: b
+        )
+        args: array(
+        )
+    )
+    6: Expr_MethodCall(
+        var: Expr_Variable(
+            name: a
+        )
+        name: Expr_ArrayDimFetch(
             var: Expr_Variable(
-                name: a
-            )
-            name: Expr_Variable(
                 name: b
             )
-            args: array(
+            dim: Scalar_String(
+                value: c
             )
         )
+        args: array(
+        )
     )
-    6: Stmt_Expression(
-        expr: Expr_MethodCall(
+    7: Expr_ArrayDimFetch(
+        var: Expr_MethodCall(
             var: Expr_Variable(
                 name: a
-            )
-            name: Expr_ArrayDimFetch(
-                var: Expr_Variable(
-                    name: b
-                )
-                dim: Scalar_String(
-                    value: c
-                )
-            )
-            args: array(
-            )
-        )
-    )
-    7: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_MethodCall(
-                var: Expr_Variable(
-                    name: a
-                    comments: array(
-                        0: // array dereferencing
-                    )
-                )
-                name: Identifier(
-                    name: b
-                )
-                args: array(
-                )
                 comments: array(
                     0: // array dereferencing
                 )
             )
-            dim: Scalar_String(
-                value: c
+            name: b
+            args: array(
             )
             comments: array(
                 0: // array dereferencing
             )
         )
+        dim: Scalar_String(
+            value: c
+        )
         comments: array(
             0: // array dereferencing
         )
     )
-    8: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_MethodCall(
-                var: Expr_Variable(
-                    name: a
-                )
-                name: Identifier(
-                    name: b
-                )
-                args: array(
-                )
+    8: Expr_ArrayDimFetch(
+        var: Expr_MethodCall(
+            var: Expr_Variable(
+                name: a
             )
-            dim: Scalar_String(
-                value: c
+            name: b
+            args: array(
             )
+        )
+        dim: Scalar_String(
+            value: c
         )
     )
     9: Stmt_Nop(

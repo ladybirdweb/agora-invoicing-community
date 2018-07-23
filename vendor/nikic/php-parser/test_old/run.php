@@ -110,24 +110,17 @@ switch ($testType) {
         showHelp('Test type must be one of: PHP5, PHP7 or Symfony');
 }
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once dirname(__FILE__) . '/../lib/PhpParser/Autoloader.php';
+PhpParser\Autoloader::register();
 
-$lexer = new PhpParser\Lexer\Emulative(['usedAttributes' => [
-    'comments', 'startLine', 'endLine', 'startTokenPos', 'endTokenPos',
-]]);
-$parserName = 'PhpParser\Parser\\' . $version;
-/** @var PhpParser\Parser $parser */
-$parser = new $parserName($lexer);
+$parserName    = 'PhpParser\Parser\\' . $version;
+$parser        = new $parserName(new PhpParser\Lexer\Emulative);
 $prettyPrinter = new PhpParser\PrettyPrinter\Standard;
-$nodeDumper = new PhpParser\NodeDumper;
+$nodeDumper    = new PhpParser\NodeDumper;
 
-$cloningTraverser = new PhpParser\NodeTraverser;
-$cloningTraverser->addVisitor(new PhpParser\NodeVisitor\CloningVisitor);
+$parseFail = $ppFail = $compareFail = $count = 0;
 
-$parseFail = $fpppFail = $ppFail = $compareFail = $count = 0;
-
-$readTime = $parseTime = $cloneTime = 0;
-$fpppTime = $ppTime = $reparseTime = $compareTime = 0;
+$readTime = $parseTime = $ppTime = $reparseTime = $compareTime = 0;
 $totalStartTime = microtime(true);
 
 foreach (new RecursiveIteratorIterator(
@@ -139,10 +132,10 @@ foreach (new RecursiveIteratorIterator(
     }
 
     $startTime = microtime(true);
-    $origCode = file_get_contents($file);
+    $code = file_get_contents($file);
     $readTime += microtime(true) - $startTime;
 
-    if (null === $origCode = $codeExtractor($file, $origCode)) {
+    if (null === $code = $codeExtractor($file, $code)) {
         continue;
     }
 
@@ -156,30 +149,11 @@ foreach (new RecursiveIteratorIterator(
 
     try {
         $startTime = microtime(true);
-        $origStmts = $parser->parse($origCode);
+        $stmts = $parser->parse($code);
         $parseTime += microtime(true) - $startTime;
 
-        $origTokens = $lexer->getTokens();
-
         $startTime = microtime(true);
-        $stmts = $cloningTraverser->traverse($origStmts);
-        $cloneTime += microtime(true) - $startTime;
-
-        $startTime = microtime(true);
-        $code = $prettyPrinter->printFormatPreserving($stmts, $origStmts, $origTokens);
-        $fpppTime += microtime(true) - $startTime;
-
-        if ($code !== $origCode) {
-            echo $file, ":\n Result of format-preserving pretty-print differs\n";
-            if ($verbose) {
-                echo "FPPP output:\n=====\n$code\n=====\n\n";
-            }
-
-            ++$fpppFail;
-        }
-
-        $startTime = microtime(true);
-        $code = "<?php\n" . $prettyPrinter->prettyPrint($stmts);
+        $code = '<?php' . "\n" . $prettyPrinter->prettyPrint($stmts);
         $ppTime += microtime(true) - $startTime;
 
         try {
@@ -226,9 +200,6 @@ if (0 === $parseFail && 0 === $ppFail && 0 === $compareFail) {
     if (0 !== $ppFail) {
         echo '    ', $ppFail,      ' pretty print failures.', "\n";
     }
-    if (0 !== $fpppFail) {
-        echo '    ', $fpppFail,      ' FPPP failures.', "\n";
-    }
     if (0 !== $compareFail) {
         echo '    ', $compareFail, ' compare failures.',      "\n";
     }
@@ -239,8 +210,6 @@ echo "\n",
      "\n",
      'Reading files took:   ', $readTime,    "\n",
      'Parsing took:         ', $parseTime,   "\n",
-     'Cloning took:         ', $cloneTime,   "\n",
-     'FPPP took:            ', $fpppTime,    "\n",
      'Pretty printing took: ', $ppTime,      "\n",
      'Reparsing took:       ', $reparseTime, "\n",
      'Comparing took:       ', $compareTime, "\n",

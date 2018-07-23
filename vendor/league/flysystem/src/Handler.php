@@ -4,9 +4,6 @@ namespace League\Flysystem;
 
 use BadMethodCallException;
 
-/**
- * @deprecated
- */
 abstract class Handler
 {
     /**

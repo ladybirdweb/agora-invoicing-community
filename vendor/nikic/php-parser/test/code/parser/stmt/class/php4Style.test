@@ -11,9 +11,7 @@ class A {
 array(
     0: Stmt_Class(
         flags: 0
-        name: Identifier(
-            name: A
-        )
+        name: A
         extends: null
         implements: array(
         )
@@ -22,9 +20,7 @@ array(
                 flags: 0
                 props: array(
                     0: Stmt_PropertyProperty(
-                        name: VarLikeIdentifier(
-                            name: foo
-                        )
+                        name: foo
                         default: null
                     )
                 )
@@ -32,9 +28,7 @@ array(
             1: Stmt_ClassMethod(
                 flags: 0
                 byRef: false
-                name: Identifier(
-                    name: bar
-                )
+                name: bar
                 params: array(
                 )
                 returnType: null
@@ -44,9 +38,7 @@ array(
             2: Stmt_ClassMethod(
                 flags: MODIFIER_ABSTRACT | MODIFIER_STATIC (24)
                 byRef: false
-                name: Identifier(
-                    name: baz
-                )
+                name: baz
                 params: array(
                 )
                 returnType: null

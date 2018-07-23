@@ -1,13 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node\Stmt;
 
-use PHPUnit\Framework\TestCase;
-
-class ClassTest extends TestCase
+class ClassTest extends \PHPUnit_Framework_TestCase
 {
     public function testIsAbstract() {
-        $class = new Class_('Foo', ['type' => Class_::MODIFIER_ABSTRACT]);
+        $class = new Class_('Foo', array('type' => Class_::MODIFIER_ABSTRACT));
         $this->assertTrue($class->isAbstract());
 
         $class = new Class_('Foo');
@@ -15,7 +13,7 @@ class ClassTest extends TestCase
     }
 
     public function testIsFinal() {
-        $class = new Class_('Foo', ['type' => Class_::MODIFIER_FINAL]);
+        $class = new Class_('Foo', array('type' => Class_::MODIFIER_FINAL));
         $this->assertTrue($class->isFinal());
 
         $class = new Class_('Foo');
@@ -23,21 +21,21 @@ class ClassTest extends TestCase
     }
 
     public function testGetMethods() {
-        $methods = [
+        $methods = array(
             new ClassMethod('foo'),
             new ClassMethod('bar'),
             new ClassMethod('fooBar'),
-        ];
-        $class = new Class_('Foo', [
-            'stmts' => [
-                new TraitUse([]),
+        );
+        $class = new Class_('Foo', array(
+            'stmts' => array(
+                new TraitUse(array()),
                 $methods[0],
-                new ClassConst([]),
+                new ClassConst(array()),
                 $methods[1],
-                new Property(0, []),
+                new Property(0, array()),
                 $methods[2],
-            ]
-        ]);
+            )
+        ));
 
         $this->assertSame($methods, $class->getMethods());
     }
@@ -45,17 +43,24 @@ class ClassTest extends TestCase
     public function testGetMethod() {
         $methodConstruct = new ClassMethod('__CONSTRUCT');
         $methodTest = new ClassMethod('test');
-        $class = new Class_('Foo', [
-            'stmts' => [
-                new ClassConst([]),
+        $class = new Class_('Foo', array(
+            'stmts' => array(
+                new ClassConst(array()),
                 $methodConstruct,
-                new Property(0, []),
+                new Property(0, array()),
                 $methodTest,
-            ]
-        ]);
+            )
+        ));
 
         $this->assertSame($methodConstruct, $class->getMethod('__construct'));
         $this->assertSame($methodTest, $class->getMethod('test'));
         $this->assertNull($class->getMethod('nonExisting'));
+    }
+
+    public function testDeprecatedTypeNode() {
+        $class = new Class_('Foo', array('type' => Class_::MODIFIER_ABSTRACT));
+        $this->assertTrue($class->isAbstract());
+        $this->assertSame(Class_::MODIFIER_ABSTRACT, $class->flags);
+        $this->assertSame(Class_::MODIFIER_ABSTRACT, $class->type);
     }
 }

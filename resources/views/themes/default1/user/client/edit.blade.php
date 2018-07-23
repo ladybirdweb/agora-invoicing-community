@@ -166,7 +166,7 @@
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getCountryAttr(this.value);']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -202,14 +202,13 @@
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                         <!-- <input class="form-control" id="mobilecode" name="mobile" type="tel"> -->
-                        {!! Form::text('mobil',null,['class'=>'form-control','id'=>'mobile_code']) !!}
+                        {!! Form::text('mobile_code',null,['class'=>'form-control','id'=>'mobile_code']) !!}
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
@@ -242,47 +241,6 @@
 
 {!! Form::close() !!}
 
-<script type="text/javascript">
-          $(document).ready(function(){
-    var country = $('#country').val();
-    var telInput = $('#mobile_code');
-     let currentCountry="";
-    telInput.intlTelInput({
-        initialCountry: "auto",
-        geoIpLookup: function (callback) {
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                resp.country = country;
-                var countryCode = (resp && resp.country) ? resp.country : "";
-                    currentCountry=countryCode.toLowerCase()
-                    callback(countryCode);
-            });
-        },
-        separateDialCode: true,
-        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
-    });
-    setTimeout(()=>{
-         telInput.intlTelInput("setCountry", currentCountry);
-    },500)
-    $('.intl-tel-input').css('width', '100%');
-
-    telInput.on('blur', function () {
-        if ($.trim(telInput.val())) {
-            if (!telInput.intlTelInput("isValidNumber")) {
-                telInput.parent().addClass('has-error');
-            }
-        }
-    });
-    $('input').on('focus', function () {
-        $(this).parent().removeClass('has-error');
-    });
-
-    $('form').on('submit', function (e) {
-        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
-    });
-});
-
-</script>
-
 <script>
 
     function getCountryAttr(val) {
@@ -296,8 +254,8 @@
 
 
         $.ajax({
-            type: "GET",
-              url: "{{url('get-state')}}/" + val,
+            type: "POST",
+            url: "{{url('get-state')}}",
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
@@ -311,7 +269,7 @@
             data: 'country_id=' + val,
             success: function (data) {
                 $("#mobile_code").val(data);
-                // $("#mobile_code_hidden").val(data);
+                $("#mobile_code_hidden").val(data);
             }
         });
     }
@@ -326,6 +284,4 @@
         });
     }
 </script>
-
-
 @stop

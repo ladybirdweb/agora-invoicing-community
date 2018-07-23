@@ -206,8 +206,9 @@ class Encrypter implements EncrypterContract
      */
     protected function validPayload($payload)
     {
-        return is_array($payload) && isset($payload['iv'], $payload['value'], $payload['mac']) &&
-               strlen(base64_decode($payload['iv'], true)) === openssl_cipher_iv_length($this->cipher);
+        return is_array($payload) && isset(
+            $payload['iv'], $payload['value'], $payload['mac']
+        );
     }
 
     /**

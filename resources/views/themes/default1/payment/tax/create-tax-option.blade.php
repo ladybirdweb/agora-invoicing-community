@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'taxes/option','id'=>'taxClass']) !!}
+                {!! Form::open(['url'=>'taxes/option']) !!}
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
@@ -31,8 +31,8 @@
                     <!-- name -->
                     
                     {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
-                    {!! Form::text('tax-name',null,['class' => 'form-control','id'=>'taxname']) !!}
-                   <h6 id ="namecheck"></h6>
+                    {!! Form::text('tax-name',null,['class' => 'form-control']) !!}
+                   
                 </div>
            
                  <div class="form-group">
@@ -82,8 +82,7 @@
                  <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
-                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
-                  
+                    {!! Form::text('rate',null,['class' => 'form-control']) !!}
 
                 </div>
                   
@@ -131,42 +130,5 @@
         }
     });
 });
-</script>
-
-<script>
-     $(document).ready(function(){
-        $('#namecheck').hide();
-      
-      $('#taxClass').submit(function(){
-        function tax_nameCheck()
-        {
-            var tax_name = $('#taxname').val();
-            if (tax_name.length == ''){
-                   $('#namecheck').show(); 
-                   $('#namecheck').html('This field is required'); 
-                   $('#namecheck').focus();
-                   $('#taxname').css("border-color","red");
-                   $('#namecheck').css({"color":"red","margin-top":"5px"});
-            }
-            else{
-                 $('#namecheck').hide();
-                 $('#taxname').css("border-color","");
-                 return true;
-            }
-        }
-
-        
-        tax_nameCheck();
-       
-       
-        if(tax_nameCheck()){
-                return true;
-             }
-            else{
-            return false;
-          }
-      });
-
-    });
 </script>
 {!! Form::close()  !!}

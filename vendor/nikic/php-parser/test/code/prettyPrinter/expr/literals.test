@@ -44,13 +44,11 @@ FALSE;
 'a';
 'a
 b';
-'a\'b';
-'a\b';
-'a\\';
-
-// strings (double quoted)
 "a";
 "a\nb";
+'a\'b';
+
+// strings (double quoted)
 "a'b";
 "a\b";
 "$a";
@@ -121,12 +119,10 @@ FALSE;
 'a';
 'a
 b';
-'a\'b';
-'a\\b';
-'a\\';
-// strings (double quoted)
 "a";
 "a\nb";
+'a\'b';
+// strings (double quoted)
 "a'b";
 "a\\b";
 "{$a}";

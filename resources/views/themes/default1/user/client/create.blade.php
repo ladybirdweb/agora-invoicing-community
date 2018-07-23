@@ -42,7 +42,7 @@
         </div>
         @endif
         {!! Form::open(['url'=>'clients','method'=>'post']) !!}
-        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h4>{{Lang::get('message.client')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
 
     </div>
 
@@ -193,7 +193,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toarray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toarray()],null,['class' => 'form-control','id'=>'currency']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
@@ -233,7 +233,6 @@
 
 {!! Form::close() !!}
 
-
 <script>
 
     function getCountryAttr(val) {
@@ -243,12 +242,10 @@
 
     }
 
-   function getState(val) {
-
-
+    function getState(val) {
         $.ajax({
-            type: "GET",
-              url: "{{url('get-state')}}/" + val,
+            type: "POST",
+            url: "{{url('get-state')}}",
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);

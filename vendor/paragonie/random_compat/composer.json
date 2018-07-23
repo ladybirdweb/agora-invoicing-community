@@ -4,7 +4,6 @@
   "keywords": [
     "csprng",
     "random",
-    "polyfill",
     "pseudorandom"
   ],
   "license":      "MIT",

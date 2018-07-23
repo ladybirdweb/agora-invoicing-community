@@ -184,11 +184,10 @@ class SplCaster
         $storage = array();
         unset($a[Caster::PREFIX_DYNAMIC."\0gcdata"]); // Don't hit https://bugs.php.net/65967
 
-        $clone = clone $c;
-        foreach ($clone as $obj) {
+        foreach (clone $c as $obj) {
             $storage[spl_object_hash($obj)] = array(
                 'object' => $obj,
-                'info' => $clone->getInfo(),
+                'info' => $c->getInfo(),
              );
         }
 

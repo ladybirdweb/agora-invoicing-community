@@ -18,9 +18,7 @@ array(
         stmts: array(
             0: Stmt_Function(
                 byRef: false
-                name: Identifier(
-                    name: A
-                )
+                name: A
                 params: array(
                 )
                 returnType: null

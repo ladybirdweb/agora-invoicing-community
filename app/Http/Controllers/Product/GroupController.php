@@ -33,7 +33,7 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function index()
     {
@@ -77,7 +77,7 @@ class GroupController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function create()
     {
@@ -91,7 +91,7 @@ class GroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Response
+     * @return Response
      */
     public function store(GroupRequest $request)
     {
@@ -107,8 +107,8 @@ class GroupController extends Controller
             $prices = $request->input('price');
             $title = $request->input('title');
             $type = $request->input('type');
-            $c = count($prices);
-            for ($i = 0; $i < $c; $i++) {
+
+            for ($i = 0; $i < count($prices); $i++) {
                 $this->config->create(['group_id' => $this->group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
             }
 
@@ -123,7 +123,7 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function show($id)
     {
@@ -134,7 +134,7 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -156,62 +156,63 @@ class GroupController extends Controller
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
-    // public function update($id, GroupRequest $request)
-    // {
-    //     try {
-    //         $group = $this->group->where('id', $id)->first();
-    //         $group->fill($request->input())->save();
-    //         /*
-    //          * Features
-    //          */
-    //         $selects = $this->feature->where('group_id', $id)->get();
-    //         if (!empty($selects)) {
-    //             foreach ($selects as $select) {
-    //                 if ($select) {
-    //                     $select->delete();
-    //                 }
-    //             }
-    //         }
-    //         $features = $request->input('features');
+    public function update($id, GroupRequest $request)
+    {
+        try {
+            //dd($request);
+            $group = $this->group->where('id', $id)->first();
+            $group->fill($request->input())->save();
+            /*
+             * Features
+             */
+            $selects = $this->feature->where('group_id', $id)->get();
+            if (!empty($selects)) {
+                foreach ($selects as $select) {
+                    if ($select) {
+                        $select->delete();
+                    }
+                }
+            }
+            $features = $request->input('features');
 
-    //         foreach ($features as $feature) {
-    //             $this->feature->create(['group_id' => $group->id, 'features' => $feature['name']]);
-    //         }
-    //         /*
-    //          * Configurations
-    //          */
+            foreach ($features as $feature) {
+                $this->feature->create(['group_id' => $group->id, 'features' => $feature['name']]);
+            }
+            /*
+             * Configurations
+             */
 
-    //         $deletes = $this->config->where('group_id', $id)->get();
-    //         if (!empty($deletes)) {
-    //             foreach ($deletes as $delete) {
-    //                 if ($delete) {
-    //                     $delete->delete();
-    //                 }
-    //             }
-    //         }
+            $deletes = $this->config->where('group_id', $id)->get();
+            if (!empty($deletes)) {
+                foreach ($deletes as $delete) {
+                    if ($delete) {
+                        $delete->delete();
+                    }
+                }
+            }
 
-    //         $values = $request->input('value');
-    //         $prices = $request->input('price');
-    //         $title = $request->input('title');
-    //         $type = $request->input('type');
-    //         $c = count($prices);
-    //         for ($i = 0; $i < $c; $i++) {
-    //             $this->config->create(['group_id' => $group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
-    //         }
+            $values = $request->input('value');
+            $prices = $request->input('price');
+            $title = $request->input('title');
+            $type = $request->input('type');
 
-    //         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-    //     } catch (\Exception $ex) {
-    //         return redirect()->back()->with('fails', $ex->getMessage());
-    //     }
-    // }
+            for ($i = 0; $i < count($prices); $i++) {
+                $this->config->create(['group_id' => $group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
+            }
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
      *
      *
-     * @return \Response
+     * @return Response
      */
     public function destroy(Request $request)
     {
@@ -226,38 +227,32 @@ class GroupController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
-
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';

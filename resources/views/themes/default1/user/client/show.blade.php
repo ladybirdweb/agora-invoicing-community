@@ -43,42 +43,27 @@
         <h3 class="widget-user-username">{{ucfirst($client->first_name)}}  {{ucfirst($client->last_name)}}</h3>
         <h5 class="widget-user-desc">{{ucfirst($client->town)}}</h5>
         <h6 class="widget-user-desc">{{$client->email}}<br>@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</h6>
-
-        </div>
-    <div class="col-md-2 col-sm-4 padzero">
-        
-          
-          <?php
-
-         if($currency == 'INR')
-            $currency = '₹';
-            else
-            $currency = '$'; 
-          ?>
-                   
-                      
-        <div class="padright">
-             
-            
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$currency }}{{$invoiceSum}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$currency }} {{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">Balance </span><br>{{$currency }} {{$pendingAmount}}</h6> 
-          
-        </div>
-     
-        
-       
     </div>
+<!--    <div class="col-md-2 col-sm-4 padzero">
+        <div class="padleft">
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Rs: {{$client->debit}}</span><br>Open</h6> 
+            <h6 class="rupee colorred"><span class="font18">Rs: 0</span><br>Overdue</h6> 
+        </div>
+    </div>-->
 
     <div class="box-tools pull-right col-md-2 col-sm-4 padfull paddownfive">
         
-          <a href="{{url('clients/'.$client->id.'/edit')}}" class="btn btn-block btn-default btn-sm btn-flat ">
+
+        <!--                <a data-toggle="modal" data-target="#editdetail" class="btn btn-block btn-default btn-sm btn-flat ">
+                            Edit 
+                        </a>-->
+        <a href="{{url('clients/'.$client->id.'/edit')}}" class="btn btn-block btn-default btn-sm btn-flat ">
             {{Lang::get('message.edit')}}
         </a>
         <div class="dropdown">
 
             <a class="btn btn-block btn-primary btn-sm btn-flat dropdown-toggle" data-toggle="dropdown" href="#">
-                New Transaction <span class="caret"></span>
+                New Transation <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
                 <li role="presentation">
@@ -143,40 +128,22 @@
                                         <th>{{Lang::get('message.date')}}</th>
                                         <th>{{Lang::get('message.invoice_number')}}</th>
                                         <th>{{Lang::get('message.total')}}</th>
-                                        <th>{{Lang::get('message.amount_received')}}</th>
-                                        <th>{{Lang::get('message.amount_pending')}}</th>
                                         <th>{{Lang::get('message.status')}}</th>
                                         <th>{{Lang::get('message.action')}}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($invoices as $invoice) 
-                                    <?php
-                                     if($invoice->currency == 'INR')
-                                        $currency = '₹';
-                                        else
-                                        $currency = '$'; 
-                                     $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
-                                     $c=count($payment);
-                                       $sum= 0;
-                                       for($i=0 ;  $i <= $c-1 ; $i++)
-                                       {
-                                         $sum = $sum + $payment[$i]->amount;
-                                       }
-                                       $pendingAmount = ($invoice->grand_total)-($sum);
-                                     ?>
                                     <tr>
                                         <td>
                                             {{$invoice->date}}
                                         </td>
-                                        <td class="invoice-number">
+                                        <td>
                                             <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                         </td>
-                                        <td contenteditable="true" class="invoice-total"> 
-                                           {{$invoice->grand_total}}
+                                        <td>
+                                            {{$invoice->grand_total}}
                                         </td>
-                                        <td>{{$sum}}</td>
-                                        <td>{{$pendingAmount}}</td>
                                         <td>
                                             {{ucfirst($invoice->status)}}
                                         </td>
@@ -516,28 +483,5 @@
 
 
     });
-</script>
-<script>
-
-    $(".invoice-total").blur(function () {
-        var data = $(this).text().trim();
-        var number = $(this).siblings('.invoice-number').find('a').text().trim();
-
-
-        $.ajax({
-        type: "GET",
-                url: "{{route('change-invoiceTotal')}}",
-                data: {'total':data,'number':number},
-                success: function () {
-                    alert('Invoice Total Updated');
-                },
-                error: function () {
-                    alert('Invalid URL');
-                }
-
-        });
-    });
-
-
 </script>
 @stop

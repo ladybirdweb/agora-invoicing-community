@@ -1,0 +1,36 @@
+{
+    "name": "laravelcollective/iron-queue",
+    "description": "IronMQ support for the Laravel queue.",
+    "license": "MIT",
+    "homepage": "http://laravelcollective.com",
+    "support": {
+        "issues": "https://github.com/laravelcollective/iron-queue/issues",
+        "source": "https://github.com/laravelcollective/iron-queue"
+    },
+    "authors": [
+        {
+            "name": "Taylor Otwell",
+            "email": "taylorotwell@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.9",
+        "illuminate/container": "5.3.*",
+        "illuminate/contracts": "5.3.*",
+        "illuminate/encryption": "5.3.*",
+        "illuminate/http": "5.3.*",
+        "illuminate/queue": "5.3.*",
+        "illuminate/support": "5.3.*",
+        "iron-io/iron_mq": "~4.0",
+        "jeremeamia/superclosure": "~2.0"
+    },
+    "require-dev": {
+        "mockery/mockery": "~0.9",
+        "phpunit/phpunit": "~4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Collective\\IronQueue\\": "src/"
+        }
+    }
+}

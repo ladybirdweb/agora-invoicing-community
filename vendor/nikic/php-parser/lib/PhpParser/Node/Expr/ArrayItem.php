@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node\Expr;
 
@@ -21,18 +21,14 @@ class ArrayItem extends Expr
      * @param bool      $byRef      Whether to assign by reference
      * @param array     $attributes Additional attributes
      */
-    public function __construct(Expr $value, Expr $key = null, bool $byRef = false, array $attributes = []) {
+    public function __construct(Expr $value, Expr $key = null, $byRef = false, array $attributes = array()) {
         parent::__construct($attributes);
         $this->key = $key;
         $this->value = $value;
         $this->byRef = $byRef;
     }
 
-    public function getSubNodeNames() : array {
-        return ['key', 'value', 'byRef'];
-    }
-    
-    public function getType() : string {
-        return 'Expr_ArrayItem';
+    public function getSubNodeNames() {
+        return array('key', 'value', 'byRef');
     }
 }

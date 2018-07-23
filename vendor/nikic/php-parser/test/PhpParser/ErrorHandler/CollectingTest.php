@@ -1,12 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\ErrorHandler;
 
 use PhpParser\Error;
-use PHPUnit\Framework\TestCase;
 
-class CollectingTest extends TestCase
-{
+class CollectingTest extends \PHPUnit_Framework_TestCase {
     public function testHandleError() {
         $errorHandler = new Collecting();
         $this->assertFalse($errorHandler->hasErrors());

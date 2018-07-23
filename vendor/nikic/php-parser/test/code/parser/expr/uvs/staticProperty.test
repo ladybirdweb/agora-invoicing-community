@@ -12,112 +12,82 @@ A::$A::$b;
 -----
 !!php7
 array(
-    0: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Name(
-                parts: array(
-                    0: A
-                )
-            )
-            name: VarLikeIdentifier(
-                name: b
+    0: Expr_StaticPropertyFetch(
+        class: Name(
+            parts: array(
+                0: A
             )
         )
+        name: b
     )
-    1: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Expr_Variable(
-                name: A
-            )
-            name: VarLikeIdentifier(
-                name: b
-            )
+    1: Expr_StaticPropertyFetch(
+        class: Expr_Variable(
+            name: A
         )
+        name: b
     )
-    2: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Scalar_String(
+    2: Expr_StaticPropertyFetch(
+        class: Scalar_String(
+            value: A
+        )
+        name: b
+    )
+    3: Expr_StaticPropertyFetch(
+        class: Expr_BinaryOp_Concat(
+            left: Scalar_String(
                 value: A
             )
-            name: VarLikeIdentifier(
-                name: b
+            right: Scalar_String(
+                value:
             )
         )
+        name: b
     )
-    3: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Expr_BinaryOp_Concat(
-                left: Scalar_String(
-                    value: A
-                )
-                right: Scalar_String(
-                    value:
-                )
+    4: Expr_StaticPropertyFetch(
+        class: Expr_ArrayDimFetch(
+            var: Scalar_String(
+                value: A
             )
-            name: VarLikeIdentifier(
-                name: b
+            dim: Scalar_LNumber(
+                value: 0
             )
         )
+        name: b
     )
-    4: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Expr_ArrayDimFetch(
-                var: Scalar_String(
-                    value: A
-                )
-                dim: Scalar_LNumber(
-                    value: 0
-                )
-            )
-            name: VarLikeIdentifier(
-                name: b
+    5: Expr_StaticPropertyFetch(
+        class: Name(
+            parts: array(
+                0: A
             )
         )
+        name: Expr_Variable(
+            name: b
+        )
     )
-    5: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
+    6: Expr_ArrayDimFetch(
+        var: Expr_StaticPropertyFetch(
             class: Name(
                 parts: array(
                     0: A
                 )
             )
             name: Expr_Variable(
-                name: b
+                name: c
             )
+        )
+        dim: Scalar_LNumber(
+            value: 1
         )
     )
-    6: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_StaticPropertyFetch(
-                class: Name(
-                    parts: array(
-                        0: A
-                    )
-                )
-                name: Expr_Variable(
-                    name: c
+    7: Expr_StaticPropertyFetch(
+        class: Expr_StaticPropertyFetch(
+            class: Name(
+                parts: array(
+                    0: A
                 )
             )
-            dim: Scalar_LNumber(
-                value: 1
-            )
+            name: A
         )
-    )
-    7: Stmt_Expression(
-        expr: Expr_StaticPropertyFetch(
-            class: Expr_StaticPropertyFetch(
-                class: Name(
-                    parts: array(
-                        0: A
-                    )
-                )
-                name: VarLikeIdentifier(
-                    name: A
-                )
-            )
-            name: VarLikeIdentifier(
-                name: b
-            )
-        )
+        name: b
     )
 )

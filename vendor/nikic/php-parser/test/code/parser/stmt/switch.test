@@ -4,8 +4,6 @@ Switch
 
 switch ($a) {
     case 0:
-        break;
-    // Comment
     case 1;
     default:
 }
@@ -29,9 +27,6 @@ array(
                     value: 0
                 )
                 stmts: array(
-                    0: Stmt_Break(
-                        num: null
-                    )
                 )
             )
             1: Stmt_Case(
@@ -39,9 +34,6 @@ array(
                     value: 1
                 )
                 stmts: array(
-                )
-                comments: array(
-                    0: // Comment
                 )
             )
             2: Stmt_Case(

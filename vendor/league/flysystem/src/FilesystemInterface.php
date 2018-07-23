@@ -2,8 +2,6 @@
 
 namespace League\Flysystem;
 
-use InvalidArgumentException;
-
 interface FilesystemInterface
 {
     /**
@@ -63,8 +61,6 @@ interface FilesystemInterface
      *
      * @param string $path The path to the file.
      *
-     * @throws FileNotFoundException
-     *
      * @return int|false The file size or false on failure.
      */
     public function getSize($path);
@@ -122,7 +118,7 @@ interface FilesystemInterface
      * @param resource $resource The file handle.
      * @param array    $config   An optional configuration array.
      *
-     * @throws InvalidArgumentException If $resource is not a file handle.
+     * @throws \InvalidArgumentException If $resource is not a file handle.
      * @throws FileExistsException
      *
      * @return bool True on success, false on failure.
@@ -149,7 +145,7 @@ interface FilesystemInterface
      * @param resource $resource The file handle.
      * @param array    $config   An optional configuration array.
      *
-     * @throws InvalidArgumentException If $resource is not a file handle.
+     * @throws \InvalidArgumentException If $resource is not a file handle.
      * @throws FileNotFoundException
      *
      * @return bool True on success, false on failure.
@@ -220,8 +216,6 @@ interface FilesystemInterface
      * @param string $path       The path to the file.
      * @param string $visibility One of 'public' or 'private'.
      *
-     * @throws FileNotFoundException
-     *
      * @return bool True on success, false on failure.
      */
     public function setVisibility($path, $visibility);
@@ -244,7 +238,7 @@ interface FilesystemInterface
      * @param resource $resource The file handle.
      * @param array    $config   An optional configuration array.
      *
-     * @throws InvalidArgumentException Thrown if $resource is not a resource.
+     * @throws \InvalidArgumentException Thrown if $resource is not a resource.
      *
      * @return bool True on success, false on failure.
      */
@@ -263,8 +257,6 @@ interface FilesystemInterface
 
     /**
      * Get a file/directory handler.
-     *
-     * @deprecated
      *
      * @param string  $path    The path to the file.
      * @param Handler $handler An optional existing handler to populate.

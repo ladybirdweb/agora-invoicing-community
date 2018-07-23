@@ -66,11 +66,12 @@ class SplFileInfo extends \SplFileInfo
      */
     public function getContents()
     {
-        set_error_handler(function ($type, $msg) use (&$error) { $error = $msg; });
+        $level = error_reporting(0);
         $content = file_get_contents($this->getPathname());
-        restore_error_handler();
+        error_reporting($level);
         if (false === $content) {
-            throw new \RuntimeException($error);
+            $error = error_get_last();
+            throw new \RuntimeException($error['message']);
         }
 
         return $content;

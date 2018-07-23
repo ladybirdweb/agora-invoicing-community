@@ -10,9 +10,7 @@ function a() {
 array(
     0: Stmt_Function(
         byRef: false
-        name: Identifier(
-            name: a
-        )
+        name: a
         params: array(
         )
         returnType: null
@@ -37,15 +35,11 @@ array(
             1: Stmt_Static(
                 vars: array(
                     0: Stmt_StaticVar(
-                        var: Expr_Variable(
-                            name: c
-                        )
+                        name: c
                         default: null
                     )
                     1: Stmt_StaticVar(
-                        var: Expr_Variable(
-                            name: d
-                        )
+                        name: d
                         default: Scalar_String(
                             value: e
                         )

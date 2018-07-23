@@ -1,10 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node\Stmt;
 
-use PHPUnit\Framework\TestCase;
-
-class PropertyTest extends TestCase
+class PropertyTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @dataProvider provideModifiers
@@ -12,14 +10,14 @@ class PropertyTest extends TestCase
     public function testModifiers($modifier) {
         $node = new Property(
             constant('PhpParser\Node\Stmt\Class_::MODIFIER_' . strtoupper($modifier)),
-            [] // invalid
+            array() // invalid
         );
 
         $this->assertTrue($node->{'is' . $modifier}());
     }
 
     public function testNoModifiers() {
-        $node = new Property(0, []);
+        $node = new Property(0, array());
 
         $this->assertTrue($node->isPublic());
         $this->assertFalse($node->isProtected());
@@ -28,7 +26,7 @@ class PropertyTest extends TestCase
     }
 
     public function testStaticImplicitlyPublic() {
-        $node = new Property(Class_::MODIFIER_STATIC, []);
+        $node = new Property(Class_::MODIFIER_STATIC, array());
         $this->assertTrue($node->isPublic());
         $this->assertFalse($node->isProtected());
         $this->assertFalse($node->isPrivate());
@@ -36,11 +34,11 @@ class PropertyTest extends TestCase
     }
 
     public function provideModifiers() {
-        return [
-            ['public'],
-            ['protected'],
-            ['private'],
-            ['static'],
-        ];
+        return array(
+            array('public'),
+            array('protected'),
+            array('private'),
+            array('static'),
+        );
     }
 }

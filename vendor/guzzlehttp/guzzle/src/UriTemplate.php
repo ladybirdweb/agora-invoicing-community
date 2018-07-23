@@ -107,6 +107,7 @@ class UriTemplate
         $useQuery = self::$operatorHash[$parsed['operator']]['query'];
 
         foreach ($parsed['values'] as $value) {
+
             if (!isset($this->variables[$value['value']])) {
                 continue;
             }
@@ -116,9 +117,11 @@ class UriTemplate
             $expanded = '';
 
             if (is_array($variable)) {
+
                 $isAssoc = $this->isAssoc($variable);
                 $kvp = [];
                 foreach ($variable as $key => $var) {
+
                     if ($isAssoc) {
                         $key = rawurlencode($key);
                         $isNestedArray = is_array($var);
@@ -176,6 +179,7 @@ class UriTemplate
                     }
                     $expanded = implode(',', $kvp);
                 }
+
             } else {
                 if ($value['modifier'] === ':') {
                     $variable = substr($variable, 0, $value['position']);

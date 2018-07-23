@@ -28,7 +28,7 @@ array(
                         1: B
                     )
                 )
-                alias: null
+                alias: B
             )
         )
     )
@@ -43,9 +43,7 @@ array(
                         1: D
                     )
                 )
-                alias: Identifier(
-                    name: E
-                )
+                alias: E
             )
         )
     )
@@ -60,9 +58,7 @@ array(
                         1: G
                     )
                 )
-                alias: Identifier(
-                    name: H
-                )
+                alias: H
             )
             1: Stmt_UseUse(
                 type: TYPE_UNKNOWN (0)
@@ -71,7 +67,7 @@ array(
                         0: J
                     )
                 )
-                alias: null
+                alias: J
             )
         )
     )
@@ -85,7 +81,7 @@ array(
                         0: A
                     )
                 )
-                alias: null
+                alias: A
             )
         )
         comments: array(
@@ -102,9 +98,7 @@ array(
                         0: A
                     )
                 )
-                alias: Identifier(
-                    name: B
-                )
+                alias: B
             )
         )
     )
@@ -119,7 +113,7 @@ array(
                         1: bar
                     )
                 )
-                alias: null
+                alias: bar
             )
         )
         comments: array(
@@ -137,9 +131,7 @@ array(
                         1: bar
                     )
                 )
-                alias: Identifier(
-                    name: baz
-                )
+                alias: baz
             )
         )
     )
@@ -154,7 +146,7 @@ array(
                         1: BAR
                     )
                 )
-                alias: null
+                alias: BAR
             )
         )
     )
@@ -169,9 +161,7 @@ array(
                         1: BAR
                     )
                 )
-                alias: Identifier(
-                    name: BAZ
-                )
+                alias: BAZ
             )
         )
     )

@@ -26,9 +26,9 @@ if (empty($files)) {
     showHelp("Must specify at least one file.");
 }
 
-$lexer = new PhpParser\Lexer\Emulative(['usedAttributes' => [
+$lexer = new PhpParser\Lexer\Emulative(array('usedAttributes' => array(
     'startLine', 'endLine', 'startFilePos', 'endFilePos', 'comments'
-]]);
+)));
 $parser = (new PhpParser\ParserFactory)->create(
     PhpParser\ParserFactory::PREFER_PHP7,
     $lexer
@@ -38,6 +38,7 @@ $dumper = new PhpParser\NodeDumper([
     'dumpPositions' => $attributes['with-positions'],
 ]);
 $prettyPrinter = new PhpParser\PrettyPrinter\Standard;
+$serializer = new PhpParser\Serializer\XML;
 
 $traverser = new PhpParser\NodeTraverser();
 $traverser->addVisitor(new PhpParser\NodeVisitor\NameResolver);
@@ -81,9 +82,9 @@ foreach ($files as $file) {
         } elseif ('pretty-print' === $operation) {
             echo "==> Pretty print:\n";
             echo $prettyPrinter->prettyPrintFile($stmts), "\n";
-        } elseif ('json-dump' === $operation) {
-            echo "==> JSON dump:\n";
-            echo json_encode($stmts, JSON_PRETTY_PRINT), "\n";
+        } elseif ('serialize-xml' === $operation) {
+            echo "==> Serialized XML:\n";
+            echo $serializer->serialize($stmts), "\n";
         } elseif ('var-dump' === $operation) {
             echo "==> var_dump():\n";
             var_dump($stmts);
@@ -115,7 +116,7 @@ Operations is a list of the following options (--dump by default):
 
     -d, --dump              Dump nodes using NodeDumper
     -p, --pretty-print      Pretty print file using PrettyPrinter\Standard
-    -j, --json-dump         Print json_encode() result
+        --serialize-xml     Serialize nodes using Serializer\XML
         --var-dump          var_dump() nodes (for exact structure)
     -N, --resolve-names     Resolve names using NodeVisitor\NameResolver
     -c, --with-column-info  Show column-numbers for errors (if available)
@@ -134,13 +135,13 @@ OUTPUT
 }
 
 function parseArgs($args) {
-    $operations = [];
-    $files = [];
-    $attributes = [
+    $operations = array();
+    $files = array();
+    $attributes = array(
         'with-column-info' => false,
         'with-positions' => false,
         'with-recovery' => false,
-    ];
+    );
 
     array_shift($args);
     $parseOptions = true;
@@ -159,9 +160,8 @@ function parseArgs($args) {
             case '-p':
                 $operations[] = 'pretty-print';
                 break;
-            case '--json-dump':
-            case '-j':
-                $operations[] = 'json-dump';
+            case '--serialize-xml':
+                $operations[] = 'serialize-xml';
                 break;
             case '--var-dump':
                 $operations[] = 'var-dump';
@@ -198,5 +198,5 @@ function parseArgs($args) {
         }
     }
 
-    return [$operations, $files, $attributes];
+    return array($operations, $files, $attributes);
 }

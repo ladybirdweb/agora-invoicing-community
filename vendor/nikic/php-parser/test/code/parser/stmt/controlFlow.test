@@ -47,13 +47,9 @@ array(
         )
     )
     7: Stmt_Label(
-        name: Identifier(
-            name: label
-        )
+        name: label
     )
     8: Stmt_Goto(
-        name: Identifier(
-            name: label
-        )
+        name: label
     )
 )

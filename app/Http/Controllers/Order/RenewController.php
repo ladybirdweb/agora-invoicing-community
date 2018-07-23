@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -14,7 +15,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Session;
 
-class RenewController extends BaseRenewController
+class RenewController extends Controller
 {
     protected $sub;
     protected $plan;
@@ -73,12 +74,13 @@ class RenewController extends BaseRenewController
         try {
             $invoice->status = 'success';
             $invoice->save();
-
             $id = Session::get('subscription_id');
 
             $planid = Session::get('plan_id');
             $plan = $this->plan->find($planid);
+            // dd($plan);
             $days = $plan->days;
+
             $sub = $this->sub->find($id);
             $current = $sub->ends_at;
             $ends = $this->getExpiryDate($current, $days);
@@ -86,11 +88,66 @@ class RenewController extends BaseRenewController
             $sub->save();
             $this->removeSession();
         } catch (Exception $ex) {
+            dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
 
     //Tuesday, June 13, 2017 08:06 AM
+
+    public function invoiceBySubscriptionId($id, $planid, $cost)
+    {
+        try {
+            $sub = $this->sub->find($id);
+            $order_id = $sub->order_id;
+
+            return $this->getInvoiceByOrderId($order_id, $planid, $cost);
+        } catch (Exception $ex) {
+            throw new Exception($ex->getMessage());
+        }
+    }
+
+    public function getInvoiceByOrderId($orderid, $planid, $cost)
+    {
+        try {
+            $order = $this->order->find($orderid);
+            $invoice_item_id = $order->invoice_item_id;
+            $invoice_id = $order->invoice_id;
+            $invoice = $this->invoice->find($invoice_id);
+            if ($invoice_item_id == 0) {
+                $invoice_item_id = $invoice->invoiceItem()->first()->id;
+            }
+            $item = $this->item->find($invoice_item_id);
+            $product = $this->getProductByName($item->product_name);
+            //dd($product);
+            $user = $this->getUserById($order->client);
+            if (!$user) {
+                throw new Exception('User has removed from database');
+            }
+            if (!$product) {
+                throw new Exception('Product has removed from database');
+            }
+
+            return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '');
+        } catch (Exception $ex) {
+            dd($ex);
+
+            throw new Exception($ex->getMessage());
+        }
+    }
+
+    public function getProductByName($name)
+    {
+        try {
+            $product = $this->product->where('name', $name)->first();
+            if ($product) {
+                return $product;
+            }
+        } catch (Exception $ex) {
+            throw new Exception($ex->getMessage());
+        }
+    }
 
     public function getProductById($id)
     {
@@ -112,6 +169,39 @@ class RenewController extends BaseRenewController
                 return $user;
             }
         } catch (Exception $ex) {
+            throw new Exception($ex->getMessage());
+        }
+    }
+
+    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '')
+    {
+        try {
+            $controller = new InvoiceController();
+            if ($code != '') {
+                $product_cost = $controller->checkCode($code, $product->id);
+            }
+            if ($cost != '') {
+                $product_cost = $this->planCost($planid, $user->id);
+            }
+            $cost = $this->tax($product, $product_cost, $user->id);
+            $currency = $this->getUserCurrencyById($user->id);
+            $number = rand(11111111, 99999999);
+            $date = \Carbon\Carbon::now();
+            $invoice = $this->invoice->create([
+                'user_id'     => $user->id,
+                'number'      => $number,
+                'date'        => $date,
+                'grand_total' => $cost,
+                'currency'    => $currency,
+                'status'      => 'pending',
+            ]);
+            $this->createOrderInvoiceRelation($orderid, $invoice->id);
+            $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $code, $product_cost, $currency, $qty = 1);
+
+            return $items;
+        } catch (Exception $ex) {
+            dd($ex);
+
             throw new Exception($ex->getMessage());
         }
     }
@@ -163,8 +253,10 @@ class RenewController extends BaseRenewController
             }
 
             return $user->currency;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+        } catch (Exception $ex) {
+            dd($ex);
+
+            throw new Exception($ex->getMessage());
         }
     }
 
@@ -181,11 +273,11 @@ class RenewController extends BaseRenewController
                 $tax_name .= $tax[0].',';
                 $tax_rate .= $tax[1].',';
             }
+            //dd('dsjcgv');
             $grand_total = $controller->calculateTotal($tax_rate, $cost);
 
             return \App\Http\Controllers\Front\CartController::rounding($grand_total);
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+        } catch (Exception $ex) {
         }
     }
 
@@ -228,6 +320,29 @@ class RenewController extends BaseRenewController
         }
     }
 
+    public function getCost(Request $request)
+    {
+        try {
+            $planid = $request->input('plan');
+            $userid = $request->input('user');
+
+            return $this->planCost($planid, $userid);
+        } catch (Exception $ex) {
+        }
+    }
+
+    public function planCost($planid, $userid)
+    {
+        try {
+            $currency = $this->getUserCurrencyById($userid);
+            $plan = $this->plan->find($planid);
+            $price = $plan->planPrice()->where('currency', $currency)->first()->renew_price;
+
+            return $price;
+        } catch (Exception $ex) {
+        }
+    }
+
     public function renewByClient($id, Request $request)
     {
         $this->validate($request, [
@@ -247,8 +362,7 @@ class RenewController extends BaseRenewController
             $this->setSession($id, $planid);
 
             return redirect('paynow/'.$invoiceid);
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+        } catch (Exception $ex) {
         }
     }
 

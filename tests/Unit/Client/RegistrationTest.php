@@ -93,12 +93,16 @@ class RegistrationTest extends DBTestCase
                      'terms'                                          => 'on',
 
                      ]);
-        // \Mail::raw('Test Mail', function ($message) {
-        //     $message->to('testmail@gmail.com');
-        // });
-        // $this->assertEmailWasSent();
+
+        \Mail::raw('Test Mail', function ($message) {
+            $message->to('testmail@gmail.com');
+        });
+
+        // dd(json_decode($response->content())->type);
+        // $success = session('success');
+        $this->assertEmailWasSent();
         $this->assertEquals(json_decode($response->content())->type, 'success');
-        $this->assertStringContainsSubstring(json_decode($response->content())->message, 'Your Submission');
+        $this->assertEquals(json_decode($response->content())->message, 'Registered Successfully...');
 
         $this->tearDownServerVariable();
     }

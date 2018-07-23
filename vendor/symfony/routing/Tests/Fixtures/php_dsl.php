@@ -4,7 +4,6 @@ namespace Symfony\Component\Routing\Loader\Configurator;
 
 return function (RoutingConfigurator $routes) {
     $routes
-        ->collection()
         ->add('foo', '/foo')
             ->condition('abc')
             ->options(array('utf8' => true))

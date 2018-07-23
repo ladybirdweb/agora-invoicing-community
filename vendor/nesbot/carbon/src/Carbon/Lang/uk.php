@@ -24,7 +24,7 @@ return array(
     'min' => ':count хвилину|:count хвилини|:count хвилин',
     'second' => ':count секунду|:count секунди|:count секунд',
     's' => ':count секунду|:count секунди|:count секунд',
-    'ago' => ':time тому',
+    'ago' => ':time назад',
     'from_now' => 'через :time',
     'after' => ':time після',
     'before' => ':time до',

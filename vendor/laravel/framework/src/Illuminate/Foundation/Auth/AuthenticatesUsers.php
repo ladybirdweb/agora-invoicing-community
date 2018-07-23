@@ -9,7 +9,6 @@ use Illuminate\Validation\ValidationException;
 use App\User;
 use Hash;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
-use Spatie\Activitylog\Models\Activity;
 
 use Validator;
 
@@ -109,9 +108,7 @@ trait AuthenticatesUsers
             
             
            }else{
-                 activity()->log('Logged In');
                  return redirect()->intended($this->redirectPath());
-
             
         }
     }
@@ -265,10 +262,12 @@ trait AuthenticatesUsers
      */
     public function logout(Request $request)
     {
-         
+        
         $this->guard()->logout();
-         $request->session()->invalidate();
-          return redirect('/');
+
+        $request->session()->invalidate();
+
+        return redirect('/');
     }
 
     /**

@@ -156,8 +156,6 @@ return [
     'customer_detail'   => 'Customer Detail',
     'order_detail'      => 'Order Detail',
     'payment_detail'    => 'Payment Detail',
-    'amount_received'   => 'Paid',
-    'amount_pending'    => 'Balance',
     /*
      * Plan
      */
@@ -267,12 +265,6 @@ return [
     /*
      * Promotion
      */
-
-    'check-code-error'       => 'Please Check Code',
-    'no-such-code'           => 'No such Code',
-    'usage-of-code-completed'=> 'Usage of ocde Completed',
-    'usage-of-code-expired'  => 'Usage of code expired',
-
     'promotion'                                                                                                                        => 'Promotion',
     'promotions'                                                                                                                       => 'Promotions',
     'coupons'                                                                                                                          => 'Coupons',
@@ -287,9 +279,6 @@ return [
     'apply-only-once-per-order'                                                                                                        => 'Apply only once per order',
     'apply-to-new-signups-only'                                                                                                        => 'Apply to new signups only',
     'apply-to-existing-clients-only'                                                                                                   => 'Apply to existing clients only',
-    'usage-of-code-expired'                                                                                                            => 'Usage of Code Expired',
-    'no-product-related-to-this-code'                                                                                                  => 'There is  no product related to this code',
-    'price-updated-successfully'                                                                                                       => 'Price Updated Successfully',
     /*
      * Bundle
      */
@@ -351,16 +340,6 @@ return [
     'licences'          => 'Licences',
     'number_of_sla'     => 'Number of SLAs',
     'shoping_cart_link' => 'Shoping Cart Link',
-     /*
-     * Api Keys
-     */
-     'rzp_key'        => 'Razorpay Key',
-     'rzp_secret'     => 'Razorpay Secret',
-     'apilayer'       => 'ApiLayer Access Key',
-     'zoho_key'       => 'Zoho Key',
-     'key'            => 'API Keys',
-     'msg91key'       => 'Msg91 Auth Key',
-
     /*
      * Slas
      */

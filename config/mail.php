@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'from' => ['address' => 'support@faveohelpdesk.com', 'name' => 'Faveo Helpdesk'],
+    'from' => ['address' => 'info@faveohelpdesk.com', 'name' => 'Faveo Helpdesk'],
 
     /*
     |--------------------------------------------------------------------------

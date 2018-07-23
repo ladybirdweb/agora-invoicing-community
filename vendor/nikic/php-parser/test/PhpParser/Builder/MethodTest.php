@@ -1,16 +1,14 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Builder;
 
 use PhpParser\Comment;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Print_;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
-use PHPUnit\Framework\TestCase;
 
-class MethodTest extends TestCase
+class MethodTest extends \PHPUnit_Framework_TestCase
 {
     public function createMethodBuilder($name) {
         return new Method($name);
@@ -25,12 +23,12 @@ class MethodTest extends TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
+            new Stmt\ClassMethod('test', array(
                 'flags' => Stmt\Class_::MODIFIER_PUBLIC
                          | Stmt\Class_::MODIFIER_ABSTRACT
                          | Stmt\Class_::MODIFIER_STATIC,
                 'stmts' => null,
-            ]),
+            )),
             $node
         );
 
@@ -41,10 +39,10 @@ class MethodTest extends TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
+            new Stmt\ClassMethod('test', array(
                 'flags' => Stmt\Class_::MODIFIER_PROTECTED
                          | Stmt\Class_::MODIFIER_FINAL
-            ]),
+            )),
             $node
         );
 
@@ -54,9 +52,9 @@ class MethodTest extends TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
+            new Stmt\ClassMethod('test', array(
                 'type' => Stmt\Class_::MODIFIER_PRIVATE
-            ]),
+            )),
             $node
         );
     }
@@ -68,28 +66,28 @@ class MethodTest extends TestCase
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
+            new Stmt\ClassMethod('test', array(
                 'byRef' => true
-            ]),
+            )),
             $node
         );
     }
 
     public function testParams() {
-        $param1 = new Node\Param(new Variable('test1'));
-        $param2 = new Node\Param(new Variable('test2'));
-        $param3 = new Node\Param(new Variable('test3'));
+        $param1 = new Node\Param('test1');
+        $param2 = new Node\Param('test2');
+        $param3 = new Node\Param('test3');
 
         $node = $this->createMethodBuilder('test')
             ->addParam($param1)
-            ->addParams([$param2, $param3])
+            ->addParams(array($param2, $param3))
             ->getNode()
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
-                'params' => [$param1, $param2, $param3]
-            ]),
+            new Stmt\ClassMethod('test', array(
+                'params' => array($param1, $param2, $param3)
+            )),
             $node
         );
     }
@@ -101,18 +99,14 @@ class MethodTest extends TestCase
 
         $node = $this->createMethodBuilder('test')
             ->addStmt($stmt1)
-            ->addStmts([$stmt2, $stmt3])
+            ->addStmts(array($stmt2, $stmt3))
             ->getNode()
         ;
 
         $this->assertEquals(
-            new Stmt\ClassMethod('test', [
-                'stmts' => [
-                    new Stmt\Expression($stmt1),
-                    new Stmt\Expression($stmt2),
-                    new Stmt\Expression($stmt3),
-                ]
-            ]),
+            new Stmt\ClassMethod('test', array(
+                'stmts' => array($stmt1, $stmt2, $stmt3)
+            )),
             $node
         );
     }
@@ -121,18 +115,18 @@ class MethodTest extends TestCase
             ->setDocComment('/** Test */')
             ->getNode();
 
-        $this->assertEquals(new Stmt\ClassMethod('test', [], [
-            'comments' => [new Comment\Doc('/** Test */')]
-        ]), $node);
+        $this->assertEquals(new Stmt\ClassMethod('test', array(), array(
+            'comments' => array(new Comment\Doc('/** Test */'))
+        )), $node);
     }
 
     public function testReturnType() {
         $node = $this->createMethodBuilder('test')
             ->setReturnType('bool')
             ->getNode();
-        $this->assertEquals(new Stmt\ClassMethod('test', [
+        $this->assertEquals(new Stmt\ClassMethod('test', array(
             'returnType' => 'bool'
-        ], []), $node);
+        ), array()), $node);
     }
 
     /**

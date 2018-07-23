@@ -8,33 +8,25 @@ array(
     0: Stmt_Const(
         consts: array(
             0: Const(
-                name: Identifier(
-                    name: A
-                )
+                name: A
                 value: Scalar_LNumber(
                     value: 0
                 )
             )
             1: Const(
-                name: Identifier(
-                    name: B
-                )
+                name: B
                 value: Scalar_DNumber(
                     value: 1
                 )
             )
             2: Const(
-                name: Identifier(
-                    name: C
-                )
+                name: C
                 value: Scalar_String(
                     value: A
                 )
             )
             3: Const(
-                name: Identifier(
-                    name: D
-                )
+                name: D
                 value: Expr_ConstFetch(
                     name: Name(
                         parts: array(

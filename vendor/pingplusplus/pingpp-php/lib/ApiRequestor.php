@@ -357,9 +357,6 @@ class ApiRequestor
 
     private function caBundle()
     {
-        if (Pingpp::$caBundle) {
-            return Pingpp::$caBundle;
-        }
         return dirname(__FILE__) . '/../data/ca-certificates.crt';
     }
 

@@ -10,8 +10,6 @@
  */
 
 return array(
-    'useReadline'       => false,
-    'usePcntl'          => true,
-    'requireSemicolons' => true,
-    'useUnicode'        => false,
+    'useReadline' => false,
+    'usePcntl'    => true,
 );

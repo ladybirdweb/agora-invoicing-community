@@ -6,10 +6,8 @@ Invalid octal literals
 !!php7
 Invalid numeric literal from 2:1 to 2:4
 array(
-    0: Stmt_Expression(
-        expr: Scalar_LNumber(
-            value: 0
-        )
+    0: Scalar_LNumber(
+        value: 0
     )
 )
 -----
@@ -18,9 +16,7 @@ array(
 -----
 !!php5
 array(
-    0: Stmt_Expression(
-        expr: Scalar_LNumber(
-            value: 7
-        )
+    0: Scalar_LNumber(
+        value: 7
     )
 )

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
-use App\Model\Common\State;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -19,9 +18,8 @@ use App\User;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
-use Log;
 
-class CheckoutController extends InfoController
+class CheckoutController extends Controller
 {
     public $subscription;
     public $plan;
@@ -83,7 +81,6 @@ class CheckoutController extends InfoController
         if (!\Auth::user()) {
             $url = $request->segments();
             $content = Cart::getContent();
-
             \Session::put('session-url', $url[0]);
             $domain = $request->input('domain');
             if (count($domain) > 0) {
@@ -95,15 +92,9 @@ class CheckoutController extends InfoController
 
             return redirect('auth/login')->with('fails', 'Please login');
         }
-
-        if (\Session::has('items')) {
-            $content = \Session::get('items');
-            $attributes = $this->getAttributes($content);
-        } else {
-            $content = Cart::getContent();
-            $attributes = $this->getAttributes($content);
-        }
-
+        $content = Cart::getContent();
+        //dd($content[10]);
+        $attributes = $this->getAttributes($content);
         $require = [];
 
         //        if ($content->count() == 0) {
@@ -129,10 +120,9 @@ class CheckoutController extends InfoController
                 }
             }
             //$content = Cart::getContent();
+
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -141,7 +131,6 @@ class CheckoutController extends InfoController
 
     public function getAttributes($content)
     {
-        $attributes = [];
         foreach ($content as $key => $item) {
             $attributes[] = $item->attributes;
             $cart_currency = $attributes[0]['currency'][0]['code'];
@@ -160,7 +149,6 @@ class CheckoutController extends InfoController
             }
 
             $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-            $require = [];
             if ($require_domain == 1) {
                 $require[$key] = $item->id;
             }
@@ -194,41 +182,62 @@ class CheckoutController extends InfoController
     public function postCheckout(Request $request)
     {
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
-        $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
+
         $paynow = false;
         if ($request->input('invoice_id')) {
             $paynow = true;
+            //$invoiceid = $request->input('invoice_id');
         }
+
         $cost = $request->input('cost');
-        $state = $this->getState();
+        // if (\Cart::getSubTotal() > 0 || $cost > 0) {
+        //     //  {
+        //     $v = $this->validate($request, [
+        //         'payment_gateway' => 'required',
+        //             ], [
+
+        //         'payment_gateway.required' => 'Please choose a payment gateway',
+        //             ]);
+        // }
 
         try {
-            if ($paynow === false) {
+            if (!$this->setting->where('id', 1)->first()) {
+                return redirect()->back()->with('fails', 'Complete your settings');
+            }
+            if ($paynow == false) {
                 /*
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
-
-                $pay = $this->payment($payment_method, $status = 'pending');
-                $payment_method = $pay['payment'];
-                $status = $pay['status'];
+                $status = 'pending';
+                if (!$payment_method) {
+                    $payment_method = 'free';
+                    $status = 'success';
+                }
                 $invoice_no = $invoice->number;
-                $date = $this->getDate($invoice);
+
                 $invoiceid = $invoice->id;
+
                 $amount = $invoice->grand_total;
+
+                //dd($payment);
                 $url = '';
                 $cart = Cart::getContent();
                 $invoices = $this->invoice->find($invoiceid);
+                // dd($invoice);
                 $items = new \Illuminate\Support\Collection();
+                // dd($items);
                 if ($invoices) {
                     $items = $invoice->invoiceItem()->get();
+
                     $product = $this->product($invoiceid);
                     $content = Cart::getContent();
                     $attributes = $this->getAttributes($content);
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
+                $cart = [];
                 $invoice_id = $request->input('invoice_id');
                 $invoice = $this->invoice->find($invoice_id);
                 $items = $invoice->invoiceItem()->get();
@@ -237,28 +246,29 @@ class CheckoutController extends InfoController
                 $content = Cart::getContent();
                 $attributes = $this->getAttributes($content);
             }
-            if (Cart::getSubTotal() != 0 || $cost > 0) {
-                $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
-                $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
-                $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
-                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method','phone', 'invoice', 'items', 'product', 'paynow', 'attributes','rzp_key','rzp_secret',
-                    'apilayer_key'));
+            //trasfer the control to event if cart price is not equal 0
+            if (Cart::getSubTotal() != 0 || $cost > 0) {
+                //                if ($paynow == true) {
+                //                     $invoice_controller->doPayment($payment_method, $invoiceid, $amount, '', '', $status);
+                //                }
+                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method', 'invoice', 'items', 'product', 'paynow', 'attributes'));
+            // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+                // dd('sdfds');
             } else {
                 $action = $this->checkoutAction($invoice);
+
                 $check_product_category = $this->product($invoiceid);
+
                 $url = '';
                 if ($check_product_category->category) {
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',
-                        'product', 'items', 'attributes', 'state'))->render();
+                    $url = 'You can also download the product <a href='.url('download/'.\Auth::user()->id."/$invoice->number").'>here</a>';
                 }
                 \Cart::clear();
 
-                return redirect()->back()->with('success', $url);
+                return redirect()->back()->with('success', \Lang::get('message.check-your-mail-for-further-datails').$url);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -293,8 +303,6 @@ class CheckoutController extends InfoController
 
             return 'success';
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -311,8 +319,6 @@ class CheckoutController extends InfoController
 
             return $product;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -331,8 +337,6 @@ class CheckoutController extends InfoController
                 $this->AddProductToOrder($id);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order');
@@ -360,8 +364,6 @@ class CheckoutController extends InfoController
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order for Product');
@@ -383,8 +385,6 @@ class CheckoutController extends InfoController
             }
             $this->subscription->create(['user_id' => \Auth::user()->id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
@@ -404,8 +404,6 @@ class CheckoutController extends InfoController
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -433,8 +431,6 @@ class CheckoutController extends InfoController
 
             $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 'product_name' => $product_name, 'regular_price' => $regular_price, 'quantity' => $quantity, 'tax_name' => $tax_name, 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');

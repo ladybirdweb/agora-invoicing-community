@@ -35,10 +35,6 @@ try {
                     'amount' => 10,
                 ],
             ],
-            //'balance_settlement' => [   // 可选参数，余额结算信息。
-            //    'user' => 'user_001',
-            //    'user_fee' => 1
-            //]
         )
     );
     echo $or;

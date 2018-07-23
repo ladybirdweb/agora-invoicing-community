@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node\Stmt;
 
@@ -12,24 +12,20 @@ class Interface_ extends ClassLike
     /**
      * Constructs a class node.
      *
-     * @param string|Node\Identifier $name Name
+     * @param string $name       Name
      * @param array  $subNodes   Array of the following optional subnodes:
      *                           'extends' => array(): Name of extended interfaces
      *                           'stmts'   => array(): Statements
      * @param array  $attributes Additional attributes
      */
-    public function __construct($name, array $subNodes = [], array $attributes = []) {
+    public function __construct($name, array $subNodes = array(), array $attributes = array()) {
         parent::__construct($attributes);
-        $this->name = \is_string($name) ? new Node\Identifier($name) : $name;
-        $this->extends = $subNodes['extends'] ?? [];
-        $this->stmts = $subNodes['stmts'] ?? [];
+        $this->name = $name;
+        $this->extends = isset($subNodes['extends']) ? $subNodes['extends'] : array();
+        $this->stmts = isset($subNodes['stmts']) ? $subNodes['stmts'] : array();
     }
 
-    public function getSubNodeNames() : array {
-        return ['name', 'extends', 'stmts'];
-    }
-    
-    public function getType() : string {
-        return 'Stmt_Interface';
+    public function getSubNodeNames() {
+        return array('name', 'extends', 'stmts');
     }
 }

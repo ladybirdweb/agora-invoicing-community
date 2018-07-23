@@ -1,11 +1,8 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser;
 
-use PHPUnit\Framework\TestCase;
-
-class DummyNode extends NodeAbstract
-{
+class DummyNode extends NodeAbstract {
     public $subNode1;
     public $subNode2;
 
@@ -15,38 +12,33 @@ class DummyNode extends NodeAbstract
         $this->subNode2 = $subNode2;
     }
 
-    public function getSubNodeNames() : array {
-        return ['subNode1', 'subNode2'];
+    public function getSubNodeNames() {
+        return array('subNode1', 'subNode2');
     }
 
     // This method is only overwritten because the node is located in an unusual namespace
-    public function getType() : string {
+    public function getType() {
         return 'Dummy';
     }
 }
 
-class NodeAbstractTest extends TestCase
+class NodeAbstractTest extends \PHPUnit_Framework_TestCase
 {
     public function provideNodes() {
-        $attributes = [
+        $attributes = array(
             'startLine' => 10,
-            'endLine' => 11,
-            'startTokenPos' => 12,
-            'endTokenPos' => 13,
-            'startFilePos' => 14,
-            'endFilePos' => 15,
-            'comments'  => [
+            'comments'  => array(
                 new Comment('// Comment' . "\n"),
                 new Comment\Doc('/** doc comment */'),
-            ],
-        ];
+            ),
+        );
 
         $node = new DummyNode('value1', 'value2', $attributes);
         $node->notSubNode = 'value3';
 
-        return [
-            [$attributes, $node],
-        ];
+        return array(
+            array($attributes, $node),
+        );
     }
 
     /**
@@ -54,22 +46,15 @@ class NodeAbstractTest extends TestCase
      */
     public function testConstruct(array $attributes, Node $node) {
         $this->assertSame('Dummy', $node->getType());
-        $this->assertSame(['subNode1', 'subNode2'], $node->getSubNodeNames());
+        $this->assertSame(array('subNode1', 'subNode2'), $node->getSubNodeNames());
         $this->assertSame(10, $node->getLine());
-        $this->assertSame(10, $node->getStartLine());
-        $this->assertSame(11, $node->getEndLine());
-        $this->assertSame(12, $node->getStartTokenPos());
-        $this->assertSame(13, $node->getEndTokenPos());
-        $this->assertSame(14, $node->getStartFilePos());
-        $this->assertSame(15, $node->getEndFilePos());
         $this->assertSame('/** doc comment */', $node->getDocComment()->getText());
         $this->assertSame('value1', $node->subNode1);
         $this->assertSame('value2', $node->subNode2);
-        $this->assertObjectHasAttribute('subNode1', $node);
-        $this->assertObjectHasAttribute('subNode2', $node);
-        $this->assertObjectNotHasAttribute('subNode3', $node);
+        $this->assertTrue(isset($node->subNode1));
+        $this->assertTrue(isset($node->subNode2));
+        $this->assertFalse(isset($node->subNode3));
         $this->assertSame($attributes, $node->getAttributes());
-        $this->assertSame($attributes['comments'], $node->getComments());
 
         return $node;
     }
@@ -79,14 +64,9 @@ class NodeAbstractTest extends TestCase
      */
     public function testGetDocComment(array $attributes, Node $node) {
         $this->assertSame('/** doc comment */', $node->getDocComment()->getText());
-        $comments = $node->getComments();
-
-        array_pop($comments); // remove doc comment
-        $node->setAttribute('comments', $comments);
+        array_pop($node->getAttribute('comments')); // remove doc comment
         $this->assertNull($node->getDocComment());
-
-        array_pop($comments); // remove comment
-        $node->setAttribute('comments', $comments);
+        array_pop($node->getAttribute('comments')); // remove comment
         $this->assertNull($node->getDocComment());
     }
 
@@ -116,6 +96,10 @@ class NodeAbstractTest extends TestCase
      * @dataProvider provideNodes
      */
     public function testChange(array $attributes, Node $node) {
+        // change of line
+        $node->setLine(15);
+        $this->assertSame(15, $node->getLine());
+
         // direct modification
         $node->subNode = 'newValue';
         $this->assertSame('newValue', $node->subNode);
@@ -127,7 +111,7 @@ class NodeAbstractTest extends TestCase
 
         // removal
         unset($node->subNode);
-        $this->assertObjectNotHasAttribute('subNode', $node);
+        $this->assertFalse(isset($node->subNode));
     }
 
     /**
@@ -141,10 +125,10 @@ class NodeAbstractTest extends TestCase
             if ($i === 0) {
                 $this->assertSame('subNode1', $key);
                 $this->assertSame('value1', $value);
-            } elseif ($i === 1) {
+            } else if ($i === 1) {
                 $this->assertSame('subNode2', $key);
                 $this->assertSame('value2', $value);
-            } elseif ($i === 2) {
+            } else if ($i === 2) {
                 $this->assertSame('notSubNode', $key);
                 $this->assertSame('value3', $value);
             } else {
@@ -157,7 +141,7 @@ class NodeAbstractTest extends TestCase
 
     public function testAttributes() {
         /** @var $node Node */
-        $node = $this->getMockForAbstractClass(NodeAbstract::class);
+        $node = $this->getMockForAbstractClass('PhpParser\NodeAbstract');
 
         $this->assertEmpty($node->getAttributes());
 
@@ -175,24 +159,10 @@ class NodeAbstractTest extends TestCase
         $this->assertNull($node->getAttribute('null', 'default'));
 
         $this->assertSame(
-            [
+            array(
                 'key'  => 'value',
                 'null' => null,
-            ],
-            $node->getAttributes()
-        );
-
-        $node->setAttributes(
-            [
-                'a' => 'b',
-                'c' => null,
-            ]
-        );
-        $this->assertSame(
-            [
-                'a' => 'b',
-                'c' => null,
-            ],
+            ),
             $node->getAttributes()
         );
     }
@@ -211,28 +181,14 @@ PHP;
     {
         "nodeType": "Stmt_Function",
         "byRef": false,
-        "name": {
-            "nodeType": "Identifier",
-            "name": "functionName",
-            "attributes": {
-                "startLine": 4,
-                "endLine": 4
-            }
-        },
+        "name": "functionName",
         "params": [
             {
                 "nodeType": "Param",
                 "type": null,
                 "byRef": true,
                 "variadic": false,
-                "var": {
-                    "nodeType": "Expr_Variable",
-                    "name": "a",
-                    "attributes": {
-                        "startLine": 4,
-                        "endLine": 4
-                    }
-                },
+                "name": "a",
                 "default": {
                     "nodeType": "Scalar_LNumber",
                     "value": 0,
@@ -252,14 +208,7 @@ PHP;
                 "type": null,
                 "byRef": false,
                 "variadic": false,
-                "var": {
-                    "nodeType": "Expr_Variable",
-                    "name": "b",
-                    "attributes": {
-                        "startLine": 4,
-                        "endLine": 4
-                    }
-                },
+                "name": "b",
                 "default": {
                     "nodeType": "Scalar_DNumber",
                     "value": 1,
@@ -302,15 +251,13 @@ PHP;
                     "nodeType": "Comment",
                     "text": "\/\/ comment\n",
                     "line": 2,
-                    "filePos": 6,
-                    "tokenPos": 1
+                    "filePos": 6
                 },
                 {
                     "nodeType": "Comment_Doc",
                     "text": "\/** doc comment *\/",
                     "line": 3,
-                    "filePos": 17,
-                    "tokenPos": 2
+                    "filePos": 17
                 }
             ],
             "endLine": 6

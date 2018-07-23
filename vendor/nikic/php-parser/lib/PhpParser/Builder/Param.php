@@ -1,12 +1,11 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Builder;
 
 use PhpParser;
-use PhpParser\BuilderHelpers;
 use PhpParser\Node;
 
-class Param implements PhpParser\Builder
+class Param extends PhpParser\BuilderAbstract
 {
     protected $name;
 
@@ -24,7 +23,7 @@ class Param implements PhpParser\Builder
      *
      * @param string $name Name of the parameter
      */
-    public function __construct(string $name) {
+    public function __construct($name) {
         $this->name = $name;
     }
 
@@ -36,7 +35,7 @@ class Param implements PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function setDefault($value) {
-        $this->default = BuilderHelpers::normalizeValue($value);
+        $this->default = $this->normalizeValue($value);
 
         return $this;
     }
@@ -49,8 +48,8 @@ class Param implements PhpParser\Builder
      * @return $this The builder instance (for fluid interface)
      */
     public function setTypeHint($type) {
-        $this->type = BuilderHelpers::normalizeType($type);
-        if ($this->type == 'void') {
+        $this->type = $this->normalizeType($type);
+        if ($this->type === 'void') {
             throw new \LogicException('Parameter type cannot be void');
         }
 
@@ -84,10 +83,9 @@ class Param implements PhpParser\Builder
      *
      * @return Node\Param The built parameter node
      */
-    public function getNode() : Node {
+    public function getNode() {
         return new Node\Param(
-            new Node\Expr\Variable($this->name),
-            $this->default, $this->type, $this->byRef, $this->variadic
+            $this->name, $this->default, $this->type, $this->byRef, $this->variadic
         );
     }
 }

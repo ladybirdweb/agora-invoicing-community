@@ -1,13 +1,10 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser;
 
 /* This test is very weak, because PHPUnit's assertEquals assertion is way too slow dealing with the
  * large objects involved here. So we just do some basic instanceof tests instead. */
-use PHPUnit\Framework\TestCase;
-
-class ParserFactoryTest extends TestCase
-{
+class ParserFactoryTest extends \PHPUnit_Framework_TestCase {
     /** @dataProvider provideTestCreate */
     public function testCreate($kind, $lexer, $expected) {
         $this->assertInstanceOf($expected, (new ParserFactory)->create($kind, $lexer));
@@ -18,19 +15,19 @@ class ParserFactoryTest extends TestCase
         return [
             [
                 ParserFactory::PREFER_PHP7, $lexer,
-                Parser\Multiple::class
+                'PhpParser\Parser\Multiple'
             ],
             [
                 ParserFactory::PREFER_PHP5, null,
-                Parser\Multiple::class
+                'PhpParser\Parser\Multiple'
             ],
             [
                 ParserFactory::ONLY_PHP7, null,
-                Parser\Php7::class
+                'PhpParser\Parser\Php7'
             ],
             [
                 ParserFactory::ONLY_PHP5, $lexer,
-                Parser\Php5::class
+                'PhpParser\Parser\Php5'
             ]
         ];
     }

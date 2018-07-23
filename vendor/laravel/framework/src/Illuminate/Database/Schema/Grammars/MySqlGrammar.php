@@ -1,11 +1,8 @@
 <?php
-
 namespace Illuminate\Database\Schema\Grammars;
-
 use Illuminate\Support\Fluent;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
-
 class MySqlGrammar extends Grammar
 {
     /**
@@ -17,14 +14,12 @@ class MySqlGrammar extends Grammar
         'Unsigned', 'VirtualAs', 'StoredAs', 'Charset', 'Collate', 'Nullable',
         'Default', 'Increment', 'Comment', 'After', 'First',
     ];
-
     /**
      * The possible column serials.
      *
      * @var array
      */
     protected $serials = ['bigInteger', 'integer', 'mediumInteger', 'smallInteger', 'tinyInteger'];
-
     /**
      * Compile the query to determine the list of tables.
      *
@@ -34,7 +29,6 @@ class MySqlGrammar extends Grammar
     {
         return 'select * from information_schema.tables where table_schema = ? and table_name = ?';
     }
-
     /**
      * Compile the query to determine the list of columns.
      *
@@ -44,7 +38,6 @@ class MySqlGrammar extends Grammar
     {
         return 'select column_name as `column_name` from information_schema.columns where table_schema = ? and table_name = ?';
     }
-
     /**
      * Compile a create table command.
      *
@@ -58,14 +51,12 @@ class MySqlGrammar extends Grammar
         $sql = $this->compileCreateTable(
             $blueprint, $command, $connection
         );
-
         // Once we have the primary SQL, we can add the encoding option to the SQL for
         // the table.  Then, we can check if a storage engine has been supplied for
         // the table. If so, we will add the engine declaration to the SQL query.
         $sql = $this->compileCreateEncoding(
             $sql, $connection, $blueprint
         );
-
         // Finally, we will append the engine configuration onto this SQL statement as
         // the final thing we do before returning this finished SQL. Once this gets
         // added the query will be ready to execute against the real connections.
@@ -73,7 +64,6 @@ class MySqlGrammar extends Grammar
             $sql, $connection, $blueprint
         );
     }
-
     /**
      * Create the main create table clause.
      *
@@ -90,7 +80,6 @@ class MySqlGrammar extends Grammar
             implode(', ', $this->getColumns($blueprint))
         );
     }
-
     /**
      * Append the character set specifications to a command.
      *
@@ -109,7 +98,6 @@ class MySqlGrammar extends Grammar
         } elseif (! is_null($charset = $connection->getConfig('charset'))) {
             $sql .= ' default character set '.$charset;
         }
-
         // Next we will add the collation to the create table statement if one has been
         // added to either this create table blueprint or the configuration for this
         // connection that the query is targeting. We'll add it to this SQL query.
@@ -118,10 +106,8 @@ class MySqlGrammar extends Grammar
         } elseif (! is_null($collation = $connection->getConfig('collation'))) {
             $sql .= ' collate '.$collation;
         }
-
         return $sql;
     }
-
     /**
      * Append the engine specifications to a command.
      *
@@ -137,10 +123,8 @@ class MySqlGrammar extends Grammar
         } elseif (! is_null($engine = $connection->getConfig('engine'))) {
             return $sql.' engine = '.$engine;
         }
-
         return $sql;
     }
-
     /**
      * Compile an add column command.
      *
@@ -151,10 +135,8 @@ class MySqlGrammar extends Grammar
     public function compileAdd(Blueprint $blueprint, Fluent $command)
     {
         $columns = $this->prefixArray('add', $this->getColumns($blueprint));
-
         return 'alter table '.$this->wrapTable($blueprint).' '.implode(', ', $columns);
     }
-
     /**
      * Compile a primary key command.
      *
@@ -165,10 +147,8 @@ class MySqlGrammar extends Grammar
     public function compilePrimary(Blueprint $blueprint, Fluent $command)
     {
         $command->name(null);
-
         return $this->compileKey($blueprint, $command, 'primary key');
     }
-
     /**
      * Compile a unique key command.
      *
@@ -180,7 +160,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->compileKey($blueprint, $command, 'unique');
     }
-
     /**
      * Compile a plain index key command.
      *
@@ -192,7 +171,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->compileKey($blueprint, $command, 'index');
     }
-
     /**
      * Compile a spatial index key command.
      *
@@ -204,7 +182,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->compileKey($blueprint, $command, 'spatial index');
     }
-
     /**
      * Compile an index creation command.
      *
@@ -223,7 +200,6 @@ class MySqlGrammar extends Grammar
             $this->columnize($command->columns)
         );
     }
-
     /**
      * Compile a drop table command.
      *
@@ -235,7 +211,6 @@ class MySqlGrammar extends Grammar
     {
         return 'drop table '.$this->wrapTable($blueprint);
     }
-
     /**
      * Compile a drop table (if exists) command.
      *
@@ -247,7 +222,6 @@ class MySqlGrammar extends Grammar
     {
         return 'drop table if exists '.$this->wrapTable($blueprint);
     }
-
     /**
      * Compile a drop column command.
      *
@@ -258,10 +232,8 @@ class MySqlGrammar extends Grammar
     public function compileDropColumn(Blueprint $blueprint, Fluent $command)
     {
         $columns = $this->prefixArray('drop', $this->wrapArray($command->columns));
-
         return 'alter table '.$this->wrapTable($blueprint).' '.implode(', ', $columns);
     }
-
     /**
      * Compile a drop primary key command.
      *
@@ -273,7 +245,6 @@ class MySqlGrammar extends Grammar
     {
         return 'alter table '.$this->wrapTable($blueprint).' drop primary key';
     }
-
     /**
      * Compile a drop unique key command.
      *
@@ -284,10 +255,8 @@ class MySqlGrammar extends Grammar
     public function compileDropUnique(Blueprint $blueprint, Fluent $command)
     {
         $index = $this->wrap($command->index);
-
         return "alter table {$this->wrapTable($blueprint)} drop index {$index}";
     }
-
     /**
      * Compile a drop index command.
      *
@@ -298,10 +267,8 @@ class MySqlGrammar extends Grammar
     public function compileDropIndex(Blueprint $blueprint, Fluent $command)
     {
         $index = $this->wrap($command->index);
-
         return "alter table {$this->wrapTable($blueprint)} drop index {$index}";
     }
-
     /**
      * Compile a drop spatial index command.
      *
@@ -313,7 +280,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->compileDropIndex($blueprint, $command);
     }
-
     /**
      * Compile a drop foreign key command.
      *
@@ -324,10 +290,8 @@ class MySqlGrammar extends Grammar
     public function compileDropForeign(Blueprint $blueprint, Fluent $command)
     {
         $index = $this->wrap($command->index);
-
         return "alter table {$this->wrapTable($blueprint)} drop foreign key {$index}";
     }
-
     /**
      * Compile a rename table command.
      *
@@ -338,10 +302,8 @@ class MySqlGrammar extends Grammar
     public function compileRename(Blueprint $blueprint, Fluent $command)
     {
         $from = $this->wrapTable($blueprint);
-
         return "rename table {$from} to ".$this->wrapTable($command->to);
     }
-
     /**
      * Compile the SQL needed to drop all tables.
      *
@@ -352,7 +314,6 @@ class MySqlGrammar extends Grammar
     {
         return 'drop table '.implode(',', $this->wrapArray($tables));
     }
-
     /**
      * Compile the SQL needed to retrieve all table names.
      *
@@ -362,7 +323,6 @@ class MySqlGrammar extends Grammar
     {
         return 'SHOW FULL TABLES WHERE table_type = \'BASE TABLE\'';
     }
-
     /**
      * Compile the command to enable foreign key constraints.
      *
@@ -372,7 +332,6 @@ class MySqlGrammar extends Grammar
     {
         return 'SET FOREIGN_KEY_CHECKS=1;';
     }
-
     /**
      * Compile the command to disable foreign key constraints.
      *
@@ -382,7 +341,6 @@ class MySqlGrammar extends Grammar
     {
         return 'SET FOREIGN_KEY_CHECKS=0;';
     }
-
     /**
      * Create the column definition for a char type.
      *
@@ -393,7 +351,6 @@ class MySqlGrammar extends Grammar
     {
         return "char({$column->length})";
     }
-
     /**
      * Create the column definition for a string type.
      *
@@ -404,7 +361,6 @@ class MySqlGrammar extends Grammar
     {
         return "varchar({$column->length})";
     }
-
     /**
      * Create the column definition for a text type.
      *
@@ -415,7 +371,6 @@ class MySqlGrammar extends Grammar
     {
         return 'text';
     }
-
     /**
      * Create the column definition for a medium text type.
      *
@@ -426,7 +381,6 @@ class MySqlGrammar extends Grammar
     {
         return 'mediumtext';
     }
-
     /**
      * Create the column definition for a long text type.
      *
@@ -437,7 +391,6 @@ class MySqlGrammar extends Grammar
     {
         return 'longtext';
     }
-
     /**
      * Create the column definition for a big integer type.
      *
@@ -448,7 +401,6 @@ class MySqlGrammar extends Grammar
     {
         return 'bigint';
     }
-
     /**
      * Create the column definition for an integer type.
      *
@@ -459,7 +411,6 @@ class MySqlGrammar extends Grammar
     {
         return 'int';
     }
-
     /**
      * Create the column definition for a medium integer type.
      *
@@ -470,7 +421,6 @@ class MySqlGrammar extends Grammar
     {
         return 'mediumint';
     }
-
     /**
      * Create the column definition for a tiny integer type.
      *
@@ -481,7 +431,6 @@ class MySqlGrammar extends Grammar
     {
         return 'tinyint';
     }
-
     /**
      * Create the column definition for a small integer type.
      *
@@ -492,7 +441,6 @@ class MySqlGrammar extends Grammar
     {
         return 'smallint';
     }
-
     /**
      * Create the column definition for a float type.
      *
@@ -503,7 +451,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->typeDouble($column);
     }
-
     /**
      * Create the column definition for a double type.
      *
@@ -515,10 +462,8 @@ class MySqlGrammar extends Grammar
         if ($column->total && $column->places) {
             return "double({$column->total}, {$column->places})";
         }
-
         return 'double';
     }
-
     /**
      * Create the column definition for a decimal type.
      *
@@ -529,7 +474,6 @@ class MySqlGrammar extends Grammar
     {
         return "decimal({$column->total}, {$column->places})";
     }
-
     /**
      * Create the column definition for a boolean type.
      *
@@ -540,7 +484,6 @@ class MySqlGrammar extends Grammar
     {
         return 'tinyint(1)';
     }
-
     /**
      * Create the column definition for an enum type.
      *
@@ -551,7 +494,6 @@ class MySqlGrammar extends Grammar
     {
         return "enum('".implode("', '", $column->allowed)."')";
     }
-
     /**
      * Create the column definition for a json type.
      *
@@ -562,7 +504,6 @@ class MySqlGrammar extends Grammar
     {
         return 'json';
     }
-
     /**
      * Create the column definition for a jsonb type.
      *
@@ -573,7 +514,6 @@ class MySqlGrammar extends Grammar
     {
         return 'json';
     }
-
     /**
      * Create the column definition for a date type.
      *
@@ -584,7 +524,6 @@ class MySqlGrammar extends Grammar
     {
         return 'date';
     }
-
     /**
      * Create the column definition for a date-time type.
      *
@@ -595,7 +534,6 @@ class MySqlGrammar extends Grammar
     {
         return $column->precision ? "datetime($column->precision)" : 'datetime';
     }
-
     /**
      * Create the column definition for a date-time (with time zone) type.
      *
@@ -606,7 +544,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->typeDateTime($column);
     }
-
     /**
      * Create the column definition for a time type.
      *
@@ -617,7 +554,6 @@ class MySqlGrammar extends Grammar
     {
         return $column->precision ? "time($column->precision)" : 'time';
     }
-
     /**
      * Create the column definition for a time (with time zone) type.
      *
@@ -628,7 +564,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->typeTime($column);
     }
-
     /**
      * Create the column definition for a timestamp type.
      *
@@ -638,10 +573,8 @@ class MySqlGrammar extends Grammar
     protected function typeTimestamp(Fluent $column)
     {
         $columnType = $column->precision ? "timestamp($column->precision)" : 'timestamp';
-
         return $column->useCurrent ? "$columnType default CURRENT_TIMESTAMP" : $columnType;
     }
-
     /**
      * Create the column definition for a timestamp (with time zone) type.
      *
@@ -652,7 +585,6 @@ class MySqlGrammar extends Grammar
     {
         return $this->typeTimestamp($column);
     }
-
     /**
      * Create the column definition for a year type.
      *
@@ -663,7 +595,6 @@ class MySqlGrammar extends Grammar
     {
         return 'year';
     }
-
     /**
      * Create the column definition for a binary type.
      *
@@ -674,7 +605,6 @@ class MySqlGrammar extends Grammar
     {
         return 'blob';
     }
-
     /**
      * Create the column definition for a uuid type.
      *
@@ -685,7 +615,6 @@ class MySqlGrammar extends Grammar
     {
         return 'char(36)';
     }
-
     /**
      * Create the column definition for an IP address type.
      *
@@ -696,7 +625,6 @@ class MySqlGrammar extends Grammar
     {
         return 'varchar(45)';
     }
-
     /**
      * Create the column definition for a MAC address type.
      *
@@ -707,7 +635,6 @@ class MySqlGrammar extends Grammar
     {
         return 'varchar(17)';
     }
-
     /**
      * Create the column definition for a spatial Geometry type.
      *
@@ -718,7 +645,6 @@ class MySqlGrammar extends Grammar
     {
         return 'geometry';
     }
-
     /**
      * Create the column definition for a spatial Point type.
      *
@@ -729,7 +655,6 @@ class MySqlGrammar extends Grammar
     {
         return 'point';
     }
-
     /**
      * Create the column definition for a spatial LineString type.
      *
@@ -740,7 +665,6 @@ class MySqlGrammar extends Grammar
     {
         return 'linestring';
     }
-
     /**
      * Create the column definition for a spatial Polygon type.
      *
@@ -751,7 +675,6 @@ class MySqlGrammar extends Grammar
     {
         return 'polygon';
     }
-
     /**
      * Create the column definition for a spatial GeometryCollection type.
      *
@@ -762,7 +685,6 @@ class MySqlGrammar extends Grammar
     {
         return 'geometrycollection';
     }
-
     /**
      * Create the column definition for a spatial MultiPoint type.
      *
@@ -773,7 +695,6 @@ class MySqlGrammar extends Grammar
     {
         return 'multipoint';
     }
-
     /**
      * Create the column definition for a spatial MultiLineString type.
      *
@@ -784,7 +705,6 @@ class MySqlGrammar extends Grammar
     {
         return 'multilinestring';
     }
-
     /**
      * Create the column definition for a spatial MultiPolygon type.
      *
@@ -795,7 +715,6 @@ class MySqlGrammar extends Grammar
     {
         return 'multipolygon';
     }
-
     /**
      * Get the SQL for a generated virtual column modifier.
      *
@@ -809,7 +728,6 @@ class MySqlGrammar extends Grammar
             return " as ({$column->virtualAs})";
         }
     }
-
     /**
      * Get the SQL for a generated stored column modifier.
      *
@@ -823,7 +741,6 @@ class MySqlGrammar extends Grammar
             return " as ({$column->storedAs}) stored";
         }
     }
-
     /**
      * Get the SQL for an unsigned column modifier.
      *
@@ -837,7 +754,6 @@ class MySqlGrammar extends Grammar
             return ' unsigned';
         }
     }
-
     /**
      * Get the SQL for a character set column modifier.
      *
@@ -851,7 +767,6 @@ class MySqlGrammar extends Grammar
             return ' character set '.$column->charset;
         }
     }
-
     /**
      * Get the SQL for a collation column modifier.
      *
@@ -865,7 +780,6 @@ class MySqlGrammar extends Grammar
             return ' collate '.$column->collation;
         }
     }
-
     /**
      * Get the SQL for a nullable column modifier.
      *
@@ -879,7 +793,6 @@ class MySqlGrammar extends Grammar
             return $column->nullable ? ' null' : ' not null';
         }
     }
-
     /**
      * Get the SQL for a default column modifier.
      *
@@ -893,7 +806,6 @@ class MySqlGrammar extends Grammar
             return ' default '.$this->getDefaultValue($column->default);
         }
     }
-
     /**
      * Get the SQL for an auto-increment column modifier.
      *
@@ -907,7 +819,6 @@ class MySqlGrammar extends Grammar
             return ' auto_increment primary key';
         }
     }
-
     /**
      * Get the SQL for a "first" column modifier.
      *
@@ -921,7 +832,6 @@ class MySqlGrammar extends Grammar
             return ' first';
         }
     }
-
     /**
      * Get the SQL for an "after" column modifier.
      *
@@ -935,7 +845,6 @@ class MySqlGrammar extends Grammar
             return ' after '.$this->wrap($column->after);
         }
     }
-
     /**
      * Get the SQL for a "comment" column modifier.
      *
@@ -949,7 +858,6 @@ class MySqlGrammar extends Grammar
             return " comment '".addslashes($column->comment)."'";
         }
     }
-
     /**
      * Wrap a single string in keyword identifiers.
      *
@@ -961,7 +869,6 @@ class MySqlGrammar extends Grammar
         if ($value !== '*') {
             return '`'.str_replace('`', '``', $value).'`';
         }
-
         return $value;
     }
 }

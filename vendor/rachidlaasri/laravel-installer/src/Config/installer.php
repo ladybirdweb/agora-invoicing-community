@@ -17,10 +17,6 @@ return [
     'core' => [
         'minPhpVersion' => '7.0.0'
     ],
-    'final' => [
-        'key' => true,
-        'publish' => false
-    ],    
     'requirements' => [
         'php' => [
             'openssl',
@@ -76,7 +72,7 @@ return [
                 'database_port'         => 'required|numeric',
                 'database_name'         => 'required|string|max:50',
                 'database_username'     => 'required|string|max:50',
-                // 'database_password'     => 'required|string|max:50',
+                'database_password'     => 'required|string|max:50',
                 'broadcast_driver'      => 'required|string|max:50',
                 'cache_driver'          => 'required|string|max:50',
                 'session_driver'        => 'required|string|max:50',

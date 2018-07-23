@@ -17,17 +17,13 @@ function a(
 array(
     0: Stmt_Function(
         byRef: false
-        name: Identifier(
-            name: a
-        )
+        name: a
         params: array(
             0: Param(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: b
-                )
+                name: b
                 default: Expr_ConstFetch(
                     name: Name(
                         parts: array(
@@ -40,9 +36,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: c
-                )
+                name: c
                 default: Scalar_String(
                     value: foo
                 )
@@ -51,27 +45,21 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: d
-                )
+                name: d
                 default: Expr_ClassConstFetch(
                     class: Name(
                         parts: array(
                             0: A
                         )
                     )
-                    name: Identifier(
-                        name: B
-                    )
+                    name: B
                 )
             )
             3: Param(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: f
-                )
+                name: f
                 default: Expr_UnaryPlus(
                     expr: Scalar_LNumber(
                         value: 1
@@ -82,9 +70,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: g
-                )
+                name: g
                 default: Expr_UnaryMinus(
                     expr: Scalar_DNumber(
                         value: 1
@@ -95,9 +81,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: h
-                )
+                name: h
                 default: Expr_Array(
                     items: array(
                     )
@@ -107,9 +91,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: i
-                )
+                name: i
                 default: Expr_Array(
                     items: array(
                     )
@@ -119,9 +101,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: j
-                )
+                name: j
                 default: Expr_Array(
                     items: array(
                         0: Expr_ArrayItem(
@@ -138,9 +118,7 @@ array(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: k
-                )
+                name: k
                 default: Expr_Array(
                     items: array(
                         0: Expr_ArrayItem(

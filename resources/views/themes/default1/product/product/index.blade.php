@@ -3,7 +3,7 @@
 
 
 
-    <div class="box box-primary">
+<div class="box box-primary">
 
     <div class="box-header">
         @if (count($errors) > 0)

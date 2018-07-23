@@ -13,7 +13,6 @@ switch ($expr) {
     case 4:
         echo 'Third case, return instead of break';
         return;
-    // Comment
     default:
         echo 'Default case';
         break;
@@ -30,7 +29,6 @@ switch ($expr) {
     case 4:
         echo 'Third case, return instead of break';
         return;
-    // Comment
     default:
         echo 'Default case';
         break;

@@ -21,7 +21,7 @@ class Configuration
     const BUILD_ENDPOINT = 'https://build.bugsnag.com';
 
     /**
-     * The Bugsnag API Key.
+     * The Bugnsag API Key.
      *
      * @var string
      */
@@ -76,7 +76,7 @@ class Configuration
      */
     protected $notifier = [
         'name' => 'Bugsnag PHP (Official)',
-        'version' => '3.13.0',
+        'version' => '3.12.1',
         'url' => 'https://bugsnag.com',
     ];
 
@@ -163,7 +163,7 @@ class Configuration
     }
 
     /**
-     * Get the Bugsnag API Key.
+     * Get the Bugnsag API Key.
      *
      * @var string
      */

@@ -11,43 +11,35 @@ function gen() {
 array(
     0: Stmt_Function(
         byRef: false
-        name: Identifier(
-            name: gen
-        )
+        name: gen
         params: array(
         )
         returnType: null
         stmts: array(
-            0: Stmt_Expression(
-                expr: Expr_Yield(
-                    key: null
-                    value: Expr_UnaryPlus(
-                        expr: Scalar_LNumber(
-                            value: 1
-                        )
+            0: Expr_Yield(
+                key: null
+                value: Expr_UnaryPlus(
+                    expr: Scalar_LNumber(
+                        value: 1
                     )
                 )
             )
-            1: Stmt_Expression(
-                expr: Expr_Yield(
-                    key: null
-                    value: Expr_UnaryMinus(
-                        expr: Scalar_LNumber(
-                            value: 1
-                        )
+            1: Expr_Yield(
+                key: null
+                value: Expr_UnaryMinus(
+                    expr: Scalar_LNumber(
+                        value: 1
                     )
                 )
             )
-            2: Stmt_Expression(
-                expr: Expr_BinaryOp_Mul(
-                    left: Expr_Yield(
-                        key: null
-                        value: null
-                    )
-                    right: Expr_UnaryMinus(
-                        expr: Scalar_LNumber(
-                            value: 1
-                        )
+            2: Expr_BinaryOp_Mul(
+                left: Expr_Yield(
+                    key: null
+                    value: null
+                )
+                right: Expr_UnaryMinus(
+                    expr: Scalar_LNumber(
+                        value: 1
                     )
                 )
             )

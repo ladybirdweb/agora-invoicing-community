@@ -5,35 +5,12 @@ namespace App\Model\Order;
 use App\BaseModel;
 use App\Model\Product\Subscription;
 use Illuminate\Contracts\Encryption\DecryptException;
-use Spatie\Activitylog\Traits\LogsActivity;
 
 class Order extends BaseModel
 {
-    use LogsActivity;
     protected $table = 'orders';
-    protected static $logName = 'Order';
     protected $fillable = ['client', 'order_status', 'invoice_item_id',
         'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
-    protected static $logAttributes = ['client', 'order_status', 'invoice_item_id',
-        'serial_key', 'product', 'domain', 'subscription', 'price_override', 'qty', 'invoice_id', 'number', ];
-    protected static $logOnlyDirty = true;
-
-    public function getDescriptionForEvent(string $eventName): string
-    {
-        if ($eventName == 'created') {
-            return 'Order No.  <strong> '.$this->number.' </strong> was created';
-        }
-
-        if ($eventName == 'updated') {
-            return 'Order No. <strong> '.$this->number.'</strong> was updated';
-        }
-
-        if ($eventName == 'deleted') {
-            return 'Order No. <strong> '.$this->number.' </strong> was deleted';
-        }
-
-        return '';
-    }
 
     public function invoice()
     {

@@ -51,7 +51,7 @@ main
                     </div>
                     @endif
                      <div id="alertMessage"></div>
-                     <div id="error"></div>
+             <div id="error"></div>
                    <div class="featured-box featured-box-primary text-left mt-5">
                         <div class="box-content">
                           
@@ -128,7 +128,7 @@ main
                            $('#resetpasswordcheck').hide();
                                                         
                           if(verify_mail_check()){
-                          $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
+                          $("#resetmail").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
                                     var data = {
                                         "email":   $('#email').val(),
                                       
@@ -141,8 +141,6 @@ main
                                         
                                         if(response.type == 'success'){
                                              var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                                            $('#error').hide(); 
-                                            $('#alertMessage').show();
                                             $('#alertMessage').html(result);
                                             // $('#alertMessage2').html(result);
                                             $("#resetmail").html("Send Email");
@@ -161,7 +159,7 @@ main
                                             html += '</ul></div>';
                                            $('#alertMessage').hide(); 
                                             
-                                            $('#error').show();
+                                            $('#error1').show();
                                              document.getElementById('error').innerHTML = html;
                                            
                                         }

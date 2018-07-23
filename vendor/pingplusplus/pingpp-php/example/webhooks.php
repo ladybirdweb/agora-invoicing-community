@@ -18,6 +18,7 @@ require dirname(__FILE__) . '/../init.php';
  */
 function verify_signature($raw_data, $signature, $pub_key_path) {
     $pub_key_contents = file_get_contents($pub_key_path);
+    // php 5.4.8 以上，第四个参数可用常量 OPENSSL_ALGO_SHA256
     return openssl_verify($raw_data, base64_decode($signature), $pub_key_contents, 'sha256');
 }
 
@@ -51,11 +52,11 @@ $event = json_decode($raw_data, true);
 if ($event['type'] == 'charge.succeeded') {
     $charge = $event['data']['object'];
     // ...
-    http_response_code(200);
+    http_response_code(200); // PHP 5.4 or greater
 } elseif ($event['type'] == 'refund.succeeded') {
     $refund = $event['data']['object'];
     // ...
-    http_response_code(200);
+    http_response_code(200); // PHP 5.4 or greater
 } else {
     /**
      * 其它类型 ...

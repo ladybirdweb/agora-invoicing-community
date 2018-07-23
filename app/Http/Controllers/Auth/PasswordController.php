@@ -50,7 +50,7 @@ class PasswordController extends Controller
      *
      * @param string $token
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function getReset($token = null)
     {
@@ -66,7 +66,7 @@ class PasswordController extends Controller
      *
      * @param Request $request
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
     public function postReset(Request $request)
     {

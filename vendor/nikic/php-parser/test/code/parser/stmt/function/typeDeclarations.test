@@ -7,39 +7,27 @@ function a($b, array $c, callable $d, E $f) {}
 array(
     0: Stmt_Function(
         byRef: false
-        name: Identifier(
-            name: a
-        )
+        name: a
         params: array(
             0: Param(
                 type: null
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: b
-                )
+                name: b
                 default: null
             )
             1: Param(
-                type: Identifier(
-                    name: array
-                )
+                type: array
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: c
-                )
+                name: c
                 default: null
             )
             2: Param(
-                type: Identifier(
-                    name: callable
-                )
+                type: callable
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: d
-                )
+                name: d
                 default: null
             )
             3: Param(
@@ -50,9 +38,7 @@ array(
                 )
                 byRef: false
                 variadic: false
-                var: Expr_Variable(
-                    name: f
-                )
+                name: f
                 default: null
             )
         )

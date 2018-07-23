@@ -33,8 +33,6 @@ interface InputInterface
      *
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
-     * Does not necessarily return the correct result for short options
-     * when multiple flags are combined in the same option.
      *
      * @param string|array $values     The values to look for in the raw parameters (can be an array)
      * @param bool         $onlyParams Only check real parameters, skip those following an end of options (--) signal
@@ -48,8 +46,6 @@ interface InputInterface
      *
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
-     * Does not necessarily return the correct result for short options
-     * when multiple flags are combined in the same option.
      *
      * @param string|array $values     The value(s) to look for in the raw parameters (can be an array)
      * @param mixed        $default    The default value to return if no result is found

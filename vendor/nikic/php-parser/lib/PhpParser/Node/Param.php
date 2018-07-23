@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node;
 
@@ -6,44 +6,37 @@ use PhpParser\NodeAbstract;
 
 class Param extends NodeAbstract
 {
-    /** @var null|Identifier|Name|NullableType Typehint */
+    /** @var null|string|Name|NullableType Typehint */
     public $type;
     /** @var bool Whether parameter is passed by reference */
     public $byRef;
     /** @var bool Whether this is a variadic argument */
     public $variadic;
-    /** @var Expr\Variable|Expr\Error Parameter variable */
-    public $var;
+    /** @var string Name */
+    public $name;
     /** @var null|Expr Default value */
     public $default;
 
     /**
      * Constructs a parameter node.
      *
-     * @param Expr\Variable|Expr\Error      $var        Parameter variable
+     * @param string                        $name       Name
      * @param null|Expr                     $default    Default value
      * @param null|string|Name|NullableType $type       Typehint
      * @param bool                          $byRef      Whether is passed by reference
      * @param bool                          $variadic   Whether this is a variadic argument
      * @param array                         $attributes Additional attributes
      */
-    public function __construct(
-        $var, Expr $default = null, $type = null,
-        bool $byRef = false, bool $variadic = false, array $attributes = []
-    ) {
+    public function __construct($name, Expr $default = null, $type = null, $byRef = false, $variadic = false, array $attributes = array()) {
         parent::__construct($attributes);
-        $this->type = \is_string($type) ? new Identifier($type) : $type;
+        $this->type = $type;
         $this->byRef = $byRef;
         $this->variadic = $variadic;
-        $this->var = $var;
+        $this->name = $name;
         $this->default = $default;
     }
 
-    public function getSubNodeNames() : array {
-        return ['type', 'byRef', 'variadic', 'var', 'default'];
-    }
-    
-    public function getType() : string {
-        return 'Param';
+    public function getSubNodeNames() {
+        return array('type', 'byRef', 'variadic', 'name', 'default');
     }
 }

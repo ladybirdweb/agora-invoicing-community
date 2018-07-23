@@ -9,8 +9,16 @@ $a{'b'};
 ${$a}['b'];
 -----
 array(
-    0: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
+    0: Expr_ArrayDimFetch(
+        var: Expr_Variable(
+            name: a
+        )
+        dim: Scalar_String(
+            value: b
+        )
+    )
+    1: Expr_ArrayDimFetch(
+        var: Expr_ArrayDimFetch(
             var: Expr_Variable(
                 name: a
             )
@@ -18,55 +26,37 @@ array(
                 value: b
             )
         )
-    )
-    1: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_ArrayDimFetch(
-                var: Expr_Variable(
-                    name: a
-                )
-                dim: Scalar_String(
-                    value: b
-                )
-            )
-            dim: Scalar_String(
-                value: c
-            )
+        dim: Scalar_String(
+            value: c
         )
     )
-    2: Stmt_Expression(
-        expr: Expr_Assign(
-            var: Expr_ArrayDimFetch(
-                var: Expr_Variable(
-                    name: a
-                )
-                dim: null
-            )
-            expr: Expr_Variable(
-                name: b
-            )
-        )
-    )
-    3: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
+    2: Expr_Assign(
+        var: Expr_ArrayDimFetch(
             var: Expr_Variable(
                 name: a
             )
-            dim: Scalar_String(
-                value: b
-            )
+            dim: null
+        )
+        expr: Expr_Variable(
+            name: b
         )
     )
-    4: Stmt_Expression(
-        expr: Expr_ArrayDimFetch(
-            var: Expr_Variable(
-                name: Expr_Variable(
-                    name: a
-                )
+    3: Expr_ArrayDimFetch(
+        var: Expr_Variable(
+            name: a
+        )
+        dim: Scalar_String(
+            value: b
+        )
+    )
+    4: Expr_ArrayDimFetch(
+        var: Expr_Variable(
+            name: Expr_Variable(
+                name: a
             )
-            dim: Scalar_String(
-                value: b
-            )
+        )
+        dim: Scalar_String(
+            value: b
         )
     )
 )

@@ -76,9 +76,7 @@ array(
     1: Stmt_Declare(
         declares: array(
             0: Stmt_DeclareDeclare(
-                key: Identifier(
-                    name: ticks
-                )
+                key: ticks
                 value: Scalar_LNumber(
                     value: 1
                 )
@@ -86,15 +84,13 @@ array(
         )
         stmts: null
     )
-    2: Stmt_Expression(
-        expr: Expr_FuncCall(
-            name: Name(
-                parts: array(
-                    0: foo
-                )
+    2: Expr_FuncCall(
+        name: Name(
+            parts: array(
+                0: foo
             )
-            args: array(
-            )
+        )
+        args: array(
         )
     )
     3: Stmt_Namespace(

@@ -176,11 +176,11 @@ function resolveMacros($code) {
             }
 
             if ('makeNop' == $name) {
-                assertArgs(3, $args, $name);
+                assertArgs(2, $args, $name);
 
                 return '$startAttributes = ' . $args[1] . ';'
                 . ' if (isset($startAttributes[\'comments\']))'
-                . ' { ' . $args[0] . ' = new Stmt\Nop($startAttributes + ' . $args[2] . '); }'
+                . ' { ' . $args[0] . ' = new Stmt\Nop([\'comments\' => $startAttributes[\'comments\']]); }'
                 . ' else { ' . $args[0] . ' = null; }';
             }
 

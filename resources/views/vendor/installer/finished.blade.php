@@ -15,8 +15,7 @@
 		<p><strong><small>{{ trans('installer_messages.final.migration') }}</small></strong></p>
 		<pre><code>{{ session('message')['dbOutputLog'] }}</code></pre>
 	@endif
-    <strong>Username : </strong> demo <br/>
-    <strong>Password : </strong> password
+
 	
     <div class="buttons">
         <a href="{{ url('/login') }}" class="button">{{ trans('installer_messages.final.exit') }}</a>

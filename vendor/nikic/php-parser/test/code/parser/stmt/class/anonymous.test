@@ -22,137 +22,123 @@ class A {
 }
 -----
 array(
-    0: Stmt_Expression(
-        expr: Expr_New(
-            class: Stmt_Class(
-                flags: 0
-                name: null
-                extends: null
-                implements: array(
-                )
-                stmts: array(
-                    0: Stmt_ClassMethod(
-                        flags: MODIFIER_PUBLIC (1)
-                        byRef: false
-                        name: Identifier(
-                            name: test
-                        )
-                        params: array(
-                        )
-                        returnType: null
-                        stmts: array(
-                        )
+    0: Expr_New(
+        class: Stmt_Class(
+            flags: 0
+            name: null
+            extends: null
+            implements: array(
+            )
+            stmts: array(
+                0: Stmt_ClassMethod(
+                    flags: MODIFIER_PUBLIC (1)
+                    byRef: false
+                    name: test
+                    params: array(
+                    )
+                    returnType: null
+                    stmts: array(
                     )
                 )
             )
-            args: array(
-            )
+        )
+        args: array(
         )
     )
-    1: Stmt_Expression(
-        expr: Expr_New(
-            class: Stmt_Class(
-                flags: 0
-                name: null
-                extends: Name(
+    1: Expr_New(
+        class: Stmt_Class(
+            flags: 0
+            name: null
+            extends: Name(
+                parts: array(
+                    0: A
+                )
+            )
+            implements: array(
+                0: Name(
                     parts: array(
-                        0: A
+                        0: B
                     )
                 )
-                implements: array(
-                    0: Name(
-                        parts: array(
-                            0: B
-                        )
+                1: Name(
+                    parts: array(
+                        0: C
                     )
-                    1: Name(
-                        parts: array(
-                            0: C
-                        )
-                    )
-                )
-                stmts: array(
                 )
             )
-            args: array(
+            stmts: array(
             )
         )
+        args: array(
+        )
     )
-    2: Stmt_Expression(
-        expr: Expr_New(
-            class: Stmt_Class(
-                flags: 0
-                name: null
-                extends: null
-                implements: array(
+    2: Expr_New(
+        class: Stmt_Class(
+            flags: 0
+            name: null
+            extends: null
+            implements: array(
+            )
+            stmts: array(
+                0: Stmt_Property(
+                    flags: MODIFIER_PUBLIC (1)
+                    props: array(
+                        0: Stmt_PropertyProperty(
+                            name: foo
+                            default: null
+                        )
+                    )
                 )
-                stmts: array(
-                    0: Stmt_Property(
-                        flags: MODIFIER_PUBLIC (1)
-                        props: array(
-                            0: Stmt_PropertyProperty(
-                                name: VarLikeIdentifier(
-                                    name: foo
-                                )
-                                default: null
+            )
+        )
+        args: array(
+        )
+    )
+    3: Expr_New(
+        class: Stmt_Class(
+            flags: 0
+            name: null
+            extends: Name(
+                parts: array(
+                    0: A
+                )
+            )
+            implements: array(
+            )
+            stmts: array(
+                0: Stmt_TraitUse(
+                    traits: array(
+                        0: Name(
+                            parts: array(
+                                0: T
                             )
                         )
                     )
+                    adaptations: array(
+                    )
                 )
-            )
-            args: array(
             )
         )
-    )
-    3: Stmt_Expression(
-        expr: Expr_New(
-            class: Stmt_Class(
-                flags: 0
-                name: null
-                extends: Name(
-                    parts: array(
-                        0: A
-                    )
+        args: array(
+            0: Arg(
+                value: Expr_Variable(
+                    name: a
                 )
-                implements: array(
-                )
-                stmts: array(
-                    0: Stmt_TraitUse(
-                        traits: array(
-                            0: Name(
-                                parts: array(
-                                    0: T
-                                )
-                            )
-                        )
-                        adaptations: array(
-                        )
-                    )
-                )
+                byRef: false
+                unpack: false
             )
-            args: array(
-                0: Arg(
-                    value: Expr_Variable(
-                        name: a
-                    )
-                    byRef: false
-                    unpack: false
+            1: Arg(
+                value: Expr_Variable(
+                    name: b
                 )
-                1: Arg(
-                    value: Expr_Variable(
-                        name: b
-                    )
-                    byRef: false
-                    unpack: false
-                )
+                byRef: false
+                unpack: false
             )
         )
     )
     4: Stmt_Class(
         flags: 0
-        name: Identifier(
-            name: A
-        )
+        name: A
         extends: null
         implements: array(
         )
@@ -160,9 +146,7 @@ array(
             0: Stmt_ClassMethod(
                 flags: MODIFIER_PUBLIC (1)
                 byRef: false
-                name: Identifier(
-                    name: test
-                )
+                name: test
                 params: array(
                 )
                 returnType: null
@@ -184,9 +168,7 @@ array(
                                         flags: 0
                                         consts: array(
                                             0: Const(
-                                                name: Identifier(
-                                                    name: A
-                                                )
+                                                name: A
                                                 value: Scalar_String(
                                                     value: B
                                                 )

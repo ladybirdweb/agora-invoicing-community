@@ -2,7 +2,6 @@
 
 namespace League\Flysystem\Plugin;
 
-use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 
 class ForcedRename extends AbstractPlugin
@@ -22,7 +21,6 @@ class ForcedRename extends AbstractPlugin
      * @param string $newpath The new path of the file.
      *
      * @throws FileNotFoundException Thrown if $path does not exist.
-     * @throws FileExistsException
      *
      * @return bool True on success, false on failure.
      */

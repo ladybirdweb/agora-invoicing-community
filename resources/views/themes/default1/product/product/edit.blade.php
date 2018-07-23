@@ -61,7 +61,7 @@
                     {{Session::get('fails')}}
                 </div>
                 @endif
-                {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
+                {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true]) !!}
                 <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
        </div>
@@ -79,8 +79,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                                    {!! Form::text('name',null,['class' => 'form-control', 'id'=>'productname']) !!}
-                                    <h6 id= "namecheck"></h6>
+                                    {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -100,10 +99,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
-
-
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk'],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -115,7 +111,7 @@
                                     
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea1']) !!}
-                                     <h6 id= "descheck"></h6>
+
                                      </div>
                                    <div class="col-md-6">
                                     <ul class="list-unstyled">
@@ -201,10 +197,29 @@
 
                                             </div>
                                         </li>
-                                         <li>
+                                   
+                                </div>
+
+                            </div>
+
+                            <div class="row">
+
+                                <div class="col-md-6">
+                                    <ul class="list-unstyled">
+                                        
+                                        <li>
                                             <div class="row">
 
-                                               <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
+                                              
+
+                                                <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
+                                                    <!-- last name -->
+                                                    {!! Form::label('tax_apply',Lang::get('message.apply_tax')) !!}
+                                                    {!! Form::hidden('tax_apply', 0) !!}
+                                                    <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
+
+                                                </div>
+                                                <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
                                                 {!! Form::hidden('hidden', 0) !!}
@@ -220,12 +235,14 @@
 
                                             </div>
                                         </li>
-                                   
+
+
+                                    </ul>
                                 </div>
+                                
+
 
                             </div>
-
-                  
                         </div>
 
                          <!-- /.tab-pane -->
@@ -548,58 +565,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
-<script>
-       // Jquery validation for Product Creation
-    $(document).ready(function(){
-        $('#namecheck').hide();
-        $('#descheck').hide();
-
-        var nameErr= true;
-        var desErr = true;
-
-        $('#editproduct').submit(function(){
-            function name_check(){
-                var name = $('#productname').val();
-                if (name.length == ''){
-                   $('#namecheck').show(); 
-                   $('#namecheck').html('This field is required'); 
-                   $('#namecheck').focus();
-                   $('#productname').css("border-color","red");
-                   $('#namecheck').css({"color":"red","margin-top":"5px"});
-                }
-                 else{
-                     $('#namecheck').hide();
-                      $('#productname').css("border-color","");
-                     return true;
-                     }
-            }
-
-            function des_check(){
-                var des = $('#textarea1').val();
-                if (des.length == ''){
-                    $('#descheck').show();
-                    $('#descheck').html('This field is required');
-                    $('#descheck').focus();
-                    $('#textarea1').css("border-color","red");
-                    $('#descheck').css({"color":"red","margin-top":"5px"});
-                }
-                else{
-                     $('#descheck').hide();
-                     $('#textarea1').css("border-color","");
-                     return true;
-                }
-            }
-            name_check();
-            des_check();
-             if(name_check() && des_check()){
-                return true;
-             }
-            else{
-            return false;
-          }
-        });
-    });
-</script>
 
 
 

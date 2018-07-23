@@ -1,13 +1,12 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Builder;
 
 use PhpParser\Comment;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
-use PHPUnit\Framework\TestCase;
 
-class TraitTest extends TestCase
+class TraitTest extends \PHPUnit_Framework_TestCase
 {
     protected function createTraitBuilder($class) {
         return new Trait_($class);
@@ -17,9 +16,9 @@ class TraitTest extends TestCase
         $method1 = new Stmt\ClassMethod('test1');
         $method2 = new Stmt\ClassMethod('test2');
         $method3 = new Stmt\ClassMethod('test3');
-        $prop = new Stmt\Property(Stmt\Class_::MODIFIER_PUBLIC, [
+        $prop = new Stmt\Property(Stmt\Class_::MODIFIER_PUBLIC, array(
             new Stmt\PropertyProperty('test')
-        ]);
+        ));
         $use = new Stmt\TraitUse([new Name('OtherTrait')]);
         $trait = $this->createTraitBuilder('TestTrait')
             ->setDocComment('/** Nice trait */')
@@ -43,7 +42,7 @@ class TraitTest extends TestCase
      */
     public function testInvalidStmtError() {
         $this->createTraitBuilder('Test')
-            ->addStmt(new Stmt\Echo_([]))
+            ->addStmt(new Stmt\Echo_(array()))
         ;
     }
 }

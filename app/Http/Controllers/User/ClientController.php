@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Order\Payment;
 use App\Model\User\AccountActivate;
 use App\User;
-use Bugsnag;
-use DB;
 use Illuminate\Http\Request;
-use Log;
 
-class ClientController extends AdvanceSearchController
+class ClientController extends Controller
 {
     public $user;
     public $activate;
@@ -34,7 +31,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function index(Request $request)
     {
@@ -47,12 +44,13 @@ class ClientController extends AdvanceSearchController
         $industry = $request->input('industry');
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
 
-        return view('themes.default1.user.client.index',
-            compact('name', 'username', 'company', 'mobile', 'email',
-                'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
+        $count_users = $this->user->get()->count();
+        $pro_editions = $this->soldEdition('Faveo Helpdesk Pro');
+        $community = $this->soldEdition('faveo helpdesk community');
+        $product_count = $this->productCount();
+
+        return view('themes.default1.user.client.index', compact('name', 'username', 'company', 'mobile', 'email', 'country', 'count_users', 'pro_editions', 'community', 'product_count', 'industry', 'company_type', 'company_size'));
     }
 
     /**
@@ -69,13 +67,11 @@ class ClientController extends AdvanceSearchController
         $industry = $request->input('industry');
         $company_type = $request->input('company_type');
         $company_size = $request->input('company_size');
-        $role = $request->input('role');
-        $position = $request->input('position');
 
-        $user = $this->advanceSearch($name, $username, $company,
-         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
+        $user = $this->advanceSearch($name, $username, $company, $mobile, $email, $country, $industry, $company_type, $company_size);
 
         return\ DataTables::of($user->get())
+
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -93,6 +89,8 @@ class ClientController extends AdvanceSearchController
                               }
 
                               return $end;
+
+                              //   return $model->created_at;
                           })
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
@@ -125,7 +123,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function create()
     {
@@ -140,7 +138,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Response
+     * @return Response
      */
     public function store(ClientRequest $request)
     {
@@ -165,7 +163,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function show($id)
     {
@@ -173,59 +171,14 @@ class ClientController extends AdvanceSearchController
             $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-            $invoiceSum = $this->getTotalInvoice($invoices);
-            $amountReceived = $this->getAmountPaid($id);
-            $pendingAmount = $invoiceSum - $amountReceived;
             $client = $this->user->where('id', $id)->first();
-            $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
             //dd($client);
 
-            return view('themes.default1.user.client.show',
-                compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+            return view('themes.default1.user.client.show', compact('client', 'invoices', 'model_popup', 'orders'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    /**
-     * Get total Amount paid for a particular invoice.
-     */
-    public function getAmountPaid($userId)
-    {
-        try {
-            $amounts = Payment::where('user_id', $userId)->select('amount')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amount;
-            }
-
-            return $paidSum;
-        } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get total of the Invoices for a User.
-     */
-    public function getTotalInvoice($invoices)
-    {
-        $sum = 0;
-        foreach ($invoices as $invoice) {
-            $sum = $sum + $invoice->grand_total;
-        }
-
-        return $sum;
     }
 
     /**
@@ -233,7 +186,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -251,9 +204,6 @@ class ClientController extends AdvanceSearchController
 
             return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($ex->getMessage());
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -263,12 +213,11 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function update($id, ClientRequest $request)
     {
         $user = $this->user->where('id', $id)->first();
-
         $user->fill($request->input())->save();
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -279,7 +228,7 @@ class ClientController extends AdvanceSearchController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function destroy(Request $request)
     {
@@ -292,36 +241,34 @@ class ClientController extends AdvanceSearchController
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                        '.\Lang::get('message.no-record').'
                 </div>';
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
+            //echo \Lang::get('message.select-a-row');
         }
     }
 
     public function getUsers(Request $request)
     {
+        //dd($request->all());
+        //$s = $request->input('mask');
         $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
                 ->select('email AS text', 'id AS value')
@@ -330,19 +277,59 @@ class ClientController extends AdvanceSearchController
         return response()->json(compact('options'));
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '',
-     $mobile = '', $email = '', $country = '', $industry = '',
-      $company_type = '', $company_size = '', $role = '', $position = '')
+    public function advanceSearch($name = '', $username = '', $company = '', $mobile = '', $email = '', $country = '', $industry = '', $company_type = '', $company_size = '')
     {
-        $join = DB::table('users');
-        $join = $this->getNamUserCom($join, $name, $username, $company);
-        $join = $this->getMobEmCoun($join, $mobile, $email, $country);
-        $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
-        $join = $this->getRolPos($join, $role, $position);
+        $join = $this->user;
 
-        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
+        if ($name) {
+            $join = $join->where('first_name', 'LIKE', '%'.$name.'%')
+                    ->orWhere('last_name', 'LIKE', '%'.$name.'%');
+        }
+        if ($username) {
+            $join = $join->where('user_name', 'LIKE', '%'.$username.'%');
+        }
+        if ($company) {
+            $join = $join->where('company', 'LIKE', '%'.$company.'%');
+        }
+        if ($mobile) {
+            $join = $join->where('mobile', $mobile);
+        }
+        if ($email) {
+            $join = $join->where('email', 'LIKE', '%'.$email.'%');
+        }
+        if ($country) {
+            $join = $join->where('country', $country);
+        }
+        if ($industry) {
+            $join = $join->where('bussiness', $industry);
+        }
+        if ($company_type) {
+            $join = $join->where('company_type', $company_type);
+        }
+        if ($company_size) {
+            $join = $join->where('company_size', $company_size);
+        }
+
+        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified');
 
         return $join;
+    }
+
+    public function soldEdition($name)
+    {
+        $invoice = new \App\Model\Order\InvoiceItem();
+        $product_in_invoice = $invoice->where('product_name', $name)->distinct()->pluck('invoice_id');
+        $order = new Order();
+        $orders = $order->whereIn('invoice_id', $product_in_invoice)->get()->count();
+
+        return $orders;
+    }
+
+    public function productCount()
+    {
+        $products = $this->product->get()->count();
+
+        return $products;
     }
 
     public function sendWelcomeMail($user)

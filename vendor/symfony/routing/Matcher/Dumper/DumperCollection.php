@@ -106,7 +106,7 @@ class DumperCollection implements \IteratorAggregate
     /**
      * Sets the parent collection.
      */
-    protected function setParent(self $parent)
+    protected function setParent(DumperCollection $parent)
     {
         $this->parent = $parent;
     }

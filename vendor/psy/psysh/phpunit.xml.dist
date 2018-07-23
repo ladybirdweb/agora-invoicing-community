@@ -6,7 +6,7 @@
 
 	<filter>
 		<whitelist>
-			<directory suffix=".php">./src</directory>
+			<directory suffix=".php">./src/Psy</directory>
 		</whitelist>
 	</filter>
 </phpunit>

@@ -2,9 +2,6 @@
 
 namespace League\Flysystem;
 
-/**
- * @deprecated
- */
 class Directory extends Handler
 {
     /**

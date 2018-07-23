@@ -6,46 +6,13 @@ php:
   - 7.0
   - hhvm
 
-# services:
-# - mysql
-
-# addons:
-#   apt:
-#     sources:
-#       - mysql-5.7-trusty
-#     packages:
-#       - mysql-server
-#       - mysql-client
-
-before_install:
-  # - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
-
 # Commands to be run before your environment runs.
 before_script:
   - composer self-update
   - composer install --prefer-source --no-interaction --dev
-  # - mysql -e 'create database db_testing;'
-# before_script:
-#   - cp .env.travis .env
-# - mysql -e 'create database db_testing;'
-# - composer self-update
-# - composer install --no-interaction
-# - php artisan key:generate
-# - php artisan migrate --seed
-
-
 
 # Commands you want to run that will verify your build.
-script:
-  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
-
-# after_script:
-after_script:
-  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
-# wget https://scrutinizer-ci.com/ocular.phar
-# php ocular.phar code-coverage:upload --format=php-clover coverage.clover
-#   - wget https://scrutinizer-ci.com/ocular.phar
-#   - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+script: phpunit
 # allow_failures: Allow this build to fail under the specified environments.
 # fast_finish: If your build fails do not continue trying to build, just stop.
 matrix:

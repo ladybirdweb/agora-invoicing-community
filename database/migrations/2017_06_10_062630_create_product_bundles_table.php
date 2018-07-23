@@ -15,8 +15,8 @@ class CreateProductBundlesTable extends Migration
         Schema::create('product_bundles', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->timestamp('valid_from');
-            $table->dateTime('valid_till');
+            $table->timestamp('valid_from')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->dateTime('valid_till')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->integer('uses');
             $table->integer('maximum_uses');
             $table->integer('allow-promotion');

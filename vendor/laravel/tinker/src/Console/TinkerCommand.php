@@ -80,10 +80,6 @@ class TinkerCommand extends Command
             }
         }
 
-        foreach (config('tinker.commands', []) as $command) {
-            $commands[] = $this->getApplication()->resolve($command);
-        }
-
         return $commands;
     }
 

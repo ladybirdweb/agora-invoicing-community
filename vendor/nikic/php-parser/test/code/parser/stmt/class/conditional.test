@@ -18,9 +18,7 @@ array(
         stmts: array(
             0: Stmt_Class(
                 flags: 0
-                name: Identifier(
-                    name: A
-                )
+                name: A
                 extends: null
                 implements: array(
                 )

@@ -1,9 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-
 Contact Us | Faveo Helpdesk
-
-
 @stop
 @section('page-header')
 Cart

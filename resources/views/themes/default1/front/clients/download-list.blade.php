@@ -1,9 +1,13 @@
-<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#list">  <i class='fa fa-download' style="color:white;" title=Download></i></a>
+<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary" data-toggle="modal" data-target="#list">  <i class='fa fa-download' title=Download></i></a>
 <div class="modal fade" id="list">
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">
-             <div class="modal-body" >
-               <button type="button" class="close" data-dismiss="alert" aria-label="Close" onclick="hideModals()"><span aria-hidden="true">&times;</span></button>
+
+
+
+
+            <div class="modal-body" >
+
                 <?php
                 //Name of the product
                 $products = \App\Model\Product\Product::where('id', $productid)->pluck( 'name')->toArray();
@@ -16,7 +20,6 @@
                         <div class="box">
                             <div class="box-header with-border">
                                 <h3 class="box-title">Product Versions</h3>
-
                             </div>
                             <div class="box-body">
                                 <div class="row">
@@ -47,9 +50,6 @@
                 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
                 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
                 <script type="text/javascript">
-                     function hideModals(){
-                        $('#list').modal('hide');
-                        }
     function getTable($productid, $clientid, $invoiceid){
     $('#version-table').DataTable({
             destroy: true,

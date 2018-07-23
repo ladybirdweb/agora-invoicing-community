@@ -54,8 +54,7 @@ class SubApp extends AppBase
      */
     public static function delete($sub_app_id, $options = null)
     {
-        $url = static::instanceUrlWithId($sub_app_id);
-        return static::_directRequest('delete', $url, null, $options);
+        return self::_delete($sub_app_id, $options);
     }
 
     /**

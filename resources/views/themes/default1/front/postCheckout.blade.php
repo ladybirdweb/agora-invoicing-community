@@ -25,8 +25,8 @@ Checkout
     }
     return $randomString;
 }
-     $api = new Api($rzp_key, $rzp_secret);
 
+    $api = new Api(config('custom.razor_key'), config('custom.razor_secret'));
     $displayCurrency=$invoice->currency;;
     $symbol = $invoice->currency;
  if ($symbol !== 'INR')
@@ -37,11 +37,7 @@ Checkout
 }
 
     if ($symbol == 'INR'){
-
-
 $exchangeRate= '';
-
-
 $orderData = [
     'receipt'         => 3456,
     'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
@@ -55,14 +51,11 @@ $orderData = [
 }
 else
 {
-     $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
+     $url = "http://apilayer.net/api/live?access_key=1af85deb04dd0c538c06c5c005ef73cf";
      $exchange = json_decode(file_get_contents($url));
-
      $exchangeRate = $exchange->quotes->USDINR;
      // dd($exchangeRate);
      $displayAmount =$exchangeRate * $invoice->grand_total ;
-
-
      $orderData = [
     'receipt'         => 3456,
     'amount'          =>  round($displayAmount)*100, // 2000 rupees in paise
@@ -78,11 +71,7 @@ $_SESSION['razorpay_order_id'] = $razorpayOrderId;
 $displayAmount = $amount = $orderData['amount'];
 
 $data = [
-
-
-    "key"               => $rzp_key,
-
-
+    "key"               => 'rzp_test_GL0mtsOBCft5Tp',
     "name"              => 'Faveo Helpdesk',
     "currency"          => 'INR',
      "prefill"=> [
@@ -91,9 +80,6 @@ $data = [
     ],
     "description"       =>  'Order for Invoice No' .-$invoice->number,
     
-
-
-
      "notes"             => [
     "First Name"         => \Auth::user()->first_name,
     "Last Name"         =>  \Auth::user()->last_name,
@@ -104,13 +90,9 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
-
-
     "Currency"          => \Auth::user()->currency,
     "Amount Paid"   => $invoice->grand_total,
     "Exchange Rate"   =>  $exchangeRate,
-
-
 
     "merchant_order_id" =>  $merchant_orderid,
     ],
@@ -127,31 +109,16 @@ if ($displayCurrency !== 'INR')
     
 }
 $json = json_encode($data);
-
-
-if(\Auth::user()->currency == 'INR'){
-    $symbol = '₹';
-}
-else{
-    $symbol = '$';
-}
-
-
-
 ?>
 <div class="row">
 
     <div class="col-md-8">
-
-
          <div class="card card-default" style="margin-bottom: 40px;">
             <div class="card-header">
                 <h4 class="card-title m-0">
                    
                         Payment
                    
-
-
                 </h4>
             </div>
 
@@ -160,37 +127,26 @@ else{
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-
-
          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
          <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
                     {{Lang::get('message.success')}}.
-
-
                     {!!Session::get('success')!!}
                 </div>
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
                 <div class="alert alert-danger alert-dismissable">
-
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                      <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> 
                     <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
                    
-
-
                     {{Session::get('fails')}}
                 </div>
                 @endif
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
-
-
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                     <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> There were some problems with your input.<br><br>
-
-
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -225,7 +181,8 @@ else{
                             </tr>
                         </thead>
                         <tbody>
-                             @forelse($items as $item)
+                            
+                            @forelse($items as $item)
                             
                             <tr class="cart_table_item">
 
@@ -255,11 +212,7 @@ else{
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-
-
-                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
-
-
+                                    <span class="amount"><small>{!! $symbol !!} </small> {{$item->regular_price}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -287,13 +240,9 @@ else{
                 </div>
                
                     <div class="col-md-12">
-
-
                         <!--  <hr class="tall">
                     <h4 class="heading-primary">Cart Totals</h4> -->
                        <!--  <table class="cart-totals">
-
-
                             <tbody>
 
 
@@ -306,13 +255,9 @@ else{
                                     </td>
                                 </tr>
 
-
-
                             </tbody> -->
                       <!--   </table>
                         <hr class="tall"> -->
-
-
                     </div>
                 
                 
@@ -337,9 +282,7 @@ else{
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-
-
-                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
+                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
                     </td>
                 </tr>
                 @if ($attributes != null)
@@ -355,8 +298,8 @@ else{
                        
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],$subtotal)}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
                        
                        
                     </td>
@@ -373,7 +316,7 @@ else{
                      
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],$subtotal)}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
                       
                     </td>
 
@@ -390,8 +333,8 @@ else{
                        
                     </th>
                     <td>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],$subtotal)}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
+                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],Cart::getSubTotalWithoutConditions())}} <br/>
                        
                     </td>
 
@@ -409,7 +352,7 @@ else{
                     </th>
                     <td>
                        
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
                          
                        
                     </td>
@@ -425,7 +368,7 @@ else{
                     </th>
                     <td>
                       
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getTotal())}} <br/>
                          
                        
                     </td>
@@ -434,7 +377,7 @@ else{
                   @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
-                
+                  
                     <th>
                         <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
                        
@@ -442,7 +385,7 @@ else{
                     </th>
                     <td>
                        
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
                          
                        
                     </td>
@@ -455,11 +398,10 @@ else{
                 <?php
                 $items=$invoice->invoiceItem()->get();
                 ?>
-                    
+                   
                 @if ($attributes == null)
-                 
-                @foreach ($items as $item)
                 
+                @foreach ($items as $item)
                <tr class="Taxes">
                   <th>
                         <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
@@ -468,7 +410,7 @@ else{
                     </th>
                     <td>
                        
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
+                         <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($item['tax_percentage'],$item['regular_price'])}} <br/>
                          
                        
                     </td>
@@ -479,18 +421,12 @@ else{
 
                
                
-
-
                 <tr class="total">
                     <th>
                         <strong>Order Total</strong>
                     </th>
                     <td>
-
-
-                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
-
-
+                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
                     </td>
                 </tr>
 

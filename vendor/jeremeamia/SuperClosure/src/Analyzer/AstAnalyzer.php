@@ -7,7 +7,6 @@ use SuperClosure\Analyzer\Visitor\MagicConstantVisitor;
 use PhpParser\NodeTraverser;
 use PhpParser\PrettyPrinter\Standard as NodePrinter;
 use PhpParser\Error as ParserError;
-use PhpParser\Node\Expr\Variable as VariableNode;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser as CodeParser;
 use PhpParser\ParserFactory;
@@ -93,13 +92,7 @@ class AstAnalyzer extends ClosureAnalyzer
             if ($node->byRef) {
                 $refs++;
             }
-            if ($node->var instanceof VariableNode) {
-                // For PHP-Parser >=4.0
-                return $node->var->name;
-            } else {
-                // For PHP-Parser <4.0
-                return $node->var;
-            }
+            return $node->var;
         }, $data['ast']->uses);
         $data['hasRefs'] = ($refs > 0);
 

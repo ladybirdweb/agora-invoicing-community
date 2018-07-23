@@ -18,7 +18,7 @@ class FrontPageSeeder extends Seeder
             'slug'          => 'pricing',
             'name'          => 'pricing',
             'parent_page_id'=> 0,
-            'content'       => '
+            'content'       => '<div class="pricing-table princig-table-flat">
                             <div class="col-md-3 col-sm-6">
                                 <div class="plan">
                                     <h3>{{name}}<span>{{price}}</span></h3>
@@ -35,7 +35,7 @@ class FrontPageSeeder extends Seeder
                            
                          
                            
-                        ',
+                        </div>',
             'url'     => '',
             'type'    => 'cart',
             'publish' => 1,

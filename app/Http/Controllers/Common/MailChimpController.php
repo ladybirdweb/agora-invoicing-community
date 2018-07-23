@@ -80,6 +80,7 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
+            dd($ex);
             $exe = json_decode($ex->getMessage(), true);
             if ($exe['status'] == 400) {
                 throw new Exception("$email is already subscribed to newsletter", 400);
@@ -120,14 +121,38 @@ class MailChimpController extends Controller
             $user = new User();
             $user = $user->where('email', $email)->first();
             if ($user) {
-                $fields = ['first_name', 'last_name', 'company', 'mobile',
-                 'address', 'town', 'state', 'zip', 'active', 'role', ];
                 $relation = $this->relation;
                 $merge_fields = [];
-                foreach ($fields as $field) {
-                    if ($relation->$field) {
-                        $merge_fields[$relation->$field] = $user->$field;
-                    }
+                if ($relation->first_name) {
+                    //dd($user->first_name);
+                    $merge_fields[$relation->first_name] = $user->first_name;
+                }
+                if ($relation->last_name) {
+                    $merge_fields[$relation->last_name] = $user->last_name;
+                }
+                if ($relation->company) {
+                    $merge_fields[$relation->company] = $user->company;
+                }
+                if ($relation->mobile) {
+                    $merge_fields[$relation->mobile] = $user->mobile;
+                }
+                if ($relation->address) {
+                    $merge_fields[$relation->address] = $user->address;
+                }
+                if ($relation->town) {
+                    $merge_fields[$relation->town] = $user->town;
+                }
+                if ($relation->state) {
+                    $merge_fields[$relation->state] = $user->state;
+                }
+                if ($relation->zip) {
+                    $merge_fields[$relation->zip] = $user->zip;
+                }
+                if ($relation->active) {
+                    $merge_fields[$relation->active] = $user->active;
+                }
+                if ($relation->role) {
+                    $merge_fields[$relation->role] = $user->role;
                 }
 
                 return $merge_fields;
@@ -147,6 +172,8 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
+            dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -154,8 +181,8 @@ class MailChimpController extends Controller
     public function addFieldsToAgora()
     {
         try {
-            /** @scrutinizer ignore-call */
             $fields = $this->getMergeFields($this->list_id);
+            //dd($fields);
             $mailchimp_field_in_agora = $this->mailchimp_field_model->get();
             if (count($mailchimp_field_in_agora) > 0) {
                 foreach ($mailchimp_field_in_agora as $field) {

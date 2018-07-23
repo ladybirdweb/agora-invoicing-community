@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Payment;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Payment\PromotionRequest;
 use App\Model\Order\Invoice;
 use App\Model\Payment\PromoProductRelation;
@@ -11,7 +12,7 @@ use App\Model\Product\Product;
 use Darryldecode\Cart\CartCondition;
 use Illuminate\Http\Request;
 
-class PromotionController extends BasePromotionController
+class PromotionController extends Controller
 {
     public $promotion;
     public $product;
@@ -43,7 +44,7 @@ class PromotionController extends BasePromotionController
     /**
      * Display a listing of the resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function index()
     {
@@ -70,7 +71,7 @@ class PromotionController extends BasePromotionController
                         })
                         ->addColumn('products', function ($model) {
                             $selected = $this->promoRelation->select('product_id')->where('promotion_id', $model->id)->get();
-                            $result = [];
+
                             foreach ($selected as $key => $select) {
                                 $result[$key] = $this->product->where('id', $select->product_id)->first()->name;
                             }
@@ -91,7 +92,7 @@ class PromotionController extends BasePromotionController
     /**
      * Show the form for creating a new resource.
      *
-     * @return \Response
+     * @return Response
      */
     public function create()
     {
@@ -108,7 +109,7 @@ class PromotionController extends BasePromotionController
     /**
      * Store a newly created resource in storage.
      *
-     * @return \Response
+     * @return Response
      */
     public function store(PromotionRequest $request)
     {
@@ -122,9 +123,21 @@ class PromotionController extends BasePromotionController
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
     }
 
     /**
@@ -132,7 +145,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function edit($id)
     {
@@ -140,11 +153,22 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->pluck('name', 'id')->toArray();
             $type = $this->type->pluck('name', 'id')->toArray();
+            //            if ($promotion->start != null) {
+            //                $start = $promotion->start;
+            //            } else {
+            //                $start = null;
+            //            }
+            //            if ($promotion->expiry != null) {
+            //                $expiry=$promotion->expiry;
+            //            } else {
+            //                $expiry = null;
+            //            }
             $selectedProduct = $this->promoRelation->where('promotion_id', $id)->pluck('product_id', 'product_id')->toArray();
             //dd($selectedProduct);
             return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            dd($ex);
+            //return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 
@@ -153,7 +177,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function update($id, PromotionRequest $request)
     {
@@ -172,7 +196,7 @@ class PromotionController extends BasePromotionController
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -182,7 +206,7 @@ class PromotionController extends BasePromotionController
      *
      * @param int $id
      *
-     * @return \Response
+     * @return Response
      */
     public function destroy(Request $request)
     {
@@ -196,49 +220,76 @@ class PromotionController extends BasePromotionController
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                        '.\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                        '.\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                        '.\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
         }
     }
 
+    public function getCode()
+    {
+        try {
+            $code = str_random(6);
+            echo strtoupper($code);
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function checkCode($code, $productid)
     {
         try {
-            $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
-            $promo = $inv_cont->getPromotionDetails($code);
+            $promo = $this->promotion->where('code', $code)->first();
+            //check promotion code is valid
+            if (!$promo) {
+                return redirect()->back()->with('fails', 'No Code');
+            }
+            $relation = $promo->relation()->get();
+            //check the relation between code and product
+            if (count($relation) == 0) {
+                return redirect()->back()->with('fails', \Lang::get('message.no-product-related-to-this-code'));
+            }
+            //check the usess
+            $uses = $this->checkNumberOfUses($code);
+            //dd($uses);
+            if ($uses != 'success') {
+                return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-completed'));
+            }
+            //check for the expiry date
+            $expiry = $this->checkExpiry($code);
+            //dd($expiry);
+            if ($expiry != 'success') {
+                return redirect()->back()->with('fails', \Lang::get('message.usage-of-code-expired'));
+            }
             $value = $this->findCostAfterDiscount($promo->id, $productid);
-
+            //dd($promo->code);
+            //return the updated cartcondition
             $coupon = new CartCondition([
                 'name'   => $promo->code,
                 'type'   => 'coupon',
@@ -246,30 +297,78 @@ class PromotionController extends BasePromotionController
                 'value'  => $value,
             ]);
 
-            $userId = \Auth::user()->id;
-            \Cart::update($productid, [
-           'id'        => $productid,
-           'price'     => $value,
-          'conditions' => $coupon,
-
-           // new item price, price can also be a string format like so: '98.67'
-          ]);
             $items = \Cart::getContent();
-            \Session::put('items', $items);
 
             foreach ($items as $item) {
                 if (count($item->conditions) == 2 || count($item->conditions) == 1) {
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }
+            //dd($items);
 
             return 'success';
         } catch (\Exception $ex) {
-            if (!\Auth::user()) {
-                throw new \Exception('Please Login');
-            } else {
-                throw new \Exception($ex->getMessage());
+            dd($ex);
+
+            throw new \Exception(\Lang::get('message.check-code-error'));
+        }
+    }
+
+    public function findCostAfterDiscount($promoid, $productid)
+    {
+        try {
+            $promotion = $this->promotion->findOrFail($promoid);
+            $product = $this->product->findOrFail($productid);
+            $promotion_type = $promotion->type;
+            $promotion_value = $promotion->value;
+            $product_price = 0;
+            $userid = \Auth::user()->id;
+            $control = new \App\Http\Controllers\Order\RenewController();
+            $cart_control = new \App\Http\Controllers\Front\CartController();
+            $currency = $cart_control->checkCurrencySession();
+            if ($cart_control->checkPlanSession() == true) {
+                $planid = \Session::get('plan');
             }
+            if ($product->subscription != 1) {
+                $planId = Plan::where('product', $productid)->pluck('id')->first();
+                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
+            } else {
+                $product_price = $control->planCost($planid, $userid);
+            }
+            if (count(\Cart::getContent())) {
+                $product_price = \Cart::getSubTotal();
+            }
+
+            $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
+            // dd($updated_price);
+            //dd([$product_price,$promotion_type,$updated_price]);
+            return $updated_price;
+        } catch (\Exception $ex) {
+            throw new \Exception(\Lang::get('message.find-discount-error'));
+        }
+    }
+
+    public function findCost($type, $value, $price, $productid)
+    {
+        try {
+            switch ($type) {
+                case 1:
+                    $percentage = $price * ($value / 100);
+
+                    return  $price - $percentage;
+                case 2:
+                    return $price - $value;
+                case 3:
+                    \Cart::update($productid, [
+                        'price' => $value,
+                    ]);
+
+                    return '-0';
+                case 4:
+                    return '-'.$price;
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception(\Lang::get('message.find-cost-error'));
         }
     }
 
@@ -300,11 +399,31 @@ class PromotionController extends BasePromotionController
             $end = $promotion->expiry;
             //dd($end);
             $now = \Carbon\Carbon::now();
-            $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
-            $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);
-
-            return $getExpiryStatus;
+            //both not set, always true
+            if (($start == null || $start == '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+                return 'success';
+            }
+            //only starting date set, check the date is less or equel to today
+            if (($start != null || $start != '0000-00-00 00:00:00') && ($end == null || $end == '0000-00-00 00:00:00')) {
+                if ($start <= $now) {
+                    return 'success';
+                }
+            }
+            //only ending date set, check the date is greater or equel to today
+            if (($end != null || $end != '0000-00-00 00:00:00') && ($start == null || $start == '0000-00-00 00:00:00')) {
+                if ($end >= $now) {
+                    return 'success';
+                }
+            }
+            //both set
+            if (($end != null || $end != '0000-00-00 00:00:00') && ($start != null || $start != '0000-00-00 00:00:00')) {
+                if ($end >= $now && $start <= $now) {
+                    return 'success';
+                }
+            }
         } catch (\Exception $ex) {
+            dd($ex);
+
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
     }

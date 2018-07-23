@@ -9,38 +9,26 @@ die();
 die('Exit!');
 -----
 array(
-    0: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: null
+    0: Expr_Exit(
+        expr: null
+    )
+    1: Expr_Exit(
+        expr: null
+    )
+    2: Expr_Exit(
+        expr: Scalar_String(
+            value: Die!
         )
     )
-    1: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: null
-        )
+    3: Expr_Exit(
+        expr: null
     )
-    2: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: Scalar_String(
-                value: Die!
-            )
-        )
+    4: Expr_Exit(
+        expr: null
     )
-    3: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: null
-        )
-    )
-    4: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: null
-        )
-    )
-    5: Stmt_Expression(
-        expr: Expr_Exit(
-            expr: Scalar_String(
-                value: Exit!
-            )
+    5: Expr_Exit(
+        expr: Scalar_String(
+            value: Exit!
         )
     )
 )

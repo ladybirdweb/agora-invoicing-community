@@ -324,7 +324,6 @@ class Filesystem implements FilesystemInterface
     public function getSize($path)
     {
         $path = Util::normalizePath($path);
-        $this->assertPresent($path);
 
         if (( ! $object = $this->getAdapter()->getSize($path)) || ! array_key_exists('size', $object)) {
             return false;
@@ -339,7 +338,6 @@ class Filesystem implements FilesystemInterface
     public function setVisibility($path, $visibility)
     {
         $path = Util::normalizePath($path);
-        $this->assertPresent($path);
 
         return (bool) $this->getAdapter()->setVisibility($path, $visibility);
     }

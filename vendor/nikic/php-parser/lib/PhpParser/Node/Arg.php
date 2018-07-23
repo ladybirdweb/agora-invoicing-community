@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 
 namespace PhpParser\Node;
 
@@ -21,18 +21,14 @@ class Arg extends NodeAbstract
      * @param bool  $unpack     Whether to unpack the argument
      * @param array $attributes Additional attributes
      */
-    public function __construct(Expr $value, bool $byRef = false, bool $unpack = false, array $attributes = []) {
+    public function __construct(Expr $value, $byRef = false, $unpack = false, array $attributes = array()) {
         parent::__construct($attributes);
         $this->value = $value;
         $this->byRef = $byRef;
         $this->unpack = $unpack;
     }
 
-    public function getSubNodeNames() : array {
-        return ['value', 'byRef', 'unpack'];
-    }
-    
-    public function getType() : string {
-        return 'Arg';
+    public function getSubNodeNames() {
+        return array('value', 'byRef', 'unpack');
     }
 }

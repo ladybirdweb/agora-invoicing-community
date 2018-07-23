@@ -146,33 +146,26 @@ class XmlFileLoader extends FileLoader
 
         $this->setCurrentDir(dirname($path));
 
-        $imported = $this->import($resource, ('' !== $type ? $type : null), false, $file);
-
-        if (!is_array($imported)) {
-            $imported = array($imported);
+        $subCollection = $this->import($resource, ('' !== $type ? $type : null), false, $file);
+        /* @var $subCollection RouteCollection */
+        $subCollection->addPrefix($prefix);
+        if (null !== $host) {
+            $subCollection->setHost($host);
         }
-
-        foreach ($imported as $subCollection) {
-            /* @var $subCollection RouteCollection */
-            $subCollection->addPrefix($prefix);
-            if (null !== $host) {
-                $subCollection->setHost($host);
-            }
-            if (null !== $condition) {
-                $subCollection->setCondition($condition);
-            }
-            if (null !== $schemes) {
-                $subCollection->setSchemes($schemes);
-            }
-            if (null !== $methods) {
-                $subCollection->setMethods($methods);
-            }
-            $subCollection->addDefaults($defaults);
-            $subCollection->addRequirements($requirements);
-            $subCollection->addOptions($options);
-
-            $collection->addCollection($subCollection);
+        if (null !== $condition) {
+            $subCollection->setCondition($condition);
         }
+        if (null !== $schemes) {
+            $subCollection->setSchemes($schemes);
+        }
+        if (null !== $methods) {
+            $subCollection->setMethods($methods);
+        }
+        $subCollection->addDefaults($defaults);
+        $subCollection->addRequirements($requirements);
+        $subCollection->addOptions($options);
+
+        $collection->addCollection($subCollection);
     }
 
     /**

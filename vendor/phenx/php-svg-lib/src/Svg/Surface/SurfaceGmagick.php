@@ -3,7 +3,7 @@
  * @package php-svg-lib
  * @link    http://github.com/PhenX/php-svg-lib
  * @author  Fabien M�nager <fabien.menager@gmail.com>
- * @license GNU LGPLv3+ http://www.gnu.org/copyleft/lesser.html
+ * @license http://www.gnu.org/copyleft/lesser.html GNU Lesser General Public License
  */
 
 namespace Svg\Surface;
@@ -202,7 +202,7 @@ class SurfaceGmagick implements SurfaceInterface
         $this->fill();
     }
 
-    public function rect($x, $y, $w, $h, $rx = 0, $ry = 0)
+    public function rect($x, $y, $w, $h)
     {
         if (self::DEBUG) echo __FUNCTION__ . "\n";
         $this->canvas->rect($x, $y, $w, $h);

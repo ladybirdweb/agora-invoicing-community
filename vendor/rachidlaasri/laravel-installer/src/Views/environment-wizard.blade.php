@@ -219,6 +219,12 @@
                     @endif
                 </div>
 
+                <div class="form-group {{ $errors->has('database_password') ? ' has-error ' : '' }}">
+          <input id="dummy-data" class="input-checkbox" type="checkbox" name="dummy-data">
+            <label for="dummy-data" style="color:#3AA7D9">Install dummy data</label>
+            
+         </div>
+
                 <div class="buttons">
                     <button class="button" onclick="showApplicationSettings();return false">
                         {{ trans('installer_messages.environment.wizard.form.buttons.setup_application') }}
@@ -443,7 +449,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="block margin-bottom-2">
+              <!--   <div class="block margin-bottom-2">
                     <input type="radio" name="appSettingsTabs" id="appSettingsTab4" value="null"/>
                     <label for="appSettingsTab4">
                         <span>
@@ -490,7 +496,7 @@
                             @endif
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <div class="buttons">
                     <button class="button" type="submit">
                         {{ trans('installer_messages.environment.wizard.form.buttons.install') }}

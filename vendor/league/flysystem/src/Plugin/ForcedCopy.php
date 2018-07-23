@@ -2,7 +2,6 @@
 
 namespace League\Flysystem\Plugin;
 
-use League\Flysystem\FileExistsException;
 use League\Flysystem\FileNotFoundException;
 
 class ForcedCopy extends AbstractPlugin
@@ -21,7 +20,6 @@ class ForcedCopy extends AbstractPlugin
      * @param string $path    Path to the existing file.
      * @param string $newpath The new path of the file.
      *
-     * @throws FileExistsException
      * @throws FileNotFoundException Thrown if $path does not exist.
      *
      * @return bool True on success, false on failure.

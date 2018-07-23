@@ -3,7 +3,6 @@
 namespace League\Flysystem\Plugin;
 
 use InvalidArgumentException;
-use League\Flysystem\FileNotFoundException;
 
 class GetWithMetadata extends AbstractPlugin
 {
@@ -24,7 +23,6 @@ class GetWithMetadata extends AbstractPlugin
      * @param array  $metadata metadata keys
      *
      * @throws InvalidArgumentException
-     * @throws FileNotFoundException
      *
      * @return array|false metadata
      */

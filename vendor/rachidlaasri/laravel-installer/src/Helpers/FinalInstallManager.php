@@ -32,9 +32,7 @@ class FinalInstallManager
     private static function generateKey($outputLog)
     {
         try{
-            if (config('installer.final.key')){
-                Artisan::call('key:generate', ["--force"=> true], $outputLog);
-            }
+            Artisan::call('key:generate', ["--force"=> true], $outputLog);
         }
         catch(Exception $e){
             return $this->response($e->getMessage());
@@ -52,9 +50,7 @@ class FinalInstallManager
     private static function publishVendorAssets($outputLog)
     {
         try{
-            if (config('installer.final.publish')){
-                Artisan::call('vendor:publish', ['--all' => true], $outputLog);
-            }
+            Artisan::call('vendor:publish', ['--all' => true], $outputLog);
         }
         catch(Exception $e){
             return $this->response($e->getMessage());

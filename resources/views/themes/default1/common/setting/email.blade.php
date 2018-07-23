@@ -6,7 +6,7 @@
         <div class="box">
             <div class="box-header">
                 @if (count($errors) > 0)
-                <div class="alert alert-danger">
+                <div class="alert alert-danger alert-dismissable">
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -40,7 +40,7 @@
                 <table class="table table-condensed">
                     <tr>
                         <td><h3 class="box-title">{{Lang::get('message.smtp')}}</h3></td>
-                        <td>{!! Form::submit(Lang::get('message.update'),['class'=>'btn btn-primary pull-right'])!!}</td>
+                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></td>
                     </tr>
                     <tr>
 
@@ -59,7 +59,7 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('port',Lang::get('message.port')) !!}</b></td>
+                        <td><b>{!! Form::label('port',Lang::get('message.port'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('port') ? 'has-error' : '' }}">
 
@@ -73,7 +73,7 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('host',Lang::get('message.host')) !!}</b></td>
+                        <td><b>{!! Form::label('host',Lang::get('message.host'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('host') ? 'has-error' : '' }}">
 
@@ -87,7 +87,7 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('encryption',Lang::get('message.encryption')) !!}</b></td>
+                        <td><b>{!! Form::label('encryption',Lang::get('message.encryption'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('encryption') ? 'has-error' : '' }}">
 

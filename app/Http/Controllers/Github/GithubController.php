@@ -277,6 +277,8 @@ class GithubController extends Controller
         $this->validate($request, [
             'username' => 'required',
             'password' => 'required',
+            'client_id'=>'required',
+            'client_secret'=>'required'
         ]);
 
         try {

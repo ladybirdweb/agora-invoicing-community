@@ -157,8 +157,7 @@ class TaxController extends Controller
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();
             }
-
-            return view('themes.default1.payment.tax.edit', 
+             return view('themes.default1.payment.tax.edit', 
                 compact('tax', 'classes', 'txClass', 'states', 'state', 
                     'defaultValue'));
         } catch (\Exception $ex) {

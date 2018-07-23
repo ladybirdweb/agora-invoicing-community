@@ -122,6 +122,8 @@ class SettingsController extends BaseSettingsController
         $this->validate($request, [
                 'email'    => 'required',
                 'password' => 'required',
+                'driver'   => 'required',
+                
             ]);
 
         try {

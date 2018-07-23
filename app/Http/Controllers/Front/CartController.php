@@ -282,7 +282,8 @@ class CartController extends BaseCartController
                        if ($this->tax_option->findOrFail(1)->tax_enable == 0) {
                            $taxClassId = Tax::where('country', '')
                            ->where('state', 'Any State')
-                           ->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
+                           ->pluck('tax_classes_id')->first(); //In case of India when other 
+                           //tax is available and tax is not enabled
                            if ($taxClassId) {
                                $taxes = $this->getTaxByPriority($taxClassId);
                                $value = $this->getValueForOthers($productid, $taxClassId, $taxes);

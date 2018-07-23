@@ -123,7 +123,7 @@ class SettingsController extends BaseSettingsController
                 'email'    => 'required',
                 'password' => 'required',
                 'driver'   => 'required',
-                
+
             ]);
 
         try {

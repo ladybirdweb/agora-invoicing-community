@@ -26,9 +26,9 @@ class DashboardController extends Controller
         $monthlySalesUSD = $this->getMonthlySalesInUsd();
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
-        $productNameList = array();
+        $productNameList = [];
         $productSoldlists = $this->recentProductSold();
-        if (count($productSoldlists)>0) {
+        if (count($productSoldlists) > 0) {
             foreach ($productSoldlists as $productSoldlist) {
                 $productNameList[] = $productSoldlist->name;
             }

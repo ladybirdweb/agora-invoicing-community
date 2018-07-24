@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
-use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
@@ -185,7 +183,6 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', '<b>Plugin File Path is not exist</b>  '.$file);
         }
     }
-
 
     public function getActivity()
     {

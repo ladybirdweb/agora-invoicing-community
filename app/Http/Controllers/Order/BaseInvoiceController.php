@@ -206,7 +206,6 @@ class BaseInvoiceController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
 
     public function setDomain($productid, $domain)
     {

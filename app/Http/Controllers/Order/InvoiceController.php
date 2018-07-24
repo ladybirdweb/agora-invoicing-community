@@ -16,7 +16,6 @@ use App\Model\Payment\PLanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
-use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 //use Symfony\Component\HttpFoundation\Request as Requests;
 use App\Model\Product\Price;
@@ -706,6 +705,7 @@ class InvoiceController extends Controller
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -736,12 +736,11 @@ class InvoiceController extends Controller
             $tax = $this->getTaxWhenState($user_state, $productid, $origin_state);
             $taxes = $tax['taxes'];
             $value = $tax['value'];
-             } else {//If user from other Country
+        } else {//If user from other Country
             $tax = $this->getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid);
             $taxes = $tax['taxes'];
             $value = $tax['value'];
             $rate = $tax['rate'];
-
         }
 
         foreach ($taxes as $key => $tax) {

@@ -27,15 +27,15 @@ class ProfileRequest extends Request
             $userid = \Auth::user()->id;
 
             return [
-                    'first_name'       => 'required',
-                    'last_name'        => 'required',
-                    'company'          => 'required',
-                    'mobile'           => 'required|numeric',
-                    'mobile_code'      => 'required|numeric',
-                    'address'          => 'required',
-                    'zip'              => 'required|numeric',
-                    'user_name'        => 'required|unique:users,user_name,'.$userid,
-                    'bussiness'        => 'required',
+                    'first_name'             => 'required',
+                    'last_name'              => 'required',
+                    'company'                => 'required',
+                    'mobile'                 => 'required|numeric',
+                    'mobile_code'            => 'required|numeric',
+                    'address'                => 'required',
+                    'zip'                    => 'required|numeric',
+                    'user_name'              => 'required|unique:users,user_name,'.$userid,
+                    'bussiness'              => 'required',
                      'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];

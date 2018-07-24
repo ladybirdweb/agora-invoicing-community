@@ -496,6 +496,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $taxs;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }
@@ -528,13 +529,16 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $tax = $this->getTaxWhenState($user_state, $productid, $origin_state);
             $taxes = $tax['taxes'];
             $value = $tax['value'];
+<<<<<<< HEAD
              } else {//If user from other Country
 
+=======
+        } else {//If user from other Country
+>>>>>>> 83d2639e56d4bb191fce6d30c4818f92aa2b0269
             $tax = $this->getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid);
             $taxes = $tax['taxes'];
             $value = $tax['value'];
             $rate = $tax['rate'];
-
         }
 
         foreach ($taxes as $key => $tax) {

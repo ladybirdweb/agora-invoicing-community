@@ -158,6 +158,7 @@ class TaxController extends Controller
                 $classes = $this->tax_class->get();
             }
 
+<<<<<<< HEAD
 
 
              return view('themes.default1.payment.tax.edit', 
@@ -165,6 +166,12 @@ class TaxController extends Controller
                     'defaultValue'));
 
            
+=======
+            return view('themes.default1.payment.tax.edit',
+                compact('tax', 'classes', 'txClass', 'states', 'state',
+
+                    'defaultValue'));
+>>>>>>> 83d2639e56d4bb191fce6d30c4818f92aa2b0269
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -243,9 +250,14 @@ class TaxController extends Controller
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
+<<<<<<< HEAD
 
                         <b>"./** @scrutinizer ignore-type */ \Lang::get('message.alert').'!
                         </b> './** @scrutinizer ignore-type */ \Lang::get('message.failed').'
+=======
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!
+                        </b> './* @scrutinizer ignore-type */ \Lang::get('message.failed').'
+>>>>>>> 83d2639e56d4bb191fce6d30c4818f92aa2b0269
 
 
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
@@ -259,20 +271,24 @@ class TaxController extends Controller
 
 
                         <b>".\Lang::get('message.alert').'!</b> '.
-                        /** @scrutinizer ignore-type */ \Lang::get('message.success').'
+                        /* @scrutinizer ignore-type */ \Lang::get('message.success').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            './** @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                            './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
 
                     </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
+<<<<<<< HEAD
 
                         <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+=======
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+>>>>>>> 83d2639e56d4bb191fce6d30c4818f92aa2b0269
                         /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            './** @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
+                            './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
 
 
                     </div>';
@@ -325,12 +341,13 @@ class TaxController extends Controller
      */
     public function options(Request $request)
     {
-         if($request->input('name') == 'Others'){
-        // if($request->)
-        $this->validate($request, [
+        if ($request->input('name') == 'Others') {
+            // if($request->)
+            $this->validate($request, [
             'rate'        => 'required',
         ]);
-    }
+        }
+
         try {
             $method = $request->method();
             if ($method == 'PATCH') {

@@ -120,6 +120,7 @@ class SettingsController extends BaseSettingsController
     public function postSettingsEmail(Setting $settings, Request $request)
     {
         $this->validate($request, [
+<<<<<<< HEAD
                 'email'    => 'required',
                 'password' => 'required',
                 'driver'   => 'required',
@@ -127,6 +128,13 @@ class SettingsController extends BaseSettingsController
                 'port'     => 'required',
                 'encryption'=>'required',
                 
+=======
+                'email'     => 'required',
+                'password'  => 'required',
+                'driver'    => 'required',
+                'port'      => 'required',
+                'encryption'=> 'required',
+>>>>>>> 83d2639e56d4bb191fce6d30c4818f92aa2b0269
 
 
             ]);

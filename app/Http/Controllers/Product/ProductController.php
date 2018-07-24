@@ -289,10 +289,10 @@ namespace App\Http\Controllers\Product;
             $input = $request->all();
             // dd($input);
             $v = \Validator::make($input, [
-                        'name'    => 'required|unique:products,name',
-                        'type'    => 'required',
-                        'group'   => 'required',
-                        'description'=>'required',
+                        'name'       => 'required|unique:products,name',
+                        'type'       => 'required',
+                        'group'      => 'required',
+                        'description'=> 'required',
                         // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
@@ -517,6 +517,82 @@ namespace App\Http\Controllers\Product;
                         '.$e->getMessage().'
                 </div>';
             }
+
+        }
+
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param int $id
+         *
+         * @return Response
+         */
+        public function fileDestroy(Request $request)
+        {
+            try {
+                $ids = $request->input('select');
+                if (!empty($ids)) {
+                    foreach ($ids as $id) {
+                        if ($id != 1) {
+                            $product = $this->product_upload->where('id', $id)->first();
+                            if ($product) {
+                                $product->delete();
+                            } else {
+                                echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.no-record').'
+                </div>';
+                                //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                            }
+                            echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.deleted-successfully').'
+                </div>';
+                        } else {
+                            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.can-not-delete-default').'
+                </div>';
+                        }
+                    }
+                } else {
+                    echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.\Lang::get('message.select-a-row').'
+                </div>';
+                    //echo \Lang::get('message.select-a-row');
+                }
+            } catch (\Exception $e) {
+                echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.$e->getMessage().'
+                </div>';
+            }
+        }
+
+        public function getMyUrl()
+        {
+            $server = new Request();
+            $url = $_SERVER['REQUEST_URI'];
+            $server = parse_url($url);
+            $server['path'] = dirname($server['path']);
+            $server = parse_url($server['path']);
+            $server['path'] = dirname($server['path']);
+
+            $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
+
+            return $server;
+
         }
 
         /*

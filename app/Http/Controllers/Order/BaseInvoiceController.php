@@ -76,8 +76,8 @@ class BaseInvoiceController extends Controller
      */
     public function getTaxWhenState($user_state, $productid, $origin_state)
     {
-        $taxes = array();
-        $value= array();
+        $taxes = [];
+        $value = [];
         $cartController = new CartController();
         $c_gst = $user_state->c_gst;
         $s_gst = $user_state->s_gst;
@@ -109,7 +109,7 @@ class BaseInvoiceController extends Controller
          } else {
              $taxes = [0];
          }
-        } 
+        }
 
         return ['taxes'=>$taxes, 'value'=>$value];
     }

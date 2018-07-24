@@ -161,7 +161,9 @@ class CartController extends BaseCartController
         }
     }
 
+
  public function checkTax($productid,$user_state='',$user_country='')
+
     {
         try {
             $tax_condition = [];
@@ -183,9 +185,11 @@ class CartController extends BaseCartController
             $state = $this->getStateByCode($state_code);
             $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
             $country_iso = $location['countryCode'];
+
             $geoip_state = $this->getGeoipState($state_code,$user_state);
             $geoip_country = $this->getGeoipCountry($country_iso,$user_country);
             
+
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);

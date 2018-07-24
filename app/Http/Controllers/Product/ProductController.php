@@ -426,6 +426,7 @@ namespace App\Http\Controllers\Product;
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
 
+
                 $newTax = $this->saveTax($taxes, $product_id);
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
@@ -438,6 +439,7 @@ namespace App\Http\Controllers\Product;
          public function saveTax($taxes, $product_id)
         {
             if ($taxes) {
+
                     $this->tax_relation->where('product_id', $product_id)->delete();
                     foreach ($taxes as $tax) {
                         $newTax = new TaxProductRelation();

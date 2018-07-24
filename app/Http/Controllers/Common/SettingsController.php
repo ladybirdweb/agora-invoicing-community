@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
-use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
@@ -41,7 +39,9 @@ class SettingsController extends BaseSettingsController
         return view('themes.default1.common.plugins');
     }
 
+
     public function getKeys(ApiKey $apikeys)
+
     {
         try {
             $model = $apikeys->find(1);

@@ -224,7 +224,7 @@ class BaseCartController extends ExtendedBaseCartController
                 }
                 $isTaxApply = $product->tax_apply;
                 $taxConditions = $this->checkTax($id);
-                
+
                 /*
                  * Check if this product allow multiple qty
                  */

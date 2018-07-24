@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
-use App\Http\Controllers\Controller;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\PlanPrice;
@@ -161,9 +160,7 @@ class CartController extends BaseCartController
         }
     }
 
-
- public function checkTax($productid,$user_state='',$user_country='')
-
+    public function checkTax($productid, $user_state = '', $user_country = '')
     {
         try {
             $tax_condition = [];
@@ -186,10 +183,8 @@ class CartController extends BaseCartController
             $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
             $country_iso = $location['countryCode'];
 
-            $geoip_state = $this->getGeoipState($state_code,$user_state);
-            $geoip_country = $this->getGeoipCountry($country_iso,$user_country);
-            
-
+            $geoip_state = $this->getGeoipState($state_code, $user_state);
+            $geoip_country = $this->getGeoipCountry($country_iso, $user_country);
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);
@@ -219,7 +214,7 @@ class CartController extends BaseCartController
                            $i_gst = $user_state->i_gst;
                            $ut_gst = $user_state->ut_gst;
                            $state_code = $user_state->state_code;
-                           
+
                            if ($state_code == $origin_state) {//If user and origin state are same
                                $rateForSameState = $this->getTaxWhenIndianSameState($user_state,
                                 $origin_state, $productid, $c_gst, $s_gst, $state_code, $status);

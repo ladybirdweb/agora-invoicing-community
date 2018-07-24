@@ -61,7 +61,7 @@ class BaseInvoiceController extends Controller
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
-            dd($ex);
+
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -76,8 +76,10 @@ class BaseInvoiceController extends Controller
      */
     public function getTaxWhenState($user_state, $productid, $origin_state)
     {
+
         $taxes = array();
         $value= array();
+
         $cartController = new CartController();
         $c_gst = $user_state->c_gst;
         $s_gst = $user_state->s_gst;
@@ -109,7 +111,9 @@ class BaseInvoiceController extends Controller
          } else {
              $taxes = [0];
          }
+
         } 
+
 
         return ['taxes'=>$taxes, 'value'=>$value];
     }

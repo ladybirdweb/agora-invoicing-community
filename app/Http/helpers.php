@@ -14,16 +14,11 @@ function mime($type)
 {
     if ($type == 'jpg' ||
             $type == 'png' ||
-            $type == 'PNG' ||
-            $type == 'JPG' ||
             $type == 'jpeg' ||
-            $type == 'JPEG' ||
             $type == 'gif' ||
-            $type == 'GIF' ||
             $type == 'image/jpeg' ||
             $type == 'image/jpg' ||
             $type == 'image/gif' ||
-            $type == 'application/octet-stream' ||
             $type == 'image/png' ||
             starts_with($type, 'image')) {
         return 'image';
@@ -43,17 +38,17 @@ function isInstall()
 
 function agoratime($date, $hour = 0, $min = 0, $sec = 0, $tz = '')
 {
-    if (is_bool($hour) && $hour == true) {
+    if (is_bool($hour) && $hour === true) {
         $hour = $date->hour;
     }
-    if (is_bool($min) && $min == true) {
+    if (is_bool($min) && $min === true) {
         $min = $date->minute;
     }
-    if (is_bool($sec) && $sec == true) {
+    if (is_bool($sec) && $sec === true) {
         $sec = $date->second;
     }
     if (!$tz) {
-        $tz = timezone();
+        $tz = /* @scrutinizer ignore-call */ timezone();
     }
     $date1 = \Carbon\Carbon::create($date->year, $date->month, $date->day, $hour, $min, $sec, $tz);
 

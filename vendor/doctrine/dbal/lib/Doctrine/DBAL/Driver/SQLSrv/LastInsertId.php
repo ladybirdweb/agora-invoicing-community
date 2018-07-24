@@ -28,12 +28,12 @@ namespace Doctrine\DBAL\Driver\SQLSrv;
 class LastInsertId
 {
     /**
-     * @var int
+     * @var integer
      */
     private $id;
 
     /**
-     * @param int $id
+     * @param integer $id
      */
     public function setId($id)
     {
@@ -41,7 +41,7 @@ class LastInsertId
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getId()
     {

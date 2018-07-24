@@ -33,6 +33,7 @@ $api = new Api($api_key, $api_secret);
 $order  = $api->order->create(array('receipt' => '123', 'amount' => 100, 'currency' => 'INR')); // Creates order
 $order  = $api->order->fetch($orderId); // Returns a particular order
 $orders = $api->order->all($options); // Returns array of order objects
+$payments = $api->order->fetch($orderId)->payments(); // Returns array of payment objects against an order
 
 // Payments
 $payments = $api->payment->all($options); // Returns array of payment objects

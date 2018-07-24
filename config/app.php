@@ -13,6 +13,7 @@ return [
     */
 
     'name'      => env('APP_NAME', 'Laravel'),
+
     'version'   => ' v1.0.9',
 
     /*
@@ -26,7 +27,7 @@ return [
     |
     */
 
-    'env' => env('APP_ENV', 'production'),
+    'env' => env('APP_ENV', 'local'),
 
     /*
     |--------------------------------------------------------------------------
@@ -132,7 +133,7 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'single'),
+    'log' => env('APP_LOG', 'daily'),
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
@@ -149,9 +150,9 @@ return [
 
     'providers' => [
 
-            'App\Plugins\Paypal\ServiceProvider',
+            // 'App\Plugins\Paypal\ServiceProvider',
 
-            'App\Plugins\Ccavanue\ServiceProvider',
+            // 'App\Plugins\Ccavanue\ServiceProvider',
 
         /*
          * Laravel Framework Service Providers...
@@ -179,6 +180,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,
 
         /*
          * Package Service Providers...
@@ -200,6 +202,8 @@ return [
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
+         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+         Spatie\Activitylog\ActivitylogServiceProvider::class,
 
     ],
 
@@ -217,6 +221,7 @@ return [
     'aliases' => [
 
         'App'          => Illuminate\Support\Facades\App::class,
+        'Activity'     => Spatie\Activitylog\ActivitylogFacade::class,
         'Artisan'      => Illuminate\Support\Facades\Artisan::class,
         'Auth'         => Illuminate\Support\Facades\Auth::class,
         'Blade'        => Illuminate\Support\Facades\Blade::class,
@@ -259,6 +264,7 @@ return [
         'Datatable'    => 'Chumper\Datatable\Facades\DatatableFacade',
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
+          'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
 
     ],
 

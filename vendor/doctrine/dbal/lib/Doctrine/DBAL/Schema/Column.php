@@ -20,12 +20,6 @@
 namespace Doctrine\DBAL\Schema;
 
 use Doctrine\DBAL\Types\Type;
-use const E_USER_DEPRECATED;
-use function array_merge;
-use function is_numeric;
-use function method_exists;
-use function sprintf;
-use function trigger_error;
 
 /**
  * Object representation of a database column.
@@ -42,32 +36,32 @@ class Column extends AbstractAsset
     protected $_type;
 
     /**
-     * @var int|null
+     * @var integer|null
      */
     protected $_length = null;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $_precision = 10;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $_scale = 0;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $_unsigned = false;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $_fixed = false;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $_notnull = true;
 
@@ -77,14 +71,14 @@ class Column extends AbstractAsset
     protected $_default = null;
 
     /**
-     * @var bool
+     * @var boolean
      */
     protected $_autoincrement = false;
 
     /**
      * @var array
      */
-    protected $_platformOptions = [];
+    protected $_platformOptions = array();
 
     /**
      * @var string|null
@@ -99,7 +93,7 @@ class Column extends AbstractAsset
     /**
      * @var array
      */
-    protected $_customSchemaOptions = [];
+    protected $_customSchemaOptions = array();
 
     /**
      * Creates a new Column.
@@ -108,7 +102,7 @@ class Column extends AbstractAsset
      * @param Type   $type
      * @param array  $options
      */
-    public function __construct($columnName, Type $type, array $options=[])
+    public function __construct($columnName, Type $type, array $options=array())
     {
         $this->_setName($columnName);
         $this->setType($type);
@@ -124,17 +118,9 @@ class Column extends AbstractAsset
     {
         foreach ($options as $name => $value) {
             $method = "set".$name;
-            if ( ! method_exists($this, $method)) {
-                // next major: throw an exception
-                @trigger_error(sprintf(
-                    'The "%s" column option is not supported,'.
-                    ' setting it is deprecated and will cause an error in Doctrine 3.0',
-                    $name
-                ), E_USER_DEPRECATED);
-
-                continue;
+            if (method_exists($this, $method)) {
+                $this->$method($value);
             }
-            $this->$method($value);
         }
 
         return $this;
@@ -153,7 +139,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param int|null $length
+     * @param integer|null $length
      *
      * @return Column
      */
@@ -169,7 +155,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param int $precision
+     * @param integer $precision
      *
      * @return Column
      */
@@ -185,7 +171,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param int $scale
+     * @param integer $scale
      *
      * @return Column
      */
@@ -201,7 +187,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param bool $unsigned
+     * @param boolean $unsigned
      *
      * @return Column
      */
@@ -213,7 +199,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param bool $fixed
+     * @param boolean $fixed
      *
      * @return Column
      */
@@ -225,7 +211,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param bool $notnull
+     * @param boolean $notnull
      *
      * @return Column
      */
@@ -294,7 +280,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return int|null
+     * @return integer|null
      */
     public function getLength()
     {
@@ -302,7 +288,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getPrecision()
     {
@@ -310,7 +296,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getScale()
     {
@@ -318,7 +304,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getUnsigned()
     {
@@ -326,7 +312,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getFixed()
     {
@@ -334,7 +320,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getNotnull()
     {
@@ -360,7 +346,7 @@ class Column extends AbstractAsset
     /**
      * @param string $name
      *
-     * @return bool
+     * @return boolean
      */
     public function hasPlatformOption($name)
     {
@@ -386,7 +372,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function getAutoincrement()
     {
@@ -394,7 +380,7 @@ class Column extends AbstractAsset
     }
 
     /**
-     * @param bool $flag
+     * @param boolean $flag
      *
      * @return Column
      */
@@ -441,7 +427,7 @@ class Column extends AbstractAsset
     /**
      * @param string $name
      *
-     * @return bool
+     * @return boolean
      */
     public function hasCustomSchemaOption($name)
     {
@@ -483,7 +469,7 @@ class Column extends AbstractAsset
      */
     public function toArray()
     {
-        return array_merge([
+        return array_merge(array(
             'name'          => $this->_name,
             'type'          => $this->_type,
             'default'       => $this->_default,
@@ -496,6 +482,6 @@ class Column extends AbstractAsset
             'autoincrement' => $this->_autoincrement,
             'columnDefinition' => $this->_columnDefinition,
             'comment' => $this->_comment,
-        ], $this->_platformOptions, $this->_customSchemaOptions);
+        ), $this->_platformOptions, $this->_customSchemaOptions);
     }
 }

@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'taxes/option']) !!}
+                {!! Form::open(['url'=>'taxes/option','id'=>'taxClass']) !!}
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
@@ -32,8 +32,8 @@
                     <!-- name -->
                     
                     {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
-                    {!! Form::text('tax-name',null,['class' => 'form-control']) !!}
-                   
+                    {!! Form::text('tax-name',null,['class' => 'form-control','id'=>'taxname']) !!}
+                   <h6 id ="namecheck"></h6>
                 </div>
            
                  <div class="form-group">
@@ -84,12 +84,17 @@
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
 <<<<<<< HEAD
+<<<<<<< HEAD
                     {!! Form::text('rate',null,['class' => 'form-control']) !!}
 =======
                     {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
                     <h6 id="ratecheck"> </h6>
                   
 >>>>>>> ddca1e27... bug fixes
+=======
+                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
+                  
+>>>>>>> parent of 58a3ffa4... update
 
                 </div>
                   
@@ -139,7 +144,10 @@
 });
 </script>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> parent of 58a3ffa4... update
 
 <script>
      $(document).ready(function(){
@@ -163,6 +171,7 @@
             }
         }
 
+<<<<<<< HEAD
         function ratecheck()
         {
             var rate = $('#rate').val();
@@ -183,6 +192,10 @@
         
         tax_nameCheck();
         // ratecheck();
+=======
+        
+        tax_nameCheck();
+>>>>>>> parent of 58a3ffa4... update
        
        
         if(tax_nameCheck()){
@@ -195,5 +208,8 @@
 
     });
 </script>
+<<<<<<< HEAD
 >>>>>>> ddca1e27... bug fixes
+=======
+>>>>>>> parent of 58a3ffa4... update
 {!! Form::close()  !!}

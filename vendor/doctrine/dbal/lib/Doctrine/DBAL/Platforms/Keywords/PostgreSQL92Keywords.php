@@ -19,8 +19,6 @@
 
 namespace Doctrine\DBAL\Platforms\Keywords;
 
-use function array_merge;
-
 /**
  * PostgreSQL 9.2 reserved keywords list.
  *
@@ -45,8 +43,8 @@ class PostgreSQL92Keywords extends PostgreSQL91Keywords
      */
     protected function getKeywords()
     {
-        return array_merge(parent::getKeywords(), [
+        return array_merge(parent::getKeywords(), array(
             'COLLATION',
-        ]);
+        ));
     }
 }

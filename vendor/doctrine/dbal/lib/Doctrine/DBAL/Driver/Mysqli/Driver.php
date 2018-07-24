@@ -30,7 +30,7 @@ class Driver extends AbstractMySQLDriver
     /**
      * {@inheritdoc}
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
+    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
         try {
             return new MysqliConnection($params, $username, $password, $driverOptions);

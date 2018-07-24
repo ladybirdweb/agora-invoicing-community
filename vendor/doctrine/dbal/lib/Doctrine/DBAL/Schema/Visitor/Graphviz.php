@@ -22,12 +22,6 @@ namespace Doctrine\DBAL\Schema\Visitor;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use function current;
-use function file_put_contents;
-use function in_array;
-use function mt_rand;
-use function sha1;
-use function strtolower;
 
 /**
  * Create a Graphviz output of a Schema.
@@ -47,11 +41,11 @@ class Graphviz extends AbstractVisitor
         $this->output .= $this->createNodeRelation(
             $fkConstraint->getLocalTableName() . ":col" . current($fkConstraint->getLocalColumns()).":se",
             $fkConstraint->getForeignTableName() . ":col" . current($fkConstraint->getForeignColumns()).":se",
-            [
+            array(
                 'dir'       => 'back',
                 'arrowtail' => 'dot',
                 'arrowhead' => 'normal',
-            ]
+            )
         );
     }
 
@@ -75,10 +69,10 @@ class Graphviz extends AbstractVisitor
     {
         $this->output .= $this->createNode(
             $table->getName(),
-            [
+            array(
                 'label' => $this->createTableLabel($table),
                 'shape' => 'plaintext',
-            ]
+            )
         );
     }
 

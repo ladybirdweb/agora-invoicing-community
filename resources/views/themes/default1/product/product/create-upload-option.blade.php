@@ -22,14 +22,9 @@
                  </div>
                 <div class="form-group {{ $errors->has('description') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    
-
-                                    {!! Form::label('description',Lang::get('message.description')) !!}
-                                    <textarea class=form-control id= "textarea3" name="description"></textarea>
-                                    <!--  <input type="text" row="10" col="5" id="product-description" class="form-control" name="version"> -->
-                                   <!--  {!! Form::textarea('description',null,['class' => 'form-control','id'=>'product-description']) !!} -->
-
-                                </div>
+                {!! Form::label('description',Lang::get('message.description')) !!}
+                <textarea class=form-control id= "textarea3" name="description"></textarea>
+               </div>
 
                 <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->

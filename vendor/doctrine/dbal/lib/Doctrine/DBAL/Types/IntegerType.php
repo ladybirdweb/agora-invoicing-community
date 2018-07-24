@@ -19,7 +19,6 @@
 
 namespace Doctrine\DBAL\Types;
 
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 
 /**
@@ -28,7 +27,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
  * @author Roman Borschel <roman@code-factory.org>
  * @since 2.0
  */
-class IntegerType extends Type implements PhpIntegerMappingType
+class IntegerType extends Type
 {
     /**
      * {@inheritdoc}
@@ -59,6 +58,6 @@ class IntegerType extends Type implements PhpIntegerMappingType
      */
     public function getBindingType()
     {
-        return ParameterType::INTEGER;
+        return \PDO::PARAM_INT;
     }
 }

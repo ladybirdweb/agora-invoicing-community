@@ -47,7 +47,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function persist($object)
     {
-        $this->wrapped->persist($object);
+        return $this->wrapped->persist($object);
     }
 
     /**
@@ -55,7 +55,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function remove($object)
     {
-        $this->wrapped->remove($object);
+        return $this->wrapped->remove($object);
     }
 
     /**
@@ -71,7 +71,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function clear($objectName = null)
     {
-        $this->wrapped->clear($objectName);
+        return $this->wrapped->clear($objectName);
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function detach($object)
     {
-        $this->wrapped->detach($object);
+        return $this->wrapped->detach($object);
     }
 
     /**
@@ -87,7 +87,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function refresh($object)
     {
-        $this->wrapped->refresh($object);
+        return $this->wrapped->refresh($object);
     }
 
     /**
@@ -95,7 +95,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function flush()
     {
-        $this->wrapped->flush();
+        return $this->wrapped->flush();
     }
 
     /**
@@ -127,7 +127,7 @@ abstract class ObjectManagerDecorator implements ObjectManager
      */
     public function initializeObject($obj)
     {
-        $this->wrapped->initializeObject($obj);
+        return $this->wrapped->initializeObject($obj);
     }
 
     /**

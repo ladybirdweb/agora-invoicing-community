@@ -1,0 +1,4 @@
+[08-Apr-2018 09:07:00 UTC] PHP Fatal error:  Class 'TwitterPhp\Connection\Base' not found in /home/faveo/public_html/billing/public/cart/vendor/rs-plugin/php/twitter/connection/Application.php on line 6
+[08-Apr-2018 09:10:20 UTC] PHP Fatal error:  Class 'TwitterPhp\Connection\Base' not found in /home/faveo/public_html/billing/public/cart/vendor/rs-plugin/php/twitter/connection/User.php on line 4
+[16-Apr-2018 12:29:17 UTC] PHP Fatal error:  Class 'TwitterPhp\Connection\Base' not found in /home/faveo/public_html/billing/public/cart/vendor/rs-plugin/php/twitter/connection/Application.php on line 6
+[16-Apr-2018 14:44:16 UTC] PHP Fatal error:  Class 'TwitterPhp\Connection\Base' not found in /home/faveo/public_html/billing/public/cart/vendor/rs-plugin/php/twitter/connection/User.php on line 4

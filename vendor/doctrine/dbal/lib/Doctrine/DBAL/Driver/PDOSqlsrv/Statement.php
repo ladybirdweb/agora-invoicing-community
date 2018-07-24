@@ -20,7 +20,6 @@
 namespace Doctrine\DBAL\Driver\PDOSqlsrv;
 
 use Doctrine\DBAL\Driver\PDOStatement;
-use Doctrine\DBAL\ParameterType;
 use PDO;
 
 /**
@@ -31,9 +30,9 @@ class Statement extends PDOStatement
     /**
      * {@inheritdoc}
      */
-    public function bindParam($column, &$variable, $type = ParameterType::STRING, $length = null, $driverOptions = null)
+    public function bindParam($column, &$variable, $type = PDO::PARAM_STR, $length = null, $driverOptions = null)
     {
-        if ($type === ParameterType::LARGE_OBJECT && $driverOptions === null) {
+        if ($type === PDO::PARAM_LOB && $driverOptions === null) {
             $driverOptions = PDO::SQLSRV_ENCODING_BINARY;
         }
 
@@ -43,7 +42,7 @@ class Statement extends PDOStatement
     /**
      * {@inheritdoc}
      */
-    public function bindValue($param, $value, $type = ParameterType::STRING)
+    public function bindValue($param, $value, $type = PDO::PARAM_STR)
     {
         return $this->bindParam($param, $value, $type);
     }

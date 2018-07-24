@@ -19,8 +19,6 @@
 
 namespace Doctrine\DBAL\Schema;
 
-use function in_array;
-
 /**
  * Represents the change of a column.
  *
@@ -43,7 +41,7 @@ class ColumnDiff
     /**
      * @var array
      */
-    public $changedProperties = [];
+    public $changedProperties = array();
 
     /**
      * @var Column
@@ -56,7 +54,7 @@ class ColumnDiff
      * @param string[] $changedProperties
      * @param Column   $fromColumn
      */
-    public function __construct($oldColumnName, Column $column, array $changedProperties = [], Column $fromColumn = null)
+    public function __construct($oldColumnName, Column $column, array $changedProperties = array(), Column $fromColumn = null)
     {
         $this->oldColumnName = $oldColumnName;
         $this->column = $column;
@@ -67,7 +65,7 @@ class ColumnDiff
     /**
      * @param string $propertyName
      *
-     * @return bool
+     * @return boolean
      */
     public function hasChanged($propertyName)
     {

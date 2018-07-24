@@ -176,35 +176,35 @@ class GithubController extends Controller
      *
      * @return type
      */
-    public function getReleaseByTag($owner, $repo)
-    {
-        try {
-            $tag = \Input::get('tag');
-            $all_releases = $this->listRepositories($owner, $repo);
+    // public function getReleaseByTag($owner, $repo)
+    // {
+    //     try {
+    //         $tag = \Input::get('tag');
+    //         $all_releases = $this->listRepositories($owner, $repo);
 
-            $this->download($result['header']['Location']);
-            if ($tag) {
-                foreach ($all_releases as $key => $release) {
-                    //dd($release);
-                    if (in_array($tag, $release)) {
-                        $version[$tag] = $this->getReleaseById($release['id']);
-                    }
-                }
-            } else {
-                $version[0] = $all_releases[0];
-            }
-            //            dd($version);
-            //execute download
+    //         $this->download($result['header']['Location']);
+    //         if ($tag) {
+    //             foreach ($all_releases as $key => $release) {
+    //                 //dd($release);
+    //                 if (in_array($tag, $release)) {
+    //                     $version[$tag] = $this->getReleaseById($release['id']);
+    //                 }
+    //             }
+    //         } else {
+    //             $version[0] = $all_releases[0];
+    //         }
+    //         //            dd($version);
+    //         //execute download
 
-            if ($this->download($version) == 'success') {
-                return 'success';
-            }
-            //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
-        } catch (Exception $ex) {
-            //dd($ex);
-            return redirect('/')->with('fails', $ex->getMessage());
-        }
-    }
+    //         if ($this->download($version) == 'success') {
+    //             return 'success';
+    //         }
+    //         //return redirect()->back()->with('success', \Lang::get('message.downloaded-successfully'));
+    //     } catch (Exception $ex) {
+    //         //dd($ex);
+    //         return redirect('/')->with('fails', $ex->getMessage());
+    //     }
+    // }
 
     /**
      * List only one release by id.
@@ -228,7 +228,7 @@ class GithubController extends Controller
     /**
      * Get the count of download of the release.
      *
-     * @return array||redirect
+     * @return array
      */
     public function getDownloadCount()
     {
@@ -249,22 +249,17 @@ class GithubController extends Controller
      */
     public function download($release)
     {
-        try {
-            //dd($release);
-            echo "<form action=$release method=get name=download>";
-            echo '</form>';
-            echo"<script language='javascript'>document.download.submit();</script>";
+        echo "<form action=$release method=get name=download>";
+        echo '</form>';
+        echo"<script language='javascript'>document.download.submit();</script>";
 
-            //return "success";
-        } catch (Exception $ex) {
-            return redirect('/')->with('fails', $ex->getMessage());
-        }
+        //return "success";
     }
 
     /**
      * get the settings page for github.
      *
-     * @return view
+     * @return \view
      */
     public function getSettings()
     {
@@ -285,6 +280,7 @@ class GithubController extends Controller
             'password'     => 'required',
             'client_id'    => 'required',
             'client_secret'=> 'required',
+
 
         ]);
 
@@ -324,7 +320,6 @@ class GithubController extends Controller
             $url = "https://api.github.com/repos/$owner/$repo/releases";
 
             $link = $this->github_api->getCurl1($url);
-
             foreach ($link['body'] as $key => $value) {
                 if (strtotime($value['created_at']) < strtotime($order_end_date->ends_at)) {
                     $ver[] = $value['tag_name'];
@@ -350,6 +345,7 @@ class GithubController extends Controller
             return $link['header'];
         } catch (Exception $ex) {
             dd($ex->getline());
+
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

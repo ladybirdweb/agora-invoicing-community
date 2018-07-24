@@ -22,8 +22,6 @@ namespace Doctrine\DBAL\Event;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\TableDiff;
-use function array_merge;
-use function is_array;
 
 /**
  * Event Arguments used when SQL queries for changing table columns are generated inside Doctrine\DBAL\Platform\*Platform.
@@ -52,7 +50,7 @@ class SchemaAlterTableChangeColumnEventArgs extends SchemaEventArgs
     /**
      * @var array
      */
-    private $_sql = [];
+    private $_sql = array();
 
     /**
      * @param \Doctrine\DBAL\Schema\ColumnDiff          $columnDiff

@@ -43,7 +43,7 @@ class MySQL57Keywords extends MySQLKeywords
      */
     protected function getKeywords()
     {
-        return [
+        return array(
             'ACCESSIBLE',
             'ADD',
             'ALL',
@@ -119,7 +119,6 @@ class MySQL57Keywords extends MySQLKeywords
             'FOREIGN',
             'FROM',
             'FULLTEXT',
-            'GENERATED',
             'GET',
             'GRANT',
             'GROUP',
@@ -184,12 +183,12 @@ class MySQL57Keywords extends MySQLKeywords
             'MODIFIES',
             'NATURAL',
             'NO_WRITE_TO_BINLOG',
+            'NONBLOCKING',
             'NOT',
             'NULL',
             'NUMERIC',
             'ON',
             'OPTIMIZE',
-            'OPTIMIZER_COSTS',
             'OPTION',
             'OPTIONALLY',
             'OR',
@@ -241,7 +240,6 @@ class MySQL57Keywords extends MySQLKeywords
             'SQLWARNING',
             'SSL',
             'STARTING',
-            'STORED',
             'STRAIGHT_JOIN',
             'TABLE',
             'TERMINATED',
@@ -270,7 +268,6 @@ class MySQL57Keywords extends MySQLKeywords
             'VARCHAR',
             'VARCHARACTER',
             'VARYING',
-            'VIRTUAL',
             'WHEN',
             'WHERE',
             'WHILE',
@@ -279,6 +276,6 @@ class MySQL57Keywords extends MySQLKeywords
             'XOR',
             'YEAR_MONTH',
             'ZEROFILL',
-        ];
+        );
     }
 }

@@ -51,13 +51,6 @@ class StaticReflectionParser implements ReflectionProviderInterface
     protected $classAnnotationOptimize;
 
     /**
-     * A ClassFinder object which finds the class.
-     *
-     * @var ClassFinderInterface
-     */
-    protected $finder;
-
-    /**
      * Whether the parser has run.
      *
      * @var boolean
@@ -81,7 +74,7 @@ class StaticReflectionParser implements ReflectionProviderInterface
     /**
      * The docComment of the class.
      *
-     * @var mixed[]
+     * @var string
      */
     protected $docComment = [
         'class' => '',
@@ -147,7 +140,7 @@ class StaticReflectionParser implements ReflectionProviderInterface
         $last_token = false;
 
         while ($token = $tokenParser->next(false)) {
-            switch ($token[0]) {
+            if (is_array($token)) {switch ($token[0]) {
                 case T_USE:
                     $this->useStatements = array_merge($this->useStatements, $tokenParser->parseUseStatement());
                     break;
@@ -155,10 +148,8 @@ class StaticReflectionParser implements ReflectionProviderInterface
                     $docComment = $token[1];
                     break;
                 case T_CLASS:
-                    if ($last_token !== T_PAAMAYIM_NEKUDOTAYIM) {
-                        $this->docComment['class'] = $docComment;
-                        $docComment = '';
-                    }
+                    if ($last_token !== T_PAAMAYIM_NEKUDOTAYIM) {$this->docComment['class'] = $docComment;
+                    $docComment = '';}
                     break;
                 case T_VAR:
                 case T_PRIVATE:
@@ -208,7 +199,7 @@ class StaticReflectionParser implements ReflectionProviderInterface
                     if (!$fullySpecified) {
                         $this->parentClassName = '\\' . $this->namespace . '\\' . $this->parentClassName;
                     }
-                    break;
+                    break;}
             }
 
             $last_token = $token[0];

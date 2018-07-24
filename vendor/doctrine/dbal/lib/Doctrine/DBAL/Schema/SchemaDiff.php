@@ -20,7 +20,6 @@
 namespace Doctrine\DBAL\Schema;
 
 use \Doctrine\DBAL\Platforms\AbstractPlatform;
-use function array_merge;
 
 /**
  * Schema Diff.
@@ -43,55 +42,55 @@ class SchemaDiff
      *
      * @var string[]
      */
-    public $newNamespaces = [];
+    public $newNamespaces = array();
 
     /**
      * All removed namespaces.
      *
      * @var string[]
      */
-    public $removedNamespaces = [];
+    public $removedNamespaces = array();
 
     /**
      * All added tables.
      *
      * @var \Doctrine\DBAL\Schema\Table[]
      */
-    public $newTables = [];
+    public $newTables = array();
 
     /**
      * All changed tables.
      *
      * @var \Doctrine\DBAL\Schema\TableDiff[]
      */
-    public $changedTables = [];
+    public $changedTables = array();
 
     /**
      * All removed tables.
      *
      * @var \Doctrine\DBAL\Schema\Table[]
      */
-    public $removedTables = [];
+    public $removedTables = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\Sequence[]
      */
-    public $newSequences = [];
+    public $newSequences = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\Sequence[]
      */
-    public $changedSequences = [];
+    public $changedSequences = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\Sequence[]
      */
-    public $removedSequences = [];
+    public $removedSequences = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\ForeignKeyConstraint[]
      */
-    public $orphanedForeignKeys = [];
+    public $orphanedForeignKeys = array();
 
     /**
      * Constructs an SchemaDiff object.
@@ -101,7 +100,7 @@ class SchemaDiff
      * @param \Doctrine\DBAL\Schema\Table[]     $removedTables
      * @param \Doctrine\DBAL\Schema\Schema|null $fromSchema
      */
-    public function __construct($newTables = [], $changedTables = [], $removedTables = [], Schema $fromSchema = null)
+    public function __construct($newTables = array(), $changedTables = array(), $removedTables = array(), Schema $fromSchema = null)
     {
         $this->newTables     = $newTables;
         $this->changedTables = $changedTables;
@@ -139,13 +138,13 @@ class SchemaDiff
 
     /**
      * @param \Doctrine\DBAL\Platforms\AbstractPlatform $platform
-     * @param bool                                      $saveMode
+     * @param boolean                                   $saveMode
      *
      * @return array
      */
     protected function _toSql(AbstractPlatform $platform, $saveMode = false)
     {
-        $sql = [];
+        $sql = array();
 
         if ($platform->supportsSchemas()) {
             foreach ($this->newNamespaces as $newNamespace) {
@@ -175,7 +174,7 @@ class SchemaDiff
             }
         }
 
-        $foreignKeySql = [];
+        $foreignKeySql = array();
         foreach ($this->newTables as $table) {
             $sql = array_merge(
                 $sql,

@@ -109,14 +109,10 @@ abstract class AbstractOracleDriver implements Driver, ExceptionConverterDriver
      *
      * @return string
      *
-     * @link https://docs.oracle.com/database/121/NETAG/naming.htm
+     * @link http://download.oracle.com/docs/cd/E11882_01/network.112/e10836/naming.htm
      */
     protected function getEasyConnectString(array $params)
     {
-        if ( ! empty($params['connectstring'])) {
-            return $params['connectstring'];
-        }
-
         if ( ! empty($params['host'])) {
             if ( ! isset($params['port'])) {
                 $params['port'] = 1521;
@@ -150,6 +146,6 @@ abstract class AbstractOracleDriver implements Driver, ExceptionConverterDriver
 
         }
 
-        return $params['dbname'] ?? '';
+        return isset($params['dbname']) ? $params['dbname'] : '';
     }
 }

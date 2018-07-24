@@ -53,16 +53,17 @@
 
             </div>
 
-            <div class="col-md-4 col-md-offset-4">
+          
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                     <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
-                </div>
-                <div class="col-md-6">
+                     &nbsp;&nbsp;
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+
+
                 </div>
-            </div>
+            
 
         </div>
 <script type="text/javascript">

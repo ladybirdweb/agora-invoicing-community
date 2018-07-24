@@ -41,7 +41,7 @@ class SQLAnywhereKeywords extends KeywordList
      */
     protected function getKeywords()
     {
-        return [
+        return array(
             'ADD',
             'ALL',
             'ALTER',
@@ -276,6 +276,6 @@ class SQLAnywhereKeywords extends KeywordList
             'WORK',
             'WRITETEXT',
             'XML'
-        ];
+        );
     }
 }

@@ -23,29 +23,28 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
 use Doctrine\DBAL\Schema\Sequence;
-use function array_merge;
 
 class CreateSchemaSqlCollector extends AbstractVisitor
 {
     /**
      * @var array
      */
-    private $createNamespaceQueries = [];
+    private $createNamespaceQueries = array();
 
     /**
      * @var array
      */
-    private $createTableQueries = [];
+    private $createTableQueries = array();
 
     /**
      * @var array
      */
-    private $createSequenceQueries = [];
+    private $createSequenceQueries = array();
 
     /**
      * @var array
      */
-    private $createFkConstraintQueries = [];
+    private $createFkConstraintQueries = array();
 
     /**
      *
@@ -67,7 +66,10 @@ class CreateSchemaSqlCollector extends AbstractVisitor
     public function acceptNamespace($namespaceName)
     {
         if ($this->platform->supportsSchemas()) {
-            $this->createNamespaceQueries[] = $this->platform->getCreateSchemaSQL($namespaceName);
+            $this->createNamespaceQueries = array_merge(
+                $this->createNamespaceQueries,
+                (array) $this->platform->getCreateSchemaSQL($namespaceName)
+            );
         }
     }
 
@@ -85,7 +87,12 @@ class CreateSchemaSqlCollector extends AbstractVisitor
     public function acceptForeignKey(Table $localTable, ForeignKeyConstraint $fkConstraint)
     {
         if ($this->platform->supportsForeignKeyConstraints()) {
-            $this->createFkConstraintQueries[] = $this->platform->getCreateForeignKeySQL($fkConstraint, $localTable);
+            $this->createFkConstraintQueries = array_merge(
+                $this->createFkConstraintQueries,
+                (array) $this->platform->getCreateForeignKeySQL(
+                    $fkConstraint, $localTable
+                )
+            );
         }
     }
 
@@ -94,7 +101,10 @@ class CreateSchemaSqlCollector extends AbstractVisitor
      */
     public function acceptSequence(Sequence $sequence)
     {
-        $this->createSequenceQueries[] = $this->platform->getCreateSequenceSQL($sequence);
+        $this->createSequenceQueries = array_merge(
+            $this->createSequenceQueries,
+            (array) $this->platform->getCreateSequenceSQL($sequence)
+        );
     }
 
     /**
@@ -102,10 +112,10 @@ class CreateSchemaSqlCollector extends AbstractVisitor
      */
     public function resetQueries()
     {
-        $this->createNamespaceQueries = [];
-        $this->createTableQueries = [];
-        $this->createSequenceQueries = [];
-        $this->createFkConstraintQueries = [];
+        $this->createNamespaceQueries = array();
+        $this->createTableQueries = array();
+        $this->createSequenceQueries = array();
+        $this->createFkConstraintQueries = array();
     }
 
     /**
@@ -115,11 +125,24 @@ class CreateSchemaSqlCollector extends AbstractVisitor
      */
     public function getQueries()
     {
-        return array_merge(
-            $this->createNamespaceQueries,
-            $this->createTableQueries,
-            $this->createSequenceQueries,
-            $this->createFkConstraintQueries
-        );
+        $sql = array();
+
+        foreach ($this->createNamespaceQueries as $schemaSql) {
+            $sql = array_merge($sql, (array) $schemaSql);
+        }
+
+        foreach ($this->createTableQueries as $schemaSql) {
+            $sql = array_merge($sql, (array) $schemaSql);
+        }
+
+        foreach ($this->createSequenceQueries as $schemaSql) {
+            $sql = array_merge($sql, (array) $schemaSql);
+        }
+
+        foreach ($this->createFkConstraintQueries as $schemaSql) {
+            $sql = array_merge($sql, (array) $schemaSql);
+        }
+
+        return $sql;
     }
 }

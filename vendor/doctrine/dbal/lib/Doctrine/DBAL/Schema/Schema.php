@@ -24,9 +24,6 @@ use Doctrine\DBAL\Schema\Visitor\DropSchemaSqlCollector;
 use Doctrine\DBAL\Schema\Visitor\NamespaceVisitor;
 use Doctrine\DBAL\Schema\Visitor\Visitor;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
-use function array_keys;
-use function strpos;
-use function strtolower;
 
 /**
  * Object representation of a database schema.
@@ -63,17 +60,17 @@ class Schema extends AbstractAsset
      *
      * @var array
      */
-    private $namespaces = [];
+    private $namespaces = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\Table[]
      */
-    protected $_tables = [];
+    protected $_tables = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\Sequence[]
      */
-    protected $_sequences = [];
+    protected $_sequences = array();
 
     /**
      * @var \Doctrine\DBAL\Schema\SchemaConfig
@@ -87,10 +84,10 @@ class Schema extends AbstractAsset
      * @param array                              $namespaces
      */
     public function __construct(
-        array $tables = [],
-        array $sequences = [],
+        array $tables = array(),
+        array $sequences = array(),
         SchemaConfig $schemaConfig = null,
-        array $namespaces = []
+        array $namespaces = array()
     ) {
         if ($schemaConfig == null) {
             $schemaConfig = new SchemaConfig();
@@ -112,7 +109,7 @@ class Schema extends AbstractAsset
     }
 
     /**
-     * @return bool
+     * @return boolean
      */
     public function hasExplicitForeignKeyIndexes()
     {
@@ -240,7 +237,7 @@ class Schema extends AbstractAsset
      *
      * @param string $namespaceName
      *
-     * @return bool
+     * @return boolean
      */
     public function hasNamespace($namespaceName)
     {
@@ -254,7 +251,7 @@ class Schema extends AbstractAsset
      *
      * @param string $tableName
      *
-     * @return bool
+     * @return boolean
      */
     public function hasTable($tableName)
     {
@@ -276,7 +273,7 @@ class Schema extends AbstractAsset
     /**
      * @param string $sequenceName
      *
-     * @return bool
+     * @return boolean
      */
     public function hasSequence($sequenceName)
     {
@@ -316,8 +313,6 @@ class Schema extends AbstractAsset
      * @param string $namespaceName The name of the namespace to create.
      *
      * @return \Doctrine\DBAL\Schema\Schema This schema instance.
-     *
-     * @throws SchemaException
      */
     public function createNamespace($namespaceName)
     {
@@ -389,9 +384,9 @@ class Schema extends AbstractAsset
     /**
      * Creates a new sequence.
      *
-     * @param string $sequenceName
-     * @param int    $allocationSize
-     * @param int    $initialValue
+     * @param string  $sequenceName
+     * @param integer $allocationSize
+     * @param integer $initialValue
      *
      * @return \Doctrine\DBAL\Schema\Sequence
      */

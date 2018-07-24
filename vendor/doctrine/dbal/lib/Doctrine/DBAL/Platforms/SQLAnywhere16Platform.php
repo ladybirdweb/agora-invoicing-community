@@ -55,6 +55,6 @@ class SQLAnywhere16Platform extends SQLAnywhere12Platform
      */
     protected function getReservedKeywordsClass()
     {
-        return Keywords\SQLAnywhere16Keywords::class;
+        return 'Doctrine\DBAL\Platforms\Keywords\SQLAnywhere16Keywords';
     }
 }

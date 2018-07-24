@@ -19,8 +19,6 @@
 
 namespace Doctrine\DBAL\Platforms\Keywords;
 
-use function array_merge;
-
 /**
  * Microsoft SQL Server 2012 reserved keyword dictionary.
  *
@@ -46,12 +44,12 @@ class SQLServer2012Keywords extends SQLServer2008Keywords
      */
     protected function getKeywords()
     {
-        return array_merge(parent::getKeywords(), [
+        return array_merge(parent::getKeywords(), array(
             'SEMANTICKEYPHRASETABLE',
             'SEMANTICSIMILARITYDETAILSTABLE',
             'SEMANTICSIMILARITYTABLE',
             'TRY_CONVERT',
             'WITHIN GROUP'
-        ]);
+        ));
     }
 }

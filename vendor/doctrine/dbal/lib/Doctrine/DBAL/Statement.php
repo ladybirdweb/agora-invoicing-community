@@ -19,10 +19,9 @@
 
 namespace Doctrine\DBAL;
 
+use PDO;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Driver\Statement as DriverStatement;
-use function is_array;
-use function is_string;
 
 /**
  * A thin wrapper around a Doctrine\DBAL\Driver\Statement that adds support
@@ -45,14 +44,14 @@ class Statement implements \IteratorAggregate, DriverStatement
      *
      * @var array
      */
-    protected $params = [];
+    protected $params = array();
 
     /**
      * The parameter types.
      *
      * @var array
      */
-    protected $types = [];
+    protected $types = array();
 
     /**
      * The underlying driver statement.
@@ -101,9 +100,9 @@ class Statement implements \IteratorAggregate, DriverStatement
      * @param mixed  $value The value of the parameter.
      * @param mixed  $type  Either a PDO binding type or a DBAL mapping type name or instance.
      *
-     * @return bool TRUE on success, FALSE on failure.
+     * @return boolean TRUE on success, FALSE on failure.
      */
-    public function bindValue($name, $value, $type = ParameterType::STRING)
+    public function bindValue($name, $value, $type = null)
     {
         $this->params[$name] = $value;
         $this->types[$name] = $type;
@@ -115,13 +114,13 @@ class Statement implements \IteratorAggregate, DriverStatement
                 $value = $type->convertToDatabaseValue($value, $this->platform);
                 $bindingType = $type->getBindingType();
             } else {
-                $bindingType = $type;
+                $bindingType = $type; // PDO::PARAM_* constants
             }
 
             return $this->stmt->bindValue($name, $value, $bindingType);
+        } else {
+            return $this->stmt->bindValue($name, $value);
         }
-
-        return $this->stmt->bindValue($name, $value);
     }
 
     /**
@@ -129,15 +128,15 @@ class Statement implements \IteratorAggregate, DriverStatement
      *
      * Binding a parameter by reference does not support DBAL mapping types.
      *
-     * @param string   $name   The name or position of the parameter.
-     * @param mixed    $var    The reference to the variable to bind.
-     * @param int      $type   The PDO binding type.
-     * @param int|null $length Must be specified when using an OUT bind
-     *                         so that PHP allocates enough memory to hold the returned value.
+     * @param string       $name   The name or position of the parameter.
+     * @param mixed        $var    The reference to the variable to bind.
+     * @param integer      $type   The PDO binding type.
+     * @param integer|null $length Must be specified when using an OUT bind
+     *                             so that PHP allocates enough memory to hold the returned value.
      *
-     * @return bool TRUE on success, FALSE on failure.
+     * @return boolean TRUE on success, FALSE on failure.
      */
-    public function bindParam($name, &$var, $type = ParameterType::STRING, $length = null)
+    public function bindParam($name, &$var, $type = PDO::PARAM_STR, $length = null)
     {
         $this->params[$name] = $var;
         $this->types[$name] = $type;
@@ -150,7 +149,7 @@ class Statement implements \IteratorAggregate, DriverStatement
      *
      * @param array|null $params
      *
-     * @return bool TRUE on success, FALSE on failure.
+     * @return boolean TRUE on success, FALSE on failure.
      *
      * @throws \Doctrine\DBAL\DBALException
      */
@@ -182,8 +181,8 @@ class Statement implements \IteratorAggregate, DriverStatement
         if ($logger) {
             $logger->stopQuery();
         }
-        $this->params = [];
-        $this->types = [];
+        $this->params = array();
+        $this->types = array();
 
         return $stmt;
     }
@@ -191,7 +190,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Closes the cursor, freeing the database resources used by this statement.
      *
-     * @return bool TRUE on success, FALSE on failure.
+     * @return boolean TRUE on success, FALSE on failure.
      */
     public function closeCursor()
     {
@@ -201,7 +200,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Returns the number of columns in the result set.
      *
-     * @return int
+     * @return integer
      */
     public function columnCount()
     {
@@ -253,19 +252,29 @@ class Statement implements \IteratorAggregate, DriverStatement
     }
 
     /**
-     * {@inheritdoc}
+     * Fetches the next row from a result set.
+     *
+     * @param integer|null $fetchMode
+     *
+     * @return mixed The return value of this function on success depends on the fetch type.
+     *               In all cases, FALSE is returned on failure.
      */
-    public function fetch($fetchMode = null, $cursorOrientation = \PDO::FETCH_ORI_NEXT, $cursorOffset = 0)
+    public function fetch($fetchMode = null)
     {
         return $this->stmt->fetch($fetchMode);
     }
 
     /**
-     * {@inheritdoc}
+     * Returns an array containing all of the result set rows.
+     *
+     * @param integer|null $fetchMode
+     * @param mixed        $fetchArgument
+     *
+     * @return array An array containing all of the remaining rows in the result set.
      */
-    public function fetchAll($fetchMode = null, $fetchArgument = null, $ctorArgs = null)
+    public function fetchAll($fetchMode = null, $fetchArgument = 0)
     {
-        if ($fetchArgument) {
+        if ($fetchArgument !== 0) {
             return $this->stmt->fetchAll($fetchMode, $fetchArgument);
         }
 
@@ -275,7 +284,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Returns a single column from the next row of a result set.
      *
-     * @param int $columnIndex
+     * @param integer $columnIndex
      *
      * @return mixed A single column from the next row of a result set or FALSE if there are no more rows.
      */
@@ -287,7 +296,7 @@ class Statement implements \IteratorAggregate, DriverStatement
     /**
      * Returns the number of rows affected by the last execution of this statement.
      *
-     * @return int The number of affected rows.
+     * @return integer The number of affected rows.
      */
     public function rowCount()
     {

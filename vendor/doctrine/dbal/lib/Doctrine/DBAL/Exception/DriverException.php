@@ -61,7 +61,7 @@ class DriverException extends DBALException
      *
      * Returns null if no error code was given by the driver.
      *
-     * @return int|string|null
+     * @return integer|string|null
      */
     public function getErrorCode()
     {

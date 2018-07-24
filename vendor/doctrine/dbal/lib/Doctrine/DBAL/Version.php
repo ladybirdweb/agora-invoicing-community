@@ -19,10 +19,6 @@
 
 namespace Doctrine\DBAL;
 
-use function str_replace;
-use function strtolower;
-use function version_compare;
-
 /**
  * Class to store and retrieve the version of Doctrine.
  *
@@ -38,14 +34,14 @@ class Version
     /**
      * Current Doctrine Version.
      */
-    const VERSION = '2.7.1';
+    const VERSION = '2.5.13';
 
     /**
      * Compares a Doctrine version with the current one.
      *
      * @param string $version The Doctrine version to compare to.
      *
-     * @return int -1 if older, 0 if it is the same, 1 if version passed as argument is newer.
+     * @return integer -1 if older, 0 if it is the same, 1 if version passed as argument is newer.
      */
     public static function compare($version)
     {

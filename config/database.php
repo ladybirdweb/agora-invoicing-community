@@ -13,7 +13,8 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default'   => env('DB_CONNECTION', 'mysql'),
+    'DB_INSTALL'=> env('DB_INSTALL'),
 
     /*
     |--------------------------------------------------------------------------
@@ -43,9 +44,11 @@ return [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
             'port'        => env('DB_PORT', ''),
-            'database'    => env('DB_DATABASE', null),
+            'database'    => env('DB_DATABASE', ''),
+
             'username'    => env('DB_USERNAME', 'root'),
             'password'    => env('DB_PASSWORD', ''),
+
             'unix_socket' => env('DB_SOCKET', ''),
             'charset'     => 'utf8mb4',
             'collation'   => 'utf8mb4_unicode_ci',
@@ -53,6 +56,18 @@ return [
             'strict'      => false,
             'engine'      => env('DB_ENGINE', null),
         ],
+
+      // 'testing' => [
+      //       'driver'    => 'mysql',
+      //       'host'      => env('DB_TEST_HOST', 'localhost'),
+      //       'database'  => env('DB_TEST_DATABASE', 'db_testing'),
+      //       'username'  => env('DB_TEST_USERNAME', 'root'),
+      //       'password'  => env('DB_TEST_PASSWORD', ''),
+      //       'charset'   => 'utf8',
+      //       'collation' => 'utf8_unicode_ci',
+      //       'prefix'    => '',
+      //       'strict'    => false,
+      //   ],
 
         'pgsql' => [
             'driver'   => 'pgsql',

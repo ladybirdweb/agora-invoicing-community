@@ -19,9 +19,6 @@
 
 namespace Doctrine\DBAL\Platforms\Keywords;
 
-use function array_diff;
-use function array_merge;
-
 /**
  * Microsoft SQL Server 2005 reserved keyword dictionary.
  *
@@ -47,13 +44,13 @@ class SQLServer2005Keywords extends SQLServerKeywords
      */
     protected function getKeywords()
     {
-        return array_merge(array_diff(parent::getKeywords(), ['DUMMY']), [
+        return array_merge(array_diff(parent::getKeywords(), array('DUMMY')), array(
             'EXTERNAL',
             'PIVOT',
             'REVERT',
             'SECURITYAUDIT',
             'TABLESAMPLE',
             'UNPIVOT'
-        ]);
+        ));
     }
 }

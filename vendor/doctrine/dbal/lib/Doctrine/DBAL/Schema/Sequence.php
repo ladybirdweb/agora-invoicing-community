@@ -20,9 +20,6 @@
 namespace Doctrine\DBAL\Schema;
 
 use Doctrine\DBAL\Schema\Visitor\Visitor;
-use function count;
-use function is_numeric;
-use function sprintf;
 
 /**
  * Sequence structure.
@@ -34,25 +31,25 @@ use function sprintf;
 class Sequence extends AbstractAsset
 {
     /**
-     * @var int
+     * @var integer
      */
     protected $allocationSize = 1;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $initialValue = 1;
 
     /**
-     * @var int|null
+     * @var integer|null
      */
     protected $cache = null;
 
     /**
-     * @param string   $name
-     * @param int      $allocationSize
-     * @param int      $initialValue
-     * @param int|null $cache
+     * @param string       $name
+     * @param integer      $allocationSize
+     * @param integer      $initialValue
+     * @param integer|null $cache
      */
     public function __construct($name, $allocationSize = 1, $initialValue = 1, $cache = null)
     {
@@ -63,7 +60,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getAllocationSize()
     {
@@ -71,7 +68,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @return int
+     * @return integer
      */
     public function getInitialValue()
     {
@@ -79,7 +76,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @return int|null
+     * @return integer|null
      */
     public function getCache()
     {
@@ -87,7 +84,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @param int $allocationSize
+     * @param integer $allocationSize
      *
      * @return \Doctrine\DBAL\Schema\Sequence
      */
@@ -99,7 +96,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @param int $initialValue
+     * @param integer $initialValue
      *
      * @return \Doctrine\DBAL\Schema\Sequence
      */
@@ -111,7 +108,7 @@ class Sequence extends AbstractAsset
     }
 
     /**
-     * @param int $cache
+     * @param integer $cache
      *
      * @return \Doctrine\DBAL\Schema\Sequence
      */
@@ -130,7 +127,7 @@ class Sequence extends AbstractAsset
      *
      * @param \Doctrine\DBAL\Schema\Table $table
      *
-     * @return bool
+     * @return boolean
      */
     public function isAutoIncrementsFor(Table $table)
     {

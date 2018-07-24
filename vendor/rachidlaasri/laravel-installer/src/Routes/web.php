@@ -1,16 +1,13 @@
 <?php
 
 Route::group(['prefix' => 'install','as' => 'LaravelInstaller::','namespace' => 'RachidLaasri\LaravelInstaller\Controllers'], function() {
-     $env = base_path('.env');
-     if ((\File::exists($env)) && (env('DB_INSTALL') == 0)) {
+
+ 
     Route::get('/', [
         'as' => 'welcome',
         'uses' => 'WelcomeController@welcome'
     ]);
-}
-   else{
-    return redirect('login');
-   }
+
 
     Route::get('environment', [
         'as' => 'environment',

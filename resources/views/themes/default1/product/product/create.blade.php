@@ -33,7 +33,7 @@
             {{Session::get('fails')}}
         </div>
         @endif
-        {!! Form::open(['url'=>'products','method'=>'post','files' => true]) !!}
+        {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
         <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
@@ -59,13 +59,10 @@
                                 <div class="col-md-3 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                                     <!-- first name -->
                                     {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                                    {!! Form::text('name',null,['class' => 'form-control']) !!}
+                                    {!! Form::text('name',null,['class' => 'form-control', 'id' =>'productname']) !!}
+                                <h6 id = "namecheck"></h6>
 
                                 </div>
-
-
-
-                              
 
                                  <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
@@ -84,7 +81,7 @@
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins'],null,['class' => 'form-control']) !!}
+                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdesk vps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
 
                                 </div>
 
@@ -108,7 +105,7 @@
 
                                     {!! Form::label('description',Lang::get('message.description')) !!}
                                     {!! Form::textarea('description',null,['class' => 'form-control','id'=>'textarea']) !!}
-
+                                <h6 id= "descheck"></h6>
                                 </div>
                                  <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
                                                         <!-- last name -->
@@ -144,37 +141,8 @@
 
                                             </div>
                                         </li>
-                                    </ul>
-                                </div>
 
-                            </div>
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                       
-                                        <li>
-                                            <div class="row">
-
-                                                
-
-                                                <div class="col-md-8 form-group {{ $errors->has('tax_apply') ? 'has-error' : '' }}">
-                                                    <!-- last name -->
-                                                    {!! Form::label('tax_apply',Lang::get('message.apply_tax')) !!}
-                                                    <p>{!! Form::checkbox('tax_apply',1) !!}  {{Lang::get('message.tick-this-box-to-charge-tax-for-this-product')}}</p>
-
-                                                </div>
-
-                                            </div>
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <ul class="list-unstyled">
-                                        <li>
+                                         <li>
                                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
                                                 {!! Form::label('hidden',Lang::get('message.hidden')) !!}
@@ -182,15 +150,12 @@
 
                                             </div>
                                         </li>
-                                       
-                                         
-                                        
-
-
                                     </ul>
                                 </div>
 
                             </div>
+
+                           
                         </div>
                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
@@ -284,8 +249,12 @@
     </script> -->
 <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+<<<<<<< HEAD
 
 <!-- <script>
+=======
+<script>
+>>>>>>> parent of 58a3ffa4... update
     // Jquery validation for Product Creation
     $(document).ready(function(){
         $('#namecheck').hide();
@@ -336,8 +305,12 @@
           }
         });
     });
+<<<<<<< HEAD
 </script> -->
 
+=======
+</script>
+>>>>>>> parent of 58a3ffa4... update
 
 
 <script>

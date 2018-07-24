@@ -26,7 +26,6 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\DBAL\Schema\Synchronizer\AbstractSchemaSynchronizer;
 use Doctrine\DBAL\Schema\Synchronizer\SingleDatabaseSynchronizer;
 use Doctrine\DBAL\Schema\Synchronizer\SchemaSynchronizer;
-use function array_merge;
 
 /**
  * SQL Azure Schema Synchronizer.
@@ -70,7 +69,7 @@ class SQLAzureFederationsSynchronizer extends AbstractSchemaSynchronizer
      */
     public function getCreateSchema(Schema $createSchema)
     {
-        $sql = [];
+        $sql = array();
 
         list($global, $federation) = $this->partitionSchema($createSchema);
 
@@ -184,15 +183,15 @@ class SQLAzureFederationsSynchronizer extends AbstractSchemaSynchronizer
      */
     private function partitionSchema(Schema $schema)
     {
-        return [
+        return array(
             $this->extractSchemaFederation($schema, false),
             $this->extractSchemaFederation($schema, true),
-        ];
+        );
     }
 
     /**
      * @param \Doctrine\DBAL\Schema\Schema $schema
-     * @param bool                         $isFederation
+     * @param boolean                      $isFederation
      *
      * @return \Doctrine\DBAL\Schema\Schema
      *
@@ -235,7 +234,7 @@ class SQLAzureFederationsSynchronizer extends AbstractSchemaSynchronizer
     private function work(Schema $schema, \Closure $operation)
     {
         list($global, $federation) = $this->partitionSchema($schema);
-        $sql = [];
+        $sql = array();
 
         $this->shardManager->selectGlobal();
         $globalSql = $operation($this->synchronizer, $global);
@@ -291,7 +290,7 @@ class SQLAzureFederationsSynchronizer extends AbstractSchemaSynchronizer
     private function getCreateFederationStatement()
     {
         $federationType = Type::getType($this->shardManager->getDistributionType());
-        $federationTypeSql = $federationType->getSQLDeclaration([], $this->conn->getDatabasePlatform());
+        $federationTypeSql = $federationType->getSqlDeclaration(array(), $this->conn->getDatabasePlatform());
 
         return "--Create Federation\n" .
                "CREATE FEDERATION " . $this->shardManager->getFederationName() . " (" . $this->shardManager->getDistributionKey() . " " . $federationTypeSql ."  RANGE)";

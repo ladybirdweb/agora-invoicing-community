@@ -46,7 +46,7 @@ class SQLServerKeywords extends KeywordList
      */
     protected function getKeywords()
     {
-        return [
+        return array(
             'ADD',
             'ALL',
             'ALTER',
@@ -226,6 +226,6 @@ class SQLServerKeywords extends KeywordList
             'WHILE',
             'WITH',
             'WRITETEXT'
-        ];
+        );
     }
 }

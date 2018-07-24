@@ -36,8 +36,6 @@ class ProfileRequest extends Request
                     'zip'              => 'required|numeric',
                     'user_name'        => 'required|unique:users,user_name,'.$userid,
                     'bussiness'        => 'required',
-                    'company_type'     => 'required',
-                    'company_size'     => 'required',
 
         ];
         }
@@ -48,14 +46,14 @@ class ProfileRequest extends Request
             return [
                      'first_name'            => 'required|min:3|max:20',
                     'last_name'              => 'required|max:20',
-                     'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
+                     'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                     'mobile_code'            => 'required|numeric',
 
                     'zip'                   => 'required|numeric',
 
                     'address'               => 'required|max:300',
                     'country'               => 'required|exists:countries,country_code_char2',
-                    'profile_pic'           => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                    'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
         }
@@ -73,7 +71,7 @@ class ProfileRequest extends Request
                     'last_name'             => 'required|max:20',
                     'email'                 => 'required|email|unique:users',
                     'company'               => 'required',
-                    'mobile'                => 'required|regex:/[0-9]/|min:10|max:15',
+                    'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                     'mobile_code'           => 'required|numeric',
                     'user_name'             => 'required|unique:users|min:3|max:20',
                     'terms'                 => 'accepted',

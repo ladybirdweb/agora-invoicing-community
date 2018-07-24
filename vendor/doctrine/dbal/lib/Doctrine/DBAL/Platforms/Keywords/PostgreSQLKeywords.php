@@ -42,7 +42,7 @@ class PostgreSQLKeywords extends KeywordList
      */
     protected function getKeywords()
     {
-        return [
+        return array(
             'ALL',
             'ANALYSE',
             'ANALYZE',
@@ -130,6 +130,6 @@ class PostgreSQLKeywords extends KeywordList
             'VERBOSE',
             'WHEN',
             'WHERE'
-        ];
+        );
     }
 }

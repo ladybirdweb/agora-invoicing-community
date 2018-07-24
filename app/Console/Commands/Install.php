@@ -93,7 +93,7 @@ QUEUE_DRIVER=sync';
             $contents = "$key=$value";
             file_put_contents($env, $contents.PHP_EOL, FILE_APPEND | LOCK_EX);
         } else {
-            throw new Exception('.env not found');
+            throw new \Exception('.env not found');
         }
     }
 

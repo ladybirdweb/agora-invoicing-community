@@ -68,14 +68,14 @@
 
                     <div class="col-md-6 form-group {{ $errors->has('client_id') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('client_id',Lang::get('message.client_id')) !!}
+                        {!! Form::label('client_id',Lang::get('message.client_id'),['class'=>'required']) !!}
                         {!! Form::text('client_id',null,['class' => 'form-control']) !!}
 
                     </div>
 
                     <div class="col-md-6 form-group {{ $errors->has('client_secret') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('client_secret',Lang::get('message.client_secret')) !!}
+                        {!! Form::label('client_secret',Lang::get('message.client_secret'),['class'=>'required']) !!}
                         {!! Form::text('client_secret',null,['class' => 'form-control']) !!}
 
                     </div>

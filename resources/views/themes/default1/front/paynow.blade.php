@@ -13,7 +13,13 @@ Checkout
 @section('content')
 <?php
 
-    $symbol = $invoice->currency;
+    $currency = $invoice->currency;
+    if ($currency == 'INR'){
+        $symbol = '₹';
+    }
+    else {
+        $symbol = '$';
+    }
 
 ?>
 <div class="container">
@@ -109,7 +115,7 @@ Checkout
                                     {{$item->quantity}}
                                 </td>
                                 <td class="product-name">
-                                    <span class="amount"><small>{!! $symbol !!} </small> {{$item->regular_price}}</span>
+                                    <span class="amount">{!! $symbol !!}  {{$item->regular_price}}</span>
                                 </td>
                             </tr>
                             @empty 
@@ -149,7 +155,11 @@ Checkout
                 <div class="form-group">
                     
                     <div class="col-md-6">
+
+
                          <img alt="Porto" width="111" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
+
+
                     </div>
                     
                     <div class="col-md-6">
@@ -184,13 +194,12 @@ Checkout
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$subtotal}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
                  
                 @foreach($items->toArray() as $attribute)
-                
-                @if($attribute['tax_name']!='null,')
+                 @if($attribute['tax_name']!='null,' && $currency == "INR")
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";
@@ -206,7 +215,7 @@ Checkout
                         <strong>{{$tax_name}}<span>@</span>{{$tax_percentage}}</strong><br/>
                          </th>
                     <td>
-                        <small>{{$symbol}}</small> {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
+                       {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['tax_percentage'],$subtotal)}} <br/>
                         
                        
                        
@@ -222,7 +231,7 @@ Checkout
                         <strong>Order Total</strong>
                     </th>
                     <td>
-                        <strong><span class="amount"><small>{{$symbol}}</small> {{$invoice->grand_total}}</span></strong>
+                        <strong><span class="amount">{{$symbol}} {{$invoice->grand_total}}</span></strong>
                     </td>
                 </tr>
             </tbody>

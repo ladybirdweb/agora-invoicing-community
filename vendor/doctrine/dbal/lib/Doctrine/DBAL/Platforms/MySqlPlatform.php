@@ -20,27 +20,11 @@
 namespace Doctrine\DBAL\Platforms;
 
 use Doctrine\DBAL\Schema\Identifier;
+use Doctrine\DBAL\Schema\TableDiff;
 use Doctrine\DBAL\Schema\Index;
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\DBAL\Schema\TableDiff;
-use Doctrine\DBAL\TransactionIsolationLevel;
 use Doctrine\DBAL\Types\BlobType;
 use Doctrine\DBAL\Types\TextType;
-use function array_diff_key;
-use function array_merge;
-use function array_unique;
-use function array_values;
-use function count;
-use function func_get_args;
-use function implode;
-use function in_array;
-use function is_numeric;
-use function is_string;
-use function join;
-use function sprintf;
-use function str_replace;
-use function strtoupper;
-use function trim;
 
 /**
  * The MySqlPlatform provides the behavior, features and SQL dialect of the
@@ -65,12 +49,6 @@ class MySqlPlatform extends AbstractPlatform
     /**
      * Adds MySQL-specific LIMIT clause to the query
      * 18446744073709551615 is 2^64-1 maximum of unsigned BIGINT the biggest limit possible
-     *
-     * @param string $query
-     * @param int    $limit
-     * @param int    $offset
-     *
-     * @return string
      */
     protected function doModifyLimitQuery($query, $limit, $offset)
     {
@@ -378,9 +356,6 @@ class MySqlPlatform extends AbstractPlatform
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getListTablesSQL()
     {
         return "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'";
@@ -424,7 +399,7 @@ class MySqlPlatform extends AbstractPlatform
     /**
      * {@inheritDoc}
      */
-    protected function _getCreateTableSQL($tableName, array $columns, array $options = [])
+    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
     {
         $queryFields = $this->getColumnDeclarationListSQL($columns);
 
@@ -500,7 +475,7 @@ class MySqlPlatform extends AbstractPlatform
             return $options['table_options'];
         }
 
-        $tableOptions = [];
+        $tableOptions = array();
 
         // Charset
         if ( ! isset($options['charset'])) {
@@ -511,7 +486,7 @@ class MySqlPlatform extends AbstractPlatform
 
         // Collate
         if ( ! isset($options['collate'])) {
-            $options['collate'] = $options['charset'] . '_unicode_ci';
+            $options['collate'] = 'utf8_unicode_ci';
         }
 
         $tableOptions[] = sprintf('COLLATE %s', $options['collate']);
@@ -562,8 +537,8 @@ class MySqlPlatform extends AbstractPlatform
      */
     public function getAlterTableSQL(TableDiff $diff)
     {
-        $columnSql = [];
-        $queryParts = [];
+        $columnSql = array();
+        $queryParts = array();
         if ($diff->newName !== false) {
             $queryParts[] = 'RENAME TO ' . $diff->getNewName()->getQuotedName($this);
         }
@@ -626,8 +601,8 @@ class MySqlPlatform extends AbstractPlatform
             unset($diff->addedIndexes['primary']);
         }
 
-        $sql = [];
-        $tableSql = [];
+        $sql = array();
+        $tableSql = array();
 
         if ( ! $this->onSchemaAlterTable($diff, $tableSql)) {
             if (count($queryParts) > 0) {
@@ -648,7 +623,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     protected function getPreAlterTableIndexForeignKeySQL(TableDiff $diff)
     {
-        $sql = [];
+        $sql = array();
         $table = $diff->getName($this)->getQuotedName($this);
 
         foreach ($diff->changedIndexes as $changedIndex) {
@@ -675,7 +650,8 @@ class MySqlPlatform extends AbstractPlatform
 
                     $sql[] = $query;
 
-                    unset($diff->removedIndexes[$remKey], $diff->addedIndexes[$addKey]);
+                    unset($diff->removedIndexes[$remKey]);
+                    unset($diff->addedIndexes[$addKey]);
 
                     break;
                 }
@@ -690,9 +666,9 @@ class MySqlPlatform extends AbstractPlatform
 
         // Suppress foreign key constraint propagation on non-supporting engines.
         if ('INNODB' !== $engine) {
-            $diff->addedForeignKeys   = [];
-            $diff->changedForeignKeys = [];
-            $diff->removedForeignKeys = [];
+            $diff->addedForeignKeys   = array();
+            $diff->changedForeignKeys = array();
+            $diff->removedForeignKeys = array();
         }
 
         $sql = array_merge(
@@ -713,7 +689,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     private function getPreAlterTableAlterPrimaryKeySQL(TableDiff $diff, Index $index)
     {
-        $sql = [];
+        $sql = array();
 
         if (! $index->isPrimary() || ! $diff->fromTable instanceof Table) {
             return $sql;
@@ -726,7 +702,7 @@ class MySqlPlatform extends AbstractPlatform
             if (! $diff->fromTable->hasColumn($columnName)) {
                 continue;
             }
-
+          
             $column = $diff->fromTable->getColumn($columnName);
 
             if ($column->getAutoincrement() === true) {
@@ -750,7 +726,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     private function getPreAlterTableAlterIndexForeignKeySQL(TableDiff $diff)
     {
-        $sql = [];
+        $sql = array();
         $table = $diff->getName($this)->getQuotedName($this);
 
         foreach ($diff->changedIndexes as $changedIndex) {
@@ -786,7 +762,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     protected function getPreAlterTableRenameIndexForeignKeySQL(TableDiff $diff)
     {
-        $sql = [];
+        $sql = array();
         $tableName = $diff->getName($this)->getQuotedName($this);
 
         foreach ($this->getRemainingForeignKeyConstraintsRequiringRenamedIndexes($diff) as $foreignKey) {
@@ -811,10 +787,10 @@ class MySqlPlatform extends AbstractPlatform
     private function getRemainingForeignKeyConstraintsRequiringRenamedIndexes(TableDiff $diff)
     {
         if (empty($diff->renamedIndexes) || ! $diff->fromTable instanceof Table) {
-            return [];
+            return array();
         }
 
-        $foreignKeys = [];
+        $foreignKeys = array();
         /** @var \Doctrine\DBAL\Schema\ForeignKeyConstraint[] $remainingForeignKeys */
         $remainingForeignKeys = array_diff_key(
             $diff->fromTable->getForeignKeys(),
@@ -852,7 +828,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     protected function getPostAlterTableRenameIndexForeignKeySQL(TableDiff $diff)
     {
-        $sql = [];
+        $sql = array();
         $tableName = (false !== $diff->newName)
             ? $diff->getNewName()->getQuotedName($this)
             : $diff->getName($this)->getQuotedName($this);
@@ -908,34 +884,6 @@ class MySqlPlatform extends AbstractPlatform
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function getFloatDeclarationSQL(array $field)
-    {
-        return 'DOUBLE PRECISION' . $this->getUnsignedDeclaration($field);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDecimalTypeDeclarationSQL(array $columnDef)
-    {
-        return parent::getDecimalTypeDeclarationSQL($columnDef) . $this->getUnsignedDeclaration($columnDef);
-    }
-
-    /**
-     * Get unsigned declaration for a column.
-     *
-     * @param array $columnDef
-     *
-     * @return string
-     */
-    private function getUnsignedDeclaration(array $columnDef)
-    {
-        return ! empty($columnDef['unsigned']) ? ' UNSIGNED' : '';
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function _getCommonIntegerTypeDeclarationSQL(array $columnDef)
@@ -944,8 +892,9 @@ class MySqlPlatform extends AbstractPlatform
         if ( ! empty($columnDef['autoincrement'])) {
             $autoinc = ' AUTO_INCREMENT';
         }
+        $unsigned = (isset($columnDef['unsigned']) && $columnDef['unsigned']) ? ' UNSIGNED' : '';
 
-        return $this->getUnsignedDeclaration($columnDef) . $autoinc;
+        return $unsigned . $autoinc;
     }
 
     /**
@@ -1029,7 +978,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     protected function initializeDoctrineTypeMappings()
     {
-        $this->doctrineTypeMapping = [
+        $this->doctrineTypeMapping = array(
             'tinyint'       => 'boolean',
             'smallint'      => 'smallint',
             'mediumint'     => 'integer',
@@ -1060,7 +1009,7 @@ class MySqlPlatform extends AbstractPlatform
             'binary'        => 'binary',
             'varbinary'     => 'binary',
             'set'           => 'simple_array',
-        ];
+        );
     }
 
     /**
@@ -1084,7 +1033,7 @@ class MySqlPlatform extends AbstractPlatform
      */
     protected function getReservedKeywordsClass()
     {
-        return Keywords\MySQLKeywords::class;
+        return 'Doctrine\DBAL\Platforms\Keywords\MySQLKeywords';
     }
 
     /**
@@ -1098,7 +1047,7 @@ class MySqlPlatform extends AbstractPlatform
         if ($table instanceof Table) {
             $table = $table->getQuotedName($this);
         } elseif (!is_string($table)) {
-            throw new \InvalidArgumentException('getDropTemporaryTableSQL() expects $table parameter to be string or \Doctrine\DBAL\Schema\Table.');
+            throw new \InvalidArgumentException('getDropTableSQL() expects $table parameter to be string or \Doctrine\DBAL\Schema\Table.');
         }
 
         return 'DROP TEMPORARY TABLE ' . $table;
@@ -1144,13 +1093,5 @@ class MySqlPlatform extends AbstractPlatform
         $str = str_replace('\\', '\\\\', $str); // MySQL requires backslashes to be escaped aswell.
 
         return parent::quoteStringLiteral($str);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDefaultTransactionIsolationLevel()
-    {
-        return TransactionIsolationLevel::REPEATABLE_READ;
     }
 }

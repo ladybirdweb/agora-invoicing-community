@@ -61,6 +61,6 @@ class SQLSessionInit implements EventSubscriber
      */
     public function getSubscribedEvents()
     {
-        return [Events::postConnect];
+        return array(Events::postConnect);
     }
 }

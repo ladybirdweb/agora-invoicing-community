@@ -19,21 +19,8 @@
 
 namespace Doctrine\DBAL\Query;
 
-use Doctrine\DBAL\ParameterType;
 use Doctrine\DBAL\Query\Expression\CompositeExpression;
 use Doctrine\DBAL\Connection;
-use function array_key_exists;
-use function array_keys;
-use function array_unshift;
-use function func_get_args;
-use function func_num_args;
-use function implode;
-use function is_array;
-use function is_null;
-use function is_object;
-use function key;
-use function strtoupper;
-use function substr;
 
 /**
  * QueryBuilder class is responsible to dynamically create SQL queries.
@@ -76,17 +63,17 @@ class QueryBuilder
     /**
      * @var array The array of SQL parts collected.
      */
-    private $sqlParts = [
-        'select'  => [],
-        'from'    => [],
-        'join'    => [],
-        'set'     => [],
+    private $sqlParts = array(
+        'select'  => array(),
+        'from'    => array(),
+        'join'    => array(),
+        'set'     => array(),
         'where'   => null,
-        'groupBy' => [],
+        'groupBy' => array(),
         'having'  => null,
-        'orderBy' => [],
-        'values'  => [],
-    ];
+        'orderBy' => array(),
+        'values'  => array(),
+    );
 
     /**
      * The complete SQL string for this query.
@@ -100,47 +87,47 @@ class QueryBuilder
      *
      * @var array
      */
-    private $params = [];
+    private $params = array();
 
     /**
      * The parameter type map of this query.
      *
      * @var array
      */
-    private $paramTypes = [];
+    private $paramTypes = array();
 
     /**
      * The type of query this is. Can be select, update or delete.
      *
-     * @var int
+     * @var integer
      */
     private $type = self::SELECT;
 
     /**
      * The state of the query object. Can be dirty or clean.
      *
-     * @var int
+     * @var integer
      */
     private $state = self::STATE_CLEAN;
 
     /**
      * The index of the first result to retrieve.
      *
-     * @var int
+     * @var integer
      */
     private $firstResult = null;
 
     /**
      * The maximum number of results to retrieve.
      *
-     * @var int
+     * @var integer
      */
     private $maxResults = null;
 
     /**
      * The counter of bound parameters used with {@see bindValue).
      *
-     * @var int
+     * @var integer
      */
     private $boundCounter = 0;
 
@@ -178,7 +165,7 @@ class QueryBuilder
     /**
      * Gets the type of the currently built query.
      *
-     * @return int
+     * @return integer
      */
     public function getType()
     {
@@ -198,7 +185,7 @@ class QueryBuilder
     /**
      * Gets the state of this query builder instance.
      *
-     * @return int Either QueryBuilder::STATE_DIRTY or QueryBuilder::STATE_CLEAN.
+     * @return integer Either QueryBuilder::STATE_DIRTY or QueryBuilder::STATE_CLEAN.
      */
     public function getState()
     {
@@ -217,9 +204,9 @@ class QueryBuilder
     {
         if ($this->type == self::SELECT) {
             return $this->connection->executeQuery($this->getSQL(), $this->params, $this->paramTypes);
+        } else {
+            return $this->connection->executeUpdate($this->getSQL(), $this->params, $this->paramTypes);
         }
-
-        return $this->connection->executeUpdate($this->getSQL(), $this->params, $this->paramTypes);
     }
 
     /**
@@ -275,9 +262,9 @@ class QueryBuilder
      *         ->setParameter(':user_id', 1);
      * </code>
      *
-     * @param string|int      $key   The parameter position or name.
-     * @param mixed           $value The parameter value.
-     * @param string|int|null $type  One of the {@link \Doctrine\DBAL\ParameterType} constants.
+     * @param string|integer $key   The parameter position or name.
+     * @param mixed          $value The parameter value.
+     * @param string|null    $type  One of the PDO::PARAM_* constants.
      *
      * @return $this This QueryBuilder instance.
      */
@@ -311,7 +298,7 @@ class QueryBuilder
      *
      * @return $this This QueryBuilder instance.
      */
-    public function setParameters(array $params, array $types = [])
+    public function setParameters(array $params, array $types = array())
     {
         $this->paramTypes = $types;
         $this->params = $params;
@@ -338,7 +325,7 @@ class QueryBuilder
      */
     public function getParameter($key)
     {
-        return $this->params[$key] ?? null;
+        return isset($this->params[$key]) ? $this->params[$key] : null;
     }
 
     /**
@@ -360,13 +347,13 @@ class QueryBuilder
      */
     public function getParameterType($key)
     {
-        return $this->paramTypes[$key] ?? null;
+        return isset($this->paramTypes[$key]) ? $this->paramTypes[$key] : null;
     }
 
     /**
      * Sets the position of the first result to retrieve (the "offset").
      *
-     * @param int $firstResult The first result to return.
+     * @param integer $firstResult The first result to return.
      *
      * @return $this This QueryBuilder instance.
      */
@@ -382,7 +369,7 @@ class QueryBuilder
      * Gets the position of the first result the query object was set to retrieve (the "offset").
      * Returns NULL if {@link setFirstResult} was not applied to this QueryBuilder.
      *
-     * @return int The position of the first result.
+     * @return integer The position of the first result.
      */
     public function getFirstResult()
     {
@@ -392,7 +379,7 @@ class QueryBuilder
     /**
      * Sets the maximum number of results to retrieve (the "limit").
      *
-     * @param int $maxResults The maximum number of results to retrieve.
+     * @param integer $maxResults The maximum number of results to retrieve.
      *
      * @return $this This QueryBuilder instance.
      */
@@ -408,7 +395,7 @@ class QueryBuilder
      * Gets the maximum number of results the query object was set to retrieve (the "limit").
      * Returns NULL if {@link setMaxResults} was not applied to this query builder.
      *
-     * @return int The maximum number of results.
+     * @return integer The maximum number of results.
      */
     public function getMaxResults()
     {
@@ -421,9 +408,9 @@ class QueryBuilder
      * The available parts are: 'select', 'from', 'set', 'where',
      * 'groupBy', 'having' and 'orderBy'.
      *
-     * @param string $sqlPartName
-     * @param string $sqlPart
-     * @param bool   $append
+     * @param string  $sqlPartName
+     * @param string  $sqlPart
+     * @param boolean $append
      *
      * @return $this This QueryBuilder instance.
      */
@@ -433,7 +420,7 @@ class QueryBuilder
         $isMultiple = is_array($this->sqlParts[$sqlPartName]);
 
         if ($isMultiple && !$isArray) {
-            $sqlPart = [$sqlPart];
+            $sqlPart = array($sqlPart);
         }
 
         $this->state = self::STATE_DIRTY;
@@ -485,7 +472,7 @@ class QueryBuilder
 
         $selects = is_array($select) ? $select : func_get_args();
 
-        return $this->add('select', $selects);
+        return $this->add('select', $selects, false);
     }
 
     /**
@@ -540,10 +527,10 @@ class QueryBuilder
             return $this;
         }
 
-        return $this->add('from', [
+        return $this->add('from', array(
             'table' => $delete,
             'alias' => $alias
-        ]);
+        ));
     }
 
     /**
@@ -553,7 +540,7 @@ class QueryBuilder
      * <code>
      *     $qb = $conn->createQueryBuilder()
      *         ->update('users', 'u')
-     *         ->set('u.last_login', 'NOW()')
+     *         ->set('u.password', md5('password'))
      *         ->where('u.id = ?');
      * </code>
      *
@@ -570,10 +557,10 @@ class QueryBuilder
             return $this;
         }
 
-        return $this->add('from', [
+        return $this->add('from', array(
             'table' => $update,
             'alias' => $alias
-        ]);
+        ));
     }
 
     /**
@@ -603,9 +590,9 @@ class QueryBuilder
             return $this;
         }
 
-        return $this->add('from', [
+        return $this->add('from', array(
             'table' => $insert
-        ]);
+        ));
     }
 
     /**
@@ -625,10 +612,10 @@ class QueryBuilder
      */
     public function from($from, $alias = null)
     {
-        return $this->add('from', [
+        return $this->add('from', array(
             'table' => $from,
             'alias' => $alias
-        ], true);
+        ), true);
     }
 
     /**
@@ -672,14 +659,14 @@ class QueryBuilder
      */
     public function innerJoin($fromAlias, $join, $alias, $condition = null)
     {
-        return $this->add('join', [
-            $fromAlias => [
+        return $this->add('join', array(
+            $fromAlias => array(
                 'joinType'      => 'inner',
                 'joinTable'     => $join,
                 'joinAlias'     => $alias,
                 'joinCondition' => $condition
-            ]
-        ], true);
+            )
+        ), true);
     }
 
     /**
@@ -701,14 +688,14 @@ class QueryBuilder
      */
     public function leftJoin($fromAlias, $join, $alias, $condition = null)
     {
-        return $this->add('join', [
-            $fromAlias => [
+        return $this->add('join', array(
+            $fromAlias => array(
                 'joinType'      => 'left',
                 'joinTable'     => $join,
                 'joinAlias'     => $alias,
                 'joinCondition' => $condition
-            ]
-        ], true);
+            )
+        ), true);
     }
 
     /**
@@ -730,14 +717,14 @@ class QueryBuilder
      */
     public function rightJoin($fromAlias, $join, $alias, $condition = null)
     {
-        return $this->add('join', [
-            $fromAlias => [
+        return $this->add('join', array(
+            $fromAlias => array(
                 'joinType'      => 'right',
                 'joinTable'     => $join,
                 'joinAlias'     => $alias,
                 'joinCondition' => $condition
-            ]
-        ], true);
+            )
+        ), true);
     }
 
     /**
@@ -746,7 +733,7 @@ class QueryBuilder
      * <code>
      *     $qb = $conn->createQueryBuilder()
      *         ->update('users', 'u')
-     *         ->set('u.last_login', 'NOW()')
+     *         ->set('u.password', md5('password'))
      *         ->where('u.id = ?');
      * </code>
      *
@@ -778,7 +765,7 @@ class QueryBuilder
      *     $or->add($qb->expr()->eq('u.id', 2));
      *
      *     $qb->update('users', 'u')
-     *         ->set('u.last_login', 'NOW()')
+     *         ->set('u.password', md5('password'))
      *         ->where($or);
      * </code>
      *
@@ -1106,7 +1093,7 @@ class QueryBuilder
     public function resetQueryPart($queryPartName)
     {
         $this->sqlParts[$queryPartName] = is_array($this->sqlParts[$queryPartName])
-            ? [] : null;
+            ? array() : null;
 
         $this->state = self::STATE_DIRTY;
 
@@ -1144,8 +1131,8 @@ class QueryBuilder
      */
     private function getFromClauses()
     {
-        $fromClauses = [];
-        $knownAliases = [];
+        $fromClauses = array();
+        $knownAliases = array();
 
         // Loop through all FROM clauses
         foreach ($this->sqlParts['from'] as $from) {
@@ -1269,7 +1256,7 @@ class QueryBuilder
      *
      * @return string the placeholder name used.
      */
-    public function createNamedParameter($value, $type = ParameterType::STRING, $placeHolder = null)
+    public function createNamedParameter($value, $type = \PDO::PARAM_STR, $placeHolder = null)
     {
         if ($placeHolder === null) {
             $this->boundCounter++;
@@ -1293,16 +1280,16 @@ class QueryBuilder
      *  $qb = $conn->createQueryBuilder();
      *  $qb->select('u.*')
      *     ->from('users', 'u')
-     *     ->where('u.username = ' . $qb->createPositionalParameter('Foo', ParameterType::STRING))
-     *     ->orWhere('u.username = ' . $qb->createPositionalParameter('Bar', ParameterType::STRING))
+     *     ->where('u.username = ' . $qb->createPositionalParameter('Foo', PDO::PARAM_STR))
+     *     ->orWhere('u.username = ' . $qb->createPositionalParameter('Bar', PDO::PARAM_STR))
      * </code>
      *
-     * @param mixed $value
-     * @param int   $type
+     * @param mixed   $value
+     * @param integer $type
      *
      * @return string
      */
-    public function createPositionalParameter($value, $type = ParameterType::STRING)
+    public function createPositionalParameter($value, $type = \PDO::PARAM_STR)
     {
         $this->boundCounter++;
         $this->setParameter($this->boundCounter, $value, $type);
@@ -1315,8 +1302,6 @@ class QueryBuilder
      * @param array  $knownAliases
      *
      * @return string
-     *
-     * @throws QueryException
      */
     private function getSQLForJoins($fromAlias, array &$knownAliases)
     {

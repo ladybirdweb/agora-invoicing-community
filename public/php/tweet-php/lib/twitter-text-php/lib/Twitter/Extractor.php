@@ -140,7 +140,8 @@ class Twitter_Extractor extends Twitter_Regex
     {
         preg_match_all(self::REGEX_HASHTAG, $this->tweet, $matches, PREG_OFFSET_CAPTURE);
         $m = &$matches[3];
-        for ($i = 0; $i < count($m); $i++) {
+        $c = count($m);
+        for ($i = 0; $i < $c; $i++) {
             $m[$i] = array_combine(['hashtag', 'indices'], $m[$i]);
             // XXX: Fix for PREG_OFFSET_CAPTURE returning byte offsets...
             $start = mb_strlen(substr($this->tweet, 0, $matches[1][$i][1]));
@@ -161,7 +162,8 @@ class Twitter_Extractor extends Twitter_Regex
     {
         preg_match_all(self::$REGEX_VALID_URL, $this->tweet, $matches, PREG_OFFSET_CAPTURE);
         $m = &$matches[2];
-        for ($i = 0; $i < count($m); $i++) {
+        $c = count($m);
+        for ($i = 0; $i < $c; $i++) {
             $m[$i] = array_combine(['url', 'indices'], $m[$i]);
             // XXX: Fix for PREG_OFFSET_CAPTURE returning byte offsets...
             $start = mb_strlen(substr($this->tweet, 0, $matches[1][$i][1]));
@@ -182,7 +184,8 @@ class Twitter_Extractor extends Twitter_Regex
     {
         preg_match_all(self::REGEX_USERNAME_MENTION, $this->tweet, $matches, PREG_OFFSET_CAPTURE);
         $m = &$matches[2];
-        for ($i = 0; $i < count($m); $i++) {
+        $c = count($m);
+        for ($i = 0; $i < $c; $i++) {
             $m[$i] = array_combine(['screen_name', 'indices'], $m[$i]);
             // XXX: Fix for PREG_OFFSET_CAPTURE returning byte offsets...
             $start = mb_strlen(substr($this->tweet, 0, $matches[1][$i][1]));

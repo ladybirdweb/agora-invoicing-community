@@ -1,0 +1,141 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+class BaseHomeController extends Controller
+{
+    public static function decryptByFaveoPrivateKey($encrypted)
+    {
+        $encrypted = json_decode($encrypted);
+        $sealed_data = $encrypted->seal;
+        $envelope = $encrypted->envelope;
+        $input = base64_decode($sealed_data);
+        $einput = base64_decode($envelope);
+        $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
+        $key_content = file_get_contents($path);
+        $private_key = openssl_get_privatekey($key_content);
+        $plaintext = null;
+        openssl_open($input, $plaintext, $einput, $private_key);
+
+        return $plaintext;
+    }
+
+    public function getTotalSales()
+    {
+        $invoice = new Invoice();
+        $total = $invoice->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+
+        return $grandTotal;
+    }
+
+    public function checkDomain($request_url)
+    {
+        try {
+            $order = new Order();
+            $this_order = $order->where('domain', $request_url)->first();
+            if (!$this_order) {
+                return;
+            } else {
+                return $this_order->domain;
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function checkSerialKey($faveo_encrypted_key, $order_number)
+    {
+        try {
+            $order = new Order();
+            //$faveo_decrypted_key = self::decryptByFaveoPrivateKey($faveo_encrypted_key);
+            $this_order = $order->where('number', $order_number)->first();
+            if (!$this_order) {
+                return;
+            } else {
+                if ($this_order->serial_key == $faveo_encrypted_key) {
+                    return $this_order->serial_key;
+                }
+            }
+
+            return;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function verifyOrder($order_number, $serial_key, $domain)
+    {
+        if (ends_with($domain, '/')) {
+            $domain = substr_replace($domain, '', -1, 1);
+        }
+        //dd($domain);
+        try {
+            $order = new Order();
+            $this_order = $order
+                    ->where('number', $order_number)
+                    //->where('serial_key', $serial_key)
+                    ->where('domain', $domain)
+                    ->first();
+
+            return $this_order;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function hook(Request $request)
+    {
+        try {
+            \Log::info('requests', $request->all());
+        } catch (\Exception $ex) {
+            dd($ex);
+        }
+    }
+
+    public function index()
+    {
+        $totalSales = $this->getTotalSales();
+
+        return view('themes.default1.common.dashboard');
+    }
+
+    public function getDomain($url)
+    {
+        $pieces = parse_url($url);
+        $domain = isset($pieces['host']) ? $pieces['host'] : '';
+        if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+            return $regs['domain'];
+        }
+
+        return $domain;
+    }
+
+    public function verificationResult($order_number, $serial_key, $domain)
+    {
+        try {
+            if ($order_number && $domain && $serial_key) {
+                $order = $this->verifyOrder($order_number, $serial_key, $domain);
+                if ($order) {
+                    return ['status' => 'success', 'message' => 'this-is-a-valid-request', 'order_number' => $order_number, 'serial' => $serial_key];
+                } else {
+                    return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];
+                }
+            } else {
+                return ['status' => 'fails', 'message' => 'this-is-an-invalid-request'];
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    public function getEncryptedData(Request $request)
+    {
+        $enc = $request->input('en');
+        $result = self::decryptByFaveoPrivateKey($enc);
+
+        return response()->json($result);
+    }
+}

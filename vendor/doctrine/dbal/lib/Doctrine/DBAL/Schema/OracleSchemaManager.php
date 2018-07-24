@@ -22,16 +22,6 @@ namespace Doctrine\DBAL\Schema;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\Driver\DriverException;
 use Doctrine\DBAL\Types\Type;
-use const CASE_LOWER;
-use function array_change_key_case;
-use function array_values;
-use function is_null;
-use function preg_match;
-use function sprintf;
-use function strpos;
-use function strtolower;
-use function strtoupper;
-use function trim;
 
 /**
  * Oracle Schema Manager.
@@ -88,9 +78,9 @@ class OracleSchemaManager extends AbstractSchemaManager
     {
         $user = \array_change_key_case($user, CASE_LOWER);
 
-        return [
+        return array(
             'user' => $user['username'],
-        ];
+        );
     }
 
     /**
@@ -111,7 +101,7 @@ class OracleSchemaManager extends AbstractSchemaManager
      */
     protected function _getPortableTableIndexesList($tableIndexes, $tableName=null)
     {
-        $indexBuffer = [];
+        $indexBuffer = array();
         foreach ($tableIndexes as $tableIndex) {
             $tableIndex = \array_change_key_case($tableIndex, CASE_LOWER);
 
@@ -237,7 +227,7 @@ class OracleSchemaManager extends AbstractSchemaManager
                 $length = null;
         }
 
-        $options = [
+        $options = array(
             'notnull'    => (bool) ($tableColumn['nullable'] === 'N'),
             'fixed'      => (bool) $fixed,
             'unsigned'   => (bool) $unsigned,
@@ -248,7 +238,8 @@ class OracleSchemaManager extends AbstractSchemaManager
             'comment'    => isset($tableColumn['comments']) && '' !== $tableColumn['comments']
                 ? $tableColumn['comments']
                 : null,
-        ];
+            'platformDetails' => array(),
+        );
 
         return new Column($this->getQuotedIdentifierName($tableColumn['column_name']), Type::getType($type), $options);
     }
@@ -258,7 +249,7 @@ class OracleSchemaManager extends AbstractSchemaManager
      */
     protected function _getPortableTableForeignKeysList($tableForeignKeys)
     {
-        $list = [];
+        $list = array();
         foreach ($tableForeignKeys as $value) {
             $value = \array_change_key_case($value, CASE_LOWER);
             if (!isset($list[$value['constraint_name']])) {
@@ -266,13 +257,13 @@ class OracleSchemaManager extends AbstractSchemaManager
                     $value['delete_rule'] = null;
                 }
 
-                $list[$value['constraint_name']] = [
+                $list[$value['constraint_name']] = array(
                     'name' => $this->getQuotedIdentifierName($value['constraint_name']),
-                    'local' => [],
-                    'foreign' => [],
+                    'local' => array(),
+                    'foreign' => array(),
                     'foreignTable' => $value['references_table'],
                     'onDelete' => $value['delete_rule'],
-                ];
+                );
             }
 
             $localColumn = $this->getQuotedIdentifierName($value['local_column']);
@@ -282,12 +273,12 @@ class OracleSchemaManager extends AbstractSchemaManager
             $list[$value['constraint_name']]['foreign'][$value['position']] = $foreignColumn;
         }
 
-        $result = [];
+        $result = array();
         foreach ($list as $constraint) {
             $result[] = new ForeignKeyConstraint(
                 array_values($constraint['local']), $this->getQuotedIdentifierName($constraint['foreignTable']),
                 array_values($constraint['foreign']), $this->getQuotedIdentifierName($constraint['name']),
-                ['onDelete' => $constraint['onDelete']]
+                array('onDelete' => $constraint['onDelete'])
             );
         }
 
@@ -353,7 +344,7 @@ class OracleSchemaManager extends AbstractSchemaManager
     /**
      * @param string $table
      *
-     * @return bool
+     * @return boolean
      */
     public function dropAutoincrement($table)
     {
@@ -417,7 +408,7 @@ WHERE
     AND p.addr(+) = s.paddr
 SQL;
 
-        $activeUserSessions = $this->_conn->fetchAll($sql, [strtoupper($user)]);
+        $activeUserSessions = $this->_conn->fetchAll($sql, array(strtoupper($user)));
 
         foreach ($activeUserSessions as $activeUserSession) {
             $activeUserSession = array_change_key_case($activeUserSession, \CASE_LOWER);

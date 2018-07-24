@@ -21,22 +21,6 @@ namespace Doctrine\DBAL\Driver\SQLSrv;
 
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
-use Doctrine\DBAL\ParameterType;
-use const SQLSRV_ERR_ERRORS;
-use function func_get_args;
-use function is_float;
-use function is_int;
-use function sprintf;
-use function sqlsrv_begin_transaction;
-use function sqlsrv_commit;
-use function sqlsrv_configure;
-use function sqlsrv_connect;
-use function sqlsrv_errors;
-use function sqlsrv_query;
-use function sqlsrv_rollback;
-use function sqlsrv_rows_affected;
-use function sqlsrv_server_info;
-use function str_replace;
 
 /**
  * SQL Server implementation for the Connection interface.
@@ -118,7 +102,7 @@ class SQLSrvConnection implements Connection, ServerInfoAwareConnection
      * {@inheritDoc}
      * @license New BSD, code from Zend Framework
      */
-    public function quote($value, $type = ParameterType::STRING)
+    public function quote($value, $type=\PDO::PARAM_STR)
     {
         if (is_int($value)) {
             return $value;
@@ -134,13 +118,10 @@ class SQLSrvConnection implements Connection, ServerInfoAwareConnection
      */
     public function exec($statement)
     {
-        $stmt = sqlsrv_query($this->conn, $statement);
+        $stmt = $this->prepare($statement);
+        $stmt->execute();
 
-        if (false === $stmt) {
-            throw SQLSrvException::fromSqlSrvErrors();
-        }
-
-        return sqlsrv_rows_affected($stmt);
+        return $stmt->rowCount();
     }
 
     /**
@@ -150,12 +131,12 @@ class SQLSrvConnection implements Connection, ServerInfoAwareConnection
     {
         if ($name !== null) {
             $stmt = $this->prepare('SELECT CONVERT(VARCHAR(MAX), current_value) FROM sys.sequences WHERE name = ?');
-            $stmt->execute([$name]);
-        } else {
-            $stmt = $this->query('SELECT @@IDENTITY');
+            $stmt->execute(array($name));
+
+            return $stmt->fetchColumn();
         }
 
-        return $stmt->fetchColumn();
+        return $this->lastInsertId->getId();
     }
 
     /**

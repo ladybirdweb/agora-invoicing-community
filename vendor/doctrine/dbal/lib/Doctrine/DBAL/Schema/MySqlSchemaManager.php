@@ -19,21 +19,8 @@
 
 namespace Doctrine\DBAL\Schema;
 
-use Doctrine\DBAL\Platforms\MariaDb1027Platform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Types\Type;
-use const CASE_LOWER;
-use function array_change_key_case;
-use function array_shift;
-use function array_values;
-use function end;
-use function preg_match;
-use function preg_replace;
-use function str_replace;
-use function stripslashes;
-use function strpos;
-use function strtok;
-use function strtolower;
 
 /**
  * Schema manager for the MySql RDBMS.
@@ -67,28 +54,28 @@ class MySqlSchemaManager extends AbstractSchemaManager
      */
     protected function _getPortableUserDefinition($user)
     {
-        return [
+        return array(
             'user' => $user['User'],
             'password' => $user['Password'],
-        ];
+        );
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function _getPortableTableIndexesList($tableIndexes, $tableName = null)
+    protected function _getPortableTableIndexesList($tableIndexes, $tableName=null)
     {
         foreach ($tableIndexes as $k => $v) {
             $v = array_change_key_case($v, CASE_LOWER);
-            if ($v['key_name'] === 'PRIMARY') {
+            if ($v['key_name'] == 'PRIMARY') {
                 $v['primary'] = true;
             } else {
                 $v['primary'] = false;
             }
             if (strpos($v['index_type'], 'FULLTEXT') !== false) {
-                $v['flags'] = ['FULLTEXT'];
+                $v['flags'] = array('FULLTEXT');
             } elseif (strpos($v['index_type'], 'SPATIAL') !== false) {
-                $v['flags'] = ['SPATIAL'];
+                $v['flags'] = array('SPATIAL');
             }
             $tableIndexes[$k] = $v;
         }
@@ -121,7 +108,11 @@ class MySqlSchemaManager extends AbstractSchemaManager
 
         $dbType = strtolower($tableColumn['type']);
         $dbType = strtok($dbType, '(), ');
-        $length = $tableColumn['length'] ?? strtok('(), ');
+        if (isset($tableColumn['length'])) {
+            $length = $tableColumn['length'];
+        } else {
+            $length = strtok('(), ');
+        }
 
         $fixed = null;
 
@@ -129,14 +120,14 @@ class MySqlSchemaManager extends AbstractSchemaManager
             $tableColumn['name'] = '';
         }
 
-        $scale     = null;
+        $scale = null;
         $precision = null;
 
         $type = $this->_platform->getDoctrineTypeMapping($dbType);
 
         // In cases where not connected to a database DESCRIBE $table does not return 'Comment'
         if (isset($tableColumn['comment'])) {
-            $type                   = $this->extractDoctrineTypeFromComment($tableColumn['comment'], $type);
+            $type = $this->extractDoctrineTypeFromComment($tableColumn['comment'], $type);
             $tableColumn['comment'] = $this->removeDoctrineTypeFromComment($tableColumn['comment'], $type);
         }
 
@@ -152,8 +143,8 @@ class MySqlSchemaManager extends AbstractSchemaManager
             case 'decimal':
                 if (preg_match('([A-Za-z]+\(([0-9]+)\,([0-9]+)\))', $tableColumn['type'], $match)) {
                     $precision = $match[1];
-                    $scale     = $match[2];
-                    $length    = null;
+                    $scale = $match[2];
+                    $length = null;
                 }
                 break;
             case 'tinytext':
@@ -185,29 +176,25 @@ class MySqlSchemaManager extends AbstractSchemaManager
                 break;
         }
 
-        if ($this->_platform instanceof MariaDb1027Platform) {
-            $columnDefault = $this->getMariaDb1027ColumnDefault($this->_platform, $tableColumn['default']);
-        } else {
-            $columnDefault = $tableColumn['default'];
-        }
+        $length = ((int) $length == 0) ? null : (int) $length;
 
-        $options = [
-            'length'        => $length !== null ? (int) $length : null,
-            'unsigned'      => strpos($tableColumn['type'], 'unsigned') !== false,
+        $options = array(
+            'length'        => $length,
+            'unsigned'      => (bool) (strpos($tableColumn['type'], 'unsigned') !== false),
             'fixed'         => (bool) $fixed,
-            'default'       => $columnDefault,
-            'notnull'       => $tableColumn['null'] !== 'YES',
+            'default'       => isset($tableColumn['default']) ? $tableColumn['default'] : null,
+            'notnull'       => (bool) ($tableColumn['null'] != 'YES'),
             'scale'         => null,
             'precision'     => null,
-            'autoincrement' => strpos($tableColumn['extra'], 'auto_increment') !== false,
+            'autoincrement' => (bool) (strpos($tableColumn['extra'], 'auto_increment') !== false),
             'comment'       => isset($tableColumn['comment']) && $tableColumn['comment'] !== ''
                 ? $tableColumn['comment']
                 : null,
-        ];
+        );
 
         if ($scale !== null && $precision !== null) {
-            $options['scale']     = (int) $scale;
-            $options['precision'] = (int) $precision;
+            $options['scale'] = $scale;
+            $options['precision'] = $precision;
         }
 
         $column = new Column($tableColumn['field'], Type::getType($type), $options);
@@ -220,84 +207,43 @@ class MySqlSchemaManager extends AbstractSchemaManager
     }
 
     /**
-     * Return Doctrine/Mysql-compatible column default values for MariaDB 10.2.7+ servers.
-     *
-     * - Since MariaDb 10.2.7 column defaults stored in information_schema are now quoted
-     *   to distinguish them from expressions (see MDEV-10134).
-     * - CURRENT_TIMESTAMP, CURRENT_TIME, CURRENT_DATE are stored in information_schema
-     *   as current_timestamp(), currdate(), currtime()
-     * - Quoted 'NULL' is not enforced by Maria, it is technically possible to have
-     *   null in some circumstances (see https://jira.mariadb.org/browse/MDEV-14053)
-     * - \' is always stored as '' in information_schema (normalized)
-     *
-     * @link https://mariadb.com/kb/en/library/information-schema-columns-table/
-     * @link https://jira.mariadb.org/browse/MDEV-13132
-     *
-     * @param null|string $columnDefault default value as stored in information_schema for MariaDB >= 10.2.7
-     */
-    private function getMariaDb1027ColumnDefault(MariaDb1027Platform $platform, ?string $columnDefault) : ?string
-    {
-        if ($columnDefault === 'NULL' || $columnDefault === null) {
-            return null;
-        }
-        if ($columnDefault[0] === "'") {
-            return stripslashes(
-                str_replace("''", "'",
-                    preg_replace('/^\'(.*)\'$/', '$1', $columnDefault)
-                )
-            );
-        }
-        switch ($columnDefault) {
-            case 'current_timestamp()':
-                return $platform->getCurrentTimestampSQL();
-            case 'curdate()':
-                return $platform->getCurrentDateSQL();
-            case 'curtime()':
-                return $platform->getCurrentTimeSQL();
-        }
-        return $columnDefault;
-    }
-
-    /**
      * {@inheritdoc}
      */
     protected function _getPortableTableForeignKeysList($tableForeignKeys)
     {
-        $list = [];
+        $list = array();
         foreach ($tableForeignKeys as $value) {
             $value = array_change_key_case($value, CASE_LOWER);
-            if ( ! isset($list[$value['constraint_name']])) {
-                if ( ! isset($value['delete_rule']) || $value['delete_rule'] === "RESTRICT") {
+            if (!isset($list[$value['constraint_name']])) {
+                if (!isset($value['delete_rule']) || $value['delete_rule'] == "RESTRICT") {
                     $value['delete_rule'] = null;
                 }
-                if ( ! isset($value['update_rule']) || $value['update_rule'] === "RESTRICT") {
+                if (!isset($value['update_rule']) || $value['update_rule'] == "RESTRICT") {
                     $value['update_rule'] = null;
                 }
 
-                $list[$value['constraint_name']] = [
+                $list[$value['constraint_name']] = array(
                     'name' => $value['constraint_name'],
-                    'local' => [],
-                    'foreign' => [],
+                    'local' => array(),
+                    'foreign' => array(),
                     'foreignTable' => $value['referenced_table_name'],
                     'onDelete' => $value['delete_rule'],
                     'onUpdate' => $value['update_rule'],
-                ];
+                );
             }
-            $list[$value['constraint_name']]['local'][]   = $value['column_name'];
+            $list[$value['constraint_name']]['local'][] = $value['column_name'];
             $list[$value['constraint_name']]['foreign'][] = $value['referenced_column_name'];
         }
 
-        $result = [];
+        $result = array();
         foreach ($list as $constraint) {
             $result[] = new ForeignKeyConstraint(
-                array_values($constraint['local']),
-                $constraint['foreignTable'],
-                array_values($constraint['foreign']),
-                $constraint['name'],
-                [
+                array_values($constraint['local']), $constraint['foreignTable'],
+                array_values($constraint['foreign']), $constraint['name'],
+                array(
                     'onDelete' => $constraint['onDelete'],
                     'onUpdate' => $constraint['onUpdate'],
-                ]
+                )
             );
         }
 

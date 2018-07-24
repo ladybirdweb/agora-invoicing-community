@@ -32,7 +32,7 @@ class Driver extends \Doctrine\DBAL\Driver\PDOMySql\Driver
     /**
      * {@inheritdoc}
      */
-    public function connect(array $params, $username = null, $password = null, array $driverOptions = [])
+    public function connect(array $params, $username = null, $password = null, array $driverOptions = array())
     {
         $conn = new Connection(
             $this->constructPdoDsn($params),

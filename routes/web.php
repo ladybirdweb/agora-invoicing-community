@@ -78,6 +78,7 @@
         Route::patch('my-profile', 'Front\ClientController@postProfile');
         Route::patch('my-password', 'Front\ClientController@postPassword');
         Route::get('paynow/{id}', 'Front\CheckoutController@payNow');
+
         Route::get('get-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-versions', 'uses' => 'Front\ClientController@getVersionList']);
         Route::get('get-github-versions/{productid}/{clientid}/{invoiceid}/', ['as' => 'get-github-versions', 'uses' => 'Front\ClientController@getGithubVersionList']);
 
@@ -107,7 +108,7 @@
     // // 'password' => 'Auth\PasswordController',
     //     ]);
         Route::auth();
-        Route::get('/', 'HomeController@index');
+        Route::get('/', 'DashboardController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
         Route::get('activate/{token}', 'Auth\AuthController@Activate');
@@ -132,8 +133,14 @@
         Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
         Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
         Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
-        Route::get('settings/error', 'Common\SettingsController@settingsError');
+        // Route::get('settings/error', 'Common\SettingsController@settingsError');
+        // Route::get('/log-viewer', 'Common\SettingsController@viewLogs');
         Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
+        Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
+         Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
+         Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
+          Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
+         Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
 
         /*
          * Client
@@ -204,8 +211,11 @@
         Route::resource('tax', 'Payment\TaxController');
         Route::get('get-state/{state}', 'Payment\TaxController@getState');
         Route::get('get-tax', ['as' => 'get-tax', 'uses' => 'Payment\TaxController@getTax']);
+        Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
+
         Route::get('get-taxtable', ['as' => 'get-taxtable', 'uses' => 'Payment\TaxController@getTaxTable']);
         Route::get('get-loginstate/{state}', 'Auth\AuthController@getState');
+
         // Route::get('get-tax', 'Payment\TaxController@GetTax');
 
         Route::get('tax-delete', 'Payment\TaxController@destroy')->name('tax-delete');
@@ -217,6 +227,7 @@
          */
 
         Route::resource('promotions', 'Payment\PromotionController');
+
         Route::post('get-code', 'Payment\PromotionController@getCode')->name('get-code');
         Route::get('get-promotions', 'Payment\PromotionController@getPromotion')->name('get-promotions');
         Route::get('promotions-delete', 'Payment\PromotionController@destroy')->name('promotions-delete');
@@ -273,6 +284,8 @@
         Route::get('invoice/generate', 'Order\InvoiceController@generateById');
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
+
+        Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 'uses' => 'Order\InvoiceController@invoiceTotalChange']);
 
         /*
          * Payment
@@ -343,7 +356,7 @@
          * download
          */
       Route::get('download/{uploadid}/{userid}/{invoice_number}/{versionid}', 'Product\ProductController@userDownload');
-      Route::get('product/download/{id}', 'Product\ProductController@adminDownload');
+      Route::get('product/download/{id}/{invoice?}', 'Product\ProductController@adminDownload');
 
         /*
          * testings
@@ -409,6 +422,12 @@
              */
             Route::get('check-url', 'Api\ApiController@checkDomain');
         });
+
+        /*
+         * Api Keys
+         */
+        Route::get('apikeys', 'Common\SettingsController@getKeys');
+        Route::patch('apikeys', 'Common\SettingsController@postKeys');
 
         Route::get('otp/send', 'Auth\AuthController@requestOtp');
         Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');

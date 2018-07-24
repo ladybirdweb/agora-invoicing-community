@@ -54,7 +54,7 @@ class PoolingShardManager implements ShardManager
     }
 
     /**
-     * {@inheritDoc}
+     * @return void
      */
     public function selectGlobal()
     {
@@ -63,7 +63,9 @@ class PoolingShardManager implements ShardManager
     }
 
     /**
-     * {@inheritDoc}
+     * @param string $distributionValue
+     *
+     * @return void
      */
     public function selectShard($distributionValue)
     {
@@ -73,7 +75,7 @@ class PoolingShardManager implements ShardManager
     }
 
     /**
-     * {@inheritDoc}
+     * @return string|null
      */
     public function getCurrentDistributionValue()
     {
@@ -81,15 +83,15 @@ class PoolingShardManager implements ShardManager
     }
 
     /**
-     * {@inheritDoc}
+     * @return array
      */
     public function getShards()
     {
         $params = $this->conn->getParams();
-        $shards = [];
+        $shards = array();
 
         foreach ($params['shards'] as $shard) {
-            $shards[] = ['id' => $shard['id']];
+            $shards[] = array('id' => $shard['id']);
         }
 
         return $shards;
@@ -111,7 +113,7 @@ class PoolingShardManager implements ShardManager
             throw new \RuntimeException("No shards found.");
         }
 
-        $result = [];
+        $result = array();
         $oldDistribution = $this->getCurrentDistributionValue();
 
         foreach ($shards as $shard) {

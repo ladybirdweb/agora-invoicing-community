@@ -41,7 +41,7 @@ class DB2Keywords extends KeywordList
      */
     protected function getKeywords()
     {
-        return [
+        return array(
             'ACTIVATE',
             'ADD',
             'AFTER',
@@ -436,6 +436,6 @@ class DB2Keywords extends KeywordList
             'LOCATORS',
             'ROLLBACK',
             'YEARS',
-        ];
+        );
     }
 }

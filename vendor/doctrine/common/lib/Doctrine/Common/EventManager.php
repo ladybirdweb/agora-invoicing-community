@@ -48,7 +48,7 @@ class EventManager
      * @param EventArgs|null $eventArgs The event arguments to pass to the event handlers/listeners.
      *                                  If not supplied, the single empty EventArgs instance is used.
      *
-     * @return void
+     * @return boolean
      */
     public function dispatchEvent($eventName, EventArgs $eventArgs = null)
     {
@@ -82,7 +82,7 @@ class EventManager
      */
     public function hasListeners($event)
     {
-        return !empty($this->_listeners[$event]);
+        return isset($this->_listeners[$event]) && $this->_listeners[$event];
     }
 
     /**
@@ -119,7 +119,10 @@ class EventManager
         $hash = spl_object_hash($listener);
 
         foreach ((array) $events as $event) {
-            unset($this->_listeners[$event][$hash]);
+            // Check if actually have this listener associated
+            if (isset($this->_listeners[$event][$hash])) {
+                unset($this->_listeners[$event][$hash]);
+            }
         }
     }
 

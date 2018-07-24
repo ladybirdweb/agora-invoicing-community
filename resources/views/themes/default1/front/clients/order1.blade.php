@@ -16,9 +16,10 @@ active
 
 @section('content')
 
-<h2 class="mb-none"> My Orders</h2>
+
 
 <div class="col-md-12 pull-center">
+    <h2 class="mb-none"> My Orders</h2>
     @if (count($errors) > 0)
                  <div class="alert alert-danger alert-dismissable" role="alert">
                       <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -50,7 +51,10 @@ active
                 @endif
 
                 <table id="order-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+
+
              
+
                     <thead><tr>
                             <th>Product Name</th>
                             <th>Expiry</th>
@@ -67,6 +71,7 @@ active
         $('#order-table').DataTable({
             destroy:true,
             processing: true,
+            stateSave: true,
             serverSide: true,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-my-orders') !!}',
@@ -92,7 +97,8 @@ active
             },
         });
     </script>
-    
+
+
 @stop
 
 

@@ -21,25 +21,7 @@ namespace Doctrine\DBAL\Driver\OCI8;
 
 use Doctrine\DBAL\Driver\Connection;
 use Doctrine\DBAL\Driver\ServerInfoAwareConnection;
-use Doctrine\DBAL\ParameterType;
-use const OCI_COMMIT_ON_SUCCESS;
-use const OCI_DEFAULT;
-use const OCI_NO_AUTO_COMMIT;
-use function addcslashes;
-use function define;
-use function defined;
-use function func_get_args;
-use function is_float;
-use function is_int;
-use function oci_commit;
-use function oci_connect;
-use function oci_error;
-use function oci_pconnect;
-use function oci_rollback;
-use function oci_server_version;
-use function preg_match;
-use function sprintf;
-use function str_replace;
+use Doctrine\DBAL\Platforms\OraclePlatform;
 
 /**
  * OCI8 implementation of the Connection interface.
@@ -54,7 +36,7 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     protected $dbh;
 
     /**
-     * @var int
+     * @var integer
      */
     protected $executeMode = OCI_COMMIT_ON_SUCCESS;
 
@@ -65,8 +47,8 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
      * @param string      $password
      * @param string      $db
      * @param string|null $charset
-     * @param int         $sessionMode
-     * @param bool        $persistent
+     * @param integer     $sessionMode
+     * @param boolean     $persistent
      *
      * @throws OCI8Exception
      */
@@ -139,7 +121,7 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
     /**
      * {@inheritdoc}
      */
-    public function quote($value, $type = ParameterType::STRING)
+    public function quote($value, $type=\PDO::PARAM_STR)
     {
         if (is_int($value) || is_float($value)) {
             return $value;
@@ -169,21 +151,23 @@ class OCI8Connection implements Connection, ServerInfoAwareConnection
             return false;
         }
 
+        OraclePlatform::assertValidIdentifier($name);
+
         $sql    = 'SELECT ' . $name . '.CURRVAL FROM DUAL';
         $stmt   = $this->query($sql);
-        $result = $stmt->fetchColumn();
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-        if ($result === false) {
+        if ($result === false || !isset($result['CURRVAL'])) {
             throw new OCI8Exception("lastInsertId failed: Query was executed but no result was returned.");
         }
 
-        return (int) $result;
+        return (int) $result['CURRVAL'];
     }
 
     /**
      * Returns the current execution mode.
      *
-     * @return int
+     * @return integer
      */
     public function getExecuteMode()
     {

@@ -43,7 +43,7 @@ class TaxController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -130,33 +130,11 @@ class TaxController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -174,8 +152,6 @@ class TaxController extends Controller
             }
             $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
 
-            //  $classes=($txClass->name== 'others')?1:($txClass->name== 'Intra State GST')?2:($txClass->name== 'Inter State GST')?3:($txClass->name== 'Union Territory GST')?4:[];
-            // dd($classes);
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
             if (count($classes) == 0) {
@@ -183,11 +159,12 @@ class TaxController extends Controller
             }
 
 
+
              return view('themes.default1.payment.tax.edit', 
                 compact('tax', 'classes', 'txClass', 'states', 'state', 
-
                     'defaultValue'));
 
+           
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -198,7 +175,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, Request $request)
     {
@@ -231,7 +208,8 @@ class TaxController extends Controller
                 $country = 'IN';
                 $state = '';
                 $rate = '';
-                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId, 'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
+                $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId,
+                    'country'                                         => $country, 'state'=>$state, 'rate'=>$rate, ]);
             }
 
             // $tax->fill($request->input())->save();
@@ -247,7 +225,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -265,17 +243,20 @@ class TaxController extends Controller
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
+
                         <b>"./** @scrutinizer ignore-type */ \Lang::get('message.alert').'!
                         </b> './** @scrutinizer ignore-type */ \Lang::get('message.failed').'
 
+
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                            '.\Lang::get('message.no-record').'
+                            './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                     </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                         <i class='fa fa-ban'></i>
+
 
                         <b>".\Lang::get('message.alert').'!</b> '.
                         /** @scrutinizer ignore-type */ \Lang::get('message.success').'
@@ -287,10 +268,12 @@ class TaxController extends Controller
                 echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
 
+
                         <b>"./** @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                         /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             './** @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
+
 
                     </div>';
                 //echo \Lang::get('message.select-a-row');
@@ -298,7 +281,8 @@ class TaxController extends Controller
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>
-                        <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                         <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                             '.$e->getMessage().'
                     </div>';
@@ -318,8 +302,8 @@ class TaxController extends Controller
             $states = \App\Model\Common\State::where('country_code_char2', $id)->orderBy('state_subdivision_name', 'asc')->get();
             // return $states;
             echo '<option value=>Select a State</option>';
-            foreach ($states as $state) {
-                echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
+            foreach ($states as $stateList) {
+                echo '<option value='.$stateList->state_subdivision_code.'>'.$stateList->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";
@@ -331,7 +315,7 @@ class TaxController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
 
     /**
@@ -363,7 +347,8 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-                $this->tax_class->fill($request->except('tax-name', 'level', 'active', 'country', 'country1', 'rate'))->save();
+                $this->tax_class->fill($request
+                    ->except('tax-name', 'level', 'active', 'country', 'country1', 'rate'))->save();
                 $country = ($request->input('rate')) ? $request->input('country') : $request->input('country1');
 
                 $this->tax->fill($request->except('tax-name', 'name', 'country'))->save();
@@ -377,8 +362,6 @@ class TaxController extends Controller
 
             return redirect()->back()->with('success', \Lang::get('message.created-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

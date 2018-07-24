@@ -19,31 +19,17 @@
 
 namespace Doctrine\DBAL\Platforms;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\LockMode;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ColumnDiff;
 use Doctrine\DBAL\Schema\Constraint;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
-use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Index;
+use Doctrine\DBAL\Schema\Identifier;
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\DBAL\Schema\TableDiff;
-use Doctrine\DBAL\TransactionIsolationLevel;
-use function array_merge;
-use function array_unique;
-use function array_values;
-use function count;
-use function explode;
-use function func_get_args;
-use function get_class;
-use function implode;
-use function is_string;
-use function preg_replace;
-use function strlen;
-use function strpos;
-use function strtoupper;
-use function substr;
 
 /**
  * The SQLAnywherePlatform provides the behavior, features and SQL dialect of the
@@ -56,19 +42,19 @@ use function substr;
 class SQLAnywherePlatform extends AbstractPlatform
 {
     /**
-     * @var int
+     * @var integer
      */
     const FOREIGN_KEY_MATCH_SIMPLE = 1;
     /**
-     * @var int
+     * @var integer
      */
     const FOREIGN_KEY_MATCH_FULL = 2;
     /**
-     * @var int
+     * @var integer
      */
     const FOREIGN_KEY_MATCH_SIMPLE_UNIQUE = 129;
     /**
-     * @var int
+     * @var integer
      */
     const FOREIGN_KEY_MATCH_FULL_UNIQUE = 130;
 
@@ -141,11 +127,11 @@ class SQLAnywherePlatform extends AbstractPlatform
      */
     public function getAlterTableSQL(TableDiff $diff)
     {
-        $sql          = [];
-        $columnSql    = [];
-        $commentsSQL  = [];
-        $tableSql     = [];
-        $alterClauses = [];
+        $sql          = array();
+        $columnSql    = array();
+        $commentsSQL  = array();
+        $tableSql     = array();
+        $alterClauses = array();
 
         /** @var \Doctrine\DBAL\Schema\Column $column */
         foreach ($diff->addedColumns as $column) {
@@ -317,8 +303,6 @@ class SQLAnywherePlatform extends AbstractPlatform
 
             return $columnAlterationClause;
         }
-
-        return null;
     }
 
     /**
@@ -547,7 +531,7 @@ class SQLAnywherePlatform extends AbstractPlatform
      */
     public function getDefaultTransactionIsolationLevel()
     {
-        return TransactionIsolationLevel::READ_UNCOMMITTED;
+        return Connection::TRANSACTION_READ_UNCOMMITTED;
     }
 
     /**
@@ -642,7 +626,7 @@ class SQLAnywherePlatform extends AbstractPlatform
     /**
      * Returns foreign key MATCH clause for given type.
      *
-     * @param int $type The foreign key match type
+     * @param integer $type The foreign key match type
      *
      * @return string
      *
@@ -1117,13 +1101,13 @@ class SQLAnywherePlatform extends AbstractPlatform
     /**
      * {@inheritdoc}
      */
-    public function getTrimExpression($str, $pos = TrimMode::UNSPECIFIED, $char = false)
+    public function getTrimExpression($str, $pos = self::TRIM_UNSPECIFIED, $char = false)
     {
         if ( ! $char) {
             switch ($pos) {
-                case TrimMode::LEADING:
+                case self::TRIM_LEADING:
                     return $this->getLtrimExpression($str);
-                case TrimMode::TRAILING:
+                case self::TRIM_TRAILING:
                     return $this->getRtrimExpression($str);
                 default:
                     return 'TRIM(' . $str . ')';
@@ -1133,9 +1117,9 @@ class SQLAnywherePlatform extends AbstractPlatform
         $pattern = "'%[^' + $char + ']%'";
 
         switch ($pos) {
-            case TrimMode::LEADING:
+            case self::TRIM_LEADING:
                 return 'SUBSTR(' . $str . ', PATINDEX(' . $pattern . ', ' . $str . '))';
-            case TrimMode::TRAILING:
+            case self::TRIM_TRAILING:
                 return 'REVERSE(SUBSTR(REVERSE(' . $str . '), PATINDEX(' . $pattern . ', REVERSE(' . $str . '))))';
             default:
                 return
@@ -1237,10 +1221,10 @@ class SQLAnywherePlatform extends AbstractPlatform
     /**
      * {@inheritdoc}
      */
-    protected function _getCreateTableSQL($tableName, array $columns, array $options = [])
+    protected function _getCreateTableSQL($tableName, array $columns, array $options = array())
     {
         $columnListSql = $this->getColumnDeclarationListSQL($columns);
-        $indexSql = [];
+        $indexSql = array();
 
         if ( ! empty($options['uniqueConstraints'])) {
             foreach ((array) $options['uniqueConstraints'] as $name => $definition) {
@@ -1280,7 +1264,7 @@ class SQLAnywherePlatform extends AbstractPlatform
 
         $query .= ')';
 
-        return array_merge([$query], $indexSql);
+        return array_merge(array($query), $indexSql);
     }
 
     /**
@@ -1289,13 +1273,13 @@ class SQLAnywherePlatform extends AbstractPlatform
     protected function _getTransactionIsolationLevelSQL($level)
     {
         switch ($level) {
-            case TransactionIsolationLevel::READ_UNCOMMITTED:
+            case Connection::TRANSACTION_READ_UNCOMMITTED:
                 return 0;
-            case TransactionIsolationLevel::READ_COMMITTED:
+            case Connection::TRANSACTION_READ_COMMITTED:
                 return 1;
-            case TransactionIsolationLevel::REPEATABLE_READ:
+            case Connection::TRANSACTION_REPEATABLE_READ:
                 return 2;
-            case TransactionIsolationLevel::SERIALIZABLE:
+            case Connection::TRANSACTION_SERIALIZABLE:
                 return 3;
             default:
                 throw new \InvalidArgumentException('Invalid isolation level:' . $level);
@@ -1435,9 +1419,9 @@ class SQLAnywherePlatform extends AbstractPlatform
      */
     protected function getRenameIndexSQL($oldIndexName, Index $index, $tableName)
     {
-        return [
+        return array(
             'ALTER INDEX ' . $oldIndexName . ' ON ' . $tableName . ' RENAME TO ' . $index->getQuotedName($this)
-        ];
+        );
     }
 
     /**
@@ -1445,7 +1429,7 @@ class SQLAnywherePlatform extends AbstractPlatform
      */
     protected function getReservedKeywordsClass()
     {
-        return Keywords\SQLAnywhereKeywords::class;
+        return 'Doctrine\DBAL\Platforms\Keywords\SQLAnywhereKeywords';
     }
 
     /**
@@ -1463,7 +1447,7 @@ class SQLAnywherePlatform extends AbstractPlatform
      */
     protected function initializeDoctrineTypeMappings()
     {
-        $this->doctrineTypeMapping = [
+        $this->doctrineTypeMapping = array(
             'char' => 'string',
             'long nvarchar' => 'text',
             'long varchar' => 'text',
@@ -1502,6 +1486,6 @@ class SQLAnywherePlatform extends AbstractPlatform
             'long binary' => 'blob',
             'uniqueidentifier' => 'guid',
             'varbinary' => 'binary',
-        ];
+        );
     }
 }

@@ -19,10 +19,6 @@
 
 namespace Doctrine\DBAL\Platforms\Keywords;
 
-use function array_flip;
-use function array_map;
-use function strtoupper;
-
 /**
  * Abstract interface for a SQL reserved keyword dictionary.
  *
@@ -42,7 +38,7 @@ abstract class KeywordList
      *
      * @param string $word
      *
-     * @return bool
+     * @return boolean
      */
     public function isKeyword($word)
     {

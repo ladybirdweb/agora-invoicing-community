@@ -184,7 +184,7 @@ class CartController extends Controller
         }
     }
 
-    public function checkTax($productid,$user_state='',$user_country='')
+    public function checkTax($productid, $user_state = '', $user_country = '')
     {
         try {
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
@@ -219,9 +219,8 @@ class CartController extends Controller
             $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
             $country_iso = $location['countryCode'];
 
-            $geoip_country = $this->getGeoipCountry($country_iso,$user_country);
-            $geoip_state = $this->getGeoipState($state_code,$user_state);
-
+            $geoip_country = $this->getGeoipCountry($country_iso, $user_country);
+            $geoip_state = $this->getGeoipState($state_code, $user_state);
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);

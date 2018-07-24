@@ -451,8 +451,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
- 
-
         /**
          * Remove the specified resource from storage.
          *
@@ -517,7 +515,6 @@ namespace App\Http\Controllers\Product;
                         '.$e->getMessage().'
                 </div>';
             }
-
         }
 
         /**
@@ -592,7 +589,6 @@ namespace App\Http\Controllers\Product;
             $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
 
             return $server;
-
         }
 
         /*

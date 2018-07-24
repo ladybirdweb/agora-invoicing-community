@@ -391,8 +391,8 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="javascript:void(0)" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-              <a href="javascript:void(0)" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Invoice</a>
+              <a href="{{url('invoices')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Invoice</a>
             </div>
             <!-- /.box-footer -->
           </div>

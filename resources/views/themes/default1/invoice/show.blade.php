@@ -182,13 +182,6 @@
                                         $rate = substr_replace($item->tax_percentage, '', -1);
                                         
                                     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                    ?>
-                                    @for($i=0;$i < count($tax_name);$i++)
-=======
-=======
->>>>>>> parent of 58a3ffa4... update
                                     $tax_name = explode(',', $name);
                                     $tax_percentage = explode(',', $rate);
                                 }
@@ -197,11 +190,7 @@
                                 @if($tax_name[0] !='null')
                                    <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
-<<<<<<< HEAD
                                     $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
-=======
-                                    $taxes= $taxInstance->checkTax($productId);
->>>>>>> parent of 58a3ffa4... update
                                      ?>
                                    @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
                                     @if($set->state == $user->state)
@@ -234,16 +223,6 @@
                                      <th>
                                  <strong>UTGST<span>@</span>{{$taxes['attributes']['tax'][0]['ut_gst']}}%</strong><br/>
                                  <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
-<<<<<<< HEAD
-
-                                  
-                            </th>
-                            <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['ut_gst'],$item->regular_price)}} <br/>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}}
->>>>>>> ddca1e27... bug fixes
-=======
->>>>>>> parent of 58a3ffa4... update
 
                                   
                             </th>
@@ -286,7 +265,7 @@
 
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
-                        <div class="col-xs-12">	
+                        <div class="col-xs-12"> 
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>

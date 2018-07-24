@@ -2,14 +2,18 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
+use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Plugin;
+use App\User;
+use Bugsnag;
+use GrahamCampbell\Markdown\Facades\Markdown;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Input;
+use Spatie\Activitylog\Models\Activity;
 
-class SettingsController extends Controller
+class SettingsController extends BaseSettingsController
 {
     public function __construct()
     {
@@ -179,6 +183,66 @@ class SettingsController extends Controller
             $this->deleteDirectory($file);
 
             return redirect()->back()->with('fails', '<b>Plugin File Path is not exist</b>  '.$file);
+        }
+    }
+
+
+    public function getActivity()
+    {
+        try {
+            $activity_log = Activity::select('id', 'log_name', 'description',
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
+
+            return\ DataTables::of($activity_log)
+             ->addColumn('checkbox', function ($model) {
+                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+             })
+                           ->addColumn('name', function ($model) {
+                               return ucfirst($model->log_name);
+                           })
+                             ->addColumn('description', function ($model) {
+                                 return ucfirst($model->description);
+                             })
+                          ->addColumn('username', function ($model) {
+                              $causer_id = $model->causer_id;
+                              $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
+                              foreach ($names as $key => $value) {
+                                  $fullName = $key.' '.$value;
+
+                                  return $fullName;
+                              }
+                          })
+                              ->addColumn('role', function ($model) {
+                                  $causer_id = $model->causer_id;
+                                  $role = User::where('id', $causer_id)->pluck('role');
+
+                                  return json_decode($role);
+                              })
+                               ->addColumn('new', function ($model) {
+                                   $properties = ($model->properties);
+                                   $newEntry = $this->getNewEntry($properties, $model);
+
+                                   return $newEntry;
+                               })
+                                ->addColumn('old', function ($model) {
+                                    $data = ($model->properties);
+                                    $oldEntry = $this->getOldEntry($data, $model);
+
+                                    return $oldEntry;
+                                })
+                                ->addColumn('created_at', function ($model) {
+                                    $newDate = $this->getDate($model->created_at);
+
+                                    return $newDate;
+                                })
+
+                            ->rawColumns(['checkbox', 'name', 'description',
+                                'username', 'role', 'new', 'old', 'created_at', ])
+                            ->make(true);
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -452,6 +516,17 @@ class SettingsController extends Controller
             $template = new Template();
             //$templates = $template->lists('name', 'id')->toArray();
             return view('themes.default1.common.setting.template', compact('set', 'template'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function settingsActivity(Activity $activities)
+    {
+        try {
+            $activity = $activities->all();
+
+            return view('themes.default1.common.Activity-Log', compact('activity'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

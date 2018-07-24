@@ -194,7 +194,7 @@ class ExtendedBaseCartController extends Controller
 
     public function getGeoipCountry($country_iso,$user_country='')
     {
-        $geoip_country = '';
+         $geoip_country = '';
         if (\Auth::user()->role='admin') {
             $geoip_country = $user_country;
         }else{
@@ -204,7 +204,6 @@ class ExtendedBaseCartController extends Controller
         if ($geoip_country == '') {
             $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
         }
-
         return $geoip_country;
     }
 
@@ -309,8 +308,7 @@ class ExtendedBaseCartController extends Controller
      */
     public function getTaxForAnyCountry($taxClassId, $productid, $status)
     {
-        $taxForAnyCountry = $this->getTaxForAnyCountry($taxClassId, $productid, $status);
-        $taxes = $this->getTaxByPriority($taxClassId);
+         $taxes = $this->getTaxByPriority($taxClassId);
         $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
         if ($value == '') {
             $status = 0;

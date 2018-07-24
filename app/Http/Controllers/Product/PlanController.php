@@ -180,6 +180,7 @@ class PlanController extends Controller
             'name'        => 'required',
             'add_price.*' => 'required',
             'product'     => 'required',
+            'days'        => 'required',
         ]);
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();

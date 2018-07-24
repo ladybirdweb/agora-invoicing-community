@@ -108,7 +108,7 @@ class DashboardController extends Controller
         $currentYear = date('Y');
         $total = $invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'USD')
                 ->pluck('grand_total')->all();
-                $grandTotal = array_sum($total);
+        $grandTotal = array_sum($total);
 
         return $grandTotal;
     }

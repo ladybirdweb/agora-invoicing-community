@@ -12,6 +12,7 @@ class ExtendedOrderController extends Controller
 {
     public function advanceSearch($order_no = '', $product_id = '', $expiry = '', $from = '', $till = '', $domain = '')
     {
+        // dd($expiry);
         $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
         if ($order_no) {
             $join = $join->where('number', $order_no);
@@ -24,14 +25,14 @@ class ExtendedOrderController extends Controller
         }
         if ($from) {
             $fromdate = date_create($from);
-            $from = date_format($fromdate, 'Y-m-d H:m:i');
-            $tills = date('Y-m-d H:m:i');
+            $from = date_format($fromdate,'M j, Y, g:i a ');
+            $tills = date('M j, Y, g:i a ');
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
         }
         if ($till) {
             $tilldate = date_create($till);
-            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $till = date_format($tilldate, 'M j, Y, g:i a ');
             $froms = Order::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);

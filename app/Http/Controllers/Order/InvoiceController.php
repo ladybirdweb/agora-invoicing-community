@@ -207,11 +207,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function invoiceTotalChange(Request $request)
     {
         $total = $request->input('total');
-        if ($total == "")
-        {
+        if ($total == '') {
             $total = 0;
         }
-         $number = $request->input('number');
+        $number = $request->input('number');
         $invoiceId = Invoice::where('number', $number)->value('id');
         $invoiceItem = $this->invoiceItem->where('invoice_id', $invoiceId)->update(['subtotal'=>$total]);
         $invoices = $this->invoice->where('number', $number)->update(['grand_total'=>$total]);

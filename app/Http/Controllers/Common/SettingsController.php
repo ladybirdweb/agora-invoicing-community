@@ -39,10 +39,7 @@ class SettingsController extends BaseSettingsController
         return view('themes.default1.common.plugins');
     }
 
-
-
     public function getKeys(ApiKey $apikeys)
-
     {
         try {
             $model = $apikeys->find(1);
@@ -177,6 +174,7 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $activity = $activities->all();
+
             return view('themes.default1.common.Activity-Log', compact('activity'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

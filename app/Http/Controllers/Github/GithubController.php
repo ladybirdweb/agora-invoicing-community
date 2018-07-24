@@ -281,7 +281,6 @@ class GithubController extends Controller
             'client_id'    => 'required',
             'client_secret'=> 'required',
 
-
         ]);
 
         try {

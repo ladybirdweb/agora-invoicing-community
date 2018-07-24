@@ -16,7 +16,6 @@ class BaseSettingsController extends Controller
         $properties = (array_key_exists('attributes', $properties->toArray())) ? ($model->properties['attributes']) : null;
 
         $display = array();
-
         if ($properties != null) {
             if (array_key_exists('parent', $properties)) {
                 unset($properties['parent']);

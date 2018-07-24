@@ -25,7 +25,7 @@ class ExtendedOrderController extends Controller
         }
         if ($from) {
             $fromdate = date_create($from);
-            $from = date_format($fromdate,'M j, Y, g:i a ');
+            $from = date_format($fromdate, 'M j, Y, g:i a ');
             $tills = date('M j, Y, g:i a ');
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);

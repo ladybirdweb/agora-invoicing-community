@@ -19,7 +19,6 @@
                       <select name="name" id="gst" class="form-control">
                       <option value="Others">Others</option>
                        @if($taxType[0]==1)
-                       
                       <option value="Intra State GST">Intra State GST</option>
                       <option value="Inter State GST">Inter State GST</option>
                       <option value="Union Territory GST">Union Territory GST</option>
@@ -83,18 +82,8 @@
                  <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
-<<<<<<< HEAD
-<<<<<<< HEAD
-                    {!! Form::text('rate',null,['class' => 'form-control']) !!}
-=======
-                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
-                    <h6 id="ratecheck"> </h6>
-                  
->>>>>>> ddca1e27... bug fixes
-=======
                     {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
                   
->>>>>>> parent of 58a3ffa4... update
 
                 </div>
                   
@@ -143,11 +132,6 @@
     });
 });
 </script>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> parent of 58a3ffa4... update
 
 <script>
      $(document).ready(function(){
@@ -171,31 +155,8 @@
             }
         }
 
-<<<<<<< HEAD
-        function ratecheck()
-        {
-            var rate = $('#rate').val();
-            if (rate.length == ''){
-                   $('#ratecheck').show(); 
-                   $('#ratecheck').html('This field is required'); 
-                   $('#ratecheck').focus();
-                   $('#rate').css("border-color","red");
-                   $('#ratecheck').css({"color":"red","margin-top":"5px"});
-            }
-            else{
-                 $('#ratecheck').hide();
-                 $('#rate').css("border-color","");
-                 return true;
-            }
-        }
-
         
         tax_nameCheck();
-        // ratecheck();
-=======
-        
-        tax_nameCheck();
->>>>>>> parent of 58a3ffa4... update
        
        
         if(tax_nameCheck()){
@@ -208,8 +169,4 @@
 
     });
 </script>
-<<<<<<< HEAD
->>>>>>> ddca1e27... bug fixes
-=======
->>>>>>> parent of 58a3ffa4... update
 {!! Form::close()  !!}

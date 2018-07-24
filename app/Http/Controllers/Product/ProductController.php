@@ -425,7 +425,8 @@ namespace App\Http\Controllers\Product;
 
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-                 $newTax = $this->saveTax($taxes, $product_id);
+                $newTax = $this->saveTax($taxes, $product_id);
+
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
@@ -434,19 +435,19 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-         public function saveTax($taxes, $product_id)
+        public function saveTax($taxes, $product_id)
         {
             if ($taxes) {
-
-                    $this->tax_relation->where('product_id', $product_id)->delete();
-                    foreach ($taxes as $tax) {
-                        $newTax = new TaxProductRelation();
-                        $newTax->product_id = $product_id;
-                        $newTax->tax_class_id = $tax;
-                        $newTax->save();
-                    }
+                $this->tax_relation->where('product_id', $product_id)->delete();
+                foreach ($taxes as $tax) {
+                    $newTax = new TaxProductRelation();
+                    $newTax->product_id = $product_id;
+                    $newTax->tax_class_id = $tax;
+                    $newTax->save();
                 }
-             return $newTax;
+            }
+
+            return $newTax;
         }
 
         /**
@@ -575,7 +576,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-      
         /*
         *  Download Files from Filesystem/Github
         */

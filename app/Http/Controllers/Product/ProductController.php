@@ -425,9 +425,7 @@ namespace App\Http\Controllers\Product;
 
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-
-
-                $newTax = $this->saveTax($taxes, $product_id);
+                 $newTax = $this->saveTax($taxes, $product_id);
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);

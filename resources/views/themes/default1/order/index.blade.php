@@ -31,19 +31,19 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary', 'placeholder'=>'yyyy-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'from']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'yyyy-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'till']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'yyyy-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">

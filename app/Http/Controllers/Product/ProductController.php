@@ -293,7 +293,7 @@ namespace App\Http\Controllers\Product;
                         'type'       => 'required',
                         'group'      => 'required',
                         'description'=> 'required',
-                        // 'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
             if ($v->fails()) {

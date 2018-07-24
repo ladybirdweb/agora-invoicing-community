@@ -443,7 +443,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-center">
-              <a href="javascript:void(0)" class="uppercase">View All Products</a>
+              <a href="{{url('products')}}" class="uppercase">View All Products</a>
             </div>
             <!-- /.box-footer -->
           </div>

@@ -35,7 +35,7 @@ class ProfileController extends Controller
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = 'dist/app/users';
+                $destinationPath = public_path('dist/app/users');
                 $fileName = rand(0000, 9999).'.'.$name;
                 \Input::file('profile_pic')->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;

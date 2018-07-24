@@ -224,7 +224,7 @@ class BaseCartController extends ExtendedBaseCartController
                 }
                 $isTaxApply = $product->tax_apply;
                 $taxConditions = $this->checkTax($id);
-
+                
                 /*
                  * Check if this product allow multiple qty
                  */
@@ -233,6 +233,7 @@ class BaseCartController extends ExtendedBaseCartController
                 } else {
                     $qty = 1;
                 }
+
                 $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice, 'quantity' => $qty, 'attributes' => ['currency' => [[$currency]]]];
                 $items = array_merge($items, $taxConditions);
 

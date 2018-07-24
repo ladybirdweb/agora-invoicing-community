@@ -192,15 +192,15 @@ class ExtendedBaseCartController extends Controller
         }
     }
 
-    public function getGeoipCountry($country_iso,$user_country='')
+    public function getGeoipCountry($country_iso, $user_country = '')
     {
         $geoip_country = '';
-        if (\Auth::user()->role='admin') {
+        if (\Auth::user()->role = 'admin') {
             $geoip_country = $user_country;
-        }else{
+        } else {
             $geoip_country = \Auth::user()->country;
         }
-        
+
         if ($geoip_country == '') {
             $geoip_country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($country_iso);
         }
@@ -208,13 +208,13 @@ class ExtendedBaseCartController extends Controller
         return $geoip_country;
     }
 
-    public function getGeoipState($state_code,$user_state='')
-    { 
+    public function getGeoipState($state_code, $user_state = '')
+    {
         $geoip_state = '';
         $geoip_state_array = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-        if (\Auth::user()->role =='admin') {
-              $geoip_state = $user_state;
-          }else{
+        if (\Auth::user()->role == 'admin') {
+            $geoip_state = $user_state;
+        } else {
             $geoip_state = \Auth::user()->state;
         }
         if ($geoip_state == '') {

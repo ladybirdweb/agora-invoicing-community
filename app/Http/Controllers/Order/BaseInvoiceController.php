@@ -56,12 +56,14 @@ class BaseInvoiceController extends Controller
             $grand_total = $this->calculateTotal($tax_rate, $grand_total);
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
-            $invoice = Invoice::create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'currency' => $currency, 'status' => 'pending', 'description' => $description]);
+            $invoice = Invoice::create(['user_id' => $user_id, 
+                'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 
+                'currency' => $currency, 'status' => 'pending', 'description' => $description]);
 
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid, $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
+            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
+             $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);

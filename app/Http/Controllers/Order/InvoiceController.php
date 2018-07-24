@@ -499,11 +499,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $taxs;
         } catch (\Exception $ex) {
-<<<<<<< HEAD
-=======
-            dd($ex);
-
->>>>>>> d3ce4660801cdc76373f588d6a1789df47973fe6
             throw new \Exception(\Lang::get('message.check-tax-error'));
         }
     }

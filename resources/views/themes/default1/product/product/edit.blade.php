@@ -31,6 +31,10 @@
         });
     });
 </script>
+<style>
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #1b1818 !important;
+</style>
 
 <div class="box box-primary">
 

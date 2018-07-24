@@ -258,7 +258,7 @@ namespace App\Http\Controllers\Product;
                 /*
                  * server url
                  */
-                $url = $this->GetMyUrl();
+                $url = $this->getMyUrl();
                 $i = $this->product->orderBy('created_at', 'desc')->first()->id + 1;
                 $cartUrl = $url.'/pricing?id='.$i;
                 $type = $this->type->pluck('name', 'id')->toArray();
@@ -363,17 +363,6 @@ namespace App\Http\Controllers\Product;
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
-                $price = $this->price->where('product_id', $product->id);
-                foreach ($currency as $key => $value) {
-                    if ($this->price->where('product_id', $product->id)->where('currency', $key)->first()) {
-                        $regular[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->price;
-                        $sales[$key] = $this->price->where('product_id', $product->id)->where('currency', $key)->first()->sales_price;
-                    } else {
-                        $regular[$key] = '';
-                        $sales[$key] = '';
-                    }
-                }
-
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
@@ -405,10 +394,7 @@ namespace App\Http\Controllers\Product;
                         'type'    => 'required',
                         'group'   => 'required',
                         'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-    //                    'subscription' => 'required',
-    //                    'currency.*' => 'required',
-    //                    'price.*' => 'required',
-            ]);
+      ]);
 
             if ($v->fails()) {
                 return redirect()->back()->with('errors', $v->errors());
@@ -439,7 +425,20 @@ namespace App\Http\Controllers\Product;
 
                 //add tax class to tax_product_relation table
                 $taxes = $request->input('tax');
-                 if ($taxes) {
+                $newTax = $this->saveTax($taxes, $product_id);
+                 
+
+                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            } catch (\Exception $e) {
+                Bugsnag::notifyException($e);
+
+                return redirect()->back()->with('fails', $e->getMessage());
+            }
+        }
+
+         public function saveTax($taxes, $product_id)
+        {
+            if ($taxes) {
                     $this->tax_relation->where('product_id', $product_id)->delete();
                     foreach ($taxes as $tax) {
                         $newTax = new TaxProductRelation();
@@ -448,13 +447,7 @@ namespace App\Http\Controllers\Product;
                         $newTax->save();
                     }
                 }
-
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            } catch (\Exception $e) {
-                Bugsnag::notifyException($e);
-
-                return redirect()->back()->with('fails', $e->getMessage());
-            }
+             return $newTax;
         }
 
         /**
@@ -583,20 +576,7 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-        public function getMyUrl()
-        {
-            $server = new Request();
-            $url = $_SERVER['REQUEST_URI'];
-            $server = parse_url($url);
-            $server['path'] = dirname($server['path']);
-            $server = parse_url($server['path']);
-            $server['path'] = dirname($server['path']);
-
-            $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
-
-            return $server;
-        }
-
+      
         /*
         *  Download Files from Filesystem/Github
         */

@@ -54,11 +54,9 @@
                      <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
-<<<<<<< HEAD
+
                             <th style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
-=======
-                            <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
->>>>>>> parent of 58a3ffa4... update
+
                             <th>Date</th>
                             <th>From</th>
                              <th>To</th>   

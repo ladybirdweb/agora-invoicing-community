@@ -16,62 +16,6 @@ use Illuminate\Http\Request;
 
 class BaseInvoiceController extends Controller
 {
-    public function invoiceGenerateByForm(Request $request, $user_id = '')
-    {
-        $qty = 1;
-
-        try {
-            if ($user_id == '') {
-                $user_id = \Request::input('user');
-            }
-            $productid = $request->input('product');
-            $code = $request->input('code');
-            $total = $request->input('price');
-            $plan = $request->input('plan');
-            $description = $request->input('description');
-            if ($request->has('domain')) {
-                $domain = $request->input('domain');
-                $this->setDomain($productid, $domain);
-            }
-            $controller = new \App\Http\Controllers\Front\CartController();
-            $currency = $controller->currency($user_id);
-            $number = rand(11111111, 99999999);
-            $date = \Carbon\Carbon::now();
-            $product = Product::find($productid);
-            $cost = $controller->cost($productid, $user_id, $plan);
-            if ($cost != $total) {
-                $grand_total = $total;
-            }
-            $grand_total = $this->getGrandTotal($code, $total, $cost, $productid, $currency);
-            $grand_total = $qty * $grand_total;
-
-            $tax = $this->checkTax($product->id, $user_id);
-            $tax_name = '';
-            $tax_rate = '';
-            if (!empty($tax)) {
-                $tax_name = $tax[0];
-                $tax_rate = $tax[1];
-            }
-
-            $grand_total = $this->calculateTotal($tax_rate, $grand_total);
-            $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
-
-            $invoice = Invoice::create(['user_id' => $user_id,
-                'number'   => $number, 'date' => $date, 'grand_total' => $grand_total,
-                'currency' => $currency, 'status' => 'pending', 'description' => $description, ]);
-
-            $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
-             $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
-            $result = $this->getMessage($items, $user_id);
-        } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $result = ['fails' => $ex->getMessage()];
-        }
-
-        return response()->json(compact('result'));
-    }
 
     /**
      *Tax When state is not empty.
@@ -215,19 +159,7 @@ class BaseInvoiceController extends Controller
         }
     }
 
-    public function setDomain($productid, $domain)
-    {
-        try {
-            if (\Session::has('domain'.$productid)) {
-                \Session::forget('domain'.$productid);
-            }
-            \Session::put('domain'.$productid, $domain);
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
+   
 
     public function domain($id)
     {

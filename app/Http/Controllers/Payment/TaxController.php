@@ -228,7 +228,7 @@ class TaxController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {

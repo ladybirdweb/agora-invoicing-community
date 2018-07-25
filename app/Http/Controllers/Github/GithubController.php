@@ -334,7 +334,7 @@ class GithubController extends Controller
         }
     }
 
-    public function getUrl($repo)
+    public function getUrl($repo,$ver)
     {
         //For Satellite Helpdesk
          if ($repo == 'faveo-satellite-helpdesk-advance') {

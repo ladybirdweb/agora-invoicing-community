@@ -74,7 +74,7 @@ class CartController extends BaseCartController
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = $this->getStateByCode($state_code);
-        $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+        $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
         $currency = $cont->getCurrency($location);
 
         \Session::put('currency', $currency);

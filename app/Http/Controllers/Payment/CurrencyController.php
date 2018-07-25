@@ -45,7 +45,7 @@ class CurrencyController extends Controller
                         })
                         // ->showColumns('name', 'base_conversion')
                         ->addColumn('action', function ($model) {
-                          return "<a href=#edit class='btn btn-primary' data-toggle='modal' 
+                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' 
                             data-target=#edit".$model->id.'>'.
                             /* @scrutinizer ignore-type */\Lang::get('message.edit')."</a>
         <div class='modal fade' id=edit".$model->id.">

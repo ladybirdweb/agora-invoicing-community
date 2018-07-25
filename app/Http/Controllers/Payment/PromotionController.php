@@ -147,6 +147,7 @@ class PromotionController extends BasePromotionController
             $selectedProduct = $this->promoRelation
             ->where('promotion_id', $id)
             ->pluck('product_id', 'product_id')->toArray();
+
             return view('themes.default1.payment.promotion.edit',
              compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {

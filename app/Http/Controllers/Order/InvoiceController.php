@@ -341,7 +341,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function doPayment($payment_method, $invoiceid, $amount, 
+    public function doPayment($payment_method, $invoiceid, $amount,
         $parent_id = '', $userid = '', $payment_status = 'pending')
     {
         try {

@@ -184,8 +184,8 @@ class AuthController extends BaseAuthController
             // dd($result);
 
             $array = json_decode($result, true);
-            $response = ['type' => 'success', 
-            'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
+            $response = ['type' => 'success',
+            'message'           => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!', ];
 
             return response()->json($response);
         } catch (\Exception $ex) {

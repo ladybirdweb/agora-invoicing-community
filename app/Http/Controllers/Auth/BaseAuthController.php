@@ -110,7 +110,12 @@ class BaseAuthController extends Controller
             $method = 'POST';
 
             $this->sendActivation($email, $method, $pass);
-            $response = ['type' => 'success', 'message' => 'Activation link has been sent to '.$email.'.<br>OTP has been sent to '.$number.'.<br>Please enter the OTP received on your mobile No below. Incase you did not recieve OTP,please get in touch with us on <a href="mailto:support@faveohelpdesk.com">support@faveohelpdesk.com</a>'];
+            $response = ['type' => 'success', 
+            'message' => 'Activation link has been sent to '.$email.'.
+            <br>OTP has been sent to '.$number.'.<br>Please enter the 
+            OTP received on your mobile No below. Incase you did not recieve OTP,
+            please get in touch with us on <a href="mailto:support@faveohelpdesk.com">
+            support@faveohelpdesk.com</a>'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -155,7 +160,8 @@ class BaseAuthController extends Controller
             $to = $user->email;
             $subject = $template->name;
             $data = $template->data;
-            $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+            $replace = ['name' => $user->first_name.' '.$user->last_name, 
+            'username' => $user->email, 'password' => $str, 'url' => $url];
             $type = '';
 
             if ($template) {

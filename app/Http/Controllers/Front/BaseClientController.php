@@ -25,7 +25,9 @@ class BaseClientController extends Controller
      */
     public function getPopup($orders, $productid)
     {
-        $productCheck = $orders->product()->select('github_owner', 'github_repository')->where('id', $orders->product)->first();
+        $productCheck = $orders->product()
+        ->select('github_owner', 'github_repository')
+        ->where('id', $orders->product)->first();
         if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
             $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
         } else {
@@ -190,7 +192,9 @@ class BaseClientController extends Controller
                     $url = 'my-invoice';
                 }
 
-                return '<a href='.url($url.'/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                return '<a href='.url($url.'/'.$model->id)." 
+                class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
+                style='color:white;'> </i>&nbsp;&nbsp;View</a>";
             })
                             ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);

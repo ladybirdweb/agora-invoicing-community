@@ -184,7 +184,8 @@ class AuthController extends BaseAuthController
             // dd($result);
 
             $array = json_decode($result, true);
-            $response = ['type' => 'success', 'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
+            $response = ['type' => 'success', 
+            'message' => 'OTP has been resent to '.$number.'.Please Enter the OTP to login!!'];
 
             return response()->json($response);
         } catch (\Exception $ex) {
@@ -306,7 +307,8 @@ class AuthController extends BaseAuthController
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
             foreach ($states as $stateList) {
-                echo '<option value='.$stateList->state_subdivision_code.'>'.$stateList->state_subdivision_name.'</option>';
+                echo '<option value='.$stateList->state_subdivision_code.'>'
+                .$stateList->state_subdivision_name.'</option>';
             }
         } catch (\Exception $ex) {
             echo "<option value=''>Problem while loading</option>";

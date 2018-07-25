@@ -292,7 +292,8 @@ class CartController extends BaseCartController
                        if ($this->tax_option->findOrFail(1)->tax_enable == 0) {
                            $taxClassId = Tax::where('country', '')
                            ->where('state', 'Any State')
-                           ->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
+                           ->pluck('tax_classes_id')->first(); //In case of India when
+                           // other tax is available and tax is not enabled
                            if ($taxClassId) {
                                $taxes = $this->getTaxByPriority($taxClassId);
                                $value = $this->getValueForOthers($productid, $taxClassId, $taxes);
@@ -354,7 +355,6 @@ class CartController extends BaseCartController
             'attributes'         => ['tax' => $tax_attribute,
             'currency'                     => $currency_attribute, ], ];
         } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not check the tax');
@@ -415,7 +415,8 @@ class CartController extends BaseCartController
     {
         $value = '';
         $value = $taxes->toArray()[0]['active'] ?
-             (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
+             (TaxProductRelation::where('product_id', $productid)
+              ->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
 
         return $value;
     }
@@ -433,7 +434,8 @@ class CartController extends BaseCartController
     {
         $otherRate = 0;
         $status = $taxes->toArray()[0]['active'];
-        if ($status && (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() > 0)) {
+        if ($status && (TaxProductRelation::where('product_id', $productid)
+          ->where('tax_class_id', $taxClassId)->count() > 0)) {
             $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
         }
 
@@ -446,84 +448,6 @@ class CartController extends BaseCartController
         return $value;
     }
 
-    public function checkTaxOld($isTaxApply, $id)
-    {
-        try {
-            $rate1 = 0;
-            $rate2 = 0;
-            $name1 = 'null';
-            $name2 = 'null';
-
-            if ($ruleEnabled) {
-                $enabled = $ruleEnabled->status;
-                $type = $ruleEnabled->type;
-                $compound = $ruleEnabled->compound;
-                if ($enabled == 1 && $type == 'exclusive') {
-                    if ($isTaxApply == 1) {
-                        $tax1 = $this->tax->where('level', 1)->first();
-                        $tax2 = $this->tax->where('level', 2)->first();
-                        if ($tax1) {
-                            $name1 = $tax1->name;
-                            $rate1 = $tax1->rate;
-                            $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name1,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate1.'%',
-                            ]);
-                        } else {
-                            $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name1,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate1,
-                            ]);
-                        }
-                        if ($tax2) {
-                            $name2 = $tax2->name;
-                            $rate2 = $tax2->rate;
-                            $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name2,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate2.'%',
-                            ]);
-                        } else {
-                            $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                                'name'   => $name2,
-                                'type'   => 'tax',
-                                'target' => 'item',
-                                'value'  => $rate2,
-                            ]);
-                        }
-                    } else {
-                        $taxCondition1 = new \Darryldecode\Cart\CartCondition([
-                            'name'   => $name1,
-                            'type'   => 'tax',
-                            'target' => 'item',
-                            'value'  => $rate1,
-                        ]);
-                        $taxCondition2 = new \Darryldecode\Cart\CartCondition([
-                            'name'   => $name2,
-                            'type'   => 'tax',
-                            'target' => 'item',
-                            'value'  => $rate2,
-                        ]);
-                    }
-                    $currency_attribute = $this->addCurrencyAttributes($id);
-                    if ($compound == 1) {
-                        return ['conditions' => [$taxCondition1, $taxCondition2], 'attributes' => ['tax' => [['name' => $name1, 'rate' => $rate1], ['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
-                    } else {
-                        return ['conditions' => $taxCondition2, 'attributes' => ['tax' => [['name' => $name2, 'rate' => $rate2]], 'currency' => $currency_attribute]];
-                    }
-                }
-            }
-        } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception('Can not check the tax');
-        }
-    }
 
     public function cartRemove(Request $request)
     {
@@ -557,27 +481,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-    public function addAddons($id)
-    {
-        $addon = $this->addons->where('id', $id)->first();
-        $isTaxApply = $addon->tax_addon;
-        $taxConditions = $this->CheckTax($isTaxApply);
-        $items = ['id' => 'addon'.$addon->id, 'name' => $addon->name, 'price' => $addon->selling_price, 'quantity' => 1];
-        $items = array_merge($items, $taxConditions);
-
-        return $items;
-    }
-
-    public function getProductAddons($productId)
-    {
-        $addons = [];
-        if ($this->addonRelation->where('product_id', $productId)->count() > 0) {
-            $addid = $this->addonRelation->where('product_id', $productId)->pluck('addon_id')->toArray();
-            $addons = $this->addons->whereIn('id', $addid)->get();
-        }
-
-        return $addons;
-    }
 
     /**
      * @return type
@@ -597,31 +500,7 @@ class CartController extends BaseCartController
         return redirect('show/cart');
     }
 
-    /**
-     * @param type $id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function licenceCart($id)
-    {
-        try {
-            $licence = $this->licence->where('id', $id)->first();
-            $isTaxApply = 0;
-            $taxConditions = $this->CheckTax($isTaxApply);
-            $items = ['id' => $licence->id, 'name' => $licence->name, 'price' => $licence->price, 'quantity' => 1, 'attributes' => ['number_of_sla' => $licence->number_of_sla]];
-            $items = array_merge($items, $taxConditions);
-            Cart::clear();
-            Cart::add($items);
-
-            return view('themes.default1.front.cart', compact('cartCollection'));
-        } catch (\Exception $ex) {
-            dd($ex);
-
-            throw new \Exception('Problem while adding licence to cart');
-        }
-    }
+    
 
     /**
      * @param type $id
@@ -782,29 +661,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @param type $slug
-     *
-     * @return type
-     */
-    public function addCartBySlug($slug)
-    {
-        try {
-            $sub = '';
-            if ($slug == 'helpdesk-with-kb-pro-edition') {
-                $id = 8;
-                $sub = 13;
-            }
-            if ($slug == 'helpdesk-and-kb-community') {
-                $id = 7;
-            }
-            $url = url("pricing?id=$id&subscription=$sub");
 
-            return \Redirect::to($url);
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     /**
      * @param type $code
@@ -866,9 +723,9 @@ class CartController extends BaseCartController
             if ($code) {
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
-                    $result = ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                    //return ['id' => $subregion->state_subdivision_code, 'name' => $subregion->state_subdivision_name];
-                }
+                    $result = ['id' => $subregion->state_subdivision_code,
+                     'name' => $subregion->state_subdivision_name];
+                    }
             }
 
             return $result;
@@ -1197,38 +1054,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function removePlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                Session::forget('plan');
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkPlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
+  
     /**
      * @throws \Exception
      *

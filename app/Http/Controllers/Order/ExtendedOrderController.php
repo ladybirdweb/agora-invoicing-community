@@ -45,7 +45,8 @@ class ExtendedOrderController extends Controller
             $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
         }
 
-        $join = $join->select('orders.id', 'orders.created_at', 'client', 'price_override', 'order_status', 'number', 'serial_key');
+        $join = $join->select('orders.id', 'orders.created_at', 'client', 
+            'price_override', 'order_status', 'number', 'serial_key');
 
         return $join;
     }

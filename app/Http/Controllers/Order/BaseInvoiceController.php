@@ -87,7 +87,8 @@ class BaseInvoiceController extends Controller
         $ut_gst = $user_state->ut_gst;
         $state_code = $user_state->state_code;
         if ($state_code == $origin_state) {//If user and origin state are same
-             $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
+             $taxClassId = TaxClass::where('name', 'Intra State GST')
+             ->pluck('id')->toArray(); //Get the class Id  of state
                if ($taxClassId) {
                    $taxes = $cartController->getTaxByPriority($taxClassId);
                    $value = $cartController->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
@@ -96,7 +97,8 @@ class BaseInvoiceController extends Controller
                }
         } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
 
-            $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
+            $taxClassId = TaxClass::where('name', 'Inter State GST')
+            ->pluck('id')->toArray(); //Get the class Id  of state
             if ($taxClassId) {
                 $taxes = $cartController->getTaxByPriority($taxClassId);
                 $value = $cartController->getValueForOtherState($productid, $i_gst, $taxClassId, $taxes);
@@ -104,7 +106,8 @@ class BaseInvoiceController extends Controller
                 $taxes = [0];
             }
         } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
-        $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
+        $taxClassId = TaxClass::where('name', 'Union Territory GST')
+        ->pluck('id')->toArray(); //Get the class Id  of state
          if ($taxClassId) {
              $taxes = $cartController->getTaxByPriority($taxClassId);
              $value = $cartController->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);
@@ -122,7 +125,9 @@ class BaseInvoiceController extends Controller
     public function getTaxWhenOtherCountry($geoip_state, $geoip_country, $productid)
     {
         $cartController = new CartController();
-        $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+        $taxClassId = Tax::where('state', $geoip_state)
+        ->orWhere('country', $geoip_country)
+        ->pluck('tax_classes_id')->first();
         $value = '';
         $rate = '';
         if ($taxClassId) { //if state equals the user State
@@ -199,7 +204,8 @@ class BaseInvoiceController extends Controller
             $payment_status = 'success';
             $payment_date = $request->input('payment_date');
             $amount = $request->input('amount');
-            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
+            $payment = $this->updateInvoicePayment($invoiceid, $payment_method, 
+                $payment_status, $payment_date, $amount);
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
@@ -250,8 +256,7 @@ class BaseInvoiceController extends Controller
                 $getExpiryStatus = $this->getExpiryStatus($start, $end, $now);
 
                 return $getExpiryStatus;
-            } else {
-            }
+            } 
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-expiry'));
         }

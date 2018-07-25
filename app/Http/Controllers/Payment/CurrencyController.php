@@ -47,7 +47,8 @@ class CurrencyController extends Controller
                             //return "<a href=" . url('products/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
                             //return "<a href=#create class='btn btn-primary pull-right' data-toggle=modal data-target=#edit".$model->id.">".\Lang::get('message.create')."</a>".  include base_path(). '/resources/views/themes/default1/payment/currency/edit.blade.php';
 
-                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' data-target=#edit".$model->id.'>'.
+                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' 
+                            data-target=#edit".$model->id.'>'.
                             /* @scrutinizer ignore-type */\Lang::get('message.edit')."</a>
         <div class='modal fade' id=edit".$model->id.">
 <div class='modal-dialog'>

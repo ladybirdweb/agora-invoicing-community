@@ -151,61 +151,7 @@ class GroupController extends Controller
         }
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param int $id
-     *
-     * @return \Response
-     */
-    // public function update($id, GroupRequest $request)
-    // {
-    //     try {
-    //         $group = $this->group->where('id', $id)->first();
-    //         $group->fill($request->input())->save();
-    //         /*
-    //          * Features
-    //          */
-    //         $selects = $this->feature->where('group_id', $id)->get();
-    //         if (!empty($selects)) {
-    //             foreach ($selects as $select) {
-    //                 if ($select) {
-    //                     $select->delete();
-    //                 }
-    //             }
-    //         }
-    //         $features = $request->input('features');
 
-    //         foreach ($features as $feature) {
-    //             $this->feature->create(['group_id' => $group->id, 'features' => $feature['name']]);
-    //         }
-    //         /*
-    //          * Configurations
-    //          */
-
-    //         $deletes = $this->config->where('group_id', $id)->get();
-    //         if (!empty($deletes)) {
-    //             foreach ($deletes as $delete) {
-    //                 if ($delete) {
-    //                     $delete->delete();
-    //                 }
-    //             }
-    //         }
-
-    //         $values = $request->input('value');
-    //         $prices = $request->input('price');
-    //         $title = $request->input('title');
-    //         $type = $request->input('type');
-    //         $c = count($prices);
-    //         for ($i = 0; $i < $c; $i++) {
-    //             $this->config->create(['group_id' => $group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
-    //         }
-
-    //         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-    //     } catch (\Exception $ex) {
-    //         return redirect()->back()->with('fails', $ex->getMessage());
-    //     }
-    // }
 
     /**
      * Remove the specified resource from storage.

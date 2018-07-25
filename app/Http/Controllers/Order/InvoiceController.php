@@ -471,7 +471,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
 
                     $taxClassId = Tax::where('country', '')->where('state', 'Any State')
-                     ->pluck('tax_classes_id')->first(); //In case of India when other tax is available and tax is not enabled
+                     ->pluck('tax_classes_id')->first(); //In case of India when 
+                     //other tax is available and tax is not enabled
                     if ($taxClassId) {
                         $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
                         $taxs = $rate['taxes'];
@@ -745,7 +746,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                     $payment_method = $payment->payment_method;
                 }
 
-                return view('themes.default1.invoice.payment', compact('invoice_status', 'payment_status', 'payment_method', 'invoice_id', 'domain', 'invoice'));
+                return view('themes.default1.invoice.payment',
+                 compact('invoice_status', 'payment_status',
+                  'payment_method', 'invoice_id', 'domain', 'invoice'));
             }
 
             return redirect()->back();
@@ -765,7 +768,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $promotion_value = $promotion->value;
             $planId = Plan::where('product', $productid)->pluck('id')->first();
             // dd($planId);
-            $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
+            $product_price = PlanPrice::where('plan_id', $planId)
+            ->where('currency', $currency)->pluck('add_price')->first();
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
 
             return $updated_price;
@@ -799,7 +803,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();
             $amount = $grand_total;
-            $paymentRenewal = $this->updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount);
+            $paymentRenewal = $this->updateInvoicePayment($invoiceid, $payment_method,
+             $payment_status, $payment_date, $amount);
 
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {

@@ -114,7 +114,8 @@ class BaseRenewController extends Controller
                 'status'      => 'pending',
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
-            $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id, $code, $product_cost, $currency, $qty = 1);
+            $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,
+             $code, $product_cost, $currency, $qty = 1);
 
             return $items;
         } catch (Exception $ex) {

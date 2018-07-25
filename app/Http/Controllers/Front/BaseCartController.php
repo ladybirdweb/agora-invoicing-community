@@ -98,7 +98,9 @@ class BaseCartController extends ExtendedBaseCartController
     {
         $value = '';
         $value = $taxes->toArray()[0]['active'] ?
-             (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
+             (TaxProductRelation::where('product_id', $productid)
+                ->where('tax_class_id', $taxClassId)
+                ->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
 
         return $value;
     }
@@ -107,7 +109,8 @@ class BaseCartController extends ExtendedBaseCartController
     {
         $otherRate = 0;
         $status = $taxes->toArray()[0]['active'];
-        if ($status && (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() > 0)) {
+        if ($status && (TaxProductRelation::where('product_id', $productid)
+            ->where('tax_class_id', $taxClassId)->count() > 0)) {
             $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
         }
 
@@ -234,7 +237,8 @@ class BaseCartController extends ExtendedBaseCartController
                     $qty = 1;
                 }
 
-                $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice, 'quantity' => $qty, 'attributes' => ['currency' => [[$currency]]]];
+                $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice,
+                 'quantity' => $qty, 'attributes' => ['currency' => [[$currency]]]];
                 $items = array_merge($items, $taxConditions);
 
                 return $items;
@@ -354,11 +358,45 @@ class BaseCartController extends ExtendedBaseCartController
     public static function findStateByRegionId($iso)
     {
         try {
-            $states = \App\Model\Common\State::where('country_code_char2', $iso)->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            $states = \App\Model\Common\State::where('country_code_char2', $iso)
+            ->pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
 
             return $states;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
+
+      /**
+     * @throws \Exception
+     */
+    public function removePlanSession()
+    {
+        try {
+            if (Session::has('plan')) {
+                Session::forget('plan');
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function checkPlanSession()
+    {
+        try {
+            if (Session::has('plan')) {
+                return true;
+            }
+
+            return false;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
 }

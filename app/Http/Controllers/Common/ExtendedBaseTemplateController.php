@@ -37,7 +37,8 @@ class ExtendedBaseTemplateController extends Controller
                                     <div class='modal-footer'>
                                         <button type=button id=close class='btn btn-default pull-left' 
                                         data-dismiss=modal>Close</button>
-                                        <input type=submit class='btn btn-primary' value="./* @scrutinizer ignore-type */
+                                        <input type=submit class='btn btn-primary' value=".
+                                        /** @scrutinizer ignore-type */
                                         \Lang::get('message.save').'>
                                     </div>
                                     '.\Form::close().'
@@ -85,7 +86,9 @@ class ExtendedBaseTemplateController extends Controller
             if (!$tax_relation) {
                 return $this->withoutTaxRelation($productid, $currency);
             }
-            $taxes = Tax::where('tax_classes_id', $tax_relation->tax_class_id)->where('active', 1)->orderBy('created_at', 'asc')->get();
+            $taxes = Tax::where('tax_classes_id', $tax_relation->tax_class_id)
+            ->where('active', 1)
+            ->orderBy('created_at', 'asc')->get();
             if (count($taxes) == 0) {
                 throw new \Exception('No taxes is avalable');
             }

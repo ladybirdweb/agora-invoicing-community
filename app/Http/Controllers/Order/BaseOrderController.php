@@ -29,11 +29,15 @@ class BaseOrderController extends ExtendedOrderController
         $url = '';
         if ($status == 'success') {
             if ($sub) {
-                $url = '<a href='.url('renew/'.$sub->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh' style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
+                $url = '<a href='.url('renew/'.$sub->id)." 
+                class='btn btn-sm btn-primary btn-xs'><i class='fa fa-refresh'
+                 style='color:white;'> </i>&nbsp;&nbsp;Renew</a>";
             }
         }
 
-        return '<p><a href='.url('orders/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
+        return '<p><a href='.url('orders/'.$model->id)." 
+        class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye'
+         style='color:white;'> </i>&nbsp;&nbsp;View</a> $url</p>";
     }
 
     /**
@@ -145,9 +149,10 @@ class BaseOrderController extends ExtendedOrderController
                     $ends_at = '';
                 }
                 $user_id = $this->order->find($orderid)->client;
-                $this->subscription->create(['user_id' => $user_id, 'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'version' => $version, 'product_id' =>$product]);
-                // dd($product);
-            }
+                $this->subscription->create(['user_id' => $user_id, 
+                    'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at,
+                     'version' => $version, 'product_id' =>$product]);
+                 }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 

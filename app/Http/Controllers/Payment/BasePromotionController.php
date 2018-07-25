@@ -61,7 +61,8 @@ class BasePromotionController extends Controller
             }
             if ($product->subscription != 1) {
                 $planId = Plan::where('product', $productid)->pluck('id')->first();
-                $product_price = PlanPrice::where('plan_id', $planId)->where('currency', $currency)->pluck('add_price')->first();
+                $product_price = PlanPrice::where('plan_id', $planId)
+                ->where('currency', $currency)->pluck('add_price')->first();
             } else {
                 $product_price = $control->planCost($planid, $userid);
             }

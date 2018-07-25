@@ -136,7 +136,7 @@ class BaseCronController extends Controller
     {
         $yesterday = new Carbon('today');
         $tomorrow = new Carbon('+2 days');
-        $sub = Subscription:: where('ends_at', '!=', '0000-00-00 00:00:00')
+        $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
                 ->whereNotNull('ends_at')
                 ->whereBetween('ends_at', [$yesterday, $tomorrow]);
 

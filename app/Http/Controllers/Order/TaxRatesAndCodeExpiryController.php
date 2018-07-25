@@ -174,9 +174,16 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         if ($items->count() > 0) {
             foreach ($items as $item) {
                 $content .= '<tr>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$invoice->number.'</td>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$item->product_name.'</td>'.
-                        '<td style="border-bottom: 1px solid#ccc; color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; padding: 15px 8px;" valign="top">'.$this->currency($invoiceid).' '.$item->subtotal.'</td>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; 
+                        font-family: Arial,sans-serif; font-size: 14px; line-height: 20px;
+                         padding: 15px 8px;" valign="top">'.$invoice->number.'</td>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; 
+                        font-family: Arial,sans-serif; font-size: 14px; line-height: 20px;
+                         padding: 15px 8px;" valign="top">'.$item->product_name.'</td>'.
+                        '<td style="border-bottom: 1px solid#ccc; color: #333; 
+                        font-family: Arial,sans-serif; font-size: 14px; line-height: 20px;
+                         padding: 15px 8px;" valign="top">'.$this->currency($invoiceid).' '
+                         .$item->subtotal.'</td>'.
                         '</tr>';
             }
         }
@@ -293,7 +300,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
         //check for the expiry date
         $expiry = $this->checkExpiry($code);
-        //dd($expiry);
         if ($expiry != 'success') {
             throw new \Exception(\Lang::get('message.usage-of-code-expired'));
         }

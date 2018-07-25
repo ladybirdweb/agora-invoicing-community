@@ -174,9 +174,7 @@ class TaxController extends Controller
             }
             $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
 
-            //  $classes=($txClass->name== 'others')?1:($txClass->name== 'Intra State GST')?2:($txClass->name== 'Inter State GST')?3:($txClass->name== 'Union Territory GST')?4:[];
-            // dd($classes);
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
+          $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
             if (count($classes) == 0) {
                 $classes = $this->tax_class->get();

@@ -82,9 +82,7 @@ class ClientController extends BaseClientController
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-
-                                // $timezone = Timezone::where('id',Auth::user()->timezone_id)->pluck('location')->first();
-                                $date = $model->created_at;
+                                 $date = $model->created_at;
 
                                 return $date;
                                 // $myobject->created_at->timezone($this->auth->user()->timezone);
@@ -97,10 +95,12 @@ class ClientController extends BaseClientController
                                 $status = $model->status;
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
-                                    $payment = '  <a href='.url('paynow/'.$model->id)." class='btn btn-primary btn-xs'>Pay Now</a>";
+                                    $payment = '  <a href='.url('paynow/'.$model->id).
+                                    " class='btn btn-primary btn-xs'>Pay Now</a>";
                                 }
 
-                                return '<p><a href='.url('my-invoice/'.$model->id)." class='btn btn-primary btn-xs'>View</a>".$payment.'</p>';
+                                return '<p><a href='.url('my-invoice/'.$model->id).
+                                " class='btn btn-primary btn-xs'>View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
@@ -149,10 +149,14 @@ class ClientController extends BaseClientController
                                 $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                                 $order_id = $order->id;
-                                $endDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
-                                if ($versions->created_at->toDateTimeString() < $endDate->ends_at->toDateTimeString()) {
-                                    return '<p><a href='.url('download/'.$productid.'/'.$clientid.'/'.$invoiceid.'/'.$versions->id)." class='btn btn-sm btn-primary'><i class='fa fa-download'></i>&nbsp;&nbsp;Download</a>"
-                                            .'&nbsp;
+                                $endDate = Subscription::select('ends_at')
+                                ->where('product_id', $productid)->where('order_id', $order_id)->first();
+                                if ($versions->created_at->toDateTimeString() 
+                                    < $endDate->ends_at->toDateTimeString()) {
+                                    return '<p><a href='.url('download/'.$productid.'/'
+                                        .$clientid.'/'.$invoiceid.'/'.$versions->id).
+                                " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+                                </i>&nbsp;&nbsp;Download</a>" .'&nbsp;
 
                                    </p>';
                                 } else {

@@ -50,8 +50,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     protected static $logOnlyDirty = true;
 
-    // protected static  $logAttributesToIgnore = ['user_name','company','zip','password','town','profile_pic','company_type','address','company_size', 'mobile_verified','timezone_id','bussiness','ip', 'skype'];
-
     public function getDescriptionForEvent(string $eventName): string
     {
         $lastActivity = Activity::all()->last(); //returns the last logged activity

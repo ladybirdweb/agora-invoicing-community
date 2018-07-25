@@ -39,30 +39,6 @@ class AddonController extends Controller
         }
     }
 
-    // public function getAddons()
-    // {
-    //     return \Datatable::collection($this->addon->get())
-    //                     ->addColumn('#', function ($model) {
-    //                         return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
-    //                     })
-    //                     ->showColumns('name', 'regular_price', 'selling_price')
-    //                     ->addColumn('associated', function ($model) {
-    //                         $relations = new ProductAddonRelation();
-    //                         $relations = $relations->where('addon_id', $model->id)->get();
-    //                         $products = [];
-    //                         foreach ($relations as $key => $relation) {
-    //                             $products[$key] = $this->product->where('id', $relation->product_id)->first()->name;
-    //                         }
-
-    //                         return implode(',', $products);
-    //                     })
-    //                     ->addColumn('action', function ($model) {
-    //                         return '<a href='.url('addons/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
-    //                     })
-    //                     ->searchColumns('name')
-    //                     ->orderColumns('name')
-    //                     ->make();
-    // }
 
     /**
      * Show the form for creating a new resource.

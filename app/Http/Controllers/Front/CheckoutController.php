@@ -242,8 +242,10 @@ class CheckoutController extends InfoController
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
-                return view('themes.default1.front.postCheckout', compact('amount', 'invoice_no', ' invoiceid', ' payment_method','phone', 'invoice', 'items', 'product', 'paynow', 'attributes','rzp_key','rzp_secret',
-                    'apilayer_key'));
+                return view('themes.default1.front.postCheckout', 
+                    compact('amount', 'invoice_no', ' invoiceid', ' payment_method',
+                        'phone', 'invoice', 'items', 'product', 'paynow', 'attributes',
+                        'rzp_key','rzp_secret','apilayer_key'));
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);

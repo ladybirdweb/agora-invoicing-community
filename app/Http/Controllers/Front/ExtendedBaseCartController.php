@@ -278,7 +278,8 @@ class ExtendedBaseCartController extends Controller
     public function getTaxWhenUnionTerritory($user_state, $origin_state,
         $productid, $c_gst, $ut_gst, $state_code, $status)
     {
-        $taxClassId = TaxClass::where('name', 'Union Territory GST')->pluck('id')->toArray(); //Get the class Id  of state
+        $taxClassId = TaxClass::where('name', 'Union Territory GST')
+        ->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
             $taxes = $this->getTaxByPriority($taxClassId);
             $value = $this->getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes);

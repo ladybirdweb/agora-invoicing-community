@@ -76,7 +76,8 @@ class BaseProductController extends Controller
             $check = self::checkMultiProduct($productid);
             if ($check == true) {
                 return "<div class='col-md-4 form-group'>
-	                        <label class='required'>"./* @scrutinizer ignore-type */\Lang::get('message.quantity')."</label>
+	                        <label class='required'>"./* @scrutinizer ignore-type */
+                            \Lang::get('message.quantity')."</label>
 	                        <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
 	                </div>";
             }
@@ -99,8 +100,10 @@ class BaseProductController extends Controller
                 $plans = $plan->pluck('name', 'id')->toArray();
                 $script = ''; //$this->getSubscriptionCheckScript();
                 $field = "<div class='col-md-4 form-group'>
-                        <label class='required'>"./* @scrutinizer ignore-type */ \Lang::get('message.subscription').'</label>
-                       '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null, ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
+                        <label class='required'>"./* @scrutinizer ignore-type */ 
+                        \Lang::get('message.subscription').'</label>
+                       '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null,
+                        ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
                 </div>'.$script;
             } else {
                 $userid = $request->input('user');
@@ -299,7 +302,8 @@ class BaseProductController extends Controller
 
             if ($product->retired == 1) {
                 $field .= "<div class='col-md-4 form-group'>
-	                        <label class='required'>"./* @scrutinizer ignore-type */ \Lang::get('message.description')."</label>
+	                        <label class='required'>"./* @scrutinizer ignore-type */
+                             \Lang::get('message.description')."</label>
 	                        <textarea name='description' class='form-control' id='description' placeholder='Description'></textarea>
 	                </div>";
             }

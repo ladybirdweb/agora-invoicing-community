@@ -141,6 +141,7 @@
          Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
           Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
          Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
+          Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
 
         /*
          * Client

@@ -258,7 +258,7 @@ class SettingsController extends BaseSettingsController
 
             return\ DataTables::of($email_log)
              ->addColumn('checkbox', function ($model) {
-                 return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
+                 return "<input type='checkbox' class='email' value=".$model->id.' name=select[] id=check>';
              })
                            ->addColumn('date', function ($model) {
                                return ucfirst($model->date);
@@ -311,6 +311,56 @@ class SettingsController extends BaseSettingsController
                     $activity = Activity::where('id', $id)->first();
                     if ($activity) {
                         $activity->delete();
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */     \Lang::get('message.failed').'
+
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                    </div>';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
+                }
+                echo "<div class='alert alert-success alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '
+                        ./* @scrutinizer ignore-type */\Lang::get('message.success').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.deleted-successfully').'
+                    </div>';
+            } else {
+                echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').
+                        '!</b> './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            './* @scrutinizer ignore-type */ \Lang::get('message.select-a-row').'
+                    </div>';
+                //echo \Lang::get('message.select-a-row');
+            }
+        } catch (\Exception $e) {
+            echo "<div class='alert alert-danger alert-dismissable'>
+                        <i class='fa fa-ban'></i>
+                        <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                        /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                        <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                            '.$e->getMessage().'
+                    </div>';
+        }
+    }
+
+    public function destroyEmail(Request $request)
+    {
+        try {
+            $ids = $request->input('select');
+            if (!empty($ids)) {
+                foreach ($ids as $id) {
+                    $email = \DB::table('email_log')->where('id', $id)->delete();
+                    if ($email) {
+                        // $email->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                         <i class='fa fa-ban'></i>

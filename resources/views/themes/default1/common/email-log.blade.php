@@ -50,12 +50,12 @@
 	
          
                            
-             <table id="activity-table" class="table display" cellspacing="0"  styleClass="borderless">
+             <table id="email-table" class="table display" cellspacing="0"  styleClass="borderless">
                      <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                      
                     <thead><tr>
 
-                            <th style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
 
                             <th>Date</th>
                             <th>From</th>
@@ -80,28 +80,10 @@
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <!--  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
 <script type="text/javascript">
-     function readmore(){
-                        var maxLength = 100;
-                        $("#activity-table tbody tr td").each(function(){
-                            var myStr = $(this).text();
-
-                           console.log(myStr);
-                            if($.trim(myStr).length > maxLength){
-                                var newStr = myStr.substring(0, maxLength);
-                                 $(this).empty().html(newStr);
-                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
-                                $(this).append('<span class="more-text">' + removedStr + '</span>');
-                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
-                            }
-                          }); 
-                         }
-        $('#activity-table').DataTable({
-             destroy: true,
-            // "initComplete": function(settings, json) {
-            //              readmore();
-            // },
-            processing: true,
-            serverSide: true,
+  
+        $('#email-table').DataTable({
+             processing: true,
+             serverSide: true,
              stateSave: true,
               order: [[ 0, "desc" ]],
             ajax: '{!! route('get-email') !!}',
@@ -119,7 +101,7 @@
             ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
-                 {data: 'date', name: 'date'},
+                {data: 'date', name: 'date'},
                 {data: 'from', name: 'from'},
                 {data: 'to', name: 'to'},
                  {data: 'cc', name: 'cc'},
@@ -137,8 +119,8 @@
             },
         });
     </script>
-<script>
-    $(document).on('click','#activity-table tbody tr td .read-more',function(){
+<!-- <script>
+    $(document).on('click','#email-table tbody tr td .read-more',function(){
         var text=$(this).siblings(".more-text").text().replace('read more...','');
         console.log(text)
         $(this).siblings(".more-text").html(text);
@@ -148,11 +130,11 @@
     $(function () {
     $('[data-toggle="popover"]').popover()
     })
-</script>
+</script> -->
     <script>
 
        function checking(e){
-              $('#activity-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+              $('#email-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
          }
          
 
@@ -160,13 +142,13 @@
           var id=[];
           if (confirm("Are you sure you want to delete this?"))
             {
-                $('.activity:checked').each(function(){
+                $('.email:checked').each(function(){
                   id.push($(this).val())
                 });
                 if(id.length >0)
                 { 
                    $.ajax({
-                          url:"{!! route('activity-delete') !!}",
+                          url:"{!! route('email-delete') !!}",
                           method:"get",
                           data: $('#check:checked').serialize(),
                           beforeSend: function () {

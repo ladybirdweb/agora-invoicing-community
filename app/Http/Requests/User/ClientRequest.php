@@ -62,7 +62,6 @@ class ClientRequest extends Request
                         'company_type'     => 'required',
                         'company_size'     => 'required',
                     ];
-                
             default:break;
         }
     }

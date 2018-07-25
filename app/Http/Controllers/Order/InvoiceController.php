@@ -282,7 +282,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $symbol = $attributes[0]['currency'][0]['code'];
             //dd($symbol);
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number, 'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending', 'currency' => $symbol]);
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
+             'date' => $date, 'grand_total' => $grand_total, 'status' => 'pending', 
+             'currency' => $symbol]);
 
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
@@ -625,7 +627,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $invoice = $this->invoice->findOrFail($invoiceid);
-            $payment = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
+            $payment = $this->payment->where('invoice_id', $invoiceid)
+            ->where('payment_status', 'success')->pluck('amount')->toArray();
             $total = array_sum($payment);
             if ($total < $invoice->grand_total) {
                 $invoice->status = 'pending';
@@ -662,7 +665,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $all_payments = $this->payment->where('invoice_id', $invoiceid)->where('payment_status', 'success')->pluck('amount')->toArray();
+            $all_payments = $this->payment
+            ->where('invoice_id', $invoiceid)
+            ->where('payment_status', 'success')
+            ->pluck('amount')->toArray();
             $total_paid = array_sum($all_payments);
             if ($total_paid >= $invoice->grand_total) {
                 $invoice_status = 'success';

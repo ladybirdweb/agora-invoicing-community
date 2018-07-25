@@ -192,7 +192,8 @@ class SocialMediaController extends Controller
             // Migrate over to SSL/TLS
             // Load the Tweets
             $tweets = $twitter->get('statuses/user_timeline', 
-                ['screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit]);
+                ['screen_name' => $username, 'exclude_replies' => 'true', 
+                'include_rts' => 'false', 'count' => $tweet_limit]);
             //dd($tweets);
             // Example output
             // Put this after fetching Tweets

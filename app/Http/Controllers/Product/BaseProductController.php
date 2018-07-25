@@ -9,7 +9,7 @@ use App\Model\Product\ProductUpload;
 use Bugsnag;
 use Illuminate\Http\Request;
 
-class BaseProductController extends Controller
+class BaseProductController extends ExtendedBaseProductController
 {
     public function getMyUrl()
     {

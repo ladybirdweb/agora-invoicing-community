@@ -59,7 +59,8 @@ class PlanController extends Controller
 
         return\ DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='plan_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='plan_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -80,7 +81,9 @@ class PlanController extends Controller
                             return ucfirst($response);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            return '<a href='.url('plans/'.$model->id.'/edit')." 
+                            class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
+                            style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'action'])
                         ->make(true);

@@ -70,11 +70,11 @@ class CartController extends BaseCartController
             $error = $ex->getMessage();
         }
 
-        $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+        $country = $this->findCountryByGeoip($location['countryCode']);
+        $states =  $this->findStateByRegionId($location['countryCode']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['countryCode'].'-'.$location['region'];
-        $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+        $state = $this->getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
         $currency = $cont->getCurrency($location);
 
@@ -425,9 +425,7 @@ class CartController extends BaseCartController
 
     public function otherRate($productid)
     {
-        // $taxClassOther = TaxClass::where('name', 'Others')->pluck('id')->toArray();
-        // $otherRate = TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassOther)->count() ? Tax::where('tax_classes_id', $taxClassOther)->first()->rate : '';
-        $otherRate = '';
+         $otherRate = '';
 
         return $otherRate;
     }

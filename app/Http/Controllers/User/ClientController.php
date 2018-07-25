@@ -262,7 +262,7 @@ class ClientController extends AdvanceSearchController
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.user.client.edit', 
+            return view('themes.default1.user.client.edit',
                 compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/laravel.log');
@@ -379,8 +379,8 @@ class ClientController extends AdvanceSearchController
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name, 
-        'username' => $user->email, 'password' => $str, 'url' => $url];
+        $replace = ['name' => $user->first_name.' '.$user->last_name,
+        'username'         => $user->email, 'password' => $str, 'url' => $url, ];
         $type = '';
         if ($template) {
             $type_id = $template->type;

@@ -94,7 +94,7 @@ class RazorpayController extends Controller
 
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
-                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
+                throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }
     }

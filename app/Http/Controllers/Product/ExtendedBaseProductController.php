@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Product;
 
-use Illuminate\Http\Request;
-use App\Model\Product\Product;
-use App\Model\Product\ProductUpload;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\TaxProductRelation;
+use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
+use Illuminate\Http\Request;
 
 class ExtendedBaseProductController extends Controller
 {
-
     public function getUpload($id)
     {
         $new_upload = ProductUpload::where('product_id', '=', $id)
@@ -49,7 +48,7 @@ class ExtendedBaseProductController extends Controller
     ->make(true);
     }
 
-     //Update the File Info
+    //Update the File Info
     public function uploadUpdate($id, Request $request)
     {
         $file_upload = ProductUpload::find($id);
@@ -69,7 +68,6 @@ class ExtendedBaseProductController extends Controller
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 
-
     public function saveTax($taxes, $product_id)
     {
         if ($taxes) {
@@ -84,7 +82,6 @@ class ExtendedBaseProductController extends Controller
 
         return $newTax;
     }
-
 
     public function getProductField($productid)
     {
@@ -109,5 +106,4 @@ class ExtendedBaseProductController extends Controller
             return $ex->getMessage();
         }
     }
-
 }

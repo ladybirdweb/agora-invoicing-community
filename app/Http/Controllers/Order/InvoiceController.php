@@ -478,8 +478,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 } elseif ($this->tax_option->tax_enable == 0) {//if tax_enable is 0
 
                     $taxClassId = Tax::where('country', '')->where('state', 'Any State')
-                     ->pluck('tax_classes_id')->first(); //In case of India when 
-                     //other tax is available and tax is not enabled
+                     ->pluck('tax_classes_id')->first(); //In case of India when
+                    //other tax is available and tax is not enabled
                     if ($taxClassId) {
                         $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
                         $taxs = $rate['taxes'];

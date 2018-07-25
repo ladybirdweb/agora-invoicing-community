@@ -13,7 +13,7 @@ class BaseSettingsController extends Controller
      */
     public function getNewEntry($properties, $model)
     {
-        $properties = (array_key_exists('attributes', $properties->toArray())) 
+        $properties = (array_key_exists('attributes', $properties->toArray()))
         ? ($model->properties['attributes']) : null;
 
         $display = [];

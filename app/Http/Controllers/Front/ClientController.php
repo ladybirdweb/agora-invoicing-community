@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Github\GithubApiController;
-use App\Model\Common\Timezone;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
@@ -82,7 +81,7 @@ class ClientController extends BaseClientController
                                 return $model->number;
                             })
                             ->addColumn('date', function ($model) {
-                                 $date = $model->created_at;
+                                $date = $model->created_at;
 
                                 return $date;
                                 // $myobject->created_at->timezone($this->auth->user()->timezone);
@@ -151,12 +150,12 @@ class ClientController extends BaseClientController
                                 $order_id = $order->id;
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
-                                if ($versions->created_at->toDateTimeString() 
+                                if ($versions->created_at->toDateTimeString()
                                     < $endDate->ends_at->toDateTimeString()) {
                                     return '<p><a href='.url('download/'.$productid.'/'
                                         .$clientid.'/'.$invoiceid.'/'.$versions->id).
                                 " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-                                </i>&nbsp;&nbsp;Download</a>" .'&nbsp;
+                                </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
                                    </p>';
                                 } else {

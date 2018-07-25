@@ -238,7 +238,7 @@ class BaseCartController extends ExtendedBaseCartController
                 }
 
                 $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice,
-                 'quantity' => $qty, 'attributes' => ['currency' => [[$currency]]]];
+                 'quantity'    => $qty, 'attributes' => ['currency' => [[$currency]]], ];
                 $items = array_merge($items, $taxConditions);
 
                 return $items;

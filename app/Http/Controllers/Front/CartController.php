@@ -450,7 +450,6 @@ class CartController extends BaseCartController
         return $value;
     }
 
-
     public function cartRemove(Request $request)
     {
         $id = $request->input('id');
@@ -483,7 +482,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-
     /**
      * @return type
      */
@@ -501,8 +499,6 @@ class CartController extends BaseCartController
 
         return redirect('show/cart');
     }
-
-    
 
     /**
      * @param type $id
@@ -665,8 +661,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
     /**
      * @param type $code
      *
@@ -728,11 +722,11 @@ class CartController extends BaseCartController
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code,
+
                      'name' => $subregion->state_subdivision_name];
                     }
             
-
-            return $result;
+          return $result;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -1090,7 +1084,6 @@ class CartController extends BaseCartController
         }
     }
 
-  
     /**
      * @throws \Exception
      *

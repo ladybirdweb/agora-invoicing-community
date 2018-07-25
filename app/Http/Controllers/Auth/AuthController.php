@@ -264,8 +264,8 @@ class AuthController extends BaseAuthController
             $method = 'POST';
             //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
-            $response = ['type' => 'success', 'proceed' => $check, 
-            'email' => $email, 'message' => 'Activation link has been sent to '.$email];
+            $response = ['type' => 'success', 'proceed' => $check,
+            'email'             => $email, 'message' => 'Activation link has been sent to '.$email, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {

@@ -300,7 +300,7 @@ class TaxController extends Controller
             $id = $stateid;
             $states = \App\Model\Common\State::where('country_code_char2', $id)
             ->orderBy('state_subdivision_name', 'asc')->get();
-             echo '<option value=>Select a State</option>';
+            echo '<option value=>Select a State</option>';
             foreach ($states as $state) {
                 echo '<option value='.$state->state_subdivision_code.'>'.$state->state_subdivision_name.'</option>';
             }
@@ -347,7 +347,7 @@ class TaxController extends Controller
                                         ->withErrors($v)
                                         ->withInput();
                 }
-                $this->tax_class->fill($request->except('tax-name', 'level', 
+                $this->tax_class->fill($request->except('tax-name', 'level',
                   'active', 'country', 'country1', 'rate'))->save();
                 $country = ($request->input('rate')) ? $request->input('country') : $request->input('country1');
 

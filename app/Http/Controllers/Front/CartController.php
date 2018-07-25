@@ -302,8 +302,8 @@ class CartController extends BaseCartController
                                }
                                $rate = $value;
                                foreach ($taxes as $key => $tax) {
-                                   $tax_attribute[$key] = ['name' => $tax->name, 
-                                   'rate' => $value, 'tax_enable'=>0, 'status' => $status];
+                                   $tax_attribute[$key] = ['name' => $tax->name,
+                                   'rate'                         => $value, 'tax_enable'=>0, 'status' => $status, ];
                                    $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
 
                                             'name'   => $tax->name,
@@ -327,8 +327,8 @@ class CartController extends BaseCartController
                                    $rate = $value;
                                }
                                foreach ($taxes as $key => $tax) {
-                                   $tax_attribute[$key] = ['name' => $tax->name, 
-                                   'rate' => $value, 'tax_enable'=>0, 'status' => $status];
+                                   $tax_attribute[$key] = ['name' => $tax->name,
+                                   'rate'                         => $value, 'tax_enable'=>0, 'status' => $status, ];
                                    $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
 
                                             'name'   => $tax->name,
@@ -512,7 +512,7 @@ class CartController extends BaseCartController
                     ]
             );
         } catch (\Exception $ex) {
-          return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -535,7 +535,7 @@ class CartController extends BaseCartController
 
             return $currency;
         } catch (\Exception $ex) {
-          //catch exception here
+            //catch exception here
         }
     }
 
@@ -716,15 +716,15 @@ class CartController extends BaseCartController
     {
         try {
             $result = ['id' => '', 'name' => ''];
-            
-                $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
-                if ($subregion) {
-                    $result = ['id' => $subregion->state_subdivision_code,
 
-                     'name' => $subregion->state_subdivision_name];
-                    }
-            
-          return $result;
+            $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
+            if ($subregion) {
+                $result = ['id' => $subregion->state_subdivision_code,
+
+                     'name' => $subregion->state_subdivision_name, ];
+            }
+
+            return $result;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -960,7 +960,7 @@ class CartController extends BaseCartController
         }
     }
 
-          /**
+    /**
      * @throws \Exception
      */
     public function removePlanSession()

@@ -366,7 +366,4 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
-
-
-
 }

@@ -24,7 +24,7 @@ class ClientRequest extends Request
     public function rules()
     {
         switch ($this->method()) {
-            case 'POST': 
+            case 'POST':
                     return [
                         'first_name' => 'required',
                         'last_name'  => 'required',
@@ -42,9 +42,8 @@ class ClientRequest extends Request
                         'company_type'     => 'required',
                         'company_size'     => 'required',
                     ];
-                
 
-            case 'PATCH': 
+            case 'PATCH':
                 $id = $this->segment(2);
 
                     return [
@@ -62,6 +61,7 @@ class ClientRequest extends Request
                         'company_type'     => 'required',
                         'company_size'     => 'required',
                     ];
+
             default:break;
         }
     }

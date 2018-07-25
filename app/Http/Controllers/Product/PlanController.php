@@ -167,7 +167,7 @@ class PlanController extends Controller
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
 
-        return view('themes.default1.product.plan.edit', 
+        return view('themes.default1.product.plan.edit',
             compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
     }
 

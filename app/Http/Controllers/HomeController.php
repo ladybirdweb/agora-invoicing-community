@@ -84,8 +84,8 @@ class HomeController extends BaseHomeController
             $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
             $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             \Log::emergency(json_encode(['domain' => $request
-                ->input('domain'), 'enc_serial' => $faveo_encrypted_key, 
-                'enc_order' => $faveo_encrypted_order_number]));
+                ->input('domain'), 'enc_serial' => $faveo_encrypted_key,
+                'enc_order' => $faveo_encrypted_order_number, ]));
             $request_type = $request->input('request_type');
             $faveo_name = $request->input('name');
             $faveo_version = $request->input('version');
@@ -151,7 +151,7 @@ class HomeController extends BaseHomeController
     public static function decryptByFaveoPrivateKeyold($encrypted)
     {
         try {
-            
+
             // Get the private Key
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);

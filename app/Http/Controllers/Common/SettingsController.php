@@ -352,8 +352,6 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-  
-
     public function postSettingsError(Setting $settings, Request $request)
     {
         try {

@@ -69,7 +69,7 @@ class BaseSettingsController extends Controller
         return $newDate;
     }
 
-      public function destroyEmail(Request $request)
+    public function destroyEmail(Request $request)
     {
         try {
             $ids = $request->input('select');

@@ -106,7 +106,7 @@ namespace App\Http\Controllers\Product;
                 $new_product = Product::select('id', 'name', 'type', 'group')->get();
 
                 return\ DataTables::of($new_product)
-          
+
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' 
                                 value=".$model->id.' name=select[] id=check>';

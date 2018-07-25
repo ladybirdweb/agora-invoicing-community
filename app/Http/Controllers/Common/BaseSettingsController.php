@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\Http\Controllers\Controller;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class BaseSettingsController extends Controller
 {

@@ -255,6 +255,7 @@ class CheckoutController extends InfoController
                         'product', 'items', 'attributes', 'state'))->render();
                 }
                 \Cart::clear();
+
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
@@ -357,11 +358,11 @@ class CheckoutController extends InfoController
 
             $planid = $this->price->where('product_id', $id)->first()->subscription;
 
-            $or = $this->order->create(['client' => $client, 
-                'payment_method' => $payment_method, 'promotion_code' => $promotion_code, 
-                'order_status' => $order_status, 'serial_key' => $serial_key, 
-                'product' => $product, 'addon' => $addon, 'domain' => $domain, 
-                'price_override' => $price_override, 'qty' => $qty]);
+            $or = $this->order->create(['client' => $client,
+                'payment_method'                 => $payment_method, 'promotion_code' => $promotion_code,
+                'order_status'                   => $order_status, 'serial_key' => $serial_key,
+                'product'                        => $product, 'addon' => $addon, 'domain' => $domain,
+                'price_override'                 => $price_override, 'qty' => $qty, ]);
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
@@ -387,7 +388,7 @@ class CheckoutController extends InfoController
                 $ends_at = '';
             }
             $this->subscription->create(['user_id' => \Auth::user()->id,
-             'plan_id' => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at]);
+             'plan_id'                             => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, ]);
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
@@ -405,8 +406,8 @@ class CheckoutController extends InfoController
             $date = \Carbon\Carbon::now();
             $grand_total = \Cart::getSubTotal();
 
-            $invoice = $this->invoice->create(['user_id' => $user_id, 
-                'number' => $number, 'date' => $date, 'grand_total' => $grand_total]);
+            $invoice = $this->invoice->create(['user_id' => $user_id,
+                'number'                                 => $number, 'date' => $date, 'grand_total' => $grand_total, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
@@ -438,10 +439,10 @@ class CheckoutController extends InfoController
 
             //dd($tax_name);
 
-            $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid, 
-                'product_name' => $product_name, 'regular_price' => $regular_price, 
-                'quantity' => $quantity, 'tax_name' => $tax_name,
-                 'tax_percentage' => $tax_percentage, 'subtotal' => $subtotal]);
+            $invoiceItem = $this->invoiceItem->create(['invoice_id' => $invoiceid,
+                'product_name'                                      => $product_name, 'regular_price' => $regular_price,
+                'quantity'                                          => $quantity, 'tax_name' => $tax_name,
+                 'tax_percentage'                                   => $tax_percentage, 'subtotal' => $subtotal, ]);
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());

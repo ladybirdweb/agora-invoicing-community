@@ -135,8 +135,6 @@ class TaxController extends Controller
                           ->make(true);
     }
 
-    
-
     /**
      * Show the form for editing the specified resource.
      *

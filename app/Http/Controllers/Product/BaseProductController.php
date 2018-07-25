@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;

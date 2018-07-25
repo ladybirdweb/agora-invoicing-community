@@ -184,8 +184,9 @@ class ClientController extends BaseClientController
         try {
             $products = $this->product::where('id', $productid)
             ->select('name', 'version', 'github_owner', 'github_repository')->get();
-            $owner = '';  $repo = '';
-           foreach ($products as $product) {
+            $owner = '';
+            $repo = '';
+            foreach ($products as $product) {
                 $owner = $product->github_owner;
                 $repo = $product->github_repository;
             }
@@ -193,6 +194,7 @@ class ClientController extends BaseClientController
             $link = $this->github_api->getCurl1($url);
             $link = $link['body'];
             $link = (array_slice($link, 0, 10, true));
+
             return \DataTables::of($link)
                             ->addColumn('version', function ($link) {
                                 return ucfirst($link['tag_name']);
@@ -202,7 +204,8 @@ class ClientController extends BaseClientController
                             })
                             ->addColumn('description', function ($link) {
                                 $markdown = Markdown::convertToHtml(ucfirst($link['body']));
-                                 return $markdown;
+
+                                return $markdown;
                             })
                             ->addColumn('file', function ($link) use ($invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
@@ -211,9 +214,11 @@ class ClientController extends BaseClientController
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
                                     $actionButton = $this->getActionButton($link, $orderEndDate);
+
                                     return $actionButton;
                                 } elseif (!$orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
+
                                     return '<p><a href='.$link['header']['Location']
                                     ." class='btn btn-sm btn-primary'>Download  </a>"
                                             .'&nbsp;

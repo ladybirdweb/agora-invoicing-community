@@ -8,7 +8,6 @@ use App\Model\Payment\Currency;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
-use App\Model\Payment\TaxClass;
 use App\Model\Payment\TaxOption;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
@@ -71,7 +70,7 @@ class CartController extends BaseCartController
         }
 
         $country = $this->findCountryByGeoip($location['countryCode']);
-        $states =  $this->findStateByRegionId($location['countryCode']);
+        $states = $this->findStateByRegionId($location['countryCode']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = $this->getStateByCode($state_code);
@@ -425,7 +424,7 @@ class CartController extends BaseCartController
 
     public function otherRate($productid)
     {
-         $otherRate = '';
+        $otherRate = '';
 
         return $otherRate;
     }

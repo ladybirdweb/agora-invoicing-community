@@ -324,8 +324,20 @@ class GithubController extends Controller
                     $ver[] = $value['tag_name'];
                 }
             }
-            //For Satellite Helpdesk
-            if ($repo == 'faveo-satellite-helpdesk-advance') {
+            $url = $this->getUrl($repo,$ver);
+            $link = $this->github_api->getCurl1($url);
+            return $link['header'];
+        } catch (Exception $ex) {
+             Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getUrl($repo)
+    {
+        //For Satellite Helpdesk
+         if ($repo == 'faveo-satellite-helpdesk-advance') {
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
             }
 
@@ -335,20 +347,9 @@ class GithubController extends Controller
             }
             //For Service Desk Advance
             if ($repo == 'faveo-service-desk-pro') {
-                dd('dfd');
                 $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
             }
-
-            $link = $this->github_api->getCurl1($url);
-
-            return $link['header'];
-        } catch (Exception $ex) {
-            dd($ex->getline());
-
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
+       return $url;
     }
 
     //Github Download for Admin

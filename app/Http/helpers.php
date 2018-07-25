@@ -15,7 +15,7 @@ function mime($type)
     if ($type == 'jpg' ||
             $type == 'png' ||
             $type == 'jpeg' ||
-            $type == 'gif' 
+            $type == 'gif' ||
             starts_with($type, 'image')) {
         return 'image';
     }

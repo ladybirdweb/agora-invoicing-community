@@ -303,7 +303,8 @@ class BaseProductController extends ExtendedBaseProductController
                 $field .= "<div class='col-md-4 form-group'>
 	                        <label class='required'>"./* @scrutinizer ignore-type */
                              \Lang::get('message.description')."</label>
-	                        <textarea name='description' class='form-control' id='description' placeholder='Description'></textarea>
+	                        <textarea name='description' class='form-control'
+                             id='description' placeholder='Description'></textarea>
 	                </div>";
             }
 

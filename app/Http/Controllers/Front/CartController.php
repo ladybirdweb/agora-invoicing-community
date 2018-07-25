@@ -146,11 +146,6 @@ class CartController extends BaseCartController
                     }
                 }
             }
-            // if ($cart_currency != $currency) {
-            //     return redirect('show/cart');
-            // }
-            //dd(Cart::getContent());
-
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
             //dd($ex);
@@ -437,11 +432,6 @@ class CartController extends BaseCartController
           ->where('tax_class_id', $taxClassId)->count() > 0)) {
             $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
         }
-
-        // $value= $taxes->toArray()[0]['active'] ?
-        //  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() != 0) ?
-        //  $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-
         $value = $otherRate.'%';
 
         return $value;
@@ -944,19 +934,24 @@ class CartController extends BaseCartController
                 }
             }
             if ($userid != '') {
-                $user = new \App\User();
-                $currency = $user->find($userid)->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                } else {
-                    $currency = 'INR';
-                }
+               $currency = $this->getCurrency($userid);
             }
-            // dd($currency);
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
+    }
+
+    public function getCurrency($userid)
+    {
+      $user = new \App\User();
+      $currency = $user->find($userid)->currency;
+      if ($currency == 'USD' || $currency == '1') {
+          $currency = 'USD';
+      } else {
+          $currency = 'INR';
+      }
+      return $currency;
     }
 
     /**

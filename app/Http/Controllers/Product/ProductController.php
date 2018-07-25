@@ -533,32 +533,7 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-        public function adminDownload($id, $invoice = '', $api = false)
-        {
-            try {
-                $role = \Auth::user()->role;
-                $release = $this->getLinkToDownload($role, $invoice, $id);
 
-                if (is_array($release) && array_key_exists('type', $release)) {
-                    header('Location: '.$release['release']);
-                    exit;
-                } else {
-                    header('Content-type: Zip');
-                    header('Content-Description: File Transfer');
-                    header('Content-Disposition: attachment; filename=Faveo.zip');
-                    header('Content-Length: '.filesize($release));
-                    flush();
-                    readfile("$release");
-                }
-            } catch (\Exception $e) {
-                if ($api) {
-                    return response()->json(['error'=>$e->getMessage()]);
-                }
-                Bugsnag::notifyException($e);
-
-                return redirect()->back()->with('fails', $e->getMessage());
-            }
-        }
 
         public function getSubscriptionCheckScript()
         {

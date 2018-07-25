@@ -147,7 +147,8 @@ class BundleController extends Controller
                 $from = null;
             }
 
-            return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
+            return view('themes.default1.product.bundle.edit',
+             compact('products', 'bundle', 'relation', 'till', 'from'));
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         } catch (\InvalidArgumentException $e) {

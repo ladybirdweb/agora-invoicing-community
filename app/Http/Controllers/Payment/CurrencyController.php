@@ -34,7 +34,8 @@ class CurrencyController extends Controller
     {
         return \DataTables::of($this->currency->select('name', 'id')->where('id', '!=', 1)->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='currency_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='currency_checkbox'
+                             value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return $model->name;
@@ -44,17 +45,15 @@ class CurrencyController extends Controller
                         })
                         // ->showColumns('name', 'base_conversion')
                         ->addColumn('action', function ($model) {
-                            //return "<a href=" . url('products/' . $model->id . '/edit') . " class='btn btn-sm btn-primary'>Edit</a>";
-                            //return "<a href=#create class='btn btn-primary pull-right' data-toggle=modal data-target=#edit".$model->id.">".\Lang::get('message.create')."</a>".  include base_path(). '/resources/views/themes/default1/payment/currency/edit.blade.php';
-
-                            return "<a href=#edit class='btn btn-primary' data-toggle='modal' 
+                          return "<a href=#edit class='btn btn-primary' data-toggle='modal' 
                             data-target=#edit".$model->id.'>'.
                             /* @scrutinizer ignore-type */\Lang::get('message.edit')."</a>
         <div class='modal fade' id=edit".$model->id.">
 <div class='modal-dialog'>
     <div class='modal-content'>
         <div class='modal-header'>
-            <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+            <button type='button' class='close' data-dismiss='modal'
+             aria-label='Close'><span aria-hidden='true'>&times;</span></button>
             <h4 class='modal-title'>Edit Currency</h4>
         </div>
         ".Form::model($model, ['url' => 'currency/'.$model->id, 'method' => 'patch'])."

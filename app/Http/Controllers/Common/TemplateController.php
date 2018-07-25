@@ -123,7 +123,8 @@ class TemplateController extends BaseTemplateController
     {
         return \DataTables::of($this->template->select('id', 'name', 'type')->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='template_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='template_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
 
                          ->addColumn('name', function ($model) {
@@ -133,7 +134,8 @@ class TemplateController extends BaseTemplateController
                             return $this->type->where('id', $model->type)->first()->name;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('templates/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('templates/'.$model->id.'/edit').
+                            " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);
@@ -269,7 +271,8 @@ class TemplateController extends BaseTemplateController
         }
     }
 
-    public function mailing($from, $to, $data, $subject, $replace = [], $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
+    public function mailing($from, $to, $data, $subject, $replace = [],
+     $type = '', $fromname = '', $toname = '', $cc = [], $attach = [])
     {
         try {
             $transform = [];
@@ -278,7 +281,8 @@ class TemplateController extends BaseTemplateController
             $data = $page_controller->transform($type, $data, $transform);
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
-            \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
+            \Mail::send('emails.mail', ['data' => $data], function ($m)
+             use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);

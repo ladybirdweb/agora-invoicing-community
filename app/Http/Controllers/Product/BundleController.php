@@ -46,7 +46,8 @@ class BundleController extends Controller
 
     public function getBundles()
     {
-        return \Datatable::collection($this->bundle->select('id', 'name', 'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
+        return \Datatable::collection($this->bundle->select('id', 'name',
+         'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -62,7 +63,8 @@ class BundleController extends Controller
                             return implode(',', $result);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('bundles/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('bundles/'.$model->id.'/edit').
+                            " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name', 'item')
                         ->orderColumns('name')
@@ -153,7 +155,8 @@ class BundleController extends Controller
                 $till = null;
                 $from = null;
 
-                return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
+                return view('themes.default1.product.bundle.edit',
+                 compact('products', 'bundle', 'relation', 'till', 'from'));
             }
         }
     }

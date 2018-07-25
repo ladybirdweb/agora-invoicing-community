@@ -302,7 +302,8 @@ class CartController extends BaseCartController
                                }
                                $rate = $value;
                                foreach ($taxes as $key => $tax) {
-                                   $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $value, 'tax_enable'=>0, 'status' => $status];
+                                   $tax_attribute[$key] = ['name' => $tax->name, 
+                                   'rate' => $value, 'tax_enable'=>0, 'status' => $status];
                                    $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
 
                                             'name'   => $tax->name,
@@ -326,7 +327,8 @@ class CartController extends BaseCartController
                                    $rate = $value;
                                }
                                foreach ($taxes as $key => $tax) {
-                                   $tax_attribute[$key] = ['name' => $tax->name, 'rate' => $value, 'tax_enable'=>0, 'status' => $status];
+                                   $tax_attribute[$key] = ['name' => $tax->name, 
+                                   'rate' => $value, 'tax_enable'=>0, 'status' => $status];
                                    $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
 
                                             'name'   => $tax->name,
@@ -516,6 +518,7 @@ class CartController extends BaseCartController
                     ]
             );
         } catch (\Exception $ex) {
+          return redirect()->back()->with('fails',$ex->getMessage());
         }
     }
 
@@ -538,6 +541,7 @@ class CartController extends BaseCartController
 
             return $currency;
         } catch (\Exception $ex) {
+          //catch exception here
         }
     }
 
@@ -720,13 +724,13 @@ class CartController extends BaseCartController
     {
         try {
             $result = ['id' => '', 'name' => ''];
-            if ($code) {
+            
                 $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
                 if ($subregion) {
                     $result = ['id' => $subregion->state_subdivision_code,
                      'name' => $subregion->state_subdivision_name];
                     }
-            }
+            
 
             return $result;
         } catch (\Exception $ex) {
@@ -938,7 +942,7 @@ class CartController extends BaseCartController
     {
         try {
             $currency = 'INR';
-            if ($this->checkCurrencySession() == true) {
+            if ($this->checkCurrencySession() === true) {
                 $currency = Session::get('currency');
             }
 
@@ -959,6 +963,38 @@ class CartController extends BaseCartController
             }
             // dd($currency);
             return $currency;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+          /**
+     * @throws \Exception
+     */
+    public function removePlanSession()
+    {
+        try {
+            if (Session::has('plan')) {
+                Session::forget('plan');
+            }
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
+    /**
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function checkPlanSession()
+    {
+        try {
+            if (Session::has('plan')) {
+                return true;
+            }
+
+            return false;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
@@ -1028,11 +1064,11 @@ class CartController extends BaseCartController
         try {
             $cost = 0;
             $subscription = $this->allowSubscription($productid);
-            if ($this->checkPlanSession() == true) {
+            if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
 
-            if ($subscription == true) {
+            if ($subscription === true) {
                 $plan = new \App\Model\Payment\Plan();
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
 

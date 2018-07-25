@@ -367,36 +367,6 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-      /**
-     * @throws \Exception
-     */
-    public function removePlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                Session::forget('plan');
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkPlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
 }

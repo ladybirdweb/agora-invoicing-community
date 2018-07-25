@@ -80,7 +80,9 @@ class OrderController extends BaseOrderController
             $till = $request->input('till');
             $domain = $request->input('domain');
 
-            return view('themes.default1.order.index', compact('products', 'order_no', 'product_id', 'expiry', 'from', 'till', 'domain'));
+            return view('themes.default1.order.index', 
+                compact('products', 'order_no', 'product_id', 
+                    'expiry', 'from', 'till', 'domain'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -101,7 +103,8 @@ class OrderController extends BaseOrderController
         return\ DataTables::of($query->get())
 
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='order_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='order_checkbox' value=".
+                            $model->id.' name=select[] id=check>';
                         })
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
@@ -183,7 +186,8 @@ class OrderController extends BaseOrderController
             $invoiceItems = $this->invoice_items->where('invoice_id', $invoiceid)->get();
             $user = $this->user->find($invoice->user_id);
 
-            return view('themes.default1.order.show', compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
+            return view('themes.default1.order.show', 
+                compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
         } catch (\Exception $ex) {
             Bugsnag::notifyExeption($ex);
 
@@ -207,7 +211,8 @@ class OrderController extends BaseOrderController
             $subscription = $this->subscription->pluck('name', 'id')->toArray();
             $promotion = $this->promotion->pluck('code', 'id')->toArray();
 
-            return view('themes.default1.order.edit', compact('clients', 'product', 'subscription', 'promotion', 'order'));
+            return view('themes.default1.order.edit', 
+                compact('clients', 'product', 'subscription', 'promotion', 'order'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 

@@ -43,7 +43,8 @@ class ServiceController extends Controller
                             //return $this->product->plan()->name;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('products/'.$model->id.'/edit')
+                            ." class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')

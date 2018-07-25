@@ -31,7 +31,8 @@ class PageController extends GetPageTemplateController
     {
         return \DataTables::of($this->page->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='page_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='page_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -47,7 +48,8 @@ class PageController extends GetPageTemplateController
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('pages/'.$model->id.'/edit')
+                            ." class='btn btn-sm btn-primary'>Edit</a>";
                         })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'content', 'action'])

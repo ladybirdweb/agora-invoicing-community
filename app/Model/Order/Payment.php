@@ -7,7 +7,8 @@ use App\BaseModel;
 class Payment extends BaseModel
 {
     protected $table = 'payments';
-    protected $fillable = ['parent_id', 'invoice_id', 'amount', 'payment_method', 'user_id', 'payment_status', 'created_at'];
+    protected $fillable = ['parent_id', 'invoice_id', 'amount',
+     'payment_method', 'user_id', 'payment_status', 'created_at'];
 
     public function invoice()
     {

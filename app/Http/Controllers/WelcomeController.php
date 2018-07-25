@@ -36,8 +36,7 @@ class WelcomeController extends Controller
 
     public function countryCount()
     {
-        $users = \App\User::
-                leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
+        $users = \App\User::leftJoin('countries', 'users.country', '=', 'countries.country_code_char2')
                 ->select('countries.nicename as Country', \DB::raw('COUNT(users.id) as count'))
                 ->groupBy('users.country')
                 ->get()

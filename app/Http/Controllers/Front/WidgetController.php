@@ -48,7 +48,8 @@ class WidgetController extends Controller
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('widgets/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('widgets/'.$model->id.'/edit')."
+                             class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->rawColumns(['name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);

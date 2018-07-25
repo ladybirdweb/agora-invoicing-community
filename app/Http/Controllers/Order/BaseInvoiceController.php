@@ -57,8 +57,8 @@ class BaseInvoiceController extends Controller
             $grand_total = \App\Http\Controllers\Front\CartController::rounding($grand_total);
 
             $invoice = Invoice::create(['user_id' => $user_id,
-                'number'                          => $number, 'date' => $date, 'grand_total' => $grand_total,
-                'currency'                        => $currency, 'status' => 'pending', 'description' => $description, ]);
+                'number'   => $number, 'date' => $date, 'grand_total' => $grand_total,
+                'currency' => $currency, 'status' => 'pending', 'description' => $description,]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
              $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);

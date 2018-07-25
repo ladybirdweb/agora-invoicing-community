@@ -13,7 +13,7 @@ class ProfileController extends Controller
         $this->middleware('auth');
     }
 
-    public function Profile()
+    public function profile()
     {
         try {
             $user = \Auth::user();
@@ -29,7 +29,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function UpdateProfile(ProfileRequest $request)
+    public function updateProfile(ProfileRequest $request)
     {
         try {
             $user = \Auth::user();
@@ -48,7 +48,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function UpdatePassword(ProfileRequest $request)
+    public function updatePassword(ProfileRequest $request)
     {
         try {
             $user = \Auth::user();

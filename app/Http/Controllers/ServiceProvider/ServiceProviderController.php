@@ -45,7 +45,7 @@ class ServiceProviderController extends Controller
         $this->licence = $licence;
     }
 
-    public function Orders()
+    public function orders()
     {
         try {
             return view('themes.default1.serviceprovider.orders');
@@ -54,7 +54,7 @@ class ServiceProviderController extends Controller
         }
     }
 
-    public function Sla()
+    public function sla()
     {
         try {
             return view('themes.default1.serviceprovider.sla');
@@ -63,7 +63,7 @@ class ServiceProviderController extends Controller
         }
     }
 
-    public function Pricing()
+    public function pricing()
     {
         try {
             $licence = new \App\Model\licence\Licence();

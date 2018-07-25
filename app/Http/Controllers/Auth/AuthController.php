@@ -52,7 +52,7 @@ class AuthController extends BaseAuthController
         }
     }
 
-    public function Activate($token, AccountActivate $activate, Request $request, User $user)
+    public function activate($token, AccountActivate $activate, Request $request, User $user)
     {
         try {
             if ($activate->where('token', $token)->first()) {
@@ -103,7 +103,8 @@ class AuthController extends BaseAuthController
             }
         } catch (\Exception $ex) {
             if ($ex->getCode() == 400) {
-                return redirect($url)->with('success', 'Email verification successful, Please login to access your account');
+                return redirect($url)->with('success', 'Email verification successful,
+                 Please login to access your account');
             }
 
             return redirect($url)->with('fails', $ex->getMessage());
@@ -263,7 +264,8 @@ class AuthController extends BaseAuthController
             $method = 'POST';
             //$this->sendActivation($email, $request->method());
             $this->sendActivation($email, $method);
-            $response = ['type' => 'success', 'proceed' => $check, 'email' => $email, 'message' => 'Activation link has been sent to '.$email];
+            $response = ['type' => 'success', 'proceed' => $check, 
+            'email' => $email, 'message' => 'Activation link has been sent to '.$email];
 
             return response()->json($response);
         } catch (\Exception $ex) {

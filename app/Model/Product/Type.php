@@ -9,7 +9,7 @@ class Type extends BaseModel
     protected $table = 'product_types';
     protected $fillable = ['name', 'description'];
 
-    public function Product()
+    public function product()
     {
         return $this->hasMany('App\Model\Product\Product');
     }

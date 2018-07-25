@@ -49,7 +49,8 @@ class SocialMediaController extends Controller
                             })
                             // ->showColumns('name', 'class', 'link')
                             ->addColumn('action', function ($model) {
-                                return '<a href='.url('social-media/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                                return '<a href='.url('social-media/'.$model->id.'/edit')
+                                ." class='btn btn-sm btn-primary'>Edit</a>";
                             })
                             ->rawColumns(['name', 'class', 'link', 'action'])
                             ->make(true);
@@ -190,7 +191,8 @@ class SocialMediaController extends Controller
 
             // Migrate over to SSL/TLS
             // Load the Tweets
-            $tweets = $twitter->get('statuses/user_timeline', ['screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit]);
+            $tweets = $twitter->get('statuses/user_timeline', 
+                ['screen_name' => $username, 'exclude_replies' => 'true', 'include_rts' => 'false', 'count' => $tweet_limit]);
             //dd($tweets);
             // Example output
             // Put this after fetching Tweets

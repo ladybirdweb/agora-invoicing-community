@@ -160,7 +160,9 @@ class ClientController extends BaseClientController
 
                                    </p>';
                                 } else {
-                                    return '<button class="btn btn-primary btn-sm disabled tooltip">Download <span class="tooltiptext">Please Renew!!</span></button>';
+                                    return '<button class="btn btn-primary 
+                                    btn-sm disabled tooltip">Download <span class="tooltiptext">
+                                    Please Renew!!</span></button>';
                                 }
                             })
                             ->rawColumns(['version', 'title', 'description', 'file'])
@@ -181,7 +183,8 @@ class ClientController extends BaseClientController
     public function getGithubVersionList($productid, $clientid, $invoiceid)
     {
         try {
-            $products = $this->product::where('id', $productid)->select('name', 'version', 'github_owner', 'github_repository')->get();
+            $products = $this->product::where('id', $productid)
+            ->select('name', 'version', 'github_owner', 'github_repository')->get();
             $owner = '';
             $repo = '';
             foreach ($products as $product) {
@@ -208,7 +211,8 @@ class ClientController extends BaseClientController
                             ->addColumn('file', function ($link) use ($invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
-                                $orderEndDate = Subscription::select('ends_at')->where('product_id', $productid)->where('order_id', $order_id)->first();
+                                $orderEndDate = Subscription::select('ends_at')
+                                ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
                                     $actionButton = $this->getActionButton($link, $orderEndDate);
 
@@ -216,7 +220,8 @@ class ClientController extends BaseClientController
                                 } elseif (!$orderEndDate) {
                                     $link = $this->github_api->getCurl1($link['zipball_url']);
 
-                                    return '<p><a href='.$link['header']['Location']." class='btn btn-sm btn-primary'>Download  </a>"
+                                    return '<p><a href='.$link['header']['Location']
+                                    ." class='btn btn-sm btn-primary'>Download  </a>"
                                             .'&nbsp;
 
                                    </p>';
@@ -313,7 +318,8 @@ class ClientController extends BaseClientController
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.front.clients.profile', compact('user', 'timezones', 'state', 'states', 'bussinesses'));
+            return view('themes.default1.front.clients.profile',
+             compact('user', 'timezones', 'state', 'states', 'bussinesses'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

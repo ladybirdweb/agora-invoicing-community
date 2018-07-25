@@ -111,7 +111,7 @@
         Route::get('/', 'DashboardController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
-        Route::get('activate/{token}', 'Auth\AuthController@Activate');
+        Route::get('activate/{token}', 'Auth\AuthController@activate');
 
          Route::get('change/email', 'Auth\AuthController@updateUserEmail');
 
@@ -119,9 +119,9 @@
          * Profile Process
          */
 
-        Route::get('profile', 'User\ProfileController@Profile');
-        Route::patch('profile', 'User\ProfileController@UpdateProfile');
-        Route::patch('password', 'User\ProfileController@UpdatePassword');
+        Route::get('profile', 'User\ProfileController@profile');
+        Route::patch('profile', 'User\ProfileController@updateProfile');
+        Route::patch('password', 'User\ProfileController@updatePassword');
 
         /*
          * Settings
@@ -150,7 +150,7 @@
         Route::resource('clients', 'User\ClientController');
 
         // Route::get('get-clients', 'User\ClientController@GetClients');
-         Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
+         Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
         Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 

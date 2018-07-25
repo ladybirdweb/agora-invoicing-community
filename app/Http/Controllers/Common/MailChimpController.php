@@ -248,7 +248,8 @@ class MailChimpController extends Controller
         try {
             $model = $this->relation;
             $this->addFieldsToAgora();
-            $mailchimp_fields = $this->mailchimp_field_model->where('list_id', $this->list_id)->pluck('name', 'tag')->toArray();
+            $mailchimp_fields = $this->mailchimp_field_model
+            ->where('list_id', $this->list_id)->pluck('name', 'tag')->toArray();
 
             return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model'));
         } catch (Exception $ex) {

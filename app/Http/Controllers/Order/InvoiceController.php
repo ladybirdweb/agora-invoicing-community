@@ -111,7 +111,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return \DataTables::of($invoice->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='invoice_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='invoice_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
@@ -141,10 +142,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                             $check = $this->checkExecution($model->id);
                             if ($check == false) {
-                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-tasks' style='color:white;'> </i>&nbsp;&nbsp; Execute Order</a>";
+                                $action = '<a href='.url('order/execute?invoiceid='.$model->id)
+                                ." class='btn btn-sm btn-primary btn-xs'>
+                                <i class='fa fa-tasks' style='color:white;'>
+                                 </i>&nbsp;&nbsp; Execute Order</a>";
                             }
 
-                            return '<a href='.url('invoices/show?invoiceid='.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>"
+                            return '<a href='.url('invoices/show?invoiceid='.$model->id)
+                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
+                            style='color:white;'> </i>&nbsp;&nbsp;View</a>"
                                     ."   $action";
                         })
 
@@ -335,7 +341,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function doPayment($payment_method, $invoiceid, $amount, $parent_id = '', $userid = '', $payment_status = 'pending')
+    public function doPayment($payment_method, $invoiceid, $amount, 
+        $parent_id = '', $userid = '', $payment_status = 'pending')
     {
         try {
             if ($amount > 0) {
@@ -481,7 +488,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         // when tax is available and tax is not enabled(Applicable
                         //when Global Tax class for any country and state is not there)
 
-                        $taxClassId = Tax::where('state', $geoip_state)->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
+                        $taxClassId = Tax::where('state', $geoip_state)
+                        ->orWhere('country', $geoip_country)->pluck('tax_classes_id')->first();
                         if ($taxClassId) { //if state equals the user State
                             $rate = $this->getTotalRate($taxClassId, $productid, $taxs);
                             $taxs = $rate['taxes'];

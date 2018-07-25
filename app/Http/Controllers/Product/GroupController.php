@@ -68,7 +68,8 @@ class GroupController extends Controller
                             return implode(',', $result);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('groups/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('groups/'.$model->id.'/edit').
+                            " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                       ->rawColumns(['name', 'features', 'action'])
                         ->make(true);
@@ -109,7 +110,8 @@ class GroupController extends Controller
             $type = $request->input('type');
             $c = count($prices);
             for ($i = 0; $i < $c; $i++) {
-                $this->config->create(['group_id' => $this->group->id, 'type' => $type, 'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
+                $this->config->create(['group_id' => $this->group->id, 'type' => $type, 
+                    'title' => $title, 'options' => $values[$i]['name'], 'price' => $prices[$i]['name']]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));

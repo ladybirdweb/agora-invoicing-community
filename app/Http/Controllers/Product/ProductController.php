@@ -106,7 +106,7 @@ namespace App\Http\Controllers\Product;
                 $new_product = Product::select('id', 'name', 'type', 'group')->get();
 
                 return\ DataTables::of($new_product)
-            // return \Datatable::collection($this->product->select('id', 'name', 'type', 'group')->where('id', '!=', 1)->get())
+          
                             ->addColumn('checkbox', function ($model) {
                                 return "<input type='checkbox' class='product_checkbox' value=".$model->id.' name=select[] id=check>';
                             })
@@ -146,10 +146,14 @@ namespace App\Http\Controllers\Product;
                             ->addColumn('Action', function ($model) {
                                 $url = '';
                                 if ($model->type == 2) {
-                                    $url = '<a href='.url('product/download/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
+                                    $url = '<a href='.url('product/download/'.$model->id).
+                                    " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' 
+                                    style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
                                 }
 
-                                return '<p><a href='.url('products/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
+                                return '<p><a href='.url('products/'.$model->id.'/edit').
+                                " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
+                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
                             })
 
                             ->rawColumns(['checkbox', 'name', 'type', 'group', 'price', 'currency', 'Action'])

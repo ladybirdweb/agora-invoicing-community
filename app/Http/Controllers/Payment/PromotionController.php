@@ -60,7 +60,8 @@ class PromotionController extends BasePromotionController
 
         return\ DataTables::of($new_promotion)
                             ->addColumn('checkbox', function ($model) {
-                                return "<input type='checkbox' class='promotion_checkbox' value=".$model->id.' name=select[] id=check>';
+                                return "<input type='checkbox' class='promotion_checkbox'
+                                 value=".$model->id.' name=select[] id=check>';
                             })
                         ->addColumn('code', function ($model) {
                             return ucfirst($model->code);
@@ -69,7 +70,8 @@ class PromotionController extends BasePromotionController
                             return $this->type->where('id', $model->type)->first()->name;
                         })
                         ->addColumn('products', function ($model) {
-                            $selected = $this->promoRelation->select('product_id')->where('promotion_id', $model->id)->get();
+                            $selected = $this->promoRelation->select('product_id')
+                            ->where('promotion_id', $model->id)->get();
                             $result = [];
                             foreach ($selected as $key => $select) {
                                 $result[$key] = $this->product->where('id', $select->product_id)->first()->name;
@@ -81,7 +83,9 @@ class PromotionController extends BasePromotionController
                             }
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('promotions/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            return '<a href='.url('promotions/'.$model->id.'/edit')
+                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
+                            style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                          ->rawColumns(['checkbox', 'code', 'products', 'action'])
 
@@ -140,9 +144,11 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('id', $id)->first();
             $product = $this->product->pluck('name', 'id')->toArray();
             $type = $this->type->pluck('name', 'id')->toArray();
-            $selectedProduct = $this->promoRelation->where('promotion_id', $id)->pluck('product_id', 'product_id')->toArray();
-            //dd($selectedProduct);
-            return view('themes.default1.payment.promotion.edit', compact('product', 'promotion', 'selectedProduct', 'type'));
+            $selectedProduct = $this->promoRelation
+            ->where('promotion_id', $id)
+            ->pluck('product_id', 'product_id')->toArray();
+            return view('themes.default1.payment.promotion.edit',
+             compact('product', 'promotion', 'selectedProduct', 'type'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

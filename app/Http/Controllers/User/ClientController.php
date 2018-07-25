@@ -58,7 +58,7 @@ class ClientController extends AdvanceSearchController
     /**
      * Get Clients for chumper datatable.
      */
-    public function GetClients(Request $request)
+    public function getClients(Request $request)
     {
         $name = $request->input('name');
         $username = $request->input('username');
@@ -77,10 +77,12 @@ class ClientController extends AdvanceSearchController
 
         return\ DataTables::of($user->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='user_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='user_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('first_name', function ($model) {
-                            return '<a href='.url('clients/'.$model->id).'>'.ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
+                            return '<a href='.url('clients/'.$model->id).'>'
+                            .ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
                         })
                          ->addColumn('email', function ($model) {
                              return $model->email;
@@ -97,21 +99,29 @@ class ClientController extends AdvanceSearchController
                         // ->showColumns('email', 'created_at')
                         ->addColumn('active', function ($model) {
                             if ($model->active == 1) {
-                                $email = "<span class='glyphicon glyphicon-envelope' style='color:green' title='verified email'></span>";
+                                $email = "<span class='glyphicon glyphicon-envelope'
+                                 style='color:green' title='verified email'></span>";
                             } else {
-                                $email = "<span class='glyphicon glyphicon-envelope' style='color:red' title='unverified email'></span>";
+                                $email = "<span class='glyphicon glyphicon-envelope'
+                                 style='color:red' title='unverified email'></span>";
                             }
                             if ($model->mobile_verified == 1) {
-                                $mobile = "<span class='glyphicon glyphicon-phone' style='color:green' title='verified mobile'></span>";
+                                $mobile = "<span class='glyphicon glyphicon-phone' 
+                                style='color:green' title='verified mobile'></span>";
                             } else {
-                                $mobile = "<span class='glyphicon glyphicon-phone' style='color:red' title='unverified mobile'></span>";
+                                $mobile = "<span class='glyphicon glyphicon-phone'
+                                 style='color:red' title='unverified mobile'></span>";
                             }
 
                             return $email.'&nbsp;&nbsp;'.$mobile;
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('clients/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>"
-                                    .'  <a href='.url('clients/'.$model->id)." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
+                            return '<a href='.url('clients/'.$model->id.'/edit')
+                            ." class='btn btn-sm btn-primary btn-xs'>
+                            <i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>"
+                                    .'  <a href='.url('clients/'.$model->id)
+                                    ." class='btn btn-sm btn-primary btn-xs'>
+                                    <i class='fa fa-eye' style='color:white;'> </i>&nbsp;&nbsp;View</a>";
                             // return 'hhhh';
                         })
                         ->rawColumns(['checkbox', 'first_name', 'email',  'created_at', 'active', 'action'])
@@ -154,7 +164,8 @@ class ClientController extends AdvanceSearchController
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
-            return redirect()->back()->with('warning', 'User has created successfully But email configuration has some problem!');
+            return redirect()->back()->with('warning', 'User has created successfully
+             But email configuration has some problem!');
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
         }
@@ -243,13 +254,16 @@ class ClientController extends AdvanceSearchController
             $timezones = $timezones->pluck('name', 'id')->toArray();
 
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
-            $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
+            $managers = User::where('role', 'admin')
+            ->where('position', 'manager')
+            ->pluck('first_name', 'id')->toArray();
 
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.user.client.edit', compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
+            return view('themes.default1.user.client.edit', 
+                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
@@ -303,8 +317,8 @@ class ClientController extends AdvanceSearchController
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert')
+                    .'!</b> './* @scrutinizer ignore-type */
                     \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
@@ -340,7 +354,9 @@ class ClientController extends AdvanceSearchController
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
         $join = $this->getRolPos($join, $role, $position);
 
-        $join = $join->orderBy('created_at', 'desc')->select('id', 'first_name', 'last_name', 'email', 'created_at', 'active', 'mobile_verified', 'role', 'position');
+        $join = $join->orderBy('created_at', 'desc')
+        ->select('id', 'first_name', 'last_name', 'email', 'created_at',
+         'active', 'mobile_verified', 'role', 'position');
 
         return $join;
     }
@@ -363,7 +379,8 @@ class ClientController extends AdvanceSearchController
         $to = $user->email;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name.' '.$user->last_name, 'username' => $user->email, 'password' => $str, 'url' => $url];
+        $replace = ['name' => $user->first_name.' '.$user->last_name, 
+        'username' => $user->email, 'password' => $str, 'url' => $url];
         $type = '';
         if ($template) {
             $type_id = $template->type;

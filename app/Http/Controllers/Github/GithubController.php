@@ -324,11 +324,12 @@ class GithubController extends Controller
                     $ver[] = $value['tag_name'];
                 }
             }
-            $url = $this->getUrl($repo,$ver);
+            $url = $this->getUrl($repo, $ver);
             $link = $this->github_api->getCurl1($url);
+
             return $link['header'];
         } catch (Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -337,19 +338,20 @@ class GithubController extends Controller
     public function getUrl($repo)
     {
         //For Satellite Helpdesk
-         if ($repo == 'faveo-satellite-helpdesk-advance') {
-                $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
-            }
+        if ($repo == 'faveo-satellite-helpdesk-advance') {
+            $url = 'https://api.github.com/repos/ladybirdweb/faveo-satellite-helpdesk-advance/zipball/'.$ver[0];
+        }
 
-            //For Helpdesk Advanced
-            if ($repo == 'Faveo-Helpdesk-Pro') {
-                $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
-            }
-            //For Service Desk Advance
-            if ($repo == 'faveo-service-desk-pro') {
-                $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
-            }
-       return $url;
+        //For Helpdesk Advanced
+        if ($repo == 'Faveo-Helpdesk-Pro') {
+            $url = 'https://api.github.com/repos/ladybirdweb/Faveo-Helpdesk-Pro/zipball/'.$ver[0];
+        }
+        //For Service Desk Advance
+        if ($repo == 'faveo-service-desk-pro') {
+            $url = 'https://api.github.com/repos/ladybirdweb/faveo-service-desk-pro/zipball/'.$ver[0];
+        }
+
+        return $url;
     }
 
     //Github Download for Admin

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Product;
 
-use Bugsnag;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class ExtendedBaseProductController extends Controller
@@ -107,7 +107,6 @@ class ExtendedBaseProductController extends Controller
             return $ex->getMessage();
         }
     }
-
 
     public function adminDownload($id, $invoice = '', $api = false)
     {

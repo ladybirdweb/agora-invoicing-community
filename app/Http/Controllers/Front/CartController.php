@@ -146,6 +146,7 @@ class CartController extends BaseCartController
                     }
                 }
             }
+
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
             //dd($ex);
@@ -934,8 +935,9 @@ class CartController extends BaseCartController
                 }
             }
             if ($userid != '') {
-               $currency = $this->getCurrency($userid);
+                $currency = $this->getCurrency($userid);
             }
+
             return $currency;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -944,14 +946,15 @@ class CartController extends BaseCartController
 
     public function getCurrency($userid)
     {
-      $user = new \App\User();
-      $currency = $user->find($userid)->currency;
-      if ($currency == 'USD' || $currency == '1') {
-          $currency = 'USD';
-      } else {
-          $currency = 'INR';
-      }
-      return $currency;
+        $user = new \App\User();
+        $currency = $user->find($userid)->currency;
+        if ($currency == 'USD' || $currency == '1') {
+            $currency = 'USD';
+        } else {
+            $currency = 'INR';
+        }
+
+        return $currency;
     }
 
     /**

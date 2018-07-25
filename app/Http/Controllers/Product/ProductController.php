@@ -533,8 +533,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-
-
         public function getSubscriptionCheckScript()
         {
             $response = "<script>

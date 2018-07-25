@@ -141,7 +141,7 @@ class CartController extends BaseCartController
                         $id = $item->id;
                         Cart::remove($id);
                         $items = $this->addProduct($id);
-                        
+
                         Cart::add($items);
                         //
                     }
@@ -163,8 +163,8 @@ class CartController extends BaseCartController
     public function checkTax($productid, $user_state = '', $user_country = '')
     {
         try {
-            $taxCondition = array();
-            $tax_attribute = array();
+            $taxCondition = [];
+            $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -185,7 +185,6 @@ class CartController extends BaseCartController
 
             $geoip_state = $this->getGeoipState($state_code, $user_state);
             $geoip_country = $this->getGeoipCountry($country_iso, $user_country);
-            
 
             if ($this->tax_option->findOrFail(1)->inclusive == 0) {
                 $tax_rule = $this->tax_option->findOrFail(1);
@@ -355,7 +354,7 @@ class CartController extends BaseCartController
             'attributes'         => ['tax' => $tax_attribute,
             'currency'                     => $currency_attribute, ], ];
         } catch (\Exception $ex) {
-          return redirect()->back()->with('fails',$ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not check the tax');
@@ -579,8 +578,6 @@ class CartController extends BaseCartController
 
         return $addons;
     }
-
-
 
     /**
      * @return type
@@ -809,8 +806,6 @@ class CartController extends BaseCartController
         }
     }
 
-  
-
     /**
      * @param type $code
      *
@@ -829,8 +824,6 @@ class CartController extends BaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 
     /**
      * @param type $name

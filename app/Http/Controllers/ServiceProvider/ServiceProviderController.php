@@ -9,7 +9,6 @@ use App\Model\licence\Sla;
 use App\Model\licence\SlaServiceRelation;
 use App\Model\Product\Service;
 use App\Organization;
-use Illuminate\Http\Request;
 
 class ServiceProviderController extends Controller
 {
@@ -74,6 +73,4 @@ class ServiceProviderController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 }

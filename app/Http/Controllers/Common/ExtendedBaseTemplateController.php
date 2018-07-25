@@ -38,7 +38,7 @@ class ExtendedBaseTemplateController extends Controller
                                         <button type=button id=close class='btn btn-default pull-left' 
                                         data-dismiss=modal>Close</button>
                                         <input type=submit class='btn btn-primary' value=".
-                                        /** @scrutinizer ignore-type */
+                                        /* @scrutinizer ignore-type */
                                         \Lang::get('message.save').'>
                                     </div>
                                     '.\Form::close().'

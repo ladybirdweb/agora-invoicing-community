@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Licence;
 use App\Http\Controllers\Controller;
 use App\Model\Licence\LicencedOrganization;
 use App\Organization;
-use Illuminate\Http\Request;
 
 class LicenceOrderController extends Controller
 {
@@ -32,5 +31,4 @@ class LicenceOrderController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 }

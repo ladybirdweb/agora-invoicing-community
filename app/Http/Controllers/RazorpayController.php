@@ -106,6 +106,7 @@ class RazorpayController extends Controller
         } else {
             $state = TaxByState::where('state_code', \Auth::user()->state)->pluck('state')->first();
         }
+
         return $state;
     }
 

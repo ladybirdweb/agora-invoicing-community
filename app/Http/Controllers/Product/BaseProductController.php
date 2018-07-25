@@ -100,7 +100,7 @@ class BaseProductController extends Controller
                 $plans = $plan->pluck('name', 'id')->toArray();
                 $script = ''; //$this->getSubscriptionCheckScript();
                 $field = "<div class='col-md-4 form-group'>
-                        <label class='required'>"./* @scrutinizer ignore-type */ 
+                        <label class='required'>"./* @scrutinizer ignore-type */
                         \Lang::get('message.subscription').'</label>
                        '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null,
                         ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'

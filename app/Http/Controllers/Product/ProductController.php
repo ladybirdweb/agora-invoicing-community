@@ -115,7 +115,7 @@ namespace App\Http\Controllers\Product;
                                 return ucfirst($model->name);
                             })
                             ->addColumn('type', function ($model) {
-                                 if ($this->type->where('id', $model->type)->first()) {
+                                if ($this->type->where('id', $model->type)->first()) {
                                     return $this->type->where('id', $model->type)->first()->name;
                                 } else {
                                     return 'Not available';
@@ -164,8 +164,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-
-
         // Save file Info in Modal popup
         public function save(Request $request)
         {
@@ -194,7 +192,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-       
         /**
          * Show the form for creating a new resource.
          *
@@ -383,8 +380,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-       
-
         /**
          * Remove the specified resource from storage.
          *
@@ -564,8 +559,6 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
-
-        
 
         public function getSubscriptionCheckScript()
         {

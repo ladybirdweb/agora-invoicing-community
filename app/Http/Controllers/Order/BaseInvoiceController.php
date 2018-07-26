@@ -4,19 +4,15 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
-use App\Model\Order\Invoice;
-use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
-use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseInvoiceController extends Controller
 {
-
     /**
      *Tax When state is not empty.
      */
@@ -158,8 +154,6 @@ class BaseInvoiceController extends Controller
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-   
 
     public function domain($id)
     {

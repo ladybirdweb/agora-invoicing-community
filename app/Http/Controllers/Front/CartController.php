@@ -771,19 +771,23 @@ class CartController extends BaseCartController
      *
      * @return type
      */
-    public static function taxValue($rate, $price)
+     public static function taxValue($rate, $price)
     {
         try {
+            $result = '';
+            if ($rate){
+            $rate = str_replace('%', '', $rate);
             $tax = $price * ($rate / 100);
             $result = $tax;
 
             $result = self::rounding($result);
-
+            }
             return $result;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
 
     /**
      * @return type

@@ -374,6 +374,7 @@ namespace App\Http\Controllers\Product;
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
+                dd($e);
                 Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());

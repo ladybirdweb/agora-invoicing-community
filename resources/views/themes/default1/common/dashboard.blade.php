@@ -93,7 +93,7 @@
                   <ul class="users-list clearfix">
                     @foreach($users as $user)
                     <li>
-                      <img src="{{$user['profile_pic']}}" alt="User Image">
+                     <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image"></a>
                       <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
 
                       @if ($user['created_at']->toDateString() < $mytime->toDateString())

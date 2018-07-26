@@ -81,7 +81,7 @@ class ExtendedBaseProductController extends Controller
             }
         }
 
-        return $newTax;
+        return ;
     }
 
     public function getProductField($productid)

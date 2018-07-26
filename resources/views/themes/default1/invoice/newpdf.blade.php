@@ -132,27 +132,29 @@
 
                         <div class="table-responsive">
                            
-                                <?php
+                                                             <?php
                                 $tax_name = [];
                                 $tax_percentage = [];
                                 foreach ($invoiceItems as $key => $item) {
+
                                     if (str_finish(',', $item->tax_name)) {
-                                        $name = substr_replace($item->tax_name, '', -1);
+                                        $name = ($item->tax_name);
+                                       
                                     }
                                     if (str_finish(',', $item->tax_percentage)) {
                                         $rate = substr_replace($item->tax_percentage, '', -1);
+                                        
                                     }
                                     $tax_name = explode(',', $name);
                                     $tax_percentage = explode(',', $rate);
                                 }
                                 ?>
                                  <table class="table  table-striped">
-                                @if($tax_name !='null')
+                                @if($tax_name[0] !='null')
                                    <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
-                                    $taxes= $taxInstance->checkTax($productId);
+                                    $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
                                      ?>
-
                                    @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
                                     @if($set->state == $user->state)
                                              <tr class="Taxes">

@@ -109,6 +109,20 @@ main
 </div>
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
 
+            <div class="row">
+                        
+            
+            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px;margin-top: 65px">ServiceDesk VPS Hosting Pricing</h4>
+                        
+                    </div>
+    <div class="col-md-12">
+        <div class="pricing-table princig-table-flat">
+            <div class="row">
+        {!! html_entity_decode($servicedesk_vps_template) !!}
+    </div>
+        </div>
+    </div>
+
   <div class="row">
                        
                            <!--  <hr class="tall mt-none"> -->

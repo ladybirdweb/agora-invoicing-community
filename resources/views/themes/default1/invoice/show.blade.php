@@ -163,7 +163,7 @@
 
                     <div class="row">
                         <!-- accepted payments column -->
-                        <div class="col-xs-6">
+                        <div class="col-xs-6">  
 
                         </div><!-- /.col -->
                         <div class="col-xs-6">

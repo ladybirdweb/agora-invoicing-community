@@ -31,7 +31,7 @@ class GetPageTemplateController extends Controller
     }
 
     /**
-     * Get  Template For Helpdesk Products.
+     * Get  Template For Helpdesk VPS Products.
      */
     public function getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3)
     {
@@ -52,6 +52,30 @@ class GetPageTemplateController extends Controller
         }
 
         return $helpdeskVpstemplate;
+    }
+
+     /**
+     * Get  Template For ServiceDesk VPS Products.
+     */
+    public function getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4)
+    {
+        $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+        if (count($servicedesk_vps_product) > 0) {
+            foreach ($servicedesk_vps_product as $key => $value) {
+                $trasform4[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform4[$value['id']]['name'] = $value['name'];
+                $trasform4[$value['id']]['feature'] = $value['description'];
+                $trasform4[$value['id']]['subscription'] = $temp_controller
+                ->plans($value['shoping_cart_link'], $value['id']);
+                $trasform4[$value['id']]['url'] = "<input type='submit' 
+                value='Order Now' class='btn btn-primary'></form>";
+            }
+            $servicedeskkVpstemplate = $this->transform('cart', $data, $trasform4);
+        } else {
+            $servicedeskkVpstemplate = '';
+        }
+
+        return $servicedeskkVpstemplate;
     }
 
     /**

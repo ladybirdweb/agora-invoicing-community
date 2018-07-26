@@ -159,7 +159,7 @@ class DashboardController extends Controller
     {
         $user = new User();
         $allUsers = $user->orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
-              ->take(8)
+              ->take(20)
               ->get()
               ->toArray();
 

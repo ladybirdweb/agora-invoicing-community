@@ -307,7 +307,7 @@ class PageController extends GetPageTemplateController
         $trasform3 = [];
         $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
 
-         $servicedesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk vps')
+        $servicedesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk vps')
          ->get()
         ->toArray();
         $trasform4 = [];
@@ -327,6 +327,6 @@ class PageController extends GetPageTemplateController
 
         return view('themes.default1.common.template.shoppingcart',
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
-                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3','servicedesk_vps_template','$trasform4'));
+                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', '$trasform4'));
     }
 }

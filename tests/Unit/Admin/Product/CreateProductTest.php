@@ -20,10 +20,11 @@ class CreateProductTest extends TestCase
         'type'           => $product->type,
         'group'          => $product->group,
         'category'       => $product->category,
+        'description'    => $product->description,
         'require_domain' => 1,
 
         ]);
-        $response->assertSessionHas('success');
+         $response->assertSessionHas('success');
 
         // $this->assertTrue(true);
     }

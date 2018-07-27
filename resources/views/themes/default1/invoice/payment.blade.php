@@ -1,5 +1,17 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Generate Payment
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+        <li><a href="{{url('clients/'.$userid)}}">View User</a></li>
+        <li class="active">Payment</li>
+      </ol>
+@stop
 @section('content')
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -30,7 +42,8 @@
                 </div>
                 @endif
         {!! Form::open(['url'=>'payment/receive/'.$invoice_id,'method'=>'post']) !!}
-        <h4>{{Lang::get('message.payment')}}  (Invoice Number: {{$invoice->number}})	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+
+        <h4>{{Lang::get('message.payment')}}  (Invoice Number: {{$invoice->number}})	 <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

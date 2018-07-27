@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create New Product
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('products')}}">All Products</a></li>
+        <li class="active">Create Product</li>
+      </ol>
+@stop
 @section('content')
 <head>
     <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">

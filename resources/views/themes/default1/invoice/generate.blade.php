@@ -1,4 +1,15 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Generate An Invoice
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+         <li><a href="{{url('invoices')}}">All Invoices</a></li>
+        <li class="active">Generate Invoice</li>
+      </ol>
+@stop
 @section('content')
 <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/fonts/font_roboto/roboto.css')!!}" rel="stylesheet" type="text/css" />
 <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.css')!!}" rel="stylesheet" type="text/css" />
@@ -36,6 +47,7 @@
             {{Session::get('fails')}}
         </div>
         @endif
+
         @if($user!='')
         {!! Form::open(['url'=>'generate/invoice/'.$user->id,'id'=>'formoid']) !!}
         <input type="hidden" name="user" value="{{$user->id}}">
@@ -44,8 +56,8 @@
         {!! Form::open(['url'=>'generate/invoice','id'=>'formoid']) !!}
         <h4>Place Order</h4>
         @endif
-        {!! Form::submit(Lang::get('message.generate'),['class'=>'btn btn-primary pull-right'])!!}
-    </div>
+          <button name="generate" type="submit" id="generate" class="btn btn-primary pull-right" style="margin-top: -35px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.generate')!!}</button>
+         </div>
 
 
 

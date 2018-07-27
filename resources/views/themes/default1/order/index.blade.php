@@ -1,5 +1,14 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+@section('content-header')
+<h1>
+View All Orders
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Orders</li>
+      </ol>
+@stop
 <div class="box box-success">
     <div class="box-header with-border">
         <h3 class="box-title">Search</h3>
@@ -25,25 +34,31 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-                {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!}
+               <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
+                   <select name="product_id"  class="form-control" id ="product_id">
+                             <option value="Choose">Choose</option>
+                           @foreach($products as $key=>$product)
+                             <option value={{$key}}>{{$product}}</option>
+                          @endforeach
+                          </select>
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary', 'placeholder'=>'yyyy-mm-dd']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary', 'placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'yyyy-mm-dd']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'yyyy-mm-dd']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">

@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Github Settings
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Github Setting</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -30,7 +40,7 @@
         </div>
         @endif
         {!! Form::model($model,['url'=>'github','method'=>'patch']) !!}
-        <h4>{{Lang::get('message.github')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.github')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

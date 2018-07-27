@@ -22,7 +22,7 @@
              folder instead of downloading all of them to reduce the load. -->
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
-        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" /> -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
         <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
@@ -246,8 +246,9 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
 
-                    @yield('header')
+                    @yield('content-header')
                 </section>
+
 
                 <!-- Main content -->
                 <section class="content">

@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create New User
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('clients')}}">All Users</a></li>
+        <li class="active">Create User</li>
+      </ol>
+@stop
 @section('content')
 <style>
 
@@ -280,8 +290,13 @@ select.form-control{
                     <div class="col-md-4 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Manager') !!}
-                        {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
-
+                 <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
+                         <select name="manager" value= "Choose" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($managers as $key=>$manager)
+                             <option value={{$key}}>{{$manager}}</option>
+                          @endforeach
+                          </select>
                     </div>
 
 

@@ -1,9 +1,19 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Template Settings
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Template</li>
+      </ol>
+@stop
 @section('content')
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
@@ -39,8 +49,8 @@
 
                 <table class="table table-condensed">
                     <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.templates')}}</h3></td>
-                        <td>{!! Form::submit(Lang::get('message.update'),['class'=>'btn btn-primary pull-right'])!!}</td>
+                        <td><h4 class="box-title">{{Lang::get('Template List')}}</h4></td>
+                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></td>
                     </tr>
 
                     <tr>

@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Email Log
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Email Log</li>
+      </ol>
+@stop
 @section('content')
 
 
@@ -38,7 +48,7 @@
         </div>
         @endif
         <div id="response"></div>
-          <h4 class="box-title">Activity Log</h4>
+         
 
  </div>
 

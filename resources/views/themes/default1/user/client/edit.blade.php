@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Edit User
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('clients')}}">All Users</a></li>
+        <li class="active">Edit User</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -97,8 +107,8 @@
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
-                        {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class' => 'form-control']) !!}
-
+                        {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control']) !!}
+                           
                     </div>
 
 
@@ -125,7 +135,7 @@
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('position','Position') !!}
-                        {!! Form::select('position',[''=>'Select','manager'=>'Manager'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('position',['Choose'=>'Choose','manager'=>'Manager'],null,['class' => 'form-control']) !!}
 
                     </div>
                     <?php
@@ -135,13 +145,13 @@
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                        {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control']) !!}
+                        {!! Form::select('company_type',['Choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!}
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
+                        {!! Form::select('company_size',['Choose'=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
 
                     </div>
                 </div>
@@ -164,9 +174,9 @@
                     <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
+                        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -196,7 +206,7 @@
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                        {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
+                        {!! Form::select('timezone_id',['Choose'=>'Choose',''=>$timezones],null,['class' => 'form-control']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">

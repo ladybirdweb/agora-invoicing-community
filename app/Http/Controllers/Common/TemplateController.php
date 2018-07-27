@@ -135,7 +135,8 @@ class TemplateController extends BaseTemplateController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('templates/'.$model->id.'/edit').
-                            " class='btn btn-sm btn-primary'>Edit</a>";
+                            " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
+                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'type', 'action'])
                         ->make(true);

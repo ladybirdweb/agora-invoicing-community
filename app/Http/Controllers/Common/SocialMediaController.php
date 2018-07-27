@@ -50,7 +50,8 @@ class SocialMediaController extends Controller
                             // ->showColumns('name', 'class', 'link')
                             ->addColumn('action', function ($model) {
                                 return '<a href='.url('social-media/'.$model->id.'/edit')
-                                ." class='btn btn-sm btn-primary'>Edit</a>";
+                                ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
+                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                             })
                             ->rawColumns(['name', 'class', 'link', 'action'])
                             ->make(true);

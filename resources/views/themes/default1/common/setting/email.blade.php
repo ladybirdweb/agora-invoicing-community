@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Configure Mail
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Email</li>
+      </ol>
+@stop
 @section('content')
 <div class="row">
 
@@ -49,7 +59,7 @@
                             <div class="form-group {{ $errors->has('driver') ? 'has-error' : '' }}">
 
 
-                                {!! Form::select('driver',[''=>'Select','smtp'=>'SMTP'],null,['class' => 'form-control']) !!}
+                                {!! Form::select('driver',[''=>'Choose','smtp'=>'SMTP'],null,['class' => 'form-control']) !!}
                                 <p><i> {{Lang::get('message.select-email-driver')}}</i> </p>
 
 

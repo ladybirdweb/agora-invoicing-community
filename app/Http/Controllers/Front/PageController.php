@@ -49,7 +49,8 @@ class PageController extends GetPageTemplateController
                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('pages/'.$model->id.'/edit')
-                            ." class='btn btn-sm btn-primary'>Edit</a>";
+                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
+                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'content', 'action'])

@@ -169,11 +169,12 @@ namespace App\Http\Controllers\Product;
         {
             try {
                 $product_id = Product::where('name', '=', $request->input('product'))->select('id')->first();
-
+                
                 $this->product_upload->product_id = $product_id->id;
                 $this->product_upload->title = $request->input('title');
                 $this->product_upload->description = $request->input('description');
                 $this->product_upload->version = $request->input('version');
+
 
                 if ($request->file) {
                     $file = $request->file('file')->getClientOriginalName();
@@ -181,8 +182,10 @@ namespace App\Http\Controllers\Product;
                     $destination = storage_path().'/products';
                     $request->file('file')->move($destination, $file);
                     $this->product_upload->file = $file;
+
                 }
                 $this->product_upload->save();
+                $this->product->where('id',$product_id->id)->update(['version'=>$request->input('version')]);
 
                 return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
             } catch (\Exception $e) {

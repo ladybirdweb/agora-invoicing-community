@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create New Page
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('pages')}}">All Pages</a></li>
+        <li class="active">Create New Page</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -30,7 +40,8 @@
                 </div>
                 @endif
         {!! Form::open(['url'=>'pages','method'=>'post']) !!}
-        <h4>{{Lang::get('message.pages')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+
+        <h4>{{Lang::get('message.pages')}}	<button type="submit" class="btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

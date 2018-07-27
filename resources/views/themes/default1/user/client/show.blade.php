@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+User Details
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+        <li class="active">View User</li>
+      </ol>
+@stop
 @section('content')
 @if (count($errors) > 0)
         <div class="alert alert-danger">

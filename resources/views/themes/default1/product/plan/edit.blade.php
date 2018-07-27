@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Edit Plan
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('plans')}}">All Plans</a></li>
+        <li class="active">Edit Plan</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 

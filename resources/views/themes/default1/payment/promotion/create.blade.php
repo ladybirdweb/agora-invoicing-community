@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create New Promotion
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('promotions')}}">All Promotions</a></li>
+        <li class="active">Create Promotion</li>
+      </ol>
+@stop
 @section('content')
 <style>
     .tooltip {
@@ -19,7 +29,7 @@
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
             <div class="box-header">
                 @if (count($errors) > 0)
@@ -74,7 +84,7 @@
                                          <input id="code" name="code" type="text" class="form-control" title="Generate Coupon Code"/>
                                     </div>
                                     <div class="col-md-6">
-                                        <a href="#" class="btn btn-primary" onclick="getCode();">Generate Code</a>
+                                        <a href="#" class="btn btn-primary" onclick="getCode();"><i class="fa fa-refresh"></i>&nbsp;Generate Code</a>
                                     </div>
                                 </div>
 

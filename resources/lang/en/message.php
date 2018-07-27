@@ -55,7 +55,7 @@ return [
     'profile'          => 'Profile',
     'first_name'       => 'First Name',
     'last_name'        => 'Last Name',
-    'company'          => 'Company',
+    'company'          => 'Company Name',
     'mobile'           => 'Mobile',
     'address'          => 'Address',
     'town'             => 'Town/City',

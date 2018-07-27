@@ -1,4 +1,15 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Edit Tax Class
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('tax')}}">Tax</a></li>
+        <li class="active">Edit Tax</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 

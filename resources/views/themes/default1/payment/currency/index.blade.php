@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+All Currencies
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+         <li class="active">Currency</li>
+      </ol>
+@stop
 @section('content')
 
 
@@ -33,9 +43,9 @@
         </div>
         @endif
         <div id="response"></div>
-        <h4>{{Lang::get('message.currency')}}
+       
             <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
-            <a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>
+            <a href="#create" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#create"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
         </h4>
         @include('themes.default1.payment.currency.create')
     </div>
@@ -47,7 +57,7 @@
 
             <div class="col-md-12">
                 <table id="currency-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                    <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbspDelete Selected</button><br /><br />
 
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>

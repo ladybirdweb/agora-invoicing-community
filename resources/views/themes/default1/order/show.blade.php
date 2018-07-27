@@ -1,8 +1,18 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Order Details
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('orders')}}">All Orders</a></li>
+        <li class="active">View Order</li>
+      </ol>
+@stop
 @section('content')
 <div class="row">
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Orders</h3>
             </div>
@@ -70,7 +80,7 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Transcation list</h3>
             </div>
@@ -137,7 +147,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header with-border">
                 <h3 class="box-title">Payment receipts</h3>
             </div>

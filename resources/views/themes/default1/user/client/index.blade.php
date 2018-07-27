@@ -1,5 +1,14 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+@section('content-header')
+<h1>
+All Users
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Users</li>
+      </ol>
+@stop
 
 <style>
 /*    .selectpicker {
@@ -54,7 +63,7 @@ $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarr
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
                 {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!}
-
+               
 
                 
 

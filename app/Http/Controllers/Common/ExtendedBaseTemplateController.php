@@ -35,6 +35,7 @@ class ExtendedBaseTemplateController extends Controller
                                     ".$body."
                                     </div>
                                     <div class='modal-footer'>
+                                   
                                         <button type=button id=close class='btn btn-default pull-left' 
                                         data-dismiss=modal>Close</button>
                                         <input type=submit class='btn btn-primary' value=".

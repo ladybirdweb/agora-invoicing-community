@@ -799,6 +799,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             if ($request->has('invoiceid')) {
                 $invoice_id = $request->input('invoiceid');
                 $invoice = $this->invoice->find($invoice_id);
+                $userid = $invoice->user_id;
                 //dd($invoice);
                 $invoice_status = '';
                 $payment_status = '';
@@ -819,7 +820,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 return view('themes.default1.invoice.payment',
                  compact('invoice_status', 'payment_status',
-                  'payment_method', 'invoice_id', 'domain', 'invoice'));
+                  'payment_method', 'invoice_id', 'domain', 'invoice','userid'));
             }
 
             return redirect()->back();

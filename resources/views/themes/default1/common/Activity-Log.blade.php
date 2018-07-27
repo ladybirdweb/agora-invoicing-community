@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Activity Log
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Activity Log</li>
+      </ol>
+@stop
 @section('content')
 
 
@@ -38,7 +48,7 @@
         </div>
         @endif
         <div id="response"></div>
-          <h4 class="box-title">Activity Log</h4>
+         
 
  </div>
 
@@ -56,7 +66,7 @@
                     <thead><tr>
                             <th class="no-sort" style="width:1px"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th style="width:50px;">Module</th>
-                            <th>Description/Event</th>
+                            <th style="width:120px;">Description/Event</th>
                              <th style="width:60px;">Name</th>   
                               <th style="width:30px;">Role</th>      
                             <!-- <th>Subject id</th> -->
@@ -96,7 +106,7 @@
                           }); 
                          }
         $('#activity-table').DataTable({
-             destroy: true,
+            
             // "initComplete": function(settings, json) {
             //              readmore();
             // },
@@ -114,7 +124,7 @@
                 { 
                     targets: 'no-sort', 
                     orderable: false,
-                    order: []
+                    order: ['desc']
                 }
             ],
             columns: [

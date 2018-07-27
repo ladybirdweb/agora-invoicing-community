@@ -1,9 +1,19 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+System Setting
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">System Settings</li>
+      </ol>
+@stop
 @section('content')
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
                 <div class="alert alert-danger">
@@ -40,20 +50,21 @@
                 <table class="table table-condensed">
 
                     <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.company')}}</h3></td>
-                        <td>{!! Form::submit(Lang::get('message.update'),['class'=>'btn btn-primary pull-right'])!!}</td>
+                        <td><h3 class="box-title">{{Lang::get('Company Details')}}</h3></td>
+                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+                        </td>
 
                     </tr>
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('message.company'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('company',Lang::get('Company Name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('company',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-the-company-name')}}</i> </p>
+                                
 
 
                             </div>
@@ -68,7 +79,7 @@
 
 
                                 {!! Form::text('website',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-the-company-website')}}</i> </p>
+                               
 
                             </div>
                         </td>
@@ -82,7 +93,7 @@
 
 
                                 {!! Form::text('phone',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-the-company-phone-number')}}</i> </p>
+                               
 
                             </div>
                         </td>
@@ -95,7 +106,7 @@
                             <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
 
                                 {!! Form::textarea('address',null,['class' => 'form-control','size' => '128x10','id'=>'address']) !!}
-                                <p><i> {{Lang::get('message.enter-company-address')}}</i> </p>
+                               
                             </div>
                         </td>
 
@@ -108,26 +119,13 @@
 
 
                                 {!! Form::text('city',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.city')}}</i> </p>
+                                
 
                             </div>
                         </td>
 
                     </tr>
-                     <tr>
-
-                        <td><b>{!! Form::label('state',Lang::get('message.state')) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
-
-
-                                {!! Form::text('state',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.state')}}</i> </p>
-
-                            </div>
-                        </td>
-
-                    </tr>
+                     
                     <tr>
 
                         <td><b>{!! Form::label('country',Lang::get('message.country')) !!}</b></td>
@@ -135,12 +133,31 @@
                             <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('country',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.country')}}</i> </p>
+                                <!-- {!! Form::text('country',null,['class' => 'form-control']) !!} -->
+                                <!-- <p><i> {{Lang::get('message.country')}}</i> </p> -->
+                                  <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                            </div>
+                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+
+                    </div>
+
+                           
                         </td>
 
+                    </tr>
+
+                    <tr>
+
+                        <td><b>{!! Form::label('state',Lang::get('message.state')) !!}</b></td>
+                        <td>
+                        <select name="state" id="state-list" class="form-control">
+                                @if(count($set->state)>0)
+                            <option value="">{{$set->state}}</option>
+                            @endif
+                            <option value="">Choose A Country</option>
+
+                        </select>
+                        </td>
                     </tr>
                     <tr>
 
@@ -162,4 +179,22 @@
         </div>
     </div>
 </div>
+<script>
+     function getCountryAttr(val) {
+        getState(val);
+    
+    }
+
+     function getState(val) {
+
+        $.ajax({
+            type: "GET",
+              url: "{{url('get-state')}}/" + val,
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#state-list").html(data);
+            }
+        });
+    }
+</script>
 @stop

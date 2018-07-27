@@ -125,7 +125,7 @@ class SettingsController extends BaseSettingsController
                 'driver'    => 'required',
                 'port'      => 'required',
                 'encryption'=> 'required',
-                'host'      =>'required',
+                'host'      => 'required',
             ]);
 
         try {

@@ -80,8 +80,6 @@ class ExtendedBaseProductController extends Controller
                 $newTax->save();
             }
         }
-
-        return ;
     }
 
     public function getProductField($productid)

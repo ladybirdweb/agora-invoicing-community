@@ -111,8 +111,8 @@ class ExtendedBaseProductController extends Controller
     public function adminDownload($id, $invoice = '', $api = false)
     {
         try {
-            $role = \Auth::user()->role;
-            $release = $this->getLinkToDownload($role, $invoice, $id);
+             // $release = $this->getLinkToDownload($role, $invoice, $id);
+             $release = $this->downloadProductAdmin($id);
 
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
@@ -130,7 +130,6 @@ class ExtendedBaseProductController extends Controller
                 return response()->json(['error'=>$e->getMessage()]);
             }
             Bugsnag::notifyException($e);
-
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

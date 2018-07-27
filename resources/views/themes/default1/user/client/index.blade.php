@@ -1,7 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('content')
 
-
+<style>
+/*    .selectpicker {
+    text-align: left;
+    background-color: white !important;
+    margin: 11px;
+}*/
+.bootstrap-select>.dropdown-toggle {
+    background-color: white;
+}
+</style>
 
 <div class="box box-success">
     <div class="box-header with-border">
@@ -38,6 +47,19 @@
                 {!! Form::text('company',null,['class' => 'form-control','id'=>'company']) !!}
 
             </div>
+             <?php
+$countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
+?>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('country','Country') !!}
+                {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!}
+
+
+                
+
+
+            </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('mobile','Mobile') !!}
@@ -50,18 +72,13 @@
                 {!! Form::text('email',null,['class' => 'form-control','id'=>'email']) !!}
 
             </div>
-            <div class="col-md-2 form-group">
-                <!-- first name -->
-                {!! Form::label('country','Country') !!}
-                {!! Form::select('country',[''=>'Choose','Countries'=>DB::table('countries')->pluck('country_name','country_code_char2')->toarray()],null,['class' => 'form-control','id'=>'country']) !!}
-
-            </div>
+           
 <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
 
 <?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',]; ?>
-                {!! Form::select('industry',[''=>'Choose','New'=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','id'=>'industry']) !!}
+                {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!}
 
             </div>
 

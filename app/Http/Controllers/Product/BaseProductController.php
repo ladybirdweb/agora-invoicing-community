@@ -96,7 +96,7 @@ class BaseProductController extends ExtendedBaseProductController
             $price = '';
             if ($check === true) {
                 $plan = new Plan();
-                $plans = $plan->pluck('name', 'id')->toArray();
+                $plans = $plan->where('product',$productid)->pluck('name', 'id')->toArray();
                 $script = ''; //$this->getSubscriptionCheckScript();
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */
@@ -198,18 +198,19 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function getLinkToDownload($role, $invoice, $id)
-    {
-        if ($role == 'user') {
-            if ($invoice && $invoice != '') {
-                return $this->downloadProductAdmin($id);
-            } else {
-                throw new \Exception('This user has no permission for this action');
-            }
-        }
+    // public function getLinkToDownload($role, $invoice, $id)
+    // {
+    //      if ($role == 'user') {
+    //         // dd($invoice);
+    //         if ($invoice && $invoice != '') {
+    //             return $this->downloadProductAdmin($id);
+    //         } else {
+    //             throw new \Exception('This user has no permission for this action');
+    //         }
+    //     }
 
-        return $this->downloadProductAdmin($id);
-    }
+    //     return $this->downloadProductAdmin($id);
+    // }
 
     public function downloadProductAdmin($id)
     {

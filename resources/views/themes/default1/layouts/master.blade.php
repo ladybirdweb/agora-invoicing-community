@@ -23,6 +23,9 @@
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
         <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+        <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
         <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
          <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
@@ -38,6 +41,7 @@
         <!-- jQuery 2.1.4 -->
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <style>
 
 .most-popular {
@@ -57,8 +61,9 @@
     ?>
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
     <!-- the fixed layout is not compatible with sidebar-mini -->
-    <body class="skin-blue fixed sidebar-mini">
-        <!-- Site wrapper -->
+    <body class="hold-transition skin-blue sidebar-mini">
+
+       <!-- Site wrapper -->
         <div class="wrapper">
 
             <header class="main-header">

@@ -96,7 +96,7 @@ class BaseProductController extends ExtendedBaseProductController
             $price = '';
             if ($check === true) {
                 $plan = new Plan();
-                $plans = $plan->where('product',$productid)->pluck('name', 'id')->toArray();
+                $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
                 $script = ''; //$this->getSubscriptionCheckScript();
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */

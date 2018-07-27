@@ -24,7 +24,7 @@ class CreateProductTest extends TestCase
         'require_domain' => 1,
 
         ]);
-         $response->assertSessionHas('success');
+        $response->assertSessionHas('success');
 
         // $this->assertTrue(true);
     }

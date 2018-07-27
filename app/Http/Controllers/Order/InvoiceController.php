@@ -820,7 +820,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                 return view('themes.default1.invoice.payment',
                  compact('invoice_status', 'payment_status',
-                  'payment_method', 'invoice_id', 'domain', 'invoice','userid'));
+                  'payment_method', 'invoice_id', 'domain', 'invoice', 'userid'));
             }
 
             return redirect()->back();

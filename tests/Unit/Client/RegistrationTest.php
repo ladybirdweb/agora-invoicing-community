@@ -62,9 +62,9 @@ class RegistrationTest extends DBTestCase
                      'password'=> $user->password,
                      ]);
         $errors = session('errors');
-         // dd($errors);
+        // dd($errors);
         // dd($response);
-          $response->assertStatus(302);
+        $response->assertStatus(302);
         // $this->assertEquals($errors->get('user_name')[0], 'The user name field is required.');
         // $this->assertEquals($errors->get('email')[0], 'The email field is required.');
     }
@@ -156,7 +156,7 @@ class RegistrationTest extends DBTestCase
                      ]);
         $errors = session('errors');
         $this->assertEquals($errors->get('password_confirmation')[0], 'The password confirmation and password must match.');
-          $this->mock->disable();
+        $this->mock->disable();
         $this->tearDownServerVariable();
     }
 }

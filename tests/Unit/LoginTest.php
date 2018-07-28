@@ -41,7 +41,7 @@ class LoginTest extends DBTestCase
     {
         $user = factory(User::class)->create(['active'=>0]);
         $response = $this->call('POST', 'login', ['email1'=>$user->email, 'password1' => 'password']);
-      $response->assertStatus(302);
+        $response->assertStatus(302);
     }
 
     /** @group postLogin */

@@ -211,7 +211,7 @@ active
                             <td>
                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['ut_gst'],$item->regular_price)}} <br/>
                                  {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}}
-
+                               
                               
                              </td>
                          </tr>
@@ -221,7 +221,7 @@ active
                                         @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
                                      <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}}% </strong>
                                         </th>
                                         <td>
 

@@ -1,5 +1,34 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create New User
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('clients')}}">All Users</a></li>
+        <li class="active">Create User</li>
+      </ol>
+@stop
 @section('content')
+<style>
+
+.bootstrap-select>.dropdown-toggle {
+    background-color: white;
+}
+
+select.form-control{
+    padding-left: 2px;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+}
+.text{
+    margin-left: -10px!important;
+}
+
+</style>
 <div class="box box-primary">
 
     <div class="box-header">
@@ -42,7 +71,7 @@
         </div>
         @endif
         {!! Form::open(['url'=>'clients','method'=>'post']) !!}
-        <h4>{{Lang::get('message.client')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
@@ -98,7 +127,15 @@
                     <div class="col-md-4 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
-                        {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class' => 'form-control']) !!}
+                         <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
+                       <select name="bussiness"  class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($bussinesses as $key=>$bussines)
+                             <option value={{$key}}>{{$bussines}}</option>
+                          @endforeach
+                          </select>
+             
+                       
 
                     </div>
 
@@ -120,7 +157,7 @@
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('position','Position') !!}
-                        {!! Form::select('position',[''=>'Select','manager'=>'Manager'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('position',[''=>'Choose','manager'=>'Manager'],null,['class' => 'form-control']) !!}
 
                     </div>
                     <?php
@@ -130,13 +167,27 @@
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                        {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control']) !!}
+                        <!-- {!! Form::select('company_type',['choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!} -->
+                         <select name="company_type" value= "Choose" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($type as $key=>$types)
+
+                             <option value={{$key}}>{{$types}}</option>
+                          @endforeach
+                          </select>
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
+                <!-- {!! Form::select('company_size',['choose'=>'Choose',''=>$size],null,['class' => 'form-control']) !!} -->
+                          <select name="company_size" value= "Choose" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($size as $key=>$sizes)
+
+                             <option value={{$key}}>{{$sizes}}</option>
+                          @endforeach
+                          </select>
 
                     </div>
                 </div>
@@ -159,12 +210,19 @@
                     </div>
 
 
-                    <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group select2{{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
+                        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getCountryAttr(this.value);']) !!}
+                        <!-- {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
+
+                          <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($countries as $key=>$country)
+                              <option value={{$key}}>{{$country}}</option>
+                          @endforeach
+                          </select>
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -173,7 +231,7 @@
                         <!--{!! Form::select('state',[],null,['class' => 'form-control','id'=>'state-list']) !!}-->
                         <select name="state" id="state-list" class="form-control">
 
-                            <option value="">Select State</option>
+                            <option value="">Choose A Country</option>
 
                         </select>
 
@@ -187,13 +245,28 @@
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                        {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
+                
+                         <select name="timezone_id" value= "Choose" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($timezones as $key=>$timezone)
+
+                             <option value={{$key}}>{{$timezone}}</option>
+                          @endforeach
+                          </select>
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
+                        <?php $currencies = DB::table('currencies')->pluck('name','code')->toarray() ?>
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toarray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                       <!--  {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toarray()],null,['class' => 'form-control','id'=>'currency']) !!} -->
+                         <select name="currency" value= "Choose" class="form-control" id ="currency">
+                             <option value="Choose">Choose</option>
+                           @foreach($currencies as $key=>$currency)
+
+                             <option value={{$key}}>{{$currency}}</option>
+                          @endforeach
+                          </select>
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
@@ -217,8 +290,13 @@
                     <div class="col-md-4 form-group {{ $errors->has('manager') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('manager','Manager') !!}
-                        {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!}
-
+                 <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
+                         <select name="manager" value= "Choose" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($managers as $key=>$manager)
+                             <option value={{$key}}>{{$manager}}</option>
+                          @endforeach
+                          </select>
                     </div>
 
 
@@ -233,6 +311,7 @@
 
 {!! Form::close() !!}
 
+
 <script>
 
     function getCountryAttr(val) {
@@ -242,10 +321,12 @@
 
     }
 
-    function getState(val) {
+   function getState(val) {
+        console.log(val)
+
         $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
+            type: "GET",
+              url: "{{url('get-state')}}/" + val,
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);

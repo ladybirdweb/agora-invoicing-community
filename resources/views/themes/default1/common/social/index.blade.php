@@ -1,4 +1,13 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Social Media
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li class="active">Social Media</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -31,8 +40,8 @@
     </div>
     @endif
     <div id="response"></div>
-        <h4>{{Lang::get('message.social-media')}}
-        <a href="{{url('social-media/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+        
+        <a href="{{url('social-media/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
     
@@ -47,8 +56,7 @@
                     <thead><tr>
                          <th>Name</th>
                           <th>Type</th>
-                          <th>Created At</th>
-                          <th>Content</th>
+                           <th>Content</th>
                           <th>Action</th>
                         </tr></thead>
                      </table>
@@ -82,8 +90,8 @@
             columns: [
                
                 {data: 'name', name: 'name'},
-                {data: 'class', name: 'Class'},
-                {data: 'link', name: 'Link'},
+                {data: 'class', name: 'class'},
+                {data: 'link', name: 'link'},
                 {data: 'action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {

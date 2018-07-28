@@ -7,7 +7,7 @@ return [
      * Shared translations.
      *
      */
-    'title' => 'Laravel Installer',
+    'title' => 'Agora Invoicing Installer',
     'next' => 'Next Step',
     'back' => 'Previous',
     'finish' => 'Install',
@@ -22,7 +22,7 @@ return [
      */
     'welcome' => [
         'templateTitle' => 'Welcome',
-        'title'   => 'Laravel Installer',
+        'title'   => 'Agora Invoicing Installer',
         'message' => 'Easy Installation and Setup Wizard.',
         'next'    => 'Check Requirements',
     ],
@@ -58,7 +58,7 @@ return [
         'menu' => [
             'templateTitle' => 'Step 3 | Environment Settings',
             'title' => 'Environment Settings',
-            'desc' => 'Please configure the apps <code>.env</code> file.',
+            'desc' => 'Please select how you want to configure the apps <code>.env</code> file.',
             'wizard-button' => 'Form Wizard Setup',
             'classic-button' => 'Classic Text Editor',
         ],

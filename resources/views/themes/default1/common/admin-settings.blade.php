@@ -1,4 +1,13 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Application Settings
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li class="active">Settings</li>
+      </ol>
+@stop
 @section('content')
 <style>
     .settingdivblue:hover {
@@ -29,7 +38,7 @@
         padding-top: 5px;
     }
 </style>
-<div class="box">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Settings</h3>
     </div>
@@ -52,7 +61,7 @@
                 </div>
                 <!--/.col-md-2-->
                  <!--col-md-2-->
-                <div class="col-md-2 col-sm-6">
+               <!--  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{ url('settings/error') }}">
@@ -62,6 +71,45 @@
                             </a>
                         </div>
                         <p class="box-title" >Error Log</p>
+                    </div>
+                </div> -->
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('log-viewer') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Error Log</p>
+                    </div>
+                </div>
+
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('settings/activitylog') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Activity Log</p>
+                    </div>
+                </div>
+
+                 <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('settings/maillog') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Email Log</p>
                     </div>
                 </div>
 
@@ -75,7 +123,7 @@
 </div>
 <!-- /.box -->
 
-<div class="box">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Email</h3>
     </div>
@@ -133,7 +181,7 @@
     <!-- ./box-body -->
 </div>
 
-<div class="box">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Api</h3>
     </div>
@@ -169,7 +217,18 @@
                     </div>
                 </div>
                 <!--/.col-md-2-->
-               
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('apikeys') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-cogs"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Api Keys</p>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- /.row -->
@@ -177,7 +236,7 @@
     <!-- ./box-body -->
 </div>
 
-<div class="box">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Common</h3>
     </div>
@@ -223,7 +282,7 @@
     </div>
     <!-- ./box-body -->
 </div>
-<div class="box">
+<div class="box box-primary">
     <div class="box-header with-border">
         <h3 class="box-title">Widgets</h3>
     </div>
@@ -266,33 +325,5 @@
     <!-- ./box-body -->
 </div>
 
-<div class="box">
-    <div class="box-header with-border">
-        <h3 class="box-title">Plugins</h3>
-    </div>
-    <!-- /.box-header -->
-    <div class="box-body">
-        <div class="row">
-            <div class="col-md-12">
-                <!--/.col-md-2-->
-                <div class="col-md-2 col-sm-6">
-                    <div class="settingiconblue">
-                        <div class="settingdivblue">
-                            <a href="{{ url('plugin') }}">
-                                <span class="fa-stack fa-2x">
-                                    <i class="fa fa-plug fa-stack-1x"></i>
-                                </span>
-                            </a>
-                        </div>
-                        <p class="box-title" >Plugins</p>
-                    </div>
-                </div>
-                <!--/.col-md-2-->
 
-            </div>
-        </div>
-        <!-- /.row -->
-    </div>
-    <!-- ./box-body -->
-</div>
 @stop

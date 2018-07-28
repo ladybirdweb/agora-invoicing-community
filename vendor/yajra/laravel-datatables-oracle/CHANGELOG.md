@@ -8,12 +8,69 @@
 
 ### [Unreleased]
 
+### [v8.7.0] - 2018-06-03
+
+- Add withQuery api for query callback. [#1759]
+- Revert [#1758] with callback implementation since its BC.
+
+### [v8.6.1] - 2018-06-03
+
+- Fix/Enhance with closure value implementation. [#1758]
+- Use filteredQuery as callback parameter.
+- Fix [#1752]
+
+### [v8.6.0] - 2018-05-18
+
+- Add support for manual setting of filtered count [#1743], credits to [@forgottencreature]
+- Fix [#1516].
+
+### [v8.5.2] - 2018-05-15
+
+- Revert "[8.0] Classify join statements as a complex query." [#1741]
+- Fix [#1739]
+
+### [v8.5.1] - 2018-05-12
+
+- Reset select bindings for count query [#1730], credits to [@fschalkwijk]
+- Classify join statements as a complex query [#1737].
+- Fix [#1600], [#1471].
+
+### [v8.5.0] - 2018-05-10
+
+- Support for Eloquent API Resources [#1702], credits to [@asahasrabuddhe].
+- Fixes [#1515], [#1659], [#1351].
+
+### [v8.4.4] - 2018-05-04
+
+- Use array_key_exists instead of in_array + array_keys [#1719], credits to [@carusogabriel].
+- Adds support to Laravel 5.6 on readme, [#1724], credits to [@nunomaduro]
+- Fixed a bug for "undefined index" errors, [#1728], credits to [@redelschaap]
+
+### [v8.4.3] - 2018-04-05
+
+- [8.0] Fix ambiguous column 'deleted_at'. [#1688], credits to [@sskl].
+
+### [v8.4.2] - 2018-03-29
+
+- Check SoftDeletes on HasOne or BelongsTo relations [#1628], credits to [@drahosistvan].
+- Add mention of Datatables Editor pkg to "suggests" [#1658], credits to [@drbyte].
+
+### [v8.4.1] - 2018-02-16
+
+- Change Log contract to LoggerInterface. [#1624], credits to [@LEI].
+- Fix [#1626].
+
+### [v8.4.0] - 2018-02-11
+
+- Added Laravel 5.6 Support [#1609], credits to [@marcoocram]
+- Fix [#1617]
+
 ### [v8.3.3] - 2018-01-11
 
 - Fixes from PHPStan. [#1569], credits to [@carusogabriel].
 - Enable no_useless_else. [#1554], credits to [@carusogabriel].
 - Remove useless else statements. [#1553], credits to [@carusogabriel].
-- Fix typo. [#1536]
+- Fix typo. [#1536], credits to [@Oussama-Tn].
 - Test against PHP 7.2. [#1532], credits to [@carusogabriel].
 - Update TestCase with PSR-2. [#1496], credits to [@gabriel-caruso].
 
@@ -162,7 +219,18 @@ return (new CollectionDataTable(User::all())->toJson();
 - Fix orderColumn api where related tables are not joined.
 - Fix nested with relation search and sort function.
 
-[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.3.3...8.0
+[Unreleased]: https://github.com/yajra/laravel-datatables/compare/v8.7.0...8.0
+[v8.7.0]: https://github.com/yajra/laravel-datatables/compare/v8.6.1...v8.7.0
+[v8.6.1]: https://github.com/yajra/laravel-datatables/compare/v8.6.0...v8.6.1
+[v8.6.0]: https://github.com/yajra/laravel-datatables/compare/v8.5.2...v8.6.0
+[v8.5.2]: https://github.com/yajra/laravel-datatables/compare/v8.5.1...v8.5.2
+[v8.5.1]: https://github.com/yajra/laravel-datatables/compare/v8.5.0...v8.5.1
+[v8.5.0]: https://github.com/yajra/laravel-datatables/compare/v8.4.4...v8.5.0
+[v8.4.4]: https://github.com/yajra/laravel-datatables/compare/v8.4.3...v8.4.4
+[v8.4.3]: https://github.com/yajra/laravel-datatables/compare/v8.4.2...v8.4.3
+[v8.4.2]: https://github.com/yajra/laravel-datatables/compare/v8.4.1...v8.4.2
+[v8.4.1]: https://github.com/yajra/laravel-datatables/compare/v8.4.0...v8.4.1
+[v8.4.0]: https://github.com/yajra/laravel-datatables/compare/v8.3.3...v8.4.0
 [v8.3.3]: https://github.com/yajra/laravel-datatables/compare/v8.3.2...v8.3.3
 [v8.3.2]: https://github.com/yajra/laravel-datatables/compare/v8.3.1...v8.3.2
 [v8.3.1]: https://github.com/yajra/laravel-datatables/compare/v8.3.0...v8.3.1
@@ -175,6 +243,15 @@ return (new CollectionDataTable(User::all())->toJson();
 [v8.0.1]: https://github.com/yajra/laravel-datatables/compare/v8.0.0...v8.0.1
 [v8.0.0]: https://github.com/yajra/laravel-datatables/compare/v7.10.1...v8.0.0
 
+[#1702]: https://github.com/yajra/laravel-datatables/pull/1702
+[#1728]: https://github.com/yajra/laravel-datatables/pull/1728
+[#1724]: https://github.com/yajra/laravel-datatables/pull/1724
+[#1719]: https://github.com/yajra/laravel-datatables/pull/1719
+[#1688]: https://github.com/yajra/laravel-datatables/pull/1688
+[#1658]: https://github.com/yajra/laravel-datatables/pull/1658
+[#1628]: https://github.com/yajra/laravel-datatables/pull/1628
+[#1624]: https://github.com/yajra/laravel-datatables/pull/1624
+[#1609]: https://github.com/yajra/laravel-datatables/pull/1609
 [#1492]: https://github.com/yajra/laravel-datatables/pull/1492
 [#1489]: https://github.com/yajra/laravel-datatables/pull/1489
 [#1487]: https://github.com/yajra/laravel-datatables/pull/1487
@@ -206,18 +283,45 @@ return (new CollectionDataTable(User::all())->toJson();
 [#1536]: https://github.com/yajra/laravel-datatables/pull/1536
 [#1532]: https://github.com/yajra/laravel-datatables/pull/1532
 [#1496]: https://github.com/yajra/laravel-datatables/pull/1496
+[#1730]: https://github.com/yajra/laravel-datatables/pull/1730
+[#1737]: https://github.com/yajra/laravel-datatables/pull/1737
+[#1741]: https://github.com/yajra/laravel-datatables/pull/1741
+[#1743]: https://github.com/yajra/laravel-datatables/pull/1743
+[#1758]: https://github.com/yajra/laravel-datatables/pull/1758
+[#1759]: https://github.com/yajra/laravel-datatables/pull/1759
 
+[#1626]: https://github.com/yajra/laravel-datatables/issues/1626
+[#1617]: https://github.com/yajra/laravel-datatables/issues/1617
 [#1294]: https://github.com/yajra/laravel-datatables/issues/1294
 [#1068]: https://github.com/yajra/laravel-datatables/issues/1068
 [#1234]: https://github.com/yajra/laravel-datatables/issues/1234
 [#1353]: https://github.com/yajra/laravel-datatables/issues/1353
 [#1367]: https://github.com/yajra/laravel-datatables/issues/1367
 [#1377]: https://github.com/yajra/laravel-datatables/issues/1377
+[#1515]: https://github.com/yajra/laravel-datatables/issues/1515
+[#1659]: https://github.com/yajra/laravel-datatables/issues/1659
+[#1351]: https://github.com/yajra/laravel-datatables/issues/1351
+[#1600]: https://github.com/yajra/laravel-datatables/issues/1600
+[#1471]: https://github.com/yajra/laravel-datatables/issues/1471
+[#1739]: https://github.com/yajra/laravel-datatables/issues/1739
+[#1516]: https://github.com/yajra/laravel-datatables/issues/1516
+[#1752]: https://github.com/yajra/laravel-datatables/issues/1752
 
 [laravel-datatables-fractal]: https://github.com/yajra/laravel-datatables-fractal
 
+[@sskl]: https://github.com/sskl
+[@drbyte]: https://github.com/drbyte
+[@drahosistvan]: https://github.com/drahosistvan
+[@LEI]: https://github.com/LEI
+[@marcoocram]: https://github.com/marcoocram
 [@ElfSundae]: https://github.com/ElfSundae
 [@carusogabriel]: https://github.com/carusogabriel
 [@gabriel-caruso]: https://github.com/gabriel-caruso
 [@pimlie]: https://github.com/pimlie
 [@jiwom]: https://github.com/jiwom
+[@Oussama-Tn]: https://github.com/Oussama-Tn
+[@redelschaap]: https://github.com/redelschaap
+[@nunomaduro]: https://github.com/nunomaduro
+[@asahasrabuddhe]: https://github.com/asahasrabuddhe
+[@fschalkwijk]: https://github.com/fschalkwijk
+[@forgottencreature]: https://github.com/forgottencreature

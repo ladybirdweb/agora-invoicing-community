@@ -1,4 +1,13 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+All Widgets
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li class="active">Widgets</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -34,7 +43,7 @@
         <div id="response"></div>
 
         <h4>{{Lang::get('message.widgets')}}
-            <a href="{{url('widgets/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a></h4>
+            <a href="{{url('widgets/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
 
@@ -46,11 +55,11 @@
                    <table id="widgets-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
                     <thead><tr>
+                        <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Name</th>
-                          <th>Type</th>
+                          <!-- <th>Type</th> -->
                           <th>Created At</th>
-                          <th>Content</th>
-                          <th>Action</th>
+                           <th>Action</th>
                         </tr></thead>
                      </table>
                 
@@ -81,7 +90,7 @@
      
             columns: [
                
-                {data: 'name', name: 'Name'},
+                {data: 'name', name: 'name'},
                 {data: 'type', name: 'Type'},
                 {data: 'created_at', name: 'Created At'},
                 {data: 'action', name: 'Action'}

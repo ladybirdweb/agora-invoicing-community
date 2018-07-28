@@ -1,4 +1,15 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Generate An Invoice
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+         <li><a href="{{url('invoices')}}">All Invoices</a></li>
+        <li class="active">Generate Invoice</li>
+      </ol>
+@stop
 @section('content')
 <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/fonts/font_roboto/roboto.css')!!}" rel="stylesheet" type="text/css" />
 <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.css')!!}" rel="stylesheet" type="text/css" />
@@ -36,6 +47,7 @@
             {{Session::get('fails')}}
         </div>
         @endif
+
         @if($user!='')
         {!! Form::open(['url'=>'generate/invoice/'.$user->id,'id'=>'formoid']) !!}
         <input type="hidden" name="user" value="{{$user->id}}">
@@ -44,8 +56,8 @@
         {!! Form::open(['url'=>'generate/invoice','id'=>'formoid']) !!}
         <h4>Place Order</h4>
         @endif
-        {!! Form::submit(Lang::get('message.generate'),['class'=>'btn btn-primary pull-right'])!!}
-    </div>
+          <button name="generate" type="submit" id="generate" class="btn btn-primary pull-right" style="margin-top: -35px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.generate')!!}</button>
+         </div>
 
 
 
@@ -72,6 +84,7 @@
                 <div class="col-md-4 form-group">
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
                     {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class'=>'form-control','onchange'=>'getSubscription(this.value)','id'=>'product']) !!}
+                    <h6 id ="productnamecheck"></h6>
                 </div>
                 <div id="fields1">
                 </div>
@@ -80,7 +93,8 @@
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('price',Lang::get('message.price')) !!}
-                    {!! Form::text('price',null,['class'=>'form-control']) !!}
+                    {!! Form::text('price',null,['class'=>'form-control','id'=>'price']) !!}
+                      <h6 id ="pricecheck"></h6>
                 </div>
                 <div class="col-md-4 form-group">
                     {!! Form::label('code',Lang::get('message.promotion-code')) !!}
@@ -244,6 +258,64 @@
 //      posting.done(function( data ) {
 //        console.log(data);
 //      });
+    });
+</script>
+
+<script>
+      $(document).ready(function(){
+      $('#productnamecheck').hide();
+      $('#pricecheck').hide();
+      
+      $('#formoid').submit(function(){
+        //validate name
+        function nameCheck()
+        {
+            var product_name = $('#product').val();
+            if (product_name.length == ''){
+                   $('#productnamecheck').show(); 
+                   $('#productnamecheck').html('Select One Product'); 
+                   $('#productnamecheck').focus();
+                   $('#product').css("border-color","red");
+                   $('#productnamecheck').css({"color":"red","margin-top":"5px"});
+            }
+            else{
+                 $('#productnamecheck').hide();
+                 $('#product').css("border-color","");
+                 return true;
+            }
+        }
+
+          //validate code
+         function price_check()
+        {
+            var price = $('#price').val();
+            if (price.length == ''){
+                   $('#pricecheck').show(); 
+                   $('#pricecheck').html('This field is required'); 
+                   $('#pricecheck').focus();
+                   $('#price').css("border-color","red");
+                   $('#pricecheck').css({"color":"red","margin-top":"5px"});
+            }
+            else{
+                 $('#pricecheck').hide();
+                 $('#price').css("border-color","");
+                 return true;
+            }
+        }
+          
+        
+   
+        nameCheck();
+        price_check();
+        
+        if(nameCheck() && price_check() ){
+                return true;
+             }
+            else{
+            return false;
+          }
+      });
+
     });
 </script>
 

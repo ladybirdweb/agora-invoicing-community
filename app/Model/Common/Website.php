@@ -8,7 +8,7 @@ use LinkThrow\Billing\SubscriptionBillableTrait;
 
 class Website extends BaseModel
 {
-    use SubscriptionBillableTrait;
+    // use SubscriptionBillableTrait;
 
     public function customermodel()
     {

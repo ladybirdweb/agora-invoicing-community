@@ -10,6 +10,7 @@
 @endsection
 
 @section('container')
+
     <div class="tabs tabs-full">
 
         <input id="tab1" type="radio" name="tabs" class="tab-input" checked />
@@ -96,9 +97,9 @@
                     <label for="app_log_level">
                         {{ trans('installer_messages.environment.wizard.form.app_log_level_label') }}
                     </label>
-                    <select name="app_log_level" id="app_log_level">
+                    <select name="app_log_level" id="app_log_level" style="height:36px" >
                         <option value="debug" selected>{{ trans('installer_messages.environment.wizard.form.app_log_level_label_debug') }}</option>
-                        <option value="info">{{ trans('installer_messages.environment.wizard.form.app_log_level_label_info') }}</option>
+                        <option value="info" >{{ trans('installer_messages.environment.wizard.form.app_log_level_label_info') }}</option>
                         <option value="notice">{{ trans('installer_messages.environment.wizard.form.app_log_level_label_notice') }}</option>
                         <option value="warning">{{ trans('installer_messages.environment.wizard.form.app_log_level_label_warning') }}</option>
                         <option value="error">{{ trans('installer_messages.environment.wizard.form.app_log_level_label_error') }}</option>
@@ -184,7 +185,7 @@
                     <label for="database_name">
                         {{ trans('installer_messages.environment.wizard.form.db_name_label') }}
                     </label>
-                    <input type="text" name="database_name" id="database_name" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.db_name_placeholder') }}" />
+                    <input type="text" name="database_name" id="database_name" value="" />
                     @if ($errors->has('database_name'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -197,7 +198,7 @@
                     <label for="database_username">
                         {{ trans('installer_messages.environment.wizard.form.db_username_label') }}
                     </label>
-                    <input type="text" name="database_username" id="database_username" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.db_username_placeholder') }}" />
+                    <input type="text" name="database_username" id="database_username" value="" }}" />
                     @if ($errors->has('database_username'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -210,7 +211,7 @@
                     <label for="database_password">
                         {{ trans('installer_messages.environment.wizard.form.db_password_label') }}
                     </label>
-                    <input type="password" name="database_password" id="database_password" value="" placeholder="{{ trans('installer_messages.environment.wizard.form.db_password_placeholder') }}" />
+                    <input type="password" name="database_password" id="database_password" value=""  />
                     @if ($errors->has('database_password'))
                         <span class="error-block">
                             <i class="fa fa-fw fa-exclamation-triangle" aria-hidden="true"></i>
@@ -219,11 +220,11 @@
                     @endif
                 </div>
 
-                <div class="form-group {{ $errors->has('database_password') ? ' has-error ' : '' }}">
+               <!--  <div class="form-group {{ $errors->has('database_password') ? ' has-error ' : '' }}">
           <input id="dummy-data" class="input-checkbox" type="checkbox" name="dummy-data">
             <label for="dummy-data" style="color:#3AA7D9">Install dummy data</label>
             
-         </div>
+         </div> -->
 
                 <div class="buttons">
                     <button class="button" onclick="showApplicationSettings();return false">

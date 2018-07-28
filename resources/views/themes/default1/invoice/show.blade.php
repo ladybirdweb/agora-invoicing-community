@@ -44,6 +44,14 @@
 
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
                 <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
+                <?php    
+            if($invoice->currency == 'INR'){
+                $symbol = 'INR';
+             }
+             else{
+                $symbol = 'USD';
+             }
+                ?>
 
                 <!-- Main content -->
                 <section class="invoice">
@@ -115,7 +123,7 @@
 
                                     @foreach($invoiceItems as $item)
                                     <tr>
-
+                         
                                         <td>{{$item->product_name}}</td>
                                         <td>{{$item->quantity}}</td>
                                         <td>{{$item->regular_price}}</td>
@@ -155,54 +163,109 @@
 
                     <div class="row">
                         <!-- accepted payments column -->
-                        <div class="col-xs-6">
+                        <div class="col-xs-6">  
 
                         </div><!-- /.col -->
                         <div class="col-xs-6">
                             <p class="lead">Amount</p>
                             <div class="table-responsive">
-                                <table class="table">
-                                    <?php
-                                    $tax_name = [];
-                                    $tax_percentage = [];
-                                    foreach ($invoiceItems as $key => $item) {
-                                        if (str_finish(',', $item->tax_name)) {
-                                            $name = $item->tax_name;
-                                        }
-                                        if (str_finish(',', $item->tax_percentage)) {
-                                            $rate = $item->tax_percentage;
-                                        }
-                                        $tax_name = explode(',', $name);
-                                        $tax_percentage = explode(',', $rate);
-                                    }
-                                    ?>
-                                    @for($i=0;$i < count($tax_name);$i++)
+                                          <?php
+                                $tax_name = [];
+                                $tax_percentage = [];
+                                foreach ($invoiceItems as $key => $item) {
 
-                                    @if($tax_name[$i]!='null')
-                                    <tr>
+                                    if (str_finish(',', $item->tax_name)) {
+                                        $name = ($item->tax_name);
+                                       
+                                    }
+                                    if (str_finish(',', $item->tax_percentage)) {
+                                        $rate = substr_replace($item->tax_percentage, '', -1);
+                                        
+                                    }
+                                    $tax_name = explode(',', $name);
+                                    $tax_percentage = explode(',', $rate);
+                                }
+                                ?>
+                                 <table class="table  table-striped">
+                                @if($tax_name[0] !='null')
+                                   <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
+                                   $taxInstance= new \App\Http\Controllers\Front\CartController();
+                                    $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
+                                     ?>
+                                   @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
+                                    @if($set->state == $user->state)
+                                             <tr class="Taxes">
+                            <th>
+                                <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
+                                <strong>SGST<span>@</span>{{$taxes['attributes']['tax'][0]['s_gst']}}%</strong><br/>
+                               
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}} <br/>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['s_gst'],$item->regular_price)}} <br/>
+                             </td>
+                              </tr>
+                                    @endif
+                                      @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] == "NULL")
+                                      <tr>
+                                      <th>
+                                <strong>IGST<span>@</span>{{$taxes['attributes']['tax'][0]['i_gst']}}%</strong><br/>
+                                  
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['i_gst'],$item->regular_price)}} <br/>
+                              
+                             </td>
+                         </tr>
+                                     @endif
+                                     <tr>
+                                     @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] != "NULL")
+                                     <th>
+                                 <strong>UTGST<span>@</span>{{$taxes['attributes']['tax'][0]['ut_gst']}}%</strong><br/>
+                                 <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
+
+                                  
+                            </th>
+                            <td>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['ut_gst'],$item->regular_price)}} <br/>
+                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}}
+
+                              
+                             </td>
+                         </tr>
+                                     @endif
+                                     @endif
+                                      
+                                        @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
+                                     <tr>
                                         <th>
-                                            <strong>{{ucfirst($tax_name[$i])}}<span>@</span>{{$tax_percentage[$i]}}%</strong>
+                                            <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>
                                         </th>
                                         <td>
-                                            <small>{!! $invoice->currency !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[$i],$item->regular_price)}}
+
+                                            <small>{!! $symbol !!}</small>&nbsp;{{App\Http\Controllers\Front\CartController::taxValue($tax_percentage[0],$item->regular_price)}}
+                                            
                                         </td>
 
                                     </tr>
                                     @endif
-                                    @endfor
-                                    <tr>
-                                        <th style="width:50%">Total:</th>
-                                        <td><small>{!! $invoice->currency !!}</small>&nbsp;{{$invoice->grand_total}}</td>
-                                    </tr>
+                                    @endif
+                                   
 
-                                </table>
+                               
+                               
+                               
+                                    <th>Total:</th>
+                                    <td><small>{!! $symbol !!}</small>&nbsp;{{$invoice->grand_total}}</td>
+                               
+                            </table>
                             </div>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
 
                     <!-- this row will not appear when printing -->
                     <div class="row no-print">
-                        <div class="col-xs-12">	
+                        <div class="col-xs-12"> 
                             <a href="{{url('pdf?invoiceid='.$invoice->id)}}"><button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button></a>
                         </div>
                     </div>

@@ -18,6 +18,7 @@ class InvoiceTest extends DBTestCase
     /** @group ClientController */
     public function test_Invoices()
     {
+        $this->expectException(\Exception::class);
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
@@ -39,6 +40,6 @@ class InvoiceTest extends DBTestCase
          'items'   => $invoiceItem,
          'user'    => $user,
         ]);
-        $this->assertStringContainsSubstring($response->content(), 'Whoops');
+        $response->setExpectedException(\Exception::class);
     }
 }

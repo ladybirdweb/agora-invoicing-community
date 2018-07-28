@@ -327,3 +327,24 @@ class DatabaseManager implements ConnectionResolverInterface
         return $this->connection()->$method(...$parameters);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

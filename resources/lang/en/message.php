@@ -55,7 +55,7 @@ return [
     'profile'          => 'Profile',
     'first_name'       => 'First Name',
     'last_name'        => 'Last Name',
-    'company'          => 'Company',
+    'company'          => 'Company Name',
     'mobile'           => 'Mobile',
     'address'          => 'Address',
     'town'             => 'Town/City',
@@ -156,6 +156,8 @@ return [
     'customer_detail'   => 'Customer Detail',
     'order_detail'      => 'Order Detail',
     'payment_detail'    => 'Payment Detail',
+    'amount_received'   => 'Paid',
+    'amount_pending'    => 'Balance',
     /*
      * Plan
      */
@@ -265,6 +267,12 @@ return [
     /*
      * Promotion
      */
+
+    'check-code-error'       => 'Please Check Code',
+    'no-such-code'           => 'No such Code',
+    'usage-of-code-completed'=> 'Usage of ocde Completed',
+    'usage-of-code-expired'  => 'Usage of code expired',
+
     'promotion'                                                                                                                        => 'Promotion',
     'promotions'                                                                                                                       => 'Promotions',
     'coupons'                                                                                                                          => 'Coupons',
@@ -343,6 +351,16 @@ return [
     'licences'          => 'Licences',
     'number_of_sla'     => 'Number of SLAs',
     'shoping_cart_link' => 'Shoping Cart Link',
+     /*
+     * Api Keys
+     */
+     'rzp_key'        => 'Razorpay Key',
+     'rzp_secret'     => 'Razorpay Secret',
+     'apilayer'       => 'ApiLayer Access Key',
+     'zoho_key'       => 'Zoho Key',
+     'key'            => 'API Keys',
+     'msg91key'       => 'Msg91 Auth Key',
+
     /*
      * Slas
      */

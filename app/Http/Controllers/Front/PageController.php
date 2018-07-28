@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
 use App\Model\Front\FrontendPage;
 use Illuminate\Http\Request;
 
-class PageController extends Controller
+class PageController extends GetPageTemplateController
 {
     public $page;
 
@@ -32,7 +31,8 @@ class PageController extends Controller
     {
         return \DataTables::of($this->page->get())
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='page_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='page_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -48,7 +48,9 @@ class PageController extends Controller
                             return str_limit($model->content, 10, '...');
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('pages/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('pages/'.$model->id.'/edit')
+                            ." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
+                                 style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
 
                           ->rawColumns(['checkbox', 'name', 'url',  'created_at', 'content', 'action'])
@@ -147,20 +149,20 @@ class PageController extends Controller
         return $segment;
     }
 
-    public function generate(Request $request)
-    {
-        // dd($request->all());
-        if ($request->has('slug')) {
-            $slug = $request->input('slug');
+    // public function generate(Request $request)
+    // {
+    //     // dd($request->all());
+    //     if ($request->has('slug')) {
+    //         $slug = $request->input('slug');
 
-            return $this->getSlug($slug);
-        }
-        if ($request->has('url')) {
-            $slug = $request->input('url');
+    //         return $this->getSlug($slug);
+    //     }
+    //     if ($request->has('url')) {
+    //         $slug = $request->input('url');
 
-            return $this->getPageUrl($slug);
-        }
-    }
+    //         return $this->getPageUrl($slug);
+    //     }
+    // }
 
     public function show($slug)
     {
@@ -181,7 +183,7 @@ class PageController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -196,32 +198,40 @@ class PageController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
+                    \Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
+                    \Lang::get('message.success').'
+
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';
@@ -240,18 +250,6 @@ class PageController extends Controller
         }
     }
 
-    public function result($search, $model)
-    {
-        try {
-            $model = $model->where('name', 'like', '%'.$search.'%')->orWhere('content', 'like', '%'.$search.'%')->paginate(10);
-
-            return $model->setPath('search');
-        } catch (\Exception $ex) {
-            //dd($ex);
-            throw new \Exception('Can not get the search result');
-        }
-    }
-
     public function transform($type, $data, $trasform = [])
     {
         $config = \Config::get("transform.$type");
@@ -260,7 +258,8 @@ class PageController extends Controller
         foreach ($trasform as $trans) {
             $array[] = $this->checkConfigKey($config, $trans);
         }
-        for ($i = 0; $i < count($array); $i++) {
+        $c = count($array);
+        for ($i = 0; $i < $c; $i++) {
             $array1 = $this->keyArray($array[$i]);
             $array2 = $this->valueArray($array[$i]);
             $result .= str_replace($array1, $array2, $data);
@@ -278,52 +277,15 @@ class PageController extends Controller
 
     public function cart()
     {
-        // $location = \GeoIP::getLocation();
-        //       $location = ['ip'   => '::1',
-        // 'isoCode'                 => 'IN',
-        // 'country'                 => 'India',
-        // 'city'                    => 'Bengaluru',
-        // 'state'                   => 'KA',
-        // 'postal_code'             => 560076,
-        // 'lat'                     => 12.9833,
-        // 'lon'                     => 77.5833,
-        // 'timezone'                => 'Asia/Kolkata',
-        // 'continent'               => 'AS',
-        // 'default'                 => false, ];
-          if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-          $ip = $_SERVER['HTTP_CLIENT_IP'];
-          } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-              $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-          } else {
-              $ip = $_SERVER['REMOTE_ADDR'];
-          }
-
-        if ($ip != '::1') {
-            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-        } else {
-            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-        }
-        // $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-
+        $location = $this->getLocation();
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
         $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['countryCode'].'-'.$location['region'];
         $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
         $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+        $currency = $this->getCurrency($location);
 
-        if ($location['country'] == 'India') {
-            $currency = 'INR';
-        } else {
-            $currency = 'USD';
-        }
-        if (\Auth::user()) {
-            $currency = 'INR';
-            $user_currency = \Auth::user()->currency;
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-        }
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
@@ -332,95 +294,40 @@ class PageController extends Controller
         $data = $pages->content;
 
         $product = new \App\Model\Product\Product();
-        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')->get()->toArray();
-
-        //$cart_controller = new \App\Http\Controllers\Front\CartController();
+        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->toArray();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-        // dd($temp_controller);
         $trasform = [];
-        $template = '';
+        $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
 
-        if (count($helpdesk_products) > 0) {
-            foreach ($helpdesk_products as $key => $value) {
-                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-                $trasform[$value['id']]['name'] = $value['name'];
-                $trasform[$value['id']]['feature'] = $value['description'];
-                $trasform[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-                // dd($temp_controller->leastAmount($value['id']), $temp_controller->plans($value['shoping_cart_link'], $value['id']));
-                $trasform[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
-            }
-            $template = $this->transform('cart', $data, $trasform);
-            // dd($template);
-        }
+        $helpdesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'helpdeskvps')
+         ->get()
+        ->toArray();
+        $trasform3 = [];
+        $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
 
-        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')->get()->toArray();
+        $servicedesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk vps')
+         ->get()
+        ->toArray();
+        $trasform4 = [];
+        $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
 
-        $servicedesk_template = '';
+        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')
+        ->orderBy('created_at', 'asc')
+        ->get()
+        ->toArray();
         $trasform1 = [];
-        if (count($sevice_desk_products) > 0) {
-            foreach ($sevice_desk_products as $key => $value) {
-                $trasform1[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
-                $trasform1[$value['id']]['name'] = $value['name'];
-                $trasform1[$value['id']]['feature'] = $value['description'];
-                $trasform1[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
-
-                $trasform1[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
-            }
-            $servicedesk_template = $this->transform('cart', $data, $trasform1);
-        }
+        $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
 
         $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
-        $service_template = '';
         $trasform2 = [];
-        if (count($service) > 0) {
-            foreach ($service as $key => $value) {
-                $trasform2[$value['id']]['price'] = $temp_controller->leastAmountService($value['id']);
-                $trasform2[$value['id']]['name'] = $value['name'];
-                $trasform2[$value['id']]['feature'] = $value['description'];
 
-                // $trasform2[$value['id']]['subscription'] = $temp_controller->leastAmountService($value['id']);
-                $trasform2[$value['id']]['subscription'] = $temp_controller->plans($value['shoping_cart_link'], $value['id']);
+        $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
-                $trasform2[$value['id']]['url'] = "<input type='submit' value='Buy' class='btn btn-primary'></form>";
-            }
-            $service_template = $this->transform('cart', $data, $trasform2);
-        }
-
-        return view('themes.default1.common.template.shoppingcart', compact('template', 'trasform', 'servicedesk_template', 'trasform1', 'service_template', 'trasform2'));
-    }
-
-    public function checkConfigKey($config, $transform)
-    {
-        $result = [];
-        //        dd($config);
-        if (count($config) > 0) {
-            foreach ($config as $key => $value) {
-                if (array_key_exists($key, $transform)) {
-                    $result[$value] = $transform[$key];
-                }
-            }
-        }
-
-        return $result;
-    }
-
-    public function keyArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $key;
-        }
-
-        return $result;
-    }
-
-    public function valueArray($array)
-    {
-        $result = [];
-        foreach ($array as $key => $value) {
-            $result[] = $value;
-        }
-
-        return $result;
+        return view('themes.default1.common.template.shoppingcart',
+            compact('template', 'trasform', 'servicedesk_template', 'trasform1',
+                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
     }
 }

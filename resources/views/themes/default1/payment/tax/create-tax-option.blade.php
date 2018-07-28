@@ -7,7 +7,7 @@
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['url'=>'taxes/option']) !!}
+                {!! Form::open(['url'=>'taxes/option','id'=>'taxClass']) !!}
 
                 <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
                     <!-- name -->
@@ -31,8 +31,8 @@
                     <!-- name -->
                     
                     {!! Form::label('tax-name',Lang::get('Tax Name'),['class'=>'required']) !!}
-                    {!! Form::text('tax-name',null,['class' => 'form-control']) !!}
-                   
+                    {!! Form::text('tax-name',null,['class' => 'form-control','id'=>'taxname']) !!}
+                   <h6 id ="namecheck"></h6>
                 </div>
            
                  <div class="form-group">
@@ -62,7 +62,7 @@
 
 
                     ?>
-                      {!! Form::select('country',[''=>'Any Country','Select a Country'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
+                      {!! Form::select('country',[''=>'Any Country','Choose'=>$countries],null,['class' => 'form-control','onChange'=>'getState(this.value);','id'=>'countryvisible']) !!}
 
                       <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],['IN'],['class' => 'form-control hide','onChange'=>'getState(this.value);','id'=>'countrynotvisible','disabled'=>'disabled'])!!} -->
                      <input type='text' name="country1" id= "countrynotvisible" class="form-control hide" value="IN" readonly>
@@ -82,7 +82,8 @@
                  <div class="form-group showwhengst{{ $errors->has('rate') ? 'has-error' : '' }}" style="display:block" >
                     <!-- name -->
                     {!! Form::label('rate',Lang::get('message.rate').' (%)',['class'=>'required']) !!}
-                    {!! Form::text('rate',null,['class' => 'form-control']) !!}
+                    {!! Form::text('rate',null,['class' => 'form-control','id'=>'rate']) !!}
+                  
 
                 </div>
                   
@@ -130,5 +131,42 @@
         }
     });
 });
+</script>
+
+<script>
+     $(document).ready(function(){
+        $('#namecheck').hide();
+      
+      $('#taxClass').submit(function(){
+        function tax_nameCheck()
+        {
+            var tax_name = $('#taxname').val();
+            if (tax_name.length == ''){
+                   $('#namecheck').show(); 
+                   $('#namecheck').html('This field is required'); 
+                   $('#namecheck').focus();
+                   $('#taxname').css("border-color","red");
+                   $('#namecheck').css({"color":"red","margin-top":"5px"});
+            }
+            else{
+                 $('#namecheck').hide();
+                 $('#taxname').css("border-color","");
+                 return true;
+            }
+        }
+
+        
+        tax_nameCheck();
+       
+       
+        if(tax_nameCheck()){
+                return true;
+             }
+            else{
+            return false;
+          }
+      });
+
+    });
 </script>
 {!! Form::close()  !!}

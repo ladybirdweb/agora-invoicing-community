@@ -1,4 +1,4 @@
-<a href="#renew" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#renew{{$id}}">Renew</a>
+<a href="#renew" class="btn  btn-primary btn-xs" data-toggle="modal" data-target="#renew{{$id}}"><i class="fa fa-refresh">&nbsp;Renew</i></a>
 <div class="modal fade" id="renew{{$id}}">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -62,7 +62,7 @@
             url: "{{url('get-renew-cost')}}",
             data: {'user': user, 'plan': val},
             success: function (data) {
-
+                  console.log(data)
                 $(".price").val(data);
             }
         });

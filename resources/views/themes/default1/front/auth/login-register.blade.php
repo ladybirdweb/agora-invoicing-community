@@ -18,23 +18,7 @@ main
 @section('content')
 <?php
 
-// if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
-//     {
-//       $ip=$_SERVER['HTTP_CLIENT_IP'];
-//     }
-//     elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
-//     {
-//       $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-//     }
-//     else
-//     {
-//       $ip=$_SERVER['REMOTE_ADDR'];
-//     }
 
-//   if($ip!='::1')
-//    {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
-//    else
-//     {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
 
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
 $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
@@ -573,6 +557,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
 <script type="text/javascript">
 
+
     //Login Form Jquery validation
  $(document).ready(function(){
    $('#usercheck').hide();
@@ -652,6 +637,153 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
  });
 
 
+
+
+
+
+
+
+
+
+ 
+
+
+            function verify_otp_check(){
+            var userOtp = $('#oneTimePassword').val();
+            if (userOtp.length < 4){
+                $('#enterotp').show();
+                $('#enterotp').html("Please Enter A Valid OTP");
+                $('#enterotp').focus();
+                 $('#oneTimePassword').css("border-color","red");
+                $('#enterotp').css({"color":"red","margin-top":"5px"});
+
+               
+                // mobile_error = false;
+                return false;
+            }
+            else{
+                $('#enterotp').hide();
+                $('#oneTimePassword').css("border-color","");
+                return true;
+                
+              }
+         }
+
+    function verifyBySendOtp() {
+      $('#enterotp').hide();
+         if(verify_otp_check()) {
+        $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
+        var data = {
+            "mobile":   $('#verify_number').val(),
+            "code"  :   $('#verify_country_code').val(),
+            "otp"   :   $('#oneTimePassword').val(),
+            'id'    :   $('#hidden_user_id').val()
+        };
+        $.ajax({
+            url: '{{url('otp/verify')}}',
+            type: 'GET',
+            data: data,
+            success: function (response) {
+                $('#error2').hide();
+                 $('#error').hide(); 
+                $('#alertMessage2').show();
+                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
+                 // $('#alertMessage3').show();
+                 $('#successMessage2').hide();
+                $('#success').html(result);
+                $("#verifyOtp").html("Verify OTP");
+                  $('.nav-tabs li a[href="#step1"]').tab('show');
+                  $('.wizard-inner').css('display','none');
+                setTimeout(()=>{
+                        getLoginTab();
+                },0)
+            },
+            error: function (ex) {
+                var myJSON = JSON.parse(ex.responseText);
+                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+                $("#verifyOtp").html("Verify OTP");
+                for (var key in myJSON)
+                {
+                    html += '<li>' + myJSON[key][0] + '</li>'
+                }
+                html += '</ul></div>';
+                $('#alertMessage2').hide(); 
+                $('#error2').show();
+                document.getElementById('error2').innerHTML = html;
+                setTimeout(function(){ 
+                    $('#error2').hide(); 
+                }, 5000);
+            }
+        });
+      }
+      else
+      {
+        return false;
+      }
+    }
+    
+   
+        function getLoginTab(){
+         registerForm.elements['first_name'].value = '';
+        registerForm.elements['last_name'].value = '';
+        registerForm.elements['email'].value = '';
+        registerForm.elements['company'].value = '';
+        registerForm.elements['bussiness'].value = '';
+        registerForm.elements['company_type'].value = '';
+        registerForm.elements['company_size'].value = '';
+        registerForm.elements['mobile'].value = '';
+        registerForm.elements['address'].value = '';
+        registerForm.elements['user_name'].value = '';
+        registerForm.elements['password'].value = '';
+        registerForm.elements['password_confirmation'].value = '';
+        registerForm.elements['terms'].checked = false;
+
+        $('.nav-tabs li a[href="#step1"]').tab('show');
+        $('.wizard-inner').css('display','none');
+    }
+
+   $(".prev-step").click(function (e) {
+          getLoginTab();
+    });
+
+    //Enter OTP Validation
+    $('#oneTimePassword').keyup(function(){
+                 verify_otp_check();
+            });
+
+
+    function resendOTP() {
+        var data = {
+            "mobile":   $('#verify_number').val(),
+            "code"  :   $('#verify_country_code').val(),
+        };
+        $.ajax({
+          url: '{{url('resend_otp')}}',
+          type: 'GET',
+          data: data,
+          success: function (response) {
+               
+                 $('#successMessage2').hide ();
+                  $('#alertMessage3').show();
+                $('#error2').hide();
+                var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
+                $('#alertMessage3').html(result+ ".");
+          },
+          error: function (ex) {
+                var myJSON = JSON.parse(ex.responseText);
+                var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
+                for (var key in myJSON)
+                {
+                    html += '<li>' + myJSON[key][0] + '</li>'
+                }
+                html += '</ul></div>';
+                $('#alertMessage2').hide();
+                $('#error2').show(); 
+                document.getElementById('error2').innerHTML = html;
+          }
+        });
+    }
+
 //Registration Form Validation
 
  
@@ -696,7 +828,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
          function verify_number_check(){
             var userNumber = $('#verify_number').val();
-            if (userNumber.length < 10){
+            if (userNumber.length < 5){
                 $('#conmobile').show();
                 $('#conmobile').html("Please Enter Your Mobile No.");
                 $('#conmobile').focus();
@@ -791,154 +923,6 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     }
    
     }
-
-
-
- 
-    function verifyBySendOtp() {
-      alert('sd')
-       $('#enterotp').hide();
-         if(verify_otp_check()) {
-        $("#verifyOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Verifying...");
-        var data = {
-            "mobile":   $('#verify_number').val(),
-            "code"  :   $('#verify_country_code').val(),
-            "otp"   :   $('#oneTimePassword').val(),
-            'id'    :   $('#hidden_user_id').val()
-        };
-        $.ajax({
-            url: '{{url('otp/verify')}}',
-            type: 'GET',
-            data: data,
-            success: function (response) {
-                $('#error2').hide(); 
-                $('#alertMessage2').show();
-                var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!.</div>';
-                 // $('#alertMessage3').show();
-                 $('#successMessage2').hide();
-                $('#success').html(result);
-                $("#verifyOtp").html("Verify OTP");
-                  $('.nav-tabs li a[href="#step1"]').tab('show');
-                  $('.wizard-inner').css('display','none');
-                setTimeout(()=>{
-                        getLoginTab();
-                },0)
-            },
-            error: function (ex) {
-                var myJSON = JSON.parse(ex.responseText);
-                var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
-                $("#verifyOtp").html("Verify OTP");
-                for (var key in myJSON)
-                {
-                    html += '<li>' + myJSON[key][0] + '</li>'
-                }
-                html += '</ul></div>';
-                $('#alertMessage2').hide(); 
-                $('#error2').show();
-                document.getElementById('error2').innerHTML = html;
-                setTimeout(function(){ 
-                    $('#error2').hide(); 
-                }, 5000);
-            }
-        });
-      }
-      else
-      {
-        return false;
-      }
-    }
-
-    
-            function verify_otp_check(){
-            var userOtp = $('#oneTimePassword').val();
-            if (userOtp.length < 4){
-                $('#enterotp').show();
-                $('#enterotp').html("Please Enter A Valid OTP");
-                $('#enterotp').focus();
-                 $('#oneTimePassword').css("border-color","red");
-                $('#enterotp').css({"color":"red","margin-top":"5px"});
-
-               
-                // mobile_error = false;
-                return false;
-            }
-            else{
-                $('#enterotp').hide();
-                $('#oneTimePassword').css("border-color","");
-                return true;
-                
-              }
-         }
-
-    
-   
-        function getLoginTab(){
-         registerForm.elements['first_name'].value = '';
-        registerForm.elements['last_name'].value = '';
-        registerForm.elements['email'].value = '';
-        registerForm.elements['company'].value = '';
-        registerForm.elements['bussiness'].value = '';
-        registerForm.elements['company_type'].value = '';
-        registerForm.elements['company_size'].value = '';
-        registerForm.elements['mobile'].value = '';
-        registerForm.elements['address'].value = '';
-        registerForm.elements['user_name'].value = '';
-        registerForm.elements['password'].value = '';
-        registerForm.elements['password_confirmation'].value = '';
-        registerForm.elements['terms'].checked = false;
-
-        $('.nav-tabs li a[href="#step1"]').tab('show');
-        $('.wizard-inner').css('display','none');
-    }
-
-   $(".prev-step").click(function (e) {
-          getLoginTab();
-    });
-
-    //Enter OTP Validation
-    $('#oneTimePassword').keyup(function(){
-                 verify_otp_check();
-            });
-
-
-    function resendOTP() {
-        var data = {
-            "mobile":   $('#verify_number').val(),
-            "code"  :   $('#verify_country_code').val(),
-        };
-        $.ajax({
-          url: '{{url('resend_otp')}}',
-          type: 'GET',
-          data: data,
-          success: function (response) {
-               
-                 $('#successMessage2').hide ();
-                  $('#alertMessage3').show();
-                $('#error2').hide();
-                var result =  '<div class="alert alert-success"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                $('#alertMessage3').html(result+ ".");
-          },
-          error: function (ex) {
-                var myJSON = JSON.parse(ex.responseText);
-                var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong>Oh Snap! </strong>Something went wrong<br><br><ul>';
-                for (var key in myJSON)
-                {
-                    html += '<li>' + myJSON[key][0] + '</li>'
-                }
-                html += '</ul></div>';
-                $('#alertMessage2').hide();
-                $('#error2').show(); 
-                document.getElementById('error2').innerHTML = html;
-          }
-        });
-    }
-
-
-
-
-
-
-
 
    $(document).ready(function(){
    $('#usercheck').hide();
@@ -1746,7 +1730,7 @@ function prevTab(elem) {
             });
         },
         initialCountry: "auto",
-        separateDialCode: false,
+        separateDialCode: true,
         utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');

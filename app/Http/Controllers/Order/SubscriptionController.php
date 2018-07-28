@@ -67,7 +67,8 @@ class SubscriptionController extends Controller
                         })
                         ->showColumns('ends_at')
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('subscriptions/'.$model->id)." class='btn btn-sm btn-primary'>View</a>";
+                            return '<a href='.url('subscriptions/'.$model->id)." 
+                            class='btn btn-sm btn-primary'>View</a>";
                         })
                         ->searchColumns('ends_at')
                         ->orderColumns('ends_at')

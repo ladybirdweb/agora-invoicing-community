@@ -13,7 +13,7 @@ class ProfileController extends Controller
         $this->middleware('auth');
     }
 
-    public function Profile()
+    public function profile()
     {
         try {
             $user = \Auth::user();
@@ -29,13 +29,13 @@ class ProfileController extends Controller
         }
     }
 
-    public function UpdateProfile(ProfileRequest $request)
+    public function updateProfile(ProfileRequest $request)
     {
         try {
             $user = \Auth::user();
             if ($request->hasFile('profile_pic')) {
                 $name = \Input::file('profile_pic')->getClientOriginalName();
-                $destinationPath = 'dist/app/users';
+                $destinationPath = public_path('dist/app/users');
                 $fileName = rand(0000, 9999).'.'.$name;
                 \Input::file('profile_pic')->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
@@ -48,7 +48,7 @@ class ProfileController extends Controller
         }
     }
 
-    public function UpdatePassword(ProfileRequest $request)
+    public function updatePassword(ProfileRequest $request)
     {
         try {
             $user = \Auth::user();

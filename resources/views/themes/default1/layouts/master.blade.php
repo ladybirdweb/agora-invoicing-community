@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <title>{{Lang::get('message.faveo-billing-application')}}</title>
+         <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.4 -->
@@ -21,9 +22,13 @@
              folder instead of downloading all of them to reduce the load. -->
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
-        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" /> -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+        <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
         <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
+         <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
 
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,6 +41,7 @@
         <!-- jQuery 2.1.4 -->
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <style>
 
 .most-popular {
@@ -55,8 +61,9 @@
     ?>
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
     <!-- the fixed layout is not compatible with sidebar-mini -->
-    <body class="skin-blue fixed sidebar-mini">
-        <!-- Site wrapper -->
+    <body class="hold-transition skin-blue sidebar-mini">
+
+       <!-- Site wrapper -->
         <div class="wrapper">
 
             <header class="main-header">
@@ -228,6 +235,10 @@
                 <!-- /.sidebar -->
             </aside>
 
+
+
+            
+
             <!-- =============================================== -->
 
             <!-- Content Wrapper. Contains page content -->
@@ -235,8 +246,9 @@
                 <!-- Content Header (Page header) -->
                 <section class="content-header">
 
-                    @yield('header')
+                    @yield('content-header')
                 </section>
+
 
                 <!-- Main content -->
                 <section class="content">
@@ -258,6 +270,8 @@
         </div><!-- ./wrapper -->
 
         <!-- Bootstrap 3.3.2 JS -->
+         <script src="{{asset('js/theme.init.js')}}"></script>
+          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
         <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <!-- SlimScroll -->
         <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
@@ -267,6 +281,7 @@
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
+        
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->
         <script src="{{asset('dist/js/demo.js')}}" type="text/javascript"></script>

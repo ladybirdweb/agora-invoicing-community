@@ -1,9 +1,16 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+All Products
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Products</li>
+      </ol>
+@stop
 @section('content')
 
-
-
-<div class="box box-primary">
+    <div class="box box-primary">
 
     <div class="box-header">
         @if (count($errors) > 0)

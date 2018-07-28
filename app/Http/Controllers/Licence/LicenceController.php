@@ -38,7 +38,8 @@ class LicenceController extends Controller
         return \Datatable::collection($this->licence->get())
                         ->showColumns('name', 'description', 'number_of_sla', 'price')
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('licences/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('licences/'.$model->id.'/edit').
+                            " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('description')
                         ->orderColumns('description')

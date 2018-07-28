@@ -33,20 +33,21 @@ class BundleController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
         try {
             return view('themes.default1.product.bundle.index');
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
     public function getBundles()
     {
-        return \Datatable::collection($this->bundle->select('id', 'name', 'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
+        return \Datatable::collection($this->bundle->select('id', 'name',
+         'valid_from', 'valid_till', 'uses', 'maximum_uses')->get())
                         ->addColumn('#', function ($model) {
                             return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
                         })
@@ -62,7 +63,8 @@ class BundleController extends Controller
                             return implode(',', $result);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('bundles/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('bundles/'.$model->id.'/edit').
+                            " class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name', 'item')
                         ->orderColumns('name')
@@ -72,7 +74,7 @@ class BundleController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -80,7 +82,7 @@ class BundleController extends Controller
             $products = $this->product->lists('name', 'id')->toArray();
 
             return view('themes.default1.product.bundle.create', compact('products'));
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -88,7 +90,7 @@ class BundleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
     public function store(BundleRequest $request)
     {
@@ -102,7 +104,7 @@ class BundleController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -112,7 +114,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -124,7 +126,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -145,15 +147,17 @@ class BundleController extends Controller
                 $from = null;
             }
 
-            return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
-        } catch (Exception $e) {
-            return redirect()->back()->with('fails', $ex->getMessage());
+            return view('themes.default1.product.bundle.edit',
+             compact('products', 'bundle', 'relation', 'till', 'from'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('fails', $e->getMessage());
         } catch (\InvalidArgumentException $e) {
             if ($e->getMessage() == 'Unexpected data found.') {
                 $till = null;
                 $from = null;
 
-                return view('themes.default1.product.bundle.edit', compact('products', 'bundle', 'relation', 'till', 'from'));
+                return view('themes.default1.product.bundle.edit',
+                 compact('products', 'bundle', 'relation', 'till', 'from'));
             }
         }
     }
@@ -163,7 +167,7 @@ class BundleController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, BundleRequest $request)
     {
@@ -185,7 +189,7 @@ class BundleController extends Controller
             }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $e) {
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -194,7 +198,7 @@ class BundleController extends Controller
      * Remove the specified resource from storage.
      *
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -208,32 +212,38 @@ class BundleController extends Controller
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
                 }
                 echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
+
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
                 //echo \Lang::get('message.select-a-row');
             }
         } catch (\Exception $e) {
             echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.$e->getMessage().'
                 </div>';

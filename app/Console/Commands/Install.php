@@ -47,7 +47,8 @@ class Install extends Command
             $dbusername = $this->ask('Enter your database username');
             $dbpassword = $this->ask('Enter your database password (blank if not entered)', false);
             $port = $this->ask('Enter your sql port (blank if not entered)', false);
-            $array = ['DB_TYPE' => $default, 'DB_HOST' => $host, 'DB_DATABASE' => $database, 'DB_USERNAME' => $dbusername, 'DB_PASSWORD' => $dbpassword];
+            $array = ['DB_TYPE' => $default, 'DB_HOST' => $host,
+             'DB_DATABASE'      => $database, 'DB_USERNAME' => $dbusername, 'DB_PASSWORD' => $dbpassword, ];
             $this->updateDBEnv($array);
             $this->call('key:generate');
             $this->call('migrate');
@@ -93,7 +94,7 @@ QUEUE_DRIVER=sync';
             $contents = "$key=$value";
             file_put_contents($env, $contents.PHP_EOL, FILE_APPEND | LOCK_EX);
         } else {
-            throw new Exception('.env not found');
+            throw new \Exception('.env not found');
         }
     }
 

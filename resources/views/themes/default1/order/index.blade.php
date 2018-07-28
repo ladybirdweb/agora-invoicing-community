@@ -1,5 +1,14 @@
 @extends('themes.default1.layouts.master')
 @section('content')
+@section('content-header')
+<h1>
+View All Orders
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Orders</li>
+      </ol>
+@stop
 <div class="box box-success">
     <div class="box-header with-border">
         <h3 class="box-title">Search</h3>
@@ -25,25 +34,31 @@
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('product_id','Product') !!}
-                {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!}
+               <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
+                   <select name="product_id"  class="form-control" id ="product_id">
+                             <option value="Choose">Choose</option>
+                           @foreach($products as $key=>$product)
+                             <option value={{$key}}>{{$product}}</option>
+                          @endforeach
+                          </select>
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary', 'placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'from']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'till']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'YYYY-mm-dd']) !!}
 
             </div>
             <div class="col-md-2 form-group">
@@ -53,16 +68,17 @@
 
             </div>
 
-            <div class="col-md-4 col-md-offset-4">
+          
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                     <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
-                </div>
-                <div class="col-md-6">
+                     &nbsp;&nbsp;
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+
+
                 </div>
-            </div>
+            
 
         </div>
 <script type="text/javascript">

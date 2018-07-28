@@ -7,5 +7,6 @@ use App\BaseModel;
 class MailchimpFieldAgoraRelation extends BaseModel
 {
     protected $table = 'mailchimp_field_agora_relations';
-    protected $fillable = ['first_name', 'last_name', 'company', 'mobile', 'address', 'town', 'state', 'zip', 'active', 'role'];
+    protected $fillable = ['first_name', 'last_name', 'company',
+    'mobile', 'address', 'town', 'state', 'zip', 'active', 'role', ];
 }

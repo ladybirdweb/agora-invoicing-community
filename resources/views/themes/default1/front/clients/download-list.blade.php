@@ -1,4 +1,4 @@
-<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#list">  <i class='fa fa-download' style="color:white;" title=Download></i></a>
+<a onclick="getTable({{$productid}},{{$clientid}},{{$invoiceid}})" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#list">  <i class='fa fa-download' style="color:white;" title=Download>&nbsp;Download</i></a>
 <div class="modal fade" id="list">
     <div class="modal-dialog">
         <div class="modal-content" style="width:700px;">

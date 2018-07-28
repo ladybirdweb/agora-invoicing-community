@@ -108,10 +108,10 @@
     // // 'password' => 'Auth\PasswordController',
     //     ]);
         Route::auth();
-        Route::get('/', 'HomeController@index');
+        Route::get('/', 'DashboardController@index');
         Route::get('resend/activation/{email}', 'Auth\AuthController@sendActivationByGet');
 
-        Route::get('activate/{token}', 'Auth\AuthController@Activate');
+        Route::get('activate/{token}', 'Auth\AuthController@activate');
 
          Route::get('change/email', 'Auth\AuthController@updateUserEmail');
 
@@ -119,9 +119,9 @@
          * Profile Process
          */
 
-        Route::get('profile', 'User\ProfileController@Profile');
-        Route::patch('profile', 'User\ProfileController@UpdateProfile');
-        Route::patch('password', 'User\ProfileController@UpdatePassword');
+        Route::get('profile', 'User\ProfileController@profile');
+        Route::patch('profile', 'User\ProfileController@updateProfile');
+        Route::patch('password', 'User\ProfileController@updatePassword');
 
         /*
          * Settings
@@ -133,8 +133,15 @@
         Route::patch('settings/email', 'Common\SettingsController@postSettingsEmail');
         Route::get('settings/template', 'Common\SettingsController@settingsTemplate');
         Route::patch('settings/template', 'Common\SettingsController@postSettingsTemplate');
-        Route::get('settings/error', 'Common\SettingsController@settingsError');
+        // Route::get('settings/error', 'Common\SettingsController@settingsError');
+        // Route::get('/log-viewer', 'Common\SettingsController@viewLogs');
         Route::patch('settings/error', 'Common\SettingsController@postSettingsError');
+        Route::get('settings/activitylog', 'Common\SettingsController@settingsActivity');
+         Route::get('settings/maillog', 'Common\SettingsController@settingsMail');
+         Route::get('get-activity', ['as' => 'get-activity', 'uses' => 'Common\SettingsController@getActivity']);
+          Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
+         Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
+          Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
 
         /*
          * Client
@@ -143,7 +150,7 @@
         Route::resource('clients', 'User\ClientController');
 
         // Route::get('get-clients', 'User\ClientController@GetClients');
-         Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@GetClients']);
+         Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
         Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
 
@@ -278,6 +285,8 @@
         Route::get('invoice/generate', 'Order\InvoiceController@generateById');
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
+
+        Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 'uses' => 'Order\InvoiceController@invoiceTotalChange']);
 
         /*
          * Payment
@@ -414,6 +423,12 @@
              */
             Route::get('check-url', 'Api\ApiController@checkDomain');
         });
+
+        /*
+         * Api Keys
+         */
+        Route::get('apikeys', 'Common\SettingsController@getKeys');
+        Route::patch('apikeys', 'Common\SettingsController@postKeys');
 
         Route::get('otp/send', 'Auth\AuthController@requestOtp');
         Route::get('otp/sendByAjax', 'Auth\AuthController@requestOtpFromAjax');

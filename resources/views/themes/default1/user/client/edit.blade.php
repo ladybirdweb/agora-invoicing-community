@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Edit User
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('clients')}}">All Users</a></li>
+        <li class="active">Edit User</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -97,8 +107,8 @@
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
-                        {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class' => 'form-control']) !!}
-
+                        {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control']) !!}
+                           
                     </div>
 
 
@@ -125,7 +135,7 @@
                     <div class="col-md-3 form-group {{ $errors->has('position') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('position','Position') !!}
-                        {!! Form::select('position',[''=>'Select','manager'=>'Manager'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('position',['Choose'=>'Choose','manager'=>'Manager'],null,['class' => 'form-control']) !!}
 
                     </div>
                     <?php
@@ -135,13 +145,13 @@
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                        {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control']) !!}
+                        {!! Form::select('company_type',['Choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!}
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                        {!! Form::select('company_size',[''=>'Select','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
+                        {!! Form::select('company_size',['Choose'=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
 
                     </div>
                 </div>
@@ -164,9 +174,9 @@
                     <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
+                        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','onChange'=>'getCountryAttr(this.value);']) !!}
+                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -196,19 +206,20 @@
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                        {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
+                        {!! Form::select('timezone_id',['Choose'=>'Choose',''=>$timezones],null,['class' => 'form-control']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',[''=>'Select','Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                        {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                        {!! Form::text('mobile_code',null,['class'=>'form-control','id'=>'mobile_code']) !!}
+                         <!-- <input class="form-control" id="mobilecode" name="mobile" type="tel"> -->
+                        {!! Form::text('mobil',null,['class'=>'form-control','id'=>'mobile_code']) !!}
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
@@ -241,6 +252,47 @@
 
 {!! Form::close() !!}
 
+<script type="text/javascript">
+          $(document).ready(function(){
+    var country = $('#country').val();
+    var telInput = $('#mobile_code');
+     let currentCountry="";
+    telInput.intlTelInput({
+        initialCountry: "auto",
+        geoIpLookup: function (callback) {
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                resp.country = country;
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                    currentCountry=countryCode.toLowerCase()
+                    callback(countryCode);
+            });
+        },
+        separateDialCode: true,
+        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
+    });
+    setTimeout(()=>{
+         telInput.intlTelInput("setCountry", currentCountry);
+    },500)
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+});
+
+</script>
+
 <script>
 
     function getCountryAttr(val) {
@@ -254,8 +306,8 @@
 
 
         $.ajax({
-            type: "POST",
-            url: "{{url('get-state')}}",
+            type: "GET",
+              url: "{{url('get-state')}}/" + val,
             data: 'country_id=' + val,
             success: function (data) {
                 $("#state-list").html(data);
@@ -269,7 +321,7 @@
             data: 'country_id=' + val,
             success: function (data) {
                 $("#mobile_code").val(data);
-                $("#mobile_code_hidden").val(data);
+                // $("#mobile_code_hidden").val(data);
             }
         });
     }
@@ -284,4 +336,6 @@
         });
     }
 </script>
+
+
 @stop

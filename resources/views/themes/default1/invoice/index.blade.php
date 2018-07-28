@@ -1,4 +1,13 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+All Invoices
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">All Invoices</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -31,7 +40,8 @@
         @endif
         <div id="response"></div>
         <h4>{{Lang::get('message.invoices')}}
-            <a href="{{url('invoice/generate')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.place-an-order')}}</a></h4>
+           
+            <a href="{{url('invoice/generate')}}" class="btn btn-primary pull-right "><i class="fa fa-credit-card"></i>&nbsp; {{Lang::get('message.place-an-order')}}</a></h4>
     </div>
 
 

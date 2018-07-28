@@ -33,7 +33,8 @@ class ServiceController extends Controller
         return \Datatable::collection($this->service->get())
                         ->showColumns('name')
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('services/'.$model->id.'/edit')." class='btn btn-sm btn-primary'>Edit</a>";
+                            return '<a href='.url('services/'.$model->id.'/edit')."
+                             class='btn btn-sm btn-primary'>Edit</a>";
                         })
                         ->searchColumns('name')
                         ->orderColumns('name')

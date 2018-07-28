@@ -197,10 +197,8 @@ Checkout
                         <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-                 
-                @foreach($items->toArray() as $attribute)
-                
-                @if($attribute['tax_name']!='null,' && $symbol == "INR")
+                  @foreach($items->toArray() as $attribute)
+                 @if($attribute['tax_name']!='null,')
                 <?php 
                 $tax_name = "";
                 $tax_percentage="";

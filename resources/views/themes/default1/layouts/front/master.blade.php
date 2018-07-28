@@ -16,7 +16,7 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href="images/faveo1.png" type="image/x-icon" />
+          <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -220,7 +220,7 @@
                                                                     <table class="cart">
                                                                         <tbody>
                                                                             @forelse(Cart::getContent() as $key=>$item)
-                                                                            
+                                                                             
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                                             if ($product->require_domain == 1) {

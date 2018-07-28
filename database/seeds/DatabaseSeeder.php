@@ -125,6 +125,7 @@ class CurrencyTableSeeder extends Seeder
         \DB::table('currencies')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
+        Currency::create(['id' => 2, 'code' => 'INR', 'symbol' => '₹', 'name' => 'Indian Rupee', 'base_conversion' => '1.0']);
     }
 }
 

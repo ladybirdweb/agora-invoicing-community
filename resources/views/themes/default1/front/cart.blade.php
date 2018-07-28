@@ -36,6 +36,7 @@ if (count($attributes) > 0) {
              <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong>There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
+                
                 <li>{{ $error }}</li>
                 @endforeach
             </ul>
@@ -183,28 +184,7 @@ if (count($attributes) > 0) {
                                 </div>
                             </div>
                        
-                        <?php $addons = \App\Http\Controllers\Front\CartController::addons();
-              
-                        ?>
-                        @if(count($addons)>0)
-                        <li>
-
-
-                            @foreach($addons as $addon)
-                            <div class="col-md-3">
-                                <div class="featured-box featured-box-primary">
-                                    <div class="box-content">
-                                        <span><img width="50" height="50" alt="" class="img-responsive" src="{{$addon->image}}"></span>
-                                        <span>{{ucfirst($addon->name)}}</span>
-                                        <span><a href="{{$addon->shoping_cart_link}}" class="btn btn-small btn-primary">Buy</a></span>
-                                    </div>
-                                </div>
-                            </div>
-                            @endforeach
-
-                        </li>
-                        @endif
-                    
+                       
                 </div>
 
                 <div class="col-md-4">
@@ -241,7 +221,7 @@ if (count($attributes) > 0) {
                                         <td>
 
 
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>   {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
 
 
                                         </td>
@@ -278,16 +258,16 @@ if (count($attributes) > 0) {
                          <!-- </div> -->
                            <div class="row">
                         <div class=" col-md-6">
-                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('cart/clear')}}"><button class="btn btn-danger btn-sm" style="margin-bottom: 20px;">Clear My Cart&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
                         
                        </div>
                         <div class=" col-md-6">
                             @if(count($domain)>0)
 
-                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="#domain" data-toggle="modal" data-target="#domain"><button class="btn btn-primary btn-sm "style="margin-bottom: 20px;"> Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
 
                             @else
-                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-sm" style="margin-bottom: 20px;">Proceed to Checkout<i class="fa fa-angle-right ml-xs"></i></button></a>
+                            <a href="{{url('checkout')}}"><button class="btn btn-primary btn-sm" style="margin-bottom: 20px;">Proceed to Checkout&nbsp;<i class="fa fa-angle-right ml-xs"></i></button></a>
                             @endif
                           
 

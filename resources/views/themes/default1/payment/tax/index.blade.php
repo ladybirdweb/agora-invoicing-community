@@ -1,4 +1,14 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Create Tax And Tax Classes
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+         <li class="active">Tax</li>
+      </ol>
+@stop
 @section('content')
 
     <style>
@@ -53,11 +63,11 @@
             @endif
 
 
-            <h4>{{Lang::get('message.tax')}}
+            
                 <!--<a href="{{url('currency/create')}}" class="btn btn-primary pull-right   ">{{Lang::get('message.create')}}</a>-->
                 <!--<a href="#create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create">{{Lang::get('message.create')}}</a>-->
                 
-                <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
+               
             </h4>
             @include('themes.default1.payment.tax.create-tax-option')
 
@@ -68,14 +78,18 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="header-body">
+                   <!--  <div class="header-body">
                         <h4>Options
                             {!! Form::model($options,['url'=>'taxes/option','method'=>'patch']) !!}
                         </h4>
-                    </div>
+                    </div> -->
 
                     <table class="table table-responsive">
-                        <tr>
+                    
+                          <h4>{{Lang::get('Options')}}  {!! Form::model($options,['url'=>'taxes/option','method'=>'patch']) !!}<button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-30px;"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+                           
+                       
+                       
                             <td>
                                 {!! Form::label('tax_enable',Lang::get('message.tax-enable')) !!}
                             </td>
@@ -95,7 +109,7 @@
                               </label>
                                
                             </td>
-                        </tr>
+                        
 
                         <tr class="form-group gstshow hide">
                               
@@ -139,11 +153,7 @@
                                     <span class="slider"></span>
                                   </div>                            </td>
                         </tr>
-                        <tr>
-                            <td>
-                             <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button></td>
-                           
-                        </tr>
+                        
                     </table>
 
                     {!! Form::close() !!}
@@ -156,10 +166,11 @@
 
 
                 <div class="col-md-12">
+                   <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
-                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Tax Type</th>
                               <th>Name</th>
                                <th>Country</th>
@@ -294,7 +305,7 @@ $('.btn-off-3').addClass('active');
                     $('#gif').show();
                     },
                     success: function (data) {
-                    $('#gif').hide();
+                    $('#gif').show();
                     $('#response').html(data);
                     location.reload();
                     }

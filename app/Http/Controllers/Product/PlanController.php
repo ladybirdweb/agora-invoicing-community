@@ -39,7 +39,7 @@ class PlanController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function index()
     {
@@ -59,7 +59,8 @@ class PlanController extends Controller
 
         return\ DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='plan_checkbox' value=".$model->id.' name=select[] id=check>';
+                            return "<input type='checkbox' class='plan_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
@@ -80,7 +81,9 @@ class PlanController extends Controller
                             return ucfirst($response);
                         })
                         ->addColumn('action', function ($model) {
-                            return '<a href='.url('plans/'.$model->id.'/edit')." class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
+                            return '<a href='.url('plans/'.$model->id.'/edit')." 
+                            class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
+                            style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
                         ->rawColumns(['checkbox', 'name', 'days', 'product', 'action'])
                         ->make(true);
@@ -89,7 +92,7 @@ class PlanController extends Controller
     /**
      * Show the form for creating a new resource.
      *
-     * @return Response
+     * @return \Response
      */
     public function create()
     {
@@ -103,7 +106,7 @@ class PlanController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @return Response
+     * @return \Response
      */
     public function store(Request $request)
     {
@@ -142,7 +145,7 @@ class PlanController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function show($id)
     {
@@ -153,7 +156,7 @@ class PlanController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function edit($id)
     {
@@ -164,7 +167,8 @@ class PlanController extends Controller
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
 
-        return view('themes.default1.product.plan.edit', compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
+        return view('themes.default1.product.plan.edit',
+            compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products'));
     }
 
     /**
@@ -172,7 +176,7 @@ class PlanController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function update($id, Request $request)
     {
@@ -180,6 +184,7 @@ class PlanController extends Controller
             'name'        => 'required',
             'add_price.*' => 'required',
             'product'     => 'required',
+            'days'        => 'required',
         ]);
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();
@@ -219,7 +224,7 @@ class PlanController extends Controller
      *
      * @param int $id
      *
-     * @return Response
+     * @return \Response
      */
     public function destroy(Request $request)
     {
@@ -232,25 +237,28 @@ class PlanController extends Controller
                 } else {
                     echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.no-record').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
                     //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                 }
             }
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.deleted-successfully').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
         } else {
             echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.select-a-row').'
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
             //echo \Lang::get('message.select-a-row');
         }

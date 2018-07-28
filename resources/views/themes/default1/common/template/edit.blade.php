@@ -1,4 +1,15 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Edit Template
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('templates')}}">Templates</a></li>
+        <li class="active">Edit Template</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -30,7 +41,7 @@
                 </div>
                 @endif
         {!! Form::model($template,['url'=>'templates/'.$template->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.template')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>{{Lang::get('message.template')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

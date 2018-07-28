@@ -4,6 +4,10 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](http://keepachangel
 
 ## Unreleased
 
+## [2.2.1] - 2018-05-28
+### Added
+- Support for fetching all customer entities
+
 ## [2.2.0] - 2017-10-23
 ### Added
 - Support for VirtualAccount entity
@@ -84,7 +88,7 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](http://keepachangel
 - Initial Release
 
 
-[Unreleased]: https://github.com/razorpay/razorpay-php/compare/2.2.0...HEAD
+[Unreleased]: https://github.com/razorpay/razorpay-php/compare/2.2.1...HEAD
 [1.2.1]: https://github.com/razorpay/razorpay-php/compare/1.2.0...1.2.1
 [1.2.0]: https://github.com/razorpay/razorpay-php/compare/1.1.0...1.2.0
 [1.2.2]: https://github.com/razorpay/razorpay-php/compare/1.2.1...1.2.2
@@ -99,3 +103,4 @@ Changelog for Razorpay-PHP SDK. Follows [keepachangelog.com](http://keepachangel
 [2.0.2]: https://github.com/razorpay/razorpay-php/compare/2.0.1...2.0.2
 [2.1.0]: https://github.com/razorpay/razorpay-php/compare/2.0.2...2.1.0
 [2.2.0]: https://github.com/razorpay/razorpay-php/compare/2.1.0...2.2.0
+[2.2.1]: https://github.com/razorpay/razorpay-php/compare/2.2.0...2.2.1

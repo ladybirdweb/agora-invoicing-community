@@ -1,4 +1,13 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+All Promotions
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Promotion</li>
+      </ol>
+@stop
 @section('content')
 
 
@@ -44,7 +53,7 @@
         <div class="row">
 
             <div class="col-md-12">
-                 <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                 <table id="promotion-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
 
 
                      <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
@@ -71,7 +80,7 @@
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-        $('#products-table').DataTable({
+        $('#promotion-table').DataTable({
             processing: true,
             serverSide: true,
              stateSave: true,
@@ -113,7 +122,7 @@
 <script>
      function checking(e){
           
-          $('#plan-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+          $('#promotion-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
      }
      
 

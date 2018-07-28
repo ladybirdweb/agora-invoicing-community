@@ -375,7 +375,7 @@ class TemplateController extends BaseTemplateController
                 }
                 // dd($price);
             }
-            $cost = "$symbol $price";
+            $cost = "$symbol$price";
         } else {
             $cost = 'Free';
         }

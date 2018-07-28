@@ -6,12 +6,14 @@ php:
   - 7.0
   - hhvm
 
-# services:
-# - mysql
+services:
+- mysql
 
 
 before_install:
-  # - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
+  - dhp artisan key:generate
+  - php artisan migrate --seed
 
 # Commands to be run before your environment runs.
 before_script:
@@ -23,18 +25,18 @@ before_script:
 # - mysql -e 'create database db_testing;'
 # - composer self-update
 # - composer install --no-interaction
-# - php artisan key:generate
+# - dhp artisan key:generate
 # - php artisan migrate --seed
 
 
 
 # Commands you want to run that will verify your build.
 script:
-  # - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.clover
 
 # after_script:
 # after_script:
-#   - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
+  - php vendor/bin/ocular code-coverage:upload --format=php-clover coverage.clover
 # wget https://scrutinizer-ci.com/ocular.phar
 # php ocular.phar code-coverage:upload --format=php-clover coverage.clover
 #   - wget https://scrutinizer-ci.com/ocular.phar
@@ -51,3 +53,6 @@ matrix:
 notifications:
     on_success: never
     on_failure: always
+ 
+
+

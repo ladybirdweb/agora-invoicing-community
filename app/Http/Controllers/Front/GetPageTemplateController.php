@@ -62,7 +62,7 @@ class GetPageTemplateController extends Controller
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         if (count($servicedesk_vps_product) > 0) {
             foreach ($servicedesk_vps_product as $key => $value) {
-                 $trasform4[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform4[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform4[$value['id']]['name'] = $value['name'];
                 $trasform4[$value['id']]['feature'] = $value['description'];
                 $trasform4[$value['id']]['subscription'] = $temp_controller

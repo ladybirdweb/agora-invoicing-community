@@ -12,7 +12,6 @@ services:
 
 before_install:
   - mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing;'
-  # - php artisan key:generate
   - php artisan migrate --seed
 
 # Commands to be run before your environment runs.

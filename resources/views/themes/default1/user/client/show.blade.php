@@ -271,7 +271,7 @@ User Details
 
                                     <td>{{$payment->amount}}</td>
                                     <td>{{ucfirst($payment->payment_status)}}</td>
-                                    <td><a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger">{{Lang::get('message.delete')}}</a></td>
+                                    <td><a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash">&nbsp;{{Lang::get('message.delete')}}</i></a></td>
                                 </tr>
                                 @empty 
                                 <tr>
@@ -456,8 +456,8 @@ User Details
                                     <td>{{$order->number}}</td>
                                     <td>{{$order->price_override}}</td>
                                     <td>{{$order->order_status}}</td>
-                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary">View</a>
-                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger">{{Lang::get('message.delete')}}</a></td>
+                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-eye">&nbsp;View</i></a>
+                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash">&nbsp;{{Lang::get('message.delete')}}</i></a></td>
                                 </tr>
                                 @empty 
                                 <tr>

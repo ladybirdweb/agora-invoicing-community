@@ -66,6 +66,7 @@ class RazorpayController extends Controller
         }
         $stateCode = \Auth::user()->state;
         $state = $this->getState($stateCode);
+        $currency = $this->getCurrency();
         $invoice = Invoice::where('id', $invoice)->first();
 
         if ($success === true) {
@@ -77,7 +78,7 @@ class RazorpayController extends Controller
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);
 
-                    $view = $this->getViewMessageAfterPayment($invoice);
+                    $view = $this->getViewMessageAfterPayment($invoice,$state,$currency);
                     $status = $view['status'];
                     $message = $view['message'];
 
@@ -88,7 +89,7 @@ class RazorpayController extends Controller
                     $payment = new \App\Http\Controllers\Order\InvoiceController();
                     $payment->postRazorpayPayment($invoice->id, $invoice->grand_total);
 
-                    $view = $this->getViewMessageAfterRenew($invoice);
+                    $view = $this->getViewMessageAfterRenew($invoice,$state,$currency);
                     $status = $view['status'];
                     $message = $view['message'];
                 }
@@ -98,6 +99,16 @@ class RazorpayController extends Controller
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }
+    }
+
+    public function getCurrency()
+    {
+        if (\Auth::user()->currency == 'INR'){
+            $symbol= '₹';
+        }else{
+             $symbol= '$';
+        }
+        return $symbol;
     }
 
     public function getState($stateCode)
@@ -111,7 +122,7 @@ class RazorpayController extends Controller
         return $state;
     }
 
-    public function getViewMessageAfterPayment($invoice)
+    public function getViewMessageAfterPayment($invoice,$state,$currency)
     {
         $order = Order::where('invoice_id', $invoice->id)->first();
         $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
@@ -124,12 +135,12 @@ class RazorpayController extends Controller
         \Cart::clear();
         $status = 'success';
         $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','order',
-            'product', 'invoiceItem'))->render();
+            'product', 'invoiceItem','state','currency'))->render();
 
         return ['status'=>$status, 'message'=>$message];
     }
 
-    public function getViewMessageAfterRenew($invoice)
+    public function getViewMessageAfterRenew($invoice,$state,$currency)
     {
         $invoiceItem = InvoiceItem::where('invoice_id', $invoice->id)->first();
         $product = Product::where('name', $invoiceItem->product_name)->first();
@@ -144,7 +155,7 @@ class RazorpayController extends Controller
         $status = 'success';
 
         $message = view('themes.default1.front.postRenewTemplate', compact('invoice','date','order',
-            'product', 'invoiceItem'))->render();
+            'product', 'invoiceItem','state','currency'))->render();
 
         return ['status'=>$status, 'message'=>$message];
     }

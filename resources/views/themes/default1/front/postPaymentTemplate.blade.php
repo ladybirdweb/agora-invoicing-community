@@ -33,7 +33,7 @@
                     </li>
                 
                 <li class="woocommerce-order-overview__total total">
-                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{\Auth::user()->currency}}</span>{{$order->price_override}}</span></strong>
+                    Total:                    <strong><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span>{{$order->price_override}}</span></strong>
                 </li>
 
                                     <li class="woocommerce-order-overview__payment-method method">
@@ -65,7 +65,7 @@
     </td>
 
     <td class="woocommerce-table__product-total product-total">
-        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{\Auth::user()->currency}}</span> {{$invoiceItem->regular_price}}</span>    </td>
+        <span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$invoiceItem->regular_price}}</span>    </td>
 
 </tr>
 
@@ -81,7 +81,7 @@
                     </tr>
                                         <tr>
                         <th scope="row">Total:</th>
-                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{\Auth::user()->currency}}</span> {{$order->price_override}}</span></td>
+                        <td><span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol">{{$currency}}</span> {{$order->price_override}}</span></td>
                     </tr>
                             </tfoot>
     </table>
@@ -93,7 +93,7 @@
     <h2 style="margin-bottom:20px;">Billing address</h2>
 
     <strong>
-       {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{\Auth::user()->state}} <br>
+       {{\Auth::user()->first_name}} {{\Auth::user()->last_name}}<br>{{\Auth::user()->address}}<br>{{\Auth::user()->town}} - {{\Auth::user()->zip}}<br> {{$state}} <br>
                    {{\Auth::user()->mobile}} <br><br>
                      <a href= product/download/{{$product->id}}/{{$invoice->number}} " class="btn btn-sm btn-primary btn-xs" style="margin-bottom:15px;"><i class="fa fa-download" style="color:white;"> </i>&nbsp;&nbsp;Download the Latest Version here</a>
             </strong>

@@ -586,14 +586,11 @@ class CartController extends BaseCartController
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
             if ($rounding == 1) {
-                // $price = str_replace(',', '', $price);
-
                 return round($price);
             } else {
                 return $price;
             }
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             // throw new \Exception('error in get tax priority');
         }
@@ -1070,7 +1067,12 @@ class CartController extends BaseCartController
                                     ->first()
                             ->add_price;
                     $days = $plan->days;
+                    if ($days >= '365'){
                     $months = $days / 30 / 12;
+                    }else{
+                      $months = $days /30;
+                    }
+                   
                     $cost = round($months) * $price;
                 }
             }

@@ -236,10 +236,10 @@
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
-            <div class="box-footer clearfix">
-              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
-              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+              <div class="box-footer text-center">
+              <a href="{{url('invoice/generate')}}" class="uppercase">Place New Order</a>
             </div>
+           
             <!-- /.box-footer -->
             </div>
           </div>
@@ -307,6 +307,9 @@
               </div>
               </div>
               <!-- /.table-responsive -->
+            </div>
+             <div class="box-footer text-center">
+               <a href="{{url('orders')}}" class="uppercase">View All Orders</a>
             </div>
             <!-- /.box-body -->
 
@@ -427,7 +430,7 @@
                   </div>
                    <div class="product-info">
 
-                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
+                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$value}}</span></td></strong>
 
                     </a>
                        <span class="product-description">

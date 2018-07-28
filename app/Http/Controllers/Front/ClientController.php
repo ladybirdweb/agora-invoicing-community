@@ -95,7 +95,7 @@ class ClientController extends BaseClientController
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
                                     $payment = '  <a href='.url('paynow/'.$model->id).
-                                    " class='btn btn-primary btn-xs'>Pay Now</a>";
+                                    " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'>&nbsp;Pay Now</i></a>";
                                 }
 
                                 return '<p><a href='.url('my-invoice/'.$model->id).
@@ -284,7 +284,7 @@ class ClientController extends BaseClientController
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'></i> $listUrl $url </a>";
+                                <i class='fa fa-eye' title='Details of order'>&nbsp;View</i> $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             ->make(true);

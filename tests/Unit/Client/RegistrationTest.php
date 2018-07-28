@@ -95,12 +95,12 @@ class RegistrationTest extends DBTestCase
     //                  'terms'                                          => 'on',
 
     //                  ]);
-        // dd($response);
-        // $response->assertStatus(302);
-        // $this->assertEquals(json_decode($response->content())->type, 'success');
-        // $this->assertStringContainsSubstring(json_decode($response->content())->message, 'Your Submission');
+    // dd($response);
+    // $response->assertStatus(302);
+    // $this->assertEquals(json_decode($response->content())->type, 'success');
+    // $this->assertStringContainsSubstring(json_decode($response->content())->message, 'Your Submission');
 
-        // $this->tearDownServerVariable();
+    // $this->tearDownServerVariable();
     // }
 
     // /** @group postRegister */

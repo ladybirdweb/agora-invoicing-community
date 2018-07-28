@@ -25,17 +25,17 @@ class BaseClientController extends Controller
      */
     public function getPopup($orders, $productid)
     {
-        $listUrl ='';
+        $listUrl = '';
         $productCheck = $orders->product()
-        ->select('github_owner', 'github_repository','type')
+        ->select('github_owner', 'github_repository', 'type')
         ->where('id', $orders->product)->first();
-        if($productCheck->type == 2) {
-        if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
-            $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
-        } else {
-            $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
+        if ($productCheck->type == 2) {
+            if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
+                $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
+            } else {
+                $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
+            }
         }
-    }
 
         return $listUrl;
     }

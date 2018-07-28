@@ -108,11 +108,11 @@ class ExtendedOrderController extends Controller
     {
         try {
             // if ($product_type == 2) {
-                $str = str_random(16);
-                $str = strtoupper($str);
-                $str = Crypt::encrypt($str);
+            $str = str_random(16);
+            $str = strtoupper($str);
+            $str = Crypt::encrypt($str);
 
-                return $str;
+            return $str;
             // }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

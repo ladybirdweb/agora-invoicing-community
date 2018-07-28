@@ -1067,12 +1067,12 @@ class CartController extends BaseCartController
                                     ->first()
                             ->add_price;
                     $days = $plan->days;
-                    if ($days >= '365'){
-                    $months = $days / 30 / 12;
-                    }else{
-                      $months = $days /30;
+                    if ($days >= '365') {
+                        $months = $days / 30 / 12;
+                    } else {
+                        $months = $days / 30;
                     }
-                   
+
                     $cost = round($months) * $price;
                 }
             }

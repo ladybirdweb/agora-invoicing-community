@@ -221,7 +221,7 @@ $sum = 0;
                                             @endif
                     </td>
                 </tr>
-              
+               
                 @foreach($item->attributes['tax'] as $attribute)
                   
                     @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))

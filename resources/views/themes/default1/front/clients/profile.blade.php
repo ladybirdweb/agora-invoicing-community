@@ -14,7 +14,15 @@ active
 <li class="active">Profile</li>
 @stop
 @section('content')
+<style>
+    <style>
+    .required:after{ 
+        content:'*'; 
+        color:red; 
+        padding-left:5px;
+    }
 
+</style>
 
 
 <div class="row">
@@ -27,8 +35,7 @@ active
 </div>
  <div id="alertMessage"></div>
  <div id="error"></div>
-
-    <h2 class="mb-none"> My Profile</h2>
+    <h2 class="mb-none" style="margin-bottom:0px;"> My Profile</h2>
     <div class="featured-boxes">
 
         <div class="row">
@@ -41,7 +48,8 @@ active
                         <div class="form-row">
                         <div class="form-group col{{ $errors->has('first_name') ? 'has-error' : '' }}">
                             <!-- first name -->
-                            {!! Form::label('first_name',Lang::get('message.first_name')) !!}
+                            <label for "first_name" class="required"><b>First Name</b></label>
+                            <!-- <b>{!! Form::label('first_name',Lang::get('message.first_name')) !!}</b> -->
                             {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
                            <h6 id="firstNameCheck"></h6>
                         </div>
@@ -49,24 +57,24 @@ active
                        <div class="form-row">
                         <div class="form-group col{{ $errors->has('last_name') ? 'has-error' : '' }}">
                             <!-- last name -->
-                            {!! Form::label('last_name',Lang::get('message.last_name')) !!}
+                             <label for "last_name" class="required"><b>Last Name</b></label>
                             {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
                              <h6 id="lastNameCheck"></h6>
                         </div>
                     </div>
                       
                          <div class="form-row">
-                        <div class="form-group col">
+                       <div class="form-group col{{ $errors->has('email') ? 'has-error' : '' }}">
+                             <label for "email" class="required"><b>Email</b></label>
                             <!-- email -->
-                            {!! Form::label('email',Lang::get('message.email')) !!}
-                             {!! Form::text('email',null,['class' => 'form-control input-lg ','id'=>'Email']) !!}
+                            {!! Form::text('email',null,['class' => 'form-control input-lg ','id'=>'Email']) !!}
                             <h6 id="emailCheck"></h6>
                         </div>
                     </div>
                           <div class="form-row">
                         <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
                             <!-- company -->
-                            {!! Form::label('company',Lang::get('message.company')) !!}
+                            <label for "company" class=""><b>Company</b></label>
                             {!! Form::text('company',null,['class' => 'form-control input-lg','id'=>'Company']) !!}
                             <h6 id="companyCheck"></h6>
                         </div>
@@ -74,7 +82,7 @@ active
                          
                           <div class="form-row">
                         <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Country code</label>
+                        <label class="required"><b>Country code</b></label>
                         <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
                         {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
                           <h6 id="mobileCodeCheck"></h6>
@@ -84,7 +92,7 @@ active
                         <div class="form-group col {{ $errors->has('mobile') ? 'has-error' : '' }}">
                             
                             <!-- mobile -->
-                            {!! Form::label('mobile',Lang::get('message.mobile')) !!}
+                            <label for"mobile" class="required"><b>Mobile</b></label>
                             {!! Form::text('mobile',null,['class' => 'form-control input-lg','id'=>'mobile']) !!}
                               <h6 id="mobileCheck"></h6>
                         </div>
@@ -93,7 +101,7 @@ active
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                             <!-- phone number -->
-                            {!! Form::label('address',Lang::get('message.address')) !!}
+                            <label for"address" class="required"><b>Address</b></label>
                             {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
                                <h6 id="addressCheck"></h6>
                         </div>
@@ -103,13 +111,13 @@ active
                         <div class="form-row">
                             <div class="form-group col-md-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                 <!-- mobile -->
-                                {!! Form::label('town',Lang::get('message.town')) !!}
+                                 <label for"town" class="required"><b>Town</b></label>
                                 {!! Form::text('town',null,['class' => 'form-control input-lg','id'=>'Town']) !!}
                                  <h6 id="townCheck"></h6>
                             </div>
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
-                                {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                                 <label for"timezone_id" class=""><b>Timezne</b></label>
                                 {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
                                 <h6 id="timezoneCheck"></h6>
                             </div>
@@ -118,15 +126,15 @@ active
 
                             <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                                 <!-- name -->
-                                {!! Form::label('country',Lang::get('message.country')) !!}
-                                 <?php $countries = \App\Model\Common\Country::pluck('country_name', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'Country','onChange'=>'getState(this.value);']) !!}
+                              <label for"country" class="required"><b>Country</b></label>
+                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'Country','onChange'=>'getCountryAttr(this.value);']) !!}
                                <h6 id="countryCheck"></h6>
                             </div>
                             <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
-                                {!! Form::label('state',Lang::get('message.state')) !!}
+                               <label for"state" class=""><b>State</b></label>
                               
-                                <select name="state" id="stateList" class="form-control input-lg ">
+                                <select name="state" id="state-list" class="form-control input-lg ">
                                     @if(count($state)>0)
                                     <option value="{{$state['id']}}">{{$state['name']}}</option>
                                     @endif
@@ -143,8 +151,7 @@ active
                         </div>
                          <div class="form-row">
                         <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
-                            <!-- mobile -->
-                            {!! Form::label('zip',Lang::get('message.zip')) !!}
+                            <label for"zip" class="required"><b>Zip/Postal Code</b></label>
                             {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
                              <h6 id="zipCheck"></h6>
                         </div>
@@ -153,7 +160,7 @@ active
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('profile_pic') ? 'has-error' : '' }}">
                             <!-- profile pic -->
-                            {!! Form::label('profile_pic',Lang::get('message.profile-picture')) !!}
+                             <label for"profile_pic" class=""><b>Profile Picture</b></label>
                             {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
                             <h6 id="profilePicCheck"></h6>
                              
@@ -162,7 +169,7 @@ active
 
                         <div class="form-row">
                            <div class="form-group col">
-                             <button type="button"  class="btn btn-primary mb-xl next-step float-right" data-loading-text="Loading..." name="update" id="update" onclick="updateProfile()" >Submit</button>
+                             <button type="button"  class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="update" onclick="updateProfile()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
                            
                                
                             </div>
@@ -181,7 +188,7 @@ active
                         <!-- old password -->
                         <div class="form-row">
                         <div class="form-group col {{ $errors->has('old_password') ? 'has-error' : '' }}">
-                            {!! Form::label('old_password',Lang::get('message.old_password')) !!}
+                            <label for"old_password" class="required"><b>Old Password</b></label>
                             {!! Form::password('old_password',['class' => 'form-control input-lg','id'=>'old_password']) !!}
                             <h6 id="oldpasswordcheck"></h6>
                            
@@ -190,7 +197,7 @@ active
                         <!-- new password -->
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
-                            {!! Form::label('new_password',Lang::get('message.new_password')) !!}
+                            <label for"new_password" class="required"><b>New Password</b></label>
                             {!! Form::password('new_password',['class' => 'form-control input-lg','id'=>'new_password']) !!}
                            
                             <h6 id="newpasswordcheck"></h6>
@@ -199,7 +206,7 @@ active
                         <!-- cofirm password -->
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
-                            {!! Form::label('confirm_password',Lang::get('message.confirm_password')) !!}
+                            <label for"confirm_password" class="required"><b>Confirm Password</b></label>
                             {!! Form::password('confirm_password',['class' => 'form-control input-lg','id'=>'confirm_password']) !!}
                             <h6 id ="confirmpasswordcheck"></h6>
                            
@@ -207,7 +214,7 @@ active
                     </div>
                         <div class="row">
                             <div class="col-md-12">
-                                 <button type="button"  class="btn btn-primary mb-xl next-step float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" >Update</button>
+                                 <button type="button"  class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="password" onclick="updatePassword()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
                               
                             </div>
                         </div>
@@ -257,7 +264,7 @@ active
                                               $('#error').hide();
                                             $('#alertMessage').html(result);
                                             // $('#alertMessage2').html(result);
-                                            $("#update").html("Update");
+                                            $("#update").html("<i class='fa fa-refresh'></i>&nbsp;Update");
                                               $('html, body').animate({scrollTop:0}, 1000);
                                           
                                               // response.success("Success");
@@ -408,13 +415,15 @@ active
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
        $(document).ready(function(){ 
+         var country = $('#Country').val();
     var telInput = $('#mobile_code');
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                var countryCode = (resp && resp.country) ? resp.country : "";
+            resp.country = country;
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp){
+            var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);
             });
@@ -443,10 +452,16 @@ active
     });
 });
 
+   function getCountryAttr(val) {
+        getState(val);
+        getCode(val);
+//        getCurrency(val);
+
+    }
 
   
 
-    function getState(val) {
+       function getState(val) {
 
 
         $.ajax({
@@ -454,11 +469,21 @@ active
               url: "{{url('get-state')}}/" + val,
             data: 'country_id=' + val,
             success: function (data) {
-                $("#stateList").html(data);
+                $("#state-list").html(data);
             }
         });
     }
-
+    function getCode(val) {
+        $.ajax({
+            type: "GET",
+            url: "{{url('get-code')}}",
+            data: 'country_id=' + val,
+            success: function (data) {
+                $("#mobile_code").val(data);
+                $("#mobile_code_hidden").val(data);
+            }
+        });
+    }
 
     
 </script>

@@ -12,7 +12,7 @@ Checkout
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
-
+ 
     use Razorpay\Api\Api;
      $merchant_orderid= generateMerchantRandomString();  
   
@@ -342,6 +342,7 @@ else{
                         <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
+
                 @if ($attributes != null)
                  @foreach($attributes[0]['tax'] as $attribute)
                   
@@ -459,7 +460,7 @@ else{
                 @if ($attributes == null)
                  
                 @foreach ($items as $item)
-                
+                 @if($item['tax_name']!='null,' )
                <tr class="Taxes">
                   <th>
                         <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
@@ -474,6 +475,7 @@ else{
                     </td>
                   
                   </tr>
+                  @endif
                   @endforeach
                 @endif
 

@@ -158,10 +158,12 @@ class DashboardController extends Controller
     public function getAllUsers()
     {
         $user = new User();
-        $allUsers = $user->orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
-              ->take(20)
-              ->get()
-              ->toArray();
+        $allUsers = $user->orderBy('created_at', 'desc')
+        ->where('active', 1)
+        ->where('mobile_verified', 1)
+        ->take(20)
+        ->get()
+        ->toArray();
 
         return $allUsers;
     }

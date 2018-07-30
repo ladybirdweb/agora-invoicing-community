@@ -30,7 +30,7 @@ active
     <div class="featured-boxes">
 
         <div class="row">
-            <h2 class="mb-none"> My Orders</h2>
+            <h2 class="mb-none" style="margin-bottom: 0px;"> My Orders</h2>
 
             <div class="featured-box featured-box-primary align-left mt-xlg" style="text-align: left;">
                 <div class="box-content">
@@ -43,7 +43,7 @@ active
                         </section>
                         <div class="row">
                             <section class="content">
-                                <div class="col-md-12">
+                                
                                     <table class="table">
                                         <tr class="info">
                                            
@@ -66,7 +66,7 @@ active
                                         </tr>
                                        
                                     </table>  
-                                </div>
+                              
 
                                 <div id="hide2">
                                     

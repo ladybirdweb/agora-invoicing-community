@@ -271,7 +271,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                 return redirect()->back()->with('fails', 'Can not delete');
             }
 
-            return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
+            return redirect()->back()->with('success', "Invoice $invoice->number has been Deleted Successfully");
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

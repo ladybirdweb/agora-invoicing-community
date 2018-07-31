@@ -30,13 +30,8 @@ class DashboardController extends Controller
         $productSoldlists = $this->recentProductSold();
         
         if (count($productSoldlists) > 0) {
-            foreach ($productSoldlists as $productSoldlist) {
-                if($productSoldlist && $productSoldlist->name){
-                    $productNameList[] = $productSoldlist->name;
-                }
-                
-            }
-        }
+            $productNameList[] = $this->getProductNameList($productSoldlists);
+           }
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
@@ -185,7 +180,7 @@ class DashboardController extends Controller
         }
 
         return $product;
-    }catch(Exception $ex )
+    }catch(\Exception $ex )
      {
         return redirect()->back()->with('fails', $ex->getMessage());
      }
@@ -241,5 +236,20 @@ class DashboardController extends Controller
         }
 
         return $product;
+    }
+
+    public function getProductNameList($productSoldlists)
+    {
+        try{
+         foreach ($productSoldlists as $productSoldlist) {
+            if($productSoldlist && $productSoldlist->name){
+                $productNameList[] = $productSoldlist->name;
+            }
+                
+        }
+        return $productNameList;
+      }catch (\Exception $ex){
+        return redirect()->back()->with('fails',$ex->getMessage());
+      }
     }
 }

@@ -968,14 +968,13 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function deleteTrasaction(Request $request)
-    {
+    { 
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
                     $invoice = $this->invoice->where('id', $id)->first();
                     if ($invoice) {
-                       
                         $invoice->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>

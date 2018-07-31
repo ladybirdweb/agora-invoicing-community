@@ -173,7 +173,7 @@ Create Tax Options And Tax Classes
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
-                            <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Tax Type</th>
                               <th>Name</th>
                                <th>Country</th>

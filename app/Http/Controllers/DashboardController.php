@@ -26,12 +26,14 @@ class DashboardController extends Controller
         $monthlySalesUSD = $this->getMonthlySalesInUsd();
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
-        $productNameList = array();
+        $productNameList = [];
         $productSoldlists = $this->recentProductSold();
-        
+
         if (count($productSoldlists) > 0) {
+
             $productNameList[] = $this->getProductNameList($productSoldlists);
            }
+
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
@@ -39,13 +41,10 @@ class DashboardController extends Controller
         $products = $this->totalProductsSold();
         $productName = [];
         if (!empty($products)) {
-           
             foreach ($products as $product) {
-                 if($product && $product->name){
+                if ($product && $product->name) {
                     $productName[] = $product->name;
-                
-                
-            }
+                }
             }
         }
         $arrayCountList = array_count_values($productName);
@@ -168,23 +167,25 @@ class DashboardController extends Controller
      *
      * @return type
      */
- public function recentProductSold()
+    public function recentProductSold()
     {
-        try{
-        $dayUtc = new Carbon('-30 days');
-        $minus30Day = $dayUtc->toDateTimeString();
-        $product = [];
-        $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
-        foreach ($orders as $order) {
-            $product[] = $order->product()->first();
-        }
+        try {
+            $dayUtc = new Carbon('-30 days');
+            $minus30Day = $dayUtc->toDateTimeString();
+            $product = [];
+            $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
+            foreach ($orders as $order) {
+                $product[] = $order->product()->first();
+            }
 
         return $product;
     }catch(\Exception $ex )
      {
         return redirect()->back()->with('fails', $ex->getMessage());
      }
+
     }
+
     /**
      * List of orders of past 30 days.
      */

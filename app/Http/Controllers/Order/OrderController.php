@@ -315,7 +315,7 @@ class OrderController extends BaseOrderController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-     
+
     public function plan($invoice_item_id)
     {
         try {

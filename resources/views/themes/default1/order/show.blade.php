@@ -82,14 +82,16 @@ Order Details
     <div class="col-md-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Transcation list</h3>
+                <h3 class="box-title">Transaction list</h3>
             </div>
             <div class="box-body">
                 <div class="row">
                     <div class="col-md-12">
                          <table id="editorder-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                             <button  value="" class="btn btn-danger btn-sm btn-alldell" id="mass_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
 
                     <thead><tr>
+                         <th><input type="checkbox" name="choose_all" onchange="selecting(this)"></th>
                          <th>Number</th>
                           <th>Products</th>
                            
@@ -127,6 +129,7 @@ Order Details
                 "targets": "_all"
               }],
             columns: [
+             {data: 'checkbox', name: 'checkbox'},
                 {data: 'number', name: 'number'},
                 {data: 'products', name: 'invoice_item'},
                 {data: 'date', name: 'created_at'},
@@ -217,8 +220,51 @@ Order Details
                 $('.loader').css('display', 'block');
             },
         });
+
+
+
+
+
+    function selecting(e){
+          
+          $('#editorder-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+               $(document).on('click','#mass_delete',function(){
+      var id=[];
+      if (confirm("Are you sure you want to delete this?"))
+        {
+            $('.transaction_checkbox:checked').each(function(){
+              id.push($(this).val())
+            });
+            if(id.length >0)
+            {
+               $.ajax({
+                      url:"{!! route('transaction-delete') !!}",
+                      method:"get",
+                      data: $('#checks:checked').serialize(),
+                      beforeSend: function () {
+                $('#gif').show();
+                },
+                success: function (data) {
+                $('#gif').hide();
+                $('#response').html(data);
+                location.reload();
+                }
+               })
+            }
+            else
+            {
+                alert("Please select at least one checkbox");
+            }
+        }  
+
+     });
+     }
+     
+
     </script>
 @stop
+
+
 @section('icheck')
 <script>
     function checking(e){

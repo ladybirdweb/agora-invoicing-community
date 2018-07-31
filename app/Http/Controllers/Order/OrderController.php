@@ -189,7 +189,8 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            dd($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -314,7 +315,7 @@ class OrderController extends BaseOrderController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-
+     
     public function plan($invoice_item_id)
     {
         try {

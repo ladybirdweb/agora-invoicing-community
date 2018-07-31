@@ -13,7 +13,7 @@ Configure Mail
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
                 <div class="alert alert-danger alert-dismissable">
@@ -49,8 +49,8 @@ Configure Mail
 
                 <table class="table table-condensed">
                     <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.smtp')}}</h3></td>
-                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></td>
+                        <h3 class="box-title">{{Lang::get('message.smtp')}}</h3>
+                       <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
                     <tr>
 

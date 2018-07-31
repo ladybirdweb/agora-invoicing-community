@@ -5,8 +5,9 @@ Edit Social Media
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li><a href="{{url('socila-media')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-         <li class="active">Social Media</li>
+        <li><a href="{{url('settings')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+         <li><a href="{{url('social-media')}}"><i class="fa fa-dashboard"></i> Settings</a></li>
+         <li class="active"> Edit Social Media</li>
       </ol>
 @stop
 @section('content')
@@ -14,7 +15,7 @@ Edit Social Media
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
             <div class="box-header">
                 @if (count($errors) > 0)
@@ -45,14 +46,14 @@ Edit Social Media
                 @endif
             </div>
 
-            <div class="box-body no-padding">
+            <div class="box-body">
                 {!! Form::model($social,['url'=>'social-media/'.$social->id,'method'=>'patch']) !!}
 
                 <table class="table table-condensed">
 
                     <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.social-media')}}</h3></td>
-                        <td> <button type="submit" class="btn btn-primary pull-right"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                        <h3 class="box-title">{{Lang::get('message.social-media')}}</h3>
+                        <button type="submit" class="btn btn-primary pull-right" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
 
                     </tr>
 

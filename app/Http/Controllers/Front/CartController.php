@@ -656,7 +656,7 @@ class CartController extends BaseCartController
         try {
             $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
             if ($country) {
-                return $country->country_name;
+                return $country->nicename;
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

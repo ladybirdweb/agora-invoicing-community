@@ -1,4 +1,15 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+View Invoice
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+        <li><a href="{{url('invoices')}}">All Invoices</a></li>
+        <li class="active">View Invoice</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 

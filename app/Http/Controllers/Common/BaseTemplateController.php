@@ -169,7 +169,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                 }
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
-
+              // dd($tax_amount);
             return $tax_amount;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

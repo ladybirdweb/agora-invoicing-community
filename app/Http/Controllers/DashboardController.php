@@ -26,11 +26,15 @@ class DashboardController extends Controller
         $monthlySalesUSD = $this->getMonthlySalesInUsd();
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
-        $productNameList = [];
+        $productNameList = array();
         $productSoldlists = $this->recentProductSold();
+        
         if (count($productSoldlists) > 0) {
             foreach ($productSoldlists as $productSoldlist) {
-                $productNameList[] = $productSoldlist->name;
+                if($productSoldlist && $productSoldlist->name){
+                    $productNameList[] = $productSoldlist->name;
+                }
+                
             }
         }
         $arraylists = array_count_values($productNameList);
@@ -40,8 +44,13 @@ class DashboardController extends Controller
         $products = $this->totalProductsSold();
         $productName = [];
         if (!empty($products)) {
+           
             foreach ($products as $product) {
-                $productName[] = $product->name;
+                 if($product && $product->name){
+                    $productName[] = $product->name;
+                
+                
+            }
             }
         }
         $arrayCountList = array_count_values($productName);
@@ -60,8 +69,7 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInInr()
     {
-        $invoice = new Invoice();
-        $total = $invoice->where('currency', 'INR')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'INR')->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -74,8 +82,7 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInUsd()
     {
-        $invoice = new Invoice();
-        $total = $invoice->where('currency', 'USD')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'USD')->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -88,9 +95,8 @@ class DashboardController extends Controller
      */
     public function getYearlySalesInInr()
     {
-        $invoice = new Invoice();
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'INR')
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'INR')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -104,9 +110,8 @@ class DashboardController extends Controller
      */
     public function getYearlySalesInUsd()
     {
-        $invoice = new Invoice();
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'USD')
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'USD')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -120,10 +125,9 @@ class DashboardController extends Controller
      */
     public function getMonthlySalesInInr()
     {
-        $invoice = new Invoice();
         $currentMonth = date('m');
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'INR')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -138,11 +142,10 @@ class DashboardController extends Controller
      */
     public function getMonthlySalesInUsd()
     {
-        $invoice = new Invoice();
         $currentMonth = date('m');
         $currentYear = date('Y');
         // dd($currentYear,$currentMonth );
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'USD')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -151,19 +154,16 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get the list of previous 8 registered users.
+     * Get the list of previous 20 registered users.
      *
      * @return type
      */
     public function getAllUsers()
     {
-        $user = new User();
-        $allUsers = $user->orderBy('created_at', 'desc')
-        ->where('active', 1)
-        ->where('mobile_verified', 1)
-        ->take(20)
-        ->get()
-        ->toArray();
+        $allUsers = User::orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
+              ->take(20)
+              ->get()
+              ->toArray();
 
         return $allUsers;
     }
@@ -173,8 +173,9 @@ class DashboardController extends Controller
      *
      * @return type
      */
-    public function recentProductSold()
+ public function recentProductSold()
     {
+        try{
         $dayUtc = new Carbon('-30 days');
         $minus30Day = $dayUtc->toDateTimeString();
         $product = [];
@@ -184,8 +185,11 @@ class DashboardController extends Controller
         }
 
         return $product;
+    }catch(Exception $ex )
+     {
+        return redirect()->back()->with('fails', $ex->getMessage());
+     }
     }
-
     /**
      * List of orders of past 30 days.
      */

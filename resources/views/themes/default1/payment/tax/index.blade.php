@@ -1,7 +1,7 @@
 @extends('themes.default1.layouts.master')
 @section('content-header')
 <h1>
-Create Tax And Tax Classes
+Create Tax Options And Tax Classes
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -32,7 +32,7 @@ Create Tax And Tax Classes
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
   </head>
-    <div class="box box-primary">
+  
 
         <div class="box-header">
             @if (count($errors) > 0)
@@ -74,7 +74,7 @@ Create Tax And Tax Classes
         </div>
 
       
-
+       <div class="box box-primary">
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
@@ -160,11 +160,14 @@ Create Tax And Tax Classes
 
                    
 
-
+              </div>
                 </div>
+              </div>
+            </div>
 
-
-
+             <div class="box box-primary">
+              <div class="box-body">
+               <h4>{{Lang::get('Tax Classes')}}</h4>
                 <div class="col-md-12">
                    <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
@@ -184,7 +187,6 @@ Create Tax And Tax Classes
                 </div>
             </div>
 
-        </div>
 
     </div>
 

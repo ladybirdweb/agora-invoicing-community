@@ -47,13 +47,11 @@ System Setting
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
 
-                <table class="table table-condensed">
+                <table class="table table-responsive">
 
-                    <tr>
-                        <td><h3 class="box-title">{{Lang::get('Company Details')}}</h3></td>
-                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-                        </td>
-
+                    <tr >
+                        <h3 class="box-title">{{Lang::get('Company Details')}}</h3>
+                        <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
 
                     <tr>

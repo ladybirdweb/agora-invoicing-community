@@ -157,7 +157,8 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('orders')}}"><i class="fa fa-paper-plane"></i>{{Lang::get('message.all-orders')}}</a></li>
-                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
+                                  <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                               
                             </ul>
                         </li>
                         <li class="treeview">
@@ -167,7 +168,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('invoices')}}"><i class="fa fa-paperclip"></i>{{Lang::get('message.all-invoices')}}</a></li>
-                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
+                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
                             </ul>
                         </li>
                         
@@ -196,10 +197,11 @@
                                 <li><a href="{{url('products')}}"><i class="fa fa-codepen"></i>{{Lang::get('message.all-products')}}</a></li>
                                  <li><a href="{{url('products/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-products')}}</a></li>
                                  <li><a href="{{url('plans')}}"><i class="fa fa-minus-circle"></i>Plans</a></li>
+                                   <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
                                 <li><a href="{{url('groups')}}"><i class="fa fa-group"></i>{{Lang::get('message.groups')}}</a></li>
                                 <!--<li><a href="{{url('addons')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.addons')}}</a></li>-->
                                 <!--<li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>-->
-                                <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
+                              
                             </ul>
                         </li>
                         <li>

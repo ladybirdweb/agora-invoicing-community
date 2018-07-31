@@ -99,7 +99,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return view('themes.default1.invoice.index');
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -927,6 +926,57 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             $invoice->save();
                         }
                         $payment->delete();
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> 
+                    './* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
+                </div>';
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
+                }
+                echo "<div class='alert alert-success alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */
+                    \Lang::get('message.success').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
+                </div>';
+            } else {
+                echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
+                </div>';
+                //echo \Lang::get('message.select-a-row');
+            }
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+            echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        '.$e->getMessage().'
+                </div>';
+        }
+    }
+
+    public function deleteTrasaction(Request $request)
+    {
+        try {
+            $ids = $request->input('select');
+            if (!empty($ids)) {
+                foreach ($ids as $id) {
+                    $invoice = $this->invoice->where('id', $id)->first();
+                    if ($invoice) {
+                       
+                        $invoice->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>

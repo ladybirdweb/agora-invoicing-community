@@ -112,9 +112,11 @@
                 </div>
 
                 <!-- /.box-body -->
-                <div class="box-footer text-center">
-                  <a href="{{url('clients')}}" class="uppercase">View All Users</a>
-                </div>
+                 <div class="box-footer clearfix">
+              <a href="{{url('clients')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Users</a>
+              <a href="{{url('clients/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New User</a>
+            </div>
+              
                 <!-- /.box-footer -->
               </div>
               <!--/.box -->
@@ -128,11 +130,11 @@
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                 </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                
               </div>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+           <div class="box-body">
               <div class="scrollit">
               <ul class="products-list product-list-in-box">
                    @foreach($arraylists as $key => $value)
@@ -152,9 +154,7 @@
                     <img src="{{$imgLink}}" alt="Product Image">
                   </div>
                   <div class="product-info">
-
-                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
-
+                 <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$value}}</span></td></strong>
                     </a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
@@ -172,9 +172,11 @@
             </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer text-center">
-              <a href="{{url('products')}}" class="uppercase">View All Products</a>
+            <div class="box-footer clearfix">
+              <a href="{{url('products')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Products</a>
+              <a href="{{url('products/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New Product</a>
             </div>
+            
             <!-- /.box-footer -->
           </div>
              </div>
@@ -183,7 +185,7 @@
 
          <div class="row">
          	<div class="col-md-6">
-         	  <div class="box box-info">
+         	  <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Recent Paid Orders (Last 30 Days)</h3>
 
@@ -236,16 +238,19 @@
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
-              <div class="box-footer text-center">
-              <a href="{{url('invoice/generate')}}" class="uppercase">Place New Order</a>
+            <div class="box-footer clearfix">
+           
+              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+               <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>
+              
            
             <!-- /.box-footer -->
             </div>
           </div>
 
          	<div class="col-md-6">
-         	  <div class="box box-info">
+         	   <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Orders Expiring Soon</h3>
 
@@ -308,9 +313,12 @@
               </div>
               <!-- /.table-responsive -->
             </div>
-             <div class="box-footer text-center">
-               <a href="{{url('orders')}}" class="uppercase">View All Orders</a>
+             <div class="box-footer clearfix">
+           
+              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+               <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>
+              
             <!-- /.box-body -->
 
             <!-- /.box-footer -->
@@ -320,7 +328,7 @@
 
          <div class= row>
           <div class="col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Recent Invoices(Past 30 Days)</h3>
 
@@ -394,8 +402,8 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Invoice</a>
-              <a href="{{url('invoices')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Invoice</a>
+              <a href="{{url('invoices')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Invoice</a>
+              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-default btn-flat pull-right">Generate New Invoice</a>
             </div>
             <!-- /.box-footer -->
           </div>
@@ -445,8 +453,9 @@
             </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer text-center">
-              <a href="{{url('products')}}" class="uppercase">View All Products</a>
+            <div class="box-footer clearfix">
+              <a href="{{url('products')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Products</a>
+              <a href="{{url('products/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New Product</a>
             </div>
             <!-- /.box-footer -->
           </div>

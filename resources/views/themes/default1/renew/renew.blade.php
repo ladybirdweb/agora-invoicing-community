@@ -1,10 +1,20 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Renew Order
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('orders')}}"><i class="fa fa-dashboard"></i> All Orders</a></li>
+        <li class="active">Renew Order</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
     <div class="content-header">
         {!! Form::open(['url'=>'renew/'.$id,'method'=>'post']) !!}
-        <h4>Renew	{!! Form::submit(Lang::get('message.generate'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
+        <h4>Renew	<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 

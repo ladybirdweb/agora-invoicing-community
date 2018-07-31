@@ -49,8 +49,8 @@ Template Settings
 
                 <table class="table table-condensed">
                     <tr>
-                        <td><h4 class="box-title">{{Lang::get('Template List')}}</h4></td>
-                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></td>
+                        <h4 class="box-title">{{Lang::get('Template List')}}</h4>
+                        <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
 
                     <tr>

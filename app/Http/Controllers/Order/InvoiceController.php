@@ -99,6 +99,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return view('themes.default1.invoice.index');
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -975,7 +976,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 foreach ($ids as $id) {
                     $invoice = $this->invoice->where('id', $id)->first();
                     if ($invoice) {
-                       
                         $invoice->delete();
                     } else {
                         echo "<div class='alert alert-danger alert-dismissable'>

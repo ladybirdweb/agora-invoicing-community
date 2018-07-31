@@ -30,9 +30,8 @@ class DashboardController extends Controller
         $productSoldlists = $this->recentProductSold();
 
         if (count($productSoldlists) > 0) {
-
             $productNameList[] = $this->getProductNameList($productSoldlists);
-           }
+        }
 
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
@@ -178,12 +177,10 @@ class DashboardController extends Controller
                 $product[] = $order->product()->first();
             }
 
-        return $product;
-    }catch(\Exception $ex )
-     {
-        return redirect()->back()->with('fails', $ex->getMessage());
-     }
-
+            return $product;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
@@ -241,16 +238,16 @@ class DashboardController extends Controller
 
     public function getProductNameList($productSoldlists)
     {
-        try{
-         foreach ($productSoldlists as $productSoldlist) {
-            if($productSoldlist && $productSoldlist->name){
-                $productNameList[] = $productSoldlist->name;
+        try {
+            foreach ($productSoldlists as $productSoldlist) {
+                if ($productSoldlist && $productSoldlist->name) {
+                    $productNameList[] = $productSoldlist->name;
+                }
             }
-                
+
+            return $productNameList;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-        return $productNameList;
-      }catch (\Exception $ex){
-        return redirect()->back()->with('fails',$ex->getMessage());
-      }
     }
 }

@@ -969,7 +969,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function deleteTrasaction(Request $request)
-    { 
+    {
         try {
             $ids = $request->input('select');
             if (!empty($ids)) {

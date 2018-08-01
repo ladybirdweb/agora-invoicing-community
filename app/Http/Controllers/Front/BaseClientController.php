@@ -169,8 +169,8 @@ class BaseClientController extends Controller
 
             return \DataTables::of($invoices->get())
              ->addColumn('number', function ($model) {
-                return $model->number;
-            })
+                 return $model->number;
+             })
             ->addColumn('products', function ($model) {
                 $invoice = $this->invoice->find($model->id);
                 $products = $invoice->invoiceItem()->pluck('product_name')->toArray();

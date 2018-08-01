@@ -30,10 +30,8 @@ class DashboardController extends Controller
         $productSoldlists = $this->recentProductSold();
 
         if (count($productSoldlists) > 0) {
-
             $productNameList = $this->getProductNameList($productSoldlists);
-           }
-
+        }
 
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();

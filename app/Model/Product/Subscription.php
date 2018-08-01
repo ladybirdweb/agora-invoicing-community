@@ -2,10 +2,10 @@
 
 namespace App\Model\Product;
 
-use Illuminate\Database\Eloquent\Model;
-use Spatie\Activitylog\Traits\LogsActivity;
 use DateTime;
 use DateTimeZone;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Subscription extends Model
 {
@@ -53,14 +53,13 @@ class Subscription extends Model
 
     public function getEndsAtAttribute($value)
     {
-         $date1 = new DateTime($value);
+        $date1 = new DateTime($value);
         $tz = \Auth::user()->timezone()->first()->name;
         $date1->setTimezone(new DateTimeZone($tz));
         $date = $date1->format('M j, Y, g:i a ');
 
         return $date;
     }
-
 
     //    public function delete() {
 //

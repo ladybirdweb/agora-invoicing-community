@@ -20,7 +20,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
-use datetime;
 use Illuminate\Http\Request;
 use Input;
 use Log;
@@ -102,7 +101,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $currency = $request->input('currency');
             $from = $request->input('from');
             $till = $request->input('till');
-            return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currency','from',
+
+            return view('themes.default1.invoice.index', compact('name','invoice_no','status','currency','from',
                 'till'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -112,20 +112,20 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function getInvoices(Request $request)
-    { 
+    {
         $name = $request->input('name');
         $invoice_no = $request->input('invoice_no');
-        $status= $request->input('status');
+        $status = $request->input('status');
         $currency = $request->input('currency');
-         $from = $request->input('from');
+        $from = $request->input('from');
         $till = $request->input('till');
-        $query = $this->advanceSearch($name,$invoice_no,$status,$currency,$from,$till);
-        
-         return \DataTables::of($query->get())
+        $query = $this->advanceSearch($name, $invoice_no, $status, $currency, $from, $till);
+
+        return \DataTables::of($query->get())
          ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='invoice_checkbox' 
+             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                             })
+         })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
@@ -170,7 +170,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         ->make(true);
     }
 
-    public function advanceSearch($name='',$invoice_no='',$status='',$currency='',$from='',$till='')
+    public function advanceSearch($name = '', $invoice_no = '', $status = '', $currency = '', $from = '', $till = '')
     {
         $join = \DB::table('invoices');
         // if($name){
@@ -179,27 +179,26 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         //         $first_name = $value;
         //     }
         // }
-        if($invoice_no) {
+        if ($invoice_no) {
+            $join = $join->where('number', $invoice_no);
+        }
 
-              $join = $join->where('number',$invoice_no);
-         }
+        if ($status) {
+            $join = $join->where('status', $status);
+        }
 
-         if($status){
-            $join =  $join->where('status',$status);
-         }
-
-         if($currency){
-            $join =  $join->where('currency',$currency);
-         }
-         if($from){
+        if ($currency) {
+            $join = $join->where('currency', $currency);
+        }
+        if ($from) {
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
-             $tills = date('Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
             $tillDate = $this->getTillDate($from, $till, $tills);
-             $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
-          }
+            $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+        }
 
-            if ($till) {
+        if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Invoice::first()->created_at;
@@ -207,11 +206,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
         }
 
+        $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
-         $join = $join->select('id','user_id','number','date','grand_total','currency','status','created_at');
-         return $join;
-          
-        }
+        return $join;
+    }
 
     public function getTillDate($from, $till, $tills)
     {
@@ -222,7 +220,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return $tills;
     }
-    
+
     public function getFromDate($from, $froms)
     {
         if ($from) {
@@ -232,8 +230,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return $froms;
     }
-
-     
 
     public function show(Request $request)
     {
@@ -1044,6 +1040,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 </div>';
         }
     }
-
-
 }

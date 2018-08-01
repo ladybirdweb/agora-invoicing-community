@@ -6,6 +6,8 @@ use App\BaseModel;
 use App\Model\Product\Subscription;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Spatie\Activitylog\Traits\LogsActivity;
+use DateTimeZone;
+use DateTime;
 
 class Order extends BaseModel
 {
@@ -90,11 +92,12 @@ class Order extends BaseModel
 
     public function getCreatedAtAttribute($value)
     {
+         $date1 = new DateTime($value);
         $tz = \Auth::user()->timezone()->first()->name;
-        $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value);
-        $d = $date->setTimezone($tz);
+        $date1->setTimezone(new DateTimeZone($tz));
+        $date = $date1->format('M j, Y, g:i a ');
 
-        return $d;
+        return $date;
     }
 
     public function getSerialKeyAttribute($value)

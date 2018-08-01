@@ -58,7 +58,13 @@ Renew Order
                     <div class="col-md-4 form-group {{ $errors->has('plan') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('plan','Plans',['class'=>'required']) !!}
-                        {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'getPrice(this.value)']) !!}
+                          <select name="plan" value= "Choose" onChange="getPrice(this.value)" class="form-control">
+                             <option value="Choose">Choose</option>
+                           @foreach($plans as $key=>$plan)
+                              <option value={{$key}}>{{$plan}}</option>
+                          @endforeach
+                          </select>
+                        <!-- {!! Form::select('plan',[''=>'Select','Plans'=>$plans],null,['class' => 'form-control','onchange'=>'getPrice(this.value)']) !!} -->
                         {!! Form::hidden('user',$userid) !!}
                     </div>
 
@@ -67,7 +73,7 @@ Renew Order
                    <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
-                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
 
                     </div>
                      <div class="col-md-4 form-group {{ $errors->has('cost') ? 'has-error' : '' }}">

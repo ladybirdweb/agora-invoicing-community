@@ -168,11 +168,7 @@ class BaseClientController extends Controller
             }
 
             return \DataTables::of($invoices->get())
-            ->addColumn('checkbox', function ($model) {
-                return "<input type='checkbox' class='transaction_checkbox' 
-                            value=".$model->id.' name=select[] id=checks>';
-            })
-            ->addColumn('number', function ($model) {
+             ->addColumn('number', function ($model) {
                 return $model->number;
             })
             ->addColumn('products', function ($model) {
@@ -203,7 +199,7 @@ class BaseClientController extends Controller
                 class='btn btn-sm btn-primary btn-xs'><i class='fa fa-eye' 
                 style='color:white;'> </i>&nbsp;&nbsp;View</a>";
             })
-                            ->rawColumns(['checkbox', 'number', 'products', 'date', 'total', 'status', 'action'])
+                            ->rawColumns(['number', 'products', 'date', 'total', 'status', 'action'])
                             ->make(true);
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);

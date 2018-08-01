@@ -57,8 +57,8 @@ All Users
 
             </div>
              <?php
-$countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
-?>
+            $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
+            ?>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}

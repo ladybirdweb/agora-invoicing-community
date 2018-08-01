@@ -58,16 +58,29 @@
                      <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                        {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'planproduct']) !!}
+                        <select name="product" value= "Choose" class="form-control" id="planproduct">
+                             <option value="">Choose</option>
+                           @foreach($products as $key=>$product)
+                              <option value={{$key}}>{{$product}}</option>
+                          @endforeach
+                          </select>
+                       <!--  {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'planproduct']) !!} -->
                         <h6 id = "productcheck"></h6>
 
                     </div>
                       <div class="col-md-4 form-group {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
-                        {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!}
-                       <h6 id="dayscheck"></h6>
-                    </div>
+                        <select name="days" value= "Choose" class="form-control" id="plandays">
+                             <option value="">Choose</option>
+                           @foreach($periods as $key=>$period)
+                              <option value={{$key}}>{{$period}}</option>
+                          @endforeach
+                          </select>
+                           <h6 id="dayscheck"></h6>
+                   
+                        <!-- {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!} -->
+                         </div>
 
                   
 

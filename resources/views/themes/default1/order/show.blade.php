@@ -64,11 +64,16 @@ Order Details
                                     $sub = "--";
                                     if ($subscription) {
                                         if ($subscription->ends_at != '' || $subscription->ends_at != '0000-00-00 00:00:00') {
-                                            $sub = $subscription->ends_at;
-                                        }
+                                             $date1 = new DateTime($subscription->ends_at);
+                                                $tz = \Auth::user()->timezone()->first()->name;
+                                                $date1->setTimezone(new DateTimeZone($tz));
+                                                $date = $date1->format('M j, Y, g:i a ');
+
+                                                
+                                             }
                                     }
                                     ?>
-                                    <tr><td><b>Subscription End:</b></td><td>{{$sub}}</td></tr>
+                                    <tr><td><b>Subscription End:</b></td><td>{{$date}}</td></tr>
 
                                 </tbody></table>
                         </div>
@@ -91,7 +96,7 @@ Order Details
                              <button  value="" class="btn btn-danger btn-sm btn-alldell" id="mass_delete"><i class= "fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
 
                     <thead><tr>
-                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="selecting(this)"></th>
+                        
                          <th >Number</th>
                           <th>Products</th>
                            
@@ -131,9 +136,9 @@ Order Details
                     order: []
                 }
             ],
-              
+
             columns: [
-             {data: 'checkbox', name: 'checkbox'},
+            
                 {data: 'number', name: 'number'},
                 {data: 'products', name: 'invoice_item'},
                 {data: 'date', name: 'created_at'},
@@ -224,45 +229,6 @@ Order Details
                 $('.loader').css('display', 'block');
             },
         });
-
-
-
-
-
-      function selecting(e){
-          
-          $('#editorder-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
-               $(document).on('click','#mass_delete',function(){
-      var id=[];
-      if (confirm("Are you sure you want to delete this?"))
-        {
-            $('.transaction_checkbox:checked').each(function(){
-              id.push($(this).val())
-            });
-            if(id.length >0)
-            {
-               $.ajax({
-                      url:"{!! route('transaction-delete') !!}",
-                      method:"get",
-                      data: $('#checks:checked').serialize(),
-                      beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
-               })
-            }
-            else
-            {
-                alert("Please select at least one checkbox");
-            }
-        }  
-
-     });
-     }
      
 
     </script>

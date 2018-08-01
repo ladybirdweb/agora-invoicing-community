@@ -20,6 +20,7 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
+use datetime;
 use Illuminate\Http\Request;
 use Input;
 use Log;
@@ -92,11 +93,17 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $this->cartController = $cartController;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            //dd($this->invoice->get());
-            return view('themes.default1.invoice.index');
+            $name = $request->input('name');
+            $invoice_no = $request->input('invoice_no');
+            $status = $request->input('status');
+            $currency = $request->input('currency');
+            $from = $request->input('from');
+            $till = $request->input('till');
+            return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currency','from',
+                'till'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -104,16 +111,21 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function getInvoices()
-    {
-        $invoice = \DB::table('invoices');
-        // $new_invoice = $invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at');
-
-        return \DataTables::of($invoice->get())
-                        ->addColumn('checkbox', function ($model) {
+    public function getInvoices(Request $request)
+    { 
+        $name = $request->input('name');
+        $invoice_no = $request->input('invoice_no');
+        $status= $request->input('status');
+        $currency = $request->input('currency');
+         $from = $request->input('from');
+        $till = $request->input('till');
+        $query = $this->advanceSearch($name,$invoice_no,$status,$currency,$from,$till);
+        
+         return \DataTables::of($query->get())
+         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                        })
+                             })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
@@ -157,6 +169,71 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
     }
+
+    public function advanceSearch($name='',$invoice_no='',$status='',$currency='',$from='',$till='')
+    {
+        $join = \DB::table('invoices');
+        // if($name){
+        //     $rels = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id')->pluck('first_name');
+        //      foreach ($rels as $key => $value) {
+        //         $first_name = $value;
+        //     }
+        // }
+        if($invoice_no) {
+
+              $join = $join->where('number',$invoice_no);
+         }
+
+         if($status){
+            $join =  $join->where('status',$status);
+         }
+
+         if($currency){
+            $join =  $join->where('currency',$currency);
+         }
+         if($from){
+            $fromdate = date_create($from);
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+             $tills = date('Y-m-d H:m:i');
+            $tillDate = $this->getTillDate($from, $till, $tills);
+             $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+          }
+
+            if ($till) {
+            $tilldate = date_create($till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = Invoice::first()->created_at;
+            $fromDate = $this->getFromDate($from, $froms);
+            $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
+        }
+
+
+         $join = $join->select('id','user_id','number','date','grand_total','currency','status','created_at');
+         return $join;
+          
+        }
+
+    public function getTillDate($from, $till, $tills)
+    {
+        if ($till) {
+            $todate = date_create($till);
+            $tills = date_format($todate, 'Y-m-d H:m:i');
+        }
+
+        return $tills;
+    }
+    
+    public function getFromDate($from, $froms)
+    {
+        if ($from) {
+            $fromdate = date_create($from);
+            $froms = date_format($fromdate, 'Y-m-d H:m:i');
+        }
+
+        return $froms;
+    }
+
+     
 
     public function show(Request $request)
     {
@@ -968,53 +1045,5 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function deleteTrasaction(Request $request)
-    { 
-        try {
-            $ids = $request->input('select');
-            if (!empty($ids)) {
-                foreach ($ids as $id) {
-                    $invoice = $this->invoice->where('id', $id)->first();
-                    if ($invoice) {
-                        $invoice->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> 
-                    './* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
-                </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                }
-                echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
-            } else {
-                echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
-                //echo \Lang::get('message.select-a-row');
-            }
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-            echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
-        }
-    }
+
 }

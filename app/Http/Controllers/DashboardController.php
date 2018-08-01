@@ -31,7 +31,7 @@ class DashboardController extends Controller
 
         if (count($productSoldlists) > 0) {
 
-            $productNameList[] = $this->getProductNameList($productSoldlists);
+            $productNameList = $this->getProductNameList($productSoldlists);
            }
 
         $arraylists = array_count_values($productNameList);

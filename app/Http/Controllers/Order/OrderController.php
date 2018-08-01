@@ -109,7 +109,7 @@ class OrderController extends BaseOrderController
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
-                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
+                            return "<span style='display:none'>$model->id</span>".$date;
                         })
                         ->addColumn('client', function ($model) {
                             $user = $this->user->where('id', $model->client)->first();

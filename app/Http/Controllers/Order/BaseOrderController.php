@@ -16,8 +16,6 @@ class BaseOrderController extends ExtendedOrderController
         if ($ends) {
             if ($ends->ends_at != '0000-00-00 00:00:00') {
                 $end = $ends->ends_at;
-                $date = date_create($end);
-                $end = date_format($date, 'l, F j, Y H:m');
             }
         }
 

@@ -9,6 +9,100 @@ All Invoices
       </ol>
 @stop
 @section('content')
+<div class="box box-success">
+    <div class="box-header with-border">
+        <h3 class="box-title">Search</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+            </button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+        </div>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+
+        {!! Form::open(['method'=>'get']) !!}
+
+        <div class="row">
+            
+
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('invoice_no','Invoice No:') !!}
+                {!! Form::text('invoice_no',null,['class' => 'form-control','id'=>'invoice_no']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('status','Status') !!}
+               <select name="status"  class="form-control">
+                    <option value="">Choose</option>
+                   <option value="pending">Pending</option>
+                  <option value="success">Success</option>
+                 </select>
+
+            </div>
+             <?php
+            $currencies=DB::table('currencies')->pluck('code')->toarray();
+            ?>
+            <div class="col-md-2 form-group">
+                {!! Form::label('currency','Currency') !!}
+             <select name="currency"  class="form-control">
+             <option value="Choose">Choose</option>
+           @foreach($currencies as $key=>$currency)
+             <option value={{$key}}>{{$currency}}</option>
+          @endforeach
+      </select>
+          </div>
+            
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('from','Invoice From') !!}
+                {!! Form::date('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'YYYY-MM-DD']) !!}
+
+            </div>
+            <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('till','Invoice Till') !!}
+                {!! Form::date('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'YYYY-mm-dd']) !!}
+
+            </div>
+           
+
+          
+                <div class="col-md-6">
+                    <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
+                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
+                     &nbsp;&nbsp;
+                    <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
+                     <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
+
+
+                </div>
+            
+
+        </div>
+            <script type="text/javascript">
+                    $(function () {
+                    $('#reset').on('click', function () {
+                      
+                        $('#order_no').val('');
+                        $('#product_id').val('');
+                        $('#expary').val('');
+                        $('#from').val('');
+                        $('#till').val('');
+                        $('#domain').val('');
+                    
+                          
+                    });
+                });
+                </script>
+
+
+        {!! Form::close() !!}
+    </div>
+</div>
 <div class="box box-primary">
 
     <div class="box-header">
@@ -50,7 +144,7 @@ All Invoices
         <div class="row">
 
             <div class="col-md-12">
-
+  
                 <table id="invoice-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
@@ -79,7 +173,7 @@ All Invoices
             serverSide: true,
              stateSave: true,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-invoices') !!}',
+            ajax: '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency=$currency&from=$from&till=$till") !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

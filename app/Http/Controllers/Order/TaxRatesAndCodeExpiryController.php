@@ -149,8 +149,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $response = false;
             $invoice = Invoice::find($invoiceid);
 
-             $order = Order::where('invoice_id', $invoiceid);
-              $order_invoice_relation = $invoice->orderRelation()->first();
+            $order = Order::where('invoice_id', $invoiceid);
+            $order_invoice_relation = $invoice->orderRelation()->first();
 
             if ($order_invoice_relation) {
                 $response = true;

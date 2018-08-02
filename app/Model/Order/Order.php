@@ -4,10 +4,10 @@ namespace App\Model\Order;
 
 use App\BaseModel;
 use App\Model\Product\Subscription;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Spatie\Activitylog\Traits\LogsActivity;
-use DateTimeZone;
-use DateTime;
 
 class Order extends BaseModel
 {
@@ -92,7 +92,7 @@ class Order extends BaseModel
 
     public function getCreatedAtAttribute($value)
     {
-         $date1 = new DateTime($value);
+        $date1 = new DateTime($value);
         $tz = \Auth::user()->timezone()->first()->name;
         $date1->setTimezone(new DateTimeZone($tz));
         $date = $date1->format('M j, Y, g:i a ');

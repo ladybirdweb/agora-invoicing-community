@@ -20,7 +20,6 @@ use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
-use datetime;
 use Illuminate\Http\Request;
 use Input;
 use Log;
@@ -104,7 +103,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $currency_id = $request->input('currency_id');
             $from = $request->input('from');
             $till = $request->input('till');
+
             return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currencies','currency_id','from',
+
                 'till'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -114,6 +115,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function getInvoices(Request $request)
+
     { 
        $name = $request->input('name');
         $invoice_no = $request->input('invoice_no');
@@ -124,10 +126,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $query = $this->advanceSearch($name,$invoice_no,$currency,$status,$from,$till);
          return \DataTables::of($query->take(50)->get())
          ->setTotalRecords($query->count())
+
          ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='invoice_checkbox' 
+             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                             })
+         })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
@@ -172,6 +175,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         ->make(true);
     }
 
+
     public function advanceSearch($name='',$invoice_no='',$currency='',$status='',$from='',$till='')
     {
         $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
@@ -185,22 +189,25 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
               $join = $join->where('number',$invoice_no);
              }
 
-         if($status){
-            $join =  $join->where('status',$status);
-         }
+
+        if ($status) {
+            $join = $join->where('status', $status);
+        }
+
 
          if($currency){
             $join =  $join->where('invoices.currency',$currency);
          }
          if($from){
+
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
-             $tills = date('Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
         }
 
-            if ($till) {
+        if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Invoice::first()->created_at;
@@ -208,6 +215,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
         }
 
+        $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
          $join = $join->orderBy('created_at', 'desc')
          ->select('invoices.id','first_name','invoices.created_at',
@@ -215,6 +223,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
          return $join;
           
         }
+
 
     public function getTillDate($from, $till, $tills)
     {
@@ -225,7 +234,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return $tills;
     }
-    
+
     public function getFromDate($from, $froms)
     {
         if ($from) {
@@ -235,8 +244,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return $froms;
     }
-
-     
 
     public function show(Request $request)
     {
@@ -1047,6 +1054,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 </div>';
         }
     }
-
-
 }

@@ -151,8 +151,8 @@ class ClientController extends BaseClientController
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
 
-                                 if ($endDate){
-                                if ($versions->created_at->toDateTimeString()
+                                if ($endDate) {
+                                    if ($versions->created_at->toDateTimeString()
 
                                     < $endDate->ends_at->toDateTimeString()) {
                                         return '<p><a href='.url('download/'.$productid.'/'

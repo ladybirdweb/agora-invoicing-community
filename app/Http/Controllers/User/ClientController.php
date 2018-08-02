@@ -9,7 +9,6 @@ use App\Model\Order\Payment;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
-use DB;
 use Illuminate\Http\Request;
 use Log;
 
@@ -345,7 +344,6 @@ class ClientController extends AdvanceSearchController
         return response()->json(compact('options'));
     }
 
-
     // public function search(Request $request)
     // {
     //     if($request->ajax())
@@ -360,7 +358,7 @@ class ClientController extends AdvanceSearchController
     //                           '</tr>';
     //             }
     //             return response($output);
-               
+
     //         }else{
     //             return response()->json(['no'=>'Not Found']);
     //         }
@@ -369,10 +367,10 @@ class ClientController extends AdvanceSearchController
 
     public function search(Request $request)
     {
-        $data = $this->user->select('email as name')->where("email","LIKE","%{$request->input('query')}%")->get();
-        return response()->json($data); 
-    }
+        $data = $this->user->select('email as name')->where('email', 'LIKE', "%{$request->input('query')}%")->get();
 
+        return response()->json($data);
+    }
 
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',

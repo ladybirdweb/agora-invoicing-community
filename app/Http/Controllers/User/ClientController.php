@@ -75,7 +75,8 @@ class ClientController extends AdvanceSearchController
         $user = $this->advanceSearch($name, $username, $company,
          $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
-        return\ DataTables::of($user->get())
+        return\ DataTables::of($user->take(50)->get())
+                        ->setTotalRecords($user->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -339,16 +340,45 @@ class ClientController extends AdvanceSearchController
         $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
                 ->select('email AS text', 'id AS value')
-                ->get();
+                ->get(10);
 
         return response()->json(compact('options'));
     }
+
+
+    // public function search(Request $request)
+    // {
+    //     if($request->ajax())
+    //     {
+    //         $output = "";
+    //         $clients = $this->user->where('email','LIKE','%'.$request->search.'%')->get();
+    //         if ($clients)
+    //         {
+    //             foreach ($clients as $key => $client) {
+    //                 $output = '<tr>'.
+    //                           '<td>'.$client->email.'</td>'.
+    //                           '</tr>';
+    //             }
+    //             return response($output);
+               
+    //         }else{
+    //             return response()->json(['no'=>'Not Found']);
+    //         }
+    //     }
+    // }
+
+    public function search(Request $request)
+    {
+        $data = $this->user->select('email as name')->where("email","LIKE","%{$request->input('query')}%")->get();
+        return response()->json($data); 
+    }
+
 
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
       $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = DB::table('users');
+        $join = new User();
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);

@@ -153,6 +153,7 @@
          Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
         Route::get('clients-delete', 'User\ClientController@destroy');
         Route::get('get-users', 'User\ClientController@getUsers');
+         Route::get('search-email', 'User\ClientController@search');
 
         /*
          * Product

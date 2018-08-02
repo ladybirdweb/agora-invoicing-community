@@ -26,34 +26,37 @@ All Invoices
 
         <div class="row">
             
+             <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('name','First Name') !!}
+                {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
+
+            </div>
 
             <div class="col-md-2 form-group">
                 <!-- first name -->
-                {!! Form::label('invoice_no','Invoice No:') !!}
+                {!! Form::label('invoice_no','Invoice No') !!}
                 {!! Form::text('invoice_no',null,['class' => 'form-control','id'=>'invoice_no']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('status','Status') !!}
-               <select name="status"  class="form-control">
+               <select name="status"  class="form-control" id="status">
                     <option value="">Choose</option>
                    <option value="pending">Pending</option>
                   <option value="success">Success</option>
                  </select>
 
             </div>
-             <?php
-            $currencies=DB::table('currencies')->pluck('code')->toarray();
-            ?>
-            <div class="col-md-2 form-group">
+           <div class="col-md-2 form-group">
                 {!! Form::label('currency','Currency') !!}
-             <select name="currency"  class="form-control">
-             <option value="Choose">Choose</option>
-           @foreach($currencies as $key=>$currency)
-             <option value={{$key}}>{{$currency}}</option>
-          @endforeach
-      </select>
+             <select name="currency_id"  class="form-control" id="currency">
+             <option value="">Choose</option>
+               @foreach($currencies as $key=>$value)
+            <option value={{$value}}>{{$value}}</option>
+              @endforeach
+               </select>
           </div>
             
             <div class="col-md-2 form-group">
@@ -80,19 +83,22 @@ All Invoices
 
 
                 </div>
-            
+            <?php
+
+?>
 
         </div>
             <script type="text/javascript">
                     $(function () {
                     $('#reset').on('click', function () {
                       
-                        $('#order_no').val('');
-                        $('#product_id').val('');
-                        $('#expary').val('');
+                        $('#name').val('');
+                        $('#invoice_no').val('');
+                        $('#status').val('');
+                        $('#currency').val('');
                         $('#from').val('');
                         $('#till').val('');
-                        $('#domain').val('');
+                      
                     
                           
                     });
@@ -167,13 +173,16 @@ All Invoices
 </div>
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
+
+
 <script type="text/javascript">
+
         $('#invoice-table').DataTable({
             processing: true,
             serverSide: true,
              stateSave: true,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency=$currency&from=$from&till=$till") !!}',
+            ajax: '{!! route('get-invoices',"name=$name&invoice_no=$invoice_no&status=$status&currency_id=$currency_id&from=$from&till=$till") !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",

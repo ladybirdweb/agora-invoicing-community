@@ -197,9 +197,10 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $activity_log = Activity::select('id', 'log_name', 'description',
-                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at');
 
-            return\ DataTables::of($activity_log)
+            return \DataTables::of($activity_log->take(50)->get())
+             ->setTotalRecords($activity_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
              })

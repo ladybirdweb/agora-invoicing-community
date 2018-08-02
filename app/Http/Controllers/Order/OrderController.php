@@ -85,7 +85,6 @@ class OrderController extends BaseOrderController
                     'expiry', 'from', 'till', 'domain'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
-
             return redirect('orders')->with('fails', $e->getMessage());
         }
     }
@@ -99,9 +98,8 @@ class OrderController extends BaseOrderController
         $till = $request->input('till');
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
-
-        return\ DataTables::of($query->get())
-
+         return \DataTables::of($query->take(50)->get())
+                        ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".
                             $model->id.' name=select[] id=check>';

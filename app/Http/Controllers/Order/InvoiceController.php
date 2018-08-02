@@ -96,13 +96,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function index(Request $request)
     {
         try {
+            $currencies = Currency::pluck('code')->toArray();
             $name = $request->input('name');
             $invoice_no = $request->input('invoice_no');
             $status = $request->input('status');
-            $currency = $request->input('currency');
+             
+            $currency_id = $request->input('currency_id');
             $from = $request->input('from');
             $till = $request->input('till');
-            return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currency','from',
+            return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currencies','currency_id','from',
                 'till'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -113,15 +115,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function getInvoices(Request $request)
     { 
-        $name = $request->input('name');
+       $name = $request->input('name');
         $invoice_no = $request->input('invoice_no');
         $status= $request->input('status');
-        $currency = $request->input('currency');
-         $from = $request->input('from');
+        $currency = $request->input('currency_id');
+        $from = $request->input('from');
         $till = $request->input('till');
-        $query = $this->advanceSearch($name,$invoice_no,$status,$currency,$from,$till);
-        
-         return \DataTables::of($query->get())
+        $query = $this->advanceSearch($name,$invoice_no,$currency,$status,$from,$till);
+         return \DataTables::of($query->take(50)->get())
+         ->setTotalRecords($query->count())
          ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -138,9 +140,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          })
 
                         ->addColumn('date', function ($model) {
-                            $date = date_create($model->created_at);
-
-                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
+                            $date = ($model->created_at);
+                            return $date;
+                            // return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })
                          ->addColumn('grand_total', function ($model) {
                              return ucfirst($model->number);
@@ -170,34 +172,33 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         ->make(true);
     }
 
-    public function advanceSearch($name='',$invoice_no='',$status='',$currency='',$from='',$till='')
+    public function advanceSearch($name='',$invoice_no='',$currency='',$status='',$from='',$till='')
     {
-        $join = \DB::table('invoices');
-        // if($name){
-        //     $rels = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id')->pluck('first_name');
-        //      foreach ($rels as $key => $value) {
-        //         $first_name = $value;
-        //     }
-        // }
+        $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
+          if($name){
+           
+              $join = $join->where('first_name', $name);
+             
+        }
         if($invoice_no) {
 
               $join = $join->where('number',$invoice_no);
-         }
+             }
 
          if($status){
             $join =  $join->where('status',$status);
          }
 
          if($currency){
-            $join =  $join->where('currency',$currency);
+            $join =  $join->where('invoices.currency',$currency);
          }
          if($from){
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
              $tills = date('Y-m-d H:m:i');
             $tillDate = $this->getTillDate($from, $till, $tills);
-             $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
-          }
+            $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+        }
 
             if ($till) {
             $tilldate = date_create($till);
@@ -208,7 +209,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
 
 
-         $join = $join->select('id','user_id','number','date','grand_total','currency','status','created_at');
+         $join = $join->orderBy('created_at', 'desc')
+         ->select('invoices.id','first_name','invoices.created_at',
+            'invoices.currency','user_id','number','status');
          return $join;
           
         }

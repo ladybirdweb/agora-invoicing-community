@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'delmultiple'        => 'Delete Selected',
     'save'                   => 'Save',
     'city'                   => 'City',
     'state'                  => 'State',
@@ -35,7 +36,6 @@ return [
     'no'                     => 'No',
     'select-a-row'           => 'Select a row',
     'no-record'              => 'No records',
-    'delete'                 => 'Delete',
     'create'                 => 'Create',
     'name'                   => 'Name',
     'description'            => 'Description',
@@ -164,12 +164,14 @@ return [
     'plan'         => 'Plan',
     'plans'        => 'Plans',
     'subscription' => 'Subscription',
+    'limited-subscription' => 'Limited Subscription',
     'expiry'       => 'Expiry',
     'price'        => 'Price',
     'updates'      => 'Updates',
     /*
      * Products
      */
+    'add-file'                                                                                        => 'Add Files',
     'products'                                                                                        => 'Products',
     'product'                                                                                         => 'Product',
     'all-products'                                                                                    => 'All Products',
@@ -185,12 +187,13 @@ return [
     'stock_control'                                                                                   => 'Stock Control',
     'sort_order'                                                                                      => 'Sort Order',
     'apply_tax'                                                                                       => 'Apply Tax',
-    'retired'                                                                                         => 'Retired',
+    'retired'                                                                                => 'Deny All Downloads after expiry',
+   'perpetual-download'                                                                     =>'Perpetual Download Till Expiry',
     'hidden'                                                                                          => 'Hidden',
     'enable-quantity-in-stock'                                                                        => 'Enable - Quantity in Stock:',
     'tick-this-box-to-charge-tax-for-this-product'                                                    => 'Tick this box to charge tax for this product',
     'tick-to-show-domain-registration-options'                                                        => 'Tick to show domain registration options',
-    'tick-to-hide-from-order-form'                                                                    => 'Tick to hide from order form',
+    'tick-to-hide-from-order-form'                                                                    => 'Check to hide from pricing page',
     'tick-to-hide-from-admin-area-product-dropdown-menus'                                             => 'Tick to hide from admin area product dropdown menus',
     'free'                                                                                            => 'Free',
     'one-time'                                                                                        => 'One Time',

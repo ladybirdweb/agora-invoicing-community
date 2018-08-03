@@ -272,15 +272,15 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $clientid = $request->input('clientid');
+            $user = new User();
             if ($clientid) {
-                $user = new User();
                 $user = $user->where('id', $clientid)->first();
                 if (!$user) {
                     return redirect()->back()->with('fails', 'Invalid user');
                 }
             } else {
                 $user = '';
-            }
+               }
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
 

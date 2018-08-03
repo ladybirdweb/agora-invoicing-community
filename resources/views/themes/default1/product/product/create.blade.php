@@ -155,7 +155,9 @@ Create New Product
                                          <li>
                                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
-                                                {!! Form::label('hidden',Lang::get('message.hidden')) !!}
+                                               <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
+                                                <label data-toggle="tooltip" data-placement="top" title="">Hidden</label>
+                                               
                                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
@@ -176,17 +178,29 @@ Create New Product
                                     <td>
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
                                                     {!! Form::checkbox('subscription',1,true) !!}
-                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
+                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date ,else ,unlimited subscription">
+                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
                                                 </div>
+                                            
 
+
+                                         
+
+
+
+                                               
                                                 <div class="col-md-6">
                                                     {!! Form::hidden('deny_after_subscription',0) !!}
                                                     {!! Form::checkbox('deny_after_subscription',1,true) !!}
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download all versions released before expiry date">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
+
+                                               
+
                                             </div>
                                         </div>
                                     </td>

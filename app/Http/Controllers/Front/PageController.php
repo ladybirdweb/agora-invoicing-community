@@ -125,7 +125,7 @@ class PageController extends GetPageTemplateController
     public function getPageUrl($slug)
     {
         $productController = new \App\Http\Controllers\Product\ProductController();
-        $url = $productController->GetMyUrl();
+        $url = $productController->getMyUrl();
         $segment = $this->addSegment(['public/pages']);
         $url = $url.$segment;
 
@@ -149,20 +149,20 @@ class PageController extends GetPageTemplateController
         return $segment;
     }
 
-    // public function generate(Request $request)
-    // {
-    //     // dd($request->all());
-    //     if ($request->has('slug')) {
-    //         $slug = $request->input('slug');
+    public function generate(Request $request)
+    {
+        // dd($request->all());
+        if ($request->has('slug')) {
+            $slug = $request->input('slug');
 
-    //         return $this->getSlug($slug);
-    //     }
-    //     if ($request->has('url')) {
-    //         $slug = $request->input('url');
+            return $this->getSlug($slug);
+        }
+        if ($request->has('url')) {
+            $slug = $request->input('url');
 
-    //         return $this->getPageUrl($slug);
-    //     }
-    // }
+            return $this->getPageUrl($slug);
+        }
+    }
 
     public function show($slug)
     {
@@ -292,39 +292,54 @@ class PageController extends GetPageTemplateController
         }
         $pages = $this->page->find(1);
         $data = $pages->content;
-
+       //Helpdesk
         $product = new \App\Model\Product\Product();
-        $helpdesk_products = $product->where('id', '!=', 1)->where('category', '=', 'helpdesk')
+        $helpdesk_products = $product->where('id', '!=', 1)
+        ->where('category', '=', 'helpdesk')
+        ->where('hidden','=','0')
         ->orderBy('created_at', 'asc')
         ->get()
         ->toArray();
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         $trasform = [];
         $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
-
-        $helpdesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'helpdeskvps')
-         ->get()
+ 
+        //Helpdesk VPS
+        $helpdesk_vps_product = $product->where('id', '!=', 1)
+        ->where('category', '=', 'helpdeskvps')
+        ->where('hidden','=','0')
+        ->get()
         ->toArray();
         $trasform3 = [];
         $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
-
-        $servicedesk_vps_product = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk vps')
-         ->get()
+        
+        //ServiceDesk Vps
+        $servicedesk_vps_product = $product->where('id', '!=', 1)
+        ->where('category', '=', 'servicedesk vps')
+        ->where('hidden','=','0')
+        ->get()
         ->toArray();
         $trasform4 = [];
         $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
-
-        $sevice_desk_products = $product->where('id', '!=', 1)->where('category', '=', 'servicedesk')
+        
+        //servicedesk
+        $sevice_desk_products = $product->where('id', '!=', 1)
+        ->where('category', '=', 'servicedesk')
+         ->where('hidden','=','0')
         ->orderBy('created_at', 'asc')
         ->get()
         ->toArray();
         $trasform1 = [];
         $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
-
-        $service = $product->where('id', '!=', 1)->where('category', '=', 'service')->get()->toArray();
-        $trasform2 = [];
-
-        $service_template = $this->getServiceTemplate($service, $data, $trasform2);
+        
+        //Service
+        $service = $product->where('id', '!=', 1)
+        ->where('category', '=', 'service') 
+        ->where('hidden','=','0')
+        ->get()
+        ->toArray();
+         $trasform2 = [];
+         $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
         return view('themes.default1.common.template.shoppingcart',
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',

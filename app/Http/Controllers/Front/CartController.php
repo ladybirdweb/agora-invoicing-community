@@ -446,6 +446,26 @@ class CartController extends BaseCartController
         return 'success';
     }
 
+    public function addCartBySlug($slug)
+    {
+        try {
+            $sub = '';
+            if ($slug == 'helpdesk-with-kb-pro-edition') {
+                $id = 8;
+                $sub = 13;
+            }
+            if ($slug == 'helpdesk-and-kb-community') {
+                $id = 7;
+            }
+            $url = url("pricing?id=$id&subscription=$sub");
+
+            return \Redirect::to($url);
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+
     public function reduseQty(Request $request)
     {
         $id = $request->input('id');

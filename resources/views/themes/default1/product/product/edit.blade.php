@@ -385,14 +385,17 @@ Edit Product
                     <!-- /.tab-content -->
                 </div>
                 </div>
+                 </div>
+                   </div>
+                   </div>
      
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="box" id="uploads">
+        <div class="box box-primary" id="uploads">
             <div class="box-header with-border" >
                 <h3 class="box-title">Upload Files</h3>
-                 
-                 <a href="#create-upload-option" id="create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-upload-option">Add Files</a>
+                
+                 <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
                              @include('themes.default1.product.product.edit-upload-option')
              
@@ -402,7 +405,7 @@ Edit Product
                 <div class="row" >
                     <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>
@@ -551,13 +554,11 @@ Edit Product
 
 
       
-    </div>
-    </div>
-     </div>
+   
+  
+   
 
-</div>
 
-</div>
  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />

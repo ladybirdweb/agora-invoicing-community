@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use DateTime;
@@ -81,8 +82,9 @@ class BaseClientController extends Controller
         return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
-    public function getActionButton($link, $orderEndDate)
+    public function getActionButton($link, $orderEndDate,$productid)
     {
+         $getDownloadCondition = Product::where('id',$productid)->pluck('deny_after_subscription');
         if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
             $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
@@ -93,7 +95,18 @@ class BaseClientController extends Controller
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
       </p>';
-        } else {
+        }
+        elseif ($getDownloadCondition == 0) {
+             $githubApi = new \App\Http\Controllers\Github\GithubApiController();
+            $link = $githubApi->getCurl1($link['zipball_url']);
+
+            return '<p><a href='.$link['header']['Location']." 
+            class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+      </p>';
+        }
+         else {
             return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
         }

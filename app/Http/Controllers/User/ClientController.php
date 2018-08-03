@@ -340,37 +340,36 @@ class ClientController extends AdvanceSearchController
         $options = $this->user
 //->where('email','LIKE','%'.$s.'%')
                 ->select('email AS text', 'id AS value')
-                ->get(10);
+                ->get();
 
         return response()->json(compact('options'));
     }
 
 
-    // public function search(Request $request)
-    // {
-    //     if($request->ajax())
-    //     {
-    //         $output = "";
-    //         $clients = $this->user->where('email','LIKE','%'.$request->search.'%')->get();
-    //         if ($clients)
-    //         {
-    //             foreach ($clients as $key => $client) {
-    //                 $output = '<tr>'.
-    //                           '<td>'.$client->email.'</td>'.
-    //                           '</tr>';
-    //             }
-    //             return response($output);
-               
-    //         }else{
-    //             return response()->json(['no'=>'Not Found']);
-    //         }
-    //     }
-    // }
 
-    public function search(Request $request)
-    {
-        $data = $this->user->select('email as name')->where("email","LIKE","%{$request->input('query')}%")->get();
-        return response()->json($data); 
+
+        public function search(Request $request) {
+        try {
+            $term = trim($request->q);
+            if (empty($term)) {
+                return \Response::json([]);
+            }
+            $users = User::where('email', 'LIKE', '%' . $term . '%')
+             ->orWhere('first_name', 'LIKE', '%' . $term . '%')
+             ->orWhere('last_name', 'LIKE', '%' . $term . '%')
+             ->select('id', 'email','profile_pic', 'first_name', 'last_name')->get();
+            $formatted_tags = [];
+
+            foreach ($users as $user) {
+                $formatted_users[] = ['id' => $user->id, 'text' => $user->email ,'profile_pic' => $user->profile_pic,
+            'first_name' => $user->first_name, 'last_name' => $user->last_name];
+            }
+
+            return \Response::json($formatted_users);
+        } catch (Exception $e) {
+            // returns if try fails with exception meaagse
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
     }
 
 

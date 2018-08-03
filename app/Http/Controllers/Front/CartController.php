@@ -465,7 +465,6 @@ class CartController extends BaseCartController
         }
     }
 
-
     public function reduseQty(Request $request)
     {
         $id = $request->input('id');

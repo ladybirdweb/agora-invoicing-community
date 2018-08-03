@@ -148,14 +148,13 @@ class ClientController extends BaseClientController
                                 $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                                 $order_id = $order->id;
-                                $getDownloadCondition = Product::where('id',$productid)->pluck('deny_after_subscription');
+                                $getDownloadCondition = Product::where('id', $productid)->pluck('deny_after_subscription');
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
 
-                                 //if product has expiry date ie sunscriptioon is generated
-                                 if ($endDate){
-                                  
-                                if ($versions->created_at->toDateTimeString()
+                                //if product has expiry date ie sunscriptioon is generated
+                                if ($endDate) {
+                                    if ($versions->created_at->toDateTimeString()
 
                                     < $endDate->ends_at->toDateTimeString()) {
                                         return '<p><a href='.url('download/'.$productid.'/'
@@ -164,15 +163,14 @@ class ClientController extends BaseClientController
                                 </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
                                    </p>';
-                                    } elseif ($getDownloadCondition == 0) {//if subscription has expired 
+                                    } elseif ($getDownloadCondition == 0) {//if subscription has expired
                                         return '<p><a href='.url('download/'.$productid.'/'
                                         .$clientid.'/'.$invoiceid.'/'.$versions->id).
                                 " class='btn btn-sm btn-primary'><i class='fa fa-download'>
                                 </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
                                    </p>';
-                               }else{
-
+                                    } else {
                                         return '<button class="btn btn-primary 
                                     btn-sm disabled tooltip">Download <span class="tooltiptext">
                                     Please Renew!!</span></button>';
@@ -228,7 +226,7 @@ class ClientController extends BaseClientController
                                 $orderEndDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
-                                    $actionButton = $this->getActionButton($link, $orderEndDate,$productid);
+                                    $actionButton = $this->getActionButton($link, $orderEndDate, $productid);
 
                                     return $actionButton;
                                 } elseif (!$orderEndDate) {

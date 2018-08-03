@@ -17,7 +17,7 @@ return [
     /*
      * Common for all
      */
-    'delmultiple'        => 'Delete Selected',
+    'delmultiple'            => 'Delete Selected',
     'save'                   => 'Save',
     'city'                   => 'City',
     'state'                  => 'State',
@@ -161,13 +161,13 @@ return [
     /*
      * Plan
      */
-    'plan'         => 'Plan',
-    'plans'        => 'Plans',
-    'subscription' => 'Subscription',
+    'plan'                 => 'Plan',
+    'plans'                => 'Plans',
+    'subscription'         => 'Subscription',
     'limited-subscription' => 'Limited Subscription',
-    'expiry'       => 'Expiry',
-    'price'        => 'Price',
-    'updates'      => 'Updates',
+    'expiry'               => 'Expiry',
+    'price'                => 'Price',
+    'updates'              => 'Updates',
     /*
      * Products
      */
@@ -187,8 +187,8 @@ return [
     'stock_control'                                                                                   => 'Stock Control',
     'sort_order'                                                                                      => 'Sort Order',
     'apply_tax'                                                                                       => 'Apply Tax',
-    'retired'                                                                                => 'Deny All Downloads after expiry',
-   'perpetual-download'                                                                     =>'Perpetual Download Till Expiry',
+    'retired'                                                                                         => 'Deny All Downloads after expiry',
+   'perpetual-download'                                                                               => 'Perpetual Download Till Expiry',
     'hidden'                                                                                          => 'Hidden',
     'enable-quantity-in-stock'                                                                        => 'Enable - Quantity in Stock:',
     'tick-this-box-to-charge-tax-for-this-product'                                                    => 'Tick this box to charge tax for this product',

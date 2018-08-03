@@ -233,7 +233,7 @@ namespace App\Http\Controllers\Product;
         public function store(Request $request)
         {
             $input = $request->all();
-             $v = \Validator::make($input, [
+            $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
                         'type'       => 'required',
                         'group'      => 'required',

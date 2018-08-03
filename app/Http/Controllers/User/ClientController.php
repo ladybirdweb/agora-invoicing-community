@@ -344,26 +344,22 @@ class ClientController extends AdvanceSearchController
         return response()->json(compact('options'));
     }
 
-
-
-
-
-        public function search(Request $request) 
-        {
+    public function search(Request $request)
+    {
         try {
             $term = trim($request->q);
             if (empty($term)) {
                 return \Response::json([]);
             }
-            $users = User::where('email', 'LIKE', '%' . $term . '%')
-             ->orWhere('first_name', 'LIKE', '%' . $term . '%')
-             ->orWhere('last_name', 'LIKE', '%' . $term . '%')
-             ->select('id', 'email','profile_pic', 'first_name', 'last_name')->get();
+            $users = User::where('email', 'LIKE', '%'.$term.'%')
+             ->orWhere('first_name', 'LIKE', '%'.$term.'%')
+             ->orWhere('last_name', 'LIKE', '%'.$term.'%')
+             ->select('id', 'email', 'profile_pic', 'first_name', 'last_name')->get();
             $formatted_tags = [];
 
             foreach ($users as $user) {
-                $formatted_users[] = ['id' => $user->id, 'text' => $user->email ,'profile_pic' => $user->profile_pic,
-            'first_name' => $user->first_name, 'last_name' => $user->last_name];
+                $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
+            'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
             }
 
             return \Response::json($formatted_users);
@@ -373,8 +369,6 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-
-   
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
       $company_type = '', $company_size = '', $role = '', $position = '')

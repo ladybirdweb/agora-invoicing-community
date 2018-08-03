@@ -273,7 +273,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 }
             } else {
                 $user = '';
-               }
+            }
             $products = $this->product->where('id', '!=', 1)->pluck('name', 'id')->toArray();
             $currency = $this->currency->pluck('name', 'code')->toArray();
 

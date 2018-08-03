@@ -9,7 +9,6 @@ use App\Model\Order\Payment;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
-use DB;
 use Illuminate\Http\Request;
 use Log;
 
@@ -348,7 +347,9 @@ class ClientController extends AdvanceSearchController
 
 
 
-        public function search(Request $request) {
+
+        public function search(Request $request) 
+        {
         try {
             $term = trim($request->q);
             if (empty($term)) {
@@ -373,6 +374,7 @@ class ClientController extends AdvanceSearchController
     }
 
 
+   
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
       $company_type = '', $company_size = '', $role = '', $position = '')

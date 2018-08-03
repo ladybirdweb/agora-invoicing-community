@@ -99,12 +99,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $name = $request->input('name');
             $invoice_no = $request->input('invoice_no');
             $status = $request->input('status');
-             
+
             $currency_id = $request->input('currency_id');
             $from = $request->input('from');
             $till = $request->input('till');
 
-            return view('themes.default1.invoice.index' ,compact('name','invoice_no','status','currencies','currency_id','from',
+            return view('themes.default1.invoice.index', compact('name','invoice_no','status','currencies','currency_id','from',
 
                 'till'));
         } catch (\Exception $ex) {
@@ -115,16 +115,16 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     public function getInvoices(Request $request)
-
-    { 
-       $name = $request->input('name');
+    {
+        $name = $request->input('name');
         $invoice_no = $request->input('invoice_no');
-        $status= $request->input('status');
+        $status = $request->input('status');
         $currency = $request->input('currency_id');
         $from = $request->input('from');
         $till = $request->input('till');
-        $query = $this->advanceSearch($name,$invoice_no,$currency,$status,$from,$till);
-         return \DataTables::of($query->take(50)->get())
+        $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
+
+        return \DataTables::of($query->take(50)->get())
          ->setTotalRecords($query->count())
 
          ->addColumn('checkbox', function ($model) {
@@ -144,6 +144,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
                         ->addColumn('date', function ($model) {
                             $date = ($model->created_at);
+
                             return $date;
                             // return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })
@@ -175,31 +176,24 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                         ->make(true);
     }
 
-
-    public function advanceSearch($name='',$invoice_no='',$currency='',$status='',$from='',$till='')
+    public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
     {
         $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
-          if($name){
-           
-              $join = $join->where('first_name', $name);
-             
+        if ($name) {
+            $join = $join->where('first_name', $name);
         }
-        if($invoice_no) {
-
-              $join = $join->where('number',$invoice_no);
-             }
-
+        if ($invoice_no) {
+            $join = $join->where('number', $invoice_no);
+        }
 
         if ($status) {
             $join = $join->where('status', $status);
         }
 
-
-         if($currency){
-            $join =  $join->where('invoices.currency',$currency);
-         }
-         if($from){
-
+        if ($currency) {
+            $join = $join->where('invoices.currency', $currency);
+        }
+        if ($from) {
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
@@ -217,13 +211,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
-         $join = $join->orderBy('created_at', 'desc')
+        $join = $join->orderBy('created_at', 'desc')
          ->select('invoices.id','first_name','invoices.created_at',
-            'invoices.currency','user_id','number','status');
-         return $join;
-          
-        }
+            'invoices.currency', 'user_id', 'number', 'status');
 
+        return $join;
+    }
 
     public function getTillDate($from, $till, $tills)
     {

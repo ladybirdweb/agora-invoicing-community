@@ -151,10 +151,12 @@ class ClientController extends BaseClientController
                                 $getDownloadCondition = Product::where('id',$productid)->pluck('deny_after_subscription');
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
+
                                  //if product has expiry date ie sunscriptioon is generated
                                  if ($endDate){
                                   
                                 if ($versions->created_at->toDateTimeString()
+
                                     < $endDate->ends_at->toDateTimeString()) {
                                         return '<p><a href='.url('download/'.$productid.'/'
                                         .$clientid.'/'.$invoiceid.'/'.$versions->id).

@@ -285,8 +285,6 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-   
-
     /**
      * @param type $id
      * @param type $key

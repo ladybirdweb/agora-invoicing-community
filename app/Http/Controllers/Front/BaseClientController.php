@@ -84,10 +84,8 @@ class BaseClientController extends Controller
 
     public function getActionButton($link, $orderEndDate, $productid)
     {
-
-         $getDownloadCondition = Product::where('id',$productid)->value('deny_after_subscription');
-         if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
-
+        $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
+        if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
             $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
             $link = $githubApi->getCurl1($link['zipball_url']);

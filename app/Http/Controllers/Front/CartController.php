@@ -1074,25 +1074,24 @@ class CartController extends BaseCartController
                 $planid = Session::get('plan');
             }
 
-                $plan = new \App\Model\Payment\Plan();
-                $plan = $plan->where('id', $planid)->where('product', $productid)->first();
+            $plan = new \App\Model\Payment\Plan();
+            $plan = $plan->where('id', $planid)->where('product', $productid)->first();
 
-                if ($plan) {
-                    $currency = $this->currency($userid);
-                    $price = $plan->planPrice()
+            if ($plan) {
+                $currency = $this->currency($userid);
+                $price = $plan->planPrice()
                                     ->where('currency', $currency)
                                     ->first()
                             ->add_price;
-                    $days = $plan->days;
-                    if ($days >= '365') {
-                        $months = $days / 30 / 12;
-                    } else {
-                        $months = $days / 30;
-                    }
-
-                    $cost = round($months) * $price;
+                $days = $plan->days;
+                if ($days >= '365') {
+                    $months = $days / 30 / 12;
+                } else {
+                    $months = $days / 30;
                 }
-          
+
+                $cost = round($months) * $price;
+            }
 
             return $cost;
         } catch (\Exception $ex) {

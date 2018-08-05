@@ -1,23 +1,23 @@
 @extends('themes.default1.layouts.master')
 @section('content-header')
 <h1>
-Generate Payment
+Create New Payment
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="{{url('clients')}}">All Users</a></li>
-        <li><a href="{{url('clients/'.$userid)}}">View User</a></li>
-        <li class="active">Payment</li>
+        <li><a href="{{url('clients/'.$clientid)}}">View User</a></li>
+        <li class="active">New Payment</li>
       </ol>
 @stop
 @section('content')
-
 <div class="box box-primary">
-
-    <div class="box-header">
+	 <div class="box-header">
         @if (count($errors) > 0)
                 <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
+                     <i class="fa fa-alert"></i>
+                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <strong>Whoops!</strong> There were some problems with your input.<br>
                     <ul>
                         @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -28,8 +28,8 @@ Generate Payment
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-                     <i class="fa fa-ban"></i>
-                     <b>{{Lang::get('message.success')}}!</b> {{Lang::get('message.success')}}.
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b>
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -43,13 +43,13 @@ Generate Payment
                     {{Session::get('fails')}}
                 </div>
                 @endif
-        {!! Form::open(['url'=>'payment/receive/'.$invoice_id,'method'=>'post']) !!}
+        {!! Form::open(['url'=>'newPayment/receive/'.$clientid,'method'=>'post']) !!}
 
-        <h4>{{Lang::get('message.payment')}}  (Invoice Number: {{$invoice->number}})	 <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h4>{{Lang::get('message.new-payment')}} <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
-    <div class="box-body">
+	<div class="box-body">
 
         <div class="row">
 
@@ -69,7 +69,7 @@ Generate Payment
                     <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method')) !!}
-                        {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],$payment_method,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
 
                     </div>
 
@@ -94,9 +94,6 @@ Generate Payment
     </div>
 
 </div>
-
-
-{!! Form::close() !!}
 @stop
 @section('datepicker')
 <script type="text/javascript">

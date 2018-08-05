@@ -61,7 +61,7 @@ Order Details
                                 <tbody><tr><td><b>Serial Key:</b></td><td>{{($order->serial_key)}}</td></tr>
                                     <tr><td><b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
                                     <?php
-                                    $sub = "--";
+                                    $date = "--";
                                     if ($subscription) {
                                         if ($subscription->ends_at != '' || $subscription->ends_at != '0000-00-00 00:00:00') {
                                              $date1 = new DateTime($subscription->ends_at);

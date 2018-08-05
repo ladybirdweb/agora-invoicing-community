@@ -92,14 +92,14 @@ User Details
             </a>
             <ul class="dropdown-menu">
                 <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.invoice')}}</a>
+                    <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.create-invoice')}}</a>
                 </li>
-<!--                <li role="presentation">
+               <!--  <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('order/execute?clientid='.$client->id)}}">{{Lang::get('message.order_execute')}}</a>
-                </li>
+                </li> -->
                 <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="{{url('payment/receive?clientid='.$client->id)}}">{{Lang::get('message.payment')}}</a>
-                </li>-->
+                    <a role="menuitem" tabindex="-1" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
+                </li>
 <!--                <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="#">Estimate</a>
                 </li>

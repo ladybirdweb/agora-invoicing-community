@@ -250,17 +250,30 @@ Edit Product
                                     <td><b>{!! Form::label('subscription',Lang::get('message.subscription')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                                            <div class="row">
-                                                 <div class="col-md-6">
+                                             <div class="row">
+                                                <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
-                                                    {!! Form::checkbox('subscription',1) !!}
-                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
+                                                    {!! Form::checkbox('subscription') !!}
+                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date ,else ,unlimited subscription">
+                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
                                                 </div>
+                                            
+
+
+                                         
+
+
+
+                                               
                                                 <div class="col-md-6">
                                                     {!! Form::hidden('deny_after_subscription',0) !!}
-                                                    {!! Form::checkbox('deny_after_subscription',1) !!}
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                                    {!! Form::checkbox('deny_after_subscription') !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download only the versions released before expiry date">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
+
+                                               
+
                                             </div>
                                         </div>
                                     </td>

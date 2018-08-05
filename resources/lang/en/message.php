@@ -345,6 +345,7 @@ return [
     /*
      * Invoices
      */
+    'create-invoice'=>'Create New Invoice',
     'invoice'  => 'Invoice',
     'invoices' => 'Invoices',
     /*
@@ -445,6 +446,8 @@ return [
     /*
      * Payments
      */
+    'new-payment'     => 'New Payment',
+    'create-payment'  => 'Create New Payment',
     'invoice-status'  => 'Invoice Status',
     'payment-status'  => 'Payment Status',
     'send-mail'       => 'Send Mail',

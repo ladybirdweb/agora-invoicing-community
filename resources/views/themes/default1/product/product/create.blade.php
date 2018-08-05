@@ -195,7 +195,7 @@ Create New Product
                                                 <div class="col-md-6">
                                                     {!! Form::hidden('deny_after_subscription',0) !!}
                                                     {!! Form::checkbox('deny_after_subscription',1,true) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download all versions released before expiry date">
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download only the versions released before expiry date">
                                                     {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
 

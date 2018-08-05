@@ -1071,12 +1071,10 @@ class CartController extends BaseCartController
     {
         try {
             $cost = 0;
-            $subscription = $this->allowSubscription($productid);
             if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
 
-            if ($subscription === true) {
                 $plan = new \App\Model\Payment\Plan();
                 $plan = $plan->where('id', $planid)->where('product', $productid)->first();
 
@@ -1095,7 +1093,7 @@ class CartController extends BaseCartController
 
                     $cost = round($months) * $price;
                 }
-            }
+          
 
             return $cost;
         } catch (\Exception $ex) {

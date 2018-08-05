@@ -285,29 +285,7 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    /**
-     * @param type $productid
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function allowSubscription($productid)
-    {
-        try {
-            $reponse = false;
-            $product = $this->product->find($productid);
-            if ($product) {
-                if ($product->subscription == 1) {
-                    $reponse = true;
-                }
-            }
-
-            return $reponse;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
+   
 
     /**
      * @param type $id

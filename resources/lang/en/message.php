@@ -345,9 +345,9 @@ return [
     /*
      * Invoices
      */
-    'create-invoice'=>'Create New Invoice',
-    'invoice'  => 'Invoice',
-    'invoices' => 'Invoices',
+    'create-invoice'=> 'Create New Invoice',
+    'invoice'       => 'Invoice',
+    'invoices'      => 'Invoices',
     /*
      * Licence
      */

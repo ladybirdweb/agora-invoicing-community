@@ -292,8 +292,8 @@
         /*
          * Payment
          */
-        Route::get('newPayment/receive','Order\InvoiceController@newPayment');
-        Route::post('newPayment/receive/{clientid}','Order\InvoiceController@postNewPayment');
+        Route::get('newPayment/receive', 'Order\InvoiceController@newPayment');
+        Route::post('newPayment/receive/{clientid}', 'Order\InvoiceController@postNewPayment');
         Route::get('payment/receive', 'Order\InvoiceController@payment');
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
         Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');

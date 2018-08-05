@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\Order;
 
-use Bugsnag;
-use App\User;
-use App\Model\Payment\Tax;
-use Illuminate\Http\Request;
-use App\Model\Payment\TaxClass;
-use App\Model\Payment\Promotion;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Front\CartController;
+use App\Model\Payment\Promotion;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
+use App\User;
+use Bugsnag;
+use Illuminate\Http\Request;
 
 class BaseInvoiceController extends ExtendedBaseInvoiceController
 {

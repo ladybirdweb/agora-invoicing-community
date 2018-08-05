@@ -36,8 +36,7 @@ class ExtendedBaseInvoiceController extends Controller
     		$paymentReceived = $payment->fill($request->all())->save();
     		return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
          }catch (Exception $ex){
-         	dd($ex);
-         return redirect()->back()->with('fails', $ex->getMessage());
+         	 return redirect()->back()->with('fails', $ex->getMessage());
       } 
     }
 }

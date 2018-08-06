@@ -110,12 +110,12 @@ class PlanController extends Controller
      */
     public function store(Request $request)
     {
-        $subs = Product::where('id',$request->input('product'))->value('subscription');
+        $subs = Product::where('id', $request->input('product'))->value('subscription');
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
             'name'        => 'required',
-            'days'        => $days_rule . 'numeric',
+            'days'        => $days_rule.'numeric',
             'add_price.*' => 'required',
             'product'     => 'required',
         ]);
@@ -170,15 +170,15 @@ class PlanController extends Controller
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
         foreach ($products as $key => $product) {
-          $selectedProduct = $this->product->where('id',$plan->product)
-          ->pluck('name','id','subscription')->toArray();
-       }
-      $selectedPeriods = $this->period->where('days',$plan->days)
+            $selectedProduct = $this->product->where('id', $plan->product)
+          ->pluck('name', 'id', 'subscription')->toArray();
+        }
+        $selectedPeriods = $this->period->where('days', $plan->days)
        ->pluck('name', 'days')->toArray();
 
         return view('themes.default1.product.plan.edit',
             compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products',
-                'selectedPeriods','selectedProduct'));
+                'selectedPeriods', 'selectedProduct'));
     }
 
     /**
@@ -190,14 +190,14 @@ class PlanController extends Controller
      */
     public function update($id, Request $request)
     {
-         $subs = Product::where('id',$request->input('product'))->value('subscription');
+        $subs = Product::where('id', $request->input('product'))->value('subscription');
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
-            'name'        => 'required',
-            'add_price.*' => 'required',
-            'product'     => 'required',
-              'days'        => $days_rule . 'numeric',
+            'name'          => 'required',
+            'add_price.*'   => 'required',
+            'product'       => 'required',
+              'days'        => $days_rule.'numeric',
         ]);
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();
@@ -279,12 +279,13 @@ class PlanController extends Controller
 
     public function checkSubscription(Request $request)
     {
-      try{
-      $product_id = $request->input('product_id');
-      $checkSubscription = Product::where('id',$product_id)->value('subscription');
-      $result = ['subscription'=> $checkSubscription];
-      return response()->json($result);
-      }catch (\Exception $ex) {
+        try {
+            $product_id = $request->input('product_id');
+            $checkSubscription = Product::where('id', $product_id)->value('subscription');
+            $result = ['subscription'=> $checkSubscription];
+
+            return response()->json($result);
+        } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             $result = ['subscription' => $ex->getMessage()];
 

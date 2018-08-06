@@ -128,6 +128,7 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
+
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');

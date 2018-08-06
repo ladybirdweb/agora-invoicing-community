@@ -154,15 +154,16 @@ class ClientController extends BaseClientController
 
                                 //if product has expiry date ie sunscriptioon is generated
                                 if ($endDate) {
-                                    if ($getDownloadCondition == 1){//Perpetual download till expiry selected
-                                     $getDownload = $this->whenDownloadTillExpiry($endDate,$productid,$versions,$clientid,$invoiceid);
+                                    if ($getDownloadCondition == 1) {//Perpetual download till expiry selected
+                                        $getDownload = $this->whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid);
+
                                         return $getDownload;
-                         
-                                  }elseif($getDownloadCondition == 0){//When download retires after subscription
-                                          
-                                        $getDownload =  $this->whenDownloadExpiresAfterExpiry($endDate,$productid,$versions,$clientid,$invoiceid);
+                                    } elseif ($getDownloadCondition == 0) {//When download retires after subscription
+
+                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($endDate, $productid, $versions, $clientid, $invoiceid);
+
                                         return $getDownload;
-                                  }
+                                    }
                                 }
                             })
                             ->rawColumns(['version', 'title', 'description', 'file'])
@@ -173,10 +174,9 @@ class ClientController extends BaseClientController
         }
     }
 
-
-    public function whenDownloadTillExpiry($endDate,$productid,$versions,$clientid,$invoiceid)
+    public function whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid)
     {
-      if ($versions->created_at->toDateTimeString()
+        if ($versions->created_at->toDateTimeString()
 
         < $endDate->ends_at->toDateTimeString()) {
             return '<p><a href='.url('download/'.$productid.'/'
@@ -192,7 +192,7 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function whenDownloadExpiresAfterExpiry($endDate,$productid,$versions,$clientid,$invoiceid)
+    public function whenDownloadExpiresAfterExpiry($endDate, $productid, $versions, $clientid, $invoiceid)
     {
         if ($versions->created_at->toDateTimeString()
         < $endDate->ends_at->toDateTimeString()) {
@@ -209,7 +209,6 @@ class ClientController extends BaseClientController
         }
     }
 
-
     /**
      * Get list of all the versions from Github.
      *
@@ -217,8 +216,6 @@ class ClientController extends BaseClientController
      * @param type $clientid
      * @param type $invoiceid
      */
-
-
     public function getGithubVersionList($productid, $clientid, $invoiceid)
     {
         try {

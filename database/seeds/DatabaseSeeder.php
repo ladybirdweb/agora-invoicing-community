@@ -147,7 +147,7 @@ class PeriodTypeTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('periods')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Period::create(['id' => 1, 'name' => '1 Year', 'days' => '365']);
+        Period::create(['id' => 1, 'name' => '1 Year', 'days' => '366']);
         Period::create(['id' => 2, 'name' => '2 Years', 'days' => '730']);
         Period::create(['id' => 3, 'name' => '3 Years', 'days' => '1095']);
         Period::create(['id' => 4, 'name' => '4 Years', 'days' => '1460']);
@@ -156,6 +156,11 @@ class PeriodTypeTableSeeder extends Seeder
         Period::create(['id' => 7, 'name' => '7 Years', 'days' => '2555']);
         Period::create(['id' => 8, 'name' => '8 Years', 'days' => '2920']);
         Period::create(['id' => 9, 'name' => '9 Years', 'days' => '3285']);
+        Period::create(['id' => 10, 'name' => '1 Month', 'days' => '30']);
+        Period::create(['id' => 11, 'name' => '2 Months', 'days' => '60']);
+        Period::create(['id' => 12, 'name' => '3 Months', 'days' => '90']);
+        Period::create(['id' => 13, 'name' => '6 Months', 'days' => '180']);
+        Period::create(['id' => 14, 'name' => 'One Time', 'days' => '365']);
     }
 }
 

@@ -44,7 +44,7 @@ $exchangeRate= '';
 
 $orderData = [
     'receipt'         => 3456,
-    'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
+    'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
 
     'currency'        => 'INR',
     'payment_capture' => 0 // auto capture

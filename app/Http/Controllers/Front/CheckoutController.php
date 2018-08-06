@@ -128,7 +128,6 @@ class CheckoutController extends InfoController
                     \Session::put('domain'.$key, $value);
                 }
             }
-            //$content = Cart::getContent();
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
@@ -432,7 +431,6 @@ class CheckoutController extends InfoController
             $tax_percentage = '';
 
             foreach ($cart->attributes['tax'] as $tax) {
-                //dd($tax['name']);
                 $tax_name .= $tax['name'].',';
                 $tax_percentage .= $tax['rate'].',';
             }

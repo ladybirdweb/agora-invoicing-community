@@ -254,27 +254,24 @@ Edit Product
                                                 <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
                                                     {!! Form::checkbox('subscription') !!}
-                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date ,else ,unlimited subscription">
+                                                     <label data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.limited-subscription-description') !!}">
                                                     {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
                                                 </div>
                                             
-
-
-                                         
-
-
-
-                                               
-                                                <div class="col-md-6">
-                                                    {!! Form::hidden('deny_after_subscription',0) !!}
-                                                    {!! Form::checkbox('deny_after_subscription') !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download only the versions released before expiry date">
+                                                
+                                                 <div class="col-md-4">
+                                                     {!! Form::radio('deny_after_subscription',1) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
                                                     {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
 
-                                               
+                                                <div class="col-md-4">
+                                                    {!! Form::radio('deny_after_subscription',0) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
+                                                </div>
 
-                                            </div>
+                                          </div>
                                         </div>
                                     </td>
                                 </tr>

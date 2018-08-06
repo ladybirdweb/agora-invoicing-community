@@ -148,33 +148,21 @@ class ClientController extends BaseClientController
                                 $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                                 $order_id = $order->id;
-                                $getDownloadCondition = Product::where('id', $productid)->pluck('deny_after_subscription');
+                                $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
 
                                 //if product has expiry date ie sunscriptioon is generated
                                 if ($endDate) {
-                                    if ($versions->created_at->toDateTimeString()
-
-                                    < $endDate->ends_at->toDateTimeString()) {
-                                        return '<p><a href='.url('download/'.$productid.'/'
-                                        .$clientid.'/'.$invoiceid.'/'.$versions->id).
-                                " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-                                </i>&nbsp;&nbsp;Download</a>".'&nbsp;
-
-                                   </p>';
-                                    } elseif ($getDownloadCondition == 0) {//if subscription has expired
-                                        return '<p><a href='.url('download/'.$productid.'/'
-                                        .$clientid.'/'.$invoiceid.'/'.$versions->id).
-                                " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-                                </i>&nbsp;&nbsp;Download</a>".'&nbsp;
-
-                                   </p>';
-                                    } else {
-                                        return '<button class="btn btn-primary 
-                                    btn-sm disabled tooltip">Download <span class="tooltiptext">
-                                    Please Renew!!</span></button>';
-                                    }
+                                    if ($getDownloadCondition == 1){//Perpetual download till expiry selected
+                                     $getDownload = $this->whenDownloadTillExpiry($endDate,$productid,$versions,$clientid,$invoiceid);
+                                        return $getDownload;
+                         
+                                  }elseif($getDownloadCondition == 0){//When download retires after subscription
+                                          
+                                        $getDownload =  $this->whenDownloadExpiresAfterExpiry($endDate,$productid,$versions,$clientid,$invoiceid);
+                                        return $getDownload;
+                                  }
                                 }
                             })
                             ->rawColumns(['version', 'title', 'description', 'file'])
@@ -185,6 +173,43 @@ class ClientController extends BaseClientController
         }
     }
 
+
+    public function whenDownloadTillExpiry($endDate,$productid,$versions,$clientid,$invoiceid)
+    {
+      if ($versions->created_at->toDateTimeString()
+
+        < $endDate->ends_at->toDateTimeString()) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-primary 
+        btn-sm disabled tooltip">Download <span class="tooltiptext">
+        Please Renew!!</span></button>';
+        }
+    }
+
+    public function whenDownloadExpiresAfterExpiry($endDate,$productid,$versions,$clientid,$invoiceid)
+    {
+        if ($versions->created_at->toDateTimeString()
+        < $endDate->ends_at->toDateTimeString()) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-primary 
+        btn-sm disabled tooltip">Download <span class="tooltiptext">
+        Please Renew!!</span></button>';
+        }
+    }
+
+
     /**
      * Get list of all the versions from Github.
      *
@@ -192,6 +217,8 @@ class ClientController extends BaseClientController
      * @param type $clientid
      * @param type $invoiceid
      */
+
+
     public function getGithubVersionList($productid, $clientid, $invoiceid)
     {
         try {

@@ -96,8 +96,8 @@ class BaseOrderController extends ExtendedOrderController
             'number'          => $this->generateNumber(),
         ]);
         $this->addOrderInvoiceRelation($invoiceid, $order->id);
-        if ($this->checkOrderCreateSubscription($order->id) === true) {
-            $this->addSubscription($order->id, $plan_id, $version, $product);
+        if ($this->checkOrderCreateSubscription($order->id) == true) {
+           $this->addSubscription($order->id, $plan_id, $version, $product);
         }
         $this->sendOrderMail($user_id, $order->id, $item->id);
     }
@@ -138,7 +138,7 @@ class BaseOrderController extends ExtendedOrderController
             }
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
-
+          
                 if ($days > 0) {
                     $dt = \Carbon\Carbon::now();
                     $user_id = \Auth::user()->id;

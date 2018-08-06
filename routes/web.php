@@ -180,6 +180,7 @@
          Route::get('get-plans', ['as' => 'get-plans', 'uses' => 'Product\PlanController@getPlans']);
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
         Route::get('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
+        Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
 
         /*
          * Addons

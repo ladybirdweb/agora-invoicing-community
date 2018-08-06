@@ -331,7 +331,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function generateInvoice()
     {
         try {
-            // dd(\Cart::getContent());
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;

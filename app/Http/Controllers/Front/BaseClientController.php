@@ -82,43 +82,39 @@ class BaseClientController extends Controller
         return view('themes.default1.renew.popup', compact('id', 'productid'));
     }
 
-    public function getActionButton($countExpiry,$countVersions,$link, $orderEndDate, $productid)
+    public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)
     {
         $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
-        if ($getDownloadCondition == 1)
-            {
-                if(strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
-            $githubApi = new \App\Http\Controllers\Github\GithubApiController();
+        if ($getDownloadCondition == 1) {
+            if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+                $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
-            $link = $githubApi->getCurl1($link['zipball_url']);
+                $link = $githubApi->getCurl1($link['zipball_url']);
 
-            return '<p><a href='.$link['header']['Location']." 
+                return '<p><a href='.$link['header']['Location']." 
             class='btn btn-sm btn-primary'><i class='fa fa-download'>
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
       </p>';
-         }
-         else {
-            return '<button class="btn btn-primary btn-sm disabled tooltip">
+            } else {
+                return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
-        }
-    } elseif ($getDownloadCondition == 0) {
-            if ($countExpiry == $countVersions){
-            $githubApi = new \App\Http\Controllers\Github\GithubApiController();
-            $link = $githubApi->getCurl1($link['zipball_url']);
+            }
+        } elseif ($getDownloadCondition == 0) {
+            if ($countExpiry == $countVersions) {
+                $githubApi = new \App\Http\Controllers\Github\GithubApiController();
+                $link = $githubApi->getCurl1($link['zipball_url']);
 
-            return '<p><a href='.$link['header']['Location']." 
+                return '<p><a href='.$link['header']['Location']." 
             class='btn btn-sm btn-primary'><i class='fa fa-download'>
             </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
       </p>';
-        }
-        else{
-             return '<button class="btn btn-primary btn-sm disabled tooltip">
+            } else {
+                return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
-
-        } 
-    }
+            }
+        }
     }
 
     /**

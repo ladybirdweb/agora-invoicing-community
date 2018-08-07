@@ -354,46 +354,44 @@ class TemplateController extends BaseTemplateController
 
     public function leastAmount($id)
     {
-        try{
-        $cost = 'Free';
-        $symbol = '';
-        $price = '';
-        $plan = new Plan();
-        $plans = $plan->where('product', $id)->get();
-        $cart_controller = new \App\Http\Controllers\Front\CartController();
-        $currency = $cart_controller->currency();
-
-        if ($plans->count() > 0) {
-            foreach ($plans as $value) {
-                $days = $value->min('days');
-                $month = round($days / 30);
-                $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
-                if ($currency == 'INR') {
-                    $symbol = '₹';
-                } else {
-                    $symbol = '$';
-                }
-               
-            }
-            foreach ($prices as $key => $value) {
-                $duration= $this->getDuration($value);
-               $priceVal[] = intval($value);
-            }
-             $price = min($priceVal).' '.$duration;
-            $cost = "$symbol$price";
-        } else {
+        try {
             $cost = 'Free';
+            $symbol = '';
+            $price = '';
+            $plan = new Plan();
+            $plans = $plan->where('product', $id)->get();
+            $cart_controller = new \App\Http\Controllers\Front\CartController();
+            $currency = $cart_controller->currency();
+
+            if ($plans->count() > 0) {
+                foreach ($plans as $value) {
+                    $days = $value->min('days');
+                    $month = round($days / 30);
+                    $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
+                    if ($currency == 'INR') {
+                        $symbol = '₹';
+                    } else {
+                        $symbol = '$';
+                    }
+                }
+                foreach ($prices as $key => $value) {
+                    $duration = $this->getDuration($value);
+                    $priceVal[] = intval($value);
+                }
+                $price = min($priceVal).' '.$duration;
+                $cost = "$symbol$price";
+            } else {
+                $cost = 'Free';
+            }
+
+            return $cost;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-
-        return $cost;
-    } catch(\Exception $ex)
-    {  
-        Bugsnag::notifyException($ex);
-       return redirect()->back()->with('fails', $ex->getMessage());
-    }
     }
 
-  
     public function leastAmountService($id)
     {
         $cost = 'Free';

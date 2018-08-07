@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
-use App\Model\Order\Payment;
 use Exception;
+use App\Model\Order\Order;
+use App\Model\Order\Payment;
+use App\Model\Order\Invoice;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class ExtendedBaseInvoiceController extends Controller
 {
@@ -17,9 +19,25 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function newPayment(Request $request)
     {
-        $clientid = $request->input('clientid');
+        try{
+             $clientid = $request->input('clientid');
+             $invoice = new Invoice();
+            $order = new Order();
+            $invoices = $invoice->where('user_id', $clientid)->where('status','=','pending')->orderBy('created_at', 'desc')->get();
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $invoiceSum = $cltCont->getTotalInvoice($invoices);
+            $amountReceived = $cltCont->getAmountPaid($clientid);
+            $pendingAmount = $invoiceSum - $amountReceived;
+            $client = $this->user->where('id', $clientid)->first();
+            $currency = $client->currency;
+            $orders = $order->where('client', $clientid)->get();
+       
 
-        return view('themes.default1.invoice.newpayment', compact('clientid'));
+        return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices',  'orders',
+                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+     }catch(Exception $ex){
+        return redirect()->back()->with('fails',$ex->getMessage());
+     }
     }
 
     public function postNewPayment($clientid, Request $request)

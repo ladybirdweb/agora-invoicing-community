@@ -111,12 +111,12 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         return $result;
     }
 
-    public function getPrice($price, $currency, $value, $cost)
+    public function getPrice($months,$price, $currency, $value, $cost)
     {
         if ($currency == 'INR') {
-            $price[$value->id] = '₹'.' '.$cost;
+            $price[$value->id] = $months  .'  ' . '₹'.' '.$cost;
         } else {
-            $price[$value->id] = '$'.' '.$cost;
+            $price[$value->id] = $months  .'  ' . '$'.' '.$cost;
         }
 
         return $price;
@@ -125,7 +125,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
     public function prices($id)
     {
         $plan = new Plan();
-        $plans = $plan->where('product', $id)->get();
+        $plans = $plan->where('product', $id)->orderBy('id','desc')->get();
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
         $currency = $cart_controller->currency();
@@ -133,13 +133,23 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         foreach ($plans as $value) {
             $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
-            $months = round($value->days / 30 / 12);
-            $price = $this->getPrice($price, $currency, $value, $cost);
+            if ($value->days >= 366){ 
+            $months = intval($value->days / 30 / 12).' '.'year';
+            }elseif ($value->days < 365){
+             $months = intval($value->days / 30 ).' '.'months';
         }
-        $this->leastAmount($id);
+        else {
+            $months = '';
+        }
+         $price = $this->getPrice($months,$price, $currency, $value, $cost);
+        }
+       
+       
+        // $this->leastAmount($id);
 
-        return $price;
-    }
+        return $price ;
+         }
+    
 
     public function withoutTaxRelation($productid, $currency)
     {
@@ -205,4 +215,19 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
         return $total;
     }
+
+     public function getDuration($value)
+    {
+     if (strpos($value, 'Y') == true){
+             $duration = '/Year';
+         }
+         elseif(strpos($value, 'M') == true){
+            $duration = '/Month';
+         }
+         else{
+            $duration = '/One-Time';
+         }
+         return $duration;
+    }
+
 }

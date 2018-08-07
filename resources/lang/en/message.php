@@ -450,6 +450,7 @@ return [
     /*
      * Payments
      */
+    'pay'             => 'Payment',
     'new-payment'     => 'New Payment',
     'create-payment'  => 'Create New Payment',
     'invoice-status'  => 'Invoice Status',

@@ -178,13 +178,13 @@ Edit Plan
     var period = document.getElementById('plan').value;
    if (period == 365){
 
-     period = '/ One-Time' ; 
+     period = '/One-Time' ; 
    }
     else if (period >= 30 && period < 365){
-    period = '/ Month' ;
+    period = '/Month' ;
    }
   else if (period > 365){
-    period= '/ Year';
+    period= '/Year';
   }
   else{
     period= '';

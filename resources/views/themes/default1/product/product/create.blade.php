@@ -181,7 +181,7 @@ Create New Product
                                                 <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
                                                     {!! Form::checkbox('subscription',1,true) !!}
-                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date ,else ,unlimited subscription">
+                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date, else, unlimited subscription">
                                                     {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
                                                 </div>
                                             

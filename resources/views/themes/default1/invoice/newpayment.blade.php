@@ -93,6 +93,83 @@ Create New Payment
 
     </div>
 
+
+
+</div>
+<div class= "box box-primary">
+    
+                    <div class="box-body">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <table id="example2" class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                                        <th>{{Lang::get('message.date')}}</th>
+                                        <th>{{Lang::get('message.invoice_number')}}</th>
+                                        <th>{{Lang::get('message.total')}}</th>
+                                        <th>{{Lang::get('message.amount_pending')}}</th>
+                                        <th>{{Lang::get('message.pay')}}</th>
+                                        
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($invoices as $invoice)
+                                    <?php
+                                     if($invoice->currency == 'INR')
+                                        $currency = '₹';
+                                        else
+                                        $currency = '$'; 
+                                    $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
+                                     $c=count($payment);
+                                       $sum= 0;
+                                       for($i=0 ;  $i <= $c-1 ; $i++)
+                                       {
+                                         $sum = $sum + $payment[$i]->amount;
+                                       }
+                                       $pendingAmount = ($invoice->grand_total)-($sum);
+                                    ?>
+                                   
+                                    <tr>
+                                         <td>
+                                             <input type="checkbox" name="select_all" onchange="checking(this)">
+                                        </td>
+                                        <td>
+                                              {{$invoice->date}}
+                                        </td>
+                                        <td class="invoice-number">
+                                            <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
+                                        </td>
+                                        <td contenteditable="true" class="invoice-total"> 
+                                           {{$invoice->grand_total}}
+                                        </td>
+                                        <td>
+                                            {{$pendingAmount}}
+                                        </td>
+                                        <td>
+                                             {{$sum}}
+                                           
+                                        </td>
+                                       
+
+                                    </tr>
+                                  
+                                    @empty 
+                                    <tr>
+                                        <td>No Invoices</td>
+                                    </tr>
+                                    @endforelse
+
+
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
 </div>
 @stop
 @section('datepicker')

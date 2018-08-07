@@ -132,19 +132,18 @@ class ClientController extends BaseClientController
              'title', 'description', 'file', 'created_at')->get();
             $countVersions = count($versions);
             $countExpiry = 0;
-             $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
-             $order = Order::where('invoice_id', '=', $invoice_id)->first();
+            $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
+            $order = Order::where('invoice_id', '=', $invoice_id)->first();
 
-             $order_id = $order->id;
-             $endDate = Subscription::select('ends_at')
+            $order_id = $order->id;
+            $endDate = Subscription::select('ends_at')
                  ->where('product_id', $productid)->where('order_id', $order_id)->first();
 
             foreach ($versions as $version) {
-               if ($version->created_at->toDateTimeString()
-               < $endDate->ends_at->toDateTimeString())
-               {
-                   $countExpiry = $countExpiry +1;
-               }
+                if ($version->created_at->toDateTimeString()
+               < $endDate->ends_at->toDateTimeString()) {
+                    $countExpiry = $countExpiry + 1;
+                }
             }
 
             return \DataTables::of($versions)
@@ -174,11 +173,9 @@ class ClientController extends BaseClientController
                                         $getDownload = $this->whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid);
 
                                         return $getDownload;
+                                    } elseif ($getDownloadCondition == 0) {//When download retires after subscription
 
-                         
-                                  }elseif($getDownloadCondition == 0){//When download retires after subscription
-                                          
-                                        $getDownload =  $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions,$endDate,$productid,$versions,$clientid,$invoiceid);
+                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid);
 
                                         return $getDownload;
                                     }
@@ -210,8 +207,7 @@ class ClientController extends BaseClientController
         }
     }
 
-
-    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions,$endDate,$productid,$versions,$clientid,$invoiceid)
+    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid)
     {
         if ($countExpiry == $countVersions) {
             return '<p><a href='.url('download/'.$productid.'/'
@@ -249,17 +245,16 @@ class ClientController extends BaseClientController
             $countExpiry = 0;
             $link = $this->github_api->getCurl1($url);
             $link = $link['body'];
-            $countVersions = 10;//because we are taking oly the first 10 versions
+            $countVersions = 10; //because we are taking oly the first 10 versions
             $link = (array_slice($link, 0, 10, true));
             $order = Order::where('invoice_id', '=', $invoiceid)->first();
             $order_id = $order->id;
-             $orderEndDate = Subscription::select('ends_at')
+            $orderEndDate = Subscription::select('ends_at')
                         ->where('product_id', $productid)->where('order_id', $order_id)->first();
-             foreach ($link as $lin) {
-              if(strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at))
-               {
-                   $countExpiry = $countExpiry +1;
-               }
+            foreach ($link as $lin) {
+                if (strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at)) {
+                    $countExpiry = $countExpiry + 1;
+                }
             }
 
             return \DataTables::of($link)
@@ -274,13 +269,13 @@ class ClientController extends BaseClientController
 
                                 return $markdown;
                             })
-                            ->addColumn('file', function ($link) use ( $countExpiry,$countVersions,$invoiceid, $productid) {
+                            ->addColumn('file', function ($link) use ($countExpiry,$countVersions,$invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
                                 $orderEndDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
-                                    $actionButton = $this->getActionButton($countExpiry,$countVersions,$link, $orderEndDate, $productid);
+                                    $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
 
                                     return $actionButton;
                                 } elseif (!$orderEndDate) {

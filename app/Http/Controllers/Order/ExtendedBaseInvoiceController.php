@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Order;
 
-use Exception;
+use App\Http\Controllers\Controller;
+use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use App\Model\Order\Invoice;
+use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class ExtendedBaseInvoiceController extends Controller
 {
@@ -19,11 +19,11 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function newPayment(Request $request)
     {
-        try{
-             $clientid = $request->input('clientid');
-             $invoice = new Invoice();
+        try {
+            $clientid = $request->input('clientid');
+            $invoice = new Invoice();
             $order = new Order();
-            $invoices = $invoice->where('user_id', $clientid)->where('status','=','pending')->orderBy('created_at', 'desc')->get();
+            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')->orderBy('created_at', 'desc')->get();
             $cltCont = new \App\Http\Controllers\User\ClientController();
             $invoiceSum = $cltCont->getTotalInvoice($invoices);
             $amountReceived = $cltCont->getAmountPaid($clientid);
@@ -31,13 +31,12 @@ class ExtendedBaseInvoiceController extends Controller
             $client = $this->user->where('id', $clientid)->first();
             $currency = $client->currency;
             $orders = $order->where('client', $clientid)->get();
-       
 
-        return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices',  'orders',
+            return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices',  'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
-     }catch(Exception $ex){
-        return redirect()->back()->with('fails',$ex->getMessage());
-     }
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function postNewPayment($clientid, Request $request)

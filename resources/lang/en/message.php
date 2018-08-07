@@ -171,10 +171,10 @@ return [
     /*
      * Products
      */
-    'retired-download'     => 'Retire all Downloads',
-    'retired-description'  => 'If selected ,the user wont be able to download any version after the expiry date',
-    'limited-subscription-description' =>'If checked the product if purchased will have an expiry date, else, unlimited subscription',
-    'perpetual-description'=>'If selected ,the user can download only the versions released before expiry date',
+    'retired-download'                                                                                => 'Retire all Downloads',
+    'retired-description'                                                                             => 'If selected ,the user wont be able to download any version after the expiry date',
+    'limited-subscription-description'                                                                => 'If checked the product if purchased will have an expiry date, else, unlimited subscription',
+    'perpetual-description'                                                                           => 'If selected ,the user can download only the versions released before expiry date',
     'add-file'                                                                                        => 'Add Files',
     'products'                                                                                        => 'Products',
     'product'                                                                                         => 'Product',

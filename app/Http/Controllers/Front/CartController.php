@@ -600,13 +600,12 @@ class CartController extends BaseCartController
      */
     public static function rounding($price)
     {
-      try {
+        try {
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
-           
-                return $price;
-            
+
+            return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             // throw new \Exception('error in get tax priority');

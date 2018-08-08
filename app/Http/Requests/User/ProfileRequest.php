@@ -55,7 +55,7 @@ class ProfileRequest extends Request
                     'zip'                    => 'required|numeric',
                     'address'                => 'required|max:300',
                     'country'                => 'required|exists:countries,country_code_char2',
-                    'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
+                    'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
         }

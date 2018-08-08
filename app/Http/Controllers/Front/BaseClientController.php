@@ -132,8 +132,8 @@ class BaseClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->fill($request->input())->save();
-           return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
 
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $e->getMessage());
         }

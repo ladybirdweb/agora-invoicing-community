@@ -124,7 +124,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $till = $request->input('till');
         $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
 
-      
         return \DataTables::of($query->take(100))
          ->setTotalRecords($query->count())
 
@@ -172,30 +171,28 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             style='color:white;'> </i>&nbsp;&nbsp;View</a>"
                                     ."   $action";
                         })
-                         ->filterColumn('user_id', function($query,$keyword) {
-                            $sql = 'first_name like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                         ->filterColumn('user_id', function ($query, $keyword) {
+                             $sql = 'first_name like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
 
-                         
-                          ->filterColumn('status', function($query,$keyword) {
-                            $sql = 'status like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                          ->filterColumn('status', function ($query, $keyword) {
+                              $sql = 'status like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
 
-                        ->filterColumn('number', function($query,$keyword) {
+                        ->filterColumn('number', function ($query, $keyword) {
                             $sql = 'number like ?';
                             $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
-                         ->filterColumn('grand_total', function($query,$keyword) {
-                            $sql = 'grand_total like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                          ->filterColumn('date', function($query,$keyword) {
-                            $sql = 'date like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                       
+                         ->filterColumn('grand_total', function ($query, $keyword) {
+                             $sql = 'grand_total like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+                          ->filterColumn('date', function ($query, $keyword) {
+                              $sql = 'date like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);

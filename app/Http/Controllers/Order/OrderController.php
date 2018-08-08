@@ -142,35 +142,33 @@ class OrderController extends BaseOrderController
                             return $url;
                         })
 
-                         ->filterColumn('created_at', function($query,$keyword) {
-                            $sql = 'created_at like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                         ->filterColumn('created_at', function ($query, $keyword) {
+                             $sql = 'created_at like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
 
-                         
-                          ->filterColumn('client', function($query,$keyword) {
-                            $sql = 'client like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                          ->filterColumn('client', function ($query, $keyword) {
+                              $sql = 'client like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
 
+                           ->filterColumn('number', function ($query, $keyword) {
+                               $sql = 'number like ?';
+                               $query->whereRaw($sql, ["%{$keyword}%"]);
+                           })
+                            ->filterColumn('price_override', function ($query, $keyword) {
+                                $sql = 'price_override like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                             ->filterColumn('order_status', function ($query, $keyword) {
+                                 $sql = 'order_status like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
 
-                           ->filterColumn('number', function($query,$keyword) {
-                            $sql = 'number like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                            ->filterColumn('price_override', function($query,$keyword) {
-                            $sql = 'price_override like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-                             ->filterColumn('order_status', function($query,$keyword) {
-                            $sql = 'order_status like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
-
-                              ->filterColumn('ends_at', function($query,$keyword) {
-                            $sql = 'ends_at like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
+                              ->filterColumn('ends_at', function ($query, $keyword) {
+                                  $sql = 'ends_at like ?';
+                                  $query->whereRaw($sql, ["%{$keyword}%"]);
+                              })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
                           'price_override', 'order_status', 'ends_at', 'action', ])

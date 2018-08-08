@@ -74,9 +74,8 @@ class ClientController extends AdvanceSearchController
         $user = $this->advanceSearch($name, $username, $company,
          $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
-        return\ DataTables::of($user->take(50)->get())
-                        ->setTotalRecords($user->count())
-                        ->addColumn('checkbox', function ($model) {
+        return\ DataTables::of($user->get())
+                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='user_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
                         })
@@ -373,7 +372,7 @@ class ClientController extends AdvanceSearchController
      $mobile = '', $email = '', $country = '', $industry = '',
       $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = new User();
+        $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
+use Illuminate\Http\Request;
 use App\User;
 use Carbon\Carbon;
 
@@ -16,7 +17,7 @@ class DashboardController extends Controller
         $this->middleware('admin', ['only' => ['index']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $totalSalesINR = $this->getTotalSalesInInr();
         $totalSalesUSD = $this->getTotalSalesInUsd();
@@ -24,11 +25,12 @@ class DashboardController extends Controller
         $yearlySalesUSD = $this->getYearlySalesInUsd();
         $monthlySalesINR = $this->getMonthlySalesInInr();
         $monthlySalesUSD = $this->getMonthlySalesInUsd();
+        $pendingPaymentINR = $this->getPendingPaymentsInInr();
+        $pendingPaymentUSD = $this->getPendingPaymentsInUsd();
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productNameList = [];
         $productSoldlists = $this->recentProductSold();
-
         if (count($productSoldlists) > 0) {
             $productNameList = $this->getProductNameList($productSoldlists);
         }
@@ -47,12 +49,14 @@ class DashboardController extends Controller
             }
         }
         $arrayCountList = array_count_values($productName);
+        $status = $request->input('status');
+       
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
 
                  'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products', 'arrayCountList'));
+                 'products', 'arrayCountList','pendingPaymentINR','pendingPaymentUSD','status'));
     }
 
     /**
@@ -62,7 +66,9 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInInr()
     {
-        $total = Invoice::where('currency', 'INR')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'INR')
+        ->where('status', '=','success')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -75,7 +81,9 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInUsd()
     {
-        $total = Invoice::where('currency', 'USD')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'USD')
+        ->where('status', '=','success')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -89,8 +97,10 @@ class DashboardController extends Controller
     public function getYearlySalesInInr()
     {
         $currentYear = date('Y');
-        $total = Invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'INR')
-                ->pluck('grand_total')->all();
+        $total = Invoice::whereYear('created_at', '=', $currentYear)
+        ->where('status', '=','success')
+        ->where('currency', 'INR')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -104,8 +114,10 @@ class DashboardController extends Controller
     public function getYearlySalesInUsd()
     {
         $currentYear = date('Y');
-        $total = Invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'USD')
-                ->pluck('grand_total')->all();
+        $total = Invoice::whereYear('created_at', '=', $currentYear)
+        ->where('status', '=','success')
+        ->where('currency', 'USD')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -122,6 +134,7 @@ class DashboardController extends Controller
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'INR')
+                ->where('status', '=','success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -140,11 +153,45 @@ class DashboardController extends Controller
         // dd($currentYear,$currentMonth );
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'USD')
+                 ->where('status', '=','success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
+    
+     /**
+     * Get  Total Pending Payment Inr.
+     *
+     * @return type
+     */
+    public function getPendingPaymentsInInr()
+    {
+        $total = Invoice::where('currency', 'INR')
+        ->where('status', '=','pending')
+        ->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+
+        return $grandTotal;
+    }
+
+     /**
+     * Get  Total Pending Payment Inr.
+     *
+     * @return type
+     */
+    public function getPendingPaymentsInUsd()
+    {
+        $total = Invoice::where('currency', 'USD')
+        ->where('status', '=','pending')
+        ->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+
+        return $grandTotal;
+    }
+
+
+    // getPendingPaymentsInInr
 
     /**
      * Get the list of previous 20 registered users.

@@ -148,12 +148,7 @@ Edit Plan
                         </table>
                     </div>
                     
-                    <div class="col-md-6 form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('allow_tax','Allow Tax') !!}
-                        {!! Form::checkbox('allow_tax',1) !!}
-
-                    </div>
+                  
 
 
                 </div>

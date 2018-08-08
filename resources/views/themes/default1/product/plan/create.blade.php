@@ -137,8 +137,6 @@
 <script>
    function myFunction(){
     var period = document.getElementById('plandays').value;
-    console.log(period)
-    
    if (period == 365){
 
      period = '/ One-Time' ; 

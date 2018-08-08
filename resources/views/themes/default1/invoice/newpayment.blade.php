@@ -68,7 +68,7 @@ Create New Payment
 
                     <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
-                        {!! Form::label('payment_method',Lang::get('message.payment-method')) !!}
+                        {!! Form::label('payment_method',Lang::get('message.payment-method'),['class'=>'required']) !!}
                         {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],null,['class' => 'form-control']) !!}
 
                     </div>
@@ -76,7 +76,7 @@ Create New Payment
                     
                     <div class="col-md-4 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('amount',Lang::get('message.amount')) !!}
+                        {!! Form::label('amount',Lang::get('message.amount'),['class'=>'required']) !!}
                         {!! Form::text('amount',null,['class' => 'form-control']) !!}
 
                     </div>
@@ -102,10 +102,10 @@ Create New Payment
                     <div class="row">
 
                         <div class="col-md-12">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="payment" class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                                        <th><input type="checkbox" id="select_all" class="main"></th>
                                         <th>{{Lang::get('message.date')}}</th>
                                         <th>{{Lang::get('message.invoice_number')}}</th>
                                         <th>{{Lang::get('message.total')}}</th>
@@ -134,7 +134,7 @@ Create New Payment
                                    
                                     <tr>
                                          <td>
-                                             <input type="checkbox" name="select_all" onchange="checking(this)">
+                                             <input type="checkbox">
                                         </td>
                                         <td>
                                               {{$invoice->date}}
@@ -179,5 +179,20 @@ $(function () {
         format: 'YYYY-MM-DD'
     });
 });
+</script>
+<script>
+ $(document).ready(function(){
+  $('body').on('click','#select_all',function(){
+    if($(this).hasClass('allChecked')){
+        $('input[type="checkbox"]','#payment').prop('checked',false);
+
+    }
+    else{
+         $('input[type="checkbox"]','#payment').prop('checked',true);
+    }
+    $(this).toggleClass('allChecked');
+  })
+
+ });
 </script>
 @stop

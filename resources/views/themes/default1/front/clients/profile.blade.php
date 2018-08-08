@@ -25,16 +25,24 @@ active
 </style>
 
 
-<div class="row">
-
-    <!--    <div class="col-md-12">
-            <p class="lead">
-                Check out all the tables options.
-            </p>
-        </div>-->
-</div>
- <div id="alertMessage"></div>
- <div id="error"></div>
+              @if(Session::has('success'))
+                <div class="alert alert-success">
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+                   
+                    {!!Session::get('success')!!}
+                </div>
+                @endif
+                <!-- fail message -->
+                @if(Session::has('fails'))
+                 <div class="alert alert-danger alert-dismissable" role="alert">
+                   <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <strong><i class="fas fa-exclamation-triangle"></i>Oh snap!</strong> Change a few things up and try submitting again.
+                   {{Lang::get('message.alert')}}! {{Lang::get('message.failed')}}.
+                  
+                    {{Session::get('fails')}}
+                </div>
+                @endif
     <h2 class="mb-none" style="margin-bottom:0px;"> My Profile</h2>
     <div class="featured-boxes">
 
@@ -128,7 +136,9 @@ active
                                 <!-- name -->
                               <label for"country" class="required"><b>Country</b></label>
                                  <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'Country','onChange'=>'getCountryAttr(this.value);']) !!}
+                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+
+
                                <h6 id="countryCheck"></h6>
                             </div>
                             <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -168,10 +178,8 @@ active
                     </div> 
 
                         <div class="form-row">
-                           <div class="form-group col">
-                             <button type="button"  class="btn btn-primary float-right" data-loading-text="Loading..." name="update" id="update" onclick="updateProfile()" > <i class="fa fa-refresh"></i>&nbsp;Update</button>
-                           
-                               
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-30px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                             </div>
                         </div>
                          {!! Form::close() !!}
@@ -228,68 +236,7 @@ active
 
 
 
-<script>
-
-                  
-                             function updateProfile() 
-                                                    {  
-                                                        
-                          $("#update").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Updating...");
-                                    var data = {
-                                        "first_name":   $('#firstName').val(),
-                                        "last_name" :    $('#lastName').val(),
-                                        "email":  $('#Email').val(),
-                                        "company":  $('#Company').val(),
-                                        "mobile_code": $('#mobile_code').val(),
-                                        "mobile": $('#mobile').val(),
-                                        "address" : $('#Address').val(),
-                                        "town" : $('#Town').val(),
-                                        "timezone_id" : $('#timezone').val(),
-                                        "country":$('#Country').val(),
-                                        "state" : $('#stateList').val(),
-                                        "zip"   : $('#Zip').val(),
-                                        "profile_pic": $('#profilePic').val(),
-
-                                                             
-                                    };
-                                    $.ajax({
-                                        url: '{{url('my-profile')}}',
-                                        type: 'PATCH',
-                                        data: data,
-                                        success: function (response) {
-                                            console.log(response)
-                                        
-                                        if(response.type == 'success'){
-                                             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+response.message+'!</div>';
-                                              $('#error').hide();
-                                            $('#alertMessage').html(result);
-                                            // $('#alertMessage2').html(result);
-                                            $("#update").html("<i class='fa fa-refresh'></i>&nbsp;Update");
-                                              $('html, body').animate({scrollTop:0}, 1000);
-                                          
-                                              // response.success("Success");
-                                           }  
-                                        },
-                                        error: function (data) {
-                                          console.log(data)
-                                             var html = '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <br><ul>';
-                                            $("#update").html("Update");
-                                              $('html, body').animate({scrollTop:0}, 500);
-                                              for (var key in data.responseJSON.errors)
-                                            {
-                                                html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
-                                            }
-                                            html += '</ul></div>';
-                                           $('#alertMessage').hide(); 
-                                            
-                                            $('#error').show();
-                                             document.getElementById('error').innerHTML = html;
-                                           
-                                        }
-                                    });
-                                 
-                                }
-                
+                    <script>
 
                 //Password Validation
                    function oldpasswordcheck(){
@@ -415,14 +362,14 @@ active
 <script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
        $(document).ready(function(){ 
-         var country = $('#Country').val();
+         var country = $('#country').val();
+         console.log(country);
     var telInput = $('#mobile_code');
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
-            resp.country = country;
-            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp){
+            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp){
             var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);

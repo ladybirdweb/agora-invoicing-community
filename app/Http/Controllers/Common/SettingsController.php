@@ -199,7 +199,7 @@ class SettingsController extends BaseSettingsController
             $activity_log = Activity::select('id', 'log_name', 'description',
                 'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at');
 
-            return \DataTables::of($activity_log->take(50)->get())
+            return \DataTables::of($activity_log->take(50))
              ->setTotalRecords($activity_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
@@ -242,6 +242,21 @@ class SettingsController extends BaseSettingsController
 
                                     return $newDate;
                                 })
+
+                                    ->filterColumn('log_name', function($query,$keyword) {
+                                    $sql = 'log_name like ?';
+                                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                                })
+
+                                ->filterColumn('description', function($query,$keyword) {
+                                $sql = 'description like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+
+                            ->filterColumn('causer_id', function($query,$keyword) {
+                            $sql = 'first_name like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
 
                             ->rawColumns(['checkbox', 'name', 'description',
                                 'username', 'role', 'new', 'old', 'created_at', ])

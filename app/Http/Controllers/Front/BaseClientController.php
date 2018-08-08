@@ -136,14 +136,10 @@ class BaseClientController extends Controller
                 $user->profile_pic = $fileName;
             }
             $user->fill($request->input())->save();
-            $response = ['type' => 'success',  'message' =>'Updated Successfully..'];
+           return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
 
-            return $response;
         } catch (Exception $ex) {
-            $result = [$ex->getMessage()];
-            Bugsnag::notifyException($ex);
-
-            return response()->json(compact('result'), 500);
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 

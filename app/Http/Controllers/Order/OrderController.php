@@ -100,7 +100,7 @@ class OrderController extends BaseOrderController
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
 
-        return \DataTables::of($query->take(50)->get())
+        return \DataTables::of($query->take(100))
                         ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".
@@ -140,6 +140,36 @@ class OrderController extends BaseOrderController
                             $url = $this->getUrl($model, $status, $sub);
 
                             return $url;
+                        })
+
+                         ->filterColumn('created_at', function($query,$keyword) {
+                            $sql = 'created_at like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+
+                         
+                          ->filterColumn('client', function($query,$keyword) {
+                            $sql = 'client like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+
+
+                           ->filterColumn('number', function($query,$keyword) {
+                            $sql = 'number like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                            ->filterColumn('price_override', function($query,$keyword) {
+                            $sql = 'price_override like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                             ->filterColumn('order_status', function($query,$keyword) {
+                            $sql = 'order_status like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+
+                              ->filterColumn('ends_at', function($query,$keyword) {
+                            $sql = 'ends_at like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
                         })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',

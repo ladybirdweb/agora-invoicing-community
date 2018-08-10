@@ -9,6 +9,12 @@ Edit User
         <li class="active">Edit User</li>
       </ol>
 @stop
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+<style>
+    .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -14px !important;
+}
+</style>
 @section('content')
 <div class="box box-primary">
 
@@ -205,8 +211,9 @@ Edit User
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
-                        {!! Form::select('timezone_id',['Choose'=>'Choose',''=>$timezones],null,['class' => 'form-control']) !!}
+                        {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
+                       
+                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'5']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
@@ -251,9 +258,10 @@ Edit User
 
 
 {!! Form::close() !!}
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
-          $(document).ready(function(){
+   
+     $(document).ready(function(){
     var country = $('#country').val();
     var telInput = $('#mobile_code');
      let currentCountry="";

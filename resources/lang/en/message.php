@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',
     'save'                   => 'Save',
     'city'                   => 'City',
@@ -56,6 +57,7 @@ return [
     'first_name'       => 'First Name',
     'last_name'        => 'Last Name',
     'company'          => 'Company Name',
+    'app-title'        => 'Application Title',
     'mobile'           => 'Mobile',
     'address'          => 'Address',
     'town'             => 'Town/City',
@@ -96,14 +98,18 @@ return [
     'send'         => 'Send',
     /*
      * Settings
-     */
+     */    
+    'fav-title'                                                    => 'Favicon Title',
+    'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
+    'fav-icon'                                                     => 'Favicon',
     'settings'                                                     => 'Settings',
     'system-settings'                                              => 'System Settings',
     'company'                                                      => 'Company',
     'name'                                                         => 'Name',
     'website'                                                      => 'Website',
     'phone'                                                        => 'Phone',
-    'logo'                                                         => 'Logo',
+    'client-logo'                                                  => 'Client Panel Logo',
+    'admin-logo'                                                   => 'Admin Panel Logo',
     'address'                                                      => 'Address',
     'driver'                                                       => 'Driver',
     'port'                                                         => 'Port',
@@ -119,6 +125,7 @@ return [
     'enter-the-company-phone-number'                               => 'Enter the company phone number',
     'enter-company-address'                                        => 'Enter company address',
     'enter-the-company-logo'                                       => 'Enter the company logo',
+    'enter-the-admin-panel-logo'                                   => 'Enter Application logo',
     'select-email-driver'                                          => 'Select email driver',
     'enter-email-port'                                             => 'Enter email port',
     'enter-email-host'                                             => 'Enter email host',

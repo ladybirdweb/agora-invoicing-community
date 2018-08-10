@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Model\Order\Order;
-use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
+use DateTime;
+use DateTimeZone;
+use App\Model\Order\Order;
+use App\Model\Product\Product;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -15,7 +17,11 @@ class BaseOrderController extends ExtendedOrderController
         $ends = $model->subscription()->first();
         if ($ends) {
             if ($ends->ends_at != '0000-00-00 00:00:00') {
-                $end = $ends->ends_at;
+                 $date1 = new DateTime($ends->ends_at);
+                $tz = \Auth::user()->timezone()->first()->name;
+                $date1->setTimezone(new DateTimeZone($tz));
+                $end = $date1->format('M j, Y, g:i a ');
+                
             }
         }
 

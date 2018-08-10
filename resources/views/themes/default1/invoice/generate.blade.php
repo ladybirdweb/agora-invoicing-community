@@ -42,6 +42,7 @@ Generate An Invoice
         </div>
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+              <i class="fa fa-check"></i>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>

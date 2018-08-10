@@ -2,6 +2,7 @@
 @section('content-header')
 <h1>
 System Setting
+
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -28,6 +29,8 @@ System Setting
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -62,6 +65,21 @@ System Setting
 
 
                                 {!! Form::text('company',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                      <tr>
+
+                        <td><b>{!! Form::label('title',Lang::get('message.app-title')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('title',null,['class' => 'form-control']) !!}
                                 
 
 
@@ -123,7 +141,7 @@ System Setting
                         </td>
 
                     </tr>
-                     
+                    
                     <tr>
 
                         <td><b>{!! Form::label('country',Lang::get('message.country')) !!}</b></td>
@@ -157,16 +175,66 @@ System Setting
                         </select>
                         </td>
                     </tr>
+
+                      <tr>
+                     
+                        <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
+
+                                {!! Form::file('admin-logo') !!}
+                                <p><i> {{Lang::get('message.enter-the-admin-panel-logo')}}</i> </p>
+                                @if($set->admin_logo) 
+                                <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-thumbnail" style="height: 50;">
+                                @endif
+                            </div>
+                        </td>
+                       
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('icon',Lang::get('message.fav-icon')) !!}</b></td>
+
+                        <td>
+                            <div class="form-group {{ $errors->has('icon') ? 'has-error' : '' }}">
+
+                                {!! Form::file('fav-icon') !!}
+                                <p><i> {{Lang::get('message.enter-the-favicon')}}</i> </p>
+                                @if($set->fav_icon) 
+                                <img src='{{asset("images/favicon/$set->fav_icon")}}' class="img-thumbnail" style="height: 50;">
+                                @endif
+                            </div>
+                        </td>
+                       
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('favicon_title',Lang::get('message.fav-title')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('favicon_title') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('favicon_title',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
                     <tr>
 
-                        <td><b>{!! Form::label('logo',Lang::get('message.logo')) !!}</b></td>
+                        <td><b>{!! Form::label('logo',Lang::get('message.client-logo')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
 
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src="{{asset('cart/img/logo/'.$set->logo)}}" class="img-thumbnail" style="height: 100px;">
+                                <img src='{{asset("cart/img/logo/$set->logo")}}' class="img-thumbnail" style="height: 50;">
                                 @endif
                             </div>
                         </td>

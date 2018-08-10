@@ -249,9 +249,20 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-            $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->pluck('name', 'id')->toArray();
+            $timezonesList = \App\Model\Common\Timezone::get();
+            foreach ($timezonesList as $timezone) {
+            $location = $timezone->location;
+            if($location){
+            $start  = strpos($location, '(');
+            $end    = strpos($location, ')', $start + 1);
+            $length = $end - $start;
+            $result = substr($location, $start + 1, $length - 1);
+            $display[]=(['id'=>$timezone->id ,'name'=> '('.$result.')'.' '.$timezone->name]);
+                }
 
+            }
+             //for display 
+            $timezones= array_column($display,'name','id');
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')
@@ -278,8 +289,9 @@ class ClientController extends AdvanceSearchController
      *
      * @return \Response
      */
-    public function update($id, ClientRequest $request)
+    public function update($id, Request $request)
     {
+        dd($request->input('timezone_id'));
         $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();

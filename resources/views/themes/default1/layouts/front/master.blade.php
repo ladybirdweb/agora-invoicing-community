@@ -16,7 +16,8 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
+          <!-- <img src='{{ asset("images/$setting->logo")}}' class="img-rounded" alt="Admin-Logo"  height="45"> -->
+          <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->

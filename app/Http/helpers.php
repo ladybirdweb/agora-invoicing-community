@@ -32,6 +32,12 @@ function isInstall()
     return $check;
 }
 
+/**
+* This function return time zone name with GMT format  ex:-(GMT-11:00)Pacific/Midway
+* @return type array
+*/
+
+
 // function agoratime($date, $hour = 0, $min = 0, $sec = 0, $tz = '')
 // {
 //     if (is_bool($hour) && $hour === true) {

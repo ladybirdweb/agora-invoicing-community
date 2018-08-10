@@ -1,8 +1,13 @@
 <!DOCTYPE html>
+  <?php 
+    $set = new \App\Model\Common\Setting();
+    $set = $set->findOrFail(1);
+    ?>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{{Lang::get('message.faveo-billing-application')}}</title>
+        <title>{{$set->favicon_title}}</title>
+        <link rel="shortcut icon" href='{{asset("images/favicon/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.4 -->
@@ -21,9 +26,13 @@
              folder instead of downloading all of them to reduce the load. -->
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
-        <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" />
+        <!-- <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" /> -->
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
+        <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
         <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
+         <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
 
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,6 +45,7 @@
         <!-- jQuery 2.1.4 -->
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 <style>
 
 .most-popular {
@@ -64,9 +74,17 @@
                 <!-- Logo -->
                 <a href="{{url('/')}}" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini">{{Lang::get('message.billing')}}</span>
+                    <!-- <span class="logo-mini">{{$set->title}}</span> -->
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>{{Lang::get('message.faveo')}} </b>{{Lang::get('message.billing')}}</span>
+                    @if ($set->title != '')
+                    <span class="logo-lg"><b>{{$set->title}} </b></span>
+                    @else
+                    <span class="logo-lg">
+                        <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
+                       
+
+                    </span>
+                    @endif
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
@@ -268,6 +286,11 @@
         <!-- Bootstrap 3.3.2 JS -->
          <script src="{{asset('js/theme.init.js')}}"></script>
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+          <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
+
+        <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
+
         <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <!-- SlimScroll -->
         <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>

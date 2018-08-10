@@ -335,11 +335,11 @@ namespace App\Http\Controllers\Product;
         {
             $input = $request->all();
             $v = \Validator::make($input, [
-                        'name'    => 'required',
-                        'type'    => 'required',
-                        'group'   => 'required',
+                        'name'       => 'required',
+                        'type'       => 'required',
+                        'group'      => 'required',
                         'description'=> 'required',
-                        'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
       ]);
 
             if ($v->fails()) {

@@ -338,6 +338,7 @@ namespace App\Http\Controllers\Product;
                         'name'    => 'required',
                         'type'    => 'required',
                         'group'   => 'required',
+                        'description'=> 'required',
                         'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
       ]);
 

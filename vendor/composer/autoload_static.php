@@ -612,6 +612,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
     public static $classMap = array (
         'AddCgstColumnToTaxesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
         'AddCityColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
+        'AddCompanyEmailToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_08_10_184054_add_company_email_to_settings.php',
         'AddCountryColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130442_add_country_columns_to_tax_by_states_table.php',
         'AddCountryColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
         'AddFavIconToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_08_10_134440_add_fav_icon_to_settings.php',

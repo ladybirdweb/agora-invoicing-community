@@ -12,7 +12,7 @@ class Setting extends Model
     'error_log', 'error_email', 'state', 'city', 'country',
         'invoice', 'download', 'subscription_over', 'subscription_going_to_end',
         'forgot_password', 'order_mail', 'welcome_mail', 'invoice_template', 
-        'driver','admin_logo','title' ,'favicon_title','fav_icon'];
+        'driver','admin_logo','title' ,'favicon_title','fav_icon','company_email'];
 
     public function getPasswordAttribute($value)
     {

@@ -90,7 +90,17 @@ class SettingsController extends BaseSettingsController
 
     public function postSettingsSystem(Setting $settings, Request $request)
     {
+         $this->validate($request, [
+                'company'     => 'required',
+                'company_email'  => 'required',
+                'website'    => 'required',
+                'phone'      => 'required',
+                'address'=> 'required',
+                'country'      => 'required',
+                'state'        =>'state'  
+            ]);
         try {
+            
             $setting = $settings->find(1);
 
             if ($request->hasFile('logo')) {

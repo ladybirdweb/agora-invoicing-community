@@ -98,11 +98,11 @@
                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
                                               <li class="nav-item d-none d-sm-block">
-                                                  <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> support@faveohelpdesk.com</a>
+                                                  <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>
                                               
                                               <li class="nav-item">
-                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i> +91 80 3075 2618</span>
+                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i>{{$set->phone}}</span>
                                               </li>
                                           </ul>
                                       </nav>

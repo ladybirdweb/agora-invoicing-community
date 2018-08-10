@@ -17,15 +17,16 @@ System Setting
         <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
@@ -59,12 +60,28 @@ System Setting
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('Company Name'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('company',Lang::get('message.company-name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('company',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td><b>{!! Form::label('company_email',Lang::get('message.company-email'),['class'=>'required']) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('company_email') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('company_email',null,['class' => 'form-control']) !!}
                                 
 
 
@@ -89,7 +106,7 @@ System Setting
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('website',Lang::get('message.website')) !!}</b></td>
+                        <td><b>{!! Form::label('website',Lang::get('message.website'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('website') ? 'has-error' : '' }}">
 
@@ -103,7 +120,7 @@ System Setting
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('phone',Lang::get('message.phone')) !!}</b></td>
+                        <td><b>{!! Form::label('phone',Lang::get('message.phone'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
 
@@ -144,7 +161,7 @@ System Setting
                     
                     <tr>
 
-                        <td><b>{!! Form::label('country',Lang::get('message.country')) !!}</b></td>
+                        <td><b>{!! Form::label('country',Lang::get('message.country') ,['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
 
@@ -164,7 +181,7 @@ System Setting
 
                     <tr>
 
-                        <td><b>{!! Form::label('state',Lang::get('message.state')) !!}</b></td>
+                        <td><b>{!! Form::label('state',Lang::get('message.state') ,['class'=>'required']) !!}</b></td>
                         <td>
                         <select name="state" id="state-list" class="form-control">
                                 @if(count($set->state)>0)

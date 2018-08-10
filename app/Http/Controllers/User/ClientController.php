@@ -251,18 +251,17 @@ class ClientController extends AdvanceSearchController
             $user = $this->user->where('id', $id)->first();
             $timezonesList = \App\Model\Common\Timezone::get();
             foreach ($timezonesList as $timezone) {
-            $location = $timezone->location;
-            if($location){
-            $start  = strpos($location, '(');
-            $end    = strpos($location, ')', $start + 1);
-            $length = $end - $start;
-            $result = substr($location, $start + 1, $length - 1);
-            $display[]=(['id'=>$timezone->id ,'name'=> '('.$result.')'.' '.$timezone->name]);
+                $location = $timezone->location;
+                if ($location) {
+                    $start = strpos($location, '(');
+                    $end = strpos($location, ')', $start + 1);
+                    $length = $end - $start;
+                    $result = substr($location, $start + 1, $length - 1);
+                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
                 }
-
             }
-             //for display 
-            $timezones= array_column($display,'name','id');
+            //for display
+            $timezones = array_column($display, 'name', 'id');
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')

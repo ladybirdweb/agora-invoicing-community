@@ -102,16 +102,16 @@ class SettingsController extends BaseSettingsController
             if ($request->hasFile('admin-logo')) {
                 $logoName = $request->file('admin-logo')->getClientOriginalName();
                 $destinationPath = public_path('images/admin-logo');
-                $request->file('admin-logo')->move($destinationPath,$logoName);
+                $request->file('admin-logo')->move($destinationPath, $logoName);
                 $setting->admin_logo = $logoName;
             }
             if ($request->hasFile('fav-icon')) {
                 $iconName = $request->file('fav-icon')->getClientOriginalName();
                 $destinationPath = public_path('images/favicon');
-                $request->file('fav-icon')->move($destinationPath,$iconName);
+                $request->file('fav-icon')->move($destinationPath, $iconName);
                 $setting->fav_icon = $iconName;
             }
-            $setting->fill($request->except('password', 'logo','admin-logo','fav-icon'))->save();
+            $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

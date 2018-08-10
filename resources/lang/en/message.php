@@ -98,7 +98,7 @@ return [
     'send'         => 'Send',
     /*
      * Settings
-     */    
+     */
     'fav-title'                                                    => 'Favicon Title',
     'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
     'fav-icon'                                                     => 'Favicon',

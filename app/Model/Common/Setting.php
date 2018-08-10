@@ -14,6 +14,7 @@ class Setting extends Model
         'forgot_password', 'order_mail', 'welcome_mail', 'invoice_template', 
         'driver','admin_logo','title' ,'favicon_title','fav_icon','company_email'];
 
+
     public function getPasswordAttribute($value)
     {
         if ($value) {

@@ -76,9 +76,9 @@ class ClientController extends AdvanceSearchController
 
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='user_checkbox' 
+                             return "<input type='checkbox' class='user_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                        })
+                         })
                         ->addColumn('first_name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'
                             .ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';

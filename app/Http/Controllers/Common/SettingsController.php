@@ -256,20 +256,20 @@ class SettingsController extends BaseSettingsController
                                     return $newDate;
                                 })
 
-                                    ->filterColumn('log_name', function($query,$keyword) {
-                                    $sql = 'log_name like ?';
+                                    ->filterColumn('log_name', function ($query, $keyword) {
+                                        $sql = 'log_name like ?';
+                                        $query->whereRaw($sql, ["%{$keyword}%"]);
+                                    })
+
+                                ->filterColumn('description', function ($query, $keyword) {
+                                    $sql = 'description like ?';
                                     $query->whereRaw($sql, ["%{$keyword}%"]);
                                 })
 
-                                ->filterColumn('description', function($query,$keyword) {
-                                $sql = 'description like ?';
+                            ->filterColumn('causer_id', function ($query, $keyword) {
+                                $sql = 'first_name like ?';
                                 $query->whereRaw($sql, ["%{$keyword}%"]);
                             })
-
-                            ->filterColumn('causer_id', function($query,$keyword) {
-                            $sql = 'first_name like ?';
-                            $query->whereRaw($sql, ["%{$keyword}%"]);
-                        })
 
                             ->rawColumns(['checkbox', 'name', 'description',
                                 'username', 'role', 'new', 'old', 'created_at', ])

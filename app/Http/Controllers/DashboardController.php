@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
-use Illuminate\Http\Request;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -50,13 +50,12 @@ class DashboardController extends Controller
         }
         $arrayCountList = array_count_values($productName);
         $status = $request->input('status');
-       
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
 
                  'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products', 'arrayCountList','pendingPaymentINR','pendingPaymentUSD','status'));
+                 'products', 'arrayCountList', 'pendingPaymentINR', 'pendingPaymentUSD', 'status'));
     }
 
     /**
@@ -67,7 +66,7 @@ class DashboardController extends Controller
     public function getTotalSalesInInr()
     {
         $total = Invoice::where('currency', 'INR')
-        ->where('status', '=','success')
+        ->where('status', '=', 'success')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -82,7 +81,7 @@ class DashboardController extends Controller
     public function getTotalSalesInUsd()
     {
         $total = Invoice::where('currency', 'USD')
-        ->where('status', '=','success')
+        ->where('status', '=', 'success')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -98,7 +97,7 @@ class DashboardController extends Controller
     {
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)
-        ->where('status', '=','success')
+        ->where('status', '=', 'success')
         ->where('currency', 'INR')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -115,7 +114,7 @@ class DashboardController extends Controller
     {
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)
-        ->where('status', '=','success')
+        ->where('status', '=', 'success')
         ->where('currency', 'USD')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -134,7 +133,7 @@ class DashboardController extends Controller
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'INR')
-                ->where('status', '=','success')
+                ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -153,14 +152,14 @@ class DashboardController extends Controller
         // dd($currentYear,$currentMonth );
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'USD')
-                 ->where('status', '=','success')
+                 ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
-    
-     /**
+
+    /**
      * Get  Total Pending Payment Inr.
      *
      * @return type
@@ -168,14 +167,14 @@ class DashboardController extends Controller
     public function getPendingPaymentsInInr()
     {
         $total = Invoice::where('currency', 'INR')
-        ->where('status', '=','pending')
+        ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
 
-     /**
+    /**
      * Get  Total Pending Payment Inr.
      *
      * @return type
@@ -183,13 +182,12 @@ class DashboardController extends Controller
     public function getPendingPaymentsInUsd()
     {
         $total = Invoice::where('currency', 'USD')
-        ->where('status', '=','pending')
+        ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
     }
-
 
     // getPendingPaymentsInInr
 

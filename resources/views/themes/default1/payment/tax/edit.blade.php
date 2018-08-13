@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Tax
+@stop
 @section('content-header')
 <h1>
 Edit Tax Class

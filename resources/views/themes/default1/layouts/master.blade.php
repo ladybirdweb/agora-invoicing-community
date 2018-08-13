@@ -6,7 +6,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{{$set->favicon_title}}</title>
+        <title>@yield('title') | {{$set->favicon_title}}</title>
         <link rel="shortcut icon" href='{{asset("images/favicon/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Create Invoice
+@stop
 @section('content-header')
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {

@@ -12,6 +12,7 @@ return array(
     'AddCountryColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130442_add_country_columns_to_tax_by_states_table.php',
     'AddCountryColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
     'AddFavIconToSettings' => $baseDir . '/database/migrations/2018_08_10_134440_add_fav_icon_to_settings.php',
+    'AddFaviconTitleClientToSettings' => $baseDir . '/database/migrations/2018_08_13_055945_add_favicon_title_client_to_settings.php',
     'AddFaviconTitleToSettings' => $baseDir . '/database/migrations/2018_08_10_143443_add_favicon_title_to_settings.php',
     'AddForeignKeyToSubscriptionTable' => $baseDir . '/database/migrations/2018_04_10_115211_add_foreign_key_to_subscription_table.php',
     'AddForeignKeysToConfigurableOptionsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_configurable_options_table.php',

@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Cart | Faveo Helpdesk
+Cart
 @stop
 @section('page-header')
 <br>

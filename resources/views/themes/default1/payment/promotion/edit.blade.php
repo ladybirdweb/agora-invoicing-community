@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Promotion
+@stop
 @section('content-header')
 <h1>
 Edit Promotion
@@ -140,7 +143,7 @@ Edit Promotion
                         <td>
                             <div class="form-group {{ $errors->has('start') ? 'has-error' : '' }}">
 
-                                {!! Form::text('start',null,['class'=>'form-control']) !!}
+                                {!! Form::date('start',null,['class'=>'form-control']) !!}
 
                             </div>
                         </td>
@@ -155,7 +158,7 @@ Edit Promotion
                             <div class="form-group {{ $errors->has('expiry') ? 'has-error' : '' }}">
 
 
-                                {!! Form::text('expiry',null,['class' => 'form-control']) !!}
+                                {!! Form::date('expiry',null,['class' => 'form-control']) !!}
 
                             </div>
                         </td>

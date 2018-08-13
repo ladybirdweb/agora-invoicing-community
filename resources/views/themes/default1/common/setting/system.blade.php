@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+System Setting
+@stop
 @section('content-header')
 <h1>
 System Setting
@@ -11,6 +14,27 @@ System Setting
       </ol>
 @stop
 @section('content')
+<style>
+        .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -10px !important;
+}
+ .btn-group>.btn:first-child {
+    margin-left: 0;
+    background-color: white;
+
+    select {
+  -webkit-appearance: none;
+  -webkit-border-radius: -6px;
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+}
+</style>
 <div class="row">
 
     <div class="col-md-12">
@@ -50,13 +74,15 @@ System Setting
 
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
-
-                <table class="table table-responsive">
-
-                    <tr >
+                  <tr >
                         <h3 class="box-title">{{Lang::get('Company Details')}}</h3>
-                        <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+                        <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
+                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
+                 <div class="col-md-6">
+              
+
+                  
 
                     <tr>
 
@@ -158,7 +184,10 @@ System Setting
                         </td>
 
                     </tr>
-                    
+             
+            </div>
+            <div class="col-md-6">
+            
                     <tr>
 
                         <td><b>{!! Form::label('country',Lang::get('message.country') ,['class'=>'required']) !!}</b></td>
@@ -170,7 +199,13 @@ System Setting
                                 <!-- <p><i> {{Lang::get('message.country')}}</i> </p> -->
                                   <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                     <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                             <option value="">Choose</option>
+                           @foreach($countries as $key=>$country)
+                              <option value="{{$key}}" <?php  if(in_array($country, $selectedCountry) ) { echo "selected";} ?>>{{$country}}</option>
+                          @endforeach
+                          </select>
+
 
                     </div>
 
@@ -185,14 +220,17 @@ System Setting
                         <td>
                         <select name="state" id="state-list" class="form-control">
                                 @if(count($set->state)>0)
-                            <option value="">{{$set->state}}</option>
+                             <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
-                            <option value="">Choose A Country</option>
+                            <option value="">Choose</option>
+                            @foreach($states as $key=>$value)
+                            <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
 
                         </select>
                         </td>
                     </tr>
-
+                    <br>
                       <tr>
                      
                         <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>
@@ -228,12 +266,28 @@ System Setting
 
                      <tr>
 
-                        <td><b>{!! Form::label('favicon_title',Lang::get('message.fav-title')) !!}</b></td>
+                        <td><b>{!! Form::label('favicon_title',Lang::get('message.fav-title-admin')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('favicon_title') ? 'has-error' : '' }}">
 
 
                                 {!! Form::text('favicon_title',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('favicon_title_client',Lang::get('message.fav-title-client')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('favicon_title_client') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('favicon_title_client',null,['class' => 'form-control']) !!}
                                 
 
 
@@ -257,7 +311,7 @@ System Setting
                         </td>
                         {!! Form::close() !!}
                     </tr>
-                </table>
+               
             </div>
         </div>
     </div>

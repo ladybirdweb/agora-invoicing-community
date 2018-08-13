@@ -9,7 +9,7 @@
           <meta charset="utf-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">  
   
-          <title>@yield('title')</title>  
+          <title>@yield('title') | {{$setting->favicon_title_client}}</title>  
   
           <meta name="keywords" content="HTML5 Template" />
           <meta name="description" content="Register, signup here to start using Faveo Helpdesk or signin to your existing account">

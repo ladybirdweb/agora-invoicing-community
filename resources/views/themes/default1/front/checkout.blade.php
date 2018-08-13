@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Checkout | Faveo Helpdesk
+Checkout
 @stop
 @section('page-header')
 Checkout

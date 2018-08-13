@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Plan
+@stop
 @section('content-header')
 <h1>
 Edit Plan

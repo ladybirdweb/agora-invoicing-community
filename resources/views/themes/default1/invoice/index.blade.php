@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Invoices
+@stop
 @section('content-header')
 <h1>
 All Invoices
@@ -62,13 +65,13 @@ All Invoices
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Invoice From') !!}
-                {!! Form::date('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'YYYY-MM-DD']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'from']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Invoice Till') !!}
-                {!! Form::date('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'YYYY-mm-dd']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'till']) !!}
 
             </div>
            
@@ -257,4 +260,17 @@ All Invoices
      });
 </script>
 @stop
-
+@section('datepicker')
+<script type="text/javascript">
+$(function () {
+    $('#from').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+$(function () {
+    $('#till').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+</script>
+@stop

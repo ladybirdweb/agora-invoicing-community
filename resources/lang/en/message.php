@@ -99,7 +99,8 @@ return [
     /*
      * Settings
      */
-    'fav-title'                                                    => 'Favicon Title',
+    'fav-title-admin'                                              => 'Favicon Title(Admin Panel)',
+     'fav-title-client'                                            => 'Favicon Title(Client Panel)',
     'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
     'fav-icon'                                                     => 'Favicon',
     'settings'                                                     => 'Settings',

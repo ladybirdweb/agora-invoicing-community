@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Tax
+@stop
 @section('content-header')
 <h1>
 Create Tax Options And Tax Classes

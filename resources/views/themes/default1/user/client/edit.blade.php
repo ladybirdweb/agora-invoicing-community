@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit User
+@stop
 @section('content-header')
 <h1>
 Edit User
@@ -24,6 +27,11 @@ Edit User
 }
 .bootstrap-select.btn-group .dropdown-toggle .filter-option {
     color:#555;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
 }
 
 

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Create Promotion
+@stop
 @section('content-header')
 <h1>
 Create New Promotion

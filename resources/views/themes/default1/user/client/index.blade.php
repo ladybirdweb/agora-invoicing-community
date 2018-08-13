@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Users
+@stop
 @section('content')
 @section('content-header')
 <h1>
@@ -244,7 +247,7 @@ All Users
    
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position" ) !!}',
              

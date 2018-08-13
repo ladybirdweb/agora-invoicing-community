@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Orders
+@stop
 @section('content')
 @section('content-header')
 <h1>
@@ -46,19 +49,19 @@ View All Orders
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::date('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::date('from',null,['class' => 'form-control','id'=>'from']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'payment_date']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::date('till',null,['class' => 'form-control','id'=>'till']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'payment_till']) !!}
 
             </div>
             <div class="col-md-2 form-group">
@@ -87,8 +90,8 @@ View All Orders
                         $('#order_no').val('');
                         $('#product_id').val('');
                         $('#expary').val('');
-                        $('#from').val('');
-                        $('#till').val('');
+                        $('#payment_date').val('');
+                        $('#payment_till').val('');
                         $('#domain').val('');
                     
                           
@@ -246,5 +249,24 @@ View All Orders
         }  
 
      });
+</script>
+@stop
+@section('datepicker')
+<script type="text/javascript">
+$(function () {
+    $('#payment_date').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+$(function () {
+    $('#payment_till').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+$(function () {
+    $('#expary').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 @stop

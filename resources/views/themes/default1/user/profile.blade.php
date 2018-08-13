@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+User Profile
+@stop
 @section('content')
 @section('content-header')
 <h1>

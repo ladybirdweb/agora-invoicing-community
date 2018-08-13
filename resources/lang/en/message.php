@@ -280,7 +280,7 @@ return [
     'round-tax-at-subtotal'                           => ' Round tax at subtotal',
     'tax_class'                                       => 'Tax Class',
     'compound'                                        => 'Compound',
-    'create-tax-class'                                =>'Create Tax Class',
+    'create-tax-class'                                => 'Create Tax Class',
     /*
      * Promotion
      */
@@ -473,7 +473,7 @@ return [
     /*
      * Category
      */
-     'category' => 'Categories',
-     'create-category'=>'Create New Category',
-     'category-name' => 'Category Name'
+     'category'       => 'Categories',
+     'create-category'=> 'Create New Category',
+     'category-name'  => 'Category Name',
 ];

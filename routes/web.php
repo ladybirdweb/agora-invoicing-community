@@ -246,7 +246,7 @@
         /*
          * Category
          */
-         Route::resource('category','Product\CategoryController'); 
+         Route::resource('category', 'Product\CategoryController');
 
         /*
          * Order

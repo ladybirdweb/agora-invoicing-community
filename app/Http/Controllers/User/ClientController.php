@@ -145,16 +145,16 @@ class ClientController extends AdvanceSearchController
         $managers = User::where('role', 'admin')->where('position', 'manager')
         ->pluck('first_name', 'id')->toArray();
         $timezonesList = \App\Model\Common\Timezone::get();
-           foreach ($timezonesList as $timezone) {
-                $location = $timezone->location;
-                if ($location) {
-                    $start = strpos($location, '(');
-                    $end = strpos($location, ')', $start + 1);
-                    $length = $end - $start;
-                    $result = substr($location, $start + 1, $length - 1);
-                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
-                }
+        foreach ($timezonesList as $timezone) {
+            $location = $timezone->location;
+            if ($location) {
+                $start = strpos($location, '(');
+                $end = strpos($location, ')', $start + 1);
+                $length = $end - $start;
+                $result = substr($location, $start + 1, $length - 1);
+                $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
             }
+        }
         $timezones = array_column($display, 'name', 'id');
 
         return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers'));
@@ -166,9 +166,8 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function store(ClientRequest $request)
-    { 
+    {
         try {
-
             $user = $this->user;
             $str = str_random(6);
             $password = \Hash::make($str);
@@ -283,19 +282,18 @@ class ClientController extends AdvanceSearchController
             ->pluck('first_name', 'id')->toArray();
             $selectedCurrency = Currency::where('code', $user->currency)
             ->pluck('name', 'code')->toArray();
-            $selectedCompany = \DB::table('company_types')->where('short',$user->company_type)
-            ->pluck('name','short')->toArray();
-            $selectedIndustry = \App\Model\Common\Bussiness::where('short',$user->bussiness)
-            ->pluck('name','short')->toArray();
-            $selectedCompanySize = \DB::table('company_sizes')->where('short',$user->company_size)
-            ->pluck('name','short')->toArray();
+            $selectedCompany = \DB::table('company_types')->where('short', $user->company_type)
+            ->pluck('name', 'short')->toArray();
+            $selectedIndustry = \App\Model\Common\Bussiness::where('short', $user->bussiness)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
+            ->pluck('name', 'short')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers','selectedCurrency'
-                    ,'selectedCompany','selectedIndustry','selectedCompanySize'));
+                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers', 'selectedCurrency', 'selectedCompany', 'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());

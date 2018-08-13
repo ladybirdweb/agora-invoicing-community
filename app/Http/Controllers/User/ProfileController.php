@@ -17,7 +17,7 @@ class ProfileController extends Controller
     {
         try {
             $user = \Auth::user();
-             $timezonesList = \App\Model\Common\Timezone::get();
+            $timezonesList = \App\Model\Common\Timezone::get();
             foreach ($timezonesList as $timezone) {
                 $location = $timezone->location;
                 if ($location) {

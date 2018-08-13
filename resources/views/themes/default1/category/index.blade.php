@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Products
+Categories
 @stop
 @section('content-header')
 <h1>
@@ -8,7 +8,7 @@ All Products
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">All Products</li>
+        <li class="active">All Categories</li>
       </ol>
 @stop
 @section('content')
@@ -47,9 +47,9 @@ All Products
         @endif
         <div id="response"></div>
         <h4>{{Lang::get('message.products')}}
-            <a href="{{url('products/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+            <a href="#create-category" data-toggle="modal" data-target="#create-category" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
-      
+       @include('themes.default1.category.create-category')
        <div class="box-body">
              
              <div class="row">
@@ -61,10 +61,6 @@ All Products
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
-                            <th>Type</th>
-                            <th>Group</th>
-                            <th>Price</th>
-                            <th>Currency</th>
                             <th>Action</th>
                         </tr></thead>
 
@@ -82,7 +78,7 @@ All Products
         $('#products-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
               order: [[ 0, "desc" ]],
             ajax: '{!! route('get-products') !!}',
             "oLanguage": {
@@ -100,10 +96,6 @@ All Products
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
-                {data: 'type', name: 'type'},
-                {data: 'group', name: 'group'},
-                {data: 'price', name: 'price'},
-                {data: 'currency', name: 'currency'},
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {
@@ -119,45 +111,3 @@ All Products
 @stop
 
 
-@section('icheck')
-
-<script>
-     function checking(e){
-          
-          $('#products-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
-     }
-     
-
-     $(document).on('click','#bulk_delete',function(){
-      var id=[];
-      if (confirm("Are you sure you want to delete this?"))
-        {
-            $('.product_checkbox:checked').each(function(){
-              id.push($(this).val())
-            });
-            if(id.length >0)
-            {
-               $.ajax({
-                      url:"{!! route('products-delete') !!}",
-                      method:"get",
-                      data: $('#check:checked').serialize(),
-                      beforeSend: function () {
-                $('#gif').show();
-                },
-                success: function (data) {
-                $('#gif').hide();
-                $('#response').html(data);
-                location.reload();
-                }
-               })
-            }
-            else
-            {
-                alert("Please select at least one checkbox");
-            }
-        }  
-
-     });
-   
-</script>
-@stop

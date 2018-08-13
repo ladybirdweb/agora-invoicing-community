@@ -244,6 +244,11 @@
         Route::get('bundles-delete', 'Product\BundleController@destroy');
 
         /*
+         * Category
+         */
+         Route::resource('category','Product\CategoryController'); 
+
+        /*
          * Order
          */
 

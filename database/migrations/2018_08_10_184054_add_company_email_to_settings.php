@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCompanyEmailToSettings extends Migration
 {
@@ -13,7 +13,7 @@ class AddCompanyEmailToSettings extends Migration
      */
     public function up()
     {
-          Schema::table('settings', function (Blueprint $table) {
+        Schema::table('settings', function (Blueprint $table) {
             $table->string('company_email', 255)->nullable();
         });
     }
@@ -25,6 +25,6 @@ class AddCompanyEmailToSettings extends Migration
      */
     public function down()
     {
-       Schema::dropIfExists('settings');
+        Schema::dropIfExists('settings');
     }
 }

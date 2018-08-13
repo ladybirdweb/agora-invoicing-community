@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddFaviconTitleClientToSettings extends Migration
 {
@@ -13,7 +13,7 @@ class AddFaviconTitleClientToSettings extends Migration
      */
     public function up()
     {
-         Schema::table('settings', function (Blueprint $table) {
+        Schema::table('settings', function (Blueprint $table) {
             $table->string('favicon_title_client', 255)->nullable();
         });
     }
@@ -25,6 +25,6 @@ class AddFaviconTitleClientToSettings extends Migration
      */
     public function down()
     {
-       Schema::dropIfExists('settings');
+        Schema::dropIfExists('settings');
     }
 }

@@ -81,12 +81,12 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $set = $settings->find(1);
-             $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
-            $selectedCountry = \DB::table('countries')->where('country_code_char2',$set->country)
-            ->pluck('nicename','country_code_char2')->toArray();
-             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
+            $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
+            ->pluck('nicename', 'country_code_char2')->toArray();
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system', compact('set','selectedCountry','state','states'));
+            return view('themes.default1.common.setting.system', compact('set', 'selectedCountry', 'state', 'states'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

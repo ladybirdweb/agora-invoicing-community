@@ -372,8 +372,19 @@ class ClientController extends BaseClientController
         try {
             $user = $this->user->where('id', \Auth::user()->id)->first();
             //dd($user);
-            $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->pluck('name', 'id')->toArray();
+            $timezonesList = \App\Model\Common\Timezone::get();
+            foreach ($timezonesList as $timezone) {
+                $location = $timezone->location;
+                if ($location) {
+                    $start = strpos($location, '(');
+                    $end = strpos($location, ')', $start + 1);
+                    $length = $end - $start;
+                    $result = substr($location, $start + 1, $length - 1);
+                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                }
+            }
+            //for display
+            $timezones = array_column($display, 'name', 'id');
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();

@@ -6,6 +6,7 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
@@ -141,7 +142,20 @@ class ClientController extends AdvanceSearchController
         $timezones = new \App\Model\Common\Timezone();
         $timezones = $timezones->pluck('name', 'id')->toArray();
         $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-        $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
+        $managers = User::where('role', 'admin')->where('position', 'manager')
+        ->pluck('first_name', 'id')->toArray();
+        $timezonesList = \App\Model\Common\Timezone::get();
+           foreach ($timezonesList as $timezone) {
+                $location = $timezone->location;
+                if ($location) {
+                    $start = strpos($location, '(');
+                    $end = strpos($location, ')', $start + 1);
+                    $length = $end - $start;
+                    $result = substr($location, $start + 1, $length - 1);
+                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                }
+            }
+        $timezones = array_column($display, 'name', 'id');
 
         return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers'));
     }
@@ -152,8 +166,9 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function store(ClientRequest $request)
-    {
+    { 
         try {
+
             $user = $this->user;
             $str = str_random(6);
             $password = \Hash::make($str);
@@ -266,13 +281,21 @@ class ClientController extends AdvanceSearchController
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')
             ->pluck('first_name', 'id')->toArray();
-
+            $selectedCurrency = Currency::where('code', $user->currency)
+            ->pluck('name', 'code')->toArray();
+            $selectedCompany = \DB::table('company_types')->where('short',$user->company_type)
+            ->pluck('name','short')->toArray();
+            $selectedIndustry = \App\Model\Common\Bussiness::where('short',$user->bussiness)
+            ->pluck('name','short')->toArray();
+            $selectedCompanySize = \DB::table('company_sizes')->where('short',$user->company_size)
+            ->pluck('name','short')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
+                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers','selectedCurrency'
+                    ,'selectedCompany','selectedIndustry','selectedCompanySize'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
@@ -290,7 +313,6 @@ class ClientController extends AdvanceSearchController
      */
     public function update($id, Request $request)
     {
-        dd($request->input('timezone_id'));
         $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();

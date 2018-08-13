@@ -41,6 +41,7 @@ class ClientRequest extends Request
                         'bussiness'        => 'required',
                         'company_type'     => 'required',
                         'company_size'     => 'required',
+                        'currency'         => 'required', 
                     ];
 
             case 'PATCH':

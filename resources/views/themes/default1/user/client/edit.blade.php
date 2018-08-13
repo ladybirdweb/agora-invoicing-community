@@ -12,8 +12,21 @@ Edit User
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <style>
     .bootstrap-select.btn-group .dropdown-menu li a {
-    margin-left: -14px !important;
+    margin-left: -10px !important;
 }
+ .btn-group>.btn:first-child {
+    margin-left: 0;
+    background-color: white;
+
+    select {
+  -webkit-appearance: none;
+  -webkit-border-radius: -6px;
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
+
+
 </style>
 @section('content')
 <div class="box box-primary">
@@ -32,6 +45,8 @@ Edit User
         @endif
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+              <i class="fa fa-check"></i>
+            <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -53,13 +68,15 @@ Edit User
             {{Session::get('fails')}}
         </div>
         @endif
-        {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
-
-        <h4>{{Lang::get('message.client')}}<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
+       
 
     </div>
+    
 
     <div class="box-body">
+         {!! Form::model($user,['url'=>'clients/'.$user->id,'method'=>'PATCH']) !!}
+
+        <h4>{{Lang::get('message.client')}}<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
 
         <div class="row">
 
@@ -113,7 +130,13 @@ Edit User
                     <div class="col-md-3 form-group {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                         <!-- company -->
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
-                        {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control']) !!}
+                        <select name="bussiness"  class="form-control">
+                            <option value="">Choose</option>
+                         @foreach($bussinesses as $key=>$bussiness)
+                        <option value="{{$key}}" <?php  if(in_array($bussiness, $selectedIndustry) ) 
+                        { echo "selected";} ?>>{{$bussiness}}</option>
+                            @endforeach
+                         </select>
                            
                     </div>
 
@@ -145,19 +168,32 @@ Edit User
 
                     </div>
                     <?php
-                   $type = DB::table('company_types')->pluck('name','short')->toArray();
-                    $size = DB::table('company_sizes')->pluck('name','short')->toArray();
+                   $types = DB::table('company_types')->pluck('name','short')->toArray();
+                    $sizes = DB::table('company_sizes')->pluck('name','short')->toArray();
                     ?>
                      <div class="col-md-3 form-group {{ $errors->has('company_type') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                        {!! Form::select('company_type',['Choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!}
+                      
+                          <select name="company_type"  class="form-control">
+                            <option value="">Choose</option>
+                         @foreach($types as $key=>$type)
+                                   <option value="{{$key}}" <?php  if(in_array($type, $selectedCompany) ) { echo "selected";} ?>>{{$type}}</option>
+                           
+                             @endforeach
+                              </select>
 
                     </div>
                      <div class="col-md-3 form-group {{ $errors->has('company_size') ? 'has-error' : '' }}">
                         <!-- email -->
                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
-                        {!! Form::select('company_size',['Choose'=>'Choose','Company Sizes'=>$size],null,['class' => 'form-control']) !!}
+                        <select name="company_size"  class="form-control">
+                            <option value="">Choose</option>
+                        @foreach($sizes as $key=>$size)
+                        <option value="{{$key}}" <?php  if(in_array($size, $selectedCompanySize) ) { echo "selected";} ?>>{{$size}}</option>
+                           
+                             @endforeach
+                              </select>
 
                     </div>
                 </div>
@@ -182,7 +218,7 @@ Edit User
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -213,13 +249,22 @@ Edit User
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
                        
-                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'5']) !!}
+                         {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
 
                     </div>
+                    <?php 
+                   $currencies = DB::table('currencies')->pluck('name','code')->toArray() ; 
+                    ?>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('currency',Lang::get('message.currency')) !!}
-                        {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toArray()],null,['class' => 'form-control','id'=>'currency']) !!}
+                         <select name="currency" id="plan" class="form-control" onchange="myFunction()">
+                            <option value="">Choose</option>
+                         @foreach($currencies as $key=>$currency)
+                                   <option value="{{$key}}" <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>>{{$currency}}</option>
+                           
+                             @endforeach
+                              </select>
 
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
@@ -249,17 +294,23 @@ Edit User
                     </div>
                     @endif
                 </div>
-                {!! Form::close() !!}
+              
             </div>
         </div>
-
+ {!! Form::close() !!}
     </div>
+     
 </div>
 
 
-{!! Form::close() !!}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 <script type="text/javascript">
+    $('.selectpicker').selectpicker({
+  style: 'btn-default',
+  color: 'white',
+  size: 4
+});
+
    
      $(document).ready(function(){
     var country = $('#country').val();

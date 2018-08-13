@@ -80,11 +80,7 @@ Edit Plan
                    <div class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
-                  
-
-                      
-                           
-                        <select name="days" id="plan" class="form-control" onchange="myFunction()">
+                      <select name="days" id="plan" class="form-control" onchange="myFunction()">
                           <option value="">Choose</option>
                              
                             @foreach($periods as $key=>$period)

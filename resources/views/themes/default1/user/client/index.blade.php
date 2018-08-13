@@ -16,8 +16,19 @@ All Users
     background-color: white !important;
     margin: 11px;
 }*/
+    .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -10px !important;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+}
 .bootstrap-select>.dropdown-toggle {
     background-color: white;
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
 }
 </style>
 
@@ -62,8 +73,13 @@ All Users
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
-                {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!}
-               
+                <!-- {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!} -->
+                 <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                             <option value="" style="color:black;">Choose</option>
+                           @foreach($countries as $key=>$coun)
+                              <option value={{$key}}>{{$coun}}</option>
+                          @endforeach
+                          </select>
 
                 
 

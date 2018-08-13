@@ -14,6 +14,7 @@ active
 <li class="active">Profile</li>
 @stop
 @section('content')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 <style>
     <style>
     .required:after{ 
@@ -22,6 +23,18 @@ active
         padding-left:5px;
     }
 
+
+        .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -12px !important;
+}
+ .btn-group>.btn:first-child {
+    margin-left: 0;
+    background-color: white;
+
+   }
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
 </style>
 
 
@@ -126,7 +139,10 @@ active
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
                                  <label for"timezone_id" class=""><b>Timezne</b></label>
-                                {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
+                                {!! Form::select('timezone_id',[Lang::get('message.choose')=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
+
+                               <!--  {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'timezone']) !!}
+ -->
                                 <h6 id="timezoneCheck"></h6>
                             </div>
                         </div>
@@ -234,7 +250,7 @@ active
 
     </div>
 
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
 
                     <script>
 

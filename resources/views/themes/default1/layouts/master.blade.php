@@ -18,6 +18,7 @@
         <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
@@ -300,6 +301,7 @@
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
         
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->

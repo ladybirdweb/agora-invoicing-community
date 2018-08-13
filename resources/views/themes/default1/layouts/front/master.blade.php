@@ -70,7 +70,6 @@
   
       </head>
 
-
     <body>
 
         <?php

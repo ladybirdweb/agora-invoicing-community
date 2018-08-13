@@ -15,7 +15,7 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-         <link rel="shortcut icon" href='{{asset("images/favicon/$set->fav_icon")}}' type="image/x-icon" />
+         <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -39,6 +39,7 @@
           <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+
           
           <!-- Demo CSS -->
           <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
@@ -47,6 +48,7 @@
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
           <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
   
           <!-- Theme Custom CSS -->
@@ -461,9 +463,12 @@
 
         <!-- Vendor -->
          <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script> -->
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
         <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('vendor/popper/umd/popper.min.js')}}"></script>
        <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
         <script src="{{asset('cart/vendor/common/common.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.validation/jquery.validation.min.js')}}"></script>

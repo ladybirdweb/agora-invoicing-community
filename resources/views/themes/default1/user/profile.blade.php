@@ -10,12 +10,24 @@ Edit Profile
       </ol>
 @stop
 <style>
-    <style>
+  
     .required:after{ 
         content:'*'; 
         color:red; 
         padding-left:5px;
     }
+        .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -12px !important;
+}
+ .btn-group>.btn:first-child {
+    margin-left: 0;
+    background-color: white;
+
+   }
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
+
 
 </style>
 <div class="row">
@@ -58,8 +70,8 @@ Edit Profile
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
+                    <i class="fa fa-check"></i>
+                    <b>{{Lang::get('message.success')}}!</b>
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -145,7 +157,9 @@ Edit Profile
                     <div class="col-md-6 form-group {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone')) !!}
-                        {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!}
+                        <!-- {!! Form::select('timezone_id',[''=>'Select','Timezones'=>$timezones],null,['class' => 'form-control']) !!} -->
+                        {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
+
 
                     </div>
 

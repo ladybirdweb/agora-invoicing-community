@@ -249,6 +249,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
                                                             {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                       <!--    <select name="bussiness"  class="form-control input-lg" 'id'=>'business'>
+                                                             <option value="">Choose</option>
+                                                           @foreach($bussinesses as $key=>$bussines)
+                                                             <option value={{$key}}>{{$bussines}}</option>
+                                                          @endforeach
+                                                          </select> -->
+             
                                                             <h6 id="bussinesscheck"></h6>
                                                         </div>
                                                         
@@ -284,7 +291,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
                                                             <h6 id="countrycheck"></h6>
 
                                                             </div>
@@ -1178,7 +1185,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var mobile_val = $('#mobilenum').val();
     if(mobile_val.length == ''){
         $('#mobile_codecheck').show();
-        $('#mobile_codecheck').html("Please Select One Country ");
+        $('#mobile_codecheck').html("Please Enter Mobile No. ");
         $('#mobile_codecheck').focus();
         $('#mobilenum').css("border-color","red");
         $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});

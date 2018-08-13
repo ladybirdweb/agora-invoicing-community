@@ -27,6 +27,9 @@ select.form-control{
 .text{
     margin-left: -10px!important;
 }
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
 
 </style>
 <div class="box box-primary">
@@ -70,12 +73,14 @@ select.form-control{
             {{Session::get('fails')}}
         </div>
         @endif
-        {!! Form::open(['url'=>'clients','method'=>'post']) !!}
-        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
-
+      
+      
     </div>
 
     <div class="box-body">
+        {!! Form::open(['url'=>'clients','method'=>'post']) !!}
+        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+
 
         <div class="row">
 
@@ -129,7 +134,7 @@ select.form-control{
                         {!! Form::label('bussiness','Industry',['class'=>'required']) !!}
                          <!-- {!! Form::select('bussiness',['Choose'=>'Choose',''=>$bussinesses],null,['class' => 'form-control selectpicker','data-live-search'=>'true', 'data-live-search-placeholder'=>'Search' ,'data-dropup-auto'=>'false', 'data-size'=>'10']) !!} -->
                        <select name="bussiness"  class="form-control">
-                             <option value="Choose">Choose</option>
+                             <option value="">Choose</option>
                            @foreach($bussinesses as $key=>$bussines)
                              <option value={{$key}}>{{$bussines}}</option>
                           @endforeach
@@ -169,7 +174,7 @@ select.form-control{
                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
                         <!-- {!! Form::select('company_type',['choose'=>'Choose',''=>$type],null,['class' => 'form-control']) !!} -->
                          <select name="company_type" value= "Choose" class="form-control">
-                             <option value="Choose">Choose</option>
+                             <option value="">Choose</option>
                            @foreach($type as $key=>$types)
 
                              <option value={{$key}}>{{$types}}</option>
@@ -182,7 +187,7 @@ select.form-control{
                         {!! Form::label('company_size','Company Size',['class'=>'required']) !!}
                 <!-- {!! Form::select('company_size',['choose'=>'Choose',''=>$size],null,['class' => 'form-control']) !!} -->
                           <select name="company_size" value= "Choose" class="form-control">
-                             <option value="Choose">Choose</option>
+                             <option value="">Choose</option>
                            @foreach($size as $key=>$sizes)
 
                              <option value={{$key}}>{{$sizes}}</option>
@@ -215,10 +220,10 @@ select.form-control{
                         {!! Form::label('country',Lang::get('message.country')) !!}
                         <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        <!-- {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
+                     <!--    {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
 
-                          <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control">
-                             <option value="Choose">Choose</option>
+                          <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                             <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
                               <option value={{$key}}>{{$country}}</option>
                           @endforeach
@@ -246,8 +251,8 @@ select.form-control{
                         <!-- mobile -->
                         {!! Form::label('timezone_id',Lang::get('message.timezone'),['class'=>'required']) !!}
                 
-                         <select name="timezone_id" value= "Choose" class="form-control">
-                             <option value="Choose">Choose</option>
+                         <select name="timezone_id" value= "Choose" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10"">
+                             <option value="">Choose</option>
                            @foreach($timezones as $key=>$timezone)
 
                              <option value={{$key}}>{{$timezone}}</option>
@@ -258,10 +263,9 @@ select.form-control{
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         <?php $currencies = DB::table('currencies')->pluck('name','code')->toarray() ?>
-                        {!! Form::label('currency',Lang::get('message.currency')) !!}
-                       <!--  {!! Form::select('currency',['Currency'=>DB::table('currencies')->pluck('name','code')->toarray()],null,['class' => 'form-control','id'=>'currency']) !!} -->
-                         <select name="currency" value= "Choose" class="form-control" id ="currency">
-                             <option value="Choose">Choose</option>
+                        {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
+                        <select name="currency" value= "Choose" class="form-control" id ="currency">
+                             <option value="">Choose</option>
                            @foreach($currencies as $key=>$currency)
 
                              <option value={{$key}}>{{$currency}}</option>
@@ -292,7 +296,7 @@ select.form-control{
                         {!! Form::label('manager','Manager') !!}
                  <!-- {!! Form::select('manager',[''=>'Select','Managers'=>$managers],null,['class' => 'form-control']) !!} -->
                          <select name="manager" value= "Choose" class="form-control">
-                             <option value="Choose">Choose</option>
+                             <option value="">Choose</option>
                            @foreach($managers as $key=>$manager)
                              <option value={{$key}}>{{$manager}}</option>
                           @endforeach
@@ -301,15 +305,15 @@ select.form-control{
 
 
                 </div>
-                {!! Form::close() !!}
+               
             </div>
         </div>
-
+          {!! Form::close() !!}
     </div>
 </div>
 
 
-{!! Form::close() !!}
+
 
 
 <script>

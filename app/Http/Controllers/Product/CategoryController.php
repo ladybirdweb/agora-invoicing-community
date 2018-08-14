@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Product;
 
+
 use Bugsnag;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Product\ProductCategory;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -20,6 +22,7 @@ class CategoryController extends Controller
         $this->productCategory = $productCategory;
 
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,19 +38,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+ 
+   
     public function store(Request $request)
     {
+
        try{
        $productCategory = $this->productCategory->fill($request->input())->save();
        return redirect()->back()->with('success',\Lang::get('message.saved-successfully'));
@@ -55,13 +50,16 @@ class CategoryController extends Controller
        {
         return redirect()->back()->with('fails',$ex->getMessage());
        }  
-
+ 
     }
+    
+
     
     /* 
     * Get All the categories
     */
     public function getCategory()
+
     {
         try{
         $allCategories = $this->productCategory->select('id','category_name')->get();
@@ -88,7 +86,9 @@ class CategoryController extends Controller
     }
      
 
+
   
+
     public function update(Request $request, $id)
     {
        try{
@@ -104,7 +104,8 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)

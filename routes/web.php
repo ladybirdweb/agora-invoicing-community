@@ -246,6 +246,7 @@
         /*
          * Category
          */
+
          Route::resource('category','Product\CategoryController'); 
          Route::get('get-category','Product\CategoryController@getCategory')->name('get-category');
          Route::get('category-delete', 'Product\CategoryController@destroy')->name('category-delete');
@@ -256,6 +257,7 @@
          Route::resource('product-type','Product\ProductTypeController');
          Route::get('get-type','Product\ProductTypeController@getTypes')->name('get-type');
          Route::get('type-delete', 'Product\ProductTypeController@destroy')->name('type-delete');
+
 
         /*
          * Order

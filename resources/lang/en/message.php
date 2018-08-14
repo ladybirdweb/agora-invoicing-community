@@ -475,5 +475,14 @@ return [
      */
      'category' => 'Categories',
      'create-category'=>'Create New Category',
-     'category-name' => 'Category Name'
+     'category-name' => 'Category Name',
+     'edit-category' => 'Edit Category',
+
+      /*
+     * Product types
+     */
+      'types' =>'Types',
+      'create-type'=>'Create New Product Type',
+      'type-name'  =>'Product Type',
+      'edit-type'  =>'Edit Product Type' 
 ];

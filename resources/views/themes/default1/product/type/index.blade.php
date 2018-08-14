@@ -1,14 +1,14 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Categories
+Product Types
 @stop
 @section('content-header')
 <h1>
-All Categories
+Product Types
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">All Categories</li>
+        <li class="active">All Types</li>
       </ol>
 @stop
 @section('content')
@@ -46,11 +46,11 @@ All Categories
         </div>
         @endif
         <div id="response"></div>
-        <h4>{{Lang::get('message.category')}}
-            <a href="#create-category" data-toggle="modal" data-target="#create-category" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+        <h4>{{Lang::get('message.types')}}
+            <a href="#create-type" data-toggle="modal" data-target="#create-type" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
-       @include('themes.default1.category.create-category')
-        @include('themes.default1.category.edit-category')
+       @include('themes.default1.product.type.create-type')
+        @include('themes.default1.product.type.edit-type')
        <div class="box-body">
              
              <div class="row">
@@ -81,7 +81,7 @@ All Categories
             serverSide: true,
              stateSave: false,
               order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-category') !!}',
+            ajax: '{!! route('get-type') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -96,7 +96,7 @@ All Categories
             ],
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
-                {data: 'category_name', name: 'category_name'},
+                {data: 'type_name', name: 'type_name'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
@@ -115,13 +115,13 @@ All Categories
 
 
     function bindEditButton() {
-        $('.editCat').click(function(){
-           var catName = $(this).attr('data-name');
-           var catId   = $(this).attr('data-id');
-            $("#edit-category").modal('show');
-            $('#cname').val(catName);
-             var url = "{{url('category/')}}"+"/"+catId
-        $("#category-edit-form").attr('action', url)
+        $('.editType').click(function(){
+           var typeName = $(this).attr('data-name');
+           var typeId   = $(this).attr('data-id');
+            $("#edit-type").modal('show');
+            $('#tname').val(typeName);
+             var url = "{{url('product-type/')}}"+"/"+typeId
+        $("#type-edit-form").attr('action', url)
         })
     }
 
@@ -129,13 +129,13 @@ All Categories
       var id=[];
       if (confirm("Are you sure you want to delete this?"))
         {
-            $('.category_checkbox:checked').each(function(){
+            $('.type_checkbox:checked').each(function(){
               id.push($(this).val())
             });
             if(id.length >0)
             {
                $.ajax({
-                      url:"{!! route('category-delete') !!}",
+                      url:"{!! route('type-delete') !!}",
                       method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {

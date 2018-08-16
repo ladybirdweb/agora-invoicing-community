@@ -1,16 +1,16 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Payment
+Edit Invoice
 @stop
 @section('content-header')
 <h1>
-Generate Payment
+Edit Invoice
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
         <li><a href="{{url('clients')}}">All Users</a></li>
-        <li><a href="{{url('clients/'.$userid)}}">View User</a></li>
-        <li class="active">Payment</li>
+        <li><a href="{{url('clients/'.$invoice->user_id)}}">View User</a></li>
+        <li class="active">Edit Invoice</li>
       </ol>
 @stop
 @section('content')
@@ -20,6 +20,7 @@ Generate Payment
     <div class="box-header">
         @if (count($errors) > 0)
                 <div class="alert alert-danger">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -32,7 +33,7 @@ Generate Payment
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
                      <i class="fa fa-check"></i>
-                     <b>{{Lang::get('message.success')}}!</b> {{Lang::get('message.success')}}.
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -46,9 +47,9 @@ Generate Payment
                     {{Session::get('fails')}}
                 </div>
                 @endif
-        {!! Form::open(['url'=>'payment/receive/'.$invoice_id,'method'=>'post']) !!}
+        {!! Form::open(['url'=>'invoice/edit/'.$invoiceid,'method'=>'post']) !!}
 
-        <h4>{{Lang::get('message.payment')}}  (Invoice Number: {{$invoice->number}})	 <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h4>Invoice Number:#{{$invoice->number}}	 <button type="submit" class="form-group btn btn-primary pull-right" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
@@ -62,25 +63,24 @@ Generate Payment
 
                 <div class="row">
 
-                    <div class="col-md-4 form-group {{ $errors->has('invoice_status') ? 'has-error' : '' }}">
+                    <div class="col-md-6 form-group {{ $errors->has('total') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('payment_date',Lang::get('message.date-of-payment'),['class'=>'required']) !!}
-                        {!! Form::text('payment_date',null,['class' => 'form-control']) !!}
+                        {!! Form::label('total',Lang::get('message.total'),['class'=>'required']) !!}
+                        <!-- {!! Form::text('total',null,['class' => 'form-control']) !!} -->
+                        <input type="text" name="total" class="form-control" value="{{$invoice->grand_total}}">
 
                     </div>
 
-                    <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('payment_method',Lang::get('message.payment-method')) !!}
-                        {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],$payment_method,['class' => 'form-control']) !!}
 
-                    </div>
-
-                    
-                    <div class="col-md-4 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
+                     <div class="col-md-6 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                         <!-- first name -->
-                        {!! Form::label('amount',Lang::get('message.amount')) !!}
-                        {!! Form::text('amount',null,['class' => 'form-control']) !!}
+                        {!! Form::label('status',Lang::get('message.status')) !!}
+                         <select name="status"  class="form-control">
+                            <option selected="selected">{{$invoice->status}}</option>
+                             <option value="">Choose</option>
+                          <option value="success">Success</option>
+                        <option value="pending">Pending</option>
+                         </select>
 
                     </div>
 

@@ -218,8 +218,9 @@ User Details
                                                     @if($invoice->status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
                                                     @endif
-                                                   
+                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice')}}</a></li>
                                                      <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
+
                                                      <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
                                                 </ul>
                                                 {!! $model_popup !!}

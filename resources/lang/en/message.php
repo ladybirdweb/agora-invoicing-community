@@ -19,6 +19,7 @@ return [
      */
     'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',
+    'delete'                 => 'Delete',
     'save'                   => 'Save',
     'city'                   => 'City',
     'state'                  => 'State',
@@ -362,6 +363,8 @@ return [
     'create-invoice'=> 'Create New Invoice',
     'invoice'       => 'Invoice',
     'invoices'      => 'Invoices',
+    'edit-invoice'  => 'Edit Invoice', 
+    
     /*
      * Licence
      */

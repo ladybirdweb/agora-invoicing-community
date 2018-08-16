@@ -146,6 +146,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasMany('App\Model\Order\Payment');
     }
 
+    public function setCountryAttribute($value)
+    {
+        $value = strtoupper($value);
+        $this->attributes['country'] = $value;
+    }
+
     public function bussiness()
     {
         $short = $this->attributes['bussiness'];

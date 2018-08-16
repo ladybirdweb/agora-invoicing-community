@@ -56,6 +56,8 @@ select.form-control{
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+           <i class="fa fa-check"></i>
+           <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -225,7 +227,7 @@ select.form-control{
 
                      <!--    {!! Form::select('country',['choose'=>'Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','onChange'=>'getCountryAttr(this.value);']) !!} -->
 
-                          <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                          <select name="country" value= "Choose" id="country" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
                              <option value="">Choose</option>
                            @foreach($countries as $key=>$country)
                               <option value={{$key}}>{{$country}}</option>
@@ -279,7 +281,9 @@ select.form-control{
                     <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
                         <label class="required">Country code</label>
                         {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                        {!! Form::text('mobile_code',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
+                        {!! Form::text('mobil',null,['class'=>'form-control','disabled','id'=>'mobile_code']) !!}
+
+                         
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
                         <!-- mobile -->
@@ -320,6 +324,34 @@ select.form-control{
 
 
 <script>
+    $(document).ready(function(){
+// get the country data from the plugin
+var countryData = $.fn.intlTelInput.getCountryData(),
+  telInput = $("#mobile_code"),
+  addressDropdown = $("#country");
+// init plugin
+telInput.intlTelInput({
+  utilsScript: "../../build/js/utils.js" // just for formatting/placeholders etc
+});
+
+// populate the country dropdown
+$.each(countryData, function(i, country) {
+  addressDropdown.append($("<option></option>").attr("value", country.iso2).text(country.name));
+});
+// set it's initial value
+var initialCountry = telInput.intlTelInput("getSelectedCountryData").iso2;
+addressDropdown.val(initialCountry);
+
+// listen to the telephone input for changes
+telInput.on("countrychange", function(e, countryData) {
+  addressDropdown.val(countryData.iso2);
+});
+
+// listen to the address dropdown for changes
+addressDropdown.change(function() {
+  telInput.intlTelInput("setCountry", $(this).val());
+});
+})
 
     function getCountryAttr(val) {
         getState(val);
@@ -329,8 +361,6 @@ select.form-control{
     }
 
    function getState(val) {
-        console.log(val)
-
         $.ajax({
             type: "GET",
               url: "{{url('get-state')}}/" + val,

@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers\Product;
 
-
-use Bugsnag;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Model\Product\ProductCategory;
+use Bugsnag;
+use Illuminate\Http\Request;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -20,7 +19,6 @@ class CategoryController extends Controller
 
         $productCategory = new ProductCategory();
         $this->productCategory = $productCategory;
-
     }
 
     /**
@@ -38,67 +36,58 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
- 
-   
     public function store(Request $request)
     {
+        try {
+            $productCategory = $this->productCategory->fill($request->input())->save();
 
-       try{
-       $productCategory = $this->productCategory->fill($request->input())->save();
-       return redirect()->back()->with('success',\Lang::get('message.saved-successfully'));
-       }catch (\Exception $ex)
-       {
-        return redirect()->back()->with('fails',$ex->getMessage());
-       }  
- 
+            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
-    
 
-    
-    /* 
+    /*
     * Get All the categories
     */
     public function getCategory()
-
     {
-        try{
-        $allCategories = $this->productCategory->select('id','category_name')->get();
-        return \DataTables::of($allCategories)
-         ->addColumn('checkbox' , function($model){
-            return "<input type='checkbox' class='category_checkbox' 
+        try {
+            $allCategories = $this->productCategory->select('id', 'category_name')->get();
+
+            return \DataTables::of($allCategories)
+         ->addColumn('checkbox', function ($model) {
+             return "<input type='checkbox' class='category_checkbox' 
             value=".$model->id.' name=select[] id=check>';
          })
-         ->addColumn('category_name',function($model){
-            return ucfirst($model->category_name);
+         ->addColumn('category_name', function ($model) {
+             return ucfirst($model->category_name);
          })
-         ->addColumn('action',function($model){
+         ->addColumn('action', function ($model) {
              return "<p><button data-toggle='modal' 
-             data-id=".$model->id. " data-name= '$model->category_name' 
+             data-id=".$model->id." data-name= '$model->category_name' 
              class='btn btn-sm btn-primary btn-xs editCat'><i class='fa fa-edit'
              style='color:white;'> </i>&nbsp;&nbsp;Edit</button>&nbsp;</p>";
          })
-         ->rawColumns(['checkbox','category_name','action'])
+         ->rawColumns(['checkbox', 'category_name', 'action'])
          ->make(true);
-      } catch (\Exception $ex)
-      {
-        return redirect()->back()->with('fails',$ex->getMessage());
-      }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
-     
-
-
-  
 
     public function update(Request $request, $id)
     {
-       try{
-       $cat_name = $request->input('category_name');
-       $category = $this->productCategory->where('id',$id)->update(['category_name' =>$cat_name]);
-       return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
-      }catch(\Exception $ex){
-        Bugsnag::notifyException($ex);
-        return redirect()->back()->with('fails',$ex->getMessage());
-      }
+        try {
+            $cat_name = $request->input('category_name');
+            $category = $this->productCategory->where('id', $id)->update(['category_name' =>$cat_name]);
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**

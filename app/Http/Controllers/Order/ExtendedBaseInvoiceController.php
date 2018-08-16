@@ -62,26 +62,26 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function edit($invoiceid, Request $request)
     {
-        $invoice = Invoice::where('id',$invoiceid)->first();
+        $invoice = Invoice::where('id', $invoiceid)->first();
         // $payment = Payment::where()
-        return view('themes.default1.invoice.editInvoice',compact('userid','invoiceid','invoice'));
+        return view('themes.default1.invoice.editInvoice', compact('userid', 'invoiceid', 'invoice'));
     }
 
     public function postEdit($invoiceid, Request $request)
     {
-       $this->validate($request,[
+        $this->validate($request, [
         'total' => 'required',
-        'status'=> 'required', 
+        'status'=> 'required',
         ]);
-         try{
-        $total = $request->input('total');
-        $status = $request->input('status');
-        $invoice = Invoice::where('id',$invoiceid)->update(['grand_total'=>$total,'status'=>$status]);
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-     }catch (\Exception $ex)
-     {
-       return redirect()->back()->with('fails', $ex->getMessage());
-     }
-       
+
+        try {
+            $total = $request->input('total');
+            $status = $request->input('status');
+            $invoice = Invoice::where('id', $invoiceid)->update(['grand_total'=>$total, 'status'=>$status]);
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

@@ -363,8 +363,8 @@ return [
     'create-invoice'=> 'Create New Invoice',
     'invoice'       => 'Invoice',
     'invoices'      => 'Invoices',
-    'edit-invoice'  => 'Edit Invoice', 
-    
+    'edit-invoice'  => 'Edit Invoice',
+
     /*
      * Licence
      */

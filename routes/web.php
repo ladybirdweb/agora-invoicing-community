@@ -305,7 +305,8 @@
         Route::post('generate/invoice/{user_id?}', 'Order\InvoiceController@invoiceGenerateByForm');
         Route::get('invoices/{id}/delete', 'Order\InvoiceController@deleleById');
 
-        Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 'uses' => 'Order\InvoiceController@invoiceTotalChange']);
+        Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal', 
+            'uses' => 'Order\InvoiceController@invoiceTotalChange']);
 
         /*
          * Payment
@@ -316,6 +317,7 @@
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
         Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
         Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
+        Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
 
         /*
          * Subscriptions

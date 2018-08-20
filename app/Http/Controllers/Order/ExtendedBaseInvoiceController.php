@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use Exception;
-use Log;
 use Bugsnag;
+use Exception;
 use Illuminate\Http\Request;
+use Log;
 
 class ExtendedBaseInvoiceController extends Controller
 {
@@ -65,10 +65,9 @@ class ExtendedBaseInvoiceController extends Controller
 
     public function edit($invoiceid, Request $request)
     {
+        $invoice = Invoice::where('id', $invoiceid)->first();
 
-        $invoice = Invoice::where('id',$invoiceid)->first();
-        return view('themes.default1.invoice.editInvoice',compact('userid','invoiceid','invoice'));
-
+        return view('themes.default1.invoice.editInvoice', compact('userid', 'invoiceid', 'invoice'));
     }
 
     public function postEdit($invoiceid, Request $request)
@@ -89,20 +88,21 @@ class ExtendedBaseInvoiceController extends Controller
         }
     }
 
-    public function postNewMultiplePayment($clientid , Request $request)
+    public function postNewMultiplePayment($clientid, Request $request)
     {
         try {
             $payment_date = $request->payment_date;
             $payment_method = $request->payment_method;
-            $totalAmt=$request->totalAmt;
+            $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
-            $payment_status= "success";
+            $payment_status = 'success';
             $payment = $this->updateForMultiplePayment($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status);
-            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully', ];
-               return response()->json($response);
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
+            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
+
+            return response()->json($response);
         } catch (\Exception $e) {
             dd($e);
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
@@ -111,49 +111,47 @@ class ExtendedBaseInvoiceController extends Controller
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
 
     public function updateForMultiplePayment($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status)
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
-       try {
-        foreach ($invoiceChecked as $key => $value) {
-            if($key != 0){
-        $invoice = Invoice::find($value);
-        $invoice_status = 'pending';
-        $payment = Payment::where('invoice_id',$value)->create([
+        try {
+            foreach ($invoiceChecked as $key => $value) {
+                if ($key != 0) {
+                    $invoice = Invoice::find($value);
+                    $invoice_status = 'pending';
+                    $payment = Payment::where('invoice_id', $value)->create([
                 'invoice_id'     => $value,
-                'user_id'       => $clientid,
-                'amount'         =>$invoicAmount[$key],
+                'user_id'        => $clientid,
+                'amount'         => $invoicAmount[$key],
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $totalPayments = $this->payment
+                    $totalPayments = $this->payment
             ->where('invoice_id', $value)
             ->where('payment_status', 'success')
             ->pluck('amount')->toArray();
-            $total_paid = array_sum($totalPayments);
-            if ($total_paid >= $invoice->grand_total) {
-                $invoice_status = 'success';
+                    $total_paid = array_sum($totalPayments);
+                    if ($total_paid >= $invoice->grand_total) {
+                        $invoice_status = 'success';
+                    }
+                    if ($invoice) {
+                        $invoice->status = $invoice_status;
+                        $invoice->save();
+                    }
+                }
             }
-            if ($invoice) {
-                $invoice->status = $invoice_status;
-                $invoice->save();
-            }
-        }
 
-    }
-    return $payment;
-           
-       } catch (Exception $e) {
-        dd($e);
-           app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            return $payment;
+        } catch (Exception $e) {
+            dd($e);
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
-       }
+        }
     }
 }

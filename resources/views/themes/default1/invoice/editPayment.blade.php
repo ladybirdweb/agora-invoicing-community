@@ -12,7 +12,7 @@
     @stop
     @section('content')
     <div class="box box-primary">
-    	 <div class="box-header">
+       <div class="box-header">
           <div id="alertMessage"></div>
                     <div id="error1">
             @if (count($errors) > 0)
@@ -50,7 +50,7 @@
 
         </div>
 
-    	<div class="box-body">
+      <div class="box-body">
 
             <div class="row">
 
@@ -77,9 +77,9 @@
                         
                         <div class="col-md-4 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                             <!-- first name -->
-                            {!! Form::label('amount',Lang::get('message.amount'),['class'=>'required']) !!}
-                            {!! Form::text('amount',null,['class' => 'form-control','id'=>'amount']) !!}
-                            <input type="hidden" name="hidden" id="amount1">
+                            {!! Form::label('amount',Lang::get('message.extra-amount'),['class'=>'required']) !!}
+                            {!! Form::text('amount',$amountReceived,['class' => 'form-control','id'=>'amount']) !!}
+                            <input type="hidden" value="{{$amountReceived}}" name="hidden" id="amount1">
                         </div>
 
                         
@@ -283,8 +283,8 @@
             "payment_method" :$('#payment_method').val(),
         };
     $.ajax({
-      url: '{{url('newMultiplePayment/receive/'.$clientid)}}',
-      type: 'POST',
+      url: '{{url('newMultiplePayment/update/'.$clientid)}}',
+      type: 'PATCH',
       data: data,
           success: function (response) {
             $('#alertMessage').show();

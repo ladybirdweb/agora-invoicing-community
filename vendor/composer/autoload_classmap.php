@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddAmtToCreditToPayments' => $baseDir . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',
     'AddCgstColumnToTaxesTable' => $baseDir . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
     'AddCityColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
     'AddCompanyEmailToSettings' => $baseDir . '/database/migrations/2018_08_10_184054_add_company_email_to_settings.php',
@@ -116,6 +117,7 @@ return array(
     'App\\Http\\Controllers\\Product\\GroupController' => $baseDir . '/app/Http/Controllers/Product/GroupController.php',
     'App\\Http\\Controllers\\Product\\PlanController' => $baseDir . '/app/Http/Controllers/Product/PlanController.php',
     'App\\Http\\Controllers\\Product\\ProductController' => $baseDir . '/app/Http/Controllers/Product/ProductController.php',
+    'App\\Http\\Controllers\\Product\\ProductTypeController' => $baseDir . '/app/Http/Controllers/Product/ProductTypeController.php',
     'App\\Http\\Controllers\\Product\\ServiceController' => $baseDir . '/app/Http/Controllers/Product/ServiceController.php',
     'App\\Http\\Controllers\\RazorpayController' => $baseDir . '/app/Http/Controllers/RazorpayController.php',
     'App\\Http\\Controllers\\ServiceProvider\\ServiceProviderController' => $baseDir . '/app/Http/Controllers/ServiceProvider/ServiceProviderController.php',
@@ -189,6 +191,7 @@ return array(
     'App\\Model\\Product\\ProductBundleRelation' => $baseDir . '/app/Model/Product/ProductBundleRelation.php',
     'App\\Model\\Product\\ProductCategory' => $baseDir . '/app/Model/Product/ProductCategory.php',
     'App\\Model\\Product\\ProductGroup' => $baseDir . '/app/Model/Product/ProductGroup.php',
+    'App\\Model\\Product\\ProductType' => $baseDir . '/app/Model/Product/ProductType.php',
     'App\\Model\\Product\\ProductUpload' => $baseDir . '/app/Model/Product/ProductUpload.php',
     'App\\Model\\Product\\Service' => $baseDir . '/app/Model/Product/Service.php',
     'App\\Model\\Product\\Subscription' => $baseDir . '/app/Model/Product/Subscription.php',

@@ -261,6 +261,37 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
+    public function paymentEditById($id)
+    {
+        try {
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+             $amountReceived = $cltCont->getAmountPaid($id);
+            $payment = Payment::find($id);
+            $clientid = $payment->user_id;
+             $invoice = new Invoice();
+            $order = new Order();
+            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')->orderBy('created_at', 'desc')->get();
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $invoiceSum = $cltCont->getTotalInvoice($invoices);
+            $amountReceived = $cltCont->getAmountPaid($clientid);
+            $pendingAmount = $invoiceSum - $amountReceived;
+            $client = $this->user->where('id', $clientid)->first();
+            $currency = $client->currency;
+            $orders = $order->where('client', $clientid)->get();
+              return view('themes.default1.invoice.editPayment',compact('amountReceived','clientid', 'client', 'invoices',  'orders',
+                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+
+
+
+
+        
+            
+        } catch (Exception $e) {
+             Bugsnag::notifyException($e);
+             return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
     public function deleleById($id)
     {
         try {

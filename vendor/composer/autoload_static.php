@@ -610,6 +610,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
     );
 
     public static $classMap = array (
+        'AddAmtToCreditToPayments' => __DIR__ . '/../..' . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',
         'AddCgstColumnToTaxesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
         'AddCityColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
         'AddCompanyEmailToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_08_10_184054_add_company_email_to_settings.php',
@@ -720,6 +721,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Controllers\\Product\\GroupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/GroupController.php',
         'App\\Http\\Controllers\\Product\\PlanController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/PlanController.php',
         'App\\Http\\Controllers\\Product\\ProductController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/ProductController.php',
+        'App\\Http\\Controllers\\Product\\ProductTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/ProductTypeController.php',
         'App\\Http\\Controllers\\Product\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/Product/ServiceController.php',
         'App\\Http\\Controllers\\RazorpayController' => __DIR__ . '/../..' . '/app/Http/Controllers/RazorpayController.php',
         'App\\Http\\Controllers\\ServiceProvider\\ServiceProviderController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServiceProvider/ServiceProviderController.php',
@@ -793,6 +795,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Model\\Product\\ProductBundleRelation' => __DIR__ . '/../..' . '/app/Model/Product/ProductBundleRelation.php',
         'App\\Model\\Product\\ProductCategory' => __DIR__ . '/../..' . '/app/Model/Product/ProductCategory.php',
         'App\\Model\\Product\\ProductGroup' => __DIR__ . '/../..' . '/app/Model/Product/ProductGroup.php',
+        'App\\Model\\Product\\ProductType' => __DIR__ . '/../..' . '/app/Model/Product/ProductType.php',
         'App\\Model\\Product\\ProductUpload' => __DIR__ . '/../..' . '/app/Model/Product/ProductUpload.php',
         'App\\Model\\Product\\Service' => __DIR__ . '/../..' . '/app/Model/Product/Service.php',
         'App\\Model\\Product\\Subscription' => __DIR__ . '/../..' . '/app/Model/Product/Subscription.php',

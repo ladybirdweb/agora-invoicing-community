@@ -99,12 +99,11 @@ class ExtendedBaseInvoiceController extends Controller
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
             $payment_status= "success";
-            $payment = $this->updateForMultiplePayment($clientid,$invoiceChecked, $payment_method,
+            $payment = $this->multiplePayment($clientid,$invoiceChecked, $payment_method,
              $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status);
             $response = ['type' => 'success', 'message' => 'Payment Updated Successfully', ];
                return response()->json($response);
-        } catch (\Exception $e) {
-            dd($e);
+        } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -114,12 +113,13 @@ class ExtendedBaseInvoiceController extends Controller
 
     }
 
-    public function updateForMultiplePayment($clientid,$invoiceChecked, $payment_method,
+    public function multiplePayment($clientid,$invoiceChecked, $payment_method,
              $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status)
     {
        try {
         foreach ($invoiceChecked as $key => $value) {
-            if($key != 0){
+            dd($key);
+            if($key != 0){//If Payment is linked to Invoice
         $invoice = Invoice::find($value);
         $invoice_status = 'pending';
         $payment = Payment::where('invoice_id',$value)->create([
@@ -143,17 +143,50 @@ class ExtendedBaseInvoiceController extends Controller
                 $invoice->save();
             }
         }
+        else{//If Payment is not linked to any invoice and is to be credited to User Accunt
+            $payment = Payment::create([
+                'invoice_id'     => $value,
+                'user_id'       => $clientid,
+                'amount'         =>$totalAmt,
+                'payment_method' => $payment_method,
+                'payment_status' => $payment_status,
+                'created_at'     => $payment_date,
+            ]);
+        }
 
     }
     return $payment;
            
        } catch (Exception $e) {
-        dd($e);
-           app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
        }
+    }
+
+    public function updateNewMultiplePayment($clientid , Request $request)
+    {
+        try {
+            $payment_date = $request->payment_date;
+            $payment_method = $request->payment_method;
+            $totalAmt=$request->totalAmt;
+            $invoiceChecked = $request->invoiceChecked;
+            $invoicAmount = $request->invoiceAmount;
+            $amtToCredit = $request->amtToCredit;
+            $payment_status= "success";
+            $payment = $this->multiplePayment($clientid,$invoiceChecked, $payment_method,
+             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status);
+            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully', ];
+               return response()->json($response);
+        } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+
     }
 }

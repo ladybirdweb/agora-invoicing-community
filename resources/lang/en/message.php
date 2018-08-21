@@ -472,6 +472,7 @@ return [
     'plugins'         => 'Plugins',
     'date-of-payment' => 'Date of Payment',
     'amount'          => 'Amount',
+    'extra-amount'    => 'Extra Amount Paid',
 
     /*
      * Category

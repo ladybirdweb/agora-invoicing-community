@@ -275,7 +275,11 @@ User Details
 
                                     <td>{{$payment->amount}}</td>
                                     <td>{{ucfirst($payment->payment_status)}}</td>
-                                    <td><a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash">&nbsp;{{Lang::get('message.delete')}}</i></a></td>
+                                    <td>
+                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs"><i class="fa fa-edit">&nbsp;</i>{{Lang::get('message.edit')}}</a>
+                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs"><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
+                                  
+                                    </td>
                                 </tr>
                                 @empty 
                                 <tr>

@@ -200,6 +200,7 @@ class ClientController extends AdvanceSearchController
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
+            $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
@@ -207,7 +208,7 @@ class ClientController extends AdvanceSearchController
 
             return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency','extraAmt'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
@@ -216,6 +217,25 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+     
+    public function getExtraAmt($userId)
+    {
+        try {
+            $amounts = Payment::where('user_id', $userId)->select('amt_to_credit')->get();
+            $paidSum = 0;
+            foreach ($amounts as $amount) {
+                $paidSum = $paidSum + $amount->amt_to_credit;
+            }
+            return $paidSum;
+        } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
 
     /**
      * Get total Amount paid for a particular invoice.

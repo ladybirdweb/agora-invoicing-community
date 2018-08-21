@@ -208,7 +208,7 @@ class ClientController extends AdvanceSearchController
 
             return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency','extraAmt'));
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
@@ -217,7 +217,7 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-     
+
     public function getExtraAmt($userId)
     {
         try {
@@ -226,6 +226,7 @@ class ClientController extends AdvanceSearchController
             foreach ($amounts as $amount) {
                 $paidSum = $paidSum + $amount->amt_to_credit;
             }
+
             return $paidSum;
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
@@ -235,7 +236,6 @@ class ClientController extends AdvanceSearchController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     /**
      * Get total Amount paid for a particular invoice.

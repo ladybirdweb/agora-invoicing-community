@@ -265,10 +265,10 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     {
         try {
             $cltCont = new \App\Http\Controllers\User\ClientController();
-             $amountReceived = $cltCont->getAmountPaid($id);
+            $amountReceived = $cltCont->getAmountPaid($id);
             $payment = Payment::find($id);
             $clientid = $payment->user_id;
-             $invoice = new Invoice();
+            $invoice = new Invoice();
             $order = new Order();
             $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')->orderBy('created_at', 'desc')->get();
             $cltCont = new \App\Http\Controllers\User\ClientController();
@@ -278,17 +278,13 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $client = $this->user->where('id', $clientid)->first();
             $currency = $client->currency;
             $orders = $order->where('client', $clientid)->get();
-              return view('themes.default1.invoice.editPayment',compact('amountReceived','clientid', 'client', 'invoices',  'orders',
+
+            return view('themes.default1.invoice.editPayment', compact('amountReceived','clientid', 'client', 'invoices',  'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
-
-
-
-
-        
-            
         } catch (Exception $e) {
-             Bugsnag::notifyException($e);
-             return redirect()->back()->with('fails', $e->getMessage());
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 

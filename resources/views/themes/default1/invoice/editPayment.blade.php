@@ -1,13 +1,13 @@
    @extends('themes.default1.layouts.master')
     @section('content-header')
     <h1>
-    Create New Payment
+    {{Lang::get('message.edit-payment')}}
     </h1>
       <ol class="breadcrumb">
             <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
             <li><a href="{{url('clients')}}">All Users</a></li>
             <li><a href="{{url('clients/'.$clientid)}}">View User</a></li>
-            <li class="active">New Payment</li>
+            <li class="active">Edit Payment</li>
           </ol>
     @stop
     @section('content')
@@ -99,15 +99,16 @@
     </div>
   </div>
     <div class= "box box-primary">
-        
+       
                         <div class="box-body">
+                          <h4>{{Lang::get('message.link')}}</h4>
                         <div class="row">
-
+                          
                             <div class="col-md-12">
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" id="select_all" onchange="checking(this)" class="main"></th>
+                                          
                                             <th>{{Lang::get('message.date')}}</th>
                                             <th>{{Lang::get('message.invoice_number')}}</th>
                                             <th>{{Lang::get('message.total')}}</th>
@@ -295,7 +296,19 @@
             $("#submit").html("Save");
           },
           error: function (ex) {
- // console.log(ex)
+               var errors = ex.responseJSON;
+               $('#error1').show();
+            var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Alert! </strong>'+ex.responseJSON.message+' <br><ul>';
+             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            for (var key in ex.responseJSON.errors)
+            {
+                html += '<li>' + ex.responseJSON.errors[key][0] + '</li>'
+            }
+            html += '</ul></div>';
+             $('#alertMessage').hide(); 
+             $('#error1').show();
+             document.getElementById('error1').innerHTML = html;
+
            
           }
     }) 

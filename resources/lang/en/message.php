@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'home'                   => 'Home', 
     'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',
     'delete'                 => 'Delete',
@@ -100,6 +101,7 @@ return [
     /*
      * Settings
      */
+    'settings'                                                     => 'Settings',
     'fav-title-admin'                                              => 'Favicon Title(Admin Panel)',
      'fav-title-client'                                            => 'Favicon Title(Client Panel)',
     'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
@@ -478,6 +480,8 @@ return [
     'date-of-payment' => 'Date of Payment',
     'amount'          => 'Amount',
     'extra-amount'    => 'Extra Amount Paid',
+    'link'            => 'Link with Invoice',
+    'edit-payment'    =>  'Edit Payment',
 
     /*
      * Category
@@ -495,5 +499,13 @@ return [
       'create-type'=> 'Create New Product Type',
       'type-name'  => 'Product Type',
       'edit-type'  => 'Edit Product Type',
+
+      /*
+     * Chat Script
+     */
+      'chat-script'    => 'Chat Script',
+      'create-chat-script'=>'Create Chat Script',
+      'script'            => 'Script',
+      'edit-chat-script'  => 'Edit Chat Script'
 
 ];

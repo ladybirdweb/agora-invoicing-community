@@ -1,15 +1,15 @@
 @extends('themes.default1.layouts.master')
 @section('title')
-Templates
+Chat
 @stop
 @section('content-header')
 <h1>
-Templates
+{{Lang::get('message.chat-script')}}
 </h1>
   <ol class="breadcrumb">
-        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li><a href="{{url('settings')}}">Settings</a></li>
-        <li class="active">Template</li>
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> {{Lang::get('message.home')}}</a></li>
+        <li><a href="{{url('settings')}}">{{Lang::get('message.settings')}}</a></li>
+        <li class="active">{{Lang::get('message.chat-script')}}</li>
       </ol>
 @stop
 @section('content')
@@ -47,7 +47,7 @@ Templates
         @endif
         <div id="response"></div>
         <h4>
-            <a href="{{url('templates/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+            <a href="{{url('chat/create')}}" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
     </div>
 
 
@@ -56,33 +56,16 @@ Templates
         <div class="row">
 
             <div class="col-md-12">
-                <table id="templates-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
+                <table id="script-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                  <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;Delete Selected</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                          <th>Name</th>
-                          <th>Type</th>
-                           <th>Action</th>
+                          <th>Action</th>
                         </tr></thead>
                      </table>
             
-                <script>
-                    $('#delete').click(function () {
-                        $.ajax({
-                            url: "addons-delete",
-                            type: "GET",
-                            data: $('#check:checked').serialize(),
-                            beforeSend: function () {
-                                $('#gif').show();
-                            },
-                            success: function (data) {
-                                $('#gif').hide();
-                                $('#response').html(data);
-                                location.reload();
-                            }
-                        });
-                    });
-                </script>
+               
             </div>
         </div>
 
@@ -93,10 +76,10 @@ Templates
 <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
-        $('#templates-table').DataTable({
+        $('#script-table').DataTable({
             processing: true,
             serverSide: true,
-            ajax: '{!! route('get-templates') !!}',
+            ajax: '{!! route('get-script') !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -113,8 +96,8 @@ Templates
             columns: [
                  {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
-                {data: 'type', name: 'Type'},
-                {data: 'action', name: 'Action'}
+                
+                {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {
                 $('.loader').css('display', 'none');
@@ -131,7 +114,7 @@ Templates
 <script>
      function checking(e){
           
-          $('#templates-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
+          $('#script-table').find("td input[type='checkbox']").prop('checked', $(e).prop('checked'));
      }
      
 
@@ -139,13 +122,13 @@ Templates
       var id=[];
       if (confirm("Are you sure you want to delete this?"))
         {
-            $('.template_checkbox:checked').each(function(){
+            $('.chat_checkbox:checked').each(function(){
               id.push($(this).val())
             });
             if(id.length >0)
             {
                $.ajax({
-                      url:"{!! route('templates-delete') !!}",
+                      url:"{!! route('script-delete') !!}",
                       method:"get",
                       data: $('#check:checked').serialize(),
                       beforeSend: function () {

@@ -279,7 +279,10 @@ User Details
                                     <td>{{ucfirst($payment->payment_status)}}</td>
                                     <td>
                                         <input type="hidden" class="paymentid" value="{{$payment->id}}">
-                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit">&nbsp;</i>{{Lang::get('message.edit')}}</a>
+                                        @if($payment->invoice_id == 0)
+                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit">&nbsp;</i>
+                                          {{Lang::get('message.link')}}</a>
+                                          @endif
                                           <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs"><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
                                   
                                     </td>

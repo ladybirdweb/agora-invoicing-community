@@ -288,7 +288,14 @@
         Route::get('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
         Route::get('testcart', 'Common\TemplateController@cartesting');
+         
 
+        /*
+         * Chat Script
+         */
+         Route::resource('chat', 'Common\ChatScriptController');
+          Route::get('get-script', ['as' => 'get-script', 'uses' => 'Common\ChatScriptController@getScript']);
+          Route::get('script-delete', 'Common\ChatScriptController@destroy')->name('script-delete');
         /*
          * Invoices
          */

@@ -185,6 +185,17 @@ class ExtendedBaseInvoiceController extends Controller
     */
     public function updateNewMultiplePayment($clientid , Request $request)
     {
+         $this->validate($request, [
+        'payment_date' => 'required',
+        'payment_method'=> 'required',
+        'totalAmt'  => 'required|numeric',
+        'invoiceChecked'=>'required'
+        ],
+        [
+        'invoiceChecked.required' => 'Please link the amount with at least one Invoice',
+        ]
+        );
+   
         try {
             $payment_date = $request->payment_date;
             $payment_method = $request->payment_method;
@@ -201,8 +212,8 @@ class ExtendedBaseInvoiceController extends Controller
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
+            $result = [$ex->getMessage()];
+            return response()->json(compact('result'), 500);
         }
 
     }

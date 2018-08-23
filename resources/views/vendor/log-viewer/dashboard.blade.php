@@ -1,8 +1,21 @@
 @extends('log-viewer::_template.master')
-
+@section('title')
+Log-Viewer
+@stop
+@section('content-header')
+<h1>
+Log-Viewer
+</h1>
+<ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">Error Logs</li>
+      </ol>
+      @stop
 @section('content')
-    <h1 class="page-header">Dashboard</h1>
-
+   
+  <div class="box box-primary">
+    <div class="box-body">
     <div class="row">
         <div class="col-md-3">
             <canvas id="stats-doughnut-chart" height="300"></canvas>
@@ -33,6 +46,8 @@
             </section>
         </div>
     </div>
+</div>
+</div>  
 @endsection
 
 @section('scripts')

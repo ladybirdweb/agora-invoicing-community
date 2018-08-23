@@ -360,16 +360,16 @@ return [
     /*
      * Invoices
      */
-    'create-invoice'=> 'Create New Invoice',
-    'invoice'       => 'Invoice',
-    'invoices'      => 'Invoices',
-    'edit-invoice'  => 'Edit Invoice',
-    'balance'       => 'Balance',
-    'extra'         => 'Extra Amount Paid',
+    'create-invoice' => 'Create New Invoice',
+    'invoice'        => 'Invoice',
+    'invoices'       => 'Invoices',
+    'edit-invoice'   => 'Edit Invoice',
+    'balance'        => 'Balance',
+    'extra'          => 'Extra Amount Paid',
     'invoice/payment'=> 'Invoice/Payment',
     'invoice-total'  => 'Invoice Total',
     'total-amt'      => 'Total Amount Paid',
- 
+
     /*
      * Licence
      */

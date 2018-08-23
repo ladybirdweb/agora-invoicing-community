@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
-use Exception;
-use Log;
 use Bugsnag;
+use Exception;
 use Illuminate\Http\Request;
+use Log;
 
 class ExtendedBaseInvoiceController extends Controller
 {
@@ -65,13 +65,13 @@ class ExtendedBaseInvoiceController extends Controller
     public function edit($invoiceid, Request $request)
     {
         $totalSum = '0';
-        $invoice = Invoice::where('id',$invoiceid)->first();
-        $payment = Payment::where('invoice_id',$invoiceid)->pluck('amount')->toArray();
-        if($payment){
-        $totalSum = array_sum($payment);
-    }
-        return view('themes.default1.invoice.editInvoice',compact('userid','invoiceid','invoice','totalSum'));
+        $invoice = Invoice::where('id', $invoiceid)->first();
+        $payment = Payment::where('invoice_id', $invoiceid)->pluck('amount')->toArray();
+        if ($payment) {
+            $totalSum = array_sum($payment);
+        }
 
+        return view('themes.default1.invoice.editInvoice', compact('userid', 'invoiceid', 'invoice', 'totalSum'));
     }
 
     public function postEdit($invoiceid, Request $request)
@@ -94,24 +94,26 @@ class ExtendedBaseInvoiceController extends Controller
         }
     }
 
-    public function postNewMultiplePayment($clientid , Request $request)
+    public function postNewMultiplePayment($clientid, Request $request)
     {
         $this->validate($request, [
-        'payment_date' => 'required',
+        'payment_date'  => 'required',
         'payment_method'=> 'required',
-        'totalAmt'  => 'required|numeric',
+        'totalAmt'      => 'required|numeric',
         ]);
+
         try {
             $payment_date = $request->payment_date;
             $payment_method = $request->payment_method;
-            $totalAmt=$request->totalAmt;
+            $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
-            $payment_status= "success";
+            $payment_status = 'success';
             $payment = $this->multiplePayment($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status);
-            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully', ];
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
+            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
+
             return response()->json($response);
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
@@ -124,79 +126,77 @@ class ExtendedBaseInvoiceController extends Controller
 
             // return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
 
     public function multiplePayment($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status)
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
-       try {
-        foreach ($invoiceChecked as $key => $value) {
-            if($key != 0){//If Payment is linked to Invoice
-        $invoice = Invoice::find($value);
-        $invoice_status = 'pending';
-        $payment = Payment::where('invoice_id',$value)->create([
+        try {
+            foreach ($invoiceChecked as $key => $value) {
+                if ($key != 0) {//If Payment is linked to Invoice
+                    $invoice = Invoice::find($value);
+                    $invoice_status = 'pending';
+                    $payment = Payment::where('invoice_id', $value)->create([
                 'invoice_id'     => $value,
-                'user_id'       => $clientid,
-                'amount'         =>$invoicAmount[$key],
-                'amt_to_credit'  =>$amtToCredit,
+                'user_id'        => $clientid,
+                'amount'         => $invoicAmount[$key],
+                'amt_to_credit'  => $amtToCredit,
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $totalPayments = $this->payment
+                    $totalPayments = $this->payment
             ->where('invoice_id', $value)
             ->where('payment_status', 'success')
             ->pluck('amount')->toArray();
-            $total_paid = array_sum($totalPayments);
-            if ($total_paid >= $invoice->grand_total) {
-                $invoice_status = 'success';
-            }
-            if ($invoice) {
-                $invoice->status = $invoice_status;
-                $invoice->save();
-            }
-        }
-        else{//If Payment is not linked to any invoice and is to be credited to User Accunt
-            $payment = Payment::create([
+                    $total_paid = array_sum($totalPayments);
+                    if ($total_paid >= $invoice->grand_total) {
+                        $invoice_status = 'success';
+                    }
+                    if ($invoice) {
+                        $invoice->status = $invoice_status;
+                        $invoice->save();
+                    }
+                } else {//If Payment is not linked to any invoice and is to be credited to User Accunt
+                    $payment = Payment::create([
                 'invoice_id'     => $value,
-                'user_id'       => $clientid,
-                'amt_to_credit'  =>$amtToCredit,
+                'user_id'        => $clientid,
+                'amt_to_credit'  => $amtToCredit,
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-        }
+                }
+            }
 
-    }
-    return $payment;
-           
-       } catch (Exception $e) {
+            return $payment;
+        } catch (Exception $e) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
-       }
+        }
     }
-    
-     /*
+
+    /*
     * Editing  and Updating the Payment By linking with Invoice
     */
-    public function updateNewMultiplePayment($clientid , Request $request)
+    public function updateNewMultiplePayment($clientid, Request $request)
     {
         try {
             $payment_date = $request->payment_date;
             $payment_method = $request->payment_method;
-            $totalAmt=$request->totalAmt;
+            $totalAmt = $request->totalAmt;
             $invoiceChecked = $request->invoiceChecked;
             $invoicAmount = $request->invoiceAmount;
             $amtToCredit = $request->amtToCredit;
-            $payment_status= "success";
+            $payment_status = 'success';
             $payment = $this->updatePaymentByInvoice($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status);
-            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully', ];
-               return response()->json($response);
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status);
+            $response = ['type' => 'success', 'message' => 'Payment Updated Successfully'];
+
+            return response()->json($response);
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
@@ -204,42 +204,40 @@ class ExtendedBaseInvoiceController extends Controller
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
-    
-    
+
     public function updatePaymentByInvoice($clientid,$invoiceChecked, $payment_method,
-             $payment_date, $totalAmt,$invoicAmount,$amtToCredit,$payment_status)
+             $payment_date, $totalAmt, $invoicAmount, $amtToCredit, $payment_status)
     {
-       try {
-        $sum = 0 ;
-        foreach ($invoiceChecked as $key => $value) {
-            if($key != 0){//If Payment is linked to Invoice
-        $invoice = Invoice::find($value);
-        Payment::where('user_id', $clientid)->where('invoice_id',0)->update(['amt_to_credit'=>$amtToCredit]);
-        $invoice_status = 'pending';
-        $payment = Payment::create([
+        try {
+            $sum = 0;
+            foreach ($invoiceChecked as $key => $value) {
+                if ($key != 0) {//If Payment is linked to Invoice
+                    $invoice = Invoice::find($value);
+                    Payment::where('user_id', $clientid)->where('invoice_id', 0)->update(['amt_to_credit'=>$amtToCredit]);
+                    $invoice_status = 'pending';
+                    $payment = Payment::create([
                 'invoice_id'     => $value,
-                'user_id'       => $clientid,
-                'amount'         =>$invoicAmount[$key],
+                'user_id'        => $clientid,
+                'amount'         => $invoicAmount[$key],
                 'payment_method' => $payment_method,
                 'payment_status' => $payment_status,
                 'created_at'     => $payment_date,
             ]);
-            $totalPayments = $this->payment
+                    $totalPayments = $this->payment
             ->where('invoice_id', $value)
             ->where('payment_status', 'success')
             ->pluck('amount')->toArray();
-            $total_paid = array_sum($totalPayments);
-            if ($total_paid >= $invoice->grand_total) {
-                $invoice_status = 'success';
-            }
-            if ($invoice) {
-                $invoice->status = $invoice_status;
-                $invoice->save();
-            }
-        }
-        // else{//If Payment is not linked to any invoice and is to be credited to User Accunt
+                    $total_paid = array_sum($totalPayments);
+                    if ($total_paid >= $invoice->grand_total) {
+                        $invoice_status = 'success';
+                    }
+                    if ($invoice) {
+                        $invoice->status = $invoice_status;
+                        $invoice->save();
+                    }
+                }
+                // else{//If Payment is not linked to any invoice and is to be credited to User Accunt
         //     dd('as');
         //     $payment = Payment::create([
         //         'invoice_id'     => $value,
@@ -251,17 +249,16 @@ class ExtendedBaseInvoiceController extends Controller
         //         'created_at'     => $payment_date,
         //     ]);
         // }
+            }
 
-    }
-    return $payment;
-           
-       } catch (Exception $e) {
-        dd($e);
+            return $payment;
+        } catch (Exception $e) {
+            dd($e);
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
-       }
+        }
     }
 }

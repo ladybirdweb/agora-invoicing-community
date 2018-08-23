@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateChatScriptsTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreateChatScriptsTable extends Migration
     {
         Schema::create('chat_scripts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',255)->nullable();
+            $table->string('name', 255)->nullable();
             $table->text('script', 16777215)->nullable();
             $table->timestamps();
         });

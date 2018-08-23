@@ -7,7 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class ChatScript extends Model
 {
     protected $table = 'chat_scripts';
-    protected $fillable = ['name','script'];
-
-   
+    protected $fillable = ['name', 'script'];
 }

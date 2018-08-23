@@ -75,7 +75,8 @@ User Details
             
             <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$currency }}{{$invoiceSum}}</h6> 
             <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$currency }} {{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">Balance </span><br>{{$currency }} {{$pendingAmount}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$currency }} {{$pendingAmount}}</h6> 
+             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$currency }} {{$extraAmt}}</h6> 
           
         </div>
      
@@ -218,7 +219,7 @@ User Details
                                                     @if($invoice->status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
                                                     @endif
-                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice')}}</a></li>
+                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice/payment')}}</a></li>
                                                      <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
 
                                                      <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
@@ -263,7 +264,7 @@ User Details
                             <tbody>
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
-                                    <td>
+                                    <td class="invoice-no">
                                         @if($payment->invoice()->first())
                                         {{($payment->invoice()->first()->number)}}
                                         @endif
@@ -273,10 +274,12 @@ User Details
                                         {{ucfirst($payment->payment_method)}}
                                     </td>
 
-                                    <td>{{$payment->amount}}</td>
+                                    <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
+                                     
                                     <td>{{ucfirst($payment->payment_status)}}</td>
                                     <td>
-                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs"><i class="fa fa-edit">&nbsp;</i>{{Lang::get('message.edit')}}</a>
+                                        <input type="hidden" class="paymentid" value="{{$payment->id}}">
+                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit">&nbsp;</i>{{Lang::get('message.edit')}}</a>
                                           <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs"><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
                                   
                                     </td>
@@ -555,7 +558,24 @@ User Details
 
         });
     });
+</script>
+<script>
+    $(".payment-total").blur(function (){
+        var id = $(this).attr("data-count");
+        var data = $(this).text().trim();
 
+        $.ajax({
+        type: "GET",
+                url: "{{route('change-paymentTotal')}}",
+                data: {'total':data,'id':id},
+                success: function () {
+                    alert('Payment Total Updated');
+                },
+                error: function () {
+                    alert('Invalid URL');
+                }
 
+        });
+    })
 </script>
 @stop

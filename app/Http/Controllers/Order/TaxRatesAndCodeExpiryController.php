@@ -270,10 +270,11 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $clientid = $payment->user_id;
              $invoice = new Invoice();
             $order = new Order();
-            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')->orderBy('created_at', 'desc')->get();
+            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')
+            ->orderBy('created_at', 'desc')->get();
             $cltCont = new \App\Http\Controllers\User\ClientController();
             $invoiceSum = $cltCont->getTotalInvoice($invoices);
-            $amountReceived = $cltCont->getAmountPaid($clientid);
+            $amountReceived = $cltCont->getExtraAmt($clientid);
             $pendingAmount = $invoiceSum - $amountReceived;
             $client = $this->user->where('id', $clientid)->first();
             $currency = $client->currency;

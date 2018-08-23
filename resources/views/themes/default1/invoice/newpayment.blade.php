@@ -13,8 +13,7 @@
     @section('content')
     <div class="box box-primary">
     	 <div class="box-header">
-          <div id="alertMessage"></div>
-                    <div id="error1">
+          
             @if (count($errors) > 0)
                     <div class="alert alert-danger">
                          <i class="fa fa-alert"></i>
@@ -45,7 +44,8 @@
                         {{Session::get('fails')}}
                     </div>
                     @endif
-          
+           <div id="alertMessage"></div>
+           <div id="error1"></div>
             <h4>{{Lang::get('message.new-payment')}} <button type="submit" class="form-group btn btn-primary pull-right" onclick="multiplePayment()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
         </div>
@@ -106,7 +106,7 @@
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                            <th><input type="checkbox" id="select_all" onchange="checking(this)" class="main"></th>
+                                          
                                             <th>{{Lang::get('message.date')}}</th>
                                             <th>{{Lang::get('message.invoice_number')}}</th>
                                             <th>{{Lang::get('message.total')}}</th>
@@ -289,15 +289,28 @@
           success: function (response) {
             $('#alertMessage').show();
             // console.log(response)
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-thumbs-up"></i> Well Done! </strong>'+response.message+'.</div>';
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit").html("Save");
+            $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
           },
           error: function (ex) {
- // console.log(ex)
+            var errors = ex.responseJSON;
+               $('#error1').show();
+            var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Alert! </strong>'+ex.responseJSON.message+' <br><ul>';
+             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            for (var key in ex.responseJSON.errors)
+            {
+                html += '<li>' + ex.responseJSON.errors[key][0] + '</li>'
+            }
+            html += '</ul></div>';
+             $('#alertMessage').hide(); 
+             // $('#alertMessage2').hide();
+            $('#error1').show();
+             document.getElementById('error1').innerHTML = html;
+
            
           }
-    }) 
+    }); 
   }
  </script>
 

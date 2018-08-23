@@ -200,6 +200,10 @@ class ClientController extends AdvanceSearchController
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
+            if($pendingAmount < 0 )
+            {
+                $pendingAmount = 0;
+            }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
             $currency = $client->currency;
@@ -221,7 +225,7 @@ class ClientController extends AdvanceSearchController
     public function getExtraAmt($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)->select('amt_to_credit')->get();
+            $amounts = Payment::where('user_id', $userId)->where('invoice_id',0)->select('amt_to_credit')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
                 $paidSum = $paidSum + $amount->amt_to_credit;

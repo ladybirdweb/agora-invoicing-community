@@ -97,6 +97,7 @@
 
 
     </div>
+  </div>
     <div class= "box box-primary">
         
                         <div class="box-body">
@@ -284,7 +285,7 @@
         };
     $.ajax({
       url: '{{url('newMultiplePayment/update/'.$clientid)}}',
-      type: 'PATCH',
+      type: 'POST',
       data: data,
           success: function (response) {
             $('#alertMessage').show();

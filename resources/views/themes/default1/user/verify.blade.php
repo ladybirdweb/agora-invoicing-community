@@ -613,7 +613,6 @@ main
                                             $('#alertMessage1').css('color', 'green');
                                     
                                         }).error(function (data,status) {
-                                           console.log(data)
                                             $scope.msg2 = true;
                                             var res = "";
                                             $("#verifyOTP").html("Verify OTP");

@@ -307,6 +307,8 @@
 
         Route::get('change-invoiceTotal', ['as' => 'change-invoiceTotal',
             'uses'                              => 'Order\InvoiceController@invoiceTotalChange', ]);
+        Route::get('change-paymentTotal', ['as' => 'change-paymentTotal',
+            'uses'                              => 'Order\InvoiceController@paymentTotalChange', ]);
 
         /*
          * Payment
@@ -319,7 +321,7 @@
         Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
         Route::get('payments/{id}/edit', 'Order\InvoiceController@paymentEditById');
         Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
-         Route::patch('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
+         Route::post('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
 
         /*
          * Subscriptions

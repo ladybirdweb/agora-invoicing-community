@@ -329,45 +329,43 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     */
     public function paymentTotalChange(Request $request)
     {
-       try{
-        $invoice = new Invoice();
-        $total = $request->input('total');
-        if ($total == '') {
-            $total = 0;
-        }
-        $paymentid = $request->input('id');
-        $creditAmtUserId = $this->payment->where('id',$paymentid)->value('user_id');
-        $creditAmt = $this->payment->where('user_id',$creditAmtUserId)
-        ->where('invoice_id','=',0)->value('amt_to_credit');
-        $invoices = $invoice->where('user_id',$creditAmtUserId)->orderBy('created_at', 'desc')->get();
-        $cltCont = new \App\Http\Controllers\User\ClientController();
-        $invoiceSum = $cltCont->getTotalInvoice($invoices); 
-        if ($total > $invoiceSum)
-        {
-            $diff = $total - $invoiceSum ;
-            $creditAmt = $creditAmt + $diff;
-            $total = $invoiceSum;
-        }
-        $payment = $this->payment->where('id', $paymentid)->update(['amount'=>$total]);
-        
-        $creditAmtInvoiceId = $this->payment->where('user_id',$creditAmtUserId)
-        ->where('invoice_id','!=',0)->first();
-        $invoiceId = $creditAmtInvoiceId->invoice_id;
-        $invoice = $invoice->where('id',$invoiceId)->first();
-        $grand_total = $invoice->grand_total;
-        $diffSum = $grand_total - $total;
-       
-        $finalAmt = $creditAmt + $diffSum;
-        $updatedAmt = $this->payment->where('user_id',$creditAmtUserId)
-        ->where('invoice_id','=',0)->update(['amt_to_credit'=>$creditAmt]);
-        
-     }catch(\Exception $ex){
-         app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+        try {
+            $invoice = new Invoice();
+            $total = $request->input('total');
+            if ($total == '') {
+                $total = 0;
+            }
+            $paymentid = $request->input('id');
+            $creditAmtUserId = $this->payment->where('id', $paymentid)->value('user_id');
+            $creditAmt = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '=', 0)->value('amt_to_credit');
+            $invoices = $invoice->where('user_id', $creditAmtUserId)->orderBy('created_at', 'desc')->get();
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $invoiceSum = $cltCont->getTotalInvoice($invoices);
+            if ($total > $invoiceSum) {
+                $diff = $total - $invoiceSum;
+                $creditAmt = $creditAmt + $diff;
+                $total = $invoiceSum;
+            }
+            $payment = $this->payment->where('id', $paymentid)->update(['amount'=>$total]);
+
+            $creditAmtInvoiceId = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '!=', 0)->first();
+            $invoiceId = $creditAmtInvoiceId->invoice_id;
+            $invoice = $invoice->where('id', $invoiceId)->first();
+            $grand_total = $invoice->grand_total;
+            $diffSum = $grand_total - $total;
+
+            $finalAmt = $creditAmt + $diffSum;
+            $updatedAmt = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '=', 0)->update(['amt_to_credit'=>$creditAmt]);
+        } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails',$ex->getMessage());
-     }
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function sendmailClientAgent($userid, $invoiceid)

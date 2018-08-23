@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
-use App\Model\Common\ChatScript;
 use App\Http\Controllers\Controller;
+use App\Model\Common\ChatScript;
+use Illuminate\Http\Request;
 
 class ChatScriptController extends Controller
 {
@@ -15,8 +15,8 @@ class ChatScriptController extends Controller
 
         $script = new ChatScript();
         $this->script = $script;
-
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -26,11 +26,11 @@ class ChatScriptController extends Controller
     {
         return view('themes.default1.common.chat.index');
     }
-    
+
     public function getScript()
     {
-        try{
-        return \DataTables::of($this->script->get())
+        try {
+            return \DataTables::of($this->script->get())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='chat_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
@@ -39,7 +39,7 @@ class ChatScriptController extends Controller
                          ->addColumn('name', function ($model) {
                              return $model->name;
                          })
-                        
+
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('chat/'.$model->id.'/edit').
                             " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
@@ -47,12 +47,12 @@ class ChatScriptController extends Controller
                         })
                         ->rawColumns(['checkbox', 'name',  'action'])
                         ->make(true);
-                    }catch (Exception $ex){
-                        dd($ex->getLine());
-                        return redirect()->back()->with('fails',$ex->getMessage());
-                    }
-    }
+        } catch (Exception $ex) {
+            dd($ex->getLine());
 
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -61,60 +61,67 @@ class ChatScriptController extends Controller
      */
     public function create()
     {
-         return view('themes.default1.common.chat.create');
+        return view('themes.default1.common.chat.create');
     }
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
-        $this->validate($request,[
-        'name' =>'required',
-        'script'=>'required',
+        $this->validate($request, [
+        'name'  => 'required',
+        'script'=> 'required',
         ]);
+
         try {
             $this->script->fill($request->input())->save();
-             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+
+            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (Exception $e) {
             Bugsnag::notifyException($ex);
-             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-   
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
     {
-       $chat = $this->script->where('id',$id)->first(); 
-       return view('themes.default1.common.chat.edit',compact('chat'));
+        $chat = $this->script->where('id', $id)->first();
+
+        return view('themes.default1.common.chat.edit', compact('chat'));
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-          $this->validate($request, [
-            'name' => 'required',
+        $this->validate($request, [
+            'name'   => 'required',
             'script' => 'required',
-            
+
         ]);
-            try {
+
+        try {
             $script = $this->script->where('id', $id)->first();
             $script->fill($request->input())->save();
 
@@ -124,13 +131,13 @@ class ChatScriptController extends Controller
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)

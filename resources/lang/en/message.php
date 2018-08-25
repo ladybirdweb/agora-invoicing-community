@@ -17,7 +17,7 @@ return [
     /*
      * Common for all
      */
-    'home'                   => 'Home', 
+    'home'                   => 'Home',
     'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',
     'delete'                 => 'Delete',
@@ -481,7 +481,7 @@ return [
     'amount'          => 'Amount',
     'extra-amount'    => 'Extra Amount Paid',
     'link'            => 'Link with Invoice',
-    'edit-payment'    =>  'Edit Payment',
+    'edit-payment'    => 'Edit Payment',
 
     /*
      * Category
@@ -503,9 +503,9 @@ return [
       /*
      * Chat Script
      */
-      'chat-script'    => 'Chat Script',
-      'create-chat-script'=>'Create Chat Script',
+      'chat-script'       => 'Chat Script',
+      'create-chat-script'=> 'Create Chat Script',
       'script'            => 'Script',
-      'edit-chat-script'  => 'Edit Chat Script'
+      'edit-chat-script'  => 'Edit Chat Script',
 
 ];

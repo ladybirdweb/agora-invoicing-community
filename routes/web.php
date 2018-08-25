@@ -288,7 +288,6 @@
         Route::get('templates-delete', 'Common\TemplateController@destroy')->name('templates-delete');
         Route::get('testmail/{id}', 'Common\TemplateController@mailtest');
         Route::get('testcart', 'Common\TemplateController@cartesting');
-         
 
         /*
          * Chat Script

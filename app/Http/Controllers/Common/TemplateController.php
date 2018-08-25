@@ -301,25 +301,25 @@ class TemplateController extends BaseTemplateController
                         $m->attach($file['path'], $options = []);
                     }
                 }
-
             });
-             \DB::table('email_log')->insert([
+            \DB::table('email_log')->insert([
                 'date' => date('Y-m-d H:i:s'),
-            'from' => $from,
-            'to' => $to,
+            'from'     => $from,
+            'to'       => $to,
              'subject' => $subject,
-            'body' => $data,
-          'status' => 'success',
+            'body'     => $data,
+          'status'     => 'success',
           ]);
+
             return 'success';
         } catch (\Exception $ex) {
             \DB::table('email_log')->insert([
-            'date' => date('Y-m-d H:i:s'),
-            'from' => $from,
-            'to' => $to,
+            'date'     => date('Y-m-d H:i:s'),
+            'from'     => $from,
+            'to'       => $to,
              'subject' => $subject,
-            'body' => $data,
-          
+            'body'     => $data,
+
             'status' => 'failed',
         ]);
             Bugsnag::notifyException($ex);

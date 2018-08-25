@@ -1,0 +1,7 @@
+[2018-08-24 07:11:39] local.INFO: We can not reach to this email address  
+[2018-08-24 09:11:29] local.INFO: We can not reach to this email address  
+[2018-08-24 09:13:25] local.INFO: mailing problem  
+[2018-08-24 09:17:13] local.INFO: mailing problem  
+[2018-08-24 09:27:11] local.INFO: mailing problem  
+[2018-08-24 09:28:56] local.INFO: mailing problem  
+[2018-08-24 13:59:37] local.INFO: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'ashutosh.pathak@ladybirdweb.com' for key 'users_email_unique' (SQL: update `users` set `first_name` = Ashutosh, `last_name` = Pathakds, `email` = ashutosh.pathak@ladybirdweb.com, `mobile` = 09901541547, `town` = karnataka, `state` = , `zip` = 560048, `updated_at` = 2018-08-24 13:59:37, `manager` =  where `id` = 160)  

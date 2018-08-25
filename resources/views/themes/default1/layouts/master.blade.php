@@ -54,24 +54,58 @@
   
     border: 1px solid;
     padding: 10px;
-    box-shadow: 5px 10px #888888;
+    box-shadow: 5px 10px white;
  
 }
+#myBar  {
+       background-color: red;
+       width: 100%; /* Adjust with JavaScript */
+       height: 40px;
+       border-radius: 40px;
+    }
+
 
 </style>
+<script type="text/javascript">
+    document.onreadystatechange = function () {
+  var state = document.readyState
+  if (state != 'complete') {
+      move();
+  }
+}
+function move() {
+       
+  $(".w3-green").removeClass("hide");
+  var elem = document.getElementById("myBar");   
+  var width = 1;
+  var id = setInterval(frame, 0);
+  function frame() {
+    if (width >= 100) {
+      clearInterval(id);
+      $(".w3-green").addClass("hide");
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+    }
+  }
+}
+</script>
     </head>
     <?php 
     $set = new \App\Model\Common\Setting();
     $set = $set->findOrFail(1);
     ?>
+        
+
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
     <!-- the fixed layout is not compatible with sidebar-mini -->
     <body class="hold-transition skin-blue sidebar-mini">
-
        <!-- Site wrapper -->
         <div class="wrapper">
 
             <header class="main-header">
+                <div id="myBar" class="w3-green " style="height:3px;width:0"></div>
+
                 <!-- Logo -->
                 <a href="{{url('/')}}" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->

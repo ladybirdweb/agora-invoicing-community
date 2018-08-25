@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Model\Product\ProductCategory;
 use Bugsnag;
 use Illuminate\Http\Request;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {

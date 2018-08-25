@@ -226,7 +226,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         //dd($type);
         $templateController = new \App\Http\Controllers\Common\TemplateController();
         $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-
+       
         return $mail;
     }
 

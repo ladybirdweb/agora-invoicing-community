@@ -726,7 +726,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $user_state = $this->tax_by_state::where('state_code', $geoip_state)->first();
         $origin_state = $this->setting->first()->state; //Get the State of origin
         $cartController = new CartController();
-
         $rate = 0;
         $name1 = 'CGST';
         $name2 = 'SGST';

@@ -334,11 +334,18 @@ class ClientController extends AdvanceSearchController
      */
     public function update($id, Request $request)
     {
+        try{
         $user = $this->user->where('id', $id)->first();
 
         $user->fill($request->input())->save();
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**

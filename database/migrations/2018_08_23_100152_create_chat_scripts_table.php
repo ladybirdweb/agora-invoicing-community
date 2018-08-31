@@ -15,7 +15,7 @@ class CreateChatScriptsTable extends Migration
     {
         Schema::create('chat_scripts', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name',255)->nullable();
+            $table->string('name', 255)->nullable();
             $table->longtext('script', 16777215)->nullable();
             $table->timestamps();
         });

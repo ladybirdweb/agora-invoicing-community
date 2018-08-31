@@ -142,38 +142,38 @@ class CheckoutController extends InfoController
 
     public function getAttributes($content)
     {
-        try{
-        $attributes = [];
-        foreach ($content as $key => $item) {
-            $attributes[] = $item->attributes;
-            $cart_currency = $attributes[0]['currency'][0]['code'];
-            $user_currency = \Auth::user()->currency;
-            $currency = 'INR';
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-            if ($cart_currency != $currency) {
-                $id = $item->id;
-                Cart::remove($id);
-                $controller = new CartController();
-                $items = $controller->addProduct($id);
-                Cart::add($items);
-                //
-            }
+        try {
+            $attributes = [];
+            foreach ($content as $key => $item) {
+                $attributes[] = $item->attributes;
+                $cart_currency = $attributes[0]['currency'][0]['code'];
+                $user_currency = \Auth::user()->currency;
+                $currency = 'INR';
+                if ($user_currency == 1 || $user_currency == 'USD') {
+                    $currency = 'USD';
+                }
+                if ($cart_currency != $currency) {
+                    $id = $item->id;
+                    Cart::remove($id);
+                    $controller = new CartController();
+                    $items = $controller->addProduct($id);
+                    Cart::add($items);
+                    //
+                }
 
-            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-            $require = [];
-            if ($require_domain == 1) {
-                $require[$key] = $item->id;
-            }
+                $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+                $require = [];
+                if ($require_domain == 1) {
+                    $require[$key] = $item->id;
+                }
 
-            return $attributes;
-            //$attributes[] = $item->attributes;
+                return $attributes;
+                //$attributes[] = $item->attributes;
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }catch (\Exception $ex){
-        return redirect()->back()->with('fails',$ex->getMessage());
     }
-   }
 
     public function payNow($invoiceid)
     {

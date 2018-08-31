@@ -76,7 +76,7 @@ class CartController extends BaseCartController
         $state = $this->getStateByCode($state_code);
         $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
         $currency = $cont->getCurrency($location);
-      
+
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
@@ -84,7 +84,7 @@ class CartController extends BaseCartController
 
         try {
             $page_controller = new PageController();
-            
+
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -98,7 +98,7 @@ class CartController extends BaseCartController
 
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
-                 
+
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
@@ -106,12 +106,11 @@ class CartController extends BaseCartController
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items);
-                
             }
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-           return redirect()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -344,14 +343,16 @@ class CartController extends BaseCartController
             ]);
                 }
             }
-             // dd($tax_attribute,$taxCondition);
+            // dd($tax_attribute,$taxCondition);
             $currency_attribute = $this->addCurrencyAttributes($productid);
+
             return ['conditions' => $taxCondition,
             'attributes'         => ['tax' => $tax_attribute,
             'currency'                     => $currency_attribute, ], ];
         } catch (\Exception $ex) {
-          Bugsnag::notifyException($ex);
-          throw new \Exception('Can not check the tax');
+            Bugsnag::notifyException($ex);
+
+            throw new \Exception('Can not check the tax');
         }
     }
 
@@ -485,7 +486,6 @@ class CartController extends BaseCartController
 
         return 'success';
     }
-
 
     /**
      * @param type $id
@@ -768,9 +768,9 @@ class CartController extends BaseCartController
             $result = '';
             if ($rate) {
                 $rate = str_replace('%', '', $rate);
-                $tax = intval($price )* ($rate / 100);
+                $tax = intval($price) * ($rate / 100);
                 $result = $tax;
-                 
+
                 $result = self::rounding($result);
             }
 
@@ -884,8 +884,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
     /**
      * @param type $userid
      *
@@ -929,8 +927,6 @@ class CartController extends BaseCartController
 
         return $currency;
     }
-
-
 
     /**
      * @param type $productid

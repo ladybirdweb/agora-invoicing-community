@@ -123,7 +123,8 @@ class CheckoutController extends InfoController
 
         try {
             $domain = $request->input('domain');
-            if (count($domain) > 0) {
+
+            if ($domain) {
                 foreach ($domain as $key => $value) {
                     \Session::put('domain'.$key, $value);
                 }
@@ -141,6 +142,7 @@ class CheckoutController extends InfoController
 
     public function getAttributes($content)
     {
+        try{
         $attributes = [];
         foreach ($content as $key => $item) {
             $attributes[] = $item->attributes;
@@ -168,7 +170,10 @@ class CheckoutController extends InfoController
             return $attributes;
             //$attributes[] = $item->attributes;
         }
+    }catch (\Exception $ex){
+        return redirect()->back()->with('fails',$ex->getMessage());
     }
+   }
 
     public function payNow($invoiceid)
     {

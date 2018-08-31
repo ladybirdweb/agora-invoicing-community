@@ -111,6 +111,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     public function calculateTotal($rate, $total)
     {
         try {
+            $total = intval($total);
             $rates = explode(',', $rate);
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
@@ -122,11 +123,12 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                     }
                 }
             }
-
+             
             return intval(round($total));
         } catch (\Exception $ex) {
+             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

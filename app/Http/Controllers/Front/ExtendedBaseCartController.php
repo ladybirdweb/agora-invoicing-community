@@ -176,6 +176,7 @@ class ExtendedBaseCartController extends Controller
                                     ->where('currency', $currency)
                                     ->first()
                             ->add_price;
+                            $price = intval($price);
                     $days = $plan->days;
                     $months = $days / 30 / 12;
                     if ($items != null) {
@@ -185,7 +186,7 @@ class ExtendedBaseCartController extends Controller
                     }
                 }
             }
-
+           
             return $cost;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

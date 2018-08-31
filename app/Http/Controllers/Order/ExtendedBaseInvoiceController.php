@@ -157,7 +157,7 @@ class ExtendedBaseInvoiceController extends Controller
                         $invoice->status = $invoice_status;
                         $invoice->save();
                     }
-                } else {//If Payment is not linked to any invoice and is to be credited to User Accunt
+                } elseif(count($invoiceChecked)==1 || $amtToCredit>0) {//If Payment is not linked to any invoice and is to be credited to User Accunt
                     $payment = Payment::create([
                 'invoice_id'     => $value,
                 'user_id'        => $clientid,

@@ -1,7 +1,7 @@
    @extends('themes.default1.layouts.master')
     @section('content-header')
     <h1>
-    {{Lang::get('message.edit-payment')}}
+    {{Lang::get('message.link-extra')}}
     </h1>
       <ol class="breadcrumb">
             <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -261,7 +261,7 @@
     }); 
     
     function multiplePayment(){
-     $("#submit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
     var invoice = [];
     var invoiceAmount = [];
     $(":checked").each(function() {
@@ -291,9 +291,9 @@
           success: function (response) {
             $('#alertMessage').show();
             // console.log(response)
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-thumbs-up"></i> Well Done! </strong>'+response.message+'.</div>';
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
             $('#alertMessage').html(result+ ".");
-            $("#submit").html("Save");
+              $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
           },
           error: function (ex) {
                var errors = ex.responseJSON;
@@ -308,6 +308,7 @@
              $('#alertMessage').hide(); 
              $('#error1').show();
              document.getElementById('error1').innerHTML = html;
+            
 
            
           }

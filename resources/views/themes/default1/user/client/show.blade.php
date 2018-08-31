@@ -31,6 +31,8 @@ User Details
         </div>
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+             <i class="fa fa-check"></i>
+               <b>{{Lang::get('message.success')}}!</b> 
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -216,10 +218,10 @@ User Details
                                                     <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
                                                     @endif
                                                     
-                                                    @if($invoice->status!='success')
+                                                  <!--   @if($invoice->status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
-                                                    @endif
-                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice/payment')}}</a></li>
+                                                    @endif -->
+                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice')}}</a></li>
                                                      <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
 
                                                      <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
@@ -273,7 +275,7 @@ User Details
                                     <td>
                                         {{ucfirst($payment->payment_method)}}
                                     </td>
-
+                          
                                     <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
                                      
                                     <td>{{ucfirst($payment->payment_status)}}</td>

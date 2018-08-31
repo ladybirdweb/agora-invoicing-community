@@ -76,7 +76,7 @@ class CartController extends BaseCartController
         $state = $this->getStateByCode($state_code);
         $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
         $currency = $cont->getCurrency($location);
-
+      
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
@@ -84,7 +84,7 @@ class CartController extends BaseCartController
 
         try {
             $page_controller = new PageController();
-
+            
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -98,21 +98,20 @@ class CartController extends BaseCartController
 
             if ($request->has('subscription')) {
                 $plan = $request->get('subscription');
-
+                 
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
 
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-
-                Cart::add($items);
+                \Cart::add($items);
+                
             }
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            // dd($ex);
-            return redirect()->back()->with('fails', $ex->getMessage());
+           return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -345,16 +344,14 @@ class CartController extends BaseCartController
             ]);
                 }
             }
-
+             // dd($tax_attribute,$taxCondition);
             $currency_attribute = $this->addCurrencyAttributes($productid);
-
             return ['conditions' => $taxCondition,
             'attributes'         => ['tax' => $tax_attribute,
             'currency'                     => $currency_attribute, ], ];
         } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('Can not check the tax');
+          Bugsnag::notifyException($ex);
+          throw new \Exception('Can not check the tax');
         }
     }
 
@@ -489,23 +486,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-    /**
-     * @return type
-     */
-    public function clearCart()
-    {
-        foreach (Cart::getContent() as $item) {
-            if (\Session::has('domain'.$item->id)) {
-                \Session::forget('domain'.$item->id);
-            }
-        }
-        $this->removePlanSession();
-        $renew_control = new \App\Http\Controllers\Order\RenewController();
-        $renew_control->removeSession();
-        Cart::clear();
-
-        return redirect('show/cart');
-    }
 
     /**
      * @param type $id
@@ -788,9 +768,9 @@ class CartController extends BaseCartController
             $result = '';
             if ($rate) {
                 $rate = str_replace('%', '', $rate);
-                $tax = $price * ($rate / 100);
+                $tax = intval($price )* ($rate / 100);
                 $result = $tax;
-
+                 
                 $result = self::rounding($result);
             }
 
@@ -904,29 +884,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @param type $iso
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getMobileCodeByIso($iso)
-    {
-        try {
-            $code = '';
-            if ($iso != '') {
-                $mobile = \DB::table('mobile')->where('iso', $iso)->first();
-                if ($mobile) {
-                    $code = $mobile->phonecode;
-                }
-            }
 
-            return $code;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @param type $userid
@@ -972,37 +930,7 @@ class CartController extends BaseCartController
         return $currency;
     }
 
-    /**
-     * @throws \Exception
-     */
-    public function removePlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                Session::forget('plan');
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkPlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @param type $productid
@@ -1086,7 +1014,7 @@ class CartController extends BaseCartController
                 } else {
                     $months = $days / 30;
                 }
-
+                $price = intval($price);
                 $cost = round($months) * $price;
             }
 

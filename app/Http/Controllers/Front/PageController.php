@@ -277,6 +277,7 @@ class PageController extends GetPageTemplateController
 
     public function cart()
     {
+        try{
         $location = $this->getLocation();
         $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
         $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
@@ -345,4 +346,8 @@ class PageController extends GetPageTemplateController
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
                 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
     }
+    catch (\Exception $ex){
+    return redirect()->back()->with('fails',$ex->getMessage());
+ }
+ }
 }

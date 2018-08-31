@@ -259,7 +259,7 @@
     }); 
     
     function multiplePayment(){
-     $("#submit").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
     var invoice = [];
     var invoiceAmount = [];
     $(":checked").each(function() {
@@ -295,9 +295,10 @@
           },
           error: function (ex) {
             var errors = ex.responseJSON;
+             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
                $('#error1').show();
             var html = '<div class="alert alert-danger alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-ban"></i>Alert! </strong>'+ex.responseJSON.message+' <br><ul>';
-             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+            
             for (var key in ex.responseJSON.errors)
             {
                 html += '<li>' + ex.responseJSON.errors[key][0] + '</li>'

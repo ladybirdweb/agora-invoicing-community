@@ -15,7 +15,7 @@ Create New Product
 @section('content')
 <head>
     <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
-</head>
+</head> 
 <div class="box box-primary">
 
     <div class="box-header">
@@ -33,7 +33,7 @@ Create New Product
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
-            <i class="fa fa-ban"></i>
+            <i class="fa fa-check"></i>
             <b>{{Lang::get('message.success')}}!</b> 
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
@@ -196,12 +196,16 @@ Create New Product
 
 
 
-                                               
-                                                <div class="col-md-6">
-                                                    {!! Form::hidden('deny_after_subscription',0) !!}
-                                                    {!! Form::checkbox('deny_after_subscription',1,true) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="If checked ,the user can download only the versions released before expiry date">
+                                                <div class="col-md-4">
+                                                     {!! Form::radio('deny_after_subscription',1) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
                                                     {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
+                                                </div>
+
+                                                <div class="col-md-4">
+                                                    {!! Form::radio('deny_after_subscription',0) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
                                                 </div>
 
                                                

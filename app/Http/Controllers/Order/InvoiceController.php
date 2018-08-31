@@ -580,10 +580,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $discount = '';
             $mode = '';
             $product = $this->product->findOrFail($productid);
-            $price_model = $this->price->where('product_id', $product->id)->where('currency', $currency)->first();
-            $price = $this->getPrice($price, $price_model);
-            $subtotal = $qty * $price;
-            //dd($subtotal);
+            $plan = Plan::where('product',$productid)->first();
+            $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
+
+            // $price = $this->getPrice($price, $price_model);
+
+            $subtotal = $qty * intval($price);
             if ($code) {
                 $subtotal = $this->checkCode($code, $productid, $currency);
                 $mode = 'coupon';

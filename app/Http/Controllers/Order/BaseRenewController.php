@@ -19,7 +19,7 @@ class BaseRenewController extends Controller
         try {
             $sub = Subscription::find($id);
             $order_id = $sub->order_id;
-           
+
             return $this->getInvoiceByOrderId($order_id, $planid, $cost);
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());

@@ -277,77 +277,76 @@ class PageController extends GetPageTemplateController
 
     public function cart()
     {
-        try{
-        $location = $this->getLocation();
-        $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-        $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
-        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-        $state_code = $location['countryCode'].'-'.$location['region'];
-        $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-        $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-        $currency = $this->getCurrency($location);
+        try {
+            $location = $this->getLocation();
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+            $currency = $this->getCurrency($location);
 
-        \Session::put('currency', $currency);
-        if (!\Session::has('currency')) {
-            \Session::put('currency', 'INR');
-        }
-        $pages = $this->page->find(1);
-        $data = $pages->content;
-        //Helpdesk
-        $product = new \App\Model\Product\Product();
-        $helpdesk_products = $product->where('id', '!=', 1)
+            \Session::put('currency', $currency);
+            if (!\Session::has('currency')) {
+                \Session::put('currency', 'INR');
+            }
+            $pages = $this->page->find(1);
+            $data = $pages->content;
+            //Helpdesk
+            $product = new \App\Model\Product\Product();
+            $helpdesk_products = $product->where('id', '!=', 1)
         ->where('category', '=', 'helpdesk')
         ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
         ->toArray();
-        $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-        $trasform = [];
-        $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
+            $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+            $trasform = [];
+            $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
 
-        //Helpdesk VPS
-        $helpdesk_vps_product = $product->where('id', '!=', 1)
+            //Helpdesk VPS
+            $helpdesk_vps_product = $product->where('id', '!=', 1)
         ->where('category', '=', 'helpdeskvps')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
-        $trasform3 = [];
-        $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
+            $trasform3 = [];
+            $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
 
-        //ServiceDesk Vps
-        $servicedesk_vps_product = $product->where('id', '!=', 1)
+            //ServiceDesk Vps
+            $servicedesk_vps_product = $product->where('id', '!=', 1)
         ->where('category', '=', 'servicedesk vps')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
-        $trasform4 = [];
-        $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
+            $trasform4 = [];
+            $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
 
-        //servicedesk
-        $sevice_desk_products = $product->where('id', '!=', 1)
+            //servicedesk
+            $sevice_desk_products = $product->where('id', '!=', 1)
         ->where('category', '=', 'servicedesk')
          ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
         ->toArray();
-        $trasform1 = [];
-        $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
+            $trasform1 = [];
+            $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
 
-        //Service
-        $service = $product->where('id', '!=', 1)
+            //Service
+            $service = $product->where('id', '!=', 1)
         ->where('category', '=', 'service')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
-        $trasform2 = [];
-        $service_template = $this->getServiceTemplate($service, $data, $trasform2);
+            $trasform2 = [];
+            $service_template = $this->getServiceTemplate($service, $data, $trasform2);
 
-        return view('themes.default1.common.template.shoppingcart',
+            return view('themes.default1.common.template.shoppingcart',
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
                 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
-    catch (\Exception $ex){
-    return redirect()->back()->with('fails',$ex->getMessage());
- }
- }
 }

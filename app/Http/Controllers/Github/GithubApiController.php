@@ -38,23 +38,21 @@ class GithubApiController extends Controller
 
     public function getCurl($url)
     {
-
-        try{
-        if (str_contains($url, ' ')) {
-            $url = str_replace(' ', '', $url);
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent:$this->username"]);
-        curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
-        if (curl_exec($ch) === false) {
-            echo 'Curl error: '.curl_error($ch);
-        }
-        $content = curl_exec($ch);
-        curl_close($ch);
-
+        try {
+            if (str_contains($url, ' ')) {
+                $url = str_replace(' ', '', $url);
+            }
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 90);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ["User-Agent:$this->username"]);
+            curl_setopt($ch, CURLOPT_USERPWD, "$this->username:$this->password");
+            if (curl_exec($ch) === false) {
+                echo 'Curl error: '.curl_error($ch);
+            }
+            $content = curl_exec($ch);
+            curl_close($ch);
 
             return json_decode($content, true);
         } catch (Exception $ex) {

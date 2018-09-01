@@ -52,8 +52,6 @@ class GithubApiController extends Controller
             echo 'Curl error: '.curl_error($ch);
         }
         $content = curl_exec($ch);
-
-        dd($content);
         curl_close($ch);
 
         return json_decode($content, true);

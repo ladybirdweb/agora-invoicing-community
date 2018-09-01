@@ -270,7 +270,8 @@ class BaseProductController extends ExtendedBaseProductController
                 $product->save();
             }
         } catch (\Exception $ex) {
-             Bugsnag::notifyException($ex);
+            Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

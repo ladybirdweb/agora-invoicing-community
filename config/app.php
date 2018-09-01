@@ -202,7 +202,7 @@ return [
 
          Yajra\DataTables\HtmlServiceProvider::class,
          Yajra\DataTables\DataTablesServiceProvider::class,
-         GrahamCampbell\Markdown\MarkdownServiceProvider::class,
+         // GrahamCampbell\Markdown\MarkdownServiceProvider::class,
          Spatie\Activitylog\ActivitylogServiceProvider::class,
 
     ],

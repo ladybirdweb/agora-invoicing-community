@@ -33,7 +33,7 @@ class Psr4ClassLoader
     public function addPrefix($prefix, $baseDir)
     {
         $prefix = trim($prefix, '\\').'\\';
-        $baseDir = rtrim($baseDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR;
+        $baseDir = rtrim($baseDir, \DIRECTORY_SEPARATOR).\DIRECTORY_SEPARATOR;
         $this->prefixes[] = array($prefix, $baseDir);
     }
 
@@ -48,8 +48,8 @@ class Psr4ClassLoader
 
         foreach ($this->prefixes as list($currentPrefix, $currentBaseDir)) {
             if (0 === strpos($class, $currentPrefix)) {
-                $classWithoutPrefix = substr($class, strlen($currentPrefix));
-                $file = $currentBaseDir.str_replace('\\', DIRECTORY_SEPARATOR, $classWithoutPrefix).'.php';
+                $classWithoutPrefix = substr($class, \strlen($currentPrefix));
+                $file = $currentBaseDir.str_replace('\\', \DIRECTORY_SEPARATOR, $classWithoutPrefix).'.php';
                 if (file_exists($file)) {
                     return $file;
                 }

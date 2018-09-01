@@ -11,10 +11,11 @@ class Github extends BaseModel
 
     public function getPasswordAttribute($value)
     {
-        if ($value) {
+       if ($value) {
             $value = \Crypt::decrypt($value);
+            // dd('dsf');
         }
-
+            
         return $value;
     }
 

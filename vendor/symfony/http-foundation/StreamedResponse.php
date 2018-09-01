@@ -35,7 +35,7 @@ class StreamedResponse extends Response
      * @param int           $status   The response status code
      * @param array         $headers  An array of response headers
      */
-    public function __construct(callable $callback = null, $status = 200, $headers = array())
+    public function __construct(callable $callback = null, int $status = 200, array $headers = array())
     {
         parent::__construct(null, $status, $headers);
 
@@ -111,7 +111,7 @@ class StreamedResponse extends Response
             throw new \LogicException('The Response callback must not be null.');
         }
 
-        call_user_func($this->callback);
+        \call_user_func($this->callback);
 
         return $this;
     }
@@ -140,5 +140,17 @@ class StreamedResponse extends Response
     public function getContent()
     {
         return false;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @return $this
+     */
+    public function setNotModified()
+    {
+        $this->setCallback(function () {});
+
+        return parent::setNotModified();
     }
 }

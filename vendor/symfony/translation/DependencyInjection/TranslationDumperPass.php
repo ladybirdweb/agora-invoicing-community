@@ -11,9 +11,9 @@
 
 namespace Symfony\Component\Translation\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Adds tagged translation.formatter services to translation writer.
@@ -23,7 +23,7 @@ class TranslationDumperPass implements CompilerPassInterface
     private $writerServiceId;
     private $dumperTag;
 
-    public function __construct($writerServiceId = 'translation.writer', $dumperTag = 'translation.dumper')
+    public function __construct(string $writerServiceId = 'translation.writer', string $dumperTag = 'translation.dumper')
     {
         $this->writerServiceId = $writerServiceId;
         $this->dumperTag = $dumperTag;

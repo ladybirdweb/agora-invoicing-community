@@ -34,7 +34,7 @@ class XliffLintCommand extends Command
     private $directoryIteratorProvider;
     private $isReadableProvider;
 
-    public function __construct($name = null, $directoryIteratorProvider = null, $isReadableProvider = null)
+    public function __construct(string $name = null, callable $directoryIteratorProvider = null, callable $isReadableProvider = null)
     {
         parent::__construct($name);
 
@@ -102,6 +102,8 @@ EOF
 
     private function validate($content, $file = null)
     {
+        $errors = array();
+
         // Avoid: Warning DOMDocument::loadXML(): Empty string supplied as input
         if ('' === trim($content)) {
             return array('file' => $file, 'valid' => true);
@@ -111,22 +113,33 @@ EOF
 
         $document = new \DOMDocument();
         $document->loadXML($content);
-        if ($document->schemaValidate(__DIR__.'/../Resources/schemas/xliff-core-1.2-strict.xsd')) {
-            return array('file' => $file, 'valid' => true);
+
+        if (null !== $targetLanguage = $this->getTargetLanguageFromFile($document)) {
+            $expectedFileExtension = sprintf('%s.xlf', str_replace('-', '_', $targetLanguage));
+            $realFileExtension = explode('.', basename($file), 2)[1] ?? '';
+
+            if ($expectedFileExtension !== $realFileExtension) {
+                $errors[] = array(
+                    'line' => -1,
+                    'column' => -1,
+                    'message' => sprintf('There is a mismatch between the file extension ("%s") and the "%s" value used in the "target-language" attribute of the file.', $realFileExtension, $targetLanguage),
+                );
+            }
         }
 
-        $errorMessages = array_map(function ($error) {
-            return array(
-                'line' => $error->line,
-                'column' => $error->column,
-                'message' => trim($error->message),
+        $document->schemaValidate(__DIR__.'/../Resources/schemas/xliff-core-1.2-strict.xsd');
+        foreach (libxml_get_errors() as $xmlError) {
+            $errors[] = array(
+                'line' => $xmlError->line,
+                'column' => $xmlError->column,
+                'message' => trim($xmlError->message),
             );
-        }, libxml_get_errors());
+        }
 
         libxml_clear_errors();
         libxml_use_internal_errors(false);
 
-        return array('file' => $file, 'valid' => false, 'messages' => $errorMessages);
+        return array('file' => $file, 'valid' => 0 === \count($errors), 'messages' => $errors);
     }
 
     private function display(SymfonyStyle $io, array $files)
@@ -143,7 +156,7 @@ EOF
 
     private function displayTxt(SymfonyStyle $io, array $filesInfo)
     {
-        $countFiles = count($filesInfo);
+        $countFiles = \count($filesInfo);
         $erroredFiles = 0;
 
         foreach ($filesInfo as $info) {
@@ -193,7 +206,7 @@ EOF
         }
 
         foreach ($this->getDirectoryIterator($fileOrDirectory) as $file) {
-            if (!in_array($file->getExtension(), array('xlf', 'xliff'))) {
+            if (!\in_array($file->getExtension(), array('xlf', 'xliff'))) {
                 continue;
             }
 
@@ -225,7 +238,7 @@ EOF
         };
 
         if (null !== $this->directoryIteratorProvider) {
-            return call_user_func($this->directoryIteratorProvider, $directory, $default);
+            return \call_user_func($this->directoryIteratorProvider, $directory, $default);
         }
 
         return $default($directory);
@@ -238,9 +251,20 @@ EOF
         };
 
         if (null !== $this->isReadableProvider) {
-            return call_user_func($this->isReadableProvider, $fileOrDirectory, $default);
+            return \call_user_func($this->isReadableProvider, $fileOrDirectory, $default);
         }
 
         return $default($fileOrDirectory);
+    }
+
+    private function getTargetLanguageFromFile(\DOMDocument $xliffContents): ?string
+    {
+        foreach ($xliffContents->getElementsByTagName('file')[0]->attributes ?? array() as $attribute) {
+            if ('target-language' === $attribute->nodeName) {
+                return $attribute->nodeValue;
+            }
+        }
+
+        return null;
     }
 }

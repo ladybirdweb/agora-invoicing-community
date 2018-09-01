@@ -38,6 +38,7 @@ class GithubApiController extends Controller
 
     public function getCurl($url)
     {
+        try{
         if (str_contains($url, ' ')) {
             $url = str_replace(' ', '', $url);
         }
@@ -52,10 +53,14 @@ class GithubApiController extends Controller
         }
         $content = curl_exec($ch);
 
-        //dd($content);
+        dd($content);
         curl_close($ch);
 
         return json_decode($content, true);
+    }catch (Exception $ex){
+        dd($ex);
+          return redirect()->back()->with('fails', $ex->getMessage());
+     }
     }
 
     public function getCurl1($url)

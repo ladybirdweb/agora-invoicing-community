@@ -482,7 +482,7 @@ return [
     'extra-amount'    => 'Extra Amount Paid',
     'link'            => 'Link with Invoice',
     'edit-payment'    => 'Edit Payment',
-    'link-extra'      =>'Link Extra Payment',
+    'link-extra'      => 'Link Extra Payment',
 
     /*
      * Category

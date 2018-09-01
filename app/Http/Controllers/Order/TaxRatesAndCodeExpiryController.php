@@ -123,12 +123,13 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                     }
                 }
             }
-             
+
             return intval(round($total));
         } catch (\Exception $ex) {
-             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

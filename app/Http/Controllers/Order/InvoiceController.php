@@ -580,7 +580,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $discount = '';
             $mode = '';
             $product = $this->product->findOrFail($productid);
-            $plan = Plan::where('product',$productid)->first();
+            $plan = Plan::where('product', $productid)->first();
             $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
 
             // $price = $this->getPrice($price, $price_model);

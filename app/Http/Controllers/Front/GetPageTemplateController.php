@@ -174,7 +174,7 @@ class GetPageTemplateController extends Controller
     public function checkConfigKey($config, $transform)
     {
         $result = [];
-        if (count($config) > 0) {
+        if ($config) {
             foreach ($config as $key => $value) {
                 if (array_key_exists($key, $transform)) {
                     $result[$value] = $transform[$key];

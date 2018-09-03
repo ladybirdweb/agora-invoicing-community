@@ -13,6 +13,8 @@ return array(
     'AddCountryCodeChar2ToCurrencies' => $baseDir . '/database/migrations/2018_09_01_104505_add_country_code_char2_to_currencies.php',
     'AddCountryColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130442_add_country_columns_to_tax_by_states_table.php',
     'AddCountryColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092927_add_country_colums_to_settings_table.php',
+    'AddCurrencyCodeToCountries' => $baseDir . '/database/migrations/2018_09_03_043005_add_currency_code_to_countries.php',
+    'AddCurrencySymbolToUsers' => $baseDir . '/database/migrations/2018_09_02_191039_add_currency_symbol_to_users.php',
     'AddFavIconToSettings' => $baseDir . '/database/migrations/2018_08_10_134440_add_fav_icon_to_settings.php',
     'AddFaviconTitleClientToSettings' => $baseDir . '/database/migrations/2018_08_13_055945_add_favicon_title_client_to_settings.php',
     'AddFaviconTitleToSettings' => $baseDir . '/database/migrations/2018_08_10_143443_add_favicon_title_to_settings.php',

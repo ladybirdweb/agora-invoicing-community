@@ -10,6 +10,8 @@ use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Log;
 
@@ -90,8 +92,12 @@ class ClientController extends AdvanceSearchController
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
                               if ($ends) {
-                                  $date = date_create($ends);
-                                  $end = date_format($date, 'l, F j, Y H:m');
+
+                                $date1 = new DateTime($ends);
+                                $tz = \Auth::user()->timezone()->first()->name;
+                                $date1->setTimezone(new DateTimeZone($tz));
+                                $end = $date1->format('M j, Y, g:i a ');
+
                               }
 
                               return $end;

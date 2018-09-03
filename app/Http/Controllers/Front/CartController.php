@@ -624,18 +624,19 @@ class CartController extends BaseCartController
             $from = $set->email;
             $fromname = $set->company;
             $toname = '';
-            $to = 'support@faveohelpdesk.com';
+            $to = 'ashutoshpathak177@gmail.com';
             $data = '';
             $data .= 'Name: '.$request->input('name').'<br/s>';
             $data .= 'Email: '.$request->input('email').'<br/>';
             $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('Mobile').'<br/>';
+            $data .= 'Mobile: '.$request->input('country_code').$request->input('Mobile').'<br/>';
 
             $subject = 'Faveo billing enquiry';
             $this->templateController->Mailing($from, $to, $data, $subject, [], $fromname, $toname);
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
+          dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

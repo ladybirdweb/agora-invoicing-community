@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Country;
 use App\Model\Payment\Currency;
 use Form;
 use Illuminate\Http\Request;
 use Lang;
- use App\Model\Common\Country;
 
 class CurrencyController extends Controller
 {
@@ -33,39 +33,39 @@ class CurrencyController extends Controller
 
     public function getCurrency()
     {
-        $model = Currency::where('name','!=',NULL)->select( 'id','name','code','symbol','status')->orderBy('id','desc')->get();
+        $model = Currency::where('name', '!=', null)->select('id', 'name', 'code', 'symbol', 'status')->orderBy('id', 'desc')->get();
+
         return \DataTables::of($model)
-                       
+
                         ->addColumn('name', function ($model) {
                             return $model->name;
                         })
 
                           ->addColumn('code', function ($model) {
-                            return $model->code;
-                        })
+                              return $model->code;
+                          })
 
                           ->addColumn('symbol', function ($model) {
-                            return $model->symbol;
-                        })
+                              return $model->symbol;
+                          })
                         ->addColumn('status', function ($model) {
-                              if ($model->status == 1) {
+                            if ($model->status == 1) {
                                 return'<label class="switch toggle_event_editing">
-                            <input type="hidden" name="module_id" class="module_id" value="' . $model->id . '" >
+                            <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
                          <input type="checkbox" name="modules_settings" checked value="'.$model->status.'"  class="modules_settings_value">
                           <span class="slider round"></span>
                         </label>';
                             } else {
                                 return'<label class="switch toggle_event_editing">
-                             <input type="hidden" name="module_id" class="module_id" value="' . $model->id . '" >
+                             <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
                          <input type="checkbox" name="modules_settings" value="'.$model->status.'" class="modules_settings_value">
                           <span class="slider round"></span>
                         </label>';
-                    }
+                            }
                         })
-                      
-                        ->rawColumns(['name', 'code','symbol', 'status'])
+
+                        ->rawColumns(['name', 'code', 'symbol', 'status'])
                         ->make(true);
-        
     }
 
     /**
@@ -93,16 +93,15 @@ class CurrencyController extends Controller
         // ]);
 
         try {
-
-            $nicename=Country::where('country_id',$request->name)->value('nicename');
-            $codeChar2 =Country::where('country_id',$request->name)->value('country_code_char2');
+            $nicename = Country::where('country_id', $request->name)->value('nicename');
+            $codeChar2 = Country::where('country_id', $request->name)->value('country_code_char2');
             $currency = new Currency();
 
             $currency->code = $request->code;
-            $currency->symbol =$request->symbol ;
-            $currency->name =$request->currency_name ;
+            $currency->symbol = $request->symbol;
+            $currency->name = $request->currency_name;
             $currency->base_conversion = '1.0';
-            $currency->country_code_char2 =$codeChar2;
+            $currency->country_code_char2 = $codeChar2;
             $currency->nicename = $nicename;
             $currency->save();
 
@@ -147,18 +146,15 @@ class CurrencyController extends Controller
      */
     public function update(Request $request)
     {
-
         try {
-
-
-            $nicename=Country::where('country_id',$request->editnicename)->value('nicename');
-            $codeChar2 =Country::where('country_id',$request->editnicename)->value('country_code_char2');
-            $currency = Currency::where('id',$request->currencyId)->first();
+            $nicename = Country::where('country_id', $request->editnicename)->value('nicename');
+            $codeChar2 = Country::where('country_id', $request->editnicename)->value('country_code_char2');
+            $currency = Currency::where('id', $request->currencyId)->first();
             $currency->code = $request->editcode;
-            $currency->symbol =$request->editsymbol ;
-            $currency->name =$request->editcurrency_name ;
+            $currency->symbol = $request->editsymbol;
+            $currency->name = $request->editcurrency_name;
             $currency->base_conversion = '1.0';
-            $currency->country_code_char2 =$codeChar2;
+            $currency->country_code_char2 = $codeChar2;
             $currency->nicename = $nicename;
             $currency->save();
 
@@ -236,22 +232,19 @@ class CurrencyController extends Controller
         }
     }
 
+    public function countryDetails(Request $request)
+    {
+        $countryDetails = Country:: where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
+        $data = (['code'=>$countryDetails->currency_code, 'symbol'=>$countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name]);
 
-
-    public function countryDetails(Request $request){
-       
-        $countryDetails = Country:: where('country_id',$request->id)->select('currency_code','currency_symbol','currency_name')->first();
-        $data = (['code'=>$countryDetails->currency_code ,'symbol'=>$countryDetails->currency_symbol ,'currency'=>$countryDetails->currency_name ]);
         return $data;
     }
 
+    public function updatecurrency(Request $request)
+    {
+        $updatedStatus = ($request->current_status == '1') ? 0 : 1;
+        Currency::where('id', $request->current_id)->update(['status'=>$updatedStatus]);
 
-
-    public function updatecurrency(Request $request){
-        $updatedStatus = ($request->current_status == "1") ? 0 : 1;
-        Currency::where('id',$request->current_id)->update(['status'=>$updatedStatus]);
         return Lang::get('message.updated-successfully');
-
-
     }
 }

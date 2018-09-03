@@ -9,7 +9,7 @@ class Currency extends BaseModel
 {
     use LogsActivity;
     protected $table = 'currencies';
-    protected $fillable = ['code', 'symbol', 'name', 'base_conversion'];
+    protected $fillable = ['code', 'symbol', 'name', 'status'];
     protected static $logName = 'Currency';
     protected static $logAttributes = ['code', 'symbol', 'name'];
     protected static $logOnlyDirty = true;

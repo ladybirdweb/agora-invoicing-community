@@ -509,4 +509,14 @@ return [
       'script'            => 'Script',
       'edit-chat-script'  => 'Edit Chat Script',
 
+      'currency_name' => 'Currency Name',
+      'select_country' => 'Select Country',
+      'countryname'=>'Countryname',
+      'choose' =>'Choose',
+      'edit_currency'=>'Edit currency',
+      'close'=>'Close',
+      'update'=>'Update',
+      'active'=>'Active',
+      'inactive'=>'Inactive',
+
 ];

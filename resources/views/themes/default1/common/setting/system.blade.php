@@ -219,7 +219,7 @@ System Setting
                         <td><b>{!! Form::label('state',Lang::get('message.state') ,['class'=>'required']) !!}</b></td>
                         <td>
                         <select name="state" id="state-list" class="form-control">
-                                @if(count($set->state)>0)
+                                @if($set->state)
                              <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
                             <option value="">Choose</option>

@@ -5,7 +5,7 @@ namespace Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
-
+use App\Model\Payment\Currency;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
@@ -37,10 +37,12 @@ trait RegistersUsers
      */
     public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
     {
+        
           try {
             $pass = $request->input('password');
             $country = $request->input('country');
-            $currency = 'INR';
+            $currency = 'USD';
+            $currency_symbol = '$';
            if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
                 {
                   $ip=$_SERVER['HTTP_CLIENT_IP'];
@@ -59,18 +61,19 @@ trait RegistersUsers
                else
                 {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
 
+
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['countryCode'] . "-" . $location['region'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-                        // $location = \GeoIP::getLocation($ip);
-                        if ($country == 'IN') {
-                            $currency = 'INR';
-                        } else {
-                            $currency = 'USD';
-            }
+            $currencyAndSymbol = Currency::where('country_code_char2',$country)->select('code','symbol')->first();
+            if ($currencyAndSymbol) {
+               $currency = $currencyAndSymbol->code;
+               $currency_symbol = $currencyAndSymbol->symbol;
+            } 
+           
             if (\Session::has('currency')) {
                 $currency = \Session::get('currency');
             }
@@ -86,6 +89,7 @@ trait RegistersUsers
             $user->active=0;
             $user->debit=0;
             $user->mobile_verified=0;
+            $user->currency_symbol = $currency_symbol;
             
             $user->role = 'user';
 
@@ -109,9 +113,6 @@ trait RegistersUsers
         }
 
 
-       // return $request->all();
-
-       
     }
      public function sendActivationByGet($email, Request $request)
     {

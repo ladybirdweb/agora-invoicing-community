@@ -511,9 +511,7 @@ s0.parentNode.insertBefore(s1,s0);
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->
 
-<script language="JavaScript" type="text/javascript">
-{!! html_entity_decode($script->script) !!}
-</script>
+<!--  -->
 
     </body>
 </html>

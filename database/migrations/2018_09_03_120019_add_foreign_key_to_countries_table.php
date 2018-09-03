@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddForeignKeyToCountriesTable extends Migration
 {
@@ -14,11 +14,9 @@ class AddForeignKeyToCountriesTable extends Migration
     public function up()
     {
         Schema::table('countries', function (Blueprint $table) {
-             
             $table->integer('currency_id')->unsigned();
 
             $table->foreign('currency_id')->references('id')->on('currencies');
-        
         });
     }
 

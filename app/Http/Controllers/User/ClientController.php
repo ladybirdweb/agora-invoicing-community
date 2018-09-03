@@ -92,12 +92,10 @@ class ClientController extends AdvanceSearchController
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
                               if ($ends) {
-
-                                $date1 = new DateTime($ends);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new DateTimeZone($tz));
-                                $end = $date1->format('M j, Y, g:i a ');
-
+                                  $date1 = new DateTime($ends);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new DateTimeZone($tz));
+                                  $end = $date1->format('M j, Y, g:i a ');
                               }
 
                               return $end;

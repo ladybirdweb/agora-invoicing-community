@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddCurrencyCodeToCountries extends Migration
 {
@@ -14,9 +14,9 @@ class AddCurrencyCodeToCountries extends Migration
     public function up()
     {
         Schema::table('countries', function (Blueprint $table) {
-             $table->string('currency_code',255)->nullable();
-             $table->string('currency_symbol',255)->nullable();
-             $table->string('currency_name',255)->nullable();
+            $table->string('currency_code', 255)->nullable();
+            $table->string('currency_symbol', 255)->nullable();
+            $table->string('currency_name', 255)->nullable();
         });
     }
 
@@ -27,6 +27,6 @@ class AddCurrencyCodeToCountries extends Migration
      */
     public function down()
     {
-       Schema::dropIfExists('countries');
+        Schema::dropIfExists('countries');
     }
 }

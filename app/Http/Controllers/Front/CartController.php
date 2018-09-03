@@ -636,7 +636,8 @@ class CartController extends BaseCartController
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
-          dd($ex);
+            dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

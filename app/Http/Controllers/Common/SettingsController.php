@@ -89,7 +89,7 @@ class SettingsController extends BaseSettingsController
             ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system', compact('set', 'selectedCountry', 'state', 'states','selectedCurrency'));
+            return view('themes.default1.common.setting.system', compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -98,13 +98,13 @@ class SettingsController extends BaseSettingsController
     public function postSettingsSystem(Setting $settings, Request $request)
     {
         $this->validate($request, [
-                'company'        => 'required',
-                'company_email'  => 'required',
-                'website'        => 'required',
-                'phone'          => 'required',
-                'address'        => 'required',
-                'country'        => 'required',
-                'default_currency'=>'required',
+                'company'         => 'required',
+                'company_email'   => 'required',
+                'website'         => 'required',
+                'phone'           => 'required',
+                'address'         => 'required',
+                'country'         => 'required',
+                'default_currency'=> 'required',
             ]);
 
         try {
@@ -128,7 +128,7 @@ class SettingsController extends BaseSettingsController
                 $request->file('fav-icon')->move($destinationPath, $iconName);
                 $setting->fav_icon = $iconName;
             }
-            $setting->default_symbol = Currency::where('code',$request->input('default_currency'))->pluck('symbol')->first();
+            $setting->default_symbol = Currency::where('code', $request->input('default_currency'))->pluck('symbol')->first();
             $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

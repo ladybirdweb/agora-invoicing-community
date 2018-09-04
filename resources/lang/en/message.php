@@ -137,6 +137,7 @@ return [
     'enter-email-host'                                             => 'Enter email host',
     'select-email-encryption-method'                               => 'Enter email encryption method',
     'enter-email'                                                  => 'Enter email',
+    'enter-email-message'                                          => 'All mails from the system will be sent from this email address',
     'enter-email-password'                                         => 'Enter email password',
     'enable-error-logging'                                         => 'Enable error logging',
     'provide-error-reporting-email'                                => 'Provide error reporting email',
@@ -181,6 +182,8 @@ return [
     'expiry'               => 'Expiry',
     'price'                => 'Price',
     'updates'              => 'Updates',
+    'regular-price'        => 'Regular Price',
+    'renew-price'          => 'Renewal Price',
     /*
      * Products
      */

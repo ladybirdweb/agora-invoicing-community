@@ -43,7 +43,7 @@ class PlanController extends Controller
      */
     public function index()
     {
-        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $currency = $this->currency->where('status','1')->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
 
@@ -164,7 +164,7 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = $this->plan->where('id', $id)->first();
-        $currency = $this->currency->pluck('name', 'code')->toArray();
+        $currency = $this->currency->where('status','1')->pluck('name', 'code')->toArray();
         $add_price = $this->price->where('plan_id', $id)->pluck('add_price', 'currency')->toArray();
         $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();

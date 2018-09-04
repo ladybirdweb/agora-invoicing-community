@@ -75,10 +75,10 @@ User Details
         <div class="padright">
              
             
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$currency }}{{$invoiceSum}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$currency }} {{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$currency }} {{$pendingAmount}}</h6> 
-             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$currency }} {{$extraAmt}}</h6> 
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$client->currency_symbol }} {{$invoiceSum}}</h6> 
+            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$client->currency_symbol }} {{$amountReceived}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$client->currency_symbol }} {{$pendingAmount}}</h6> 
+             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6> 
           
         </div>
      
@@ -168,10 +168,7 @@ User Details
                                 <tbody>
                                     @forelse($invoices as $invoice) 
                                     <?php
-                                     if($invoice->currency == 'INR')
-                                        $currency = '₹';
-                                        else
-                                        $currency = '$'; 
+                                    
                                      $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                                      $c=count($payment);
                                        $sum= 0;
@@ -183,7 +180,13 @@ User Details
                                      ?>
                                     <tr>
                                         <td>
-                                            {{$invoice->date}}
+                                            <?php
+                                          $date1 = new DateTime($invoice->date);
+                                          $tz = $client->timezone()->first()->name;
+                                          $date1->setTimezone(new DateTimeZone($tz));
+                                          $date = $date1->format('M j, Y, g:i a ');
+                                            echo $date;
+                                            ?>
                                         </td>
                                         <td class="invoice-number">
                                             <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
@@ -271,13 +274,19 @@ User Details
                                         {{($payment->invoice()->first()->number)}}
                                         @endif
                                     </td>
-                                    <td>{{$payment->created_at}}</td>
+                                    <td>
+                                        {{$invoice->created_at}}
+                                                
+                                            </td>
                                     <td>
                                         {{ucfirst($payment->payment_method)}}
                                     </td>
-                          
+                                     @if($payment->invoice_id == 0)
+                                     <td class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
+                                     @endif
+                                       @if($payment->invoice_id != 0)
                                     <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
-                                     
+                                     @endif
                                     <td>{{ucfirst($payment->payment_status)}}</td>
                                     <td>
                                         <input type="hidden" class="paymentid" value="{{$payment->id}}">

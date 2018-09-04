@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Common\TemplateController;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
+use App\Model\Common\Country;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
@@ -102,7 +103,6 @@ class CartController extends BaseCartController
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
-
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
                 \Cart::add($items);
@@ -130,10 +130,7 @@ class CartController extends BaseCartController
                     $user_currency = \Auth::user()->currency;
                     $user_country = \Auth::user()->country;
                     $user_state = \Auth::user()->state;
-                    $currency = 'INR';
-                    if ($user_currency == 1 || $user_currency == 'USD') {
-                        $currency = 'USD';
-                    }
+                    $currency = \Auth::user()->currency;;
                     if ($cart_currency != $currency) {
                         $id = $item->id;
                         Cart::remove($id);
@@ -624,7 +621,7 @@ class CartController extends BaseCartController
             $from = $set->email;
             $fromname = $set->company;
             $toname = '';
-            $to = 'ashutoshpathak177@gmail.com';
+            $to = 'support@faveohelpdesk.com';
             $data = '';
             $data .= 'Name: '.$request->input('name').'<br/s>';
             $data .= 'Email: '.$request->input('email').'<br/>';
@@ -636,8 +633,6 @@ class CartController extends BaseCartController
             //$this->templateController->Mailing($from, $to, $data, $subject);
             return redirect()->back()->with('success', 'Your message was sent successfully. Thanks.');
         } catch (\Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -896,38 +891,50 @@ class CartController extends BaseCartController
     public function currency($userid = '')
     {
         try {
-            $currency = 'INR';
-            if ($this->checkCurrencySession() === true) {
-                $currency = Session::get('currency');
+            $currency = Setting::find(1)->default_currency;
+            $currency_symbol = Setting::find(1)->default_symbol;
+            if (!\Auth::user()){//When user is not logged in
+              $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+            $userCountry = Country::where('country_code_char2',$country)->first();
+            $currencyStatus = $userCountry->currency->status;
+             if ($currencyStatus == 1){
+                $currency = $userCountry->currency->code;
+               $currency_symbol = $userCountry->currency->symbol;
             }
-
+          }
+            
+           
+            // if ($this->checkCurrencySession() === true) {
+            //     $currency = Session::get('currency');
+            // }
             if (\Auth::user()) {
-                $currency = \Auth::user()->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                }
+               $currency = \Auth::user()->currency;
+               $currency_symbol = \Auth::user()->currency_symbol;
+               
             }
-            if ($userid != '') {
-                $currency = $this->getCurrency($userid);
+            if ($userid != '') {//For Admin Panel Clients
+              $currencyAndSymbol = $this->getCurrency($userid);
+              $currency = $currencyAndSymbol['currency'];
+              $currency_symbol = $currencyAndSymbol['symbol'];
             }
-
-            return $currency;
+            return ['currency'=>$currency, 'symbol'=>$currency_symbol];
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
+    /* 
+    * Get Currency And Symbol For Admin Panel Clients
+    */
     public function getCurrency($userid)
     {
         $user = new \App\User();
         $currency = $user->find($userid)->currency;
-        if ($currency == 'USD' || $currency == '1') {
-            $currency = 'USD';
-        } else {
-            $currency = 'INR';
-        }
+        $symbol = $user->find($userid)->currency_symbol;
 
-        return $currency;
+        return ['currency'=>$currency, 'symbol'=>$symbol];
     }
 
     /**
@@ -1002,10 +1009,21 @@ class CartController extends BaseCartController
 
             if ($plan) {
                 $currency = $this->currency($userid);
-                $price = $plan->planPrice()
+
+
+                                  $price = $plan->planPrice()
                                     ->where('currency', $currency)
-                                    ->first()
-                            ->add_price;
+                                    ->first();
+                                    if($price != null){
+                                      $price = $price->add_price;
+                                    }
+                                    else{
+                                       $currency = Setting::find(1)->default_currency;
+                                      $symbol =Setting::find(1)->default_symbol;
+                                       $price = $plan->planPrice()
+                                    ->where('currency', $currency)->first()->add_price;
+                                    }
+                                   
                 $days = $plan->days;
                 if ($days >= '365') {
                     $months = $days / 30 / 12;

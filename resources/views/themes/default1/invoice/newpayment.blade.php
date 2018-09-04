@@ -106,7 +106,7 @@
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                          
+                                             <th></th>
                                             <th>{{Lang::get('message.date')}}</th>
                                             <th>{{Lang::get('message.invoice_number')}}</th>
                                             <th>{{Lang::get('message.total')}}</th>
@@ -134,6 +134,7 @@
                                         ?>
                                         @if ($invoice->status == 'Pending')
                                         <tr>
+
                                              <td class="selectedbox1">
                                                  <input type="checkbox"  id="check" class="selectedbox" name='selectedcheckbox' value="{{$invoice->id}}">
                                             </td>

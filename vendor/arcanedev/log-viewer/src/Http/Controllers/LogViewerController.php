@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 /**
@@ -29,6 +28,8 @@ class LogViewerController extends Controller
      *
      * @var \Arcanedev\LogViewer\Contracts\LogViewer
      */
+
+
     protected $logViewer;
 
     /** @var int */
@@ -49,6 +50,8 @@ class LogViewerController extends Controller
      */
     public function __construct(LogViewerContract $logViewer)
     {
+        $this->middleware('auth');
+        $this->middleware('admin');
         $this->logViewer = $logViewer;
         $this->perPage = config('log-viewer.per-page', $this->perPage);
     }
@@ -132,10 +135,10 @@ class LogViewerController extends Controller
      * @param  string                    $level
      * @param  \Illuminate\Http\Request  $request
      *
-     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\View\View
      */
     public function search($date, $level = 'all', Request $request) {
-        $log = $this->getLogOrFail($date);
+        $log   = $this->getLogOrFail($date);
 
         if (is_null($query = $request->get('query')))
             return redirect()->route('log-viewer::logs.show', [$date]);
@@ -195,9 +198,7 @@ class LogViewerController extends Controller
      */
     protected function view($view, $data = [], $mergeData = [])
     {
-        $theme = config('log-viewer.theme');
-
-        return view()->make("log-viewer::{$theme}.{$view}", $data, $mergeData);
+        return view('log-viewer::'.$view, $data, $mergeData);
     }
 
     /**
@@ -210,7 +211,7 @@ class LogViewerController extends Controller
      */
     protected function paginate(array $data, Request $request)
     {
-        $data = new Collection($data);
+        $data = collect($data);
         $page = $request->get('page', 1);
         $path = $request->url();
 

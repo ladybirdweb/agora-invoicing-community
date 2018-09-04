@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Model\Payment\Plan;
+use App\Model\Common\Setting;
 use Bugsnag;
 
 class BaseTemplateController extends ExtendedBaseTemplateController
@@ -111,27 +112,37 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         return $result;
     }
 
-    public function getPrice($months, $price, $currency, $value, $cost)
+    public function getPrice($months, $price, $currency, $value, $cost,$symbol)
     {
-        if ($currency == 'INR') {
-            $price[$value->id] = $months.'  '.'₹'.' '.$cost;
-        } else {
-            $price[$value->id] = $months.'  '.'$'.' '.$cost;
-        }
-
+        
+     $price[$value->id] = $months.'  '.$symbol.' '.$cost;
+        
         return $price;
     }
 
     public function prices($id)
     {
+        try{
         $plan = new Plan();
         $plans = $plan->where('product', $id)->orderBy('id', 'desc')->get();
         $price = [];
         $cart_controller = new \App\Http\Controllers\Front\CartController();
-        $currency = $cart_controller->currency();
-
+        $currencyAndSymbol = $cart_controller->currency();
+        $currency = $currencyAndSymbol['currency'];
+        $symbol = $currencyAndSymbol['symbol'];
+          
         foreach ($plans as $value) {
-            $cost = $value->planPrice()->where('currency', $currency)->first()->add_price;
+            $cost = $value->planPrice()->where('currency', $currency)->first();
+            if($cost){
+                $cost = $cost->add_price;
+            }else{
+                $def_currency = Setting::find(1)->default_currency;
+                $def_currency_symbol = Setting::find(1)->default_symbol;
+                $user = \Auth::user();
+                $currency = $user->update(['currency' => $def_currency]);
+                $symbol =$user->update(['currency_symbol'=>$def_currency_symbol]);
+            }
+            
             $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
             if ($value->days >= 366) {
                 $months = intval($value->days / 30 / 12).' '.'year';
@@ -140,12 +151,18 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             } else {
                 $months = '';
             }
-            $price = $this->getPrice($months, $price, $currency, $value, $cost);
+            $price = $this->getPrice($months, $price, $currency, $value, $cost,$symbol);
+            // $price =   $price[$value->id] = $months.'  '.$symbol.' '.$cost;
+            // dd($price)
         }
 
-        // $this->leastAmount($id);
-
         return $price;
+     } catch (\Exception $ex) {
+        
+        Bugsnag::notifyException($ex);
+        return redirect()->back()->with('fails',$ex->getMessage());
+           
+     }
     }
 
     public function withoutTaxRelation($productid, $currency)

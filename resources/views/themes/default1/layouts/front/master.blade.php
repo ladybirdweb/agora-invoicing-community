@@ -222,7 +222,7 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                                                 <div class="dropdown-mega-content">
                                                                     <table class="cart">
                                                                         <tbody>
-                                                                            @forelse(Cart::getContent() as $key=>$item)
+                                                                        @forelse(Cart::getContent() as $key=>$item)
                                                                              
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
@@ -232,7 +232,8 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                                                             // dd('sads')
                                                                             $cart_controller = new \App\Http\Controllers\Front\CartController();
                                                                             $currency = $cart_controller->currency();
-                                                                            ?>
+                                                                            $currency =  $currency['currency'];
+                                                                          ?>
                                                                             <tr>
 
                                                                                 <td class="product-thumbnail">

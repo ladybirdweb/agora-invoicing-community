@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use App\Model\Payment\Currency;
 use App\Model\Common\Country;
+use App\Model\Common\Setting;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
@@ -36,57 +37,37 @@ trait RegistersUsers
      *
      * @return \Illuminate\Http\Response
      */
-    public function postRegister( ProfileRequest $request,User $user, AccountActivate $activate)
+    public function postRegister(ProfileRequest $request,User $user, AccountActivate $activate)
     {
         
           try {
             $pass = $request->input('password');
             $country = $request->input('country');
-            $currency = 'USD';
-            $currency_symbol = '$';
-           if (!empty($_SERVER['HTTP_CLIENT_IP']))   //check ip from share internet
-                {
-                  $ip=$_SERVER['HTTP_CLIENT_IP'];
-                }
-                elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))   //to check ip is pass from proxy
-                {
-                  $ip=$_SERVER['HTTP_X_FORWARDED_FOR'];
-                }
-                else
-                {
-                  $ip=$_SERVER['REMOTE_ADDR'];
-                }
-               
-               if($ip!='::1')
-               {$location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip),true);}
-               else
-                {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
-
-
+            $currency = Setting::find(1)->default_currency;
+            $currency_symbol = Setting::find(1)->default_symbol;
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+         
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['countryCode'] . "-" . $location['region'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $currencyAndSymbol = Country::where('country_code_char2',$country)->first();
-           $currency =  $currencyAndSymbol->currency->name;
-           dd($currency);
-            if ($currencyAndSymbol) {
-               $currency = $currencyAndSymbol->code;
-               $currency_symbol = $currencyAndSymbol->symbol;
-            } 
-           
+            $userCountry = Country::where('country_code_char2',$country)->first();
+            $currencyStatus = $userCountry->currency->status;
+            if ($currencyStatus == 1){
+                  $currency = $userCountry->currency->code;
+               $currency_symbol = $userCountry->currency->symbol;
+            }
             if (\Session::has('currency')) {
                 $currency = \Session::get('currency');
             }
             $manager=$this->accountManager();
-          
             $account_manager =$manager; 
      
             $password = \Hash::make($pass);
             $user->password = $password;
-            // $user->town="";
             $user->town=$location['city'];
             $user->profile_pic="";
             $user->active=0;
@@ -111,7 +92,6 @@ trait RegistersUsers
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
-            dd($ex);
             $result = [$ex->getMessage()];
              return response()->json($result);
         }

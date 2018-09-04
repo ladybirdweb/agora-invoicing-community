@@ -75,7 +75,7 @@ System Setting
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
                   <tr >
-                        <h3 class="box-title">{{Lang::get('Company Details')}}</h3>
+                        <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('Company Details')}}</h3>
                         <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
                         margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
@@ -103,6 +103,7 @@ System Setting
                     <tr>
 
                         <td><b>{!! Form::label('company_email',Lang::get('message.company-email'),['class'=>'required']) !!}</b></td>
+                       
                         <td>
                             <div class="form-group {{ $errors->has('company_email') ? 'has-error' : '' }}">
 

@@ -406,13 +406,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = \Cart::getSubTotal();
             } else {
                 foreach (\Cart::getContent() as $cart) {
-
-                    // $grand_total = $cart->price;
-                    $grand_total = \Cart::getSubTotal();
+                $grand_total = \Cart::getSubTotal();
                 }
             }
-            // dd($grand_total);
-
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
 
@@ -506,7 +502,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->setDomain($productid, $domain);
             }
             $controller = new \App\Http\Controllers\Front\CartController();
-            $currency = $controller->currency($user_id);
+            $userCurrency = $controller->currency($user_id);
+            $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $product = Product::find($productid);

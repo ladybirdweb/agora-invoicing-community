@@ -120,7 +120,6 @@ if (count($attributes) > 0) {
                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                         $cart_controller = new App\Http\Controllers\Front\CartController();
                                                         $value = $cart_controller->cost($product->id);
-                                                       
                                                         $price += $value;
                                                     
                                                         if ($product->require_domain == 1) {

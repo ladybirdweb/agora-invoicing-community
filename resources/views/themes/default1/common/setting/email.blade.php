@@ -115,7 +115,7 @@ Configure Mail
                             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
 
                                 {!! Form::text('email',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-email')}}</i> </p>
+                                <p><i> {{Lang::get('message.enter-email')}} ({{Lang::get('message.enter-email-message')}})</i> </p>
 
                             </div>
                         </td>

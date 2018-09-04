@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddSystemDefaultCurrencyToSettings extends Migration
 {
@@ -13,9 +13,9 @@ class AddSystemDefaultCurrencyToSettings extends Migration
      */
     public function up()
     {
-         Schema::table('settings', function (Blueprint $table) {
-            $table->string('default_currency',255)->nullable();
-            $table->string('default_symbol',255)->nullable();
+        Schema::table('settings', function (Blueprint $table) {
+            $table->string('default_currency', 255)->nullable();
+            $table->string('default_symbol', 255)->nullable();
         });
     }
 

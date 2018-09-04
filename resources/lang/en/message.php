@@ -101,7 +101,7 @@ return [
     /*
      * Settings
      */
-    'default-currency'                                             =>'System Default Currency',
+    'default-currency'                                             => 'System Default Currency',
     'settings'                                                     => 'Settings',
     'fav-title-admin'                                              => 'Favicon Title(Admin Panel)',
      'fav-title-client'                                            => 'Favicon Title(Client Panel)',

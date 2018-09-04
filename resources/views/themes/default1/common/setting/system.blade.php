@@ -231,6 +231,22 @@ System Setting
                         </td>
                     </tr>
                     <br>
+                        <tr>
+
+                        <td><b>{!! Form::label('default_currency',Lang::get('message.default-currency') ,['class'=>'required']) !!}</b></td>
+                        <td>
+                             <?php $currencies = \App\Model\Payment\Currency::pluck('name','code')->toArray(); 
+                             ?>
+                         <select name="default_currency" value= "Choose"  class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                               <option value="">Choose</option>
+                           @foreach($currencies as $key=>$currency)
+                              <option value="{{$key}}" <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>>{{$currency}}</option>
+                          @endforeach
+
+                        </select>
+                        </td>
+                    </tr>
+                    <br>
                       <tr>
                      
                         <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>

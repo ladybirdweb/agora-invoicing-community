@@ -664,6 +664,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddStateCodeColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
         'AddStateColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
         'AddStatusToCurrencies' => __DIR__ . '/../..' . '/database/migrations/2018_09_03_115525_add_status_to_currencies.php',
+        'AddSystemDefaultCurrencyToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_09_03_202632_add_system_default_currency_to_settings.php',
         'AddTitleToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_08_10_113159_add_title_to_settings.php',
         'App\\ApiKey' => __DIR__ . '/../..' . '/app/ApiKey.php',
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',

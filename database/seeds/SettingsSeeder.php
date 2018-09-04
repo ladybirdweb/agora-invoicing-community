@@ -20,6 +20,8 @@ class SettingsSeeder extends Seeder
             'city'                      => 'Bangalore',
             'state'                     => 'IN-KA',
             'country'                   => 'IN',
+            'default_currency'          => 'USD',
+            'default_symbol'            => '$',
             'website'                   => 'http://www.ladybirdweb.com',
             'error_log'                 => 1,
             'invoice'                   => 8,

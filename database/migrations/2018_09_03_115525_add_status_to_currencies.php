@@ -14,7 +14,7 @@ class AddStatusToCurrencies extends Migration
     public function up()
     {
         Schema::table('currencies', function (Blueprint $table) {
-            $table->boolean('active')->nullable();
+            $table->boolean('status')->nullable();
         });
     }
 

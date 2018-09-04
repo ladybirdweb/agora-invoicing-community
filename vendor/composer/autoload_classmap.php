@@ -37,6 +37,7 @@ return array(
     'AddStateCodeColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
     'AddStateColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',
     'AddStatusToCurrencies' => $baseDir . '/database/migrations/2018_09_03_115525_add_status_to_currencies.php',
+    'AddSystemDefaultCurrencyToSettings' => $baseDir . '/database/migrations/2018_09_03_202632_add_system_default_currency_to_settings.php',
     'AddTitleToSettings' => $baseDir . '/database/migrations/2018_08_10_113159_add_title_to_settings.php',
     'App\\ApiKey' => $baseDir . '/app/ApiKey.php',
     'App\\BaseModel' => $baseDir . '/app/BaseModel.php',

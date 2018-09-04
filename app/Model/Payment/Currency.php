@@ -35,4 +35,9 @@ class Currency extends BaseModel
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
     }
+
+    public function country()
+    {
+        return $this->hasMany('App\Model\Common\Country','currency_id');
+    }
 }

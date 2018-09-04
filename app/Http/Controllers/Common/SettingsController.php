@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
+use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
@@ -84,9 +85,11 @@ class SettingsController extends BaseSettingsController
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
             $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
             ->pluck('nicename', 'country_code_char2')->toArray();
+            $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
+            ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system', compact('set', 'selectedCountry', 'state', 'states'));
+            return view('themes.default1.common.setting.system', compact('set', 'selectedCountry', 'state', 'states','selectedCurrency'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -101,6 +104,7 @@ class SettingsController extends BaseSettingsController
                 'phone'          => 'required',
                 'address'        => 'required',
                 'country'        => 'required',
+                'default_currency'=>'required',
             ]);
 
         try {
@@ -124,6 +128,7 @@ class SettingsController extends BaseSettingsController
                 $request->file('fav-icon')->move($destinationPath, $iconName);
                 $setting->fav_icon = $iconName;
             }
+            $setting->default_symbol = Currency::where('code',$request->input('default_currency'))->pluck('symbol')->first();
             $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use App\Model\Payment\Currency;
+use App\Model\Common\Country;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\User\AccountActivate;
@@ -68,7 +69,9 @@ trait RegistersUsers
             $state_code = $location['countryCode'] . "-" . $location['region'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
             $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $currencyAndSymbol = Currency::where('country_code_char2',$country)->select('code','symbol')->first();
+            $currencyAndSymbol = Country::where('country_code_char2',$country)->first();
+           $currency =  $currencyAndSymbol->currency->name;
+           dd($currency);
             if ($currencyAndSymbol) {
                $currency = $currencyAndSymbol->code;
                $currency_symbol = $currencyAndSymbol->symbol;
@@ -108,6 +111,7 @@ trait RegistersUsers
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             $result = [$ex->getMessage()];
              return response()->json($result);
         }

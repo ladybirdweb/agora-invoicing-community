@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Api Key
+@stop
 @section('content-header')
 <h1>
 API Keys
@@ -26,6 +29,8 @@ API Keys
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+            <i class="fa fa-check"></i>
+            <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>

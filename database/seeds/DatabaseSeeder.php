@@ -6,6 +6,7 @@ use App\Model\Github\Github;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
+use App\ApiKey;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\TaxOption;
@@ -50,8 +51,8 @@ class DatabaseSeeder extends Seeder
         $this->call('PromotionTableSeeder');
         $this->command->info('Promotion table seeded!');
 
-        $this->call('CurrencyTableSeeder');
-        $this->command->info('Currency table seeded!');
+         $this->call('ApiKeyTableSeeder');
+        $this->command->info('ApiKey table seeded!');
 
         $this->call('TaxOptionTableSeeder');
         $this->command->info('Tax Option Table seeded');
@@ -117,17 +118,7 @@ class ProductTypesTableSeeder extends Seeder
         }
     }
 }
-class CurrencyTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('currencies')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Currency::create(['id' => 1, 'code' => 'USD', 'symbol' => '$', 'name' => 'US Dollar', 'base_conversion' => '1.0']);
-        Currency::create(['id' => 2, 'code' => 'INR', 'symbol' => '₹', 'name' => 'Indian Rupee', 'base_conversion' => '1.0']);
-    }
-}
+
 
 class TaxOptionTableSeeder extends Seeder
 {
@@ -137,6 +128,18 @@ class TaxOptionTableSeeder extends Seeder
         \DB::table('tax_rules')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         TaxOption::create(['id' => 1, 'tax_enable' => 0, 'inclusive' => 0, 'rounding' => 1]);
+    }
+}
+
+
+class ApiKeyTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('api_keys')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        ApiKey::create(['id' => 1, 'rzp_key' => NULL, 'rzp_secret' => NULL,'apilayer_key' => NULL, 'bugsnag_api_key' => NULL,'zoho_api_key'=>NULL]);
     }
 }
 

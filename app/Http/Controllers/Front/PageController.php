@@ -307,7 +307,7 @@ class PageController extends GetPageTemplateController
 
             //Helpdesk VPS
             $helpdesk_vps_product = $product->where('id', '!=', 1)
-        ->where('category', '=', 'helpdeskvps')
+        ->where('category', '=', 'helpdesk vps')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();

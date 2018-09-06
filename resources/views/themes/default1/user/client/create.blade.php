@@ -267,7 +267,7 @@ select.form-control{
                     </div>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->
-                        <?php $currencies = DB::table('currencies')->pluck('name','code')->toarray() ?>
+                        <?php $currencies = DB::table('currencies')->where('status',1)->pluck('name','code')->toarray() ?>
                         {!! Form::label('currency',Lang::get('message.currency'),['class'=>'required']) !!}
                         <select name="currency" value= "Choose" class="form-control" id ="currency">
                              <option value="">Choose</option>

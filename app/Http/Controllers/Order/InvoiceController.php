@@ -95,7 +95,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function index(Request $request)
     {
         try {
-            $currencies = Currency::pluck('code')->toArray();
+            $currencies = Currency::where('status',1)->pluck('code')->toArray();
             $name = $request->input('name');
             $invoice_no = $request->input('invoice_no');
             $status = $request->input('status');

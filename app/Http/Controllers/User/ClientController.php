@@ -239,7 +239,6 @@ class ClientController extends AdvanceSearchController
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -253,7 +252,10 @@ class ClientController extends AdvanceSearchController
             $amounts = Payment::where('user_id', $userId)->select('amount')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amount;
+                if($amount){
+                    $paidSum = $paidSum + $amount->amount;
+                }
+                
             }
 
             return $paidSum;

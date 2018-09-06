@@ -13,7 +13,6 @@ class Github extends BaseModel
     {
         if ($value) {
             $value = \Crypt::decrypt($value);
-            // dd('dsf');
         }
 
         return $value;

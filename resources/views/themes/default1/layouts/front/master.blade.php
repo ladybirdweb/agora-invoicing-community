@@ -1,5 +1,11 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
+if($script){
+  $script = $script->script;
+}else{
+  $script = null;
+}
+
 
  ?>
 <!DOCTYPE html>
@@ -496,18 +502,10 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
         -->
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
-<!-- <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/57236f1bb27b7d1124b56794/default';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+<script type="text/javascript">
+ {!! html_entity_decode($script) !!}
 
-</script> -->
+</script>
 
 <!--End of Tawk.to Script-->
 <!--End of Tawk.to Script-->

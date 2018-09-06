@@ -1,3 +1,0 @@
-[2018-08-11 10:01:43] local.INFO: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'days' in 'field list' (SQL: select `code`, `days` from `currencies` where `name` = INR)  
-[2018-08-11 10:02:11] local.INFO: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'days' in 'field list' (SQL: select `code`, `days` from `currencies` where `name` = INR)  
-[2018-08-11 11:11:29] local.INFO: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'shor' in 'where clause' (SQL: select `name`, `short` from `company_sizes` where `shor` = 11-50)  

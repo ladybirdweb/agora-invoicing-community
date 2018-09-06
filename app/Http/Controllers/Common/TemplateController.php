@@ -283,7 +283,6 @@ class TemplateController extends BaseTemplateController
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
-                $status = 'success';
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -313,7 +312,6 @@ class TemplateController extends BaseTemplateController
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
             \DB::table('email_log')->insert([
             'date'     => date('Y-m-d H:i:s'),
             'from'     => $from,

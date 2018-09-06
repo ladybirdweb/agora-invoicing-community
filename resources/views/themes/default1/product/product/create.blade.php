@@ -91,12 +91,24 @@ Create New Product
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
                                     {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
-
+  
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
+                                     <?php
+                                        $type = DB::table('product_categories')->pluck('category_name')->toarray();
+                                       
+                                        ?>
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
+                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+
+                                     <select name="category" value= "Choose" class="form-control">
+                             <option value="">Choose</option>
+                           @foreach($type as $key=>$types)
+
+                             <option value={{$types}}>{{$types}}</option>
+                          @endforeach
+                          </select>
 
                                 </div>
 

@@ -169,12 +169,15 @@ Edit Profile
                 </div>
 
                 <div class="row">
-
+   <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                     <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
+                         {!! Form::label('country',Lang::get('message.country')) !!}
+
+                        {!! Form::select('country',[Lang::get('message.choose')=>$countries],null,['class' => 'form-control selectpicker','id'=>'country','onChange'=>'getCountryAttr(this.value)','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10']) !!}
                         <!-- name -->
-                        {!! Form::label('country',Lang::get('message.country')) !!}
-                        <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                        {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                       
+                     
+                        
 
                     </div>
                     <div class="col-md-6 form-group {{ $errors->has('state') ? 'has-error' : '' }}">
@@ -275,7 +278,8 @@ Edit Profile
 
 {!! Form::close() !!}
 <script>
-           $(document).ready(function(){ 
+// get the country data from the plugin
+     $(document).ready(function(){
     var country = $('#country').val();
     var telInput = $('#mobile_code');
      let currentCountry="";
@@ -283,14 +287,14 @@ Edit Profile
         initialCountry: "auto",
         geoIpLookup: function (callback) {
             $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
-                  resp.country = country;
+                resp.country = country;
                 var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);
             });
         },
         separateDialCode: false,
-        utilsScript: "{{asset('js/intl/js/utils.js')}}",
+        // utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
     setTimeout(()=>{
          telInput.intlTelInput("setCountry", currentCountry);

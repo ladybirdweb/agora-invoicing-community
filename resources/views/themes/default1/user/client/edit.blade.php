@@ -261,7 +261,7 @@ Edit User
 
                     </div>
                     <?php 
-                   $currencies = DB::table('currencies')->pluck('name','code')->toArray() ; 
+                   $currencies = DB::table('currencies')->where('status',1)->pluck('name','code')->toArray() ; 
                     ?>
                     <div class="col-md-4 form-group {{ $errors->has('currency') ? 'has-error' : '' }}">
                         <!-- mobile -->

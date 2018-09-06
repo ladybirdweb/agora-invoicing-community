@@ -28,6 +28,8 @@ Configure Mail
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -49,7 +51,7 @@ Configure Mail
 
                 <table class="table table-condensed">
                     <tr>
-                        <h3 class="box-title">{{Lang::get('message.smtp')}}</h3>
+                        <h3 style="margin-top:0px;" class="box-title">{{Lang::get('message.smtp')}}</h3>
                        <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
                     <tr>

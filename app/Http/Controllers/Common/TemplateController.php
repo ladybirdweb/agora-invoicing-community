@@ -386,7 +386,6 @@ class TemplateController extends BaseTemplateController
                     $days = $value->min('days');
                     $month = round($days / 30);
                     $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
-                   
                 }
                 foreach ($prices as $key => $value) {
                     $duration = $this->getDuration($value);

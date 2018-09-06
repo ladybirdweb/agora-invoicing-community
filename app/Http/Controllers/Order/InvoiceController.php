@@ -406,7 +406,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = \Cart::getSubTotal();
             } else {
                 foreach (\Cart::getContent() as $cart) {
-                $grand_total = \Cart::getSubTotal();
+                    $grand_total = \Cart::getSubTotal();
                 }
             }
             $number = rand(11111111, 99999999);

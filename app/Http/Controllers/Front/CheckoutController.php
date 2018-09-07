@@ -19,8 +19,6 @@ use App\User;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
-use LogViewer;
-use Debugbar;
 
 class CheckoutController extends InfoController
 {

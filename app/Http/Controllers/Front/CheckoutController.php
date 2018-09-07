@@ -131,7 +131,7 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -188,8 +188,9 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -264,6 +265,7 @@ class CheckoutController extends InfoController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -313,7 +315,7 @@ class CheckoutController extends InfoController
 
             return $product;
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -364,7 +366,7 @@ class CheckoutController extends InfoController
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order for Product');
@@ -387,7 +389,7 @@ class CheckoutController extends InfoController
             $this->subscription->create(['user_id' => \Auth::user()->id,
              'plan_id'                             => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, ]);
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
@@ -408,7 +410,7 @@ class CheckoutController extends InfoController
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -438,7 +440,7 @@ class CheckoutController extends InfoController
                 'quantity'                                          => $quantity, 'tax_name' => $tax_name,
                  'tax_percentage'                                   => $tax_percentage, 'subtotal' => $subtotal, ]);
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');

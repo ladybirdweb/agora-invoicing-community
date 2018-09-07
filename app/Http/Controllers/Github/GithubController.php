@@ -262,7 +262,7 @@ class GithubController extends Controller
     {
         try {
             $model = $this->github;
-             
+
             return view('themes.default1.github.settings', compact('model'));
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());

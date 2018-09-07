@@ -14,10 +14,10 @@ class CreateGithubsTable extends Migration
     {
         Schema::create('githubs', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('client_id')->nullable();;
-            $table->string('client_secret')->nullable();;
-            $table->string('username')->nullable();;
-            $table->string('password',255)->nullable();
+            $table->string('client_id')->nullable();
+            $table->string('client_secret')->nullable();
+            $table->string('username')->nullable();
+            $table->string('password', 255)->nullable();
             $table->timestamps();
         });
     }

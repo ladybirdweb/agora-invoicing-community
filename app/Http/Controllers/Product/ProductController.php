@@ -209,7 +209,7 @@ namespace App\Http\Controllers\Product;
                 $cartUrl = $url.'/pricing?id='.$i;
                 $type = $this->type->pluck('name', 'id')->toArray();
                 $subscription = $this->plan->pluck('name', 'id')->toArray();
-                $currency = $this->currency->where('status',1)->pluck('name', 'code')->toArray();
+                $currency = $this->currency->where('status', 1)->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
                 $periods = $this->period->pluck('name', 'days')->toArray();
@@ -318,7 +318,7 @@ namespace App\Http\Controllers\Product;
                 return view('themes.default1.product.product.edit',
                     compact('product', 'periods', 'type', 'subscription',
                         'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes','selectedCategory'));
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 

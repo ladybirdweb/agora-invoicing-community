@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'dashboard'              => 'Dashboard',
     'home'                   => 'Home',
     'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',

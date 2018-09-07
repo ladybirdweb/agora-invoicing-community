@@ -17,6 +17,7 @@ Configure Mail
             <div class="box-header">
                 @if (count($errors) > 0)
                 <div class="alert alert-danger alert-dismissable">
+                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -49,7 +50,7 @@ Configure Mail
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/email','method'=>'patch','files'=>true]) !!}
 
-                <table class="table table-condensed">
+                  <div class="col-md-12">
                     <tr>
                         <h3 style="margin-top:0px;" class="box-title">{{Lang::get('message.smtp')}}</h3>
                        <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
@@ -138,8 +139,8 @@ Configure Mail
                     </tr>
 
                     
-
-                </table>
+          </div>
+                
             </div>
         </div>
     </div>

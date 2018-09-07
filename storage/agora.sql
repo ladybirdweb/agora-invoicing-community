@@ -531,7 +531,7 @@ INSERT INTO `currencies` (`id`, `code`, `symbol`, `name`, `base_conversion`, `st
 (98, 'ISK','Kr','Iceland Krona',NULL,0),
 (99, 'INR','₹','Indian Rupee',NULL,0),
 (100, 'IDR','Rp','Rupiah',NULL,0),
-(101, 'IRR','ع.د ','  ,Iranian Rial',NULL,0),
+(101, 'IRR','ع.د ', 'Iranian Rial',NULL,0),
 (102, 'IQD','ع.د ','Iraqi Dinar',NULL,0),
 (104, 'ILS','₪','New Israeli Shekel',NULL,0),
 (106, 'JMD','$','Jamaican Dollar',NULL,0),

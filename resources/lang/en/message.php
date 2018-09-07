@@ -387,16 +387,16 @@ return [
      /*
      * Api Keys
      */
-     'rzp_key'        => 'Razorpay Key',
-     'rzp_secret'     => 'Razorpay Secret',
-     'apilayer'       => 'ApiLayer Access Key',
-     'zoho_key'       => 'Zoho Key',
-     'key'            => 'API Keys',
-     'msg91key'       => 'Msg91 Auth Key',
-     'twitter_consumer_key'=> 'Twitter Consumer Key',
-     'twitter_consumer_secret'=>'Twitter Consumer Secret',
-     'twitter_access_token' =>'Twitter Access Token',
-     'twitter_access_tooken_secret'=>'Twitter Access Token Secret',
+     'rzp_key'                     => 'Razorpay Key',
+     'rzp_secret'                  => 'Razorpay Secret',
+     'apilayer'                    => 'ApiLayer Access Key',
+     'zoho_key'                    => 'Zoho Key',
+     'key'                         => 'API Keys',
+     'msg91key'                    => 'Msg91 Auth Key',
+     'twitter_consumer_key'        => 'Twitter Consumer Key',
+     'twitter_consumer_secret'     => 'Twitter Consumer Secret',
+     'twitter_access_token'        => 'Twitter Access Token',
+     'twitter_access_tooken_secret'=> 'Twitter Access Token Secret',
 
     /*
      * Slas

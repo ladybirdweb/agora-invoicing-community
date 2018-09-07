@@ -209,7 +209,7 @@ class CheckoutController extends InfoController
         $state = $this->getState();
 
         try {
-            if ($paynow === false) {
+            if ($paydfnow === false) {
                 /*
                  * Do order, invoicing etc
                  */

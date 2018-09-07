@@ -13,5 +13,7 @@
   ],
   "language": "php"
   notifications:
-    slack: faveohelpdesk:KLTbFe90dKlctVzTExcnfefp
+    slack: faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo,
+    travis encrypt "faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo" --add notifications.slack,
+    travis encrypt "faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo" --add notifications.slack -r ladybirdweb/agorainvoicing
 }

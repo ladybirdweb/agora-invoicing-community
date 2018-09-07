@@ -667,6 +667,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddStatusToEmailLog' => __DIR__ . '/../..' . '/database/migrations/2018_09_05_121043_add_status_to_email_log.php',
         'AddSystemDefaultCurrencyToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_09_03_202632_add_system_default_currency_to_settings.php',
         'AddTitleToSettings' => __DIR__ . '/../..' . '/database/migrations/2018_08_10_113159_add_title_to_settings.php',
+        'AddTwitterKeysToApiKeys' => __DIR__ . '/../..' . '/database/migrations/2018_09_07_092457_add_twitter_keys_to_api_keys.php',
         'ApiKeyTableSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'App\\ApiKey' => __DIR__ . '/../..' . '/app/ApiKey.php',
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',

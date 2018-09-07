@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use App\Model\Common\SocialMedia;
+use App\ApiKey;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -183,10 +184,10 @@ class SocialMediaController extends Controller
         try {
             $tweet_limit = 2;
             $username = 'faveohelpdesk';
-            $consumer_key = '1BcWlYMQsiQqgBB4ZEw6eLvcy';
-            $consumer_secrete = 's9vG72rqVn01Z4243aJTFNfcyuRX0MczOBbuc6l39krrAuLWRr';
-            $access_token = '997384398-WteL6dkEXZsmAcaNXJjzfC7pHT3KBffWzqQjInJl';
-            $access_token_secrete = 'rCIlZmWKt4R4pbVuiUpYNAKP9hqgmT9Rj0Lw07cPzDpn3';
+            $consumer_key = ApiKey::find(1)->value('twitter_consumer_key');
+            $consumer_secrete = ApiKey::find(1)->value('twitter_consumer_secret');
+            $access_token = ApiKey::find(1)->value('twitter_access_token');
+            $access_token_secrete = ApiKey::find(1)->value('access_tooken_secret');
 
             $twitter = new TwitterOAuth($consumer_key, $consumer_secrete, $access_token, $access_token_secrete);
 
@@ -213,7 +214,8 @@ class SocialMediaController extends Controller
             }
             echo $twitter;
         } catch (Exception $ex) {
-            echo $ex->getMessage();
+            throw new Exception($ex->getMessage());
+              // $ex->getMessage();
         }
     }
 }

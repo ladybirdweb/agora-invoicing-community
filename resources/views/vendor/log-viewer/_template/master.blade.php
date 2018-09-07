@@ -216,11 +216,11 @@
             </footer>
         </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment-with-locales.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="{{asset('https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js')}}"></script>
+    <script src="{{asset('https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js')}}"></script>
+    <script src="{{asset('https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.1/moment-with-locales.min.js')}}"></script>
+    <script src="{{asset('https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.min.js')}}"></script>
+    <script src="{{asset('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js')}}"></script>
         <script src="{{asset('js/theme.init.js')}}"></script>
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
           <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
@@ -237,7 +237,7 @@
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+        <script src="{{asset('https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js')}}"></script>
     <script>
         Chart.defaults.global.responsive      = true;
         Chart.defaults.global.scaleFontFamily = "'Source Sans Pro'";

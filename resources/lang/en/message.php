@@ -393,6 +393,10 @@ return [
      'zoho_key'       => 'Zoho Key',
      'key'            => 'API Keys',
      'msg91key'       => 'Msg91 Auth Key',
+     'twitter_consumer_key'=> 'Twitter Consumer Key',
+     'twitter_consumer_secret'=>'Twitter Consumer Secret',
+     'twitter_access_token' =>'Twitter Access Token',
+     'twitter_access_tooken_secret'=>'Twitter Access Token Secret',
 
     /*
      * Slas
@@ -523,5 +527,6 @@ return [
       'update'         => 'Update',
       'active'         => 'Active',
       'inactive'       => 'Inactive',
+      'system-api'     => 'System Api Keys',
 
 ];

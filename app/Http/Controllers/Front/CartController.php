@@ -621,7 +621,7 @@ class CartController extends BaseCartController
             $from = $set->email;
             $fromname = $set->company;
             $toname = '';
-            $to = 'support@faveohelpdesk.com';
+            $to = $set->company_email;
             $data = '';
             $data .= 'Name: '.$request->input('name').'<br/s>';
             $data .= 'Email: '.$request->input('email').'<br/>';

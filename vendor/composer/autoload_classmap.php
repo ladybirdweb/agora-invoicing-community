@@ -40,6 +40,7 @@ return array(
     'AddStatusToEmailLog' => $baseDir . '/database/migrations/2018_09_05_121043_add_status_to_email_log.php',
     'AddSystemDefaultCurrencyToSettings' => $baseDir . '/database/migrations/2018_09_03_202632_add_system_default_currency_to_settings.php',
     'AddTitleToSettings' => $baseDir . '/database/migrations/2018_08_10_113159_add_title_to_settings.php',
+    'AddTwitterKeysToApiKeys' => $baseDir . '/database/migrations/2018_09_07_092457_add_twitter_keys_to_api_keys.php',
     'ApiKeyTableSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
     'App\\ApiKey' => $baseDir . '/app/ApiKey.php',
     'App\\BaseModel' => $baseDir . '/app/BaseModel.php',

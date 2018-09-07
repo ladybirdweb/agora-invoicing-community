@@ -106,7 +106,7 @@ class SettingsController extends BaseSettingsController
                 'country'         => 'required',
                 'default_currency'=> 'required',
                 'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                'fav-icon'        =>'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                 'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
             ]);
 

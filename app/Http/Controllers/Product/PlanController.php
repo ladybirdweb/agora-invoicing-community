@@ -96,7 +96,7 @@ class PlanController extends Controller
      */
     public function create()
     {
-        $currency = $this->currency->where('status',1)->pluck('name', 'code')->toArray();
+        $currency = $this->currency->where('status', 1)->pluck('name', 'code')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
 

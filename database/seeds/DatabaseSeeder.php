@@ -1,12 +1,12 @@
 <?php
 
+use App\ApiKey;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
-use App\ApiKey;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
 use App\Model\Payment\TaxOption;
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
         $this->call('PromotionTableSeeder');
         $this->command->info('Promotion table seeded!');
 
-         $this->call('ApiKeyTableSeeder');
+        $this->call('ApiKeyTableSeeder');
         $this->command->info('ApiKey table seeded!');
 
         $this->call('TaxOptionTableSeeder');
@@ -119,7 +119,6 @@ class ProductTypesTableSeeder extends Seeder
     }
 }
 
-
 class TaxOptionTableSeeder extends Seeder
 {
     public function run()
@@ -131,7 +130,6 @@ class TaxOptionTableSeeder extends Seeder
     }
 }
 
-
 class ApiKeyTableSeeder extends Seeder
 {
     public function run()
@@ -139,7 +137,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => NULL, 'rzp_secret' => NULL,'apilayer_key' => NULL, 'bugsnag_api_key' => NULL,'zoho_api_key'=>NULL]);
+        ApiKey::create(['id' => 1, 'rzp_key' => null, 'rzp_secret' => null, 'apilayer_key' => null, 'bugsnag_api_key' => null, 'zoho_api_key'=>null]);
     }
 }
 

@@ -12,4 +12,6 @@
     "php artisan migrate --seed"
   ],
   "language": "php"
+  notifications:
+    slack: faveohelpdesk:KLTbFe90dKlctVzTExcnfefp
 }

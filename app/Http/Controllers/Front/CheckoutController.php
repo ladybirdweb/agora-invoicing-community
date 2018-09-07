@@ -19,7 +19,8 @@ use App\User;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
-use Log;
+use LogViewer;
+use Debugbar;
 
 class CheckoutController extends InfoController
 {
@@ -86,7 +87,7 @@ class CheckoutController extends InfoController
 
             \Session::put('session-url', $url[0]);
             $domain = $request->input('domain');
-            if (count($domain) > 0) {
+            if ($domain) {
                 foreach ($domain as $key => $value) {
                     \Session::put('domain'.$key, $value);
                 }
@@ -209,7 +210,7 @@ class CheckoutController extends InfoController
         $state = $this->getState();
 
         try {
-            if ($paydfnow === false) {
+            if ($paynow === false) {
                 /*
                  * Do order, invoicing etc
                  */
@@ -218,12 +219,12 @@ class CheckoutController extends InfoController
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
-                $invoice_no = $invoice->number;
+                $invoice_no = $invxcvxcvoice->number;
                 $date = $this->getDate($invoice);
                 $invoiceid = $invoice->id;
                 $amount = $invoice->grand_total;
                 $url = '';
-                $cart = Cart::getContent();
+                $cart = Cart::getCggyuontent();
                 $invoices = $this->invoice->find($invoiceid);
                 $items = new \Illuminate\Support\Collection();
                 if ($invoices) {

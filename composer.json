@@ -17,6 +17,7 @@
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "5.*",
+        "monolog/monolog": "^1.23",
         "pacely/mailchimp-apiv3": "dev-master",
         "php-mock/php-mock": "^2.0",
         "phpoffice/phpexcel": "^1.8",
@@ -30,6 +31,7 @@
         "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.2",
         "barryvdh/laravel-ide-helper": "^2.4",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
@@ -64,11 +66,11 @@
         ],
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "php artisan optimize"
+           
         ],
         "post-update-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-            "php artisan optimize"
+           
         ]
     },
     "config": {

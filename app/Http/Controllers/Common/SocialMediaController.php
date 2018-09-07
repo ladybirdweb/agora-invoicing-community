@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\ApiKey;
 use App\Http\Controllers\Common\Twitter\TwitterOAuth;
 use App\Http\Controllers\Controller;
 use App\Model\Common\SocialMedia;
-use App\ApiKey;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -215,7 +215,7 @@ class SocialMediaController extends Controller
             echo $twitter;
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
-              // $ex->getMessage();
+            // $ex->getMessage();
         }
     }
 }

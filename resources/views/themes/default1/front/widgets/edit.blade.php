@@ -15,6 +15,7 @@ Edit Widget
     <div class="content-header">
         @if (count($errors) > 0)
         <div class="alert alert-danger">
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             <strong>Whoops!</strong> There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
@@ -26,6 +27,8 @@ Edit Widget
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+             <i class="fa fa-ban"></i>
+             <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -71,7 +74,14 @@ Edit Widget
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.type')) !!}
-                        {!! Form::select('type',['footer'=>'Footer'],null,['class' => 'form-control']) !!}
+                        <select name="type"  class="form-control">
+                            <option selected="selected">{{$widget->type}}</option>
+                             <option value="">Choose</option>
+                           <option value="footer1">footer1</option>
+                             <option value="footer2">footer2</option>
+                              <option value="footer3">footer3</option>
+                               <option value="footer4">footer4</option>
+                         </select>
 
                     </div>
 

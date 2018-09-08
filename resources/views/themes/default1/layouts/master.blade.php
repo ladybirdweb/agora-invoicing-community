@@ -186,7 +186,7 @@ function move() {
                     <ul class="sidebar-menu">
 
                            <li class="treeview">
-                            <a href=""{{url('/')}}"">
+                            <a href="{{url('/')}}">
                                 <i class="fa fa-dashboard"></i> <span>{{Lang::get('message.dashboard')}}</span>
                             </a>
                           

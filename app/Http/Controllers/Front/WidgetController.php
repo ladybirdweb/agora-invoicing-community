@@ -84,7 +84,8 @@ class WidgetController extends Controller
         $this->validate($request, [
             'name'    => 'required',
             'publish' => 'required',
-            'content' => 'required',
+            // 'content' => 'required',
+            'type'    => 'required|unique:widgets',
         ]);
 
         try {
@@ -101,7 +102,8 @@ class WidgetController extends Controller
         $this->validate($request, [
             'name'    => 'required',
             'publish' => 'required',
-            'content' => 'required',
+            // 'content' => 'required',
+            'type'    => 'required|unique:widgets',
         ]);
 
         try {

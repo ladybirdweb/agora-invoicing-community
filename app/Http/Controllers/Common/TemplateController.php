@@ -318,14 +318,12 @@ class TemplateController extends BaseTemplateController
             'to'       => $to,
              'subject' => $subject,
             'body'     => $data,
-
             'status' => 'failed',
         ]);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
             }
-
             throw new \Exception('mailing problem');
         }
     }

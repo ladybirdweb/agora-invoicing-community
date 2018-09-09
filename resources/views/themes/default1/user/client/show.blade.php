@@ -191,7 +191,7 @@ User Details
                                         <td class="invoice-number">
                                             <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                         </td>
-                                        <td contenteditable="true" class="invoice-total"> 
+                                        <td contenteditable="false" class="invoice-total"> 
                                            {{$invoice->grand_total}}
                                         </td>
                                         <td>{{$sum}}</td>

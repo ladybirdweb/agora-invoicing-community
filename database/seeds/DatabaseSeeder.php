@@ -137,7 +137,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => null, 'rzp_secret' => null, 'apilayer_key' => null, 'bugsnag_api_key' => null, 'zoho_api_key'=>null,'msg91_auth_key'=>null,'twitter_consumer_key'=>null,'twitter_consumer_secret'=>null,'twitter_access_token'=>null,'access_tooken_secret'=>null]);
+        ApiKey::create(['id' => 1, 'rzp_key' => null, 'rzp_secret' => null, 'apilayer_key' => null, 'bugsnag_api_key' => null, 'zoho_api_key'=>null, 'msg91_auth_key'=>null, 'twitter_consumer_key'=>null, 'twitter_consumer_secret'=>null, 'twitter_access_token'=>null, 'access_tooken_secret'=>null]);
     }
 }
 

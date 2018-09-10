@@ -131,15 +131,13 @@ Edit Profile
                 </div>
 
                 <div class="form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                    <label class="required">Country code</label>
-                    {!! Form::text('mobile_code',null,['class'=>'form-control', 'id'=>'mobile_code']) !!}
+                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+                     {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                      <input class="form-control"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
+                       {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                    <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
                 </div>
-                <div class="form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                    <!-- mobile -->
-                    {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
-                    {!! Form::text('mobile',null,['class' => 'form-control']) !!}
-
-                </div>
+                
 
                 <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                     <!-- phone number -->
@@ -286,14 +284,16 @@ Edit Profile
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
+
             $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp) {
                 resp.country = country;
+
                 var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);
             });
         },
-        separateDialCode: false,
+        separateDialCode: true,
         // utilsScript: "{{asset('js/intl/js/utils.js')}}",
     });
     setTimeout(()=>{
@@ -343,7 +343,7 @@ Edit Profile
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-                $("#mobile_code").val(data);
+                // $("#mobile_code").val(data);
                 $("#mobile_code_hidden").val(data);
             }
         });

@@ -1,4 +1,7 @@
-   @extends('themes.default1.layouts.master')
+@extends('themes.default1.layouts.master')
+ @section('title')
+Payment
+@stop
     @section('content-header')
     <h1>
     Create New Payment
@@ -101,7 +104,7 @@
         
                         <div class="box-body">
                         <div class="row">
-
+                            @if(count($invoices)!=0)
                             <div class="col-md-12">
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
@@ -119,10 +122,7 @@
                                     <tbody>
                                         @forelse ($invoices as $invoice)
                                         <?php
-                                         if($invoice->currency == 'INR')
-                                            $currency = '₹';
-                                            else
-                                            $currency = '$'; 
+                                      
                                         $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                                          $c=count($payment);
                                            $sum= 0;
@@ -139,7 +139,13 @@
                                                  <input type="checkbox"  id="check" class="selectedbox" name='selectedcheckbox' value="{{$invoice->id}}">
                                             </td>
                                             <td>
-                                                  {{$invoice->date}}
+                                                  <?php
+                                          $date1 = new DateTime($invoice->date);
+                                          $tz = $client->timezone()->first()->name;
+                                          $date1->setTimezone(new DateTimeZone($tz));
+                                          $date = $date1->format('M j, Y, g:i a ');
+                                            echo $date;
+                                            ?>
                                             </td>
                                             <td class="invoice-number">
                                                 <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
@@ -170,8 +176,9 @@
                                     </tbody>
                                 </table>
                             </div>
+                            @endif
                         </div>
-                          <h3>Amount To Credit : <span class="creditAmount"></span></h3>
+                          <h3>Amount To Credit : {{$symbol}} <span class="creditAmount">0</span></h3>
                     </div>
     </div>
     @stop
@@ -266,6 +273,7 @@
     $(":checked").each(function() {
       if($(this).val() != ""){
        var value = $('#'+ $(this).val()).val();
+       console.log(value);
         invoice.push($(this).val());
         invoiceAmount.push(value);
 
@@ -274,7 +282,7 @@
     });
 
 
-// console.log(invoice);
+console.log(invoice);
     var data = {
             "totalAmt":   $('#amount').val(),
             "invoiceChecked"  : invoice,
@@ -289,7 +297,7 @@
       data: data,
           success: function (response) {
             $('#alertMessage').show();
-            // console.log(response)
+            console.log(response)
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");

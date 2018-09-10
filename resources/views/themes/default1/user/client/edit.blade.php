@@ -275,18 +275,15 @@ Edit User
                               </select>
 
                     </div>
-                    <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required">Country code</label>
-                        {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
-                         <!-- <input class="form-control" id="mobilecode" name="mobile" type="tel"> -->
-                        {!! Form::text('mobil',null,['class'=>'form-control','id'=>'mobile_code']) !!}
-                    </div>
-                    <div class="col-md-4 form-group {{ $errors->has('mobile') ? 'has-error' : '' }}">
-                        <!-- mobile -->
-                        {!! Form::label('mobile',Lang::get('message.mobile'),['class'=>'required']) !!}
-                        {!! Form::text('mobile',null,['class' => 'form-control']) !!}
-
-                    </div>
+                       <div class="col-md-4 form-group {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
+                  {!! Form::label('mobile',null,['class' => 'required'],Lang::get('message.mobile'),['class'=>'required']) !!}
+                     {!! Form::hidden('mobile_code',null,['id'=>'mobile_code_hidden']) !!}
+                      <input class="form-control"  id="mobile_code" value="{{$user->mobile}}" name="mobile" type="tel">
+                       {!! Form::hidden('mobile_code',null,['class'=>'form-control input-lg','disabled','id'=>'mobile_code']) !!}
+                    <!-- {!! Form::text('mobil',null,['class'=>'form-control', 'id'=>'mobile_code']) !!} -->
+                </div>
+                   
+                  
                     <div class="col-md-4 form-group {{ $errors->has('skype') ? 'has-error' : '' }}">
                         <!-- mobile -->
                         {!! Form::label('skype','Skype') !!}
@@ -321,8 +318,10 @@ Edit User
 
    
      $(document).ready(function(){
+
     var country = $('#country').val();
     var telInput = $('#mobile_code');
+    
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
@@ -387,8 +386,8 @@ Edit User
             url: "{{url('get-code')}}",
             data: 'country_id=' + val,
             success: function (data) {
-                $("#mobile_code").val(data);
-                // $("#mobile_code_hidden").val(data);
+                // $("#mobile_code").val(data);
+                $("#mobile_code_hidden").val(data);
             }
         });
     }

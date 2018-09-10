@@ -62,7 +62,11 @@ Order Details
    
                               
                                 <tbody><tr><td><b>Serial Key:</b></td><td>{{($order->serial_key)}}</td></tr>
-                                    <tr><td><b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
+                                    <tr>
+                                        
+                                            <td>
+                                                 <label name="domain" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.domain-message') !!}">
+                                                    <b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
                                     <?php
                                     $date = "--";
                                     if ($subscription) {

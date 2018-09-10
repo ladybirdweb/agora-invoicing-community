@@ -153,7 +153,7 @@ User Details
                     <div class="row">
 
                         <div class="col-md-12">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>{{Lang::get('message.date')}}</th>
@@ -253,7 +253,7 @@ User Details
             <div class="tab-pane" id="timeline">
                 <div>
                     <div class="box-body">
-                        <table id="example4" class="table table-bordered table-hover">
+                        <table id="example2" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Invoice Number</th>
@@ -267,6 +267,7 @@ User Details
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($invoices)>0)
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
                                     <td class="invoice-no">
@@ -282,7 +283,7 @@ User Details
                                         {{ucfirst($payment->payment_method)}}
                                     </td>
                                      @if($payment->invoice_id == 0)
-                                     <td class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
+                                     <td class="payment-total" data-count="{{$payment->id}}">{{$extraAmt}}</td>
                                      @endif
                                        @if($payment->invoice_id != 0)
                                     <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
@@ -291,10 +292,10 @@ User Details
                                     <td>
                                         <input type="hidden" class="paymentid" value="{{$payment->id}}">
                                         @if($payment->invoice_id == 0)
-                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit">&nbsp;</i>
-                                          {{Lang::get('message.link')}}</a>
+                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit"></i>
+                                          {{Lang::get('message.edit')}}</a>
                                           @endif
-                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs"><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
+                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick= "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
                                   
                                     </td>
                                 </tr>
@@ -305,6 +306,7 @@ User Details
                                     </td>
                                 </tr>
                                 @endforelse
+                                @endif
 
 
 
@@ -455,7 +457,7 @@ User Details
                 <div>
                     <div class="box box-widget widget-user">
                          <div class="box-body">
-                        <table id="example4" class="table table-bordered table-hover">
+                        <table id="example3" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -551,6 +553,11 @@ User Details
 
 
     });
+
+      function myFunction() {
+      if(!confirm("Are You Sure to delete this Payment?"))
+      event.preventDefault();
+  }
 </script>
 <script>
 
@@ -591,5 +598,20 @@ User Details
 
         });
     })
+</script>
+<script>
+  $(function () {
+     $('#example1').DataTable()
+      $('#example2').DataTable()
+       $('#example3').DataTable()
+    //    $('#example2').DataTable({
+    //   'paging'      : true,
+    //   'lengthChange': false,
+    //   'searching'   : false,
+    //   'ordering'    : true,
+    //   'info'        : true,
+    //   'autoWidth'   : false
+    // })
+  })
 </script>
 @stop

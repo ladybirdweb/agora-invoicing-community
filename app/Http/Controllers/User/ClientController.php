@@ -176,12 +176,15 @@ class ClientController extends AdvanceSearchController
             $str = str_random(6);
             $password = \Hash::make($str);
             $user->password = $password;
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+            $user->ip = $location['query'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
-            return redirect()->back()->with('warning', 'User has created successfully
+            return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!');
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -217,7 +220,6 @@ class ClientController extends AdvanceSearchController
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
                  'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -260,7 +262,6 @@ class ClientController extends AdvanceSearchController
 
             return $paidSum;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 

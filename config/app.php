@@ -181,8 +181,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
-        Barryvdh\Debugbar\ServiceProvider::class,
-
         /*
          * Package Service Providers...
          */

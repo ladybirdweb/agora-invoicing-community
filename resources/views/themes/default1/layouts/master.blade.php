@@ -22,6 +22,7 @@
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+         <link rel="stylesheet" href="{{asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
 
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
@@ -343,6 +344,8 @@ function move() {
         <script src="{{asset('plugins/fastclick/fastclick.min.js')}}" type="text/javascript"></script>
         <!-- AdminLTE App -->
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+        <script src="{{asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>

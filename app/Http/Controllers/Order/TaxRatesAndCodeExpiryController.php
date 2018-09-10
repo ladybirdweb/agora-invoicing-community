@@ -281,11 +281,11 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $pendingAmount = $invoiceSum - $amountReceived;
             $client = $this->user->where('id', $clientid)->first();
             $currency = $client->currency;
-            $symbol = Currency::where('code',$currency)->pluck('symbol')->first();
+            $symbol = Currency::where('code', $currency)->pluck('symbol')->first();
             $orders = $order->where('client', $clientid)->get();
 
             return view('themes.default1.invoice.editPayment', compact('amountReceived','clientid', 'client', 'invoices',  'orders',
-                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency','symbol'));
+                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (Exception $e) {
             Bugsnag::notifyException($e);
 

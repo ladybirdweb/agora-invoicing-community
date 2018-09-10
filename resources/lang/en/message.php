@@ -528,7 +528,7 @@ return [
       'active'         => 'Active',
       'inactive'       => 'Inactive',
       'system-api'     => 'System Api Keys',
-      'domain-message' => 'Enter domain name in the form \'domain.com\'',       
+      'domain-message' => 'Enter domain name in the form \'domain.com\'',
       'domain-name'    => 'Domain Name',
 
 ];

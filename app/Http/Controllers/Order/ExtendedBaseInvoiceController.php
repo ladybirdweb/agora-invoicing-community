@@ -33,11 +33,11 @@ class ExtendedBaseInvoiceController extends Controller
             $pendingAmount = $invoiceSum - $amountReceived;
             $client = $this->user->where('id', $clientid)->first();
             $currency = $client->currency;
-            $symbol = Currency::where('code',$currency)->pluck('symbol')->first();
+            $symbol = Currency::where('code', $currency)->pluck('symbol')->first();
             $orders = $order->where('client', $clientid)->get();
 
             return view('themes.default1.invoice.newpayment', compact('clientid', 'client', 'invoices',  'orders',
-                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency','symbol'));
+                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -151,11 +151,11 @@ class ExtendedBaseInvoiceController extends Controller
             ->where('payment_status', 'success')
             ->pluck('amount')->toArray();
                     $total_paid = array_sum($totalPayments);
-                    
+
                     if ($invoice) {
                         if ($total_paid >= $invoice->grand_total) {
-                        $invoice_status = 'success';
-                    }
+                            $invoice_status = 'success';
+                        }
                         $invoice->status = $invoice_status;
                         $invoice->save();
                     }

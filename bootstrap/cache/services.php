@@ -1,17 +1,16 @@
-<?php
-
-return [
-  'providers' => [
-    0  => 'Illuminate\\Auth\\AuthServiceProvider',
-    1  => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
-    2  => 'Illuminate\\Bus\\BusServiceProvider',
-    3  => 'Illuminate\\Cache\\CacheServiceProvider',
-    4  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    5  => 'Illuminate\\Cookie\\CookieServiceProvider',
-    6  => 'Illuminate\\Database\\DatabaseServiceProvider',
-    7  => 'Illuminate\\Encryption\\EncryptionServiceProvider',
-    8  => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
-    9  => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+<?php return array (
+  'providers' => 
+  array (
+    0 => 'Illuminate\\Auth\\AuthServiceProvider',
+    1 => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
+    2 => 'Illuminate\\Bus\\BusServiceProvider',
+    3 => 'Illuminate\\Cache\\CacheServiceProvider',
+    4 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    5 => 'Illuminate\\Cookie\\CookieServiceProvider',
+    6 => 'Illuminate\\Database\\DatabaseServiceProvider',
+    7 => 'Illuminate\\Encryption\\EncryptionServiceProvider',
+    8 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
+    9 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
     10 => 'Illuminate\\Hashing\\HashServiceProvider',
     11 => 'Illuminate\\Mail\\MailServiceProvider',
     12 => 'Illuminate\\Notifications\\NotificationServiceProvider',
@@ -54,7 +53,8 @@ return [
     49 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     50 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     51 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-  ],
+
+  ),
   'eager' => [
     0  => 'Illuminate\\Auth\\AuthServiceProvider',
     1  => 'Illuminate\\Cookie\\CookieServiceProvider',
@@ -66,6 +66,7 @@ return [
     7  => 'Illuminate\\Pagination\\PaginationServiceProvider',
     8  => 'Illuminate\\Session\\SessionServiceProvider',
     9  => 'Illuminate\\View\\ViewServiceProvider',
+
     10 => 'Arcanedev\\LogViewer\\LogViewerServiceProvider',
     11 => 'Barryvdh\\DomPDF\\ServiceProvider',
     12 => 'Chumper\\Zipper\\ZipperServiceProvider',
@@ -91,6 +92,7 @@ return [
     32 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     33 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     34 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
+
   ],
   'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager'             => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
@@ -233,3 +235,4 @@ return [
     ],
   ],
 ];
+

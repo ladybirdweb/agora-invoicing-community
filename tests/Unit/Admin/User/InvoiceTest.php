@@ -346,7 +346,7 @@ class InvoiceTest extends DBTestCase
         'uses'   => '1',
         'value'  => '100',
         'start'  => '2017-09-09',
-        'expiry' => '2018-09-09',
+        'expiry' => '2020-09-09',
         ]);
         $promoProductRelation = PromoProductRelation::create(['promotion_id'=>$promotion->id, 'product_id'=>$product->id]);
 

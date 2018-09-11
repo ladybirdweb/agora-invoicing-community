@@ -284,7 +284,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
             $symbol = Currency::where('code', $currency)->pluck('symbol')->first();
             $orders = $order->where('client', $clientid)->get();
 
-            return view('themes.default1.invoice.editPayment', 
+            return view('themes.default1.invoice.editPayment',
                 compact('amountReceived','clientid', 'client', 'invoices',  'orders',
                   'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
         } catch (\Exception $e) {

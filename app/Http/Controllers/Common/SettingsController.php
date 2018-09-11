@@ -89,7 +89,7 @@ class SettingsController extends BaseSettingsController
             ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system', 
+            return view('themes.default1.common.setting.system',
                 compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

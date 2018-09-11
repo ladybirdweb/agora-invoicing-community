@@ -111,8 +111,8 @@ class GroupController extends Controller
             $c = count($prices);
             for ($i = 0; $i < $c; $i++) {
                 $this->config->create(['group_id' => $this->group->id, 'type' => $type,
-                    'title'=> $title, 'options' => $values[$i]['name'], 
-                    'price' => $prices[$i]['name'], ]);
+                    'title'                       => $title, 'options' => $values[$i]['name'],
+                    'price'                       => $prices[$i]['name'], ]);
             }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));

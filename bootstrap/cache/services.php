@@ -1,16 +1,17 @@
-<?php return array (
-  'providers' => 
-  array (
-    0 => 'Illuminate\\Auth\\AuthServiceProvider',
-    1 => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
-    2 => 'Illuminate\\Bus\\BusServiceProvider',
-    3 => 'Illuminate\\Cache\\CacheServiceProvider',
-    4 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    5 => 'Illuminate\\Cookie\\CookieServiceProvider',
-    6 => 'Illuminate\\Database\\DatabaseServiceProvider',
-    7 => 'Illuminate\\Encryption\\EncryptionServiceProvider',
-    8 => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
-    9 => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
+<?php
+
+return [
+  'providers' => [
+    0  => 'Illuminate\\Auth\\AuthServiceProvider',
+    1  => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
+    2  => 'Illuminate\\Bus\\BusServiceProvider',
+    3  => 'Illuminate\\Cache\\CacheServiceProvider',
+    4  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    5  => 'Illuminate\\Cookie\\CookieServiceProvider',
+    6  => 'Illuminate\\Database\\DatabaseServiceProvider',
+    7  => 'Illuminate\\Encryption\\EncryptionServiceProvider',
+    8  => 'Illuminate\\Filesystem\\FilesystemServiceProvider',
+    9  => 'Illuminate\\Foundation\\Providers\\FoundationServiceProvider',
     10 => 'Illuminate\\Hashing\\HashServiceProvider',
     11 => 'Illuminate\\Mail\\MailServiceProvider',
     12 => 'Illuminate\\Notifications\\NotificationServiceProvider',
@@ -53,8 +54,7 @@
     49 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     50 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     51 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-
-  ),
+  ],
   'eager' => [
     0  => 'Illuminate\\Auth\\AuthServiceProvider',
     1  => 'Illuminate\\Cookie\\CookieServiceProvider',
@@ -66,7 +66,6 @@
     7  => 'Illuminate\\Pagination\\PaginationServiceProvider',
     8  => 'Illuminate\\Session\\SessionServiceProvider',
     9  => 'Illuminate\\View\\ViewServiceProvider',
-
     10 => 'Arcanedev\\LogViewer\\LogViewerServiceProvider',
     11 => 'Barryvdh\\DomPDF\\ServiceProvider',
     12 => 'Chumper\\Zipper\\ZipperServiceProvider',
@@ -92,7 +91,6 @@
     32 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     33 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     34 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-
   ],
   'deferred' => [
     'Illuminate\\Broadcasting\\BroadcastManager'             => 'Illuminate\\Broadcasting\\BroadcastServiceProvider',
@@ -120,6 +118,7 @@
     'command.migrate.reset'                                  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.migrate.rollback'                               => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.migrate.status'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
+    'command.optimize'                                       => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.package.discover'                               => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.preset'                                         => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.queue.failed'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
@@ -137,12 +136,10 @@
     'Illuminate\\Console\\Scheduling\\ScheduleRunCommand'    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.storage.link'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.up'                                             => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.view.cache'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.view.clear'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.app.name'                                       => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.auth.make'                                      => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.cache.table'                                    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.channel.make'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.console.make'                                   => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.controller.make'                                => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.event.generate'                                 => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
@@ -157,7 +154,6 @@
     'command.model.make'                                     => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.notification.make'                              => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.notification.table'                             => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
-    'command.observer.make'                                  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.policy.make'                                    => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.provider.make'                                  => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'command.queue.failed-table'                             => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
@@ -175,7 +171,6 @@
     'migration.creator'                                      => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'composer'                                               => 'Illuminate\\Foundation\\Providers\\ConsoleSupportServiceProvider',
     'hash'                                                   => 'Illuminate\\Hashing\\HashServiceProvider',
-    'hash.driver'                                            => 'Illuminate\\Hashing\\HashServiceProvider',
     'mailer'                                                 => 'Illuminate\\Mail\\MailServiceProvider',
     'swift.mailer'                                           => 'Illuminate\\Mail\\MailServiceProvider',
     'swift.transport'                                        => 'Illuminate\\Mail\\MailServiceProvider',
@@ -235,4 +230,3 @@
     ],
   ],
 ];
-

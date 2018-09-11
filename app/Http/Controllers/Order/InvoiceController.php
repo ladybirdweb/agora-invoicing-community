@@ -986,6 +986,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $product_price = PlanPrice::where('plan_id', $planId)
             ->where('currency', $currency)->pluck('add_price')->first();
             $updated_price = $this->findCost($promotion_type, $promotion_value, $product_price, $productid);
+
             return $updated_price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

@@ -31,8 +31,9 @@ class WidgetController extends Controller
     public function getPages()
     {
         return \DataTables::of($this->widget->get())
-                        ->addColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                       ->addColumn('checkbox', function ($model) {
+                         return "<input type='checkbox' class='widget_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
                         })
                           ->addColumn('name', function ($model) {
                               return ucfirst($model->name);
@@ -52,7 +53,7 @@ class WidgetController extends Controller
                              class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit'
                                  style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
-                        ->rawColumns(['name', 'type', 'created_at', 'content', 'action'])
+                        ->rawColumns(['checkbox','name', 'type', 'created_at', 'content', 'action'])
                         ->make(true);
         // ->searchColumns('name', 'content')
                         // ->orderColumns('name')

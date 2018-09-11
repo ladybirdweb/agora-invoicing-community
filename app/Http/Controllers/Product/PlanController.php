@@ -10,6 +10,7 @@ use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Illuminate\Http\Request;
+use Bugsnag;
 
 class PlanController extends Controller
 {

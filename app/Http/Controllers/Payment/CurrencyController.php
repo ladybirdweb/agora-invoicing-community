@@ -33,7 +33,9 @@ class CurrencyController extends Controller
 
     public function getCurrency()
     {
-        $model = Currency::where('name', '!=', null)->select('id', 'name', 'code', 'symbol', 'status')->orderBy('id', 'desc')->get();
+        $model = Currency::where('name', '!=', null)->
+        select('id', 'name', 'code', 'symbol', 'status')
+        ->orderBy('id', 'desc')->get();
 
         return \DataTables::of($model)
 
@@ -52,13 +54,15 @@ class CurrencyController extends Controller
                             if ($model->status == 1) {
                                 return'<label class="switch toggle_event_editing">
                             <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
-                         <input type="checkbox" name="modules_settings" checked value="'.$model->status.'"  class="modules_settings_value">
+                         <input type="checkbox" name="modules_settings" 
+                         checked value="'.$model->status.'"  class="modules_settings_value">
                           <span class="slider round"></span>
                         </label>';
                             } else {
                                 return'<label class="switch toggle_event_editing">
                              <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
-                         <input type="checkbox" name="modules_settings" value="'.$model->status.'" class="modules_settings_value">
+                         <input type="checkbox" name="modules_settings" 
+                         value="'.$model->status.'" class="modules_settings_value">
                           <span class="slider round"></span>
                         </label>';
                             }
@@ -234,8 +238,9 @@ class CurrencyController extends Controller
 
     public function countryDetails(Request $request)
     {
-        $countryDetails = Country:: where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
-        $data = (['code'=>$countryDetails->currency_code, 'symbol'=>$countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name]);
+        $countryDetails = Country::where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
+        $data = (['code'=>$countryDetails->currency_code, 
+          'symbol'=>$countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name]);
 
         return $data;
     }

@@ -309,7 +309,8 @@ namespace App\Http\Controllers\Product;
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
-                $selectedCategory = \App\Model\Product\ProductCategory::where('category_name', $product->category)->pluck('category_name')->toArray();
+                $selectedCategory = \App\Model\Product\ProductCategory::
+                where('category_name', $product->category)->pluck('category_name')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();

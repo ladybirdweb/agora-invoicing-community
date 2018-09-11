@@ -209,20 +209,11 @@
             "branch-alias": {
                 "dev-master": "3.2-dev"
             },
-            "laravel": {
-                "providers": [
-                    "Barryvdh\\Debugbar\\ServiceProvider"
-                ],
-                "aliases": {
-                    "Debugbar": "Barryvdh\\Debugbar\\Facade"
-                }
-            }
+           
         },
         "installation-source": "dist",
         "autoload": {
-            "psr-4": {
-                "Barryvdh\\Debugbar\\": "src/"
-            },
+           
             "files": [
                 "src/helpers.php"
             ]

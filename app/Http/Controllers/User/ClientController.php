@@ -323,7 +323,9 @@ class ClientController extends AdvanceSearchController
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers', 'selectedCurrency', 'selectedCompany', 'selectedIndustry', 'selectedCompanySize'));
+                compact('bussinesses', 'user', 'timezones', 'state', 
+                    'states', 'managers', 'selectedCurrency', 'selectedCompany',
+                     'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->info($ex->getMessage());
@@ -431,7 +433,7 @@ class ClientController extends AdvanceSearchController
             }
 
             return \Response::json($formatted_users);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // returns if try fails with exception meaagse
             return redirect()->back()->with('fails', $e->getMessage());
         }

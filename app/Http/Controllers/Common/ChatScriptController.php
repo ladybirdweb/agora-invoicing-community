@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Model\Common\ChatScript;
 use Illuminate\Http\Request;
+use Bugsnag;
 
 class ChatScriptController extends Controller
 {
@@ -47,9 +48,7 @@ class ChatScriptController extends Controller
                         })
                         ->rawColumns(['checkbox', 'name',  'action'])
                         ->make(true);
-        } catch (Exception $ex) {
-            dd($ex->getLine());
-
+        } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -82,9 +81,8 @@ class ChatScriptController extends Controller
             $this->script->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
-        } catch (Exception $e) {
+        } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());

@@ -20,7 +20,7 @@ class EditProductTest extends TestCase
         'type'           => $product->type,
         'group'          => $product->group,
         'category'       => $product->category,
-        'description'    => $product->description, 
+        'description'    => $product->description,
         'require_domain' => 1,
          'subscription'  => 1,
 

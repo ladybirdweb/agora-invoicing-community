@@ -53,7 +53,7 @@ class AdvanceSearchTest extends DBTestCase
     public function test_get_client_advanceSearchForName_whenUserRegisteredHasSelectedName()
     {
         $this->withoutMiddleware();
-          $this->getLoggedInUser();
+        $this->getLoggedInUser();
         $user = $this->user;
         $user = $user->create(['first_name'=>'ashu']);
         $response = $this->call('GET', 'get-clients', [

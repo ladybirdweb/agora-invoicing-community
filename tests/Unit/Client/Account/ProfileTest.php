@@ -30,7 +30,7 @@ class ProfileTest extends DBTestCase
             'zip'        => '560038',
             'profile_pic'=> '',
         ]);
-        $response->assertStatus(200);
+        $response->assertStatus(302);
     }
 
     /** @group my-profile */

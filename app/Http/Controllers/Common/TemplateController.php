@@ -283,7 +283,6 @@ class TemplateController extends BaseTemplateController
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
-                $status = 'success';
                 $m->from($from, $fromname);
 
                 $m->to($to, $toname)->subject($subject);
@@ -319,8 +318,7 @@ class TemplateController extends BaseTemplateController
             'to'       => $to,
              'subject' => $subject,
             'body'     => $data,
-
-            'status' => 'failed',
+            'status'   => 'failed',
         ]);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
@@ -360,7 +358,7 @@ class TemplateController extends BaseTemplateController
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
         // $planName = Plan::where()
-        if (count($plans) > 0) {
+        if ($plans) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
         $form = \Form::open(['method' => 'get', 'url' => $url]).
@@ -379,18 +377,14 @@ class TemplateController extends BaseTemplateController
             $plan = new Plan();
             $plans = $plan->where('product', $id)->get();
             $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currency = $cart_controller->currency();
-
+            $currencyAndSymbol = $cart_controller->currency();
+            $currency = $currencyAndSymbol['currency'];
+            $symbol = $currencyAndSymbol['symbol'];
             if ($plans->count() > 0) {
                 foreach ($plans as $value) {
                     $days = $value->min('days');
                     $month = round($days / 30);
                     $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
-                    if ($currency == 'INR') {
-                        $symbol = '₹';
-                    } else {
-                        $symbol = '$';
-                    }
                 }
                 foreach ($prices as $key => $value) {
                     $duration = $this->getDuration($value);

@@ -9,7 +9,7 @@ $_SERVER['argv'][4] = 'BankAccountTest';
 $_SERVER['argv'][5] = __DIR__ . '/../_files/BankAccountTest.php';
 
 require __DIR__ . '/../bootstrap.php';
-PHPUnit_TextUI_Command::main();
+PHPUnit\TextUI\Command::main();
 --EXPECTF--
 PHPUnit %s by Sebastian Bergmann and contributors.
 <!doctype html>
@@ -46,6 +46,7 @@ PHPUnit %s by Sebastian Bergmann and contributors.
         <h2 id="BankAccountTest">BankAccount</h2>
         <ul>
 ...                                                                 3 / 3 (100%)            <li style="color: #555753;">✓ Balance is initially zero</li>
+            <li style="color: #555753;">✓ Balance cannot become negative</li>
             <li style="color: #555753;">✓ Balance cannot become negative</li>
         </ul>
     </body>

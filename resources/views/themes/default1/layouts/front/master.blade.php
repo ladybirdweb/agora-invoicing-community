@@ -1,5 +1,11 @@
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
+if($script){
+  $script = $script->script;
+}else{
+  $script = null;
+}
+
 
  ?>
 <!DOCTYPE html>
@@ -99,13 +105,16 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                 <div class="header-row pt-3">
                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
+                                            @if($set->email != NULL)
                                               <li class="nav-item d-none d-sm-block">
-                                                  <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
+                                                  <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>
-                                              
+                                              @endif
+                                              @if($set->phone != NULL)
                                               <li class="nav-item">
                                                   <span class="ws-nowrap"><i class="fas fa-phone"></i>{{$set->phone}}</span>
                                               </li>
+                                              @endif
                                           </ul>
                                       </nav>
                                     <!--                                    <nav class="header-nav-top">
@@ -222,7 +231,7 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                                                 <div class="dropdown-mega-content">
                                                                     <table class="cart">
                                                                         <tbody>
-                                                                            @forelse(Cart::getContent() as $key=>$item)
+                                                                        @forelse(Cart::getContent() as $key=>$item)
                                                                              
                                                                             <?php
                                                                             $product = App\Model\Product\Product::where('id', $item->id)->first();
@@ -232,7 +241,8 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                                                             // dd('sads')
                                                                             $cart_controller = new \App\Http\Controllers\Front\CartController();
                                                                             $currency = $cart_controller->currency();
-                                                                            ?>
+                                                                            $currency =  $currency['currency'];
+                                                                          ?>
                                                                             <tr>
 
                                                                                 <td class="product-thumbnail">
@@ -354,17 +364,21 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
                             <span>Get in Touch</span>
                         </div> -->
+                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->first(); ?>
+                           @if($widgets != null)
                         <div class="col-md-3">
-                            <div class="newsletter">
-                                <h4>Newsletter</h4>
-                                <p>Keep up on our always evolving product features and technology. Enter your e-mail and subscribe to our newsletter.</p>
+                           
+                          <div class="newsletter">
+                                <h4>{{ucfirst($widgets->name)}}</h4>
+                                <p> {!! $widgets->content !!}</p>
 
                                 <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
 
                                 <div class="alert alert-danger d-none" id="newsletterError"></div>
-
+                                <?php $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);?>
+                                @if($mailchimpKey != null)
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
                                     <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
@@ -373,38 +387,48 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
                                     </span>
                                 </div>
                                 {!! Form::close() !!}
+                                @endif
                             </div>
                         </div>
+                        @endif
+                          <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->first(); ?>
+                           @if($widgets != null)
                         <div class="col-md-3">
-                            <h4>Latest Tweets</h4>
+                            <h4>{{ucfirst($widgets->name)}}</h4>
+                             <p> {!! $widgets->content !!}</p>
                             <div id="tweets" class="twitter" >
                             <p>Please wait...</p>
                             </div>
                         </div>
-                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer')->take(1)->get(); ?>
-                        @foreach($widgets as $widget)
+                        @endif
+                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->first(); ?>
+                       @if($widgets != null)
                         <div class="col-md-3">
                             <div class="contact-details">
-                                <h4>{{ucfirst($widget->name)}}</h4>
-                                {!! $widget->content !!}
+                                <h4>{{ucfirst($widgets->name)}}</h4>
+                                {!! $widgets->content !!}
                             </div>
                         </div>
-                        @endforeach
+                         @endif
+                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->first(); ?>
+                         
                         <div class="col-md-2">
-                            <h4>Follow Us</h4>
+                          @if($widgets != null)
+                            <h4>{{ucfirst($widgets->name)}}</h4>
+                             <p> {!! $widgets->content !!}</p>
                             <ul class="social-icons">
                                 @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
-
+                          @endif
                             <br>
                        
                         <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
                         <br/> <br/>
                         <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
                   </div>
-
+                  
                 </div>
                 <div class="footer-copyright">
                     <div class="container">
@@ -495,25 +519,15 @@ $script = \App\Model\Common\ChatScript::where('id', 1)->first();
         -->
 <!--Start of Tawk.to Script-->
 <!--Start of Tawk.to Script-->
-<!-- <script type="text/javascript">
-var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-(function(){
-var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-s1.async=true;
-s1.src='https://embed.tawk.to/57236f1bb27b7d1124b56794/default';
-s1.charset='UTF-8';
-s1.setAttribute('crossorigin','*');
-s0.parentNode.insertBefore(s1,s0);
-})();
+<script type="text/javascript">
+ {!! html_entity_decode($script) !!}
 
-</script> -->
-
-<!--End of Tawk.to Script-->
-<!--End of Tawk.to Script-->
-
-<script language="JavaScript" type="text/javascript">
-{!! html_entity_decode($script->script) !!}
 </script>
+
+<!--End of Tawk.to Script-->
+<!--End of Tawk.to Script-->
+
+<!--  -->
 
     </body>
 </html>

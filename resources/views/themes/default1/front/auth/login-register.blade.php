@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Login | Register | Faveo Helpdesk
+Login | Register
 @stop
 @section('page-header')
 Login | Register

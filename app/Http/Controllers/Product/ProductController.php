@@ -209,7 +209,7 @@ namespace App\Http\Controllers\Product;
                 $cartUrl = $url.'/pricing?id='.$i;
                 $type = $this->type->pluck('name', 'id')->toArray();
                 $subscription = $this->plan->pluck('name', 'id')->toArray();
-                $currency = $this->currency->pluck('name', 'code')->toArray();
+                $currency = $this->currency->where('status', 1)->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
                 $periods = $this->period->pluck('name', 'days')->toArray();
@@ -238,6 +238,7 @@ namespace App\Http\Controllers\Product;
                         'type'       => 'required',
                         'group'      => 'required',
                         'description'=> 'required',
+                        'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
@@ -308,6 +309,7 @@ namespace App\Http\Controllers\Product;
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
+                $selectedCategory = \App\Model\Product\ProductCategory::where('category_name', $product->category)->pluck('category_name')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
@@ -316,7 +318,7 @@ namespace App\Http\Controllers\Product;
                 return view('themes.default1.product.product.edit',
                     compact('product', 'periods', 'type', 'subscription',
                         'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 

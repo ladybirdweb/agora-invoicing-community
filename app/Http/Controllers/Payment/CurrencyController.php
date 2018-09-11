@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Country;
 use App\Model\Payment\Currency;
 use Form;
 use Illuminate\Http\Request;
@@ -32,85 +33,39 @@ class CurrencyController extends Controller
 
     public function getCurrency()
     {
-        return \DataTables::of($this->currency->select('name', 'id')->get())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='currency_checkbox'
-                             value=".$model->id.' name=select[] id=check>';
-                        })
+        $model = Currency::where('name', '!=', null)->select('id', 'name', 'code', 'symbol', 'status')->orderBy('id', 'desc')->get();
+
+        return \DataTables::of($model)
+
                         ->addColumn('name', function ($model) {
                             return $model->name;
                         })
-                        ->addColumn('base_conversion', function ($model) {
-                            return $model->base_conversion;
-                        })
-                        // ->showColumns('name', 'base_conversion')
-                        ->addColumn('action', function ($model) {
-                            return "<a href=#edit class='btn btn-primary btn-xs' data-toggle='modal' 
-                            data-target=#edit".$model->id.'>'.
-                            "<i class='fa fa-edit'
-                                 style='color:white;'> </i>".
-                            /* @scrutinizer ignore-type */\Lang::get('message.edit')."</a>
-        <div class='modal fade' id=edit".$model->id.">
-<div class='modal-dialog'>
-    <div class='modal-content'>
-        <div class='modal-header'>
-            <button type='button' class='close' data-dismiss='modal'
-             aria-label='Close'><span aria-hidden='true'>&times;</span></button>
-            <h4 class='modal-title'>Edit Currency</h4>
-        </div>
-        ".Form::model($model, ['url' => 'currency/'.$model->id, 'method' => 'patch'])."
-        <div class='modal-body'>
-           
-            
-                
-            
 
-            <div class='form-group'>
-               
-                ".Form::label('name', Lang::get('message.name'), ['class' => 'required']).'
-                                    '.Form::text('name', null, ['class' => 'form-control'])."
+                          ->addColumn('code', function ($model) {
+                              return $model->code;
+                          })
 
-            </div>
-            <div class='form-group'>
-                ".Form::label('code', Lang::get('message.code'), ['class' => 'required']).'
-                                    '.Form::text('code', null, ['class' => 'form-control'])."
-
-            </div>
-            <div class='form-group'>
-                ".Form::label('symbol', Lang::get('message.symbol')).'
-                                    '.Form::text('symbol', null, ['class' => 'form-control'])."
-
-            </div>
-            <div class='form-group'>
-                ".Form::label('base_conversion', Lang::get('message.base_conversion_rate'), ['class' => 'required']).'
-                                    '.Form::text('base_conversion', null, ['class' => 'form-control'])."
-
-            </div>
-
-
-        </div>
-        <div class='modal-footer'>
-            <button type=button id=close class='btn btn-default pull-left' data-dismiss=modal>Close</button>
-            <input type=submit class='btn btn-primary' value=".
-            /* @scrutinizer ignore-type */\Lang::get('message.save').'>
-                
-        </div>
-       
-             '.Form::close().'
-        
-        
-        
-    </div>
-   
-</div>
-</div>';
+                          ->addColumn('symbol', function ($model) {
+                              return $model->symbol;
+                          })
+                        ->addColumn('status', function ($model) {
+                            if ($model->status == 1) {
+                                return'<label class="switch toggle_event_editing">
+                            <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
+                         <input type="checkbox" name="modules_settings" checked value="'.$model->status.'"  class="modules_settings_value">
+                          <span class="slider round"></span>
+                        </label>';
+                            } else {
+                                return'<label class="switch toggle_event_editing">
+                             <input type="hidden" name="module_id" class="module_id" value="'.$model->id.'" >
+                         <input type="checkbox" name="modules_settings" value="'.$model->status.'" class="modules_settings_value">
+                          <span class="slider round"></span>
+                        </label>';
+                            }
                         })
 
-                        ->rawColumns(['checkbox', 'name', 'base_conversion', 'action'])
+                        ->rawColumns(['name', 'code', 'symbol', 'status'])
                         ->make(true);
-        // ->searchColumns('name')
-                        // ->orderColumns('name')
-                        // ->make();
     }
 
     /**
@@ -130,14 +85,27 @@ class CurrencyController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'code'            => 'required',
-            'name'            => 'required',
-            'base_conversion' => 'required',
-        ]);
+
+        // dd($request->all());
+        // $this->validate($request, [
+        //     'code'            => 'required',
+        //     'name'            => 'required',
+        // ]);
 
         try {
-            $this->currency->fill($request->input())->save();
+            $nicename = Country::where('country_id', $request->name)->value('nicename');
+            $codeChar2 = Country::where('country_id', $request->name)->value('country_code_char2');
+            $currency = new Currency();
+
+            $currency->code = $request->code;
+            $currency->symbol = $request->symbol;
+            $currency->name = $request->currency_name;
+            $currency->base_conversion = '1.0';
+            $currency->country_code_char2 = $codeChar2;
+            $currency->nicename = $nicename;
+            $currency->save();
+
+            // $this->currency->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -176,19 +144,21 @@ class CurrencyController extends Controller
      *
      * @return \Response
      */
-    public function update($id, Request $request)
+    public function update(Request $request)
     {
-        $this->validate($request, [
-            'code'            => 'required',
-            'name'            => 'required',
-            'base_conversion' => 'required',
-        ]);
-
         try {
-            $currency = $this->currency->where('id', $id)->first();
-            $currency->fill($request->input())->save();
+            $nicename = Country::where('country_id', $request->editnicename)->value('nicename');
+            $codeChar2 = Country::where('country_id', $request->editnicename)->value('country_code_char2');
+            $currency = Currency::where('id', $request->currencyId)->first();
+            $currency->code = $request->editcode;
+            $currency->symbol = $request->editsymbol;
+            $currency->name = $request->editcurrency_name;
+            $currency->base_conversion = '1.0';
+            $currency->country_code_char2 = $codeChar2;
+            $currency->nicename = $nicename;
+            $currency->save();
 
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            return response()->json(['success' => Lang::get('message.updated-successfully')]);
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -260,5 +230,21 @@ class CurrencyController extends Controller
                         '.$e->getMessage().'
                 </div>';
         }
+    }
+
+    public function countryDetails(Request $request)
+    {
+        $countryDetails = Country:: where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
+        $data = (['code'=>$countryDetails->currency_code, 'symbol'=>$countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name]);
+
+        return $data;
+    }
+
+    public function updatecurrency(Request $request)
+    {
+        $updatedStatus = ($request->current_status == '1') ? 0 : 1;
+        Currency::where('id', $request->current_id)->update(['status'=>$updatedStatus]);
+
+        return Lang::get('message.updated-successfully');
     }
 }

@@ -95,7 +95,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{ url('settings/activitylog') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                    <i class="fa fa-history fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
@@ -108,7 +108,7 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{ url('settings/maillog') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                    <i class="fa fa-envelope-square fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>

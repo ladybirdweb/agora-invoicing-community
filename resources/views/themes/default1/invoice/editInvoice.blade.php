@@ -71,14 +71,6 @@ Edit Invoice
 
                     </div>
 
-                     <div class="col-md-6 form-group {{ $errors->has('total') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('paid',Lang::get('message.total-amt'),['class'=>'required']) !!}
-                        <!-- {!! Form::text('total',null,['class' => 'form-control']) !!} -->
-                        <input type="text" name="paid" class="form-control" value="{{$totalSum}}">
-
-                    </div>
- 
 
                      <div class="col-md-6 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                         <!-- first name -->

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Api Key
+@stop
 @section('content-header')
 <h1>
 API Keys
@@ -26,6 +29,8 @@ API Keys
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+            <i class="fa fa-check"></i>
+            <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -39,14 +44,19 @@ API Keys
             {{Session::get('fails')}}
         </div>
         @endif
-        {!! Form::model($model,['url'=>'apikeys','method'=>'patch']) !!}
-        <h4><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
-
     </div>
+     <div  class="box-body">
+ 
+        {!! Form::model($model,['url'=>'apikeys','method'=>'patch']) !!}
+          <tr>
+         <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.system-api')}}</h3>
+       <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;
+                        margin-right:15px;"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+         </tr>
 
-    <div class="box-body">
+   
 
-        <div class="row">
+       
 
             <div class="col-md-12">
 
@@ -103,13 +113,56 @@ API Keys
 
                     
 
+                
+
+                    <div class="col-md-6 form-group {{ $errors->has('twitter_consumer_key') ? 'has-error' : '' }}">
+                        <!-- first name -->
+                        {!! Form::label('twitter_consumer_key',Lang::get('message.twitter_consumer_key')) !!}
+                        {!! Form::text('twitter_consumer_key',null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    
+
+               
+                    <div class="col-md-6 form-group {{ $errors->has('twitter_consumer_secret') ? 'has-error' : '' }}">
+                        <!-- first name -->
+                        {!! Form::label('twitter_consumer_secret',Lang::get('message.twitter_consumer_secret')) !!}
+                        {!! Form::text('twitter_consumer_secret',null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    
+
+               
+
+                    <div class="col-md-6 form-group {{ $errors->has('twitter_access_token') ? 'has-error' : '' }}">
+                        <!-- first name -->
+                        {!! Form::label('twitter_access_token',Lang::get('message.twitter_access_token')) !!}
+                        {!! Form::text('twitter_access_token',null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    
+
+               
+                    <div class="col-md-6 form-group {{ $errors->has('twitter_access_token_secret') ? 'has-error' : '' }}">
+                        <!-- first name -->
+                        {!! Form::label('access_tooken_secret',Lang::get('message.twitter_access_tooken_secret')) !!}
+                        {!! Form::text('access_tooken_secret',null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    
+
                 </div>
+
 
 
 
             </div>
 
-        </div>
+       
 
     </div>
 

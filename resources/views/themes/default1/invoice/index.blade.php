@@ -128,6 +128,8 @@ All Invoices
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+            <i class="fa fa-check"></i>
+            <b>{{Lang::get('message.alert')}}!</b> 
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>

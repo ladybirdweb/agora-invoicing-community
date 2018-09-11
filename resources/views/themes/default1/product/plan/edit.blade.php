@@ -97,14 +97,14 @@ Edit Plan
                     <div class="col-md-12">
                         <table class="table table-responsive">
                             <tr>
-                                <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
+                                
                                 <td>
 
                                     <table class="table table-responsive">
                                         <tr>
-                                            <th></th>
-                                            <th>Add/Month</th>
-                                            <th>Renew/Month</th>
+                                            <th><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></th>
+                                            <th>{{Lang::get('message.regular-price')}}</th>
+                                            <th>{{Lang::get('message.renew-price')}}</th>
 
                                         </tr>
 

@@ -148,8 +148,6 @@ class RenewController extends BaseRenewController
 
             return $cost;
         } catch (Exception $ex) {
-            dd($ex);
-
             throw new Exception($ex->getMessage());
         }
     }

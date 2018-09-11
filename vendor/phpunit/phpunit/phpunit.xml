@@ -2,17 +2,17 @@
 <phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="phpunit.xsd"
          bootstrap="tests/bootstrap.php"
-         backupGlobals="false"
+         cacheResult="true"
          verbose="true">
     <testsuites>
         <testsuite name="small">
-            <directory suffix="Test.php">tests/Framework</directory>
-            <directory suffix="Test.php">tests/Extensions</directory>
-            <directory suffix="Test.php">tests/Runner</directory>
-            <directory suffix="Test.php">tests/Util</directory>
+            <directory>tests/Framework</directory>
+            <directory>tests/Runner</directory>
+            <directory>tests/Util</directory>
         </testsuite>
 
         <testsuite name="large">
+            <directory suffix=".phpt">tests/Framework/MockObject/Generator</directory>
             <directory suffix=".phpt">tests/TextUI</directory>
             <directory suffix=".phpt">tests/Regression</directory>
         </testsuite>
@@ -28,17 +28,7 @@
         </whitelist>
     </filter>
 
-<!--    <php>
-        <env name="DB_CONNECTION" value="testing"/>
-        <env name="APP_ENV" value="testing"/>
-        <env name="DB_DATABASE" value="db_testing"/>
-        <env name="CACHE_DRIVER" value="array"/>
-        <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
-       
-        <env name="DB_HOST" value="127.0.0.1"/>
-         <env name="DB_PORT" value="3306"/>
-          <env name="DB_USERNAME" value="root"/>
-           <env name="DB_PASSWORD" value=""/>
-    </php> -->
+    <php>
+        <const name="PHPUNIT_TESTSUITE" value="true"/>
+    </php>
 </phpunit>

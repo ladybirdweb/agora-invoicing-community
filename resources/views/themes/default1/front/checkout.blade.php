@@ -17,7 +17,6 @@ Checkout
 @if (!\Cart::isEmpty())
 
 <?php
-
 if ($attributes[0]['currency'][0]['symbol'] == '') {
     $symbol = $attributes[0]['currency'][0]['code'];
 } else {

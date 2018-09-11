@@ -18,9 +18,6 @@ class ActivityLogger
 
     protected $logName = '';
 
-    /** @var bool */
-    protected $logEnabled;
-
     /** @var \Illuminate\Database\Eloquent\Model */
     protected $performedOn;
 
@@ -33,7 +30,10 @@ class ActivityLogger
     /** @var string */
     protected $authDriver;
 
-    public function __construct(AuthManager $auth, Repository $config)
+    /** @var \Spatie\Activitylog\ActivityLogStatus */
+    protected $logStatus;
+
+    public function __construct(AuthManager $auth, Repository $config, ActivityLogStatus $logStatus)
     {
         $this->auth = $auth;
 
@@ -50,6 +50,15 @@ class ActivityLogger
         $this->logName = $config['activitylog']['default_log_name'];
 
         $this->logEnabled = $config['activitylog']['enabled'] ?? true;
+
+        $this->logStatus = $logStatus;
+    }
+
+    public function setLogStatus(ActivityLogStatus $logStatus)
+    {
+        $this->logStatus = $logStatus;
+
+        return $this;
     }
 
     public function performedOn(Model $model)
@@ -71,6 +80,10 @@ class ActivityLogger
      */
     public function causedBy($modelOrId)
     {
+        if ($modelOrId === null) {
+            return $this;
+        }
+
         $model = $this->normalizeCauser($modelOrId);
 
         $this->causedBy = $model;
@@ -120,6 +133,20 @@ class ActivityLogger
         return $this->useLog($logName);
     }
 
+    public function enableLogging()
+    {
+        $this->logStatus->enable();
+
+        return $this;
+    }
+
+    public function disableLogging()
+    {
+        $this->logStatus->disable();
+
+        return $this;
+    }
+
     /**
      * @param string $description
      *
@@ -127,7 +154,7 @@ class ActivityLogger
      */
     public function log(string $description)
     {
-        if (! $this->logEnabled) {
+        if ($this->logStatus->disabled()) {
             return;
         }
 

@@ -24,6 +24,10 @@ Cart
         padding-left:5px;
     }
 </style>
+<?php 
+$set = new \App\Model\Common\Setting();
+$set = $set->findOrFail(1);
+?>
 
 <div class="row">
     <div class="col-md-6">
@@ -41,10 +45,13 @@ Cart
                 @endif
 
                 @if(Session::has('success'))
-                <div class="alert alert-success alert-dismissable">
-                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{Session::get('success')}}
-                </div>
+                 <div class="alert alert-success">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <strong><i class="far fa-thumbs-up"></i> Well done!</strong>
+
+
+                {{Session::get('success')}}
+        </div>
                 @endif
                 <!-- fail message -->
                 @if(Session::has('fails'))
@@ -73,7 +80,9 @@ Cart
             <div class="form-row">
                     <div class="form-group col">
                         <label>Mobile No</label>
-                        <input type="text" value="" data-msg-required="Please enter the mobile No." maxlength="10" class="form-control" name="Mobile" id="mobile" required>
+                        {!! Form::hidden('mobile',null,['id'=>'mobile_code_hidden','name'=>'country_code']) !!}
+                        <input type="text" value=""  id="mobilenum" data-msg-required="Please enter the mobile No." maxlength="10" class="form-control" name="Mobile"  required>
+                       
                     
                 </div>
             </div>
@@ -101,19 +110,52 @@ Cart
 
         <h4 class="heading-primary">The <strong>Office</strong></h4>
        <ul class="list list-icons list-icons-style-3 mt-4">
-                                <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> No:68, 1st floor 10th Main Indiranagar, 2nd Stage Bangalore – 560038 Karnataka – India</li>
-                                <li><i class="fas fa-phone"></i> <strong>Phone:</strong> +91 80 3075 2618</li>
-                                <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:support@faveohelpdesk.com">support@faveohelpdesk.com</a></li>
+                                <li><i class="fas fa-map-marker-alt"></i> <strong>Address:</strong> {{$set->address}}</li>
+                                <li><i class="fas fa-phone"></i> <strong>Phone:</strong> {{$set->phone}}</li>
+                                <li><i class="far fa-envelope"></i> <strong>Email:</strong> <a href="mailto:support@faveohelpdesk.com">{{$set->company_email}}</a></li>
                             </ul>
         <hr>
 
        <h4 class="heading-primary">Business <strong>Hours</strong></h4>
                             <ul class="list list-icons list-dark mt-4">
-                                <li><i class="far fa-clock"></i> Monday to Friday 09:30AM to 06:30PM</li>
+                                <li><i class="far fa-clock"></i> Monday to Friday 09:30AM to 06:30PM IST</li>
                                 
                             </ul>
 
     </div>
 
 </div>
+@stop
+@section('script')
+<script type="text/javascript">
+    var telInput = $('#mobilenum');
+    telInput.intlTelInput({
+        geoIpLookup: function (callback) {
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp) {
+                var countryCode = (resp && resp.country) ? resp.country : "";
+                callback(countryCode);
+            });
+        },
+        initialCountry: "auto",
+        separateDialCode: true,
+        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
+    });
+    $('.intl-tel-input').css('width', '100%');
+
+    telInput.on('blur', function () {
+        if ($.trim(telInput.val())) {
+            if (!telInput.intlTelInput("isValidNumber")) {
+                telInput.parent().addClass('has-error');
+            }
+        }
+    });
+    $('input').on('focus', function () {
+        $(this).parent().removeClass('has-error');
+    });
+
+    $('form').on('submit', function (e) {
+        $('input[name=country_code]').attr('value', $('.selected-dial-code').text());
+    });
+
+</script>
 @stop

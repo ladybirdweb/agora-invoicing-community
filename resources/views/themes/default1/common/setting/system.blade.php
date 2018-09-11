@@ -75,7 +75,7 @@ System Setting
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
                   <tr >
-                        <h3 class="box-title">{{Lang::get('Company Details')}}</h3>
+                        <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('Company Details')}}</h3>
                         <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
                         margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
@@ -103,6 +103,7 @@ System Setting
                     <tr>
 
                         <td><b>{!! Form::label('company_email',Lang::get('message.company-email'),['class'=>'required']) !!}</b></td>
+                       
                         <td>
                             <div class="form-group {{ $errors->has('company_email') ? 'has-error' : '' }}">
 
@@ -219,13 +220,29 @@ System Setting
                         <td><b>{!! Form::label('state',Lang::get('message.state') ,['class'=>'required']) !!}</b></td>
                         <td>
                         <select name="state" id="state-list" class="form-control">
-                                @if(count($set->state)>0)
+                                @if($set->state)
                              <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
                             <option value="">Choose</option>
                             @foreach($states as $key=>$value)
                             <option value="{{$key}}">{{$value}}</option>
                             @endforeach
+
+                        </select>
+                        </td>
+                    </tr>
+                    <br>
+                        <tr>
+
+                        <td><b>{!! Form::label('default_currency',Lang::get('message.default-currency') ,['class'=>'required']) !!}</b></td>
+                        <td>
+                             <?php $currencies = \App\Model\Payment\Currency::where('status',1)->pluck('name','code')->toArray(); 
+                             ?>
+                         <select name="default_currency" value= "Choose"  class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                               <option value="">Choose</option>
+                           @foreach($currencies as $key=>$currency)
+                              <option value="{{$key}}" <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>>{{$currency}}</option>
+                          @endforeach
 
                         </select>
                         </td>

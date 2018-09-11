@@ -10,6 +10,8 @@ use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Log;
 
@@ -90,8 +92,10 @@ class ClientController extends AdvanceSearchController
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
                               if ($ends) {
-                                  $date = date_create($ends);
-                                  $end = date_format($date, 'l, F j, Y H:m');
+                                  $date1 = new DateTime($ends);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new DateTimeZone($tz));
+                                  $end = $date1->format('M j, Y, g:i a ');
                               }
 
                               return $end;
@@ -172,12 +176,15 @@ class ClientController extends AdvanceSearchController
             $str = str_random(6);
             $password = \Hash::make($str);
             $user->password = $password;
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+            $user->ip = $location['query'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
-            return redirect()->back()->with('warning', 'User has created successfully
+            return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!');
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -213,7 +220,6 @@ class ClientController extends AdvanceSearchController
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
                  'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -249,12 +255,13 @@ class ClientController extends AdvanceSearchController
             $amounts = Payment::where('user_id', $userId)->select('amount')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amount;
+                if ($amount) {
+                    $paidSum = $paidSum + $amount->amount;
+                }
             }
 
             return $paidSum;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 

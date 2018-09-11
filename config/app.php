@@ -133,9 +133,9 @@ return [
     |
     */
 
-    'log' => env('APP_LOG', 'daily'),
+    // 'log' => env('APP_LOG', 'daily'),
 
-    'log_level' => env('APP_LOG_LEVEL', 'debug'),
+    // 'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
     /*
     |--------------------------------------------------------------------------
@@ -181,7 +181,6 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
-
         /*
          * Package Service Providers...
          */
@@ -253,6 +252,7 @@ return [
         'Storage'      => Illuminate\Support\Facades\Storage::class,
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Bugsnag'      => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
+        'Debugbar'     => Barryvdh\Debugbar\Facade::class,
 
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,

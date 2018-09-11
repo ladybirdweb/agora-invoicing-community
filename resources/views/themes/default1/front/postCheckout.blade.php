@@ -129,12 +129,8 @@ if ($displayCurrency !== 'INR')
 $json = json_encode($data);
 
 
-if(\Auth::user()->currency == 'INR'){
-    $symbol = '₹';
-}
-else{
-    $symbol = '$';
-}
+ $symbol = \Auth::user()->currency_symbol;
+
 
 
 

@@ -8,12 +8,16 @@ $_SERVER['argv'][3] = 'DataProviderTestDoxTest';
 $_SERVER['argv'][4] = __DIR__ . '/../_files/DataProviderTestDoxTest.php';
 
 require __DIR__ . '/../bootstrap.php';
-PHPUnit_TextUI_Command::main();
+PHPUnit\TextUI\Command::main();
 --EXPECTF--
 PHPUnit %s by Sebastian Bergmann and contributors.
 
 DataProviderTestDox
- [x] Does something with one
- [x] Does something with two
- [x] Does something else with one
- [x] Does something else with two
+ ✔ Does something with data set "one"
+ ✔ Does something with data set "two"
+ ✔ Does something else with data set "one"
+ ✔ Does something else with data set "two"
+
+Time: %s, Memory: %s
+
+OK (4 tests, 4 assertions)

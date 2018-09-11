@@ -11,10 +11,10 @@
 
 namespace Symfony\Component\Translation\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
+use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Adds tagged translation.extractor services to translation extractor.
@@ -24,7 +24,7 @@ class TranslationExtractorPass implements CompilerPassInterface
     private $extractorServiceId;
     private $extractorTag;
 
-    public function __construct($extractorServiceId = 'translation.extractor', $extractorTag = 'translation.extractor')
+    public function __construct(string $extractorServiceId = 'translation.extractor', string $extractorTag = 'translation.extractor')
     {
         $this->extractorServiceId = $extractorServiceId;
         $this->extractorTag = $extractorTag;

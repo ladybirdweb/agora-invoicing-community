@@ -17,6 +17,7 @@ return [
     /*
      * Common for all
      */
+    'dashboard'              => 'Dashboard',
     'home'                   => 'Home',
     'choose'                 => 'Choose',
     'delmultiple'            => 'Delete Selected',
@@ -101,9 +102,10 @@ return [
     /*
      * Settings
      */
+    'default-currency'                                             => 'System Default Currency',
     'settings'                                                     => 'Settings',
-    'fav-title-admin'                                              => 'Favicon Title(Admin Panel)',
-     'fav-title-client'                                            => 'Favicon Title(Client Panel)',
+    'fav-title-admin'                                              => 'Meta Title(Admin Panel)',
+     'fav-title-client'                                            => 'Meta Title(Client Panel)',
     'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
     'fav-icon'                                                     => 'Favicon',
     'settings'                                                     => 'Settings',
@@ -136,6 +138,7 @@ return [
     'enter-email-host'                                             => 'Enter email host',
     'select-email-encryption-method'                               => 'Enter email encryption method',
     'enter-email'                                                  => 'Enter email',
+    'enter-email-message'                                          => 'All mails from the system will be sent from this email address',
     'enter-email-password'                                         => 'Enter email password',
     'enable-error-logging'                                         => 'Enable error logging',
     'provide-error-reporting-email'                                => 'Provide error reporting email',
@@ -180,6 +183,8 @@ return [
     'expiry'               => 'Expiry',
     'price'                => 'Price',
     'updates'              => 'Updates',
+    'regular-price'        => 'Regular Price',
+    'renew-price'          => 'Renewal Price',
     /*
      * Products
      */
@@ -382,12 +387,16 @@ return [
      /*
      * Api Keys
      */
-     'rzp_key'        => 'Razorpay Key',
-     'rzp_secret'     => 'Razorpay Secret',
-     'apilayer'       => 'ApiLayer Access Key',
-     'zoho_key'       => 'Zoho Key',
-     'key'            => 'API Keys',
-     'msg91key'       => 'Msg91 Auth Key',
+     'rzp_key'                     => 'Razorpay Key',
+     'rzp_secret'                  => 'Razorpay Secret',
+     'apilayer'                    => 'ApiLayer Access Key',
+     'zoho_key'                    => 'Zoho Key',
+     'key'                         => 'API Keys',
+     'msg91key'                    => 'Msg91 Auth Key',
+     'twitter_consumer_key'        => 'Twitter Consumer Key',
+     'twitter_consumer_secret'     => 'Twitter Consumer Secret',
+     'twitter_access_token'        => 'Twitter Access Token',
+     'twitter_access_tooken_secret'=> 'Twitter Access Token Secret',
 
     /*
      * Slas
@@ -508,5 +517,18 @@ return [
       'create-chat-script'=> 'Create Chat Script',
       'script'            => 'Script',
       'edit-chat-script'  => 'Edit Chat Script',
+
+      'currency_name'  => 'Currency Name',
+      'select_country' => 'Select Country',
+      'countryname'    => 'Countryname',
+      'choose'         => 'Choose',
+      'edit_currency'  => 'Edit currency',
+      'close'          => 'Close',
+      'update'         => 'Update',
+      'active'         => 'Active',
+      'inactive'       => 'Inactive',
+      'system-api'     => 'System Api Keys',
+      'domain-message' => 'Enter domain name in the form \'domain.com\'',
+      'domain-name'    => 'Domain Name',
 
 ];

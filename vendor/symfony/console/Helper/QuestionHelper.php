@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Console\Helper;
 
-use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Formatter\OutputFormatter;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -19,8 +18,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\StreamableInputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
 
 /**
  * The QuestionHelper class provides helpers to interact with the user.
@@ -69,46 +68,6 @@ class QuestionHelper extends Helper
         };
 
         return $this->validateAttempts($interviewer, $output, $question);
-    }
-
-    /**
-     * Sets the input stream to read from when interacting with the user.
-     *
-     * This is mainly useful for testing purpose.
-     *
-     * @deprecated since version 3.2, to be removed in 4.0. Use
-     *             StreamableInputInterface::setStream() instead.
-     *
-     * @param resource $stream The input stream
-     *
-     * @throws InvalidArgumentException In case the stream is not a resource
-     */
-    public function setInputStream($stream)
-    {
-        @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.2 and will be removed in 4.0. Use %s::setStream() instead.', __METHOD__, StreamableInputInterface::class), E_USER_DEPRECATED);
-
-        if (!is_resource($stream)) {
-            throw new InvalidArgumentException('Input stream must be a valid resource.');
-        }
-
-        $this->inputStream = $stream;
-    }
-
-    /**
-     * Returns the helper's input stream.
-     *
-     * @deprecated since version 3.2, to be removed in 4.0. Use
-     *             StreamableInputInterface::getStream() instead.
-     *
-     * @return resource
-     */
-    public function getInputStream()
-    {
-        if (0 === func_num_args() || func_get_arg(0)) {
-            @trigger_error(sprintf('The %s() method is deprecated since Symfony 3.2 and will be removed in 4.0. Use %s::getStream() instead.', __METHOD__, StreamableInputInterface::class), E_USER_DEPRECATED);
-        }
-
-        return $this->inputStream;
     }
 
     /**
@@ -161,10 +120,10 @@ class QuestionHelper extends Helper
                 $ret = trim($ret);
             }
         } else {
-            $ret = trim($this->autocomplete($output, $question, $inputStream, is_array($autocomplete) ? $autocomplete : iterator_to_array($autocomplete, false)));
+            $ret = trim($this->autocomplete($output, $question, $inputStream, \is_array($autocomplete) ? $autocomplete : iterator_to_array($autocomplete, false)));
         }
 
-        $ret = strlen($ret) > 0 ? $ret : $question->getDefault();
+        $ret = \strlen($ret) > 0 ? $ret : $question->getDefault();
 
         if ($normalizer = $question->getNormalizer()) {
             return $normalizer($ret);
@@ -217,18 +176,15 @@ class QuestionHelper extends Helper
      * @param OutputInterface $output
      * @param Question        $question
      * @param resource        $inputStream
-     * @param array           $autocomplete
-     *
-     * @return string
      */
-    private function autocomplete(OutputInterface $output, Question $question, $inputStream, array $autocomplete)
+    private function autocomplete(OutputInterface $output, Question $question, $inputStream, array $autocomplete): string
     {
         $ret = '';
 
         $i = 0;
         $ofs = -1;
         $matches = $autocomplete;
-        $numMatches = count($matches);
+        $numMatches = \count($matches);
 
         $sttyMode = shell_exec('stty -g');
 
@@ -253,7 +209,7 @@ class QuestionHelper extends Helper
                 if (0 === $i) {
                     $ofs = -1;
                     $matches = $autocomplete;
-                    $numMatches = count($matches);
+                    $numMatches = \count($matches);
                 } else {
                     $numMatches = 0;
                 }
@@ -277,13 +233,13 @@ class QuestionHelper extends Helper
                     $ofs += ('A' === $c[2]) ? -1 : 1;
                     $ofs = ($numMatches + $ofs) % $numMatches;
                 }
-            } elseif (ord($c) < 32) {
+            } elseif (\ord($c) < 32) {
                 if ("\t" === $c || "\n" === $c) {
                     if ($numMatches > 0 && -1 !== $ofs) {
                         $ret = $matches[$ofs];
                         // Echo out remaining chars for current match
                         $output->write(substr($ret, $i));
-                        $i = strlen($ret);
+                        $i = \strlen($ret);
                     }
 
                     if ("\n" === $c) {
@@ -336,13 +292,11 @@ class QuestionHelper extends Helper
      * @param OutputInterface $output      An Output instance
      * @param resource        $inputStream The handler resource
      *
-     * @return string The answer
-     *
      * @throws RuntimeException In case the fallback is deactivated and the response cannot be hidden
      */
-    private function getHiddenResponse(OutputInterface $output, $inputStream)
+    private function getHiddenResponse(OutputInterface $output, $inputStream): string
     {
-        if ('\\' === DIRECTORY_SEPARATOR) {
+        if ('\\' === \DIRECTORY_SEPARATOR) {
             $exe = __DIR__.'/../Resources/bin/hiddeninput.exe';
 
             // handle code running from a phar
@@ -412,7 +366,7 @@ class QuestionHelper extends Helper
             }
 
             try {
-                return call_user_func($question->getValidator(), $interviewer());
+                return \call_user_func($question->getValidator(), $interviewer());
             } catch (RuntimeException $e) {
                 throw $e;
             } catch (\Exception $error) {
@@ -451,10 +405,8 @@ class QuestionHelper extends Helper
 
     /**
      * Returns whether Stty is available or not.
-     *
-     * @return bool
      */
-    private function hasSttyAvailable()
+    private function hasSttyAvailable(): bool
     {
         if (null !== self::$stty) {
             return self::$stty;

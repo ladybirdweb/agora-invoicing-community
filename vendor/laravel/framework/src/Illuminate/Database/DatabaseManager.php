@@ -137,7 +137,7 @@ class DatabaseManager implements ConnectionResolverInterface
         $connections = $this->app['config']['database.connections'];
 
         if (is_null($config = Arr::get($connections, $name))) {
-            throw new InvalidArgumentException("Database [$name] not configured.");
+            throw new InvalidArgumentException("Database [{$name}] not configured.");
         }
 
         return $config;
@@ -327,24 +327,3 @@ class DatabaseManager implements ConnectionResolverInterface
         return $this->connection()->$method(...$parameters);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

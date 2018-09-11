@@ -105,7 +105,7 @@ Edit Product
                                     <h6 id= "namecheck"></h6>
 
                                 </div>
-
+                   
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
@@ -119,12 +119,21 @@ Edit Product
                                     {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
 
                                 </div>
+                                <?php
+                               $types = DB::table('product_categories')->pluck('category_name')->toarray();
+                                ?>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
 
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
-
+                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+                            <select name="category"  class="form-control">
+                            <option value="">Choose</option>
+                            @foreach($types as $key=>$type)
+                                   <option value="{{$type}}" <?php  if(in_array($type, $selectedCategory) ) { echo "selected";} ?>>{{$type}}</option>
+                           
+                             @endforeach
+                              </select>
 
 
                                 </div>

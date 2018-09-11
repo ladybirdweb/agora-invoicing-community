@@ -78,7 +78,7 @@
                         <div class="col-md-4 form-group {{ $errors->has('amount') ? 'has-error' : '' }}">
                             <!-- first name -->
                             {!! Form::label('amount',Lang::get('message.extra-amount'),['class'=>'required']) !!}
-                            {!! Form::text('amount',$amountReceived,['class' => 'form-control','id'=>'amount']) !!}
+                            {!! Form::text('amount',$amountReceived,['class' => 'form-control','id'=>'amount','disabled'=>'disabled']) !!}
                             <input type="hidden" value="{{$amountReceived}}" name="hidden" id="amount1">
                         </div>
 
@@ -101,6 +101,7 @@
     <div class= "box box-primary">
        
                         <div class="box-body">
+                            @if(count($invoices)!=0)
                           <h4>{{Lang::get('message.link')}}</h4>
                         <div class="row">
                           
@@ -119,6 +120,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+
                                         @forelse ($invoices as $invoice)
                                         <?php
                                          if($invoice->currency == 'INR')
@@ -171,8 +173,10 @@
                                     </tbody>
                                 </table>
                             </div>
+                            
                         </div>
-                          <h3>Amount To Credit : <span class="creditAmount"></span></h3>
+                        @endif
+                          <h3>Amount To Credit : {{$symbol}} <span class="creditAmount">0</span></h3>
                     </div>
     </div>
     @stop

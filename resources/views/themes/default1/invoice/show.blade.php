@@ -59,12 +59,9 @@ View Invoice
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
                 <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
                 <?php    
-            if($invoice->currency == 'INR'){
-                $symbol = 'INR';
-             }
-             else{
-                $symbol = 'USD';
-             }
+           
+                $symbol = $invoice->currency;
+            
                 ?>
 
                 <!-- Main content -->

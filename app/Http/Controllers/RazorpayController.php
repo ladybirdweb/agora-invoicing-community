@@ -103,11 +103,7 @@ class RazorpayController extends Controller
 
     public function getCurrency()
     {
-        if (\Auth::user()->currency == 'INR') {
-            $symbol = '₹';
-        } else {
-            $symbol = '$';
-        }
+        $symbol = \Auth::user()->currency_symbol;
 
         return $symbol;
     }

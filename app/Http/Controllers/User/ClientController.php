@@ -323,7 +323,7 @@ class ClientController extends AdvanceSearchController
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state', 
+                compact('bussinesses', 'user', 'timezones', 'state',
                     'states', 'managers', 'selectedCurrency', 'selectedCompany',
                      'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {

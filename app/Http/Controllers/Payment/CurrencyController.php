@@ -239,8 +239,8 @@ class CurrencyController extends Controller
     public function countryDetails(Request $request)
     {
         $countryDetails = Country::where('country_id', $request->id)->select('currency_code', 'currency_symbol', 'currency_name')->first();
-        $data = (['code'=>$countryDetails->currency_code, 
-          'symbol'=>$countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name]);
+        $data = (['code'=> $countryDetails->currency_code,
+          'symbol'      => $countryDetails->currency_symbol, 'currency'=>$countryDetails->currency_name, ]);
 
         return $data;
     }

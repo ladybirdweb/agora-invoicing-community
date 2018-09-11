@@ -9,8 +9,8 @@ use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use Illuminate\Http\Request;
 use Bugsnag;
+use Illuminate\Http\Request;
 
 class PlanController extends Controller
 {

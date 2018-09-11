@@ -208,12 +208,14 @@
         "extra": {
             "branch-alias": {
                 "dev-master": "3.2-dev"
-            },
+            }
            
         },
         "installation-source": "dist",
         "autoload": {
-           
+            "psr-4": {
+                "Barryvdh\\Debugbar\\": "src/"
+            },
             "files": [
                 "src/helpers.php"
             ]

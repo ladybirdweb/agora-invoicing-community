@@ -295,7 +295,7 @@ User Details
                                           <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit"></i>
                                           {{Lang::get('message.edit')}}</a>
                                           @endif
-                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick= "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
+                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick = "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
                                   
                                     </td>
                                 </tr>
@@ -554,7 +554,10 @@ User Details
 
     });
 
-      function myFunction() {
+     
+</script>
+<script>
+     function myFunction() {
       if(!confirm("Are You Sure to delete this Payment?"))
       event.preventDefault();
   }

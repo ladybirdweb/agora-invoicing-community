@@ -4,7 +4,6 @@ namespace Tests\Unit\Admin\User;
 
 use App\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Tests\TestCase;
 use Tests\DBTestCase;
 
 class AdvanceSearchTest extends DBTestCase
@@ -26,9 +25,9 @@ class AdvanceSearchTest extends DBTestCase
     public function test_get_client_advanceSearchForRole_whenUserRegisteredWithSelectedRole()
     {
         $this->withoutMiddleware();
-         $this->getLoggedInUser();
+        $this->getLoggedInUser();
         $user = $this->user;
-        $user =  $user->create(['role'=>'admin']);
+        $user = $user->create(['role'=>'admin']);
         $response = $this->call('GET', 'get-clients', [
         'role' => 'admin',
         ]);
@@ -40,7 +39,7 @@ class AdvanceSearchTest extends DBTestCase
     public function test_get_client_advanceSearchForPosition_whenUserRegisteredIsManager()
     {
         $this->withoutMiddleware();
-         $this->getLoggedInUser();
+        $this->getLoggedInUser();
         $user = $this->user;
         $user = $user->create(['position'=>'manager']);
         $response = $this->call('GET', 'get-clients', [
@@ -68,7 +67,7 @@ class AdvanceSearchTest extends DBTestCase
     public function test_get_client_advanceSearchForEmail_whenUserRegisteredHasSelectedEmail()
     {
         $this->withoutMiddleware();
-         $this->getLoggedInUser();
+        $this->getLoggedInUser();
         $user = $this->user;
         $user = $user->create(['email'=>'testmail.com']);
         $response = $this->call('GET', 'get-clients', [

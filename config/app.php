@@ -252,7 +252,7 @@ return [
         'Storage'      => Illuminate\Support\Facades\Storage::class,
         'URL'          => Illuminate\Support\Facades\URL::class,
         'Bugsnag'      => Bugsnag\BugsnagLaravel\Facades\Bugsnag::class,
-     
+
         'Form'      => Collective\Html\FormFacade::class,
         'HTML'      => Collective\Html\HtmlFacade::class,
 

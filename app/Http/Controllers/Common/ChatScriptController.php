@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Model\Common\ChatScript;
-use Illuminate\Http\Request;
 use Bugsnag;
+use Illuminate\Http\Request;
 
 class ChatScriptController extends Controller
 {

@@ -266,7 +266,7 @@ class PromotionController extends BasePromotionController
 
             foreach ($items as $item) {
                 if ($item->conditions) {
-                // if (count($item->conditions) == 2 || count($item->conditions) == 1) {
+                    // if (count($item->conditions) == 2 || count($item->conditions) == 1) {
                     \Cart::addItemCondition($productid, $coupon);
                 }
             }

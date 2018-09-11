@@ -23,7 +23,7 @@ tools:
     php_pdepend:
         excluded_dirs:
             - vendor
-            # - tests
+            - tests
 checks:
     php:
         code_rating: true

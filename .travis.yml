@@ -1,6 +1,6 @@
 {
   "os": "linux",
-  "php": "7.2",
+  "php": "7.0",
   "dist": "trusty",
   "group": "stable",
   "install": [
@@ -12,8 +12,4 @@
     "php artisan migrate --seed"
   ],
   "language": "php"
-  notifications:
-    slack: faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo,
-    travis encrypt "faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo" --add notifications.slack,
-    travis encrypt "faveohelpdesk:KPpKc6HnbsRlaACpaAMKysqo" --add notifications.slack -r ladybirdweb/agorainvoicing
 }

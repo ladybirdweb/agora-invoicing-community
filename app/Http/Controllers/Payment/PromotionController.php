@@ -306,7 +306,6 @@ class PromotionController extends BasePromotionController
             $promotion = $this->promotion->where('code', $code)->first();
             $start = $promotion->start;
             $end = $promotion->expiry;
-            //dd($end);
             $now = \Carbon\Carbon::now();
             $inv_cont = new \App\Http\Controllers\Order\InvoiceController();
             $getExpiryStatus = $inv_cont->getExpiryStatus($start, $end, $now);

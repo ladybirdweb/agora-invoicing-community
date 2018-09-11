@@ -3,6 +3,8 @@
   "php": "7.2",
   "dist": "trusty",
   "group": "stable",
+   notifications:
+    slack: faveohelpdesk:zB3mPIF2wQEZ0hUmui3Ng1tn
   "install": [
     "composer install",
     "cp .env.travis .env",
@@ -12,6 +14,5 @@
     "php artisan migrate --seed"
   ],
   "language": "php"
-   notifications:
-    slack: faveohelpdesk:zB3mPIF2wQEZ0hUmui3Ng1tn
+
 }

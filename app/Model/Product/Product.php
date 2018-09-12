@@ -20,7 +20,7 @@ class Product extends BaseModel
     protected static $logName = 'Product';
 
     protected static $logAttributes = ['name', 'description', 'type', 'file', 'category',
-         'github_owner', 'github_repository', 'version',  'subscription', 'hidden'];
+         'github_owner', 'github_repository', 'version',  'subscription', 'hidden', ];
 
     protected static $logOnlyDirty = true;
 

@@ -344,7 +344,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-            $symbol = Currency::where('code',$request->input('currency'))->pluck('symbol')->first();
+            $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
 

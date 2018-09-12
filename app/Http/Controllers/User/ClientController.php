@@ -6,10 +6,12 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
-use DB;
+use DateTime;
+use DateTimeZone;
 use Illuminate\Http\Request;
 use Log;
 
@@ -76,10 +78,10 @@ class ClientController extends AdvanceSearchController
          $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
 
         return\ DataTables::of($user->get())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='user_checkbox' 
+                         ->addColumn('checkbox', function ($model) {
+                             return "<input type='checkbox' class='user_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                        })
+                         })
                         ->addColumn('first_name', function ($model) {
                             return '<a href='.url('clients/'.$model->id).'>'
                             .ucfirst($model->first_name).' '.ucfirst($model->last_name).'</a>';
@@ -90,8 +92,10 @@ class ClientController extends AdvanceSearchController
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
                               if ($ends) {
-                                  $date = date_create($ends);
-                                  $end = date_format($date, 'l, F j, Y H:m');
+                                  $date1 = new DateTime($ends);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new DateTimeZone($tz));
+                                  $end = $date1->format('M j, Y, g:i a ');
                               }
 
                               return $end;
@@ -142,7 +146,20 @@ class ClientController extends AdvanceSearchController
         $timezones = new \App\Model\Common\Timezone();
         $timezones = $timezones->pluck('name', 'id')->toArray();
         $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
-        $managers = User::where('role', 'admin')->where('position', 'manager')->pluck('first_name', 'id')->toArray();
+        $managers = User::where('role', 'admin')->where('position', 'manager')
+        ->pluck('first_name', 'id')->toArray();
+        $timezonesList = \App\Model\Common\Timezone::get();
+        foreach ($timezonesList as $timezone) {
+            $location = $timezone->location;
+            if ($location) {
+                $start = strpos($location, '(');
+                $end = strpos($location, ')', $start + 1);
+                $length = $end - $start;
+                $result = substr($location, $start + 1, $length - 1);
+                $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+            }
+        }
+        $timezones = array_column($display, 'name', 'id');
 
         return view('themes.default1.user.client.create', compact('timezones', 'bussinesses', 'managers'));
     }
@@ -159,12 +176,15 @@ class ClientController extends AdvanceSearchController
             $str = str_random(6);
             $password = \Hash::make($str);
             $user->password = $password;
+            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+            $location = $cont->getLocation();
+            $user->ip = $location['query'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
-            return redirect()->back()->with('warning', 'User has created successfully
+            return redirect()->back()->with('warning', 'User has been created successfully
              But email configuration has some problem!');
         } catch (\Exception $e) {
             return redirect()->back()->with('fails', $e->getMessage());
@@ -187,6 +207,10 @@ class ClientController extends AdvanceSearchController
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
+            if ($pendingAmount < 0) {
+                $pendingAmount = 0;
+            }
+            $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
@@ -194,7 +218,25 @@ class ClientController extends AdvanceSearchController
 
             return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency'));
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt'));
+        } catch (\Exception $ex) {
+            app('log')->info($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getExtraAmt($userId)
+    {
+        try {
+            $amounts = Payment::where('user_id', $userId)->where('invoice_id', 0)->select('amt_to_credit')->get();
+            $paidSum = 0;
+            foreach ($amounts as $amount) {
+                $paidSum = $paidSum + $amount->amt_to_credit;
+            }
+
+            return $paidSum;
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
@@ -213,12 +255,13 @@ class ClientController extends AdvanceSearchController
             $amounts = Payment::where('user_id', $userId)->select('amount')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amount;
+                if ($amount) {
+                    $paidSum = $paidSum + $amount->amount;
+                }
             }
 
             return $paidSum;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -250,23 +293,41 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-            $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->pluck('name', 'id')->toArray();
-
+            $timezonesList = \App\Model\Common\Timezone::get();
+            foreach ($timezonesList as $timezone) {
+                $location = $timezone->location;
+                if ($location) {
+                    $start = strpos($location, '(');
+                    $end = strpos($location, ')', $start + 1);
+                    $length = $end - $start;
+                    $result = substr($location, $start + 1, $length - 1);
+                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                }
+            }
+            //for display
+            $timezones = array_column($display, 'name', 'id');
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $managers = User::where('role', 'admin')
             ->where('position', 'manager')
             ->pluck('first_name', 'id')->toArray();
-
+            $selectedCurrency = Currency::where('code', $user->currency)
+            ->pluck('name', 'code')->toArray();
+            $selectedCompany = \DB::table('company_types')->where('short', $user->company_type)
+            ->pluck('name', 'short')->toArray();
+            $selectedIndustry = \App\Model\Common\Bussiness::where('short', $user->bussiness)
+            ->pluck('name', 'short')->toArray();
+            $selectedCompanySize = \DB::table('company_sizes')->where('short', $user->company_size)
+            ->pluck('name', 'short')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
             return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state', 'states', 'managers'));
+                compact('bussinesses', 'user', 'timezones', 'state',
+                    'states', 'managers', 'selectedCurrency', 'selectedCompany',
+                     'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -279,13 +340,21 @@ class ClientController extends AdvanceSearchController
      *
      * @return \Response
      */
-    public function update($id, ClientRequest $request)
+    public function update($id, Request $request)
     {
-        $user = $this->user->where('id', $id)->first();
+        try {
+            $user = $this->user->where('id', $id)->first();
+            $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
+            $user->currency_symbol = $symbol;
+            $user->fill($request->input())->save();
 
-        $user->fill($request->input())->save();
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+        } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
 
-        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
@@ -344,11 +413,36 @@ class ClientController extends AdvanceSearchController
         return response()->json(compact('options'));
     }
 
+    public function search(Request $request)
+    {
+        try {
+            $term = trim($request->q);
+            if (empty($term)) {
+                return \Response::json([]);
+            }
+            $users = User::where('email', 'LIKE', '%'.$term.'%')
+             ->orWhere('first_name', 'LIKE', '%'.$term.'%')
+             ->orWhere('last_name', 'LIKE', '%'.$term.'%')
+             ->select('id', 'email', 'profile_pic', 'first_name', 'last_name')->get();
+            $formatted_tags = [];
+
+            foreach ($users as $user) {
+                $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
+            'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
+            }
+
+            return \Response::json($formatted_users);
+        } catch (\Exception $e) {
+            // returns if try fails with exception meaagse
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
       $company_type = '', $company_size = '', $role = '', $position = '')
     {
-        $join = DB::table('users');
+        $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);

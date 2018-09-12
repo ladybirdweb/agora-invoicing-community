@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Product
+@stop
 @section('content-header')
 <h1>
 Edit Product
@@ -40,6 +43,7 @@ Edit Product
             } 
         });
     });
+
 </script>
 <style>
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -62,6 +66,8 @@ Edit Product
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -76,7 +82,9 @@ Edit Product
                 </div>
                 @endif
                 {!! Form::model($product,['url'=>'products/'.$product->id,'method'=>'patch','files' => true,'id'=>'editproduct']) !!}
-                <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+                <h4>{{Lang::get('message.product')}}	
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+                </h4>
 
        </div>
        <div class="box-body">
@@ -97,7 +105,7 @@ Edit Product
                                     <h6 id= "namecheck"></h6>
 
                                 </div>
-
+                   
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
@@ -111,12 +119,21 @@ Edit Product
                                     {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
 
                                 </div>
+                                <?php
+                               $types = DB::table('product_categories')->pluck('category_name')->toarray();
+                                ?>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
 
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
-
+                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+                            <select name="category"  class="form-control">
+                            <option value="">Choose</option>
+                            @foreach($types as $key=>$type)
+                                   <option value="{{$type}}" <?php  if(in_array($type, $selectedCategory) ) { echo "selected";} ?>>{{$type}}</option>
+                           
+                             @endforeach
+                              </select>
 
 
                                 </div>
@@ -250,18 +267,28 @@ Edit Product
                                     <td><b>{!! Form::label('subscription',Lang::get('message.subscription')) !!}</b></td>
                                     <td>
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                                            <div class="row">
-                                                 <div class="col-md-6">
+                                             <div class="row">
+                                                <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
-                                                    {!! Form::checkbox('subscription',1) !!}
-                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
+                                                    {!! Form::checkbox('subscription') !!}
+                                                     <label data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.limited-subscription-description') !!}">
+                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
                                                 </div>
-                                                <div class="col-md-6">
-                                                    {!! Form::hidden('deny_after_subscription',0) !!}
-                                                    {!! Form::checkbox('deny_after_subscription',1) !!}
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                            
+                                                
+                                                 <div class="col-md-4">
+                                                     {!! Form::radio('deny_after_subscription',1) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
-                                            </div>
+
+                                                <div class="col-md-4">
+                                                    {!! Form::radio('deny_after_subscription',0) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
+                                                </div>
+
+                                          </div>
                                         </div>
                                     </td>
                                 </tr>
@@ -385,14 +412,17 @@ Edit Product
                     <!-- /.tab-content -->
                 </div>
                 </div>
+                 </div>
+                   </div>
+                   </div>
      
         <div class="row" id="hide" style="display:none">
         <div class="col-md-12">
-        <div class="box" id="uploads">
+        <div class="box box-primary" id="uploads">
             <div class="box-header with-border" >
                 <h3 class="box-title">Upload Files</h3>
-                 
-                 <a href="#create-upload-option" id="create" class="btn btn-primary pull-right" data-toggle="modal" data-target="#create-upload-option">Add Files</a>
+                
+                 <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
                              @include('themes.default1.product.product.edit-upload-option')
              
@@ -402,7 +432,7 @@ Edit Product
                 <div class="row" >
                     <div class="col-md-12" >
                          <table id="upload-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete">Delete Selected</button><br /><br />
+                          <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; {{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                          <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                         <th>Title</th>
@@ -551,13 +581,11 @@ Edit Product
 
 
       
-    </div>
-    </div>
-     </div>
+   
+  
+   
 
-</div>
 
-</div>
  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />

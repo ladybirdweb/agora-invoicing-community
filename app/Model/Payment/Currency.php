@@ -9,9 +9,9 @@ class Currency extends BaseModel
 {
     use LogsActivity;
     protected $table = 'currencies';
-    protected $fillable = ['code', 'symbol', 'name', 'base_conversion'];
+    protected $fillable = ['code', 'symbol', 'name', 'status'];
     protected static $logName = 'Currency';
-    protected static $logAttributes = ['code', 'symbol', 'name'];
+    protected static $logAttributes = ['code', 'symbol', 'name', 'status'];
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string
@@ -34,5 +34,10 @@ class Currency extends BaseModel
 
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
+    }
+
+    public function country()
+    {
+        return $this->hasMany('App\Model\Common\Country', 'currency_id');
     }
 }

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Github Setting
+@stop
 @section('content-header')
 <h1>
 Github Settings
@@ -26,6 +29,8 @@ Github Settings
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+             <i class="fa fa-check"></i>
+              <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -64,7 +69,8 @@ Github Settings
                     <div class="col-md-6 form-group {{ $errors->has('password') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('password',Lang::get('message.password'),['class'=>'required']) !!}
-                        {!! Form::text('password',null,['class' => 'form-control']) !!}
+                        <!-- {!! Form::password('password',null,['class' => 'form-control']) !!} -->
+                        <input type= "password" name="password" class="form-control">
 
                     </div>
 

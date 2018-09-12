@@ -301,9 +301,25 @@ class TemplateController extends BaseTemplateController
                     }
                 }
             });
+            \DB::table('email_log')->insert([
+                'date' => date('Y-m-d H:i:s'),
+            'from'     => $from,
+            'to'       => $to,
+             'subject' => $subject,
+            'body'     => $data,
+          'status'     => 'success',
+          ]);
 
             return 'success';
         } catch (\Exception $ex) {
+            \DB::table('email_log')->insert([
+            'date'     => date('Y-m-d H:i:s'),
+            'from'     => $from,
+            'to'       => $to,
+             'subject' => $subject,
+            'body'     => $data,
+            'status'   => 'failed',
+        ]);
             Bugsnag::notifyException($ex);
             if ($ex instanceof \Swift_TransportException) {
                 throw new \Exception('We can not reach to this email address');
@@ -341,7 +357,8 @@ class TemplateController extends BaseTemplateController
         $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
-        if (count($plans) > 0) {
+        // $planName = Plan::where()
+        if ($plans) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
         $form = \Form::open(['method' => 'get', 'url' => $url]).
@@ -353,34 +370,40 @@ class TemplateController extends BaseTemplateController
 
     public function leastAmount($id)
     {
-        $cost = 'Free';
-        $symbol = '';
-        $price = '';
-        $plan = new Plan();
-        $plans = $plan->where('product', $id)->get();
-
-        $cart_controller = new \App\Http\Controllers\Front\CartController();
-        $currency = $cart_controller->currency();
-
-        if ($plans->count() > 0) {
-            foreach ($plans as $value) {
-                $days = $value->min('days');
-                $month = round($days / 30);
-                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-                $price = \App\Http\Controllers\Front\CartController::rounding($price);
-                if ($currency == 'INR') {
-                    $symbol = '₹';
-                } else {
-                    $symbol = '$';
-                }
-                // dd($price);
-            }
-            $cost = "$symbol$price";
-        } else {
+        try {
             $cost = 'Free';
-        }
+            $symbol = '';
+            $price = '';
+            $plan = new Plan();
+            $plans = $plan->where('product', $id)->get();
+            $cart_controller = new \App\Http\Controllers\Front\CartController();
+            $currencyAndSymbol = $cart_controller->currency();
+            $currency = $currencyAndSymbol['currency'];
+            $symbol = $currencyAndSymbol['symbol'];
+            $prices = [];
+            $priceVal[] = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $value) {
+                    $days = $value->min('days');
+                    $month = round($days / 30);
+                    $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
+                }
+                foreach ($prices as $key => $value) {
+                    $duration = $this->getDuration($value);
+                    $priceVal[] = intval($value);
+                }
+                $price = min($priceVal).' '.$duration;
+                $cost = "$symbol$price";
+            } else {
+                $cost = 'Free';
+            }
 
-        return $cost;
+            return $cost;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     public function leastAmountService($id)

@@ -50,7 +50,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <button type="submit" class="btn btn-primary "><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
             {!! Form::close()  !!}
             </div>

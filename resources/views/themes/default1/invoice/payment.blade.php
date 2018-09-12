@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Payment
+@stop
 @section('content-header')
 <h1>
 Generate Payment
@@ -28,6 +31,8 @@ Generate Payment
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> {{Lang::get('message.success')}}.
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -67,7 +72,7 @@ Generate Payment
                     <div class="col-md-4 form-group {{ $errors->has('payment_method') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('payment_method',Lang::get('message.payment-method')) !!}
-                        {!! Form::select('payment_method',[''=>'Select','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],$payment_method,['class' => 'form-control']) !!}
+                        {!! Form::select('payment_method',[''=>'Choose','cash'=>'Cash','check'=>'Check','online payment'=>'Online Payment','razorpay'=>'Razorpay'],$payment_method,['class' => 'form-control']) !!}
 
                     </div>
 

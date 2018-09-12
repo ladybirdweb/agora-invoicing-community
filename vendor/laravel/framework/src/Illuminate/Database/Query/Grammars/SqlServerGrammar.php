@@ -104,6 +104,49 @@ class SqlServerGrammar extends Grammar
     }
 
     /**
+     * Compile a "where time" clause.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $where
+     * @return string
+     */
+    protected function whereTime(Builder $query, $where)
+    {
+        $value = $this->parameter($where['value']);
+
+        return 'cast('.$this->wrap($where['column']).' as time) '.$where['operator'].' '.$value;
+    }
+
+    /**
+     * Compile a "JSON contains" statement into SQL.
+     *
+     * @param  string  $column
+     * @param  string  $value
+     * @return string
+     */
+    protected function compileJsonContains($column, $value)
+    {
+        $parts = explode('->', $column, 2);
+
+        $field = $this->wrap($parts[0]);
+
+        $path = count($parts) > 1 ? ', '.$this->wrapJsonPath($parts[1]) : '';
+
+        return $value.' in (select [value] from openjson('.$field.$path.'))';
+    }
+
+    /**
+     * Prepare the binding for a "JSON contains" statement.
+     *
+     * @param  mixed  $binding
+     * @return string
+     */
+    public function prepareBindingForJsonContains($binding)
+    {
+        return is_bool($binding) ? json_encode($binding) : $binding;
+    }
+
+    /**
      * Create a full ANSI offset clause for the query.
      *
      * @param  \Illuminate\Database\Query\Builder  $query
@@ -156,7 +199,7 @@ class SqlServerGrammar extends Grammar
     {
         $constraint = $this->compileRowConstraint($query);
 
-        return "select * from ({$sql}) as temp_table where row_num {$constraint}";
+        return "select * from ({$sql}) as temp_table where row_num {$constraint} order by row_num";
     }
 
     /**
@@ -269,7 +312,7 @@ class SqlServerGrammar extends Grammar
     {
         $joins = ' '.$this->compileJoins($query, $query->joins);
 
-        $alias = strpos(strtolower($table), ' as ') !== false
+        $alias = stripos($table, ' as ') !== false
                 ? explode(' as ', $table)[1] : $table;
 
         return trim("delete {$alias} from {$table}{$joins} {$where}");
@@ -335,7 +378,7 @@ class SqlServerGrammar extends Grammar
     {
         $table = $alias = $this->wrapTable($table);
 
-        if (strpos(strtolower($table), '] as [') !== false) {
+        if (stripos($table, '] as [') !== false) {
             $alias = '['.explode('] as [', $table)[1];
         }
 
@@ -412,6 +455,21 @@ class SqlServerGrammar extends Grammar
     protected function wrapValue($value)
     {
         return $value === '*' ? $value : '['.str_replace(']', ']]', $value).']';
+    }
+
+    /**
+     * Wrap the given JSON selector.
+     *
+     * @param  string  $value
+     * @return string
+     */
+    protected function wrapJsonSelector($value)
+    {
+        $parts = explode('->', $value, 2);
+
+        $field = $this->wrapSegments(explode('.', array_shift($parts)));
+
+        return 'json_value('.$field.', '.$this->wrapJsonPath($parts[0]).')';
     }
 
     /**

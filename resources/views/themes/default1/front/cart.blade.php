@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Cart | Faveo Helpdesk
+Cart
 @stop
 @section('page-header')
 <br>
@@ -120,7 +120,6 @@ if (count($attributes) > 0) {
                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
                                                         $cart_controller = new App\Http\Controllers\Front\CartController();
                                                         $value = $cart_controller->cost($product->id);
-                                                       
                                                         $price += $value;
                                                     
                                                         if ($product->require_domain == 1) {
@@ -128,6 +127,7 @@ if (count($attributes) > 0) {
 
                                                         }
                                                         $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
+                                                        
                                                         
                                                         $total = Cart::getSubTotal();
                                                         
@@ -221,7 +221,7 @@ if (count($attributes) > 0) {
                                         <td>
 
 
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>   {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>    {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span></strong>
 
 
                                         </td>

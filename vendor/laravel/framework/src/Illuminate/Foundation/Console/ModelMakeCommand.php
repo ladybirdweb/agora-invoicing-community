@@ -67,8 +67,10 @@ class ModelMakeCommand extends GeneratorCommand
      */
     protected function createFactory()
     {
+        $factory = Str::studly(class_basename($this->argument('name')));
+
         $this->call('make:factory', [
-            'name' => $this->argument('name').'Factory',
+            'name' => "{$factory}Factory",
             '--model' => $this->argument('name'),
         ]);
     }
@@ -81,6 +83,10 @@ class ModelMakeCommand extends GeneratorCommand
     protected function createMigration()
     {
         $table = Str::plural(Str::snake(class_basename($this->argument('name'))));
+
+        if ($this->option('pivot')) {
+            $table = Str::singular($table);
+        }
 
         $this->call('make:migration', [
             'name' => "create_{$table}_table",

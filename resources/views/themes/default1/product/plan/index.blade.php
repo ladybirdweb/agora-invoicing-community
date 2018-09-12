@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Plans
+@stop
 @section('content-header')
 <h1>
 All Plans
@@ -16,9 +19,8 @@ All Plans
 
     <div class="box-header">
 
-        <h4>{{Lang::get('message.plans')}}
-        <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
-    </div>
+       
+   
        @include('themes.default1.product.plan.create') 
     @if (count($errors) > 0)
     <div class="alert alert-danger">
@@ -33,8 +35,8 @@ All Plans
 
     @if(Session::has('success'))
     <div class="alert alert-success alert-dismissable">
-        <i class="fa fa-ban"></i>
-        <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
+        <i class="fa fa-check"></i>
+        <b>{{Lang::get('message.success')}}!</b>
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
         {{Session::get('success')}}
     </div>
@@ -48,6 +50,9 @@ All Plans
         {{Session::get('fails')}}
     </div>
     @endif
+     <h4>{{Lang::get('message.plans')}}
+        <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-primary btn-sm pull-right"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a></h4>
+     </div>
     <div id="response"></div>
 
     <div class="box-body">

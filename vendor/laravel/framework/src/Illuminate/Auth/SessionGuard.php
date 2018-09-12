@@ -4,6 +4,7 @@ namespace Illuminate\Auth;
 
 use RuntimeException;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Traits\Macroable;
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -90,7 +91,7 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
      * @param  string  $name
      * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
      * @param  \Illuminate\Contracts\Session\Session  $session
-     * @param  \Symfony\Component\HttpFoundation\Request  $request
+     * @param  \Symfony\Component\HttpFoundation\Request|null  $request
      * @return void
      */
     public function __construct($name,
@@ -127,10 +128,8 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         // First we will try to load the user using the identifier in the session if
         // one exists. Otherwise we will check for a "remember me" cookie in this
         // request, and if one exists, attempt to retrieve the user using that.
-        if (! is_null($id)) {
-            if ($this->user = $this->provider->retrieveById($id)) {
-                $this->fireAuthenticatedEvent($this->user);
-            }
+        if (! is_null($id) && $this->user = $this->provider->retrieveById($id)) {
+            $this->fireAuthenticatedEvent($this->user);
         }
 
         // If the user is null, but we decrypt a "recaller" cookie we can attempt to
@@ -531,6 +530,26 @@ class SessionGuard implements StatefulGuard, SupportsBasicAuth
         $user->setRememberToken($token = Str::random(60));
 
         $this->provider->updateRememberToken($user, $token);
+    }
+
+    /**
+     * Invalidate other sessions for the current user.
+     *
+     * The application must be using the AuthenticateSession middleware.
+     *
+     * @param  string  $password
+     * @param  string  $attribute
+     * @return null|bool
+     */
+    public function logoutOtherDevices($password, $attribute = 'password')
+    {
+        if (! $this->user()) {
+            return;
+        }
+
+        return tap($this->user()->forceFill([
+            $attribute => Hash::make($password),
+        ]))->save();
     }
 
     /**

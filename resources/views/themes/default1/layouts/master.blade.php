@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+  <?php 
+    $set = new \App\Model\Common\Setting();
+    $set = $set->findOrFail(1);
+    ?>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{{Lang::get('message.faveo-billing-application')}}</title>
-         <link rel="shortcut icon" href="images/faveo.png" type="image/x-icon" />
+        <title>@yield('title') | {{$set->favicon_title}}</title>
+        <link rel="shortcut icon" href='{{asset("images/favicon/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.4 -->
@@ -14,16 +18,18 @@
         <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
         <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
         <!-- Custom style -->
         <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+         <link rel="stylesheet" href="{{asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
 
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
         <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
         <!-- <link href="{!!asset('plugins/datatables/dataTables.bootstrap.css')!!}" rel="stylesheet" type="text/css" /> -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
+        <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css"> -->
         <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
@@ -41,7 +47,7 @@
         <!-- jQuery 2.1.4 -->
         <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
         <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+        <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 <style>
 
 .most-popular {
@@ -49,30 +55,72 @@
   
     border: 1px solid;
     padding: 10px;
-    box-shadow: 5px 10px #888888;
+    box-shadow: 5px 10px white;
  
 }
+#myBar  {
+       background-color: red;
+       width: 100%; /* Adjust with JavaScript */
+       height: 40px;
+       border-radius: 40px;
+    }
+
 
 </style>
+<script type="text/javascript">
+    document.onreadystatechange = function () {
+  var state = document.readyState
+  if (state != 'complete') {
+      move();
+  }
+}
+function move() {
+       
+  $(".w3-green").removeClass("hide");
+  var elem = document.getElementById("myBar");   
+  var width = 1;
+  var id = setInterval(frame, 0);
+  function frame() {
+    if (width >= 100) {
+      clearInterval(id);
+      $(".w3-green").addClass("hide");
+    } else {
+      width++; 
+      elem.style.width = width + '%'; 
+    }
+  }
+}
+</script>
     </head>
     <?php 
     $set = new \App\Model\Common\Setting();
     $set = $set->findOrFail(1);
     ?>
+        
+
     <!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
     <!-- the fixed layout is not compatible with sidebar-mini -->
     <body class="hold-transition skin-blue sidebar-mini">
-
        <!-- Site wrapper -->
         <div class="wrapper">
 
             <header class="main-header">
+                <div id="myBar" class="w3-green " style="height:3px;width:0"></div>
+
                 <!-- Logo -->
                 <a href="{{url('/')}}" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
-                    <span class="logo-mini">{{Lang::get('message.billing')}}</span>
+                    <!-- <span class="logo-mini">{{$set->title}}</span> -->
                     <!-- logo for regular state and mobile devices -->
-                    <span class="logo-lg"><b>{{Lang::get('message.faveo')}} </b>{{Lang::get('message.billing')}}</span>
+                    @if ($set->title != '')
+                    <span class="logo-lg"><b>{{$set->title}} </b></span>
+                    @else
+                    <span class="logo-lg">
+                        <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
+                       
+
+                    </span>
+                    @endif
                 </a>
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
@@ -138,6 +186,13 @@
 
                     <ul class="sidebar-menu">
 
+                           <li class="treeview">
+                            <a href="{{url('/')}}">
+                                <i class="fa fa-dashboard"></i> <span>{{Lang::get('message.dashboard')}}</span>
+                            </a>
+                          
+                        </li>
+
 
                         <li class="treeview">
                             <a href="#">
@@ -157,7 +212,8 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('orders')}}"><i class="fa fa-paper-plane"></i>{{Lang::get('message.all-orders')}}</a></li>
-                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
+                                  <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
+                               
                             </ul>
                         </li>
                         <li class="treeview">
@@ -167,7 +223,7 @@
                             </a>
                             <ul class="treeview-menu">
                                 <li><a href="{{url('invoices')}}"><i class="fa fa-paperclip"></i>{{Lang::get('message.all-invoices')}}</a></li>
-                                <!--<li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>-->
+                                <li><a href="{{url('invoice/generate')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-new')}}</a></li>
                             </ul>
                         </li>
                         
@@ -195,11 +251,15 @@
                             <ul class="treeview-menu">
                                 <li><a href="{{url('products')}}"><i class="fa fa-codepen"></i>{{Lang::get('message.all-products')}}</a></li>
                                  <li><a href="{{url('products/create')}}"><i class="fa fa-book"></i>{{Lang::get('message.add-products')}}</a></li>
+                                  <li><a href="{{url('category')}}"><i class="fa fa-tasks"></i>{{Lang::get('message.category')}}</a></li>
+                                   <li><a href="{{url('product-type')}}"><i class="fa fa-thumb-tack"></i>{{Lang::get('message.types')}}</a></li>
                                  <li><a href="{{url('plans')}}"><i class="fa fa-minus-circle"></i>Plans</a></li>
+                                   <li><a href="{{url('promotions')}}"><i class="fa fa-usd"></i>{{Lang::get('message.coupons')}}</a></li>
                                 <li><a href="{{url('groups')}}"><i class="fa fa-group"></i>{{Lang::get('message.groups')}}</a></li>
+
                                 <!--<li><a href="{{url('addons')}}"><i class="fa fa-files-o"></i>{{Lang::get('message.addons')}}</a></li>-->
                                 <!--<li><a href="{{url('bundles')}}"><i class="fa fa-code-fork"></i>{{Lang::get('message.bundles')}}</a></li>-->
-                                <li><a href="{{url('promotions')}}"><i class="fa fa-minus-circle"></i>{{Lang::get('message.coupons')}}</a></li>
+                              
                             </ul>
                         </li>
                         <li>
@@ -272,6 +332,11 @@
         <!-- Bootstrap 3.3.2 JS -->
          <script src="{{asset('js/theme.init.js')}}"></script>
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+          <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
+
+        <!-- (Optional) Latest compiled and minified JavaScript translation files -->
+         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
+
         <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <!-- SlimScroll -->
         <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
@@ -279,8 +344,11 @@
         <script src="{{asset('plugins/fastclick/fastclick.min.js')}}" type="text/javascript"></script>
         <!-- AdminLTE App -->
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+        <script src="{{asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
         
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->

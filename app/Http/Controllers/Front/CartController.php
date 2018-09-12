@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Common\TemplateController;
+use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\PlanPrice;
@@ -102,16 +103,13 @@ class CartController extends BaseCartController
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
-
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-
-                Cart::add($items);
+                \Cart::add($items);
             }
 
             return redirect('show/cart');
         } catch (\Exception $ex) {
-            // dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -132,10 +130,7 @@ class CartController extends BaseCartController
                     $user_currency = \Auth::user()->currency;
                     $user_country = \Auth::user()->country;
                     $user_state = \Auth::user()->state;
-                    $currency = 'INR';
-                    if ($user_currency == 1 || $user_currency == 'USD') {
-                        $currency = 'USD';
-                    }
+                    $currency = \Auth::user()->currency;
                     if ($cart_currency != $currency) {
                         $id = $item->id;
                         Cart::remove($id);
@@ -345,7 +340,7 @@ class CartController extends BaseCartController
             ]);
                 }
             }
-
+            // dd($tax_attribute,$taxCondition);
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
             return ['conditions' => $taxCondition,
@@ -446,6 +441,25 @@ class CartController extends BaseCartController
         return 'success';
     }
 
+    public function addCartBySlug($slug)
+    {
+        try {
+            $sub = '';
+            if ($slug == 'helpdesk-with-kb-pro-edition') {
+                $id = 8;
+                $sub = 13;
+            }
+            if ($slug == 'helpdesk-and-kb-community') {
+                $id = 7;
+            }
+            $url = url("pricing?id=$id&subscription=$sub");
+
+            return \Redirect::to($url);
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function reduseQty(Request $request)
     {
         $id = $request->input('id');
@@ -468,24 +482,6 @@ class CartController extends BaseCartController
         ]);
 
         return 'success';
-    }
-
-    /**
-     * @return type
-     */
-    public function clearCart()
-    {
-        foreach (Cart::getContent() as $item) {
-            if (\Session::has('domain'.$item->id)) {
-                \Session::forget('domain'.$item->id);
-            }
-        }
-        $this->removePlanSession();
-        $renew_control = new \App\Http\Controllers\Order\RenewController();
-        $renew_control->removeSession();
-        Cart::clear();
-
-        return redirect('show/cart');
     }
 
     /**
@@ -585,11 +581,8 @@ class CartController extends BaseCartController
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
-            if ($rounding == 1) {
-                return round($price);
-            } else {
-                return $price;
-            }
+
+            return $price;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             // throw new \Exception('error in get tax priority');
@@ -628,12 +621,12 @@ class CartController extends BaseCartController
             $from = $set->email;
             $fromname = $set->company;
             $toname = '';
-            $to = 'support@faveohelpdesk.com';
+            $to = $set->company_email;
             $data = '';
             $data .= 'Name: '.$request->input('name').'<br/s>';
             $data .= 'Email: '.$request->input('email').'<br/>';
             $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('Mobile').'<br/>';
+            $data .= 'Mobile: '.$request->input('country_code').$request->input('Mobile').'<br/>';
 
             $subject = 'Faveo billing enquiry';
             $this->templateController->Mailing($from, $to, $data, $subject, [], $fromname, $toname);
@@ -656,7 +649,7 @@ class CartController extends BaseCartController
         try {
             $country = \App\Model\Common\Country::where('country_code_char2', $code)->first();
             if ($country) {
-                return $country->country_name;
+                return $country->nicename;
             }
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -772,7 +765,7 @@ class CartController extends BaseCartController
             $result = '';
             if ($rate) {
                 $rate = str_replace('%', '', $rate);
-                $tax = $price * ($rate / 100);
+                $tax = intval($price) * ($rate / 100);
                 $result = $tax;
 
                 $result = self::rounding($result);
@@ -889,30 +882,6 @@ class CartController extends BaseCartController
     }
 
     /**
-     * @param type $iso
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function getMobileCodeByIso($iso)
-    {
-        try {
-            $code = '';
-            if ($iso != '') {
-                $mobile = \DB::table('mobile')->where('iso', $iso)->first();
-                if ($mobile) {
-                    $code = $mobile->phonecode;
-                }
-            }
-
-            return $code;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
      * @param type $userid
      *
      * @throws \Exception
@@ -922,70 +891,49 @@ class CartController extends BaseCartController
     public function currency($userid = '')
     {
         try {
-            $currency = 'INR';
-            if ($this->checkCurrencySession() === true) {
-                $currency = Session::get('currency');
-            }
-
-            if (\Auth::user()) {
-                $currency = \Auth::user()->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
+            $currency = Setting::find(1)->default_currency;
+            $currency_symbol = Setting::find(1)->default_symbol;
+            if (!\Auth::user()) {//When user is not logged in
+                $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+                $location = $cont->getLocation();
+                $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+                $userCountry = Country::where('country_code_char2', $country)->first();
+                $currencyStatus = $userCountry->currency->status;
+                if ($currencyStatus == 1) {
+                    $currency = $userCountry->currency->code;
+                    $currency_symbol = $userCountry->currency->symbol;
                 }
             }
-            if ($userid != '') {
-                $currency = $this->getCurrency($userid);
+
+            // if ($this->checkCurrencySession() === true) {
+            //     $currency = Session::get('currency');
+            // }
+            if (\Auth::user()) {
+                $currency = \Auth::user()->currency;
+                $currency_symbol = \Auth::user()->currency_symbol;
+            }
+            if ($userid != '') {//For Admin Panel Clients
+                $currencyAndSymbol = $this->getCurrency($userid);
+                $currency = $currencyAndSymbol['currency'];
+                $currency_symbol = $currencyAndSymbol['symbol'];
             }
 
-            return $currency;
+            return ['currency'=>$currency, 'symbol'=>$currency_symbol];
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
     }
 
+    /*
+    * Get Currency And Symbol For Admin Panel Clients
+    */
     public function getCurrency($userid)
     {
         $user = new \App\User();
         $currency = $user->find($userid)->currency;
-        if ($currency == 'USD' || $currency == '1') {
-            $currency = 'USD';
-        } else {
-            $currency = 'INR';
-        }
+        $symbol = $user->find($userid)->currency_symbol;
 
-        return $currency;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public function removePlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                Session::forget('plan');
-            }
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkPlanSession()
-    {
-        try {
-            if (Session::has('plan')) {
-                return true;
-            }
-
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
+        return ['currency'=>$currency, 'symbol'=>$symbol];
     }
 
     /**
@@ -1051,30 +999,36 @@ class CartController extends BaseCartController
     {
         try {
             $cost = 0;
-            $subscription = $this->allowSubscription($productid);
             if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
 
-            if ($subscription === true) {
-                $plan = new \App\Model\Payment\Plan();
-                $plan = $plan->where('id', $planid)->where('product', $productid)->first();
+            $plan = new \App\Model\Payment\Plan();
+            $plan = $plan->where('id', $planid)->where('product', $productid)->first();
 
-                if ($plan) {
-                    $currency = $this->currency($userid);
-                    $price = $plan->planPrice()
+            if ($plan) {
+                $currency = $this->currency($userid);
+
+                $price = $plan->planPrice()
                                     ->where('currency', $currency)
-                                    ->first()
-                            ->add_price;
-                    $days = $plan->days;
-                    if ($days >= '365') {
-                        $months = $days / 30 / 12;
-                    } else {
-                        $months = $days / 30;
-                    }
-
-                    $cost = round($months) * $price;
+                                    ->first();
+                if ($price != null) {
+                    $price = $price->add_price;
+                } else {
+                    $currency = Setting::find(1)->default_currency;
+                    $symbol = Setting::find(1)->default_symbol;
+                    $price = $plan->planPrice()
+                                    ->where('currency', $currency)->first()->add_price;
                 }
+
+                $days = $plan->days;
+                if ($days >= '365') {
+                    $months = $days / 30 / 12;
+                } else {
+                    $months = $days / 30;
+                }
+                $price = intval($price);
+                $cost = round($months) * $price;
             }
 
             return $cost;

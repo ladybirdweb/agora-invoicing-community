@@ -1,5 +1,16 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Create Invoice
+@stop
 @section('content-header')
+<style>
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #1b1818 !important;
+</style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+  <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
+<script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 <h1>
 Generate An Invoice
 </h1>
@@ -11,8 +22,8 @@ Generate An Invoice
       </ol>
 @stop
 @section('content')
-<link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/fonts/font_roboto/roboto.css')!!}" rel="stylesheet" type="text/css" />
-<link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.css')!!}" rel="stylesheet" type="text/css" />
+<!-- <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/fonts/font_roboto/roboto.css')!!}" rel="stylesheet" type="text/css" /> -->
+<!-- <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.css')!!}" rel="stylesheet" type="text/css" /> -->
 <div class="box box-primary">
 
     <div class="box-header">
@@ -34,6 +45,7 @@ Generate An Invoice
         </div>
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+              <i class="fa fa-check"></i>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -75,17 +87,24 @@ Generate An Invoice
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients')) !!}
-                    <body onload="doOnLoad();">
-                        <div id="combo_zone"></div>
-                    </body>
+                     {!! Form::select('user', [Lang::get('User')=>$users->toArray()],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important",'oninvalid'=>"setCustomValidity('Please Select Client')", 
+                  'onchange'=>"setCustomValidity('')"]) !!}
+                 
                 </div>
                 @endif
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                    {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class'=>'form-control','onchange'=>'getSubscription(this.value)','id'=>'product']) !!}
+                     <select name="product" value= "Choose" onChange="getSubscription(this.value)" id="product" class="form-control" required="required">
+                             <option value="">Choose</option>
+                           @foreach($products as $key=>$product)
+                              <option value={{$key}}>{{$product}}</option>
+                          @endforeach
+                          </select>
                     <h6 id ="productnamecheck"></h6>
                 </div>
+
+          
                 <div id="fields1">
                 </div>
                 <div id="fields">
@@ -121,7 +140,7 @@ Generate An Invoice
 
 <script>
     function getPrice(val) {
-        var user = document.getElementsByName('user')[0].value;
+         var user = document.getElementsByName('user')[0].value;
         var plan = "";
         var product = "";
         if ($('#plan').length > 0) {
@@ -322,15 +341,49 @@ Generate An Invoice
 @stop
 
 @section('datepicker')
-<script src="{{asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.js')}}" type="text/javascript"></script>
+<!-- <script src="{{asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.js')}}" type="text/javascript"></script> -->
 <script>
-    var myCombo;
-    function doOnLoad() {
-        myCombo = new dhtmlXCombo("combo_zone", "user", 230);
-        myCombo.enableFilteringMode(true);
-        myCombo.load("{{url('get-users')}}", function () {
-            myCombo.selectOption(0);
-        });
+   
+
+        $('#users').select2({
+        placeholder: "Search",
+        minimumInputLength: 1,
+        maximumSelectionLength: 1,
+        ajax: {
+            url: '{{route("search-email")}}',
+            dataType: 'json',
+            beforeSend: function(){
+                $('.loader').css('display', 'block');
+            },
+            complete: function() {
+                $('.loader').css('display', 'none');
+            },
+            data: function (params) {
+                return {
+                    q: $.trim(params.term)
+                };
+            },
+            processResults: function (data) {
+                return {
+                      results: $.map(data, function (value) {
+                    return {
+                        image:value.profile_pic,
+                        text:value.first_name+" "+value.last_name,
+                        id: value.id,
+                        email:value.text
+                    }
+                
+                 })
+                  }
+            },
+            cache: true
+        },
+           templateResult: formatState,
+    });
+        function formatState (state) { 
+       
+       var $state = $( '<div><div style="width: 14%;display: inline-block;"><img src='+state.image+' width=35px" height="35px" style="vertical-align:inherit"></div><div style="width: 80%;display: inline-block;"><div>'+state.text+'</div><div>'+state.email+'</div></div></div>');
+        return $state;
     }
 </script>
 @stop

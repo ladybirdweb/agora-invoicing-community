@@ -19,7 +19,6 @@ use App\User;
 use Bugsnag;
 use Cart;
 use Illuminate\Http\Request;
-use Log;
 
 class CheckoutController extends InfoController
 {
@@ -86,7 +85,7 @@ class CheckoutController extends InfoController
 
             \Session::put('session-url', $url[0]);
             $domain = $request->input('domain');
-            if (count($domain) > 0) {
+            if ($domain) {
                 foreach ($domain as $key => $value) {
                     \Session::put('domain'.$key, $value);
                 }
@@ -123,16 +122,16 @@ class CheckoutController extends InfoController
 
         try {
             $domain = $request->input('domain');
-            if (count($domain) > 0) {
+
+            if ($domain) {
                 foreach ($domain as $key => $value) {
                     \Session::put('domain'.$key, $value);
                 }
             }
-            //$content = Cart::getContent();
+
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -141,32 +140,36 @@ class CheckoutController extends InfoController
 
     public function getAttributes($content)
     {
-        $attributes = [];
-        foreach ($content as $key => $item) {
-            $attributes[] = $item->attributes;
-            $cart_currency = $attributes[0]['currency'][0]['code'];
-            $user_currency = \Auth::user()->currency;
-            $currency = 'INR';
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-            if ($cart_currency != $currency) {
-                $id = $item->id;
-                Cart::remove($id);
-                $controller = new CartController();
-                $items = $controller->addProduct($id);
-                Cart::add($items);
-                //
-            }
+        try {
+            $attributes = [];
+            foreach ($content as $key => $item) {
+                $attributes[] = $item->attributes;
+                $cart_currency = $attributes[0]['currency'][0]['code'];
+                $user_currency = \Auth::user()->currency;
+                $currency = 'INR';
+                if ($user_currency == 1 || $user_currency == 'USD') {
+                    $currency = 'USD';
+                }
+                if ($cart_currency != $currency) {
+                    $id = $item->id;
+                    Cart::remove($id);
+                    $controller = new CartController();
+                    $items = $controller->addProduct($id);
+                    Cart::add($items);
+                    //
+                }
 
-            $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-            $require = [];
-            if ($require_domain == 1) {
-                $require[$key] = $item->id;
-            }
+                $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+                $require = [];
+                if ($require_domain == 1) {
+                    $require[$key] = $item->id;
+                }
 
-            return $attributes;
-            //$attributes[] = $item->attributes;
+                return $attributes;
+                //$attributes[] = $item->attributes;
+            }
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -185,6 +188,7 @@ class CheckoutController extends InfoController
 
             return view('themes.default1.front.paynow', compact('invoice', 'items', 'product'));
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -259,8 +263,7 @@ class CheckoutController extends InfoController
                 return redirect()->back()->with('success', $url);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -295,8 +298,7 @@ class CheckoutController extends InfoController
 
             return 'success';
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -313,8 +315,7 @@ class CheckoutController extends InfoController
 
             return $product;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -333,8 +334,7 @@ class CheckoutController extends InfoController
                 $this->AddProductToOrder($id);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order');
@@ -366,8 +366,7 @@ class CheckoutController extends InfoController
 
             $this->AddSubscription($or->id, $planid);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Order for Product');
@@ -390,8 +389,7 @@ class CheckoutController extends InfoController
             $this->subscription->create(['user_id' => \Auth::user()->id,
              'plan_id'                             => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, ]);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');
@@ -412,8 +410,7 @@ class CheckoutController extends InfoController
                 $this->CreateInvoiceItems($invoice->id, $cart);
             }
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -432,7 +429,6 @@ class CheckoutController extends InfoController
             $tax_percentage = '';
 
             foreach ($cart->attributes['tax'] as $tax) {
-                //dd($tax['name']);
                 $tax_name .= $tax['name'].',';
                 $tax_percentage .= $tax['rate'].',';
             }
@@ -444,8 +440,7 @@ class CheckoutController extends InfoController
                 'quantity'                                          => $quantity, 'tax_name' => $tax_name,
                  'tax_percentage'                                   => $tax_percentage, 'subtotal' => $subtotal, ]);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not create Invoice Items');

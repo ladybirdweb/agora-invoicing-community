@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Dashboard
+@endsection
 @section('content')
 <style>
 .scrollit {
@@ -6,15 +9,16 @@
     height:300px;
 }
 </style>
+ {!! Form::open(['url'=>'my-profile,"status=$status' ,'method'=>'get']) !!}
    <div class="row">
-        <div class="col-lg-4 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-aqua">
             <div class="inner">
               <h4>Total Sales</h4>
               <?php
               $rupeeSum = number_format($totalSalesINR,2);
-              $dollarSum = number_format($totalSalesUSD);
+              $dollarSum = number_format($totalSalesUSD,2);
               ?>
               <span>INR: &nbsp;  ₹ {{$rupeeSum}}</span><br/>
                <span>USD: &nbsp;  $ {{$dollarSum}} </span>
@@ -23,10 +27,11 @@
             <div class="icon">
               <i class="ion ion-bag"></i>
             </div>
+             <a href="{{url('invoices?status=success')}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
             </div>
         </div>
         <!-- ./col -->
-        <div class="col-lg-4 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
@@ -34,6 +39,8 @@
                 <?php
               $rupeeYearlySum = number_format($yearlySalesINR,2);
               $dollarYearlySum = number_format($yearlySalesUSD,2);
+              $startingDateOfYear = (date('Y-01-01'));
+              
               ?>
               <span>INR:&nbsp;  ₹ {{$rupeeYearlySum}}   </span><br/>
                <span>USD:&nbsp; $ {{$dollarYearlySum}} </span>
@@ -41,28 +48,53 @@
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
             </div>
+             <a href="{{url('invoices?status=success&from='.$startingDateOfYear)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
         <!-- ./col -->
-   <div class="col-lg-4 col-xs-6">
+        <div class="col-lg-3 col-xs-6">
           <!-- small box -->
-          <div class="small-box bg-red">
+          <div class="small-box bg-yellow">
             <div class="inner">
             	<h4>Monthly Sales</h4>
                <?php
               $rupeeMonthlySum = number_format($monthlySalesINR,2);
               $dollarMonthlySum = number_format($monthlySalesUSD,2);
-              ?>
-              <span>INR:&nbsp;  ₹  {{$rupeeMonthlySum}}</span><br/>
+              $startMonthDate = date('Y-m-01');
+              $endMonthDate = date('Y-m-t');
+               ?>
+              <span>INR:&nbsp; ₹ {{$rupeeMonthlySum}}</span><br/>
               <span>USD:&nbsp; $ {{$dollarMonthlySum}}</span>
+             
             </div>
             <div class="icon">
               <i class="ion ion-pie-graph"></i>
             </div>
+            <a href="{{url('invoices?status=success&from='.$startMonthDate. '&till='.$endMonthDate)}}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+             </div>
+        </div>
+
+         <div class="col-lg-3 col-xs-6">
+          <!-- small box -->
+          <div class="small-box bg-red">
+            <div class="inner">
+              <h4>Pending Payments</h4>
+                <?php
+              $rupeePendingSum = number_format($pendingPaymentINR,2);
+              $dollarPendingSum = number_format($pendingPaymentUSD,2);
+              ?>
+              <span>INR: &nbsp;  ₹ {{$rupeePendingSum}}</span><br/>
+               <span>USD: &nbsp;  $ {{$dollarPendingSum}} </span>
+            </div>
+            <div class="icon">
+             <i class="ion ion-ios-cart-outline"></i>
+            </div>
+             <a href="{{url('invoices?status=pending')}}" class="small-box-footer">More info 
+              <i class="fa fa-arrow-circle-right"></i></a>
              </div>
         </div>
 </div>
-
+ {!! Form::close() !!}
 
 
 
@@ -112,9 +144,11 @@
                 </div>
 
                 <!-- /.box-body -->
-                <div class="box-footer text-center">
-                  <a href="{{url('clients')}}" class="uppercase">View All Users</a>
-                </div>
+                 <div class="box-footer clearfix">
+              <a href="{{url('clients')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Users</a>
+              <a href="{{url('clients/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New User</a>
+            </div>
+              
                 <!-- /.box-footer -->
               </div>
               <!--/.box -->
@@ -128,11 +162,11 @@
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                 </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                
               </div>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
+           <div class="box-body">
               <div class="scrollit">
               <ul class="products-list product-list-in-box">
                    @foreach($arraylists as $key => $value)
@@ -152,9 +186,7 @@
                     <img src="{{$imgLink}}" alt="Product Image">
                   </div>
                   <div class="product-info">
-
-                    <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp; x  {{$value}}</strong>
-
+                 <a href="#" class="product-title">{{$key}}<strong> &nbsp; &nbsp;  <td><span class="label label-success">{{$value}}</span></td></strong>
                     </a>
                        <span class="product-description">
                        	<strong> Last Purchase: </strong>
@@ -172,9 +204,11 @@
             </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer text-center">
-              <a href="{{url('products')}}" class="uppercase">View All Products</a>
+            <div class="box-footer clearfix">
+              <a href="{{url('products')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Products</a>
+              <a href="{{url('products/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New Product</a>
             </div>
+            
             <!-- /.box-footer -->
           </div>
              </div>
@@ -183,7 +217,7 @@
 
          <div class="row">
          	<div class="col-md-6">
-         	  <div class="box box-info">
+         	  <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Recent Paid Orders (Last 30 Days)</h3>
 
@@ -220,9 +254,11 @@
                        <td><a href="{{url('orders/'.$order->id)}}">{{$order->number}}</a></td>
                     <td>{{$productName}}</td>
                     <td>{{$date}}</td>
+                    @if($clientName)
                     <td>
                       <a href="{{url('clients/'.$order->client)}}" class="sparkbar" data-color="#00a65a" data-height="20">{{$clientName->first_name}}{{$clientName->last_name}}</a>
                     </td>
+                    @endif
                     <!-- <td><span class="label label-success">{{$order->price_override}}</span></td> -->
                     
                   </tr>
@@ -236,16 +272,19 @@
               <!-- /.table-responsive -->
             </div>
             <!-- /.box-body -->
-              <div class="box-footer text-center">
-              <a href="{{url('invoice/generate')}}" class="uppercase">Place New Order</a>
+            <div class="box-footer clearfix">
+           
+              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+               <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>
+              
            
             <!-- /.box-footer -->
             </div>
           </div>
 
          	<div class="col-md-6">
-         	  <div class="box box-info">
+         	   <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Orders Expiring Soon</h3>
 
@@ -308,9 +347,12 @@
               </div>
               <!-- /.table-responsive -->
             </div>
-             <div class="box-footer text-center">
-               <a href="{{url('orders')}}" class="uppercase">View All Orders</a>
+             <div class="box-footer clearfix">
+           
+              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+               <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>
+              
             <!-- /.box-body -->
 
             <!-- /.box-footer -->
@@ -320,7 +362,7 @@
 
          <div class= row>
           <div class="col-md-6">
-            <div class="box box-info">
+            <div class="box box-primary">
             <div class="box-header with-border">
               <h3 class="box-title">Recent Invoices(Past 30 Days)</h3>
 
@@ -394,8 +436,8 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">
-              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Invoice</a>
-              <a href="{{url('invoices')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Invoice</a>
+              <a href="{{url('invoices')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Invoice</a>
+              <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-default btn-flat pull-right">Generate New Invoice</a>
             </div>
             <!-- /.box-footer -->
           </div>
@@ -445,8 +487,9 @@
             </div>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer text-center">
-              <a href="{{url('products')}}" class="uppercase">View All Products</a>
+            <div class="box-footer clearfix">
+              <a href="{{url('products')}}" class="btn btn-sm btn-info btn-flat pull-left">View All Products</a>
+              <a href="{{url('products/create')}}" class="btn btn-sm btn-default btn-flat pull-right">Create New Product</a>
             </div>
             <!-- /.box-footer -->
           </div>

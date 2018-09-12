@@ -100,8 +100,8 @@ class OrderController extends BaseOrderController
         $domain = $request->input('domain');
         $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
 
-        return\ DataTables::of($query->get())
-
+        return \DataTables::of($query->take(100))
+                        ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".
                             $model->id.' name=select[] id=check>';
@@ -109,7 +109,7 @@ class OrderController extends BaseOrderController
                         ->addColumn('date', function ($model) {
                             $date = $model->created_at;
 
-                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m A');
+                            return "<span style='display:none'>$model->id</span>".$date;
                         })
                         ->addColumn('client', function ($model) {
                             $user = $this->user->where('id', $model->client)->first();
@@ -141,6 +141,34 @@ class OrderController extends BaseOrderController
 
                             return $url;
                         })
+
+                         ->filterColumn('created_at', function ($query, $keyword) {
+                             $sql = 'created_at like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+
+                          ->filterColumn('client', function ($query, $keyword) {
+                              $sql = 'client like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+
+                           ->filterColumn('number', function ($query, $keyword) {
+                               $sql = 'number like ?';
+                               $query->whereRaw($sql, ["%{$keyword}%"]);
+                           })
+                            ->filterColumn('price_override', function ($query, $keyword) {
+                                $sql = 'price_override like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
+                             ->filterColumn('order_status', function ($query, $keyword) {
+                                 $sql = 'order_status like ?';
+                                 $query->whereRaw($sql, ["%{$keyword}%"]);
+                             })
+
+                              ->filterColumn('ends_at', function ($query, $keyword) {
+                                  $sql = 'ends_at like ?';
+                                  $query->whereRaw($sql, ["%{$keyword}%"]);
+                              })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
                           'price_override', 'order_status', 'ends_at', 'action', ])
@@ -189,7 +217,7 @@ class OrderController extends BaseOrderController
             return view('themes.default1.order.show',
                 compact('invoiceItems', 'invoice', 'user', 'order', 'subscription'));
         } catch (\Exception $ex) {
-            Bugsnag::notifyExeption($ex);
+            Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }

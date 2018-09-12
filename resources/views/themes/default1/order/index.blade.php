@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Orders
+@stop
 @section('content')
 @section('content-header')
 <h1>
@@ -36,7 +39,7 @@ View All Orders
                 {!! Form::label('product_id','Product') !!}
                <!--  {!! Form::select('product_id',[''=>'Select','Products'=>$products],null,['class' => 'form-control','id'=>'product_id']) !!} -->
                    <select name="product_id"  class="form-control" id ="product_id">
-                             <option value="Choose">Choose</option>
+                             <option value="">Choose</option>
                            @foreach($products as $key=>$product)
                              <option value={{$key}}>{{$product}}</option>
                           @endforeach
@@ -46,19 +49,19 @@ View All Orders
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary', 'placeholder'=>'YYYY-mm-dd']) !!}
+                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'from','placeholder'=>'YYYY-mm-dd']) !!}
+                {!! Form::text('from',null,['class' => 'form-control','id'=>'payment_date']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'till','placeholder'=>'YYYY-mm-dd']) !!}
+                {!! Form::text('till',null,['class' => 'form-control','id'=>'payment_till']) !!}
 
             </div>
             <div class="col-md-2 form-group">
@@ -71,8 +74,7 @@ View All Orders
           
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
-                    <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
-                     &nbsp;&nbsp;
+                      <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
                     <!-- {!! Form::submit('Reset',['class'=>'btn btn-danger','id'=>'reset']) !!} -->
                      <button name="Reset" type="submit" id="reset" class="btn btn-danger" data-loading-text="<i class='fa fa-refresh fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('Reset')!!}</button>
 
@@ -88,8 +90,8 @@ View All Orders
                         $('#order_no').val('');
                         $('#product_id').val('');
                         $('#expary').val('');
-                        $('#from').val('');
-                        $('#till').val('');
+                        $('#payment_date').val('');
+                        $('#payment_till').val('');
                         $('#domain').val('');
                     
                           
@@ -171,7 +173,7 @@ View All Orders
         $('#order-table').DataTable({
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
             order: [[ 0, "desc" ]],
              ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain" ) !!}',
             "oLanguage": {
@@ -247,5 +249,24 @@ View All Orders
         }  
 
      });
+</script>
+@stop
+@section('datepicker')
+<script type="text/javascript">
+$(function () {
+    $('#payment_date').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+$(function () {
+    $('#payment_till').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
+$(function () {
+    $('#expary').datetimepicker({
+        format: 'YYYY-MM-DD'
+    });
+});
 </script>
 @stop

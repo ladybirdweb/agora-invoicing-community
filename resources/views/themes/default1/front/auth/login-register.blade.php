@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Login | Register | Faveo Helpdesk
+Login | Register
 @stop
 @section('page-header')
 Login | Register
@@ -248,7 +248,8 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                                         <div class="form-group col-lg-6 {{ $errors->has('bussiness') ? 'has-error' : '' }}">
                                                             <label class="required">Industry</label>
-                                                            {!! Form::select('bussiness',[''=>'Select','Industries'=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                            {!! Form::select('bussiness',[Lang::get('message.choose')=>$bussinesses],null,['class'=>'form-control input-lg', 'id'=>'business']) !!}
+                                                    
                                                             <h6 id="bussinesscheck"></h6>
                                                         </div>
                                                         
@@ -266,7 +267,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                     <div class="col-md-6 form-group {{ $errors->has('role') ? 'has-error' : '' }}">
                                                         <!-- email -->
                                                         {!! Form::label('company_type','Company Type',['class'=>'required']) !!}
-                                                        {!! Form::select('company_type',[''=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
+                                                        {!! Form::select('company_type',[Lang::get('message.choose')=>'Select','Company Types'=>$type],null,['class' => 'form-control input-lg', 'id'=>'company_type']) !!}
                                                      <h6 id="company_typecheck"></h6>
                                                     </div>
                                                     
@@ -284,7 +285,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                       <div class="form-group col {{ $errors->has('country') ? 'has-error' : '' }}">
                                                                 {!! Form::label('country',Lang::get('message.country'),['class'=>'required']) !!}
                                                                 <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
-                                                                {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],$country,['class' => 'form-control input-lg','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
+                                                                {!! Form::select('country',[Lang::get('message.choose')=>$countries],$country,['class' => 'form-control input-lg selectpicker','onChange'=>'getCountryAttr(this.value);','id'=>'country']) !!}
                                                             <h6 id="countrycheck"></h6>
 
                                                             </div>
@@ -1178,7 +1179,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
     var mobile_val = $('#mobilenum').val();
     if(mobile_val.length == ''){
         $('#mobile_codecheck').show();
-        $('#mobile_codecheck').html("Please Select One Country ");
+        $('#mobile_codecheck').html("Please Enter Mobile No. ");
         $('#mobile_codecheck').focus();
         $('#mobilenum').css("border-color","red");
         $('#mobile_codecheck').css({"color":"red","margin-top":"5px"});

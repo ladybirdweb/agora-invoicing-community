@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Products
+@stop
 @section('content-header')
 <h1>
 All Products
@@ -15,6 +18,7 @@ All Products
     <div class="box-header">
         @if (count($errors) > 0)
         <div class="alert alert-danger alert-dismissable">
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             <strong>Whoops!</strong> There were some problems with your input.<br><br>
             <ul>
                 @foreach ($errors->all() as $error)
@@ -26,6 +30,8 @@ All Products
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+            <i class="fa fa-check"></i>
+             <b>{{Lang::get('message.success')}}!</b>
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -51,7 +57,7 @@ All Products
             <div class="col-md-12">
                
                  <table id="products-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
-                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp; Delete Selected</button><br /><br />
+                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash"></i>&nbsp;&nbsp;{{Lang::get('message.delmultiple')}}</button><br /><br />
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>

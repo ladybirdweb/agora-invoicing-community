@@ -92,11 +92,21 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $this->cartController = $cartController;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            //dd($this->invoice->get());
-            return view('themes.default1.invoice.index');
+            $currencies = Currency::where('status', 1)->pluck('code')->toArray();
+            $name = $request->input('name');
+            $invoice_no = $request->input('invoice_no');
+            $status = $request->input('status');
+
+            $currency_id = $request->input('currency_id');
+            $from = $request->input('from');
+            $till = $request->input('till');
+
+            return view('themes.default1.invoice.index', compact('name','invoice_no','status','currencies','currency_id','from',
+
+                'till'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -104,16 +114,23 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function getInvoices()
+    public function getInvoices(Request $request)
     {
-        $invoice = \DB::table('invoices');
-        // $new_invoice = $invoice->select('id', 'user_id', 'number', 'date', 'grand_total', 'status', 'created_at');
+        $name = $request->input('name');
+        $invoice_no = $request->input('invoice_no');
+        $status = $request->input('status');
+        $currency = $request->input('currency_id');
+        $from = $request->input('from');
+        $till = $request->input('till');
+        $query = $this->advanceSearch($name, $invoice_no, $currency, $status, $from, $till);
 
-        return \DataTables::of($invoice->get())
-                        ->addColumn('checkbox', function ($model) {
-                            return "<input type='checkbox' class='invoice_checkbox' 
+        return \DataTables::of($query->take(100))
+         ->setTotalRecords($query->count())
+
+         ->addColumn('checkbox', function ($model) {
+             return "<input type='checkbox' class='invoice_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                        })
+         })
                         ->addColumn('user_id', function ($model) {
                             $first = $this->user->where('id', $model->user_id)->first()->first_name;
                             $last = $this->user->where('id', $model->user_id)->first()->last_name;
@@ -126,9 +143,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                          })
 
                         ->addColumn('date', function ($model) {
-                            $date = date_create($model->created_at);
+                            $date = ($model->created_at);
 
-                            return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
+                            return $date;
+                            // return "<span style='display:none'>$model->id</span>".$date->format('l, F j, Y H:m');
                         })
                          ->addColumn('grand_total', function ($model) {
                              return ucfirst($model->number);
@@ -153,9 +171,93 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                             style='color:white;'> </i>&nbsp;&nbsp;View</a>"
                                     ."   $action";
                         })
+                         ->filterColumn('user_id', function ($query, $keyword) {
+                             $sql = 'first_name like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+
+                          ->filterColumn('status', function ($query, $keyword) {
+                              $sql = 'status like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
+
+                        ->filterColumn('number', function ($query, $keyword) {
+                            $sql = 'number like ?';
+                            $query->whereRaw($sql, ["%{$keyword}%"]);
+                        })
+                         ->filterColumn('grand_total', function ($query, $keyword) {
+                             $sql = 'grand_total like ?';
+                             $query->whereRaw($sql, ["%{$keyword}%"]);
+                         })
+                          ->filterColumn('date', function ($query, $keyword) {
+                              $sql = 'date like ?';
+                              $query->whereRaw($sql, ["%{$keyword}%"]);
+                          })
 
                          ->rawColumns(['checkbox', 'user_id', 'number', 'date', 'grand_total', 'status', 'action'])
                         ->make(true);
+    }
+
+    public function advanceSearch($name = '', $invoice_no = '', $currency = '', $status = '', $from = '', $till = '')
+    {
+        $join = Invoice::leftJoin('users', 'invoices.user_id', '=', 'users.id');
+        if ($name) {
+            $join = $join->where('first_name', $name);
+        }
+        if ($invoice_no) {
+            $join = $join->where('number', $invoice_no);
+        }
+
+        if ($status) {
+            $join = $join->where('status', $status);
+        }
+
+        if ($currency) {
+            $join = $join->where('invoices.currency', $currency);
+        }
+        if ($from) {
+            $fromdate = date_create($from);
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
+            $tillDate = $this->getTillDate($from, $till, $tills);
+            $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+        }
+
+        if ($till) {
+            $tilldate = date_create($till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = Invoice::first()->created_at;
+            $fromDate = $this->getFromDate($from, $froms);
+            $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
+        }
+
+        $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
+
+        $join = $join->orderBy('created_at', 'desc')
+         ->select('invoices.id','first_name','invoices.created_at',
+            'invoices.currency', 'user_id', 'number', 'status');
+
+        return $join;
+    }
+
+    public function getTillDate($from, $till, $tills)
+    {
+        if ($till) {
+            $todate = date_create($till);
+            $tills = date_format($todate, 'Y-m-d H:m:i');
+        }
+
+        return $tills;
+    }
+
+    public function getFromDate($from, $froms)
+    {
+        if ($from) {
+            $fromdate = date_create($from);
+            $froms = date_format($fromdate, 'Y-m-d H:m:i');
+        }
+
+        return $froms;
     }
 
     public function show(Request $request)
@@ -185,8 +287,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     {
         try {
             $clientid = $request->input('clientid');
+            $user = new User();
             if ($clientid) {
-                $user = new User();
                 $user = $user->where('id', $clientid)->first();
                 if (!$user) {
                     return redirect()->back()->with('fails', 'Invalid user');
@@ -222,6 +324,50 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $invoices = $this->invoice->where('number', $number)->update(['grand_total'=>$total]);
     }
 
+    /*
+    *Edit payment Total.
+    */
+    public function paymentTotalChange(Request $request)
+    {
+        try {
+            $invoice = new Invoice();
+            $total = $request->input('total');
+            if ($total == '') {
+                $total = 0;
+            }
+            $paymentid = $request->input('id');
+            $creditAmtUserId = $this->payment->where('id', $paymentid)->value('user_id');
+            $creditAmt = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '=', 0)->value('amt_to_credit');
+            $invoices = $invoice->where('user_id', $creditAmtUserId)->orderBy('created_at', 'desc')->get();
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $invoiceSum = $cltCont->getTotalInvoice($invoices);
+            if ($total > $invoiceSum) {
+                $diff = $total - $invoiceSum;
+                $creditAmt = $creditAmt + $diff;
+                $total = $invoiceSum;
+            }
+            $payment = $this->payment->where('id', $paymentid)->update(['amount'=>$total]);
+
+            $creditAmtInvoiceId = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '!=', 0)->first();
+            $invoiceId = $creditAmtInvoiceId->invoice_id;
+            $invoice = $invoice->where('id', $invoiceId)->first();
+            $grand_total = $invoice->grand_total;
+            $diffSum = $grand_total - $total;
+
+            $finalAmt = $creditAmt + $diffSum;
+            $updatedAmt = $this->payment->where('user_id', $creditAmtUserId)
+        ->where('invoice_id', '=', 0)->update(['amt_to_credit'=>$creditAmt]);
+        } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->info($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
@@ -251,7 +397,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function generateInvoice()
     {
         try {
-            // dd(\Cart::getContent());
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
@@ -261,13 +406,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $grand_total = \Cart::getSubTotal();
             } else {
                 foreach (\Cart::getContent() as $cart) {
-
-                    // $grand_total = $cart->price;
                     $grand_total = \Cart::getSubTotal();
                 }
             }
-            // dd($grand_total);
-
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
 
@@ -361,7 +502,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $this->setDomain($productid, $domain);
             }
             $controller = new \App\Http\Controllers\Front\CartController();
-            $currency = $controller->currency($user_id);
+            $userCurrency = $controller->currency($user_id);
+            $currency = $userCurrency['currency'];
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
             $product = Product::find($productid);
@@ -435,10 +577,12 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $discount = '';
             $mode = '';
             $product = $this->product->findOrFail($productid);
-            $price_model = $this->price->where('product_id', $product->id)->where('currency', $currency)->first();
-            $price = $this->getPrice($price, $price_model);
-            $subtotal = $qty * $price;
-            //dd($subtotal);
+            $plan = Plan::where('product', $productid)->first();
+            $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
+
+            // $price = $this->getPrice($price, $price_model);
+
+            $subtotal = $qty * intval($price);
             if ($code) {
                 $subtotal = $this->checkCode($code, $productid, $currency);
                 $mode = 'coupon';
@@ -581,7 +725,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         $user_state = $this->tax_by_state::where('state_code', $geoip_state)->first();
         $origin_state = $this->setting->first()->state; //Get the State of origin
         $cartController = new CartController();
-
         $rate = 0;
         $name1 = 'CGST';
         $name2 = 'SGST';
@@ -854,6 +997,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
     public function findCost($type, $value, $price, $productid)
     {
+        $price = intval($price);
         switch ($type) {
                 case 1:
                     $percentage = $price * ($value / 100);

@@ -11,16 +11,16 @@
 
 namespace Symfony\Component\Console\Command;
 
-use Symfony\Component\Console\Exception\ExceptionInterface;
-use Symfony\Component\Console\Input\InputDefinition;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Exception\ExceptionInterface;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Console\Helper\HelperSet;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Base class for all commands.
@@ -55,7 +55,7 @@ class Command
      */
     public static function getDefaultName()
     {
-        $class = get_called_class();
+        $class = \get_called_class();
         $r = new \ReflectionProperty($class, 'defaultName');
 
         return $class === $r->class ? static::$defaultName : null;
@@ -66,7 +66,7 @@ class Command
      *
      * @throws LogicException When the command name is empty
      */
-    public function __construct($name = null)
+    public function __construct(string $name = null)
     {
         $this->definition = new InputDefinition();
 
@@ -217,15 +217,15 @@ class Command
         $this->initialize($input, $output);
 
         if (null !== $this->processTitle) {
-            if (function_exists('cli_set_process_title')) {
+            if (\function_exists('cli_set_process_title')) {
                 if (!@cli_set_process_title($this->processTitle)) {
                     if ('Darwin' === PHP_OS) {
-                        $output->writeln('<comment>Running "cli_get_process_title" as an unprivileged user is not supported on MacOS.</comment>');
+                        $output->writeln('<comment>Running "cli_set_process_title" as an unprivileged user is not supported on MacOS.</comment>', OutputInterface::VERBOSITY_VERY_VERBOSE);
                     } else {
                         cli_set_process_title($this->processTitle);
                     }
                 }
-            } elseif (function_exists('setproctitle')) {
+            } elseif (\function_exists('setproctitle')) {
                 setproctitle($this->processTitle);
             } elseif (OutputInterface::VERBOSITY_VERY_VERBOSE === $output->getVerbosity()) {
                 $output->writeln('<comment>Install the proctitle PECL to be able to change the process title.</comment>');
@@ -246,7 +246,7 @@ class Command
         $input->validate();
 
         if ($this->code) {
-            $statusCode = call_user_func($this->code, $input, $output);
+            $statusCode = \call_user_func($this->code, $input, $output);
         } else {
             $statusCode = $this->execute($input, $output);
         }
@@ -273,15 +273,7 @@ class Command
         if ($code instanceof \Closure) {
             $r = new \ReflectionFunction($code);
             if (null === $r->getClosureThis()) {
-                if (\PHP_VERSION_ID < 70000) {
-                    // Bug in PHP5: https://bugs.php.net/bug.php?id=64761
-                    // This means that we cannot bind static closures and therefore we must
-                    // ignore any errors here.  There is no way to test if the closure is
-                    // bindable.
-                    $code = @\Closure::bind($code, $this);
-                } else {
-                    $code = \Closure::bind($code, $this);
-                }
+                $code = \Closure::bind($code, $this);
             }
         }
 
@@ -550,7 +542,7 @@ class Command
      */
     public function setAliases($aliases)
     {
-        if (!is_array($aliases) && !$aliases instanceof \Traversable) {
+        if (!\is_array($aliases) && !$aliases instanceof \Traversable) {
             throw new InvalidArgumentException('$aliases must be an array or an instance of \Traversable');
         }
 
@@ -643,11 +635,9 @@ class Command
      *
      * It must be non-empty and parts can optionally be separated by ":".
      *
-     * @param string $name
-     *
      * @throws InvalidArgumentException When the name is invalid
      */
-    private function validateName($name)
+    private function validateName(string $name)
     {
         if (!preg_match('/^[^\:]++(\:[^\:]++)*$/', $name)) {
             throw new InvalidArgumentException(sprintf('Command name "%s" is invalid.', $name));

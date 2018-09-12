@@ -13,10 +13,11 @@ Configure Mail
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
                 <div class="alert alert-danger alert-dismissable">
+                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -28,6 +29,8 @@ Configure Mail
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -47,10 +50,10 @@ Configure Mail
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/email','method'=>'patch','files'=>true]) !!}
 
-                <table class="table table-condensed">
+                  <div class="col-md-12">
                     <tr>
-                        <td><h3 class="box-title">{{Lang::get('message.smtp')}}</h3></td>
-                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></td>
+                        <h3 style="margin-top:0px;" class="box-title">{{Lang::get('message.smtp')}}</h3>
+                       <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
                     <tr>
 
@@ -115,7 +118,7 @@ Configure Mail
                             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">
 
                                 {!! Form::text('email',null,['class' => 'form-control']) !!}
-                                <p><i> {{Lang::get('message.enter-email')}}</i> </p>
+                                <p><i> {{Lang::get('message.enter-email')}} ({{Lang::get('message.enter-email-message')}})</i> </p>
 
                             </div>
                         </td>
@@ -136,8 +139,8 @@ Configure Mail
                     </tr>
 
                     
-
-                </table>
+          </div>
+                
             </div>
         </div>
     </div>

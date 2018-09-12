@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Users
+@stop
 @section('content')
 @section('content-header')
 <h1>
@@ -11,13 +14,29 @@ All Users
 @stop
 
 <style>
-/*    .selectpicker {
+ /*   .selectpicker {
     text-align: left;
     background-color: white !important;
     margin: 11px;
 }*/
+    .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -10px !important;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+}
 .bootstrap-select>.dropdown-toggle {
     background-color: white;
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
 }
 </style>
 
@@ -57,13 +76,18 @@ All Users
 
             </div>
              <?php
-$countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
-?>
+            $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarray();
+            ?>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('country','Country') !!}
-                {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!}
-               
+                <!-- {!! Form::select('country',['Choose',''=>$countries],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-size'=>'10','id'=>'country']) !!} -->
+                 <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                             <option value="" style="color:black;">Choose</option>
+                           @foreach($countries as $key=>$coun)
+                              <option value={{$key}}>{{$coun}}</option>
+                          @endforeach
+                          </select>
 
                 
 
@@ -86,9 +110,18 @@ $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarr
                 <!-- first name -->
                 {!! Form::label('industry','Industries') !!}
 
-<?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',]; ?>
-                {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control selectpicker','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!}
+<?php $old = ['agriculture_forestry'=>'Agriculture Forestry','safety_security_legal'=>'Safety Security Legal','business_information'=>'Business Information','finance_insurance'=>'Finance Insurance','gaming'=>'Gaming','real_estate_housing'=>'Real Estate Housing','health_services'=>'Health Services','education'=>'Education','food_hospitality'=>'Food Hospitality','personal_services'=>'Personal Services','transportation'=>'Transportation','construction_utilities_contracting'=>'Construction Utilities Contracting','motor_vehicle'=>'Motor Vehicle','animals_pets'=>'Animals & Pets','art_design'=>'Art & Design','auto_transport'=>'Auto & Transport','food_beverage'=>'Food & Beverage','beauty_fashion'=>'Beauty & Fashion','education_childcare'=>'Education & Childcare','environment_green_tech'=>'Environment & Green Tech','events_weddings'=>'Events & Weddings','finance_legal_consulting'=>'Finance, Legal & Consulting','government_municipal'=>'Government & Municipal','home_garden'=>'Home & Garden','internet_technology'=>'Internet & Technology','local_service_providers'=>'Local Service Providers','manufacturing_wholesale'=>'Manufacturing & Wholesale','marketing_advertising'=>'Marketing & Advertising','media_communication'=>'Media & Communication','medical_dental'=>'Medical & Dental','music_bands'=>'Music & Bands','non_profit_charity'=>'Non-Profit & Charity','real_estate'=>'Real Estate','religion'=>'Religion','retail_e-Commerce'=>'Retail & E-Commerce','sports_recreation'=>'Sports & Recreation','travel_hospitality'=>'Travel & Hospitality','other'=>'Other',]; 
+ $bussinesses =DB::table('bussinesses')->pluck('name','short')->toarray();
+?>
+                <!-- {!! Form::select('industry',['Choose',''=>DB::table('bussinesses')->pluck('name','short')->toarray(),'old'=>$old],null,['class' => 'form-control','data-live-search'=>'true','data-live-search-placeholder'=>'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'industry']) !!} -->
 
+                 <select name="industry"  class="form-control selectpicker" data-live-search="true",data-live-search-placeholder="Search data-dropup-auto="false" data-size="10" id="industry">
+                             <option value="">Choose</option>
+                           @foreach($bussinesses as $key=>$bussines)
+                             <option value={{$key}}>{{$bussines}}</option>
+                          @endforeach
+                          </select>
+             
             </div>
 
              <div class="col-md-2 form-group">
@@ -228,7 +261,7 @@ $countries=DB::table('countries')->pluck('nicename','country_code_char2')->toarr
    
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
             order: [[ 0, "desc" ]],
             ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position" ) !!}',
              

@@ -30,6 +30,7 @@ class ProfileRequest extends Request
                     'first_name'             => 'required',
                     'last_name'              => 'required',
                     'company'                => 'required',
+                    'email'                  => 'required',
                     'mobile'                 => 'required|numeric',
                     'mobile_code'            => 'required|numeric',
                     'address'                => 'required',
@@ -48,13 +49,13 @@ class ProfileRequest extends Request
                      'first_name'            => 'required|min:3|max:20',
                     'last_name'              => 'required|max:20',
                      'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
+                     'email'                 => 'required',
                     'mobile_code'            => 'required|numeric',
-
-                    'zip'                   => 'required|numeric',
-
-                    'address'               => 'required|max:300',
-                    'country'               => 'required|exists:countries,country_code_char2',
-                    // 'profile_pic'           => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
+                    'mobile'                 => 'required',
+                    'zip'                    => 'required|numeric',
+                    'address'                => 'required|max:300',
+                    'country'                => 'required|exists:countries,country_code_char2',
+                    'profile_pic'            => 'sometimes|mimes:jpeg,jpg,png,gif|max:100000',
 
         ];
         }

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Edit Plan
+@stop
 @section('content-header')
 <h1>
 Edit Plan
@@ -13,19 +16,9 @@ Edit Plan
 <div class="box box-primary">
 
     <div class="content-header">
-        {!! Form::model($plan,['url'=>'plans/'.$plan->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.plan')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
-
-    </div>
-
-    <div class="box-body">
-
-        <div class="row">
-
-            <div class="col-md-12">
-
-                @if (count($errors) > 0)
+            @if (count($errors) > 0)
                 <div class="alert alert-danger">
+                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong>Whoops!</strong> There were some problems with your input.<br><br>
                     <ul>
                         @foreach ($errors->all() as $error)
@@ -37,8 +30,8 @@ Edit Plan
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
-                    <i class="fa fa-ban"></i>
-                    <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.success')}}.
+                    <i class="fa fa-check"></i>
+                    <b>{{Lang::get('message.success')}}!</b>
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -52,6 +45,17 @@ Edit Plan
                     {{Session::get('fails')}}
                 </div>
                 @endif
+         {!! Form::model($plan,['url'=>'plans/'.$plan->id,'method'=>'patch']) !!}
+        <h4>{{Lang::get('message.plan')}}	<button type="submit" class="btn btn-primary pull-right"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button></h4>
+
+    </div>
+    <div class="box-body">
+
+        <div class="row">
+
+            <div class="col-md-12">
+
+            
 
                 
                 <div class="row">
@@ -64,28 +68,43 @@ Edit Plan
                      <div class="col-md-4 form-group {{ $errors->has('product') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('product',Lang::get('message.product'),['class'=>'required']) !!}
-                        {!! Form::select('product',[''=>'Select','Products'=>$products],null,['class' => 'form-control']) !!}
+                         <select name="product" id="planproduct" class="form-control" onchange="myProduct()">
+                          <option value="">Choose</option>
+                             
+                            @foreach($products as $key=>$product)
+                            <option value="{{$key}}"  <?php  if(in_array($product, $selectedProduct) ) { echo "selected";} ?>>{{$product}}</option>
+                           
+                             @endforeach
+                        </select>
+
+
 
                     </div>
-
-                   <div class="col-md-4 form-group {{ $errors->has('days') ? 'has-error' : '' }}">
+                   <div class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
-                        {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control']) !!}
+                      <select name="days" id="plan" class="form-control" onchange="myFunction()">
+                          <option value="">Choose</option>
+                             
+                            @foreach($periods as $key=>$period)
+                                   <option value="{{$key}}" <?php  if(in_array($period, $selectedPeriods) ) { echo "selected";} ?>>{{$period}}</option>
+                           
+                             @endforeach
+                        </select>
 
                     </div>
 
                     <div class="col-md-12">
                         <table class="table table-responsive">
                             <tr>
-                                <td><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></td>
+                                
                                 <td>
 
                                     <table class="table table-responsive">
                                         <tr>
-                                            <th></th>
-                                            <th>Add/Month</th>
-                                            <th>Renew/Month</th>
+                                            <th><b>{!! Form::label('currency',Lang::get('message.currency')) !!}</b></th>
+                                            <th>{{Lang::get('message.regular-price')}}</th>
+                                            <th>{{Lang::get('message.renew-price')}}</th>
 
                                         </tr>
 
@@ -100,7 +119,7 @@ Edit Plan
 
                                             <td>
                                                 @if(key_exists($key,$add_price))
-                                                {!! Form::text("add_price[$key]",$add_price[$key],['class' => 'form-control']) !!}
+                                                {!! Form::text("add_price[$key]",$add_price[$key],['class' => 'form-control periodChange']) !!}
                                                  @else
                                                  {!! Form::text("add_price[$key]",null,['class' => 'form-control']) !!}
                                                  @endif
@@ -110,9 +129,9 @@ Edit Plan
 
                                             <td>
                                                 @if(key_exists($key,$renew_price))
-                                                {!! Form::text("renew_price[$key]",$renew_price[$key],['class' => 'form-control']) !!}
+                                                {!! Form::text("renew_price[$key]",$renew_price[$key],['class' => 'form-control periodChange']) !!}
                                                  @else
-                                                 {!! Form::text("renew_price[$key]",null,['class' => 'form-control']) !!}
+                                                 {!! Form::text("renew_price[$key]",null,['class' => 'form-control periodChange']) !!}
                                                  @endif
 
                                             </td>
@@ -128,12 +147,7 @@ Edit Plan
                         </table>
                     </div>
                     
-                    <div class="col-md-6 form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('allow_tax','Allow Tax') !!}
-                        {!! Form::checkbox('allow_tax',1) !!}
-
-                    </div>
+                  
 
 
                 </div>
@@ -152,4 +166,79 @@ Edit Plan
 
 
 {!! Form::close() !!}
+
+<script>
+   function myFunction(){
+    var period = document.getElementById('plan').value;
+   if (period == 365){
+
+     period = '/One-Time' ; 
+   }
+    else if (period >= 30 && period < 365){
+    period = '/Month' ;
+   }
+  else if (period > 365){
+    period= '/Year';
+  }
+  else{
+    period= '';
+  }
+    $('.periodChange').val(period);
+  
+  }
+</script>
+<script>
+    $( document ).ready(function() {
+
+         var product = document.getElementById('planproduct').value;
+         // console.log(product)
+         $.ajax({
+            type: 'get',
+            url : "{{url('get-period')}}",
+            data: {'product_id':product},
+           success: function (data){
+            console.log(data.subscription);
+
+            if(data.subscription != 1 ){
+              $('.plandays').hide();
+            }
+            else{
+               $('.plandays').show();
+            }
+
+            var sub = data['subscription'];
+           
+           }
+         });
+ // console.log(product)
+
+ });
+
+
+
+    function myProduct(){
+         var product = document.getElementById('planproduct').value;
+         // console.log(product)
+         $.ajax({
+            type: 'get',
+            url : "{{url('get-period')}}",
+            data: {'product_id':product},
+           success: function (data){
+            console.log(data.subscription);
+
+            if(data.subscription != 1 ){
+              $('.plandays').hide();
+            }
+            else{
+               $('.plandays').show();
+            }
+
+            var sub = data['subscription'];
+           
+           }
+         });
+ // console.log(product)
+}
+</script>
+
 @stop

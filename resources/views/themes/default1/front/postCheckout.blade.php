@@ -12,7 +12,7 @@ Checkout
 @section('main-class') "main shop" @stop
 @section('content')
 <?php
-
+ 
     use Razorpay\Api\Api;
      $merchant_orderid= generateMerchantRandomString();  
   
@@ -44,7 +44,7 @@ $exchangeRate= '';
 
 $orderData = [
     'receipt'         => 3456,
-    'amount'          => $invoice->grand_total*100, // 2000 rupees in paise
+    'amount'          => round($invoice->grand_total*100), // 2000 rupees in paise
 
     'currency'        => 'INR',
     'payment_capture' => 0 // auto capture
@@ -129,12 +129,8 @@ if ($displayCurrency !== 'INR')
 $json = json_encode($data);
 
 
-if(\Auth::user()->currency == 'INR'){
-    $symbol = '₹';
-}
-else{
-    $symbol = '$';
-}
+ $symbol = \Auth::user()->currency_symbol;
+
 
 
 
@@ -342,6 +338,7 @@ else{
                         <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
+
                 @if ($attributes != null)
                  @foreach($attributes[0]['tax'] as $attribute)
                   
@@ -459,7 +456,7 @@ else{
                 @if ($attributes == null)
                  
                 @foreach ($items as $item)
-                
+                 @if($item['tax_name']!='null,' )
                <tr class="Taxes">
                   <th>
                         <strong>{{$item['tax_name']}}<span>@</span>{{$item['tax_percentage']}}</strong><br/>
@@ -474,6 +471,7 @@ else{
                     </td>
                   
                   </tr>
+                  @endif
                   @endforeach
                 @endif
 

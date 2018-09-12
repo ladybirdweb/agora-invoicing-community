@@ -60,7 +60,7 @@ class CouponTest extends DBTestCase
             'uses'                            => '100',
             'value'                           => '100',
             'start'                           => '2018-06-30 00:00:00',
-            'expiry'                          => '2018-07-30 00:00:00',
+            'expiry'                          => '2019-07-30 00:00:00',
         ]);
 
         $promotion = PromoProductRelation::create(['promotion_id'=> $promotion->id,

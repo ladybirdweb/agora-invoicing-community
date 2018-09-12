@@ -1,6 +1,6 @@
 @extends('themes.default1.layouts.front.master')
 @section('title')
-Checkout | Faveo Helpdesk
+Checkout
 @stop
 @section('page-header')
 Checkout
@@ -17,7 +17,6 @@ Checkout
 @if (!\Cart::isEmpty())
 
 <?php
-
 if ($attributes[0]['currency'][0]['symbol'] == '') {
     $symbol = $attributes[0]['currency'][0]['code'];
 } else {
@@ -187,7 +186,7 @@ $sum = 0;
                 <div class="form-group">
                     <div class="col-md-6 col-md-offset-4">
                         <button type="submit" class="btn btn-primary">
-                            Proceed
+                            Proceed <i class="fa fa-forward"></i>
                         </button>
                     </div>
                 </div>
@@ -221,7 +220,7 @@ $sum = 0;
                                             @endif
                     </td>
                 </tr>
-              
+               
                 @foreach($item->attributes['tax'] as $attribute)
                   
                     @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))

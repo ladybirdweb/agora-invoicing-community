@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Common;
 use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
+use App\Model\Payment\Currency;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
@@ -81,8 +82,15 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $set = $settings->find(1);
+            $state = \App\Http\Controllers\Front\CartController::getStateByCode($set->state);
+            $selectedCountry = \DB::table('countries')->where('country_code_char2', $set->country)
+            ->pluck('nicename', 'country_code_char2')->toArray();
+            $selectedCurrency = \DB::table('currencies')->where('code', $set->default_currency)
+            ->pluck('name', 'symbol')->toArray();
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system', compact('set'));
+            return view('themes.default1.common.setting.system',
+                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -90,15 +98,43 @@ class SettingsController extends BaseSettingsController
 
     public function postSettingsSystem(Setting $settings, Request $request)
     {
+        $this->validate($request, [
+                'company'         => 'required',
+                'company_email'   => 'required',
+                'website'         => 'required',
+                'phone'           => 'required',
+                'address'         => 'required',
+                'country'         => 'required',
+                'default_currency'=> 'required',
+                'admin-logo'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                'fav-icon'        => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                'logo'            => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+            ]);
+
         try {
             $setting = $settings->find(1);
+
             if ($request->hasFile('logo')) {
                 $name = $request->file('logo')->getClientOriginalName();
                 $destinationPath = public_path('cart/img/logo');
                 $request->file('logo')->move($destinationPath, $name);
                 $setting->logo = $name;
             }
-            $setting->fill($request->except('password', 'logo'))->save();
+            if ($request->hasFile('admin-logo')) {
+                $logoName = $request->file('admin-logo')->getClientOriginalName();
+                $destinationPath = public_path('images/admin-logo');
+                $request->file('admin-logo')->move($destinationPath, $logoName);
+                $setting->admin_logo = $logoName;
+            }
+            if ($request->hasFile('fav-icon')) {
+                $iconName = $request->file('fav-icon')->getClientOriginalName();
+                $destinationPath = public_path('images/favicon');
+                $request->file('fav-icon')->move($destinationPath, $iconName);
+                $setting->fav_icon = $iconName;
+            }
+            $setting->default_symbol = Currency::where('code', $request->input('default_currency'))
+            ->pluck('symbol')->first();
+            $setting->fill($request->except('password', 'logo', 'admin-logo', 'fav-icon'))->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -197,9 +233,10 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $activity_log = Activity::select('id', 'log_name', 'description',
-                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->get();
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 
-            return\ DataTables::of($activity_log)
+            return \DataTables::of($activity_log->take(50))
+             ->setTotalRecords($activity_log->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
              })
@@ -241,6 +278,21 @@ class SettingsController extends BaseSettingsController
 
                                     return $newDate;
                                 })
+
+                                    ->filterColumn('log_name', function ($query, $keyword) {
+                                        $sql = 'log_name like ?';
+                                        $query->whereRaw($sql, ["%{$keyword}%"]);
+                                    })
+
+                                ->filterColumn('description', function ($query, $keyword) {
+                                    $sql = 'description like ?';
+                                    $query->whereRaw($sql, ["%{$keyword}%"]);
+                                })
+
+                            ->filterColumn('causer_id', function ($query, $keyword) {
+                                $sql = 'first_name like ?';
+                                $query->whereRaw($sql, ["%{$keyword}%"]);
+                            })
 
                             ->rawColumns(['checkbox', 'name', 'description',
                                 'username', 'role', 'new', 'old', 'created_at', ])

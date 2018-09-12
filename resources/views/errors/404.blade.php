@@ -13,7 +13,7 @@
 @section('content')
 <section class="page-not-found">
     <div class="row">
-        <div style="text-align:center;">
+        <div style="text-align:right;">
             <div>
                 <h1 style="font-size: 6.6em;">404 <i class="fa fa-file"></i></h1>
                 <p>We're sorry, but the page you were looking for doesn't exist.</p>

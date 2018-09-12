@@ -111,6 +111,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     public function calculateTotal($rate, $total)
     {
         try {
+            $total = intval($total);
             $rates = explode(',', $rate);
             $rule = new TaxOption();
             $rule = $rule->findOrFail(1);
@@ -125,6 +126,8 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
 
             return intval(round($total));
         } catch (\Exception $ex) {
+            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
+            app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -148,10 +151,10 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         try {
             $response = false;
             $invoice = Invoice::find($invoiceid);
-            // dd($invoice);
+
             $order = Order::where('invoice_id', $invoiceid);
-            // dd($order);
             $order_invoice_relation = $invoice->orderRelation()->first();
+
             if ($order_invoice_relation) {
                 $response = true;
             } elseif ($order->get()->count() > 0) {
@@ -261,6 +264,36 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
+    public function paymentEditById($id)
+    {
+        try {
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $amountReceived = $cltCont->getAmountPaid($id);
+            $payment = Payment::find($id);
+            $clientid = $payment->user_id;
+            $invoice = new Invoice();
+            $order = new Order();
+            $invoices = $invoice->where('user_id', $clientid)->where('status', '=', 'pending')
+            ->orderBy('created_at', 'desc')->get();
+            $cltCont = new \App\Http\Controllers\User\ClientController();
+            $invoiceSum = $cltCont->getTotalInvoice($invoices);
+            $amountReceived = $cltCont->getExtraAmt($clientid);
+            $pendingAmount = $invoiceSum - $amountReceived;
+            $client = $this->user->where('id', $clientid)->first();
+            $currency = $client->currency;
+            $symbol = Currency::where('code', $currency)->pluck('symbol')->first();
+            $orders = $order->where('client', $clientid)->get();
+
+            return view('themes.default1.invoice.editPayment',
+                compact('amountReceived','clientid', 'client', 'invoices',  'orders',
+                  'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'symbol'));
+        } catch (\Exception $e) {
+            Bugsnag::notifyException($e);
+
+            return redirect()->back()->with('fails', $e->getMessage());
+        }
+    }
+
     public function deleleById($id)
     {
         try {
@@ -271,7 +304,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
                 return redirect()->back()->with('fails', 'Can not delete');
             }
 
-            return redirect()->back()->with('success', "Invoice $invoice->number has Deleted Successfully");
+            return redirect()->back()->with('success', "Invoice $invoice->number has been Deleted Successfully");
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

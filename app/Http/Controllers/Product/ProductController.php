@@ -209,7 +209,7 @@ namespace App\Http\Controllers\Product;
                 $cartUrl = $url.'/pricing?id='.$i;
                 $type = $this->type->pluck('name', 'id')->toArray();
                 $subscription = $this->plan->pluck('name', 'id')->toArray();
-                $currency = $this->currency->pluck('name', 'code')->toArray();
+                $currency = $this->currency->where('status', 1)->pluck('name', 'code')->toArray();
                 $group = $this->group->pluck('name', 'id')->toArray();
                 $products = $this->product->pluck('name', 'id')->toArray();
                 $periods = $this->period->pluck('name', 'days')->toArray();
@@ -233,12 +233,12 @@ namespace App\Http\Controllers\Product;
         public function store(Request $request)
         {
             $input = $request->all();
-            // dd($input);
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
                         'type'       => 'required',
                         'group'      => 'required',
                         'description'=> 'required',
+                        'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         // 'version' => 'required',
             ]);
@@ -309,6 +309,8 @@ namespace App\Http\Controllers\Product;
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
+                $selectedCategory = \App\Model\Product\ProductCategory::
+                where('category_name', $product->category)->pluck('category_name')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 // dd($taxes);
                 $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
@@ -317,7 +319,7 @@ namespace App\Http\Controllers\Product;
                 return view('themes.default1.product.product.edit',
                     compact('product', 'periods', 'type', 'subscription',
                         'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes'));
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -336,10 +338,11 @@ namespace App\Http\Controllers\Product;
         {
             $input = $request->all();
             $v = \Validator::make($input, [
-                        'name'    => 'required',
-                        'type'    => 'required',
-                        'group'   => 'required',
-                        'image'   => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'name'       => 'required',
+                        'type'       => 'required',
+                        'group'      => 'required',
+                        'description'=> 'required',
+                        'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
       ]);
 
             if ($v->fails()) {
@@ -375,7 +378,6 @@ namespace App\Http\Controllers\Product;
 
                 return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
             } catch (\Exception $e) {
-                dd($e);
                 Bugsnag::notifyException($e);
 
                 return redirect()->back()->with('fails', $e->getMessage());

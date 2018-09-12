@@ -1,7 +1,21 @@
 @extends('log-viewer::_template.master')
-
+@section('title')
+Log-Viewer
+@stop
+@section('content-header')
+<h1>
+ <h1 class="page-header">Log [{{ $log->date }}]</h1>
+</h1>
+<ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('log-viewer')}}">Dashboard</a></li>
+        <li class="active">View Logs</li>
+      </ol>
+      @stop
 @section('content')
-    <h1 class="page-header">Log [{{ $log->date }}]</h1>
+<div class="box box-primary">
+   <div class="box-body">
 
     <div class="row">
         <div class="col-md-2">
@@ -152,6 +166,8 @@
             </div>
         </div>
     </div>
+</div>
+</div>
 @endsection
 
 @section('modals')

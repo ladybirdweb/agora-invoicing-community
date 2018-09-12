@@ -1,188 +1,137 @@
 <?php
 
-namespace Illuminate\Foundation\Auth;
+namespace RachidLaasri\LaravelInstaller\Helpers;
 
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
 
-trait SendsPasswordResetEmails {
+class EnvironmentManager
+{
+    /**
+     * @var string
+     */
+    private $envPath;
 
     /**
-     * Display the form to request a password reset link.
-     *
-     * @return \Illuminate\Http\Response
+     * @var string
      */
-    public function showLinkRequestForm() {
-        return view('themes.default1.front.auth.password');
+    private $envExamplePath;
+
+    /**
+     * Set the .env and .env.example paths.
+     */
+    public function __construct()
+    {
+        $this->envPath = base_path('.env');
+        $this->envExamplePath = base_path('.env.example');
     }
 
-    public function getEmail() {
+    /**
+     * Get the content of the .env file.
+     *
+     * @return string
+     */
+    public function getEnvContent()
+    {
+        if (!file_exists($this->envPath)) {
+            if (file_exists($this->envExamplePath)) {
+                copy($this->envExamplePath, $this->envPath);
+            } else {
+                touch($this->envPath);
+            }
+        }
+
+        return file_get_contents($this->envPath);
+    }
+
+    /**
+     * Get the the .env file path.
+     *
+     * @return string
+     */
+    public function getEnvPath() {
+        return $this->envPath;
+    }
+
+    /**
+     * Get the the .env.example file path.
+     *
+     * @return string
+     */
+    public function getEnvExamplePath() {
+        return $this->envExamplePath;
+    }
+
+    /**
+     * Save the edited content to the .env file.
+     *
+     * @param Request $input
+     * @return string
+     */
+    public function saveFileClassic(Request $input)
+    {
+        $message = trans('installer_messages.environment.success');
+
         try {
-            return view('themes.default1.front.auth.password');
-        } catch (\Exception $ex) {
-            return redirect()->with('fails', $ex->getMessage());
+            file_put_contents($this->envPath, $input->get('envConfig'));
         }
+        catch(Exception $e) {
+            $message = trans('installer_messages.environment.errors');
+        }
+
+        return $message;
     }
 
     /**
-     * Display the password reset view for the given token.
-     *
-     * @param string $token
-     *
-     * @return Response
-     */
-    public function getReset($token = null) {
-        if (is_null($token)) {
-            throw new NotFoundHttpException();
-        }
-
-        return view('themes.default1.front.auth.reset')->with('token', $token);
-    }
-
-    /**
-     * Reset the given user's password.
+     * Save the form content to the .env file.
      *
      * @param Request $request
-     *
-     * @return Response
+     * @return string
      */
-    public function postReset(Request $request) {
-        //dd($request->input('token'));
-        $this->validate($request, [
-            'token' => 'required',
-            //'email' => 'required|email',
-            'password' => 'required|confirmed',
-        ]);
-        $token = $request->input('token');
-        $pass = $request->input('password');
-        $password = new \App\Model\User\Password();
-        $password = $password->where('token', $token)->first();
-        if ($password) {
-            $user = new \App\User();
-            $user = $user->where('email', $password->email)->first();
-            if ($user) {
-                $user->password = \Hash::make($pass);
-                $user->save();
+    public function saveFileWizard(Request $request)
+    {
+        $results = trans('installer_messages.environment.success');
 
-                return redirect('auth/login')->with('success', 'You have successfully changed your password');
-            } else {
-                return redirect()->back()
-                                ->withInput($request->only('email'))
-                                ->withErrors([
-                                    'email' => 'Invalid email',]);
-            }
-        } else {
-            return redirect()->back()
-                            ->withInput($request->only('email'))
-                            ->withErrors([
-                                'email' => 'Invalid email',]);
+        $envFileData =
+        'APP_NAME=' . $request->app_name . "\n" .
+        'APP_ENV=' . $request->environment . "\n" .
+        'APP_KEY=' . 'base64:bODi8VtmENqnjklBmNJzQcTTSC8jNjBysfnjQN59btE=' . "\n" .
+        'APP_DEBUG=' . $request->app_debug . "\n" .
+        'APP_LOG_LEVEL=' . $request->app_log_level . "\n" .
+        'APP_URL=' . $request->app_url . "\n\n" .
+        'DB_CONNECTION=' . $request->database_connection . "\n" .
+        'DB_HOST=' . $request->database_hostname . "\n" .
+        'DB_PORT=' . $request->database_port . "\n" .
+        'DB_DATABASE=' . $request->database_name . "\n" .
+        'DB_USERNAME=' . $request->database_username . "\n" .
+
+        'DB_PASSWORD=' . $request->database_password . "\n\n" .
+        'DB_INSTALL='  ."0". "\n".
+        'BROADCAST_DRIVER=' . $request->broadcast_driver . "\n" .
+        'CACHE_DRIVER=' . $request->cache_driver . "\n" .
+        'SESSION_DRIVER=' . $request->session_driver . "\n" .
+        'QUEUE_DRIVER=' . $request->queue_driver . "\n\n" .
+        'REDIS_HOST=' . $request->redis_hostname . "\n" .
+        'REDIS_PASSWORD=' . $request->redis_password . "\n" .
+        'REDIS_PORT=' . $request->redis_port . "\n\n" .
+        'MAIL_DRIVER=' . $request->mail_driver . "\n" .
+        'MAIL_HOST=' . $request->mail_host . "\n" .
+        'MAIL_PORT=' . $request->mail_port . "\n" .
+        'MAIL_USERNAME=' . $request->mail_username . "\n" .
+        'MAIL_PASSWORD=' . $request->mail_password . "\n" .
+        'MAIL_ENCRYPTION=' . $request->mail_encryption . "\n\n" .
+        'PUSHER_APP_ID=' . $request->pusher_app_id . "\n" .
+        'PUSHER_APP_KEY=' . $request->pusher_app_key . "\n" .
+        'PUSHER_APP_SECRET=' . $request->pusher_app_secret;
+
+        try {
+            file_put_contents($this->envPath, $envFileData);
+
         }
-    }
-
-    /**
-     * Send a reset link to the given user.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sendResetLinkEmail(Request $request) {
-        try{
-        $this->validate($request, ['email' => 'required|email|exists:users,email']);
-        $email = $request->email;
-        $token = str_random(40);
-        $password = new \App\Model\User\Password();
-        if ($password->where('email', $email)->first()) {
-            $token = $password->where('email', $email)->first()->token;
-        } else {
-            $activate = $password->create(['email' => $email, 'token' => $token]);
-            $token = $activate->token;
+        catch(Exception $e) {
+            $results = trans('installer_messages.environment.errors');
         }
 
-        $url = url("password/reset/$token");
-
-        $user = new \App\User();
-        $user = $user->where('email', $email)->first();
-        if (!$user) {
-            return redirect()->back()->with('fails', 'Invalid Email');
-        }
-        //check in the settings
-        $settings = new \App\Model\Common\Setting();
-        $setting = $settings->where('id', 1)->first();
-        //template
-        $templates = new \App\Model\Common\Template();
-        $temp_id = $setting->forgot_password;
-            $template = $templates->where('id', $temp_id)->first();
-
-        $from = $setting->email;
-        
-        $to = $user->email;
-        $subject = $template->name;
-        $data = $template->data;
-        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'url' => $url];
-        $type = '';
-
-
-        if ($template) {
-            $type_id = $template->type;
-            $temp_type = new \App\Model\Common\TemplateType();
-            $type = $temp_type->where('id', $type_id)->first()->name;
-        }
-        $templateController = new \App\Http\Controllers\Common\TemplateController();
-        $mail = $templateController->mailing($from, $to, $data, $subject, $replace, $type);
-         $response = ['type' => 'success',   'message' =>'Reset instructions have been mailed to ' . $to .'
-        .Be sure to check your Junk folder if you do not see an email from us in your Inbox within a few minutes.'];
-
-            return response()->json($response);
-      }
-      catch (\Exception $ex) {
-            $result = [$ex->getMessage()];
-            $errors = ['You are not registered with this Email. Please enter correct Email Address !!'];
-            return response()->json(compact('result','errors'), 500);
-        }
-
+        return $results;
     }
-
-    /**
-     * Validate the email for the given request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    protected function validateEmail(Request $request) {
-        $this->validate($request, ['email' => 'required|email']);
-    }
-
-    /**
-     * Get the response for a successful password reset link.
-     *
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    protected function sendResetLinkResponse($response) {
-        return back()->with('status', trans($response));
-    }
-
-    /**
-     * Get the response for a failed password reset link.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  string  $response
-     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
-     */
-    protected function sendResetLinkFailedResponse(Request $request, $response) {
-        return back()->withErrors(
-                        ['email' => trans($response)]
-        );
-    }
-
-    /**
-     * Get the broker to be used during password reset.
-     *
-     * @return \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    public function broker() {
-        return Password::broker();
-    }
-
 }

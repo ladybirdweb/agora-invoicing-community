@@ -19,8 +19,8 @@
 
 namespace Doctrine\DBAL\Platforms;
 
-use Doctrine\Common\Proxy\Exception\UnexpectedValueException;
 use Doctrine\DBAL\Schema\Index;
+use UnexpectedValueException;
 
 /**
  * The SQLAnywhere16Platform provides the behavior, features and SQL dialect of the
@@ -55,6 +55,6 @@ class SQLAnywhere16Platform extends SQLAnywhere12Platform
      */
     protected function getReservedKeywordsClass()
     {
-        return 'Doctrine\DBAL\Platforms\Keywords\SQLAnywhere16Keywords';
+        return Keywords\SQLAnywhere16Keywords::class;
     }
 }

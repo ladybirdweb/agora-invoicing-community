@@ -28,6 +28,8 @@ class LogViewerController extends Controller
      *
      * @var \Arcanedev\LogViewer\Contracts\LogViewer
      */
+
+
     protected $logViewer;
 
     /** @var int */
@@ -48,6 +50,8 @@ class LogViewerController extends Controller
      */
     public function __construct(LogViewerContract $logViewer)
     {
+        $this->middleware('auth');
+        $this->middleware('admin');
         $this->logViewer = $logViewer;
         $this->perPage = config('log-viewer.per-page', $this->perPage);
     }

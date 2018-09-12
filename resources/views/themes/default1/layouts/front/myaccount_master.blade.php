@@ -15,7 +15,7 @@
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href="images/faveo1.png" type="image/x-icon" />
+         <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -39,6 +39,7 @@
           <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+
           
           <!-- Demo CSS -->
           <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
@@ -47,6 +48,7 @@
           <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
           <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
   
           <!-- Theme Custom CSS -->
@@ -86,15 +88,18 @@
                             </div>
                              <div class="header-column justify-content-end">
                                 <div class="header-row pt-3">
-                                    <nav class="header-nav-top">
+                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
+                                            @if($set->email != NULL)
                                               <li class="nav-item d-none d-sm-block">
-                                                  <a class="nav-link" href="mailto:support@faveohelpdesk.com"><i class="fas fa-envelope"></i> support@faveohelpdesk.com</a>
+                                                  <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>
-                                              
+                                              @endif
+                                              @if($set->phone != NULL)
                                               <li class="nav-item">
-                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i> +91 80 3075 2618</span>
+                                                  <span class="ws-nowrap"><i class="fas fa-phone"></i>{{$set->phone}}</span>
                                               </li>
+                                              @endif
                                           </ul>
                                       </nav>
                                     <!--                                    <nav class="header-nav-top">
@@ -225,8 +230,15 @@
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                        
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}}</strong></span></a>
+
+                                                                                  <?php
+                                                                                  $controller = new App\Http\Controllers\Front\CartController();
+
+                                                                                  $price = $controller->rounding($item->getPriceSumWithConditions());
+
+                                                                                  ?>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency['symbol']}}</small> {{$price}}</strong></span></a>
+
                                                                                 </td>
 
                                                                                 <td class="product-actions">
@@ -383,23 +395,27 @@
 
             </div>
 
-            <footer id="footer" style="margin-top:15px;">
+                     <footer id="footer" style="margin-top:20px;">
                 <div class="container">
                     <div class="row">
                         <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
                             <span>Get in Touch</span>
                         </div> -->
+                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->first(); ?>
+                           @if($widgets != null)
                         <div class="col-md-3">
-                            <div class="newsletter">
-                                <h4>Newsletter</h4>
-                                <p>Keep up on our always evolving product features and technology. Enter your e-mail and subscribe to our newsletter.</p>
+                           
+                          <div class="newsletter">
+                                <h4>{{ucfirst($widgets->name)}}</h4>
+                                <p> {!! $widgets->content !!}</p>
 
-                               <!--  <div class="alert alert-success d-none" id="newsletterSuccess">
+                                <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
 
-                                <div class="alert alert-danger d-none" id="newsletterError"></div> -->
-
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                <?php $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);?>
+                                @if($mailchimpKey != null)
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
                                     <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
@@ -408,39 +424,48 @@
                                     </span>
                                 </div>
                                 {!! Form::close() !!}
+                                @endif
                             </div>
                         </div>
+                        @endif
+                          <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->first(); ?>
+                           @if($widgets != null)
                         <div class="col-md-3">
-                            <h4>Latest Tweets</h4>
+                            <h4>{{ucfirst($widgets->name)}}</h4>
+                             <p> {!! $widgets->content !!}</p>
                             <div id="tweets" class="twitter" >
                             <p>Please wait...</p>
                             </div>
                         </div>
-                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer')->take(1)->get(); ?>
-                        @foreach($widgets as $widget)
+                        @endif
+                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->first(); ?>
+                       @if($widgets != null)
                         <div class="col-md-3">
                             <div class="contact-details">
-                                <h4>{{ucfirst($widget->name)}}</h4>
-                                {!! $widget->content !!}
+                                <h4>{{ucfirst($widgets->name)}}</h4>
+                                {!! $widgets->content !!}
                             </div>
                         </div>
-                        @endforeach
+                         @endif
+                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->first(); ?>
+                         
                         <div class="col-md-2">
-                            <h4>Follow Us</h4>
+                          @if($widgets != null)
+                            <h4>{{ucfirst($widgets->name)}}</h4>
+                             <p> {!! $widgets->content !!}</p>
                             <ul class="social-icons">
                                 @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
+                          @endif
                             <br>
                        
                         <a href="https://secure.comodo.com/ttb_searcher/trustlogo?v_querytype=W&v_shortname=CL1&v_search=https://www.billing.faveohelpdesk.com/&x=6&y=5"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/comodo_secure_seal_113x59_transp.png" /></a>
                         <br/> <br/>
                         <a href="https://monitor203.sucuri.net/m/verify/?r=ce48118f19b0feaecb9d46ac593fd041b2a8e31e15"><img class="img-responsive" alt="" title="" src="https://www.faveohelpdesk.com/wp-content/uploads/2017/07/index.gif" /></a>
-                        </div>
-
-                       
-                    </div>
+                  </div>
+                  
                 </div>
                 <div class="footer-copyright">
                     <div class="container">
@@ -461,9 +486,12 @@
 
         <!-- Vendor -->
          <!-- <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script> -->
+         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+
         <script src="{{asset('cart/vendor/jquery.appear/jquery.appear.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.easing/jquery.easing.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
+        <script src="{{asset('vendor/popper/umd/popper.min.js')}}"></script>
        <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
         <script src="{{asset('cart/vendor/common/common.min.js')}}"></script>
         <script src="{{asset('cart/vendor/jquery.validation/jquery.validation.min.js')}}"></script>

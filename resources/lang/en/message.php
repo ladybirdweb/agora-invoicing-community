@@ -17,6 +17,11 @@ return [
     /*
      * Common for all
      */
+    'dashboard'              => 'Dashboard',
+    'home'                   => 'Home',
+    'choose'                 => 'Choose',
+    'delmultiple'            => 'Delete Selected',
+    'delete'                 => 'Delete',
     'save'                   => 'Save',
     'city'                   => 'City',
     'state'                  => 'State',
@@ -35,7 +40,6 @@ return [
     'no'                     => 'No',
     'select-a-row'           => 'Select a row',
     'no-record'              => 'No records',
-    'delete'                 => 'Delete',
     'create'                 => 'Create',
     'name'                   => 'Name',
     'description'            => 'Description',
@@ -56,6 +60,7 @@ return [
     'first_name'       => 'First Name',
     'last_name'        => 'Last Name',
     'company'          => 'Company Name',
+    'app-title'        => 'Application Title',
     'mobile'           => 'Mobile',
     'address'          => 'Address',
     'town'             => 'Town/City',
@@ -97,13 +102,21 @@ return [
     /*
      * Settings
      */
+    'default-currency'                                             => 'System Default Currency',
+    'settings'                                                     => 'Settings',
+    'fav-title-admin'                                              => 'Meta Title(Admin Panel)',
+     'fav-title-client'                                            => 'Meta Title(Client Panel)',
+    'enter-the-favicon'                                            => 'Enter favicon for Admin and Client Panel',
+    'fav-icon'                                                     => 'Favicon',
     'settings'                                                     => 'Settings',
     'system-settings'                                              => 'System Settings',
-    'company'                                                      => 'Company',
+    'company-name'                                                 => 'Company Name',
+    'company-email'                                                => 'Company Email',
     'name'                                                         => 'Name',
     'website'                                                      => 'Website',
     'phone'                                                        => 'Phone',
-    'logo'                                                         => 'Logo',
+    'client-logo'                                                  => 'Client Panel Logo',
+    'admin-logo'                                                   => 'Admin Panel Logo',
     'address'                                                      => 'Address',
     'driver'                                                       => 'Driver',
     'port'                                                         => 'Port',
@@ -119,11 +132,13 @@ return [
     'enter-the-company-phone-number'                               => 'Enter the company phone number',
     'enter-company-address'                                        => 'Enter company address',
     'enter-the-company-logo'                                       => 'Enter the company logo',
+    'enter-the-admin-panel-logo'                                   => 'Enter Application logo',
     'select-email-driver'                                          => 'Select email driver',
     'enter-email-port'                                             => 'Enter email port',
-    'enter-email-host'                                             => 'Enter email port',
-    'select-email-encryption-method'                               => 'Select email encryption method',
+    'enter-email-host'                                             => 'Enter email host',
+    'select-email-encryption-method'                               => 'Enter email encryption method',
     'enter-email'                                                  => 'Enter email',
+    'enter-email-message'                                          => 'All mails from the system will be sent from this email address',
     'enter-email-password'                                         => 'Enter email password',
     'enable-error-logging'                                         => 'Enable error logging',
     'provide-error-reporting-email'                                => 'Provide error reporting email',
@@ -152,7 +167,7 @@ return [
     'total'             => 'Total',
     'due_balance'       => 'Due Balance',
     'action'            => 'Action',
-    'transation_detail' => 'Transation Detail',
+    'transation_detail' => 'Transaction Detail',
     'customer_detail'   => 'Customer Detail',
     'order_detail'      => 'Order Detail',
     'payment_detail'    => 'Payment Detail',
@@ -161,15 +176,23 @@ return [
     /*
      * Plan
      */
-    'plan'         => 'Plan',
-    'plans'        => 'Plans',
-    'subscription' => 'Subscription',
-    'expiry'       => 'Expiry',
-    'price'        => 'Price',
-    'updates'      => 'Updates',
+    'plan'                 => 'Plan',
+    'plans'                => 'Plans',
+    'subscription'         => 'Subscription',
+    'limited-subscription' => 'Limited Subscription',
+    'expiry'               => 'Expiry',
+    'price'                => 'Price',
+    'updates'              => 'Updates',
+    'regular-price'        => 'Regular Price',
+    'renew-price'          => 'Renewal Price',
     /*
      * Products
      */
+    'retired-download'                                                                                => 'Retire all Downloads',
+    'retired-description'                                                                             => 'If selected ,the user wont be able to download any version after the expiry date',
+    'limited-subscription-description'                                                                => 'If checked the product if purchased will have an expiry date, else, unlimited subscription',
+    'perpetual-description'                                                                           => 'If selected ,the user can download only the versions released before expiry date',
+    'add-file'                                                                                        => 'Add Files',
     'products'                                                                                        => 'Products',
     'product'                                                                                         => 'Product',
     'all-products'                                                                                    => 'All Products',
@@ -185,12 +208,13 @@ return [
     'stock_control'                                                                                   => 'Stock Control',
     'sort_order'                                                                                      => 'Sort Order',
     'apply_tax'                                                                                       => 'Apply Tax',
-    'retired'                                                                                         => 'Retired',
+    'retired'                                                                                         => 'Deny All Downloads after expiry',
+   'perpetual-download'                                                                               => 'Perpetual Download Till Expiry',
     'hidden'                                                                                          => 'Hidden',
     'enable-quantity-in-stock'                                                                        => 'Enable - Quantity in Stock:',
     'tick-this-box-to-charge-tax-for-this-product'                                                    => 'Tick this box to charge tax for this product',
     'tick-to-show-domain-registration-options'                                                        => 'Tick to show domain registration options',
-    'tick-to-hide-from-order-form'                                                                    => 'Tick to hide from order form',
+    'tick-to-hide-from-order-form'                                                                    => 'Check to hide from pricing page',
     'tick-to-hide-from-admin-area-product-dropdown-menus'                                             => 'Tick to hide from admin area product dropdown menus',
     'free'                                                                                            => 'Free',
     'one-time'                                                                                        => 'One Time',
@@ -264,6 +288,7 @@ return [
     'round-tax-at-subtotal'                           => ' Round tax at subtotal',
     'tax_class'                                       => 'Tax Class',
     'compound'                                        => 'Compound',
+    'create-tax-class'                                => 'Create Tax Class',
     /*
      * Promotion
      */
@@ -342,8 +367,16 @@ return [
     /*
      * Invoices
      */
-    'invoice'  => 'Invoice',
-    'invoices' => 'Invoices',
+    'create-invoice' => 'Create New Invoice',
+    'invoice'        => 'Invoice',
+    'invoices'       => 'Invoices',
+    'edit-invoice'   => 'Edit Invoice',
+    'balance'        => 'Balance',
+    'extra'          => 'Extra Amount Paid',
+    'invoice/payment'=> 'Invoice/Payment',
+    'invoice-total'  => 'Invoice Total',
+    'total-amt'      => 'Total Amount Paid',
+
     /*
      * Licence
      */
@@ -354,12 +387,16 @@ return [
      /*
      * Api Keys
      */
-     'rzp_key'        => 'Razorpay Key',
-     'rzp_secret'     => 'Razorpay Secret',
-     'apilayer'       => 'ApiLayer Access Key',
-     'zoho_key'       => 'Zoho Key',
-     'key'            => 'API Keys',
-     'msg91key'       => 'Msg91 Auth Key',
+     'rzp_key'                     => 'Razorpay Key',
+     'rzp_secret'                  => 'Razorpay Secret',
+     'apilayer'                    => 'ApiLayer Access Key',
+     'zoho_key'                    => 'Zoho Key',
+     'key'                         => 'API Keys',
+     'msg91key'                    => 'Msg91 Auth Key',
+     'twitter_consumer_key'        => 'Twitter Consumer Key',
+     'twitter_consumer_secret'     => 'Twitter Consumer Secret',
+     'twitter_access_token'        => 'Twitter Access Token',
+     'twitter_access_tooken_secret'=> 'Twitter Access Token Secret',
 
     /*
      * Slas
@@ -442,11 +479,56 @@ return [
     /*
      * Payments
      */
+    'pay'             => 'Payment',
+    'new-payment'     => 'New Payment',
+    'create-payment'  => 'Create New Payment',
     'invoice-status'  => 'Invoice Status',
     'payment-status'  => 'Payment Status',
     'send-mail'       => 'Send Mail',
     'plugins'         => 'Plugins',
     'date-of-payment' => 'Date of Payment',
     'amount'          => 'Amount',
+    'extra-amount'    => 'Extra Amount Paid',
+    'link'            => 'Link with Invoice',
+    'edit-payment'    => 'Edit Payment',
+    'link-extra'      => 'Link Extra Payment',
+
+    /*
+     * Category
+     */
+
+     'category'       => 'Categories',
+     'create-category'=> 'Create New Category',
+     'category-name'  => 'Category Name',
+     'edit-category'  => 'Edit Category',
+
+      /*
+     * Product types
+     */
+      'types'      => 'Types',
+      'create-type'=> 'Create New Product Type',
+      'type-name'  => 'Product Type',
+      'edit-type'  => 'Edit Product Type',
+
+      /*
+     * Chat Script
+     */
+      'chat-script'       => 'Chat Script',
+      'create-chat-script'=> 'Create Chat Script',
+      'script'            => 'Script',
+      'edit-chat-script'  => 'Edit Chat Script',
+
+      'currency_name'  => 'Currency Name',
+      'select_country' => 'Select Country',
+      'countryname'    => 'Countryname',
+      'choose'         => 'Choose',
+      'edit_currency'  => 'Edit currency',
+      'close'          => 'Close',
+      'update'         => 'Update',
+      'active'         => 'Active',
+      'inactive'       => 'Inactive',
+      'system-api'     => 'System Api Keys',
+      'domain-message' => 'Enter domain name in the form \'domain.com\'',
+      'domain-name'    => 'Domain Name',
 
 ];

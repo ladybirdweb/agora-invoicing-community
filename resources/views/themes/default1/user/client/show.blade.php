@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+User
+@stop
 @section('content-header')
 <h1>
 User Details
@@ -28,6 +31,8 @@ User Details
         </div>
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+             <i class="fa fa-check"></i>
+               <b>{{Lang::get('message.success')}}!</b> 
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -70,9 +75,10 @@ User Details
         <div class="padright">
              
             
-            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$currency }}{{$invoiceSum}}</h6> 
-            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$currency }} {{$amountReceived}}</h6> 
-            <h6 class="rupee colorred"><span class="font18">Balance </span><br>{{$currency }} {{$pendingAmount}}</h6> 
+            <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$client->currency_symbol }} {{$invoiceSum}}</h6> 
+            <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$client->currency_symbol }} {{$amountReceived}}</h6> 
+            <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$client->currency_symbol }} {{$pendingAmount}}</h6> 
+             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6> 
           
         </div>
      
@@ -92,14 +98,14 @@ User Details
             </a>
             <ul class="dropdown-menu">
                 <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.invoice')}}</a>
+                    <a role="menuitem" tabindex="-1" href="{{url('invoice/generate?clientid='.$client->id)}}">{{Lang::get('message.create-invoice')}}</a>
                 </li>
-<!--                <li role="presentation">
+               <!--  <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="{{url('order/execute?clientid='.$client->id)}}">{{Lang::get('message.order_execute')}}</a>
-                </li>
+                </li> -->
                 <li role="presentation">
-                    <a role="menuitem" tabindex="-1" href="{{url('payment/receive?clientid='.$client->id)}}">{{Lang::get('message.payment')}}</a>
-                </li>-->
+                    <a role="menuitem" tabindex="-1" href="{{url('newPayment/receive?clientid='.$client->id)}}">{{Lang::get('message.create-payment')}}</a>
+                </li>
 <!--                <li role="presentation">
                     <a role="menuitem" tabindex="-1" href="#">Estimate</a>
                 </li>
@@ -147,7 +153,7 @@ User Details
                     <div class="row">
 
                         <div class="col-md-12">
-                            <table id="example2" class="table table-bordered table-hover">
+                            <table id="example1" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>{{Lang::get('message.date')}}</th>
@@ -162,10 +168,7 @@ User Details
                                 <tbody>
                                     @forelse($invoices as $invoice) 
                                     <?php
-                                     if($invoice->currency == 'INR')
-                                        $currency = '₹';
-                                        else
-                                        $currency = '$'; 
+                                    
                                      $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                                      $c=count($payment);
                                        $sum= 0;
@@ -177,12 +180,18 @@ User Details
                                      ?>
                                     <tr>
                                         <td>
-                                            {{$invoice->date}}
+                                            <?php
+                                          $date1 = new DateTime($invoice->date);
+                                          $tz = $client->timezone()->first()->name;
+                                          $date1->setTimezone(new DateTimeZone($tz));
+                                          $date = $date1->format('M j, Y, g:i a ');
+                                            echo $date;
+                                            ?>
                                         </td>
                                         <td class="invoice-number">
                                             <a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">{{$invoice->number}}</a>
                                         </td>
-                                        <td contenteditable="true" class="invoice-total"> 
+                                        <td contenteditable="false" class="invoice-total"> 
                                            {{$invoice->grand_total}}
                                         </td>
                                         <td>{{$sum}}</td>
@@ -212,11 +221,12 @@ User Details
                                                     <li><a href=# class=null  data-toggle='modal' data-target="#editinvoice{{$invoice->id}}">Execute order</a></li>
                                                     @endif
                                                     
-                                                    @if($invoice->status!='success')
+                                                  <!--   @if($invoice->status!='success')
                                                     <li><a href="{{url('payment/receive?invoiceid='.$invoice->id)}}">{{Lang::get('message.payment')}}</a></li>
-                                                    @endif
-                                                   
+                                                    @endif -->
+                                                     <li><a href="{{url('invoices/edit/'.$invoice->id)}}">Edit {{Lang::get('message.invoice')}}</a></li>
                                                      <li><a href="{{url('invoices/show?invoiceid='.$invoice->id)}}">View {{Lang::get('message.invoice')}}</a></li>
+
                                                      <li><a href="{{url('invoices/'.$invoice->id.'/delete')}}">{{Lang::get('message.delete')}}</a></li>
                                                 </ul>
                                                 {!! $model_popup !!}
@@ -243,7 +253,7 @@ User Details
             <div class="tab-pane" id="timeline">
                 <div>
                     <div class="box-body">
-                        <table id="example4" class="table table-bordered table-hover">
+                        <table id="example2" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Invoice Number</th>
@@ -257,21 +267,37 @@ User Details
                                 </tr>
                             </thead>
                             <tbody>
+                                @if(count($invoices)>0)
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
-                                    <td>
+                                    <td class="invoice-no">
                                         @if($payment->invoice()->first())
                                         {{($payment->invoice()->first()->number)}}
                                         @endif
                                     </td>
-                                    <td>{{$payment->created_at}}</td>
+                                    <td>
+                                        {{$invoice->created_at}}
+                                                
+                                            </td>
                                     <td>
                                         {{ucfirst($payment->payment_method)}}
                                     </td>
-
-                                    <td>{{$payment->amount}}</td>
+                                     @if($payment->invoice_id == 0)
+                                     <td class="payment-total" data-count="{{$payment->id}}">{{$extraAmt}}</td>
+                                     @endif
+                                       @if($payment->invoice_id != 0)
+                                    <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
+                                     @endif
                                     <td>{{ucfirst($payment->payment_status)}}</td>
-                                    <td><a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash">&nbsp;{{Lang::get('message.delete')}}</i></a></td>
+                                    <td>
+                                        <input type="hidden" class="paymentid" value="{{$payment->id}}">
+                                        @if($payment->invoice_id == 0)
+                                          <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit"></i>
+                                          {{Lang::get('message.edit')}}</a>
+                                          @endif
+                                          <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick = "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
+                                  
+                                    </td>
                                 </tr>
                                 @empty 
                                 <tr>
@@ -280,6 +306,7 @@ User Details
                                     </td>
                                 </tr>
                                 @endforelse
+                                @endif
 
 
 
@@ -430,7 +457,7 @@ User Details
                 <div>
                     <div class="box box-widget widget-user">
                          <div class="box-body">
-                        <table id="example4" class="table table-bordered table-hover">
+                        <table id="example3" class="table table-bordered table-striped">
                             <thead>
                                 <tr>
                                     <th>Date</th>
@@ -456,8 +483,8 @@ User Details
                                     <td>{{$order->number}}</td>
                                     <td>{{$order->price_override}}</td>
                                     <td>{{$order->order_status}}</td>
-                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-eye">&nbsp;View</i></a>
-                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash">&nbsp;{{Lang::get('message.delete')}}</i></a></td>
+                                    <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>&nbsp;View</a>
+                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;{{Lang::get('message.delete')}}</a></td>
                                 </tr>
                                 @empty 
                                 <tr>
@@ -526,6 +553,14 @@ User Details
 
 
     });
+
+     
+</script>
+<script>
+     function myFunction() {
+      if(!confirm("Are You Sure to delete this Payment?"))
+      event.preventDefault();
+  }
 </script>
 <script>
 
@@ -547,7 +582,39 @@ User Details
 
         });
     });
+</script>
+<script>
+    $(".payment-total").blur(function (){
+        var id = $(this).attr("data-count");
+        var data = $(this).text().trim();
 
+        $.ajax({
+        type: "GET",
+                url: "{{route('change-paymentTotal')}}",
+                data: {'total':data,'id':id},
+                success: function () {
+                    alert('Payment Total Updated');
+                },
+                error: function () {
+                    alert('Invalid URL');
+                }
 
+        });
+    })
+</script>
+<script>
+  $(function () {
+     $('#example1').DataTable()
+      $('#example2').DataTable()
+       $('#example3').DataTable()
+    //    $('#example2').DataTable({
+    //   'paging'      : true,
+    //   'lengthChange': false,
+    //   'searching'   : false,
+    //   'ordering'    : true,
+    //   'info'        : true,
+    //   'autoWidth'   : false
+    // })
+  })
 </script>
 @stop

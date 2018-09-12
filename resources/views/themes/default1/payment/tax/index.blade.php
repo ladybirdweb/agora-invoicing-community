@@ -1,7 +1,10 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Tax
+@stop
 @section('content-header')
 <h1>
-Create Tax And Tax Classes
+Create Tax Options And Tax Classes
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -31,8 +34,9 @@ Create Tax And Tax Classes
   <!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css"> -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+  <!-- <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script> -->
   </head>
-    <div class="box box-primary">
+  
 
         <div class="box-header">
             @if (count($errors) > 0)
@@ -48,6 +52,8 @@ Create Tax And Tax Classes
 
             @if(Session::has('success'))
             <div class="alert alert-success alert-dismissable">
+               <i class="fa fa-check"></i>
+                <b>{{Lang::get('message.success')}}!</b> 
                 <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                 {{Session::get('success')}}
             </div>
@@ -74,7 +80,7 @@ Create Tax And Tax Classes
         </div>
 
       
-
+       <div class="box box-primary">
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
@@ -160,17 +166,20 @@ Create Tax And Tax Classes
 
                    
 
-
+              </div>
                 </div>
+              </div>
+            </div>
 
-
-
+             <div class="box box-primary">
+              <div class="box-body">
+               <h4>{{Lang::get('Tax Classes')}}</h4>
                 <div class="col-md-12">
                    <a href="#create-tax-option" class="btn btn-primary pull-right btn-sm" data-toggle="modal" data-target="#create-tax-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.create')}}</a>
                     <table id="tax-table" class="table display" cellspacing="0" width="100%" styleClass="borderless">
                     <button  value="" class="btn btn-danger btn-sm btn-alldell" id="bulk_delete"><i class="fa fa-trash">&nbsp;&nbsp;</i> Delete Selected</button><br /><br />
                         <thead><tr>
-                            <th><input type="checkbox" name="select_all" onchange="checking(this)"></th>
+                            <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                              <th>Tax Type</th>
                               <th>Name</th>
                                <th>Country</th>
@@ -184,7 +193,6 @@ Create Tax And Tax Classes
                 </div>
             </div>
 
-        </div>
 
     </div>
 

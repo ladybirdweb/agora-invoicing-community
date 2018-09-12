@@ -95,11 +95,11 @@ class ClientController extends BaseClientController
                                 $payment = '';
                                 if ($status == 'Pending' && $model->grand_total > 0) {
                                     $payment = '  <a href='.url('paynow/'.$model->id).
-                                    " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'>&nbsp;Pay Now</i></a>";
+                                    " class='btn btn-primary btn-xs'><i class='fa fa-credit-card'></i>&nbsp;Pay Now</a>";
                                 }
 
                                 return '<p><a href='.url('my-invoice/'.$model->id).
-                                " class='btn btn-primary btn-xs'>View</a>".$payment.'</p>';
+                                " class='btn btn-primary btn-xs'><i class='fa fa-eye'></i>&nbsp;View</a>".$payment.'</p>';
                             })
                             ->rawColumns(['number', 'created_at', 'total', 'Action'])
                             // ->orderColumns('number', 'created_at', 'total')
@@ -130,6 +130,21 @@ class ClientController extends BaseClientController
             $versions = ProductUpload::where('product_id', $productid)
             ->select('id', 'product_id', 'version',
              'title', 'description', 'file', 'created_at')->get();
+            $countVersions = count($versions);
+            $countExpiry = 0;
+            $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
+            $order = Order::where('invoice_id', '=', $invoice_id)->first();
+
+            $order_id = $order->id;
+            $endDate = Subscription::select('ends_at')
+                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
+
+            foreach ($versions as $version) {
+                if ($version->created_at->toDateTimeString()
+               < $endDate->ends_at->toDateTimeString()) {
+                    $countExpiry = $countExpiry + 1;
+                }
+            }
 
             return \DataTables::of($versions)
                             ->addColumn('id', function ($versions) {
@@ -144,24 +159,26 @@ class ClientController extends BaseClientController
                             ->addColumn('description', function ($versions) {
                                 return ucfirst($versions->description);
                             })
-                            ->addColumn('file', function ($versions) use ($clientid, $invoiceid, $productid) {
+                            ->addColumn('file', function ($versions) use ($countExpiry, $countVersions,$clientid, $invoiceid, $productid) {
                                 $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                                 $order_id = $order->id;
+                                $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
                                 $endDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
-                                if ($versions->created_at->toDateTimeString()
-                                    < $endDate->ends_at->toDateTimeString()) {
-                                    return '<p><a href='.url('download/'.$productid.'/'
-                                        .$clientid.'/'.$invoiceid.'/'.$versions->id).
-                                " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-                                </i>&nbsp;&nbsp;Download</a>".'&nbsp;
 
-                                   </p>';
-                                } else {
-                                    return '<button class="btn btn-primary 
-                                    btn-sm disabled tooltip">Download <span class="tooltiptext">
-                                    Please Renew!!</span></button>';
+                                //if product has expiry date ie sunscriptioon is generated
+                                if ($endDate) {
+                                    if ($getDownloadCondition == 1) {//Perpetual download till expiry selected
+                                        $getDownload = $this->whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid);
+
+                                        return $getDownload;
+                                    } elseif ($getDownloadCondition == 0) {//When download retires after subscription
+
+                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid);
+
+                                        return $getDownload;
+                                    }
                                 }
                             })
                             ->rawColumns(['version', 'title', 'description', 'file'])
@@ -169,6 +186,40 @@ class ClientController extends BaseClientController
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
+        }
+    }
+
+    public function whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($versions->created_at->toDateTimeString()
+
+        < $endDate->ends_at->toDateTimeString()) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-primary 
+        btn-sm disabled tooltip">Download <span class="tooltiptext">
+        Please Renew!!</span></button>';
+        }
+    }
+
+    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($countExpiry == $countVersions) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-primary 
+        btn-sm disabled tooltip">Download <span class="tooltiptext">
+        Please Renew!!</span></button>';
         }
     }
 
@@ -191,9 +242,20 @@ class ClientController extends BaseClientController
                 $repo = $product->github_repository;
             }
             $url = "https://api.github.com/repos/$owner/$repo/releases";
+            $countExpiry = 0;
             $link = $this->github_api->getCurl1($url);
             $link = $link['body'];
+            $countVersions = 10; //because we are taking oly the first 10 versions
             $link = (array_slice($link, 0, 10, true));
+            $order = Order::where('invoice_id', '=', $invoiceid)->first();
+            $order_id = $order->id;
+            $orderEndDate = Subscription::select('ends_at')
+                        ->where('product_id', $productid)->where('order_id', $order_id)->first();
+            foreach ($link as $lin) {
+                if (strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at)) {
+                    $countExpiry = $countExpiry + 1;
+                }
+            }
 
             return \DataTables::of($link)
                             ->addColumn('version', function ($link) {
@@ -207,13 +269,13 @@ class ClientController extends BaseClientController
 
                                 return $markdown;
                             })
-                            ->addColumn('file', function ($link) use ($invoiceid, $productid) {
+                            ->addColumn('file', function ($link) use ($countExpiry,$countVersions,$invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
                                 $orderEndDate = Subscription::select('ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
-                                    $actionButton = $this->getActionButton($link, $orderEndDate);
+                                    $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
 
                                     return $actionButton;
                                 } elseif (!$orderEndDate) {
@@ -284,7 +346,7 @@ class ClientController extends BaseClientController
 
                                 return '<a href='.url('my-order/'.$model->id)." 
                                 class='btn  btn-primary btn-xs' style='margin-right:5px;'>
-                                <i class='fa fa-eye' title='Details of order'>&nbsp;View</i> $listUrl $url </a>";
+                                <i class='fa fa-eye' title='Details of order'></i>&nbsp;View $listUrl $url </a>";
                             })
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             ->make(true);
@@ -310,8 +372,19 @@ class ClientController extends BaseClientController
         try {
             $user = $this->user->where('id', \Auth::user()->id)->first();
             //dd($user);
-            $timezones = new \App\Model\Common\Timezone();
-            $timezones = $timezones->pluck('name', 'id')->toArray();
+            $timezonesList = \App\Model\Common\Timezone::get();
+            foreach ($timezonesList as $timezone) {
+                $location = $timezone->location;
+                if ($location) {
+                    $start = strpos($location, '(');
+                    $end = strpos($location, ')', $start + 1);
+                    $length = $end - $start;
+                    $result = substr($location, $start + 1, $length - 1);
+                    $display[] = (['id'=>$timezone->id, 'name'=> '('.$result.')'.' '.$timezone->name]);
+                }
+            }
+            //for display
+            $timezones = array_column($display, 'name', 'id');
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($user->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();

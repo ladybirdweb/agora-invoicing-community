@@ -373,12 +373,12 @@
                     </div>
                 </div>
                 <div class="block">
-                    <input type="radio" name="appSettingsTabs" id="appSettingsTab3" value="null"/>
-                    <label for="appSettingsTab3">
+                    <input type="radio" name="appSettingsTabs" id="" value="null"/>
+                   <!--  <label for="appSettingsTab3">
                         <span>
                             {{ trans('installer_messages.environment.wizard.form.app_tabs.mail_label') }}
                         </span>
-                    </label>
+                    </label> -->
                     <div class="info">
                         <div class="form-group {{ $errors->has('mail_driver') ? ' has-error ' : '' }}">
                             <label for="mail_driver">

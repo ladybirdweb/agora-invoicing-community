@@ -6,13 +6,13 @@ $_SERVER['argv'][1] = '--configuration';
 $_SERVER['argv'][2] = __DIR__ . '/../_files/phpunit-example-extension';
 
 require __DIR__ . '/../bootstrap.php';
-PHPUnit_TextUI_Command::main();
+PHPUnit\TextUI\Command::main();
 --EXPECTF--
 PHPUnit %s by Sebastian Bergmann and contributors.
 
 Runtime:       %s
-Configuration: %s/phpunit-example-extension/phpunit.xml
-Extension:     %s/phpunit-example-extension/tools/phpunit.d/phpunit-example-extension-1.0.0.phar
+Configuration: %s%ephpunit-example-extension%ephpunit.xml
+Extension:     phpunit/phpunit-example-extension 3.0.3
 
 .                                                                   1 / 1 (100%)
 

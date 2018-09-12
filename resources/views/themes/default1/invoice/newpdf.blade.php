@@ -66,6 +66,8 @@
                         <div class="col-sm-4 invoice-col">
                             <b>Invoice #{{$invoice->number}}</b><br>
                             <br>
+                             <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
+                             <b>GSTIN   #{{$gst->Gst_No}}</b><br/>
 
                         </div>
                         <!-- /.col -->

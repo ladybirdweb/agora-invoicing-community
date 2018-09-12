@@ -1,4 +1,18 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Invoice
+@stop
+@section('content-header')
+<h1>
+View Invoice
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li><a href="{{url('clients')}}">All Users</a></li>
+        <li><a href="{{url('invoices')}}">All Invoices</a></li>
+        <li class="active">View Invoice</li>
+      </ol>
+@stop
 @section('content')
 <div class="box box-primary">
 
@@ -45,12 +59,9 @@
                 <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
                 <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); ?>
                 <?php    
-            if($invoice->currency == 'INR'){
-                $symbol = 'INR';
-             }
-             else{
-                $symbol = 'USD';
-             }
+           
+                $symbol = $invoice->currency;
+            
                 ?>
 
                 <!-- Main content -->

@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Create Product
+@stop
 @section('content-header')
 <h1>
 Create New Product
@@ -12,7 +15,7 @@ Create New Product
 @section('content')
 <head>
     <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
-</head>
+</head> 
 <div class="box box-primary">
 
     <div class="box-header">
@@ -30,6 +33,8 @@ Create New Product
 
         @if(Session::has('success'))
         <div class="alert alert-success alert-dismissable">
+            <i class="fa fa-check"></i>
+            <b>{{Lang::get('message.success')}}!</b> 
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             {{Session::get('success')}}
         </div>
@@ -86,12 +91,24 @@ Create New Product
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
                                     {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
-
+  
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
+                                     <?php
+                                        $type = DB::table('product_categories')->pluck('category_name')->toarray();
+                                       
+                                        ?>
                                     <!-- last name -->
                                     {!! Form::label('category',Lang::get('message.category')) !!}
-                                    {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!}
+                                   <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
+
+                                     <select name="category" value= "Choose" class="form-control">
+                             <option value="">Choose</option>
+                           @foreach($type as $key=>$types)
+
+                             <option value={{$types}}>{{$types}}</option>
+                          @endforeach
+                          </select>
 
                                 </div>
 
@@ -155,7 +172,9 @@ Create New Product
                                          <li>
                                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
                                                 <!-- first name -->
-                                                {!! Form::label('hidden',Lang::get('message.hidden')) !!}
+                                               <!--  <button type="button" class="" data-toggle="tooltip" data-placement="top" title="Tooltip on top"></button> -->
+                                                <label data-toggle="tooltip" data-placement="top" title="">Hidden</label>
+                                               
                                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
 
                                             </div>
@@ -176,17 +195,33 @@ Create New Product
                                     <td>
                                         <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
                                             <div class="row">
-                                                <div class="col-md-6">
+                                                <div class="col-md-4">
                                                     {!! Form::hidden('subscription',0) !!}
                                                     {!! Form::checkbox('subscription',1,true) !!}
-                                                    {!! Form::label('subscription',Lang::get('message.subscription')) !!}
+                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date, else, unlimited subscription">
+                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
+                                                </div>
+                                            
+
+
+                                         
+
+
+
+                                                <div class="col-md-4">
+                                                     {!! Form::radio('deny_after_subscription',1) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
                                                 </div>
 
-                                                <div class="col-md-6">
-                                                    {!! Form::hidden('deny_after_subscription',0) !!}
-                                                    {!! Form::checkbox('deny_after_subscription',1,true) !!}
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.deny_after_subscription')) !!}
+                                                <div class="col-md-4">
+                                                    {!! Form::radio('deny_after_subscription',0) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
+                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
                                                 </div>
+
+                                               
+
                                             </div>
                                         </div>
                                     </td>

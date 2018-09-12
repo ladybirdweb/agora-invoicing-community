@@ -253,8 +253,6 @@ class MailChimpController extends Controller
 
             return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model'));
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

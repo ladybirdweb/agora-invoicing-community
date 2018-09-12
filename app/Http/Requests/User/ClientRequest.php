@@ -29,18 +29,14 @@ class ClientRequest extends Request
                         'first_name' => 'required',
                         'last_name'  => 'required',
                         'email'      => 'required|email|unique:users',
-                        'company'    => 'required',
                         'mobile'     => 'required|numeric',
 
                         'mobile_code' => 'required|numeric',
 
                         'address'          => 'required',
                         'zip'              => 'required',
-                        'timezone_id'      => 'required',
                         'user_name'        => 'required|unique:users,user_name',
-                        'bussiness'        => 'required',
-                        'company_type'     => 'required',
-                        'company_size'     => 'required',
+                        'currency'         => 'required',
                     ];
 
             case 'PATCH':

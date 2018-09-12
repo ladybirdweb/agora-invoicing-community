@@ -150,8 +150,6 @@ class GithubController extends Controller
 
             //echo "Your download will begin in a moment. If it doesn't, <a href=$release>Click here to download</a>";
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -164,7 +162,6 @@ class GithubController extends Controller
 
             return $release;
         } catch (Exception $ex) {
-            //dd($ex);
             return redirect('/')->with('fails', $ex->getMessage());
         }
     }
@@ -380,8 +377,6 @@ class GithubController extends Controller
                 return $release['tag_name'];
             }
         } catch (Exception $ex) {
-            // dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

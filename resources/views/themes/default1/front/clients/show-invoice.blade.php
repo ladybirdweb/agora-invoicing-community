@@ -15,7 +15,7 @@ active
 @stop
 
 @section('content')
-<div class="featured-boxes">
+
     <div class="row">
         <?php $set = App\Model\Common\Setting::where('id', '1')->first(); ?>
            <?php $gst =  App\Model\Payment\TaxOption::where('id', '1')->first(); 
@@ -28,7 +28,7 @@ active
                 $symbol = '$';
              }
                 ?>
-            <div class="col-lg-12 order-1 order-lg-2">
+           
         <div class="featured-box featured-box-primary align-left mt-xlg"  style="text-align: left;">
             <div class="box-content">
                 <div class="content-wrapper">
@@ -250,7 +250,7 @@ active
 
                                 
                                  @if($invoice->status !='Success')
-                            <a href="{{url('paynow/'.$invoice->id)}}"><button class="btn btn-primary" style="margin-right: 5px;"> Pay Now</button></a>
+                            <a href="{{url('paynow/'.$invoice->id)}}"><button class="btn btn-primary" style="margin-right: 5px;"><i class="fa fa-credit-card"></i> Pay Now</button></a>
                       @endif
                             </div>
                         </div>
@@ -261,8 +261,8 @@ active
                 <div class="control-sidebar-bg"></div>
             </div><!-- ./wrapper -->
         </div> 
+   
     </div>
-    </div>
-</div>
+
 
 @stop

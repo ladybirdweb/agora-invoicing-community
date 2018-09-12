@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 use Illuminate\Http\Request;
 
 class BaseHomeController extends Controller

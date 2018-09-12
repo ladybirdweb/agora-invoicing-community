@@ -1,7 +1,11 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+System Setting
+@stop
 @section('content-header')
 <h1>
 System Setting
+
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
@@ -10,24 +14,48 @@ System Setting
       </ol>
 @stop
 @section('content')
+<style>
+        .bootstrap-select.btn-group .dropdown-menu li a {
+    margin-left: -10px !important;
+}
+ .btn-group>.btn:first-child {
+    margin-left: 0;
+    background-color: white;
+
+    select {
+  -webkit-appearance: none;
+  -webkit-border-radius: -6px;
+}
+.bootstrap-select.btn-group .dropdown-toggle .filter-option {
+    color:#555;
+}
+.caret {
+    border-top: 6px dashed;
+    border-right: 3px solid transparent;
+    border-left: 3px solid transparent;
+}
+</style>
 <div class="row">
 
     <div class="col-md-12">
         <div class="box box-primary">
             <div class="box-header">
                 @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <strong>Whoops!</strong> There were some problems with your input.<br><br>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+        <div class="alert alert-danger">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>Whoops!</strong> There were some problems with your input.<br><br>
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
                 @if(Session::has('success'))
                 <div class="alert alert-success alert-dismissable">
+                     <i class="fa fa-check"></i>
+                     <b>{{Lang::get('message.success')}}!</b> 
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     {{Session::get('success')}}
                 </div>
@@ -46,19 +74,19 @@ System Setting
 
             <div class="box-body">
                 {!! Form::model($set,['url'=>'settings/system','method'=>'patch','files'=>true]) !!}
-
-                <table class="table table-condensed">
-
-                    <tr>
-                        <td><h3 class="box-title">{{Lang::get('Company Details')}}</h3></td>
-                        <td><button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
-                        </td>
-
+                  <tr >
+                        <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('Company Details')}}</h3>
+                        <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
+                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                     </tr>
+                 <div class="col-md-6">
+              
+
+                  
 
                     <tr>
 
-                        <td><b>{!! Form::label('company',Lang::get('Company Name'),['class'=>'required']) !!}</b></td>
+                        <td><b>{!! Form::label('company',Lang::get('message.company-name'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
 
@@ -71,9 +99,41 @@ System Setting
                         </td>
 
                     </tr>
+
                     <tr>
 
-                        <td><b>{!! Form::label('website',Lang::get('message.website')) !!}</b></td>
+                        <td><b>{!! Form::label('company_email',Lang::get('message.company-email'),['class'=>'required']) !!}</b></td>
+                       
+                        <td>
+                            <div class="form-group {{ $errors->has('company_email') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('company_email',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                      <tr>
+
+                        <td><b>{!! Form::label('title',Lang::get('message.app-title')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('company') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('title',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+                    <tr>
+
+                        <td><b>{!! Form::label('website',Lang::get('message.website'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('website') ? 'has-error' : '' }}">
 
@@ -87,7 +147,7 @@ System Setting
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('phone',Lang::get('message.phone')) !!}</b></td>
+                        <td><b>{!! Form::label('phone',Lang::get('message.phone'),['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('phone') ? 'has-error' : '' }}">
 
@@ -125,10 +185,13 @@ System Setting
                         </td>
 
                     </tr>
-                     
+             
+            </div>
+            <div class="col-md-6">
+            
                     <tr>
 
-                        <td><b>{!! Form::label('country',Lang::get('message.country')) !!}</b></td>
+                        <td><b>{!! Form::label('country',Lang::get('message.country') ,['class'=>'required']) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('city') ? 'has-error' : '' }}">
 
@@ -137,7 +200,13 @@ System Setting
                                 <!-- <p><i> {{Lang::get('message.country')}}</i> </p> -->
                                   <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
 
-                        {!! Form::select('country',['Choose'=>'Choose',''=>$countries],null,['class' => 'form-control','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
+                     <select name="country" value= "Choose" onChange="getCountryAttr(this.value)" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                             <option value="">Choose</option>
+                           @foreach($countries as $key=>$country)
+                              <option value="{{$key}}" <?php  if(in_array($country, $selectedCountry) ) { echo "selected";} ?>>{{$country}}</option>
+                          @endforeach
+                          </select>
+
 
                     </div>
 
@@ -148,33 +217,118 @@ System Setting
 
                     <tr>
 
-                        <td><b>{!! Form::label('state',Lang::get('message.state')) !!}</b></td>
+                        <td><b>{!! Form::label('state',Lang::get('message.state') ,['class'=>'required']) !!}</b></td>
                         <td>
                         <select name="state" id="state-list" class="form-control">
-                                @if(count($set->state)>0)
-                            <option value="">{{$set->state}}</option>
+                                @if($set->state)
+                             <option value="{{$state['id']}}">{{$state['name']}}</option>
                             @endif
-                            <option value="">Choose A Country</option>
+                            <option value="">Choose</option>
+                            @foreach($states as $key=>$value)
+                            <option value="{{$key}}">{{$value}}</option>
+                            @endforeach
 
                         </select>
                         </td>
                     </tr>
+                    <br>
+                        <tr>
+
+                        <td><b>{!! Form::label('default_currency',Lang::get('message.default-currency') ,['class'=>'required']) !!}</b></td>
+                        <td>
+                             <?php $currencies = \App\Model\Payment\Currency::where('status',1)->pluck('name','code')->toArray(); 
+                             ?>
+                         <select name="default_currency" value= "Choose"  class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" data-dropup-auto="false" data-size="10">
+                               <option value="">Choose</option>
+                           @foreach($currencies as $key=>$currency)
+                              <option value="{{$key}}" <?php  if(in_array($currency, $selectedCurrency) ) { echo "selected";} ?>>{{$currency}}</option>
+                          @endforeach
+
+                        </select>
+                        </td>
+                    </tr>
+                    <br>
+                      <tr>
+                     
+                        <td><b>{!! Form::label('logo',Lang::get('message.admin-logo')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
+
+                                {!! Form::file('admin-logo') !!}
+                                <p><i> {{Lang::get('message.enter-the-admin-panel-logo')}}</i> </p>
+                                @if($set->admin_logo) 
+                                <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-thumbnail" style="height: 50;">
+                                @endif
+                            </div>
+                        </td>
+                       
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('icon',Lang::get('message.fav-icon')) !!}</b></td>
+
+                        <td>
+                            <div class="form-group {{ $errors->has('icon') ? 'has-error' : '' }}">
+
+                                {!! Form::file('fav-icon') !!}
+                                <p><i> {{Lang::get('message.enter-the-favicon')}}</i> </p>
+                                @if($set->fav_icon) 
+                                <img src='{{asset("images/favicon/$set->fav_icon")}}' class="img-thumbnail" style="height: 50;">
+                                @endif
+                            </div>
+                        </td>
+                       
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('favicon_title',Lang::get('message.fav-title-admin')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('favicon_title') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('favicon_title',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                     <tr>
+
+                        <td><b>{!! Form::label('favicon_title_client',Lang::get('message.fav-title-client')) !!}</b></td>
+                        <td>
+                            <div class="form-group {{ $errors->has('favicon_title_client') ? 'has-error' : '' }}">
+
+
+                                {!! Form::text('favicon_title_client',null,['class' => 'form-control']) !!}
+                                
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
                     <tr>
 
-                        <td><b>{!! Form::label('logo',Lang::get('message.logo')) !!}</b></td>
+                        <td><b>{!! Form::label('logo',Lang::get('message.client-logo')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('logo') ? 'has-error' : '' }}">
 
                                 {!! Form::file('logo') !!}
                                 <p><i> {{Lang::get('message.enter-the-company-logo')}}</i> </p>
                                 @if($set->logo) 
-                                <img src="{{asset('cart/img/logo/'.$set->logo)}}" class="img-thumbnail" style="height: 100px;">
+                                <img src='{{asset("cart/img/logo/$set->logo")}}' class="img-thumbnail" style="height: 50;">
                                 @endif
                             </div>
                         </td>
                         {!! Form::close() !!}
                     </tr>
-                </table>
+               
             </div>
         </div>
     </div>

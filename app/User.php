@@ -38,7 +38,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $fillable = ['first_name', 'last_name', 'user_name', 'company', 'zip',
         'state', 'town', 'mobile',
         'email', 'password', 'role', 'active', 'profile_pic',
-        'address', 'country', 'currency', 'timezone_id', 'mobile_code', 'bussiness',
+        'address', 'country', 'currency', 'currency_symbol', 'timezone_id', 'mobile_code', 'bussiness',
         'company_type', 'company_size', 'ip', 'mobile_verified', 'position', 'skype', 'manager', ];
 
     protected static $logName = 'User';
@@ -144,6 +144,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function payment()
     {
         return $this->hasMany('App\Model\Order\Payment');
+    }
+
+    public function setCountryAttribute($value)
+    {
+        $value = strtoupper($value);
+        $this->attributes['country'] = $value;
     }
 
     public function bussiness()

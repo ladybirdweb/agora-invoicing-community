@@ -1,4 +1,7 @@
 @extends('themes.default1.layouts.master')
+@section('title')
+Templates
+@stop
 @section('content-header')
 <h1>
 Templates

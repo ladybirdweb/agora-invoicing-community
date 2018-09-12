@@ -8,7 +8,7 @@ $_SERVER['argv'][3] = 'FatalTest';
 $_SERVER['argv'][4] = __DIR__ . '/../_files/FatalTest.php';
 
 require __DIR__ . '/../bootstrap.php';
-PHPUnit_TextUI_Command::main();
+PHPUnit\TextUI\Command::main();
 --EXPECTF--
 PHPUnit %s by Sebastian Bergmann and contributors.
 
@@ -19,7 +19,6 @@ Time: %s, Memory: %s
 There was 1 error:
 
 1) FatalTest::testFatalError
-%s
-
+%a
 ERRORS!
 Tests: 1, Assertions: 0, Errors: 1.

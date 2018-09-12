@@ -7,6 +7,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
@@ -16,7 +17,7 @@ class DashboardController extends Controller
         $this->middleware('admin', ['only' => ['index']]);
     }
 
-    public function index()
+    public function index(Request $request)
     {
         $totalSalesINR = $this->getTotalSalesInInr();
         $totalSalesUSD = $this->getTotalSalesInUsd();
@@ -24,15 +25,16 @@ class DashboardController extends Controller
         $yearlySalesUSD = $this->getYearlySalesInUsd();
         $monthlySalesINR = $this->getMonthlySalesInInr();
         $monthlySalesUSD = $this->getMonthlySalesInUsd();
+        $pendingPaymentINR = $this->getPendingPaymentsInInr();
+        $pendingPaymentUSD = $this->getPendingPaymentsInUsd();
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productNameList = [];
         $productSoldlists = $this->recentProductSold();
         if (count($productSoldlists) > 0) {
-            foreach ($productSoldlists as $productSoldlist) {
-                $productNameList[] = $productSoldlist->name;
-            }
+            $productNameList = $this->getProductNameList($productSoldlists);
         }
+
         $arraylists = array_count_values($productNameList);
         $orders = $this->getRecentOrders();
         $subscriptions = $this->expiringSubscription();
@@ -41,16 +43,19 @@ class DashboardController extends Controller
         $productName = [];
         if (!empty($products)) {
             foreach ($products as $product) {
-                $productName[] = $product->name;
+                if ($product && $product->name) {
+                    $productName[] = $product->name;
+                }
             }
         }
         $arrayCountList = array_count_values($productName);
+        $status = $request->input('status');
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
 
                  'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products', 'arrayCountList'));
+                 'products', 'arrayCountList', 'pendingPaymentINR', 'pendingPaymentUSD', 'status'));
     }
 
     /**
@@ -60,8 +65,9 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInInr()
     {
-        $invoice = new Invoice();
-        $total = $invoice->where('currency', 'INR')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'INR')
+        ->where('status', '=', 'success')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -74,8 +80,9 @@ class DashboardController extends Controller
      */
     public function getTotalSalesInUsd()
     {
-        $invoice = new Invoice();
-        $total = $invoice->where('currency', 'USD')->pluck('grand_total')->all();
+        $total = Invoice::where('currency', 'USD')
+        ->where('status', '=', 'success')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -88,10 +95,11 @@ class DashboardController extends Controller
      */
     public function getYearlySalesInInr()
     {
-        $invoice = new Invoice();
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'INR')
-                ->pluck('grand_total')->all();
+        $total = Invoice::whereYear('created_at', '=', $currentYear)
+        ->where('status', '=', 'success')
+        ->where('currency', 'INR')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -104,10 +112,11 @@ class DashboardController extends Controller
      */
     public function getYearlySalesInUsd()
     {
-        $invoice = new Invoice();
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->where('currency', 'USD')
-                ->pluck('grand_total')->all();
+        $total = Invoice::whereYear('created_at', '=', $currentYear)
+        ->where('status', '=', 'success')
+        ->where('currency', 'USD')
+        ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
         return $grandTotal;
@@ -120,11 +129,11 @@ class DashboardController extends Controller
      */
     public function getMonthlySalesInInr()
     {
-        $invoice = new Invoice();
         $currentMonth = date('m');
         $currentYear = date('Y');
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'INR')
+                ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -138,12 +147,12 @@ class DashboardController extends Controller
      */
     public function getMonthlySalesInUsd()
     {
-        $invoice = new Invoice();
         $currentMonth = date('m');
         $currentYear = date('Y');
         // dd($currentYear,$currentMonth );
-        $total = $invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
+        $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
                 ->where('currency', 'USD')
+                 ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -151,14 +160,45 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get the list of previous 8 registered users.
+     * Get  Total Pending Payment Inr.
+     *
+     * @return type
+     */
+    public function getPendingPaymentsInInr()
+    {
+        $total = Invoice::where('currency', 'INR')
+        ->where('status', '=', 'pending')
+        ->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+
+        return $grandTotal;
+    }
+
+    /**
+     * Get  Total Pending Payment Inr.
+     *
+     * @return type
+     */
+    public function getPendingPaymentsInUsd()
+    {
+        $total = Invoice::where('currency', 'USD')
+        ->where('status', '=', 'pending')
+        ->pluck('grand_total')->all();
+        $grandTotal = array_sum($total);
+
+        return $grandTotal;
+    }
+
+    // getPendingPaymentsInInr
+
+    /**
+     * Get the list of previous 20 registered users.
      *
      * @return type
      */
     public function getAllUsers()
     {
-        $user = new User();
-        $allUsers = $user->orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
+        $allUsers = User::orderBy('created_at', 'desc')->where('active', 1)->where('mobile_verified', 1)
               ->take(20)
               ->get()
               ->toArray();
@@ -173,15 +213,19 @@ class DashboardController extends Controller
      */
     public function recentProductSold()
     {
-        $dayUtc = new Carbon('-30 days');
-        $minus30Day = $dayUtc->toDateTimeString();
-        $product = [];
-        $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
-        foreach ($orders as $order) {
-            $product[] = $order->product()->first();
-        }
+        try {
+            $dayUtc = new Carbon('-30 days');
+            $minus30Day = $dayUtc->toDateTimeString();
+            $product = [];
+            $orders = Order::where('order_status', 'executed')->where('created_at', '>', $minus30Day)->get();
+            foreach ($orders as $order) {
+                $product[] = $order->product()->first();
+            }
 
-        return $product;
+            return $product;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
     /**
@@ -235,5 +279,20 @@ class DashboardController extends Controller
         }
 
         return $product;
+    }
+
+    public function getProductNameList($productSoldlists)
+    {
+        try {
+            foreach ($productSoldlists as $productSoldlist) {
+                if ($productSoldlist && $productSoldlist->name) {
+                    $productNameList[] = $productSoldlist->name;
+                }
+            }
+
+            return $productNameList;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

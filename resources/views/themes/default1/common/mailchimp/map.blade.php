@@ -1,10 +1,21 @@
 @extends('themes.default1.layouts.master')
+@section('content-header')
+<h1>
+Mailchimp Mapping
+</h1>
+  <ol class="breadcrumb">
+        <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
+         <li><a href="{{url('settings')}}">Settings</a></li>
+        <li><a href="{{url('mailchimp')}}"><i class="fa fa-dashboard"></i> Mailchimp Setting</a></li>
+        <li class="active">Mailchimp Mapping</li>
+        </ol>
+@stop
 @section('content')
 
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
             <div class="box-header">
                 @if (count($errors) > 0)
@@ -34,8 +45,8 @@
                 </div>
                 @endif
                 {!! Form::model($model,['url'=>'mail-chimp/mapping','method'=>'patch','files'=>true]) !!}
-                {!! Form::submit(Lang::get('message.update'),['class'=>'btn btn-primary pull-right'])!!}
-            </div>   
+                <button type="submit" class="btn btn-primary pull-right" id="submit" ><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+               </div>   
             <div class="box-body">
                 <table class="table table-hover">
                     <tr>

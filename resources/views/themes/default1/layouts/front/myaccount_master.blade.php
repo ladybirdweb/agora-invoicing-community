@@ -230,8 +230,15 @@
                                                                                 </td>
 
                                                                                 <td class="product-name">
-                                                                                        
-                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency}}</small> {{App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}}</strong></span></a>
+
+                                                                                  <?php
+                                                                                  $controller = new App\Http\Controllers\Front\CartController();
+
+                                                                                  $price = $controller->rounding($item->getPriceSumWithConditions());
+
+                                                                                  ?>
+                                                                                    <a>{{$item->name}}<br><span class="amount"><strong><small>{{$currency['symbol']}}</small> {{$price}}</strong></span></a>
+
                                                                                 </td>
 
                                                                                 <td class="product-actions">

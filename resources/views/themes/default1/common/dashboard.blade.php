@@ -254,9 +254,11 @@ Dashboard
                        <td><a href="{{url('orders/'.$order->id)}}">{{$order->number}}</a></td>
                     <td>{{$productName}}</td>
                     <td>{{$date}}</td>
+                    @if($clientName)
                     <td>
                       <a href="{{url('clients/'.$order->client)}}" class="sparkbar" data-color="#00a65a" data-height="20">{{$clientName->first_name}}{{$clientName->last_name}}</a>
                     </td>
+                    @endif
                     <!-- <td><span class="label label-success">{{$order->price_override}}</span></td> -->
                     
                   </tr>

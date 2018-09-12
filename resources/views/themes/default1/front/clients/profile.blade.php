@@ -379,13 +379,13 @@ active
 <script type="text/javascript">
        $(document).ready(function(){ 
          var country = $('#country').val();
-         console.log(country);
     var telInput = $('#mobile_code');
      let currentCountry="";
     telInput.intlTelInput({
         initialCountry: "auto",
         geoIpLookup: function (callback) {
-            $.get("http://ipinfo.io", function () {}, "jsonp").always(function (resp){
+            $.get("https://ipinfo.io", function () {}, "jsonp").always(function (resp){
+                resp.country = country;
             var countryCode = (resp && resp.country) ? resp.country : "";
                     currentCountry=countryCode.toLowerCase()
                     callback(countryCode);

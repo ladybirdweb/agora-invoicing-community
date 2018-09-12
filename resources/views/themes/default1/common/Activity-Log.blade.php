@@ -112,7 +112,7 @@ Activity Log
             // },
             processing: true,
             serverSide: true,
-             stateSave: true,
+             stateSave: false,
               order: [[ 0, "desc" ]],
             ajax: '{!! route('get-activity') !!}',
             "oLanguage": {
@@ -124,7 +124,7 @@ Activity Log
                 { 
                     targets: 'no-sort', 
                     orderable: false,
-                    order: ['desc']
+                    order: []
                 }
             ],
             columns: [

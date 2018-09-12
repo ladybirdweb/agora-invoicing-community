@@ -327,8 +327,7 @@ class ClientController extends AdvanceSearchController
                     'states', 'managers', 'selectedCurrency', 'selectedCompany',
                      'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
 
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -345,12 +344,12 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user->where('id', $id)->first();
-
+            $symbol = Currency::where('code',$request->input('currency'))->pluck('symbol')->first();
+            $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 

@@ -11,7 +11,7 @@ class Currency extends BaseModel
     protected $table = 'currencies';
     protected $fillable = ['code', 'symbol', 'name', 'status'];
     protected static $logName = 'Currency';
-    protected static $logAttributes = ['code', 'symbol', 'name'];
+    protected static $logAttributes = ['code', 'symbol', 'name','status'];
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\Model\Common\Setting;
 use App\Model\Payment\Plan;
+use App\Model\Payment\Currency;
 use Bugsnag;
 
 class BaseTemplateController extends ExtendedBaseTemplateController
@@ -129,6 +130,12 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $currencyAndSymbol = $cart_controller->currency();
             $currency = $currencyAndSymbol['currency'];
             $symbol = $currencyAndSymbol['symbol'];
+            if($symbol == "")
+            {  //If user has no currency symbol(In case of old customers)
+                 $user = \Auth::user();
+                $symbol = Currency::where('code',$currency)->pluck('symbol')->first();
+                $symbol = $user->update(['currency_symbol'=> $symbol]);
+            }
 
             foreach ($plans as $value) {
                 $cost = $value->planPrice()->where('currency', $currency)->first();

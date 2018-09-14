@@ -12,9 +12,9 @@ class ProductCategory extends Model
     protected $table = 'product_categories';
     protected $fillable = ['id', 'category_name'];
 
-     protected static $logName = 'Product Category';
-      protected static $logAttributes = ['category_name' ];
-        protected static $logOnlyDirty = true;
+    protected static $logName = 'Product Category';
+    protected static $logAttributes = ['category_name'];
+    protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string
     {

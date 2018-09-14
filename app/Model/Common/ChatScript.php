@@ -8,14 +8,14 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class ChatScript extends Model
 {
-	use LogsActivity;
+    use LogsActivity;
     protected $table = 'chat_scripts';
     protected $fillable = ['name', 'script'];
-      protected static $logName = 'Chat Script';
-      protected static $logAttributes = ['name', 'script'];
-        protected static $logOnlyDirty = true;
+    protected static $logName = 'Chat Script';
+    protected static $logAttributes = ['name', 'script'];
+    protected static $logOnlyDirty = true;
 
-     public function getDescriptionForEvent(string $eventName): string
+    public function getDescriptionForEvent(string $eventName): string
     {
         // dd(Activity::where('subject_id',)->pluck('subject_id'));
         if ($eventName == 'created') {

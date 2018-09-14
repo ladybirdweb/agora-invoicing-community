@@ -233,7 +233,7 @@ class SettingsController extends BaseSettingsController
     {
         try {
             $activity_log = Activity::select('id', 'log_name', 'description',
-                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id','desc');
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 
             return \DataTables::of($activity_log->take(50))
              ->setTotalRecords($activity_log->count())

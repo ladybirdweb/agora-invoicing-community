@@ -58,7 +58,7 @@ class ClientController extends AdvanceSearchController
     }
 
     /**
-     * Get Clients for chumper datatable.
+     * Get Clients for yajra datatable.
      */
     public function getClients(Request $request)
     {

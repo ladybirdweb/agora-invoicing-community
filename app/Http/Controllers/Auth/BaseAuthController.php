@@ -23,7 +23,6 @@ class BaseAuthController extends Controller
                         <FL val="Last Name">'.$user->last_name.'</FL>
                         <FL val="Email">'.$user->email.'</FL>
                         <FL val="Manager">'.$user->manager.'</FL>
-
                         <FL val="Phone">'.$user->mobile_code.''.$user->mobile.'</FL>
                         <FL val="Mobile">'.$user->mobile_code.''.$user->mobile.'</FL>
                         <FL val="Industry">'.$user->bussiness.'</FL>
@@ -31,9 +30,8 @@ class BaseAuthController extends Controller
                         <FL val="Street">'.$user->address.'</FL>
                         <FL val="State">'.$user->state.'</FL>
                         <FL val="Country">'.$user->country.'</FL>
-
                         <FL val="Zip Code">'.$user->zip.'</FL>
-                         <FL val="No. of Employees">'.$user->company_size.'</FL>
+                        <FL val="No of Employees">'.$user->company_size.'</FL>
                         </row>
                         </Leads>';
 

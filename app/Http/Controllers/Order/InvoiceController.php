@@ -533,7 +533,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
              $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            dd($ex);
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
             $result = ['fails' => $ex->getMessage()];
@@ -578,7 +578,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $mode = '';
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
-            $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
+            // $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
 
             // $price = $this->getPrice($price, $price_model);
 
@@ -620,6 +620,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $items;
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

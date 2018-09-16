@@ -163,7 +163,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
             return $price;
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -179,7 +179,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
             return $price;
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -194,16 +194,17 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             foreach ($taxes as $tax) {
                 if ($tax->compound != 1) {
                     $rate = $tax->rate;
-                   
                 } else {
                     $rate = $tax->rate;
                 }
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
+
             return $tax_amount;
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

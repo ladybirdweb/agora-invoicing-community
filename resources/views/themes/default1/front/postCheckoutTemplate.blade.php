@@ -14,7 +14,7 @@
 
     
         
-            <strong>Thank you. Your Faveo Community order is confirmed. A confirmation Mail has been sent to you on your registered
+            <strong>Thank you. Your {{$product->name}} order is confirmed. A confirmation Mail has been sent to you on your registered
                 Email
             </strong><br>
 

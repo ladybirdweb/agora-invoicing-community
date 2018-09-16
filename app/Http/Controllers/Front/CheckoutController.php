@@ -234,10 +234,11 @@ class CheckoutController extends InfoController
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
-                $invoice_id = $request->input('invoice_id');
-                $invoice = $this->invoice->find($invoice_id);
+                $invoiceid = $request->input('invoice_id');
+                $invoice = $this->invoice->find($invoiceid);
+                $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();
-                $product = $this->product($invoice_id);
+                $product = $this->product($invoiceid);
                 $amount = $invoice->grand_total;
                 $content = Cart::getContent();
                 $attributes = $this->getAttributes($content);
@@ -279,8 +280,6 @@ class CheckoutController extends InfoController
             $invoice_id = $invoice->id;
             $invoice->status = 'success';
             $invoice->save();
-            //dd($invoice->id);
-
             $invoice_items = $this->invoiceItem->where('invoice_id', $invoice->id)->first();
             $product = $invoice_items->product_name;
 

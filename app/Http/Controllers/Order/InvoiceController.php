@@ -1036,7 +1036,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $amount = $grand_total;
             $paymentRenewal = $this->updateInvoicePayment($invoiceid, $payment_method,
              $payment_status, $payment_date, $amount);
-             
+
             return redirect()->back()->with('success', 'Payment Accepted Successfully');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());

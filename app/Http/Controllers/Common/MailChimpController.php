@@ -60,8 +60,6 @@ class MailChimpController extends Controller
 
             return $result;
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -71,7 +69,6 @@ class MailChimpController extends Controller
         try {
             //dd($email);
             $merge_fields = $this->field($email);
-            //dd($merge_fields);
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status'        => $this->mailchimp_set->subscribe_status,
                 'email_address' => $email,
@@ -206,8 +203,6 @@ class MailChimpController extends Controller
             }
             //return redirect()->back()->with('success', \Lang::get('message.mailchimp-list-added-to-agora'));
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

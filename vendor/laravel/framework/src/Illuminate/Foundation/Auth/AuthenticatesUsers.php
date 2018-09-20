@@ -5,7 +5,7 @@ namespace Illuminate\Foundation\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-
+use Bugsnag;
 use App\User;
 use Hash;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -46,8 +46,10 @@ trait AuthenticatesUsers
                 {$location = json_decode(file_get_contents('http://ip-api.com/json'),true);}
 
          }catch(\Exception $ex){
-         $location = false;
-         $error = $ex->getMessage();
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+             $location = false;
+             $error = $ex->getMessage();
                     
                     // return redirect()->route('error404', [$error]);
             // return redirect(404)->json(compact('error'));

@@ -105,7 +105,7 @@ if($script){
                                 <div class="header-row pt-3">
                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
-                                            @if($set->email != NULL)
+                                            @if($set->company_email != NULL)
                                               <li class="nav-item d-none d-sm-block">
                                                   <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>

@@ -162,6 +162,7 @@ class CartController extends BaseCartController
                 'target' => 'item',
                 'value'  => '0%',
             ]);
+            
             $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
             $location = $cont->getLocation();
 
@@ -875,8 +876,6 @@ class CartController extends BaseCartController
 
             return $products;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

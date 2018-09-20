@@ -149,9 +149,9 @@ class BaseProductController extends ExtendedBaseProductController
                         header('Content-Disposition: attachment; filename=Faveo.zip');
                         //header("Content-type: application/zip");
                         header('Content-Length: '.filesize($release));
-                        //ob_clean();
-                        flush();
-                        readfile("$release");
+                        ob_end_clean();
+                        // flush();
+                        readfile($release);
                     }
                 } else {
                     return redirect('auth/login')->with('fails', \Lang::get('activate-your-account'));
@@ -193,7 +193,6 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             $relese = '/home/faveo/products/'.$file->file;
-
             return $relese;
         }
     }

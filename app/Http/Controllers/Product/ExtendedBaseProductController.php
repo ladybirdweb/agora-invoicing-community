@@ -121,7 +121,7 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Disposition: attachment; filename=Faveo.zip');
                 header('Content-Length: '.filesize($release));
                 flush();
-                readfile("$release");
+                readfile($release);
             }
         } catch (\Exception $e) {
             if ($api) {

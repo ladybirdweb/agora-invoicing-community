@@ -67,12 +67,12 @@ class MailChimpController extends Controller
     public function addSubscriber($email)
     {
         try {
-            //dd($email);
             $merge_fields = $this->field($email);
             $result = $this->mailchimp->post("lists/$this->list_id/members", [
                 'status'        => $this->mailchimp_set->subscribe_status,
                 'email_address' => $email,
                 'merge_fields'  => $merge_fields,
+
             ]);
 
             return $result;
@@ -83,6 +83,7 @@ class MailChimpController extends Controller
             }
         }
     }
+
 
     public function addSubscriberByClientPanel(Request $request)
     {

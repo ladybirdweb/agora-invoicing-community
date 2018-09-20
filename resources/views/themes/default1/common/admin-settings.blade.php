@@ -331,7 +331,7 @@ Application Settings
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Chat Script(Client Panel)</p>
+                        <p class="box-title" >Chat Script</p>
                     </div>
                 </div>                                       
             </div>

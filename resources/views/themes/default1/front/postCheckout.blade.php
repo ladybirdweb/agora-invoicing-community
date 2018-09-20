@@ -104,8 +104,6 @@ $data = [
     "State"             => \Auth::user()->state,
     "City"              => \Auth::user()->town,
     "Zip"               => \Auth::user()->zip,
-
-
     "Currency"          => \Auth::user()->currency,
     "Amount Paid"   => $invoice->grand_total,
     "Exchange Rate"   =>  $exchangeRate,

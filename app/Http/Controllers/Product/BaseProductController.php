@@ -193,6 +193,7 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
             $relese = '/home/faveo/products/'.$file->file;
+
             return $relese;
         }
     }

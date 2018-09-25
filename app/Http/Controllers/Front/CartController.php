@@ -162,7 +162,7 @@ class CartController extends BaseCartController
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-            
+
             $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
             $location = $cont->getLocation();
 

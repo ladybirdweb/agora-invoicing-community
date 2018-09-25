@@ -964,26 +964,26 @@ class CartController extends BaseCartController
      *
      * @return type
      */
-    public function productCost($productid, $userid = '')
-    {
-        try {
-            $sales = 0;
-            $currency = $this->currency($userid);
-            $product = $this->product->find($productid);
-            $price = $product->price()->where('currency', $currency)->first();
-            if ($price) {
-                $sales = $price->sales_price;
-                if ($sales == 0) {
-                    $sales = $price->price;
-                }
-            }
-            //}
+    // public function productCost($productid, $userid = '')
+    // {
+    //     try {
+    //         $sales = 0;
+    //         $currency = $this->currency($userid);
+    //         $product = $this->product->find($productid);
+    //         $price = $product->price()->where('currency', $currency)->first();
+    //         if ($price) {
+    //             $sales = $price->sales_price;
+    //             if ($sales == 0) {
+    //                 $sales = $price->price;
+    //             }
+    //         }
+    //         //}
 
-            return $sales;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
+    //         return $sales;
+    //     } catch (\Exception $ex) {
+    //         throw new \Exception($ex->getMessage());
+    //     }
+    // }
 
     /**
      * @param type $productid

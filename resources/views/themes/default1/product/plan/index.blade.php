@@ -69,6 +69,8 @@ All Plans
                             <th>Name</th>
                             <th>Months</th>
                             <th>Product</th>
+                            <th>Price</th>
+                            <th>Currency</th>
                             <th>Action</th>
                         </tr></thead>
                      </table>
@@ -79,7 +81,7 @@ All Plans
 
 </div>
 
-<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" />
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript">
         $('#plan-table').DataTable({
@@ -103,6 +105,8 @@ All Plans
                 {data: 'name', name: 'name'},
                 {data: 'days', name: 'days'},
                 {data: 'product', name: 'product'},
+                {data: 'price', name: 'price'},
+                {data: 'currency', name: 'currency'},
                 {data: 'action', name: 'action'}
             ],
             "fnDrawCallback": function( oSettings ) {

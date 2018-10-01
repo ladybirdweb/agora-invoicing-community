@@ -9,6 +9,7 @@ use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
+use App\Comment;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
@@ -199,7 +200,7 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function show($id)
-    {
+    {dd($id);
         try {
             $invoice = new Invoice();
             $order = new Order();
@@ -214,11 +215,10 @@ class ClientController extends AdvanceSearchController
             $client = $this->user->where('id', $id)->first();
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
-            //dd($client);
-
+            $comments = $client->comments()->where('user_id',$client->id)->get();
             return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt'));
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt','comments'));
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);

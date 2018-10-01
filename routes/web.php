@@ -253,6 +253,12 @@
          Route::get('get-category', 'Product\CategoryController@getCategory')->name('get-category');
          Route::get('category-delete', 'Product\CategoryController@destroy')->name('category-delete');
 
+        /*
+         * Comment
+         */
+         Route::resource('comment', 'User\CommentController');
+         Route::get('comment/{id}/delete', 'User\CommentController@destroy');
+
          /*
          * Product-type
          */

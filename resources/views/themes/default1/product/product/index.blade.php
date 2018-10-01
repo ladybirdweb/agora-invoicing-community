@@ -61,10 +61,9 @@ All Products
                     <thead><tr>
                         <th class="no-sort"><input type="checkbox" name="select_all" onchange="checking(this)"></th>
                             <th>Name</th>
+                            <th>Image</th>
                             <th>Type</th>
                             <th>Group</th>
-                            <th>Price</th>
-                            <th>Currency</th>
                             <th>Action</th>
                         </tr></thead>
 
@@ -100,10 +99,9 @@ All Products
             columns: [
                 {data: 'checkbox', name: 'checkbox'},
                 {data: 'name', name: 'name'},
+                {data: 'image', name: 'image'},
                 {data: 'type', name: 'type'},
                 {data: 'group', name: 'group'},
-                {data: 'price', name: 'price'},
-                {data: 'currency', name: 'currency'},
                 {data: 'Action', name: 'Action'}
             ],
             "fnDrawCallback": function( oSettings ) {

@@ -376,6 +376,12 @@ return [
     'invoice/payment'=> 'Invoice/Payment',
     'invoice-total'  => 'Invoice Total',
     'total-amt'      => 'Total Amount Paid',
+    'comment'        => 'Comment',
+    'comments'       => 'Comments',
+    'add_comment'    => 'Add Comment',
+    'add_new_comment'=> 'Add New Comment',
+    'no-comments'    => 'No Comments',
+    'edit-comment'   => 'Edit Comment',
 
     /*
      * Licence

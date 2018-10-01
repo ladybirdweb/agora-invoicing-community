@@ -120,7 +120,7 @@ class ExtendedBaseProductController extends Controller
                 header('Content-Description: File Transfer');
                 header('Content-Disposition: attachment; filename=Faveo.zip');
                 header('Content-Length: '.filesize($release));
-                flush();
+                ob_end_clean();
                 readfile($release);
             }
         } catch (\Exception $e) {

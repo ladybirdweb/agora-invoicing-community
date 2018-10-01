@@ -103,7 +103,7 @@ namespace App\Http\Controllers\Product;
         public function getProducts()
         {
             try {
-                $new_product = Product::select('id', 'name', 'type', 'group')->get();
+                $new_product = Product::select('id', 'name', 'type', 'image','group','image')->get();
 
                 return\ DataTables::of($new_product)
 
@@ -114,6 +114,10 @@ namespace App\Http\Controllers\Product;
                             ->addColumn('name', function ($model) {
                                 return ucfirst($model->name);
                             })
+                              ->addColumn('image', function ($model) {
+                                // return $model->image;
+                                return "<img src= '$model->image' + height=\"80\"/>";
+                            })
                             ->addColumn('type', function ($model) {
                                 if ($this->type->where('id', $model->type)->first()) {
                                     return $this->type->where('id', $model->type)->first()->name;
@@ -121,6 +125,7 @@ namespace App\Http\Controllers\Product;
                                     return 'Not available';
                                 }
                             })
+
                             ->addColumn('group', function ($model) {
                                 if ($this->group->where('id', $model->group)->first()) {
                                     return $this->group->where('id', $model->group)->first()->name;
@@ -128,20 +133,7 @@ namespace App\Http\Controllers\Product;
                                     return 'Not available';
                                 }
                             })
-                            ->addColumn('price', function ($model) {
-                                if ($this->price->where('product_id', $model->id)->first()) {
-                                    return $this->price->where('product_id', $model->id)->first()->price;
-                                } else {
-                                    return 'Not available';
-                                }
-                            })
-                            ->addColumn('currency', function ($model) {
-                                if ($this->price->where('product_id', $model->id)->first()) {
-                                    return $this->price->where('product_id', $model->id)->first()->currency;
-                                } else {
-                                    return 'Not available';
-                                }
-                            })
+                       
                             ->addColumn('Action', function ($model) {
                                 $url = '';
                                 if ($model->type == 2) {
@@ -155,7 +147,7 @@ namespace App\Http\Controllers\Product;
                                  style='color:white;'> </i>&nbsp;&nbsp;Edit</a>&nbsp;$url</p>";
                             })
 
-                            ->rawColumns(['checkbox', 'name', 'type', 'group', 'price', 'currency', 'Action'])
+                            ->rawColumns(['checkbox', 'name', 'image','type', 'group','Action'])
                             ->make(true);
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);

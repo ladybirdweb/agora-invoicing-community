@@ -3,6 +3,23 @@
 User
 @stop
 @section('content-header')
+<style type="text/css">
+    .read-more-show{
+      cursor:pointer;
+      color: #ed8323;
+    }
+    .read-more-hide{
+      cursor:pointer;
+      color: #ed8323;
+    }
+
+    .hide_content{
+      display: none;
+    }
+   
+
+
+</style>
 <h1>
 User Details
 </h1>
@@ -140,11 +157,13 @@ User Details
         <ul class="nav nav-tabs">
             <li class="active"><a href="#activity" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
             </li>
-            <li><a href="#settings" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
+            <li><a href="#settings" onclick="customer_detail()" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
             </li>
             <li><a href="#timeline" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
             </li>
             <li><a href="#order" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
+            </li>
+            <li><a href="#comment" data-toggle="tab">{{Lang::get('message.comments')}}</a>
             </li>
         </ul>
         <div class="tab-content">
@@ -504,7 +523,91 @@ User Details
                     <!-- /.box box-widget widget-user -->
                 </div>
             </div>
+             @include('themes.default1.user.client.editComment')
+            <div class="tab-pane" id="comment">
 
+                  <!-- timeline time label -->
+                
+                     <a href="#comment" class="btn btn-primary btn-sm pull-right" data-toggle="modal" data-target="#createComment">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add_comment')}}</a>
+                 @include('themes.default1.user.client.createComment')
+                  <br/> <br/> <br/>
+                  <table id="example4" class="table table-bordered table-striped">
+                <!-- The timeline -->
+                <ul class="timeline timeline-inverse">
+                    
+                
+               
+
+                  <!-- /.timeline-label -->
+                  <!-- timeline item -->
+                    @forelse($comments as $comment)
+                    <?php 
+                  $userId = $comment ->updated_by_user_id;
+                  $user = \App\User::where('id',$userId)->first();
+                  ?> 
+                  <li>
+                    
+                    <i class="fa fa-comments bg-yellow" title="Posted by {{$user->role}}"></i>
+
+                    <div class="timeline-item">
+                          <div class="user-block" >
+                     <img src = "{{$user->profile_pic}}" class="img-circle img-bordered-sm" alt="User Image" width="35" height="35" style="margin-top:5px;margin-left:10px;">
+                     <span class ="username" style="margin-left:10px;margin-top:5px">
+                     <a href="{{url('clients/'.$user->id)}}"  style="margin-left:10px;">{{$user->first_name}} {{$user->last_name}}</a>
+                 </span>
+                 <span class="description">
+                     <i class="fa fa-clock-o" style="margin-left:10px;">
+                        <?php
+                            $date1 = new DateTime($comment->created_at);
+                            $tz = \Auth::user()->timezone()->first()->name;
+                            $date1->setTimezone(new DateTimeZone($tz));
+                            $date = $date1->format('M j, Y, g:i a ');
+
+                            echo $date;
+                            ?>
+                     </i>
+                 </span>
+             </div>
+           
+                      <div class="timeline-body" id="longdesc" >
+                        
+                            <div class="comment more">
+                                @if(strlen($comment->description) > 100)
+                                {{substr($comment->description,0,100)}}
+                                <span class="read-more-show hide_content">More<i class="fa fa-angle-down"></i></span>
+                                <span class="read-more-content"> {{substr($comment->description,100,strlen($comment->description))}} 
+                                <span class="read-more-hide hide_content">Less <i class="fa fa-angle-up"></i></span> </span>
+                                @else
+                                {{$comment->description}}
+                                @endif
+                               
+                    
+                        <!-- {{$comment->description}} -->
+                        
+                    </div>
+                    <br/>
+                  
+                      <div class="timeline-footer">
+                        <button type="submit" class="btn btn-primary btn-xs edit-comment" data-description="{{$comment->description}}" data-comment-id="{{$comment->id}}" data-user_id="{{$comment->user_id}}" data-admin_id="{{$comment->updated_by_user_id}}"><i class='fa fa-edit' style='color:white;'> </i>&nbsp;{{Lang::get('message.edit')}}</button>
+                        <a href="{{url('comment/'.$comment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick="return delCommentFunction()"><i class='fa fa-trash' style='color:white;'> </i>&nbsp;Delete</a>
+                      </div>
+                    </div>
+                    
+                  </li>
+                   @empty 
+                    <tr>
+                    <td>
+                        {{Lang::get('message.no-comments')}}
+                    </td>
+                    </tr>
+                      @endforelse
+
+                </ul>
+            </table>
+            </div>
+
+           </div>
 
         </div>
          
@@ -561,6 +664,11 @@ User Details
       if(!confirm("Are You Sure to delete this Payment?"))
       event.preventDefault();
   }
+
+  function delCommentFunction() {
+     if(!confirm("Are you sure you want to delete this comment?"))
+        event.preventDefault();
+  }
 </script>
 <script>
 
@@ -604,17 +712,59 @@ User Details
 </script>
 <script>
   $(function () {
-     $('#example1').DataTable()
-      $('#example2').DataTable()
-       $('#example3').DataTable()
-    //    $('#example2').DataTable({
-    //   'paging'      : true,
-    //   'lengthChange': false,
-    //   'searching'   : false,
-    //   'ordering'    : true,
-    //   'info'        : true,
-    //   'autoWidth'   : false
-    // })
+     $('#example1').DataTable();
+      $('#example2').DataTable();
+       $('#example3').DataTable();
+       $('#example4').DataTable();
+ 
+    
   })
+
+    $('.edit-comment').click(function(){
+        var commentDescription = $(this).attr('data-description');
+        var commentid = $(this).attr('data-comment-id');
+        var userid  = $(this).attr('data-user_id');
+        var adminid = $(this).attr('data-admin_id');
+
+        $('#edit-comment').modal('show');
+        $('#desc').val(commentDescription);
+        $('#user-id').val(userid);
+        $('#admin-id').val(adminid);
+        var url = "{{url('comment')}}"+ "/"+ commentid
+        $('#comment-edit-form').attr('action', url)
+    });
+
+   
+   </script>
+<script type="text/javascript">
+// Hide the extra content initially, using JS so that if JS is disabled, no problemo:
+            $('.read-more-content').addClass('hide_content')
+            $('.read-more-show, .read-more-hide').removeClass('hide_content')
+
+            // Set up the toggle effect:
+            $('.read-more-show').on('click', function(e) {
+              $(this).next('.read-more-content').removeClass('hide_content');
+              $(this).addClass('hide_content');
+              e.preventDefault();
+            });
+
+            // Changes contributed by @diego-rzg
+            $('.read-more-hide').on('click', function(e) {
+              var p = $(this).parent('.read-more-content');
+              p.addClass('hide_content');
+              p.prev('.read-more-show').removeClass('hide_content'); // Hide only the preceding "Read More"
+              e.preventDefault();
+            });
+</script>
+  <script>
+    function customer_detail()
+    {
+      $.ajax({
+        url: '{{url("clients/".$client->id)}}',
+          type: 'get',
+          
+       })
+    }
+  
 </script>
 @stop

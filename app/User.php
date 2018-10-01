@@ -17,7 +17,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
     use Authenticatable,
-        CanResetPassword;
+    CanResetPassword;
     use LogsActivity;
 
     // use Billable;
@@ -82,6 +82,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function order()
     {
         return $this->hasMany('App\Model\Order\Order', 'client');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Comment');
     }
 
     public function subscription()

@@ -200,7 +200,7 @@ class ClientController extends AdvanceSearchController
      * @return \Response
      */
     public function show($id)
-    {dd($id);
+    {
         try {
             $invoice = new Invoice();
             $order = new Order();
@@ -213,6 +213,8 @@ class ClientController extends AdvanceSearchController
             }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
+
+            // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
             $comments = $client->comments()->where('user_id',$client->id)->get();
@@ -227,16 +229,82 @@ class ClientController extends AdvanceSearchController
         }
     }
 
+
+    public function getOrderDetail($id)
+    {
+         $client = $this->user->where('id', $id)->first();
+         $responseData = array();
+         foreach ($client->order()->orderBy('created_at','desc')->get() as $order) {
+            $date = $order->created_at;
+            $productName =$order->product()->first() && $order->product()->first()->name ? 
+            $order->product()->first()->name : 'Unknown' ; 
+            $number = $order->number;
+            $price = $order->price_override;
+            $status = $order->order_status;
+            array_push($responseData,(['date'=>$date , 'productName'=>$productName , 
+                'number'=>$number , 'price' =>$price, 'status'=>$status]));
+         }
+         return $responseData;
+    }
+     
+     //Get Paymetn Details on Invoice Page
+    public function getPaymentDetail($id)
+    {
+        $client = $this->user->where('id', $id)->first();
+        $invoice = new Invoice();
+        $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
+          $extraAmt = $this->getExtraAmt($id);
+        $date= '';
+        $responseData = array();
+        if($invoices){
+        foreach($client->payment()->orderBy('created_at','desc')->get() as $payment){
+           $number = $payment->invoice()->first()? $payment->invoice()->first()->number : '--';
+           $date = $payment->updated_at;
+            $date1 = new DateTime($date);
+        $tz = \Auth::user()->timezone()->first()->name;
+        $date1->setTimezone(new DateTimeZone($tz));
+        $date = $date1->format('M j, Y, g:i a ');
+           $pay_method = $payment->payment_method;
+           if($payment->invoice_id == 0){
+            $amount = $extraAmt;
+           } else {
+            $amount = $payment->amount;
+           }
+           $status = ucfirst($payment->payment_status);
+           array_push($responseData , (['number'=>$number,'pay_method'=>$pay_method,'amount'=>$amount,'status'=>$status,'date'=>$date]));
+         }
+     }
+        return $responseData;
+    }
+
+
+    public function getClientDetail($id)
+    {
+         $client = $this->user->where('id', $id)->first();
+         $currency = $client->currency;
+          if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($client->state)))
+          {
+           $client->state = \App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name'];
+          }
+          $client->country = ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)));
+
+         $displayData = (['currency'=>$currency,'client'=> $client]);
+         return ($displayData);
+    }
+
+
+
     public function getExtraAmt($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)->where('invoice_id', 0)->select('amt_to_credit')->get();
+            $amounts = Payment::where('user_id', $userId)
+            ->where('invoice_id', 0)
+            ->select('amt_to_credit')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
                 $paidSum = $paidSum + $amount->amt_to_credit;
             }
-
-            return $paidSum;
+        return $paidSum;
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());

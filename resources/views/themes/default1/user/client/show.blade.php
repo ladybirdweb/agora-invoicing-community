@@ -155,13 +155,13 @@ User Details
 <div class="margintop20">
     <div class="nav-tabs-custom">
         <ul class="nav nav-tabs">
-            <li class="active"><a href="#activity" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
+            <li><a href="#activity" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
             </li>
             <li><a href="#settings" onclick="customer_detail()" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
             </li>
-            <li><a href="#timeline" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
+            <li><a href="#timeline" onclick="payment_detail()" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
             </li>
-            <li><a href="#order" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
+            <li><a href="#order" onclick="order_detail()" data-toggle="tab">{{Lang::get('message.order_detail')}}</a>
             </li>
             <li><a href="#comment" data-toggle="tab">{{Lang::get('message.comments')}}</a>
             </li>
@@ -289,25 +289,21 @@ User Details
                                 @if(count($invoices)>0)
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
                                 <tr>
-                                    <td class="invoice-no">
-                                        @if($payment->invoice()->first())
-                                        {{($payment->invoice()->first()->number)}}
-                                        @endif
+                                    <td class="invoice-no invoice">
+                                       
                                     </td>
-                                    <td>
-                                        {{$invoice->created_at}}
-                                                
-                                            </td>
-                                    <td>
-                                        {{ucfirst($payment->payment_method)}}
+                                    <td class="date">
                                     </td>
-                                     @if($payment->invoice_id == 0)
-                                     <td class="payment-total" data-count="{{$payment->id}}">{{$extraAmt}}</td>
+                                    <td class="paymethod">
+                                    </td>
+                                    @if($payment->invoice_id == 0)
+                                     <td class="payment-total" data-count="{{$payment->id}}"></td>
                                      @endif
                                        @if($payment->invoice_id != 0)
-                                    <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}">{{$payment->amount}}</td>
+                                    <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}"></td>
                                      @endif
-                                    <td>{{ucfirst($payment->payment_status)}}</td>
+                                      
+                                    <td class="payment_status"></td>
                                     <td>
                                         <input type="hidden" class="paymentid" value="{{$payment->id}}">
                                         @if($payment->invoice_id == 0)
@@ -347,7 +343,7 @@ User Details
                             <div class="row">
                                 <div class="col-sm-4 border-right">
                                     <div class="description-block">
-                                        <h5 class="description-header">{{$client->email}} </h5>
+                                        <h5 class="description-header clientemail"></h5>
                                         <span class="description-text">{{Lang::get('message.email')}}</span>
                                     </div>
                                     <!-- /.description-block -->
@@ -355,7 +351,7 @@ User Details
                                 <!-- /.col -->
                                 <div class="col-sm-4 border-right">
                                     <div class="description-block">
-                                        <h5 class="description-header">{{ucfirst($client->company)}}</h5>
+                                        <h5 class="description-header clientcompanyname"></h5>
                                         <span class="description-text">{{Lang::get('message.company')}}</span>
                                     </div>
                                     <!-- /.description-block -->
@@ -363,7 +359,7 @@ User Details
                                 <!-- /.col -->
                                 <div class="col-sm-4">
                                     <div class="description-block">
-                                        <h5 class="description-header">{{$client->user_name}}</h5>
+                                        <h5 class="description-header  clientuser_name"></h5>
                                         <span class="description-text">User Name</span>
                                     </div>
                                     <!-- /.description-block -->
@@ -377,77 +373,71 @@ User Details
                                 <ul class="nav nav-stacked">
                                     <li>
                                         <a href="#">
-                                            <strong>Business :</strong> <span class="pull-right">{{$client->bussiness()}}</span>
+                                            <strong>Business :</strong> <span class="pull-right clientbusiness"></span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.mobile')}} :</strong> <span class="pull-right">@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</span>
+                                            <strong>{{Lang::get('message.mobile')}} :</strong> <span class="pull-right clientmobile">@if($client->mobile_code)<b>+</b>{{$client->mobile_code}}@endif{{$client->mobile}}</span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.address')}} :</strong> <span class="pull-right">{{ucfirst($client->address)}}</span>
+                                            <strong>{{Lang::get('message.address')}} :</strong> <span class="pull-right clientaddress"></span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.town')}} :</strong> <span class="pull-right">{{ucfirst($client->town)}}</span>
+                                            <strong>{{Lang::get('message.town')}} :</strong> <span class="pull-right clienttown"></span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.state')}} :</strong> <span class="pull-right">
-                                                @if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($client->state)))
-                                            {{\App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name']}}
-                                            @endif
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <strong>{{Lang::get('message.country')}} :</strong> <span class="pull-right">
-                                                {{ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)))}}
+                                            <strong>{{Lang::get('message.state')}} :</strong> <span class="pull-right clientstate">
                                                
-                                   
-                                            
                                             </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.zip')}} :</strong> <span class="pull-right">{{$client->zip}}</span>
+                                            <strong>{{Lang::get('message.country')}} :</strong> <span class="pull-right clientcountry">
+                                             </span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>{{Lang::get('message.role')}} :</strong> <span class="pull-right">{{ucfirst($client->role)}}</span>
-                                        </a>
-                                    </li>
-                                     <li>
-                                        <a href="#">
-                                            <strong>{{Lang::get('message.currency')}} :</strong> <span class="pull-right">{{$client->currency}}</span>
-                                        </a>
-                                    </li>
-                                     <li>
-                                        <a href="#">
-                                            <strong>Company Type :</strong> <span class="pull-right">{{str_replace('-',' ',ucfirst($client->company_type))}}</span>
+                                            <strong>{{Lang::get('message.zip')}} :</strong> <span class="pull-right clientzip"></span>
                                         </a>
                                     </li>
                                     <li>
                                         <a href="#">
-                                            <strong>Company Size :</strong> <span class="pull-right">{{str_replace('-',' ',ucfirst($client->company_size))}}</span>
+                                            <strong>{{Lang::get('message.role')}} :</strong> <span class="pull-right clientrole"></span>
                                         </a>
                                     </li>
                                      <li>
                                         <a href="#">
-                                            <strong>IP :</strong> <span class="pull-right">{{$client->ip}}</span>
+                                            <strong>{{Lang::get('message.currency')}} :</strong> <span class="pull-right clientcurrency"></span>
+                                        </a>
+                                    </li>
+                                     <li>
+                                        <a href="#">
+                                            <strong>Company Type :</strong> <span class="pull-right clientcompany"></span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#">
+                                            <strong>Company Size :</strong> <span class="pull-right clientcomsize"></span>
+                                        </a>
+                                    </li>
+                                     <li>
+                                        <a href="#">
+                                            <strong>IP :</strong> <span class="pull-right clientip"></span>
                                         </a>
                                     </li>
                                     @if($client && $client->skype)
                                     <li>
                                         <a href="#">
-                                            <strong>Skype :</strong> <span class="pull-right">{{$client->skype}}</span>
+                                            <strong>Skype :</strong> <span class="pull-right clientskype"></span>
                                         </a>
                                     </li>
                                     @endif
@@ -455,7 +445,7 @@ User Details
                                     @if($client && $manager)
                                     <li>
                                         <a href="{{url('clients/'.$manager->id)}}">
-                                            <strong>Account Manager :</strong> <span class="pull-right">{{$manager->first_name}} {{$manager->last_name}}</span>
+                                            <strong>Account Manager :</strong> <span class="pull-right clientmanager">{{$manager->first_name}} {{$manager->last_name}}</span>
                                         </a>
                                     </li>
                                     @endif
@@ -491,19 +481,14 @@ User Details
                             <tbody>
                                 @forelse($client->order()->orderBy('created_at','desc')->get() as $order)
                                 <tr>
-                                    <td>{{$order->created_at}}</td>
-                                    <td>
-                                        @if($order->product()->first() && $order->product()->first()->name) 
-                                        {{$order->product()->first()->name}}
-                                        @else 
-                                        Unknown
-                                        @endif
+                                    <td class="orderDate"></td>
+                                    <td class="orderName">
                                     </td>
-                                    <td>{{$order->number}}</td>
-                                    <td>{{$order->price_override}}</td>
-                                    <td>{{$order->order_status}}</td>
+                                    <td class="orderNumber"></td>
+                                    <td class="orderPrice"></td>
+                                    <td class="orderStatus"></td>
                                     <td><a href="{{url('orders/'.$order->id)}}" class="btn btn-primary btn-sm"><i class="fa fa-eye"></i>&nbsp;View</a>
-                                    <a href="{{url('orders/'.$order->id.'/delete')}}" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;{{Lang::get('message.delete')}}</a></td>
+                                    <a href="{{url('orders/'.$order->id.'/delete')}}"  onclick = "return orderDelFunction()" class="btn btn-danger btn-sm"><i class="fa fa-trash"></i>&nbsp;{{Lang::get('message.delete')}}</a></td>
                                 </tr>
                                 @empty 
                                 <tr>
@@ -635,6 +620,7 @@ User Details
 @stop
 
 @section('icheck')
+
 <script>
     $(function () {
 
@@ -664,6 +650,11 @@ User Details
       if(!confirm("Are You Sure to delete this Payment?"))
       event.preventDefault();
   }
+  function orderDelFunction() {
+      if(!confirm("Are You Sure to delete this Order?"))
+      event.preventDefault();
+  }
+  
 
   function delCommentFunction() {
      if(!confirm("Are you sure you want to delete this comment?"))
@@ -713,7 +704,7 @@ User Details
 <script>
   $(function () {
      $('#example1').DataTable();
-      $('#example2').DataTable();
+      $('#example').DataTable();
        $('#example3').DataTable();
        $('#example4').DataTable();
  
@@ -757,14 +748,67 @@ User Details
             });
 </script>
   <script>
-    function customer_detail()
-    {
-      $.ajax({
-        url: '{{url("clients/".$client->id)}}',
+ function customer_detail() {
+    '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 20px; height:250 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
+        $.ajax({
+          url: '{{url("getClientDetail/".$client->id)}}',
           type: 'get',
-          
+           success: function (response) {
+            $('.clientemail').html((response.client).email);
+            $('.clientcompanyname').html((response.client).company);
+              $('.clientuser_name').html((response.client).user_name);
+              $('.clientbusiness').html((response.client).bussiness);
+              $('.clientmobile').val((response.client).clientmobile);
+              $('.clientaddress').html((response.client).address);
+              $('.clienttown').html((response.client).town);
+              $('.clientstate').html((response.client).state);
+               $('.clientcountry').html((response.client).country);
+               $('.clientzip').html((response.client).zip);
+               $('.clientrole').html((response.client).role);
+               $('.clientcurrency').html((response.client).currency);
+               $('.clientcompany').html((response.client).company_type);
+               $('.clientcomsize').html((response.client).company_size);
+               $('.clientip').html((response.client).ip);
+               $('.clientskype').html((response.client).skype);
+               $('.clientmanager').val((response.client).clientmanager);
+         }
+      })
+    }
+
+    function payment_detail() {
+        $.ajax({
+        url: '{{url("getPaymentDetail/".$client->id)}}',
+        type: 'get',
+        success: function (response) {
+            console.log(response)
+            for(var i = 0; i < response.length; i++) {
+                $('.invoice-no.invoice').eq(i).html(response[i].number);
+                $('.paymethod').eq(i).html(response[i].pay_method);
+                $('.payment-total').eq(i).html(response[i].amount);
+                $('.payment_status').eq(i).html(response[i].status);
+                $('.date').eq(i).html(response[i].date);
+            }
+         
+        }
+    })
+    }
+
+    function order_detail() {
+       $.ajax({
+        url: '{{url("getOrderDetail/".$client->id)}}',
+        type:'get',
+        success: function (response) {
+            for(var i =0; i < response.length ; i++)
+            {
+                $('.orderDate').eq(i).html(response[i].date);
+                $('.orderName').eq(i).html(response[i].productName);
+                $('.orderNumber').eq(i).html(response[i].number);
+                $('.orderPrice').eq(i).html(response[i].price);
+                $('.orderStatus').eq(i).html(response[i].status);
+            }
+           
+        }
        })
     }
-  
 </script>
 @stop

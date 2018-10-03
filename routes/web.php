@@ -150,7 +150,7 @@
         Route::resource('clients', 'User\ClientController');
          Route::get('getClientDetail/{id}', 'User\ClientController@getClientDetail');
           Route::get('getPaymentDetail/{id}', 'User\ClientController@getPaymentDetail');
-          Route::get('getOrderDetail/{id}','User\ClientController@getOrderDetail');
+          Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');
         // Route::get('get-clients', 'User\ClientController@GetClients');
          Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
         Route::get('clients-delete', 'User\ClientController@destroy');

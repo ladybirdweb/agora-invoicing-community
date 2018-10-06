@@ -536,7 +536,7 @@ return [
       'system-api'     => 'System Api Keys',
       'domain-message' => 'Enter domain name in the form \'domain.com\'',
       'domain-name'    => 'Domain Name',
-      'filters'        =>'Filters',
-      'apply'         => 'Apply',
+      'filters'        => 'Filters',
+      'apply'          => 'Apply',
 
 ];

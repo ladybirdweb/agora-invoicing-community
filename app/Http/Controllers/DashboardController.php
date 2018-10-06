@@ -49,8 +49,8 @@ class DashboardController extends Controller
             }
         }
         $arrayCountList = array_count_values($productName);
-       $startSubscriptionDate = date('Y-m-d');;
-         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
+        $startSubscriptionDate = date('Y-m-d');
+        $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',

@@ -49,13 +49,15 @@ class DashboardController extends Controller
             }
         }
         $arrayCountList = array_count_values($productName);
+       $startSubscriptionDate = date('Y-m-d');;
+         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
         return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
                 'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
-
-                 'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products', 'arrayCountList', 'pendingPaymentINR', 'pendingPaymentUSD', 'status'));
+                'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
+                 'products', 'arrayCountList', 'pendingPaymentINR', 'pendingPaymentUSD', 'status','startSubscriptionDate',
+                 'endSubscriptionDate'));
     }
 
     /**

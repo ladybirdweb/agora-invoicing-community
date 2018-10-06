@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers\Order;
 
-use App\Http\Controllers\Controller;
-use App\Model\Order\Order;
-use Bugsnag;
 use Crypt;
+use Bugsnag;
+use App\Model\Order\Order;
 use Illuminate\Http\Request;
+use App\Model\Product\Subscription;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\Common\BaseSettingsController;
 
 class ExtendedOrderController extends Controller
 {
-    public function advanceSearch($order_no = '', $product_id = '', $expiry = '', $from = '', $till = '', $domain = '')
+    public function advanceSearch($order_no = '', $product_id = '', $expiry = '', 
+        $expiryTill='', $from = '', $till = '', $domain = '')
     {
+        try{
         $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
         if ($order_no) {
             $join = $join->where('number', $order_no);
@@ -20,8 +24,28 @@ class ExtendedOrderController extends Controller
             $join = $join->where('product', $product_id);
         }
         if ($expiry) {
-            $join = $join->where('ends_at', 'LIKE', '%'.$expiry.'%');
+            // $join = $join->where('ends_at', 'LIKE', '%'.$expiry.'%');
+             $expiryFrom = (new BaseSettingsController)->getDateFormat($expiry);
+            // $fromExpiryDate = date_create($expiry);
+             
+            // $from = date_format($fromExpiryDate, 'Y-m-d H:m:i');
+            $tills = (new BaseSettingsController)->getDateFormat();
+
+            $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
+            $join = $join->whereBetween('subscriptions.ends_at', [$expiryFrom, $tillDate]);
         }
+ 
+
+
+         if ($expiryTill) {
+          
+            // $tillExpiryDate = date_create($expiryTill);
+            // $till = date_format($tillExpiryDate, 'Y-m-d H:m:i');
+              $exptill = (new BaseSettingsController)->getDateFormat($expiryTill);
+            $froms = Subscription::first()->ends_at;
+            $fromDate = $this->getFromDate($expiry, $froms);
+            $join = $join->whereBetween('subscriptions.ends_at', [$fromDate, $exptill]);
+         }
         if ($from) {
             $fromdate = date_create($from);
 
@@ -44,13 +68,16 @@ class ExtendedOrderController extends Controller
             }
             $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
         }
-
+// dd($join->get());
         $join = $join->orderBy('created_at', 'desc')
         ->select('orders.id', 'orders.created_at', 'client',
-            'price_override', 'order_status', 'number', 'serial_key');
+            'price_override', 'order_status','product', 'number', 'serial_key');
 
         return $join;
-    }
+     } catch(\Exception $ex) {
+        dd($ex);
+     }
+   }
 
     public function getTillDate($from, $till, $tills)
     {

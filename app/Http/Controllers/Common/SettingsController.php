@@ -209,12 +209,15 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function settingsActivity(Activity $activities)
+    public function settingsActivity(Request $request ,Activity $activities)
     {
         try {
             $activity = $activities->all();
-
-            return view('themes.default1.common.Activity-Log', compact('activity'));
+            $from = $request->input('from');
+            $till = $request->input('till');
+            $delFrom = $request->input('delFrom');
+            $delTill = $request->input('delTill');
+            return view('themes.default1.common.Activity-Log', compact('activity','from','till','delFrom','delTill'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -229,14 +232,19 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function getActivity()
+    public function getActivity(Request $request)
     {
         try {
-            $activity_log = Activity::select('id', 'log_name', 'description',
-                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
+            $from = $request->input('log_from');
+            $till = $request->input('log_till');
+            $delFrom = $request->input('delFrom');
+             $delTill = $request->input('delTill');
+            $query = $this->advanceSearch($from,$till,$delFrom,$delTill);
+            // $activity_log = Activity::select('id', 'log_name', 'description',
+            //     'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 
-            return \DataTables::of($activity_log->take(50))
-             ->setTotalRecords($activity_log->count())
+            return \DataTables::of($query->take(50))
+             ->setTotalRecords($query->count())
              ->addColumn('checkbox', function ($model) {
                  return "<input type='checkbox' class='activity' value=".$model->id.' name=select[] id=check>';
              })
@@ -298,6 +306,7 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
+            dd($e);
             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());

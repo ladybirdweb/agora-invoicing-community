@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Models\Activity;
+use App\Http\Controllers\Order\ExtendedOrderController;
 
 class BaseSettingsController extends Controller
 {
@@ -63,7 +65,7 @@ class BaseSettingsController extends Controller
         $created = new DateTime($dbdate);
         $tz = \Auth::user()->timezone()->first()->name;
         $created->setTimezone(new DateTimeZone($tz));
-        $date = $created->format('M j, Y, g:i a ');
+        $date = $created->format('M j, Y, g:i a ');//5th October, 2018, 11:17PM
         $newDate = $date;
 
         return $newDate;
@@ -117,5 +119,49 @@ class BaseSettingsController extends Controller
                             '.$e->getMessage().'
                     </div>';
         }
+    }
+
+    public function advanceSearch($from='',$till='',$delFrom='',$delTill='')
+    {
+       $join = new Activity();
+       if ($from) {
+          $from = $this->getDateFormat($from);
+          $tills = $this->getDateFormat();
+        $tillDate = (new ExtendedOrderController)->getTillDate($from, $till, $tills);
+         $join= $join->whereBetween('created_at', [$from, $tillDate]);
+     }
+     if ($till) {
+        $till = $this->getDateFormat($till);
+        $froms = Activity::first()->created_at;
+        $fromDate = (new ExtendedOrderController)->getFromDate($from, $froms);
+        $join = $join->whereBetween('created_at', [$fromDate, $till]);
+     }
+     if($delFrom) {
+        $from = $this->getDateFormat($delFrom);
+         $tills = $this->getDateFormat();
+       $tillDate = (new ExtendedOrderController)->getTillDate($from, $delTill, $tills);
+        $join->whereBetween('created_at', [$from, $tillDate])->delete();
+        
+        }
+        if($delTill) {
+        $till = $this->getDateFormat($delTill);
+        $froms=Activity::first()->created_at;
+        $fromDate = (new ExtendedOrderController)->getFromDate($delFrom, $froms);
+         $join->whereBetween('created_at', [$fromDate, $till])->delete();;
+        }
+       $join = $join->orderBy('created_at', 'desc')
+        ->select('id', 'log_name', 'description',
+                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at');
+        return $join;
+
+    }
+
+    public function getDateFormat($dbdate='')
+    {
+        $created = new DateTime($dbdate);
+        $tz = \Auth::user()->timezone()->first()->name;
+        $created->setTimezone(new DateTimeZone($tz));
+        $date = $created->format('Y-m-d H:m:i');
+        return $date;
     }
 }

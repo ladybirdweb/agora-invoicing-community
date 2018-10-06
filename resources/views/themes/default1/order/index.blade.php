@@ -48,20 +48,26 @@ View All Orders
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
-                {!! Form::label('expiry','Expiry') !!}
-                {!! Form::text('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
+                {!! Form::label('expiry','Expiry From') !!}
+                {!! Form::date('expiry',null,['class' => 'form-control','id'=>'expary']) !!}
+
+            </div>
+             <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('expiry','Expiry Till') !!}
+                {!! Form::date('expiryTill',null,['class' => 'form-control','id'=>'exparytill']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('from','Order From') !!}
-                {!! Form::text('from',null,['class' => 'form-control','id'=>'payment_date']) !!}
+                {!! Form::date('from',null,['class' => 'form-control','id'=>'payment_date']) !!}
 
             </div>
             <div class="col-md-2 form-group">
                 <!-- first name -->
                 {!! Form::label('till','Order Till') !!}
-                {!! Form::text('till',null,['class' => 'form-control','id'=>'payment_till']) !!}
+                {!! Form::date('till',null,['class' => 'form-control','id'=>'payment_till']) !!}
 
             </div>
             <div class="col-md-2 form-group">
@@ -70,8 +76,9 @@ View All Orders
                 {!! Form::text('domain',null,['class' => 'form-control','id'=>'domain']) !!}
 
             </div>
+        </div>
 
-          
+           <div class='row'>
                 <div class="col-md-6">
                     <!-- {!! Form::submit('Search',['class'=>'btn btn-primary']) !!} -->
                       <button name="Search" type="submit"  class="btn btn-primary" data-loading-text="<i class='fa fa-search fa-spin fa-1x fa-fw'>&nbsp;</i> updating..."><i class="fa fa-search">&nbsp;&nbsp;</i>{!!Lang::get('Search')!!}</button>
@@ -90,6 +97,7 @@ View All Orders
                         $('#order_no').val('');
                         $('#product_id').val('');
                         $('#expary').val('');
+                        $('#exparytill').val('');
                         $('#payment_date').val('');
                         $('#payment_till').val('');
                         $('#domain').val('');
@@ -153,6 +161,7 @@ View All Orders
                           <th>Client Name</th>
                            
                             <th>Order No</th>
+                            <th>Product Name</th>
                             <th>Total</th>
                             
                              <th>Status</th>
@@ -175,7 +184,7 @@ View All Orders
             serverSide: true,
              stateSave: false,
             order: [[ 0, "desc" ]],
-             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&from=$from&till=$till&domain=$domain" ) !!}',
+             ajax: '{!! route('get-orders',"order_no=$order_no&product_id=$product_id&expiry=$expiry&expiryTill=$expiryTill&from=$from&till=$till&domain=$domain" ) !!}',
             "oLanguage": {
                 "sLengthMenu": "_MENU_ Records per page",
                 "sSearch"    : "Search: ",
@@ -193,6 +202,7 @@ View All Orders
                 {data: 'date', name: 'date'},
                 {data: 'client', name: 'client'},
                 {data: 'number', name: 'number'},
+                {data: 'productname', name: 'productname'},
                 {data: 'price_override', name: 'price_override'},
                   {data: 'order_status', name: 'order_status'},
                   {data: 'ends_at', name: 'ends_at'},
@@ -249,24 +259,5 @@ View All Orders
         }  
 
      });
-</script>
-@stop
-@section('datepicker')
-<script type="text/javascript">
-$(function () {
-    $('#payment_date').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-});
-$(function () {
-    $('#payment_till').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-});
-$(function () {
-    $('#expary').datetimepicker({
-        format: 'YYYY-MM-DD'
-    });
-});
 </script>
 @stop

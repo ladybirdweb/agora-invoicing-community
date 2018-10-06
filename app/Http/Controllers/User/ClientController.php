@@ -9,7 +9,6 @@ use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\User;
-use App\Comment;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
@@ -217,10 +216,11 @@ class ClientController extends AdvanceSearchController
             // $client = "";
             $currency = $client->currency;
             $orders = $order->where('client', $id)->get();
-            $comments = $client->comments()->where('user_id',$client->id)->get();
+            $comments = $client->comments()->where('user_id', $client->id)->get();
+
             return view('themes.default1.user.client.show',
                 compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt','comments'));
+                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt', 'comments'));
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -229,70 +229,68 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-
     public function getOrderDetail($id)
     {
-         $client = $this->user->where('id', $id)->first();
-         $responseData = array();
-         foreach ($client->order()->orderBy('created_at','desc')->get() as $order) {
+        $client = $this->user->where('id', $id)->first();
+        $responseData = [];
+        foreach ($client->order()->orderBy('created_at', 'desc')->get() as $order) {
             $date = $order->created_at;
-            $productName =$order->product()->first() && $order->product()->first()->name ? 
-            $order->product()->first()->name : 'Unknown' ; 
+            $productName = $order->product()->first() && $order->product()->first()->name ?
+            $order->product()->first()->name : 'Unknown';
             $number = $order->number;
             $price = $order->price_override;
             $status = $order->order_status;
-            array_push($responseData,(['date'=>$date , 'productName'=>$productName , 
-                'number'=>$number , 'price' =>$price, 'status'=>$status]));
-         }
-         return $responseData;
+            array_push($responseData, (['date'=> $date, 'productName'=>$productName,
+                'number'                      => $number, 'price' =>$price, 'status'=>$status, ]));
+        }
+
+        return $responseData;
     }
-     
-     //Get Paymetn Details on Invoice Page
+
+    //Get Paymetn Details on Invoice Page
     public function getPaymentDetail($id)
     {
         $client = $this->user->where('id', $id)->first();
         $invoice = new Invoice();
         $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-          $extraAmt = $this->getExtraAmt($id);
-        $date= '';
-        $responseData = array();
-        if($invoices){
-        foreach($client->payment()->orderBy('created_at','desc')->get() as $payment){
-           $number = $payment->invoice()->first()? $payment->invoice()->first()->number : '--';
-           $date = $payment->updated_at;
-            $date1 = new DateTime($date);
-        $tz = \Auth::user()->timezone()->first()->name;
-        $date1->setTimezone(new DateTimeZone($tz));
-        $date = $date1->format('M j, Y, g:i a ');
-           $pay_method = $payment->payment_method;
-           if($payment->invoice_id == 0){
-            $amount = $extraAmt;
-           } else {
-            $amount = $payment->amount;
-           }
-           $status = ucfirst($payment->payment_status);
-           array_push($responseData , (['number'=>$number,'pay_method'=>$pay_method,'amount'=>$amount,'status'=>$status,'date'=>$date]));
-         }
-     }
+        $extraAmt = $this->getExtraAmt($id);
+        $date = '';
+        $responseData = [];
+        if ($invoices) {
+            foreach ($client->payment()->orderBy('created_at', 'desc')->get() as $payment) {
+                $number = $payment->invoice()->first() ? $payment->invoice()->first()->number : '--';
+                $date = $payment->updated_at;
+                $date1 = new DateTime($date);
+                $tz = \Auth::user()->timezone()->first()->name;
+                $date1->setTimezone(new DateTimeZone($tz));
+                $date = $date1->format('M j, Y, g:i a ');
+                $pay_method = $payment->payment_method;
+                if ($payment->invoice_id == 0) {
+                    $amount = $extraAmt;
+                } else {
+                    $amount = $payment->amount;
+                }
+                $status = ucfirst($payment->payment_status);
+                array_push($responseData, (['number'=>$number, 'pay_method'=>$pay_method, 'amount'=>$amount, 'status'=>$status, 'date'=>$date]));
+            }
+        }
+
         return $responseData;
     }
 
-
     public function getClientDetail($id)
     {
-         $client = $this->user->where('id', $id)->first();
-         $currency = $client->currency;
-          if(key_exists('name',\App\Http\Controllers\Front\CartController::getStateByCode($client->state)))
-          {
-           $client->state = \App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name'];
-          }
-          $client->country = ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)));
+        $client = $this->user->where('id', $id)->first();
+        $currency = $client->currency;
+        if (array_key_exists('name', \App\Http\Controllers\Front\CartController::getStateByCode($client->state))) {
+            $client->state = \App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name'];
+        }
+        $client->country = ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)));
 
-         $displayData = (['currency'=>$currency,'client'=> $client]);
-         return ($displayData);
+        $displayData = (['currency'=>$currency, 'client'=> $client]);
+
+        return $displayData;
     }
-
-
 
     public function getExtraAmt($userId)
     {
@@ -304,7 +302,8 @@ class ClientController extends AdvanceSearchController
             foreach ($amounts as $amount) {
                 $paidSum = $paidSum + $amount->amt_to_credit;
             }
-        return $paidSum;
+
+            return $paidSum;
         } catch (\Exception $ex) {
             app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());

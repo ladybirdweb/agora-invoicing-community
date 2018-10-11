@@ -13,6 +13,7 @@
         "chumper/zipper": "1.0.x",
         "darryldecode/cart": "dev-master",
         "ezyang/htmlpurifier": "^4.10",
+        "geoip2/geoip2": "^2.9",
         "graham-campbell/markdown": "^10.1",
         "laravel/framework": "5.6.*",
         "laravel/tinker": "~1.0",
@@ -28,6 +29,7 @@
         "spatie/laravel-activitylog": "^2.7",
         "symfony/polyfill-iconv": "^1.8",
         "thomaswelton/laravel-gravatar": "~1.0",
+        "torann/geoip": "^1.0",
         "yajra/laravel-datatables": "^1.0"
     },
     "require-dev": {

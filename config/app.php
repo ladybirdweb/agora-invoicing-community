@@ -181,6 +181,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Bugsnag\BugsnagLaravel\BugsnagServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,
+        Torann\GeoIP\GeoIPServiceProvider::class,
         /*
          * Package Service Providers...
          */
@@ -264,6 +265,8 @@ return [
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
+          'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
+
 
     ],
 

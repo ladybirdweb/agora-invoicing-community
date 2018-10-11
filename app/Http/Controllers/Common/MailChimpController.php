@@ -347,7 +347,7 @@ class MailChimpController extends Controller
         try {
             MailchimpGroupAgoraRelation::where('id', '!=', 0)->delete();
             foreach ($request->row as $key => $value) {
-                MailchimpGroupAgoraRelation::create(['agora_product_id'=> $value[0],
+            MailchimpGroupAgoraRelation::create(['agora_product_id'=> $value[0],
              'mailchimp_group_cat_id'                                  => $value[1], ]);
             }
 

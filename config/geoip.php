@@ -1,4 +1,5 @@
 <?php
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -42,31 +43,31 @@ return [
     */
     'services' => [
         'maxmind_database' => [
-            'class' => \Torann\GeoIP\Services\MaxMindDatabase::class,
+            'class'         => \Torann\GeoIP\Services\MaxMindDatabase::class,
             'database_path' => storage_path('app/geoip.mmdb'),
-            'update_url' => 'https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
-            'locales' => ['en'],
+            'update_url'    => 'https://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz',
+            'locales'       => ['en'],
         ],
         'maxmind_api' => [
-            'class' => \Torann\GeoIP\Services\MaxMindWebService::class,
-            'user_id' => env('MAXMIND_USER_ID'),
+            'class'       => \Torann\GeoIP\Services\MaxMindWebService::class,
+            'user_id'     => env('MAXMIND_USER_ID'),
             'license_key' => env('MAXMIND_LICENSE_KEY'),
-            'locales' => ['en'],
+            'locales'     => ['en'],
         ],
         'ipapi' => [
-            'class' => \Torann\GeoIP\Services\IPApi::class,
-            'secure' => true,
-            'key' => env('IPAPI_KEY'),
+            'class'          => \Torann\GeoIP\Services\IPApi::class,
+            'secure'         => true,
+            'key'            => env('IPAPI_KEY'),
             'continent_path' => storage_path('app/continents.json'),
-            'lang' => 'en',
+            'lang'           => 'en',
         ],
-        
+
         'ipgeolocation' => [
-            'class' => \Torann\GeoIP\Services\IPGeoLocation::class,
-            'secure' => true,
-            'key' => env('IPGEOLOCATION_KEY'),
+            'class'          => \Torann\GeoIP\Services\IPGeoLocation::class,
+            'secure'         => true,
+            'key'            => env('IPGEOLOCATION_KEY'),
             'continent_path' => storage_path('app/continents.json'),
-            'lang' => 'en',
+            'lang'           => 'en',
         ],
         'ipdata' => [
             'class'  => \Torann\GeoIP\Services\IPData::class,
@@ -118,17 +119,17 @@ return [
     |
     */
     'default_location' => [
-        'ip'          => '122.172.180.5',
+        'ip'           => '122.172.180.5',
         'iso_code'     => 'IN',
-        'country'     => 'India',
-        'city'        => 'Bengaluru',
-        'state'       => 'KA',
-        'postal_code' => 560076,
-        'state_name'  => 'Karnataka',
-        'lat'         => 12.9833,
-        'lon'         => 77.5833,
-        'timezone'    => 'Asia/Kolkata',
-        'continent'   => 'AS',
-        'default'     => false,
+        'country'      => 'India',
+        'city'         => 'Bengaluru',
+        'state'        => 'KA',
+        'postal_code'  => 560076,
+        'state_name'   => 'Karnataka',
+        'lat'          => 12.9833,
+        'lon'          => 77.5833,
+        'timezone'     => 'Asia/Kolkata',
+        'continent'    => 'AS',
+        'default'      => false,
     ],
 ];

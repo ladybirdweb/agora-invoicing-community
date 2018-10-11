@@ -132,7 +132,7 @@ class MailChimpController extends Controller
               ->pluck('mailchimp_group_cat_id')->first();
              $hash = md5($email);
               $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash",[
-                 'interests'         => array( $interestGroupIdForNo => false , $interestGroupIdForYes=>true ,$productGroupId =>true),
+                 'interests' => array( $interestGroupIdForNo => false , $interestGroupIdForYes=>true ,$productGroupId =>true),
                  //refer to https://us7.api.mailchimp.com/playground
               ]);
              } catch (Exception $ex) {

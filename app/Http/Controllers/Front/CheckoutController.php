@@ -216,7 +216,7 @@ class CheckoutController extends InfoController
                  * Do order, invoicing etc
                  */
                 $invoice = $invoice_controller->generateInvoice();
-
+                
                 $pay = $this->payment($payment_method, $status = 'pending');
                 $payment_method = $pay['payment'];
                 $status = $pay['status'];
@@ -257,6 +257,10 @@ class CheckoutController extends InfoController
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
+
+                //Update Subscriber To Mailchimp
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
                 $url = '';
                 if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',

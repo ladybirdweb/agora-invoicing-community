@@ -51,10 +51,11 @@ class ClientController extends AdvanceSearchController
         $company_size = $request->input('company_size');
         $role = $request->input('role');
         $position = $request->input('position');
-
+        $reg_from = $request->input('reg_from');
+        $reg_till = $request->input('reg_till');
         return view('themes.default1.user.client.index',
             compact('name', 'username', 'company', 'mobile', 'email',
-                'country', 'industry', 'company_type', 'company_size', 'role', 'position'));
+                'country', 'industry', 'company_type', 'company_size', 'role', 'position','reg_from','reg_till'));
     }
 
     /**
@@ -73,9 +74,10 @@ class ClientController extends AdvanceSearchController
         $company_size = $request->input('company_size');
         $role = $request->input('role');
         $position = $request->input('position');
-
+        $reg_from = $request->input('reg_from');
+        $reg_till= $request->input('reg_till');
         $user = $this->advanceSearch($name, $username, $company,
-         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position);
+         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position,$reg_from,$reg_till);
 
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
@@ -181,6 +183,8 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['query'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $r = $mailchimp->addSubscriber($user->email);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
@@ -507,13 +511,14 @@ class ClientController extends AdvanceSearchController
 
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
-      $company_type = '', $company_size = '', $role = '', $position = '')
+      $company_type = '', $company_size = '', $role = '', $position = '',$reg_from='',$reg_till='')
     {
         $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
         $join = $this->getRolPos($join, $role, $position);
+        $join = $this->getregFromTill($join,$reg_from, $reg_till);
 
         $join = $join->orderBy('created_at', 'desc')
         ->select('id', 'first_name', 'last_name', 'email', 'created_at',

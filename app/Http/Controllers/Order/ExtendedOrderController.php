@@ -24,11 +24,7 @@ class ExtendedOrderController extends Controller
             $join = $join->where('product', $product_id);
         }
         if ($expiry) {
-            // $join = $join->where('ends_at', 'LIKE', '%'.$expiry.'%');
-             $expiryFrom = (new BaseSettingsController)->getDateFormat($expiry);
-            // $fromExpiryDate = date_create($expiry);
-             
-            // $from = date_format($fromExpiryDate, 'Y-m-d H:m:i');
+            $expiryFrom = (new BaseSettingsController)->getDateFormat($expiry);
             $tills = (new BaseSettingsController)->getDateFormat();
 
             $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
@@ -39,9 +35,7 @@ class ExtendedOrderController extends Controller
 
          if ($expiryTill) {
           
-            // $tillExpiryDate = date_create($expiryTill);
-            // $till = date_format($tillExpiryDate, 'Y-m-d H:m:i');
-              $exptill = (new BaseSettingsController)->getDateFormat($expiryTill);
+             $exptill = (new BaseSettingsController)->getDateFormat($expiryTill);
             $froms = Subscription::first()->ends_at;
             $fromDate = $this->getFromDate($expiry, $froms);
             $join = $join->whereBetween('subscriptions.ends_at', [$fromDate, $exptill]);

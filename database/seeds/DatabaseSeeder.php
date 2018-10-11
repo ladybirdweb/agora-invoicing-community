@@ -346,6 +346,8 @@ class TemplateTableSeeder extends Seeder
 </tr>
 </tbody>
 </table>
+<p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your Serial Key.</p>
+<p><a class="moz-txt-link-abbreviated" href="https://www.support.faveohelpdesk.com/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
 <p style="color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Click below to login to your Control Panel to view invoice or to pay for any pending invoice.</p>
 </td>
 <td style="background: #fff; border-right: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>

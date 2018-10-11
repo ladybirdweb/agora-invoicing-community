@@ -154,10 +154,10 @@ User Details
 
 <div class="margintop20">
     <div class="nav-tabs-custom">
-        <ul class="nav nav-tabs">
+        <ul class="nav nav-tabs" id="myTab">
             <li><a href="#activity" data-toggle="tab">{{Lang::get('message.transation_detail')}}</a>
             </li>
-            <li><a href="#settings" onclick="customer_detail()" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
+            <li><a href="#settings" onclick="customer_detail()" onload="customer_detail()" data-toggle="tab">{{Lang::get('message.customer_detail')}}</a>
             </li>
             <li><a href="#timeline" onclick="payment_detail()" data-toggle="tab">{{Lang::get('message.payment_detail')}}</a>
             </li>
@@ -748,6 +748,9 @@ User Details
             });
 </script>
   <script>
+
+//Do your stuff, JS!
+
  function customer_detail() {
     '<img id="blur-bg" class="backgroundfadein" style="top:40%;left:50%; width: 20px; height:250 px; display: block; position:    fixed;" src="{!! asset("lb-faveo/media/images/gifloader3.gif") !!}">'
         $.ajax({
@@ -810,5 +813,21 @@ User Details
         }
        })
     }
+
+    // $('#myTab a').click(function(e) {
+    //   e.preventDefault();
+    //   $(this).tab('show');
+    // });
+
+    // // store the currently selected tab in the hash value
+    // $("ul.nav-tabs > li > a").on("shown.bs.tab", function(e) {
+    //   var id = $(e.target).attr("href").substr(1);
+    //   window.location.hash = id;
+    // });
+
+    // // on load of the page: switch to the currently selected tab
+    // var hash = window.location.hash;
+    
+    // $('#myTab a[href="' + hash + '"]').tab('show');
 </script>
 @stop

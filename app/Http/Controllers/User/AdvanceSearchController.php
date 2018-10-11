@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\User;
 
 class AdvanceSearchController extends Controller
 {
@@ -56,6 +57,32 @@ class AdvanceSearchController extends Controller
 
         return $join;
     }
+    
+    /**
+     * Serach for Registered From,tILL.
+     */
+    public function getregFromTill($join,$reg_from, $reg_till)
+    {
+        if ($reg_from) {
+            $fromdate = date_create($reg_from);
+
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
+              $cont = new \App\Http\Controllers\Order\ExtendedOrderController();
+              $tillDate = $cont->getTillDate($from, $reg_till, $tills);
+            $join = $join->whereBetween('created_at', [$from, $tillDate]);
+        }
+        if ($reg_till) {
+            $tilldate = date_create($reg_till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = User::first()->created_at;
+             $cont = new \App\Http\Controllers\Order\ExtendedOrderController();
+           $fromDate = $cont->getFromDate($reg_from, $froms);
+             $join = $join->whereBetween('created_at', [$fromDate, $till]);
+        }
+        return $join;
+    }
+   
 
     /**
      * Serach for Name,UserName,Company.

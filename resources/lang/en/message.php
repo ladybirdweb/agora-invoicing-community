@@ -539,4 +539,18 @@ return [
       'filters'        =>'Filters',
       'apply'         => 'Apply',
 
+      /*
+     *Mailchimp Product Groups
+     */
+     'helpdesk_advance' => 'Faveo Helpdesk Advance',
+     'helpdesk_pro'     => 'Faveo Helpdesk Pro',
+     'helpdesk_smart'   => 'Faveo Helpdesk Smart',
+     'helpdesk_community'=> 'Faveo Helpdesk Community',
+     'service_advance'   => 'Faveo ServiceDesk Advance',
+     'service_pro'       => 'Faveo ServiceDesk Pro',
+     'service_smart'     => 'Faveo ServiceDesk Smart',
+     'service_community' => 'Faveo ServiceDesk Community',
+     'agora-products'    => 'Agora Products',
+     'mailchimp-product' => 'Mailchimp Group Fields',
+  
 ];

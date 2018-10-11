@@ -49,8 +49,8 @@ active
                                            
                                             <td><?php
                                                 $date1 = new DateTime($order->created_at);
-                                                $tz = \Auth::user()->timezone()->first()->name;
-                                                $date1->setTimezone(new DateTimeZone($tz));
+                                                // $tz = \Auth::user()->timezone()->first()->name;
+                                                // $date1->setTimezone(new DateTimeZone($tz));
                                                 $date = $date1->format('M j, Y, g:i a ');?>
                                                 Date: {{$date}}
                                             </td>

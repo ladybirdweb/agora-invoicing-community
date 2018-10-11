@@ -45,6 +45,7 @@
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
         Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
+        Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
         Route::get('contact-us', 'Front\CartController@contactUs');
         Route::post('contact-us', 'Front\CartController@postContactUs');
         Route::get('add-cart/{slug}', 'Front\CartController@addCartBySlug');

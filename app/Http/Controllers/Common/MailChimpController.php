@@ -128,9 +128,9 @@ class MailChimpController extends Controller
                $productGroupId = $this->groupRelation->where('agora_product_id', $productid)
               ->pluck('mailchimp_group_cat_id')->first();
 
-             $hash = md5($email);
-              $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash",[
-                 'interests' => array( $interestGroupIdForNo => false , $interestGroupIdForYes=>true ,$productGroupId =>true),
+            $hash = md5($email);
+            $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
+                 'interests' => [$interestGroupIdForNo => false, $interestGroupIdForYes=>true, $productGroupId =>true],
 
                  //refer to https://us7.api.mailchimp.com/playground
               ]);

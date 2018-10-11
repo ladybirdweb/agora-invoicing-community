@@ -53,9 +53,10 @@ class ClientController extends AdvanceSearchController
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
+
         return view('themes.default1.user.client.index',
             compact('name', 'username', 'company', 'mobile', 'email',
-                'country', 'industry', 'company_type', 'company_size', 'role', 'position','reg_from','reg_till'));
+                'country', 'industry', 'company_type', 'company_size', 'role', 'position', 'reg_from', 'reg_till'));
     }
 
     /**
@@ -75,9 +76,9 @@ class ClientController extends AdvanceSearchController
         $role = $request->input('role');
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
-        $reg_till= $request->input('reg_till');
+        $reg_till = $request->input('reg_till');
         $user = $this->advanceSearch($name, $username, $company,
-         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position,$reg_from,$reg_till);
+         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position, $reg_from, $reg_till);
 
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
@@ -511,14 +512,14 @@ class ClientController extends AdvanceSearchController
 
     public function advanceSearch($name = '', $username = '', $company = '',
      $mobile = '', $email = '', $country = '', $industry = '',
-      $company_type = '', $company_size = '', $role = '', $position = '',$reg_from='',$reg_till='')
+      $company_type = '', $company_size = '', $role = '', $position = '', $reg_from = '', $reg_till = '')
     {
         $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
         $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
         $join = $this->getRolPos($join, $role, $position);
-        $join = $this->getregFromTill($join,$reg_from, $reg_till);
+        $join = $this->getregFromTill($join, $reg_from, $reg_till);
 
         $join = $join->orderBy('created_at', 'desc')
         ->select('id', 'first_name', 'last_name', 'email', 'created_at',

@@ -265,8 +265,7 @@ return [
           'DataTables' => Yajra\DataTables\Facades\DataTables::class,
           'PDF'        => Barryvdh\DomPDF\Facade::class,
           'Markdown'   => GrahamCampbell\Markdown\Facades\Markdown::class,
-          'GeoIP' => \Torann\GeoIP\Facades\GeoIP::class,
-
+          'GeoIP'      => \Torann\GeoIP\Facades\GeoIP::class,
 
     ],
 

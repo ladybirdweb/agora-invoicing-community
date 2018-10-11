@@ -179,9 +179,8 @@ class ClientController extends AdvanceSearchController
             $str = str_random(6);
             $password = \Hash::make($str);
             $user->password = $password;
-            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
-            $location = $cont->getLocation();
-            $user->ip = $location['query'];
+            $location = \GeoIP::getLocation();
+            $user->ip = $location['ip'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();

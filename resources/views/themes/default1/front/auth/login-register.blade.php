@@ -19,13 +19,13 @@ main
 <?php
 
 
-// $location = \GeoIP::getLocation();
-$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+$location = \GeoIP::getLocation();
+$country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+$states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
 $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-$state_code = $location['countryCode'] . "-" . $location['region'];
+$state_code = $location['iso_code'] . "-" . $location['state'];
 $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
+$mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
 
 
 ?>

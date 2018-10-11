@@ -57,7 +57,7 @@ return [
     51 => 'Yajra\\DataTables\\DataTablesServiceProvider',
     52 => 'GrahamCampbell\\Markdown\\MarkdownServiceProvider',
     53 => 'Spatie\\Activitylog\\ActivitylogServiceProvider',
-  ),
+  ],
   'eager' => 
   array (
     0 => 'Illuminate\\Auth\\AuthServiceProvider',
@@ -207,7 +207,7 @@ return [
     'form'                                                   => 'Collective\\Html\\HtmlServiceProvider',
     'Collective\\Html\\HtmlBuilder'                          => 'Collective\\Html\\HtmlServiceProvider',
     'Collective\\Html\\FormBuilder'                          => 'Collective\\Html\\HtmlServiceProvider',
-  ],
+  ),
   'when' => [
     'Illuminate\\Broadcasting\\BroadcastServiceProvider' => [
     ],

@@ -17,16 +17,15 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $shop = $tax_rule->shop_inclusive;
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
-            $controller = new \App\Http\Controllers\Front\GetPageTemplateController();
-            $location = $controller->getLocation();
+            $location = \GeoIP::getLocation();
 
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $country_iso = $location['countryCode'];
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
+            $country_iso = $location['iso_code'];
 
             $geoip_country = '';
             $geoip_state = '';

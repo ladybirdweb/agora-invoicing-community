@@ -128,48 +128,6 @@ class GetPageTemplateController extends Controller
         return $service_template;
     }
 
-    /**
-     *Get The currency of User.
-     */
-    public function getCurrency($location)
-    {
-        if ($location['country'] == 'India') {
-            $currency = 'INR';
-        } else {
-            $currency = 'USD';
-        }
-        if (\Auth::user()) {
-            $currency = 'INR';
-            $user_currency = \Auth::user()->currency;
-            if ($user_currency == 1 || $user_currency == 'USD') {
-                $currency = 'USD';
-            }
-        }
-
-        return $currency;
-    }
-
-    /*
-    * To get the current location(ip details and location deails)
-    */
-    public function getLocation()
-    {
-        if (!empty($_SERVER['HTTP_CLIENT_IP'])) {   //check ip from share internet
-            $ip = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {   //to check ip is pass from proxy
-            $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } else {
-            $ip = $_SERVER['REMOTE_ADDR'];
-        }
-
-        if ($ip != '::1') {
-            $location = json_decode(file_get_contents('http://ip-api.com/json/'.$ip), true);
-        } else {
-            $location = json_decode(file_get_contents('http://ip-api.com/json'), true);
-        }
-
-        return $location;
-    }
 
     public function checkConfigKey($config, $transform)
     {

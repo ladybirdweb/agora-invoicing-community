@@ -209,7 +209,7 @@ class SettingsController extends BaseSettingsController
         }
     }
 
-    public function settingsActivity(Request $request ,Activity $activities)
+    public function settingsActivity(Request $request, Activity $activities)
     {
         try {
             $activity = $activities->all();
@@ -217,7 +217,8 @@ class SettingsController extends BaseSettingsController
             $till = $request->input('till');
             $delFrom = $request->input('delFrom');
             $delTill = $request->input('delTill');
-            return view('themes.default1.common.Activity-Log', compact('activity','from','till','delFrom','delTill'));
+
+            return view('themes.default1.common.Activity-Log', compact('activity', 'from', 'till', 'delFrom', 'delTill'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -238,8 +239,8 @@ class SettingsController extends BaseSettingsController
             $from = $request->input('log_from');
             $till = $request->input('log_till');
             $delFrom = $request->input('delFrom');
-             $delTill = $request->input('delTill');
-            $query = $this->advanceSearch($from,$till,$delFrom,$delTill);
+            $delTill = $request->input('delTill');
+            $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
             // $activity_log = Activity::select('id', 'log_name', 'description',
             //     'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 

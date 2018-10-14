@@ -797,6 +797,7 @@ User Details
     }
 
     function order_detail() {
+      
        $.ajax({
         url: '{{url("getOrderDetail/".$client->id)}}',
         type:'get',

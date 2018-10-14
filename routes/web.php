@@ -46,6 +46,7 @@
         Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
         Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
+        Route::get('get-group-field/{value}','Common\MailChimpController@addInterestFieldsToAgora');
         Route::get('contact-us', 'Front\CartController@contactUs');
         Route::post('contact-us', 'Front\CartController@postContactUs');
         Route::get('add-cart/{slug}', 'Front\CartController@addCartBySlug');
@@ -174,6 +175,9 @@
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
         Route::post('upload/save', 'Product\ProductController@save');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
+
+
+
 
         /*
          * Plan

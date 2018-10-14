@@ -552,5 +552,7 @@ return [
      'service_community' => 'Faveo ServiceDesk Community',
      'agora-products'    => 'Agora Products',
      'mailchimp-product' => 'Mailchimp Group Fields',
+     'list-fields'       => 'List Fields  Mapping',
+     'group-fields'       => 'Group Fields Mapping',
 
 ];

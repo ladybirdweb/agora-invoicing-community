@@ -42,12 +42,18 @@ trait RegistersUsers
         
           try {
             $pass = $request->input('password');
+            $fname = strip_tags($request->input('first_name'));
+            $lname = strip_tags($request->input('last_name'));
+            $address = strip_tags($request->input('address'));
+            $company =  strip_tags($request->input('company'));
+            $zip = strip_tags($request->input('zip'));
+            $user_name = strip_tags($request->input('user_name'));
             $country = $request->input('country');
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
             $location = \GeoIP::getLocation();
-         
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+            
+            // $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['iso_code'] . "-" . $location['state'];
@@ -75,13 +81,19 @@ trait RegistersUsers
             $user->currency_symbol = $currency_symbol;
             
             $user->role = 'user';
+            $user->address = $address;
+            $user->first_name = $fname;
+            $user->last_name = $lname;
+            $user->company = $company;
+             $user->zip = $zip;
+             $user->user_name = $user_name;
 
             $user->manager = $account_manager;
             $user->ip = $location['ip'];
             $user->currency = $currency;
             $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
              activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
-            $user->fill($request->except('password'))->save();
+            $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
             //$this->sendActivation($user->email, $request->method(), $pass);
             $this->accountManagerMail($user);
 
@@ -91,6 +103,7 @@ trait RegistersUsers
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
+            dd($ex);
             $result = [$ex->getMessage()];
              return response()->json($result);
         }

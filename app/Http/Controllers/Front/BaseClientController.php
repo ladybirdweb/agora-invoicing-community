@@ -131,7 +131,19 @@ class BaseClientController extends Controller
                 \Input::file('profile_pic')->move($destinationPath, $fileName);
                 $user->profile_pic = $fileName;
             }
-            $user->fill($request->input())->save();
+              $user->first_name =  strip_tags($request->input('first_name'));
+              $user->last_name = strip_tags($request->input('last_name'));
+              $user->email = strip_tags($request->input('email'));
+              $user->company = strip_tags($request->input('company'));
+              $user->mobile_code = strip_tags($request->input('mobile_code'));
+              $user->mobile = strip_tags($request->input('mobile')); 
+              $user->address = strip_tags($request->input('address')); 
+              $user->town = strip_tags($request->input('town')); 
+              $user->timezone_id = strip_tags($request->input('timezone_id')); 
+              $user->country = ($request->input('country')); 
+              $user->state = ($request->input('state'));
+              $user->zip = strip_tags($request->input('zip'));
+              $user->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {

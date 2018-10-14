@@ -616,11 +616,10 @@ class CartController extends BaseCartController
             $toname = '';
             $to = $set->company_email;
             $data = '';
-            $data .= 'Name: '.$request->input('name').'<br/s>';
-            $data .= 'Email: '.$request->input('email').'<br/>';
-            $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('country_code').$request->input('Mobile').'<br/>';
-
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             $this->templateController->Mailing($from, $to, $data, $subject, [], $fromname, $toname);
             //$this->templateController->Mailing($from, $to, $data, $subject);

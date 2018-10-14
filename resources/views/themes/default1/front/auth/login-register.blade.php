@@ -17,8 +17,6 @@ main
 @stop
 @section('content')
 <?php
-
-
 $location = \GeoIP::getLocation();
 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
 $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);

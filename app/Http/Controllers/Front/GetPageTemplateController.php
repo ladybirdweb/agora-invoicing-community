@@ -128,7 +128,6 @@ class GetPageTemplateController extends Controller
         return $service_template;
     }
 
-
     public function checkConfigKey($config, $transform)
     {
         $result = [];

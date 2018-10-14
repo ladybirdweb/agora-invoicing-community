@@ -304,98 +304,92 @@ class MailChimpController extends Controller
             ->where('list_id', $this->list_id)->pluck('name', 'tag')->toArray();
             $agoraProducts = Product::pluck('name', 'id')->toArray();
 
-               // $ProductsMailchimp = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests");
+            // $ProductsMailchimp = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests");
 
-               // foreach ($ProductsMailchimp['interests'] as $mailchimpProduct) {
-               //    $mailchimpProductsList[] = ([$mailchimpProduct->name => $mailchimpProduct->id]);
-               // }
-               //  $oneDimensionalArray = call_user_func_array('array_merge', $mailchimpProductsList);
-              
+            // foreach ($ProductsMailchimp['interests'] as $mailchimpProduct) {
+            //    $mailchimpProductsList[] = ([$mailchimpProduct->name => $mailchimpProduct->id]);
+            // }
+            //  $oneDimensionalArray = call_user_func_array('array_merge', $mailchimpProductsList);
+
             $mailchimpProducts = $this->mailchimp->get("lists/$this->list_id/interest-categories");
-       
+
             $selectedProducts = MailchimpGroupAgoraRelation::select('agora_product_id', 'mailchimp_group_cat_id')->orderBy('id', 'asc')->get()->toArray();
-          
-            $allGroups =  $this->mailchimp->get("lists/$this->list_id/interest-categories");//Get all the groups(interest-categories for a list)
+
+            $allGroups = $this->mailchimp->get("lists/$this->list_id/interest-categories"); //Get all the groups(interest-categories for a list)
             foreach ($allGroups['categories']  as $key => $value) {
-                $display[] = (['id'=> $value->id,'title'=>$value->title]);
+                $display[] = (['id'=> $value->id, 'title'=>$value->title]);
             }
 
-// dd($selectedProduct);
+            // dd($selectedProduct);
 
             $this->addProductInterestFieldsToAgora(); //add all the fields in Product Section of Groups to the db
             // this->addIsPaidInterestFieldsToAgora();
-           
 
             $group_fields = $this->groups->where('list_id', $this->list_id)
           ->select('category_name', 'category_option_id', 'category_id')->get()->toArray();
-          // dd($group_fields[0]);
-          $relations = MailchimpGroupAgoraRelation::where('id', '!=', 0)
+            // dd($group_fields[0]);
+            $relations = MailchimpGroupAgoraRelation::where('id', '!=', 0)
           ->select('agora_product_id', 'mailchimp_group_cat_id')
           ->orderBy('id', 'asc')->get()->toArray();
-          $productList = array();
-          $categoryList = array();
-          if(count($relations) !=0){
-          foreach ( $relations as $key => $value) {
-            $categoryList[] = $this->groups->where('category_option_id', $value['mailchimp_group_cat_id'])->pluck('category_name')->first();
-             $productList[]= Product::where('id',$value['agora_product_id'])->pluck('name')->first();
-              # code...
-          }
-          // dd(count($categoryList));
+            $productList = [];
+            $categoryList = [];
+            if (count($relations) != 0) {
+                foreach ($relations as $key => $value) {
+                    $categoryList[] = $this->groups->where('category_option_id', $value['mailchimp_group_cat_id'])->pluck('category_name')->first();
+                    $productList[] = Product::where('id', $value['agora_product_id'])->pluck('name')->first();
+                    // code...
+                }
+                // dd(count($categoryList));
          // dd($productList);
-      }
-    
-       
+            }
+
             // $relations = MailchimpGroupAgoraRelation::where('id', '!=', 0)->orderBy('id', 'asc')->get()->toArray();
             // dd($relations);
-          // 
+            //
 
-            return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'display','selectedProducts','relations','group_fields','categoryList','productList'));
+            return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'display', 'selectedProducts', 'relations', 'group_fields', 'categoryList', 'productList'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
-    public function addInterestFieldsToAgora(Request $request,$value)
+    public function addInterestFieldsToAgora(Request $request, $value)
     {
-         $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$value/interests");
-         
-           echo '<option value="">Choose a Category</option>';
-         if (count($groupInterests) > 0) {
+        $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$value/interests");
+
+        echo '<option value="">Choose a Category</option>';
+        if (count($groupInterests) > 0) {
             foreach ($groupInterests['interests'] as $key=>$value) {
-            $fields[]=  ([ 'category_id' => $value->category_id,
-                'list_id' => $value->list_id,
-                'category_option_id' => $value->id,
-                'category_option_name' => $value->name,
+                $fields[] = (['category_id' => $value->category_id,
+                'list_id'                   => $value->list_id,
+                'category_option_id'        => $value->id,
+                'category_option_name'      => $value->name,
             ]);
-           
-        
             }
-             foreach ($fields as $field) {
-                $selectedCategory =  MailchimpGroupAgoraRelation::where('mailchimp_group_cat_id', $field['category_option_id'])->pluck('mailchimp_group_cat_id')->first();
-              //   if( $selectedCategory){
-              //     echo '<option selected= "selected" value='. $selectedCategory .'>'.$field['category_option_name'].'</option>';
-              // }
+            foreach ($fields as $field) {
+                $selectedCategory = MailchimpGroupAgoraRelation::where('mailchimp_group_cat_id', $field['category_option_id'])->pluck('mailchimp_group_cat_id')->first();
+                //   if( $selectedCategory){
+                //     echo '<option selected= "selected" value='. $selectedCategory .'>'.$field['category_option_name'].'</option>';
+                // }
 
-                 echo '<option value='.$field['category_option_id'].'>'.$field['category_option_name'].'</option>';
+                echo '<option value='.$field['category_option_id'].'>'.$field['category_option_name'].'</option>';
 
-                  // array_push($responseData, (['selectedCat'=>$selectedCategory, 'catId'=>$field['category_option_id'],'catName'=>$field['category_option_name']]
+                // array_push($responseData, (['selectedCat'=>$selectedCategory, 'catId'=>$field['category_option_id'],'catName'=>$field['category_option_name']]
                   //  ));
-             } 
-             // return $responseData;
-              
+            }
+            // return $responseData;
         }
 
-       // return $a; 
-      
+        // return $a;
     }
 
     public function addProductInterestFieldsToAgora()
     {
-     $groupProductInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests");
-      $groupIsPaidInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->is_paid_group_id/interests");
-      //Now Merge interests of both the groups
-      $groupInterests = (array_merge($groupProductInterests['interests'],$groupIsPaidInterests['interests']));
-      //get all the fields for Product Group
+        $groupProductInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests");
+        $groupIsPaidInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->is_paid_group_id/interests");
+        //Now Merge interests of both the groups
+        $groupInterests = (array_merge($groupProductInterests['interests'], $groupIsPaidInterests['interests']));
+        //get all the fields for Product Group
         if (count($groupInterests) > 0) {
             foreach ($groupInterests as $key=>$value) {
                 $category_id = $value->category_id;
@@ -437,6 +431,7 @@ class MailChimpController extends Controller
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -409,7 +409,7 @@ class TemplateController extends BaseTemplateController
 
     public function leastAmountService($id)
     {
-       try {
+        try {
             $cost = 'Free';
             $symbol = '';
             $price = '';

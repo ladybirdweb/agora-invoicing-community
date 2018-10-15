@@ -243,7 +243,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $duration = '/Year';
         } elseif (strpos($value, 'M') == true) {
             $duration = '/Month';
-        } elseif(strpos($value, 'O') == true) {
+        } elseif (strpos($value, 'O') == true) {
             $duration = '/One-Time';
         }
 

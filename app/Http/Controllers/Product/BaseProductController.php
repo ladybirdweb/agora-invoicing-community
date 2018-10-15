@@ -19,6 +19,7 @@ class BaseProductController extends ExtendedBaseProductController
         $server = parse_url($server['path']);
         $server['path'] = dirname($server['path']);
         $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
+
         return $server;
     }
 

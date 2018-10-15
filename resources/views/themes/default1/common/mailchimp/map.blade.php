@@ -124,7 +124,14 @@ Mailchimp Mapping
                </div>   
                         
             <div class="box-body">
-                 <select name="group"  class="form-control" id="group" onChange="getGroup(this.value)">
+                
+            {!! Form::model($model2,['url'=>'mailchimp-group/mapping','method'=>'patch','files'=>true]) !!}
+               
+                 <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.group-fields')}}</h3>
+                           <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
+                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+                        <h5>Select A Group</h5>
+                         <select name="group"  class="form-control col-md-2"  id="group" onChange="getGroup(this.value)">
                             <option value="">Choose</option>
                 @foreach ($display as $key=>$value)
                <option value="{{$value['id']}}">{{$value['title']}}</option>
@@ -132,11 +139,6 @@ Mailchimp Mapping
             
                 @endforeach
             </select>
-            {!! Form::model($model2,['url'=>'mailchimp-group/mapping','method'=>'patch','files'=>true]) !!}
-               
-                 <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.group-fields')}}</h3>
-                           <button type="submit" class="btn btn-primary pull-right" id="submit"  style="margin-top:-40px;
-                        margin-right:15px;"><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
                 <table class="table table-hover">
                     <tr>
                         <th>{{Lang::get('message.agora-products')}}</th>

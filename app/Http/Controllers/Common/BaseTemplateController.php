@@ -238,11 +238,12 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
     public function getDuration($value)
     {
+        $duration = '';
         if (strpos($value, 'Y') == true) {
             $duration = '/Year';
         } elseif (strpos($value, 'M') == true) {
             $duration = '/Month';
-        } else {
+        } elseif(strpos($value, 'O') == true) {
             $duration = '/One-Time';
         }
 

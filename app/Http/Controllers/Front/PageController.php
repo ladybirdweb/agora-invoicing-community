@@ -278,15 +278,15 @@ class PageController extends GetPageTemplateController
     public function cart()
     {
         try {
-            $location = $this->getLocation();
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $location = \GeoIP::getLocation();
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $currency = $this->getCurrency($location);
-
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
+            $cont = new \App\Http\Controllers\Front\CartController();
+            $currency = $cont->currency();
             \Session::put('currency', $currency);
             if (!\Session::has('currency')) {
                 \Session::put('currency', 'INR');

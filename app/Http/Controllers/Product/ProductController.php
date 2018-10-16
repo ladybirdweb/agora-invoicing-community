@@ -524,6 +524,7 @@ namespace App\Http\Controllers\Product;
                 }
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
+
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }

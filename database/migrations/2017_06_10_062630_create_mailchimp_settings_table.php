@@ -18,7 +18,7 @@ class CreateMailchimpSettingsTable extends Migration
             $table->string('list_id');
             $table->string('subscribe_status')->default('subscribed');
              $table->string('group_id_products',255)->nullable();
-             $tabele->string('group_id_is_paid',255)->nullable();
+             $table->string('group_id_is_paid',255)->nullable();
             $table->timestamps();
         });
     }

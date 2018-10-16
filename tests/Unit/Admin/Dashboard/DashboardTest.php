@@ -17,7 +17,9 @@ class DashboardTest extends DBTestCase
     public function test_getTotalSalesInInr_gettingTotalSalesInr()
     {
         $this->withoutMiddleware();
-        $this->getLoggedInUser();
+        // $this->getLoggedInUser();
+        $this->user = factory(User::class)->create(['role' => 'user']);
+        $this->be($this->user);
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();

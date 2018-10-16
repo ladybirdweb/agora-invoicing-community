@@ -17,17 +17,14 @@ class DashboardTest extends DBTestCase
     public function test_getTotalSalesInInr_gettingTotalSalesInr()
     {
         $this->withoutMiddleware();
-        // $this->getLoggedInUser();
-        $this->user = factory(User::class)->create(['role' => 'user']);
-        $this->be($this->user);
+        $this->getLoggedInUser();
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getTotalSalesInInr();
         $this->assertEquals($response, '10000');
 
-        // dd($response);
-    }
+     }
 
     /** @group Dashboard */
     public function test_getYearlySalesInInr_gettingYearlySalesInr()

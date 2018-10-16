@@ -65,7 +65,6 @@ class DashboardController extends Controller
      *
      * @return float
      */
-    
     public function getTotalSalesInInr()
     {
         $total = Invoice::where('currency', 'INR')

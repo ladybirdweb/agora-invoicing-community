@@ -872,7 +872,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
-            "code": $('#verify_country_code').val(),
+            'code': ($('#verify_country_code').val()).replace(/\s/g, ''),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };

@@ -56,7 +56,7 @@
     "scripts": {
         "filter-test":"php vendor/phpunit/phpunit/phpunit --colors=always --filter",
         "all-test":"php vendor/phpunit/phpunit/phpunit",
-        "all-unit-test":"php vendor/phpunit/phpunit/phpunit --testsuite unit",
+        "all-unit-test":"php vendor/phpunit/phpunit/phpunit --testsuite Unit",
         "backend-test":"php vendor/phpunit/phpunit/phpunit --colors=always --testsuite backend",
         "group-test":"php vendor/phpunit/phpunit/phpunit --colors=always --group",
         "post-root-package-install": [

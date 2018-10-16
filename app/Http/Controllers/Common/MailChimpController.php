@@ -355,8 +355,7 @@ class MailChimpController extends Controller
 
     public function addInterestFieldsToAgora(Request $request, $value)
     {
-        $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$value/interests");
-
+        $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$value/interests?count=20");
         echo '<option value="">Choose a Category</option>';
         if (count($groupInterests) > 0) {
             foreach ($groupInterests['interests'] as $key=>$value) {
@@ -385,8 +384,8 @@ class MailChimpController extends Controller
 
     public function addProductInterestFieldsToAgora()
     {
-        $groupProductInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests");
-        $groupIsPaidInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->is_paid_group_id/interests");
+        $groupProductInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->product_group_id/interests?count=20");
+        $groupIsPaidInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$this->is_paid_group_id/interests?count=20");
         //Now Merge interests of both the groups
         $groupInterests = (array_merge($groupProductInterests['interests'], $groupIsPaidInterests['interests']));
         //get all the fields for Product Group

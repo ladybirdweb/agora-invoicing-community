@@ -24,6 +24,9 @@ class CreateMailchimpFieldAgoraRelationsTable extends Migration
             $table->string('zip');
             $table->string('active', 225);
             $table->string('role');
+            $table->string('source');
+            $table->string('is_paid_yes');
+            $table->string('is_paid_no');
             $table->timestamps();
         });
     }

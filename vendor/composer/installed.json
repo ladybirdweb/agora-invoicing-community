@@ -176,76 +176,7 @@
             "support"
         ]
     },
-    {
-        "name": "barryvdh/laravel-debugbar",
-        "version": "v3.2.0",
-        "version_normalized": "3.2.0.0",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/barryvdh/laravel-debugbar.git",
-            "reference": "5b68f3972083a7eeec0d6f161962fcda71a127c0"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/barryvdh/laravel-debugbar/zipball/5b68f3972083a7eeec0d6f161962fcda71a127c0",
-            "reference": "5b68f3972083a7eeec0d6f161962fcda71a127c0",
-            "shasum": ""
-        },
-        "require": {
-            "illuminate/routing": "5.5.x|5.6.x|5.7.x",
-            "illuminate/session": "5.5.x|5.6.x|5.7.x",
-            "illuminate/support": "5.5.x|5.6.x|5.7.x",
-            "maximebf/debugbar": "~1.15.0",
-            "php": ">=7.0",
-            "symfony/debug": "^3|^4",
-            "symfony/finder": "^3|^4"
-        },
-        "require-dev": {
-            "laravel/framework": "5.5.x"
-        },
-        "time": "2018-08-22T11:06:19+00:00",
-        "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "3.2-dev"
-            },
-            "laravel": {
-                "providers": [
-                    "Barryvdh\\Debugbar\\ServiceProvider"
-                ],
-                "aliases": {
-                    "Debugbar": "Barryvdh\\Debugbar\\Facade"
-                }
-            }
-        },
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Barryvdh\\Debugbar\\": "src/"
-            },
-            "files": [
-                "src/helpers.php"
-            ]
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Barry vd. Heuvel",
-                "email": "barryvdh@gmail.com"
-            }
-        ],
-        "description": "PHP Debugbar integration for Laravel",
-        "keywords": [
-            "debug",
-            "debugbar",
-            "laravel",
-            "profiler",
-            "webprofiler"
-        ]
-    },
+   
     {
         "name": "barryvdh/laravel-dompdf",
         "version": "v0.8.2",

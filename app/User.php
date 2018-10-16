@@ -115,17 +115,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsTo('App\Model\Common\Timezone');
     }
 
-    public function getCreatedAtAttribute($value)
-    {
-        if (\Auth::user()) {
-            $tz = \Auth::user()->timezone()->first()->name;
-            $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
+    // public function getCreatedAtAttribute($value)
+    // {
+    //     if (\Auth::user()) {
+    //         $tz = \Auth::user()->timezone()->first()->name;
+    //         $date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $value, 'UTC');
 
-            return $date->setTimezone($tz);
-        }
+    //         return $date->setTimezone($tz);
+    //     }
 
-        return $value;
-    }
+    //     return $value;
+    // }
 
     public function getProfilePicAttribute($value)
     {

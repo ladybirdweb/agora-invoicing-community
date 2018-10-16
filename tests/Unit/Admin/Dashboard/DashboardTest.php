@@ -16,7 +16,6 @@ class DashboardTest extends DBTestCase
     /** @group Dashboard */
     public function test_getTotalSalesInInr_gettingTotalSalesInr()
     {
-        dd('ok');
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
@@ -24,7 +23,8 @@ class DashboardTest extends DBTestCase
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getTotalSalesInInr();
         $this->assertEquals($response, '10000');
-    }
+
+     }
 
     /** @group Dashboard */
     public function test_getYearlySalesInInr_gettingYearlySalesInr()

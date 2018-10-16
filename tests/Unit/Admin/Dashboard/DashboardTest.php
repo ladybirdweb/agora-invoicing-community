@@ -16,6 +16,7 @@ class DashboardTest extends DBTestCase
     /** @group Dashboard */
     public function test_getTotalSalesInInr_gettingTotalSalesInr()
     {
+        dd('ok');
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;

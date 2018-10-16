@@ -19,6 +19,7 @@ class DashboardTest extends DBTestCase
         $this->withoutMiddleware();
         $this->getLoggedInUser();
         $user = $this->user;
+        dd($user);
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getTotalSalesInInr();

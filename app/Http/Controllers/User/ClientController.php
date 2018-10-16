@@ -183,8 +183,8 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
-            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-            $r = $mailchimp->addSubscriber($user->email);
+            // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            // $r = $mailchimp->addSubscriber($user->email);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {

@@ -185,14 +185,15 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->belongsTo('App\User', 'manager');
     }
 
-    public function save(array $options = [])
-    {
-        $changed = $this->isDirty() ? $this->getDirty() : false;
-        parent::save($options);
-        $role = $this->role;
-        // if ($changed && checkArray('manager', $changed) && $role == 'user') {
-        //     $auth = new Http\Controllers\Auth\AuthController();
-        //     $auth->accountManagerMail($this);
-        // }
-    }
+    // public function save(array $options = [])
+    // {
+       
+    //     $changed = $this->isDirty() ? $this->getDirty() : false;
+    //     parent::save($options);
+    //     $role = $this->role;
+    //     // if ($changed && checkArray('manager', $changed) && $role == 'user') {
+    //     //     $auth = new Http\Controllers\Auth\AuthController();
+    //     //     $auth->accountManagerMail($this);
+    //     // }
+    // }
 }

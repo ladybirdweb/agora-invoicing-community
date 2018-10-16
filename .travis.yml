@@ -6,7 +6,7 @@
   "install": [
     "composer install",
     "cp .env.travis .env",
-   "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
+   "mysql -e 'CREATE DATABASE IF NOT EXISTS db_tes'",
     "touch database/database.testing",
     "php artisan key:generate",
     "php artisan migrate --seed"

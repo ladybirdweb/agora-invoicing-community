@@ -142,6 +142,7 @@ return array(
     'App\\Http\\Middleware\\EncryptCookies' => $baseDir . '/app/Http/Middleware/EncryptCookies.php',
     'App\\Http\\Middleware\\Install' => $baseDir . '/app/Http/Middleware/Install.php',
     'App\\Http\\Middleware\\IsInstalled' => $baseDir . '/app/Http/Middleware/IsInstalled.php',
+    'App\\Http\\Middleware\\PreferredDomain' => $baseDir . '/app/Http/Middleware/PreferredDomain.php',
     'App\\Http\\Middleware\\RedirectIfAuthenticated' => $baseDir . '/app/Http/Middleware/RedirectIfAuthenticated.php',
     'App\\Http\\Middleware\\TrimStrings' => $baseDir . '/app/Http/Middleware/TrimStrings.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',

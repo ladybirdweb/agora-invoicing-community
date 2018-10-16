@@ -800,6 +800,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\Install' => __DIR__ . '/../..' . '/app/Http/Middleware/Install.php',
         'App\\Http\\Middleware\\IsInstalled' => __DIR__ . '/../..' . '/app/Http/Middleware/IsInstalled.php',
+        'App\\Http\\Middleware\\PreferredDomain' => __DIR__ . '/../..' . '/app/Http/Middleware/PreferredDomain.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',

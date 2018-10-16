@@ -3,14 +3,32 @@
   "php": "7.2",
   "dist": "trusty",
   "group": "stable",
-  "install": [
-    "composer install",
-    "cp .env.travis .env",
-   "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
-    "touch database/database.testing",
-    "php artisan key:generate",
-    "php artisan migrate --seed"
+  "script": "phpunit",
+  "language": "php",
+  "services": [
+    "mysql"
   ],
-  "language": "php"
-  
+  "before_script": [
+    "composer self-update",
+    "composer install --prefer-source --no-interaction --dev",
+    "php artisan testing-setup --username=\"root\""
+  ]
 }
+
+
+# {
+#   "os": "linux",
+#   "php": "7.2",
+#   "dist": "trusty",
+#   "group": "stable",
+#   "install": [
+#     "composer install",
+#     "cp .env.travis .env",
+#    "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
+#     "touch database/database.testing",
+#     "php artisan key:generate",
+#     "php artisan migrate --seed"
+#   ],
+#   "language": "php"
+  
+# }

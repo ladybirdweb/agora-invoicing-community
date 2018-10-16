@@ -187,7 +187,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     // public function save(array $options = [])
     // {
-       
+
     //     $changed = $this->isDirty() ? $this->getDirty() : false;
     //     parent::save($options);
     //     $role = $this->role;

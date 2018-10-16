@@ -4,6 +4,7 @@
   "dist": "trusty",
   "group": "stable",
   "install": [
+    "composer install",
     "cp .env.travis .env",
    "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
     "touch database/database.testing",

@@ -193,7 +193,7 @@ class BaseOrderController extends ExtendedOrderController
             $product = $renew_con->getProductByName($product_name);
             if ($product) {
                 $subscription = $product->subscription;
-                 if ($subscription == 0) {
+                if ($subscription == 0) {
                     $result = false;
                 }
             }

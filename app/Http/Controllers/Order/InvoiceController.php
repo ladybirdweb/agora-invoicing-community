@@ -452,11 +452,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $cart_cont = new \App\Http\Controllers\Front\CartController();
             if ($cart_cont->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
-                
             }
-            if($planid == 0) {
-                 //When Product is added from Faveo Website 
-                $planid = Plan::where('product',$cart->id)->pluck('id')->first();
+            if ($planid == 0) {
+                //When Product is added from Faveo Website
+                $planid = Plan::where('product', $cart->id)->pluck('id')->first();
             }
             $user_currency = \Auth::user()->currency;
             $subtotal = $this->getSubtotal($user_currency, $cart);

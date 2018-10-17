@@ -3,11 +3,19 @@
   "php": "7.2",
   "dist": "trusty",
   "group": "stable",
+  addons:
+  apt:
+    sources:
+      - mysql-5.7-trusty
+    packages:
+      - mysql-server
+      - mysql-client
+  before_install:
+  - mysql -e 'CREATE DATABASE unit_testing;'
   "install": [
     "composer install",
     "cp .env.travis .env",
-   "mysql -e 'CREATE DATABASE unit_testing'",
-    "touch database/database.testing",
+   "touch database/database.testing",
     "php artisan key:generate",
     "php artisan migrate --seed"
   ],

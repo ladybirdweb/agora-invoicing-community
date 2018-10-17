@@ -127,10 +127,11 @@ Dashboard
                     <li>
                      <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image"></a>
                       <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
-
-                      @if ($user['created_at']->toDateString() < $mytime->toDateString())
-                      <span class="users-list-date">{{$user['created_at']->format('M j')}}</span>
-                      @elseif ($user['created_at']->toDateString() < $yesterday->toDateString())
+                       <?php $displayDate = new DateTime($user['created_at']) ;
+                        ?>
+                      @if ($displayDate < $mytime)
+                      <span class="users-list-date">{{($displayDate)->format('M j')}}</span>
+                      @elseif ($displayDate == $yesterday)
                        <span class="users-list-date">Yesterday</span>
                       @else
                       <span class="users-list-date">Today</span>

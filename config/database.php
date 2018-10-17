@@ -58,7 +58,7 @@ return [
       'testing' => [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
-            'database'    => env('DB_DATABASE', 'db_testing'),
+            'database'    => env('DB_DATABASE', 'unit_testing'),
             'username'    => env('DB_USERNAME', 'root'),
             'password'    => env('DB_PASSWORD', ''),
             'charset'     => 'utf8',

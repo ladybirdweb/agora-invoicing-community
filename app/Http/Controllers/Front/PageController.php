@@ -296,7 +296,7 @@ class PageController extends GetPageTemplateController
             //Helpdesk
             $product = new \App\Model\Product\Product();
             $helpdesk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'helpdesk')
+        ->where('category', '=', 'Helpdesk')
         ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
@@ -308,7 +308,7 @@ class PageController extends GetPageTemplateController
             //Helpdesk VPS
             $helpdesk_vps_product = $product->where('id', '!=', 1)
 
-        ->where('category', '=', 'helpdesk vps')
+        ->where('category', '=', 'Helpdesk VPS')
 
         ->where('hidden', '=', '0')
         ->get()
@@ -318,7 +318,7 @@ class PageController extends GetPageTemplateController
 
             //ServiceDesk Vps
             $servicedesk_vps_product = $product->where('id', '!=', 1)
-        ->where('category', '=', 'servicedesk vps')
+        ->where('category', '=', 'Servicedesk vps')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
@@ -327,7 +327,7 @@ class PageController extends GetPageTemplateController
 
             //servicedesk
             $sevice_desk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'servicedesk')
+        ->where('category', '=', 'Servicedesk')
          ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
@@ -337,7 +337,7 @@ class PageController extends GetPageTemplateController
 
             //Service
             $service = $product->where('id', '!=', 1)
-        ->where('category', '=', 'service')
+        ->where('category', '=', 'Service')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();

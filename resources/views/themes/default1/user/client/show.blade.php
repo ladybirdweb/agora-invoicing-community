@@ -300,7 +300,7 @@ User Details
                                      <td class="payment-total" data-count="{{$payment->id}}"></td>
                                      @endif
                                        @if($payment->invoice_id != 0)
-                                    <td contenteditable="true" class="payment-total" data-count="{{$payment->id}}"></td>
+                                    <td contenteditable="false" class="payment-total" data-count="{{$payment->id}}"></td>
                                      @endif
                                       
                                     <td class="payment_status"></td>

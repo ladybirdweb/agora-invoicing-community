@@ -4,21 +4,14 @@
   "dist": "trusty",
   "group": "stable",
   "cache": "bundler",
-  before_install:
-  - composer install,
-  - composer clear-cache
-  - cp .env.travis .env
-  - mysql -e 'CREATE DATABASE myapp_test;',
-  - php artisan key:generate,
-  - php artisan migrate --seed,
-  # "install": [
-  #   "composer install",
-  #   "cp .env.travis .env",
-  #  "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
-  #   "touch database/database.testing",
-  #   "php artisan key:generate",
-  #   "php artisan migrate --seed"
-  # ],
+  "before_install": [
+    "composer install",
+    "cp .env.travis .env",
+   "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
+    "touch database/database.testing",
+    "php artisan key:generate",
+    "php artisan migrate --seed"
+  ],
   "language": "php"
   
 }

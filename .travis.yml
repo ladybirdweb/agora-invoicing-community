@@ -1,14 +1,12 @@
-language: php
-
-php:
-  - 7.2
-
-matrix:
-  allow_failures:
-    - php: 7.0
-
-before_script:
-  - curl -s http://getcomposer.org/installer | php
-  - php composer.phar install --dev
-
-script: phpunit
+{
+  "os": "linux",
+  "php": 7.2,
+  "dist": "trusty",
+  "group": "stable",
+  "script": "phpunit",
+  "language": "php",
+  "before_script": [
+    "composer self-update",
+    "composer install --prefer-source --no-interaction --dev"
+  ]
+}

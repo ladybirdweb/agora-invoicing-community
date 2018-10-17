@@ -3,15 +3,13 @@
   "php": "7.2",
   "dist": "trusty",
   "group": "stable",
-  "cache": "bundler",
-  "before_install": [
+  "install": [
     "composer install",
     "cp .env.travis .env",
-   "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
+    "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
     "touch database/database.testing",
     "php artisan key:generate",
     "php artisan migrate --seed"
   ],
   "language": "php"
-  
 }

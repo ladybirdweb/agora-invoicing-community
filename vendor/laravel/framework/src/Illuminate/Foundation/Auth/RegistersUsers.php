@@ -249,7 +249,6 @@ trait RegistersUsers
     public function redirectPath()
     {  
 
-
         if (\Session::has('session-url')) {
             $url = \Session::get('session-url');
 

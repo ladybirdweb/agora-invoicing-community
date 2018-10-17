@@ -87,7 +87,6 @@ class BaseOrderController extends ExtendedOrderController
 
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
-
         $order = $this->order->create([
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
@@ -194,7 +193,7 @@ class BaseOrderController extends ExtendedOrderController
             $product = $renew_con->getProductByName($product_name);
             if ($product) {
                 $subscription = $product->subscription;
-                if ($subscription == 0) {
+                 if ($subscription == 0) {
                     $result = false;
                 }
             }

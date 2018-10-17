@@ -13,7 +13,7 @@ return [
     |
     */
 
-    // 'default'   => env('DB_CONNECTION', 'mysql'),
+    'default'   => env('DB_CONNECTION', 'mysql'),
     'DB_INSTALL'=> env('DB_INSTALL'),
 
     /*
@@ -58,7 +58,7 @@ return [
       'testing' => [
             'driver'      => 'mysql',
             'host'        => env('DB_HOST', 'localhost'),
-            'database'    => env('DB_DATABASE', 'unit_testing'),
+            'database'    => env('DB_DATABASE', 'db_testing'),
             'username'    => env('DB_USERNAME', 'root'),
             'password'    => env('DB_PASSWORD', ''),
             'charset'     => 'utf8',

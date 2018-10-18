@@ -22,7 +22,7 @@ class DashboardTest extends DBTestCase
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
         $response = $controller->getTotalSalesInInr();
-        
+
         $this->assertEquals($response, '10000');
     }
 

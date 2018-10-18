@@ -14,8 +14,8 @@ class BaseAuthController extends Controller
     public function reqFields($user, $email)
     {
         $user = $user->where('email', $email)->first();
-        $country = \DB::table('countries')->where('country_code_char2',$user->country)->pluck('nicename')->first();
-        $state = \DB::table('states_subdivisions')->where('state_subdivision_code',$user->state)->pluck('state_subdivision_name')->first();
+        $country = \DB::table('countries')->where('country_code_char2', $user->country)->pluck('nicename')->first();
+        $state = \DB::table('states_subdivisions')->where('state_subdivision_code', $user->state)->pluck('state_subdivision_name')->first();
         $phone = $user->mobile;
         $code = $user->mobile_code;
         if ($user) {

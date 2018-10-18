@@ -26,21 +26,22 @@ class PageController extends GetPageTemplateController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
+
     public function getLocation()
     {
         try {
-          $location = \GeoIP::getLocation();
-           return $location;
+            $location = \GeoIP::getLocation();
+
+            return $location;
         } catch (Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-          $error = $ex->getMessage();
-        $location    = \Config::get('geoip.default_location');
-           return $location;
+            $error = $ex->getMessage();
+            $location = \Config::get('geoip.default_location');
+
+            return $location;
         }
     }
-
 
     public function getPages()
     {

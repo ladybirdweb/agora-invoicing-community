@@ -24,7 +24,7 @@ class DBTestCase extends TestCase
      *
      * @return
      */
-    public function getLoggedInUser($role = 'user')
+    protected function getLoggedInUser($role = 'user')
     {
         $this->user = factory(User::class)->create(['role' => $role]);
         $this->be($this->user);

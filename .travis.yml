@@ -4,6 +4,7 @@
   "dist": "trusty",
   "group": "stable",
   "install": [
+    "cache": "bundler",
     "composer install",
     "cp .env.travis .env",
     "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",

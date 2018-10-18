@@ -4,9 +4,12 @@
   "dist": "trusty",
   "group": "stable",
   "install": [
+    "docker-compose" down", 
+    "docker-compose up",
     "composer install",
     "cp .env.travis .env",
     "mysql -e 'CREATE DATABASE IF NOT EXISTS db_testing'",
+    "touch database/database.testing",
     "php artisan key:generate",
     "php artisan migrate --seed"
   ],

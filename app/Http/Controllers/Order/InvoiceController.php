@@ -433,8 +433,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');

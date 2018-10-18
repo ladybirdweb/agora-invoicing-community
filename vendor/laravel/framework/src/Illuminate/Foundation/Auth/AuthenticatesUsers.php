@@ -26,6 +26,8 @@ trait AuthenticatesUsers
     {
         try{
            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
+           $cont = new \App\Http\Controllers\Front\PageController();
+            $location = $cont->getLocation();
          return view('themes.default1.front.auth.login-register', compact('bussinesses','location'));
 
           }catch(\Exception $ex){
@@ -36,10 +38,8 @@ trait AuthenticatesUsers
 
          }
          
-      
+     }
 
-         
-    }
 
 
 

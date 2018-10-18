@@ -17,7 +17,8 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $shop = $tax_rule->shop_inclusive;
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
-            $location = \GeoIP::getLocation();
+             $cont = new \App\Http\Controllers\Front\PageController();
+            $location = $cont->getLocation();
 
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);

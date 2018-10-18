@@ -39,7 +39,6 @@ trait RegistersUsers
      */
     public function postRegister(ProfileRequest $request,User $user, AccountActivate $activate)
     {
-        
           try {
             $pass = $request->input('password');
             $fname = strip_tags($request->input('first_name'));
@@ -51,7 +50,8 @@ trait RegistersUsers
             $country = $request->input('country');
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
-            $location = \GeoIP::getLocation();
+           $cont = new \App\Http\Controllers\Front\PageController();
+            $location = $cont->getLocation();
             
             // $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);

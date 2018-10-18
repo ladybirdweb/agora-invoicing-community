@@ -25,7 +25,7 @@ class CreateInvoiceItemsTable extends Migration
             $table->string('discount_mode');
             $table->string('subtotal', 225);
             $table->string('domain', 225);
-            $table->integer('plan_id');
+            $table->integer('plan_id')->nullable();
             $table->timestamps();
         });
     }

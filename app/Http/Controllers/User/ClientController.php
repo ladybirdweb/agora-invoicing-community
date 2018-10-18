@@ -179,7 +179,8 @@ class ClientController extends AdvanceSearchController
             $str = str_random(6);
             $password = \Hash::make($str);
             $user->password = $password;
-            $location = \GeoIP::getLocation();
+            $cont = new \App\Http\Controllers\Front\PageController();
+            $location = $cont->getLocation();
             $user->ip = $location['ip'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);

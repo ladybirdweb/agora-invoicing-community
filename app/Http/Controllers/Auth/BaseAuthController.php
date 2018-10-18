@@ -14,6 +14,10 @@ class BaseAuthController extends Controller
     public function reqFields($user, $email)
     {
         $user = $user->where('email', $email)->first();
+        $country = \DB::table('countries')->where('country_code_char2',$user->country)->pluck('nicename')->first();
+        $state = \DB::table('states_subdivisions')->where('state_subdivision_code',$user->state)->pluck('state_subdivision_name')->first();
+        $phone = $user->mobile;
+        $code = $user->mobile_code;
         if ($user) {
             $xml = '      <Leads>
                         <row no="1">
@@ -23,15 +27,14 @@ class BaseAuthController extends Controller
                         <FL val="Last Name">'.$user->last_name.'</FL>
                         <FL val="Email">'.$user->email.'</FL>
                         <FL val="Manager">'.$user->manager.'</FL>
-                        <FL val="Phone">'.$user->mobile_code.''.$user->mobile.'</FL>
-                        <FL val="Mobile">'.$user->mobile_code.''.$user->mobile.'</FL>
+                         <FL val="Phone">'.$code.''.$phone.'</FL>
+                        <FL val="Mobile">'.$code.''.$phone.'</FL>
                         <FL val="Industry">'.$user->bussiness.'</FL>
                         <FL val="City">'.$user->town.'</FL>
                         <FL val="Street">'.$user->address.'</FL>
-                        <FL val="State">'.$user->state.'</FL>
-                        <FL val="Country">'.$user->country.'</FL>
+                        <FL val="State">'.$state.'</FL>
+                        <FL val="Country">'.$country.'</FL>
                         <FL val="Zip Code">'.$user->zip.'</FL>
-                        <FL val="No of Employees">'.$user->company_size.'</FL>
                         </row>
                         </Leads>';
 

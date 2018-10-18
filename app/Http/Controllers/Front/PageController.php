@@ -26,6 +26,21 @@ class PageController extends GetPageTemplateController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+    
+    public function getLocation()
+    {
+        try {
+          $location = \GeoIP::getLocation();
+           return $location;
+        } catch (Exception $ex) {
+             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+          $error = $ex->getMessage();
+        $location    = \Config::get('geoip.default_location');
+           return $location;
+        }
+    }
+
 
     public function getPages()
     {
@@ -278,7 +293,7 @@ class PageController extends GetPageTemplateController
     public function cart()
     {
         try {
-            $location = \GeoIP::getLocation();
+            $location = $this->getLocation();
             $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();

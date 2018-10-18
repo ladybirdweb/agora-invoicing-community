@@ -62,8 +62,8 @@ class CartController extends BaseCartController
 
     public function productList(Request $request)
     {
-          $cont = new \App\Http\Controllers\Front\PageController();
-            $location = $cont->getLocation();
+        $cont = new \App\Http\Controllers\Front\PageController();
+        $location = $cont->getLocation();
         $country = $this->findCountryByGeoip($location['iso_code']);
         $states = $this->findStateByRegionId($location['iso_code']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
@@ -157,7 +157,7 @@ class CartController extends BaseCartController
                 'value'  => '0%',
             ]);
 
-             $cont = new \App\Http\Controllers\Front\PageController();
+            $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
 
             $country = $this->findCountryByGeoip($location['iso_code']);
@@ -886,7 +886,7 @@ class CartController extends BaseCartController
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
             if (!\Auth::user()) {//When user is not logged in
-                 $cont = new \App\Http\Controllers\Front\PageController();
+                $cont = new \App\Http\Controllers\Front\PageController();
                 $location = $cont->getLocation();
                 $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
                 $userCountry = Country::where('country_code_char2', $country)->first();

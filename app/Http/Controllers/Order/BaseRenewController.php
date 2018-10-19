@@ -37,8 +37,7 @@ class BaseRenewController extends Controller
                 $invoice_item_id = $invoice->invoiceItem()->first()->id;
             }
             $item = InvoiceItem::find($invoice_item_id);
-            $product = $this->getProductByName($item->product_name);
-            //dd($product);
+            $product = $this->getProductByName($item->product_name,$order);
             $user = $this->getUserById($order->client);
             if (!$user) {
                 throw new Exception('User has removed from database');
@@ -53,13 +52,17 @@ class BaseRenewController extends Controller
         }
     }
 
-    public function getProductByName($name)
+    public function getProductByName($name,$order='')
     {
         try {
             $product = Product::where('name', $name)->first();
             if ($product) {
                 return $product;
+            } else {
+                $product = Product::where('id',$order->product)->first();
+                return $product;
             }
+
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }

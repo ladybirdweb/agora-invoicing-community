@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Front;
 
 use App\Model\Front\FrontendPage;
 use Illuminate\Http\Request;
+use Bugsnag;
 
 class PageController extends GetPageTemplateController
 {
@@ -83,6 +84,8 @@ class PageController extends GetPageTemplateController
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
+             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -114,6 +117,8 @@ class PageController extends GetPageTemplateController
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
+             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -364,6 +369,8 @@ class PageController extends GetPageTemplateController
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
                 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
         } catch (\Exception $ex) {
+             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

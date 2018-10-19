@@ -169,8 +169,14 @@ active
                                    
                                      
                                     @if($tax_name[0] !='null')
-                                     <?php $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
-                                   $taxInstance= new \App\Http\Controllers\Front\CartController();
+                                     <?php
+                                     $order = \App\Model\Order\Order::where('invoice_item_id',$item->id)->first();
+                                    if($order != null) {
+                                        $productId = $order->product;
+                                    } else {
+                                          $productId =  App\Model\Product\Product::where('name',$item->product_name)->pluck('id')->first(); 
+                                    }
+                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId);
                                      ?>
 

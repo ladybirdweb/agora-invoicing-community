@@ -26,7 +26,7 @@ class DBTestCase extends TestCase
      */
     protected function getLoggedInUser($role = 'user')
     {
-        $this->user = User::create(['role'=>$role]);
+        $this->user = User::create(['role'=>$role, 'timezone_id'=>79]);
         // factory(User::class)->create(['role' => $role]);
         $this->be($this->user);
     }

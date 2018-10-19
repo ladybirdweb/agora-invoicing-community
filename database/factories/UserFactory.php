@@ -5,9 +5,9 @@ use Faker\Generator as Faker;
 
 $factory->define(User::class, function (Faker $faker) {
     return [
-       'user_name'       => $faker->userName,
-       'first_name'      => $faker->firstName,
-       'last_name'       => $faker->lastName,
+       'user_name'       => $faker->unique()->safeEmail,
+       // 'first_name'      => $faker->firstName,
+       // 'last_name'       => $faker->lastName,
        'email'           => $faker->unique()->safeEmail,
        'company'         => $faker->company,
        'bussiness'       => 'abcd',

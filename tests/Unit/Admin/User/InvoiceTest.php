@@ -61,7 +61,8 @@ class InvoiceTest extends DBTestCase
         'product' => $product->name,
 
         ]);
-        $this->assertStringContainsSubstring($response->content(), 'Sorry');
+        dd($response->content());
+        $this->assertStringContainsSubstring($response->content(), 'Whoops');
     }
 
     /** @group InvoiceController */

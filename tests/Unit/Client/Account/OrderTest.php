@@ -61,6 +61,6 @@ class OrderTest extends DBTestCase
          'product'      => $product,
          'subscription' => $subscription,
         ]);
-        $this->assertStringContainsSubstring($response->content(), 'Sorry');
+        $this->assertStringContainsSubstring($response->content(), 'whoops');
     }
 }

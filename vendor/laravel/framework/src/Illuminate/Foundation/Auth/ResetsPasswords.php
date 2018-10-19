@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 
+
     trait ResetsPasswords
     {
         use RedirectsUsers;
@@ -70,10 +71,6 @@ use Illuminate\Auth\Events\PasswordReset;
                                 ->withErrors([
                                     'email' => 'Invalid email', ]);
             }
-
-
-
-
 
 
 

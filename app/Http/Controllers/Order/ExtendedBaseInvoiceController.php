@@ -81,7 +81,6 @@ class ExtendedBaseInvoiceController extends Controller
         $this->validate($request, [
         'total' => 'required',
         'status'=> 'required',
-        'paid'  => 'required',
         ]);
 
         try {

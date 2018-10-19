@@ -87,7 +87,6 @@ class BaseOrderController extends ExtendedOrderController
 
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
-
         $order = $this->order->create([
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
@@ -105,6 +104,14 @@ class BaseOrderController extends ExtendedOrderController
             $this->addSubscription($order->id, $plan_id, $version, $product);
         }
         $this->sendOrderMail($user_id, $order->id, $item->id);
+        //Update Subscriber To Mailchimp
+        $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+        $email = User::where('id', $user_id)->pluck('email')->first();
+        if ($price > 0) {
+            $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+        } else {
+            $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+        }
     }
 
     /**
@@ -240,12 +247,13 @@ class BaseOrderController extends ExtendedOrderController
             $downloadurl = url('product/'.'download'.'/'.$productId.'/'.$number);
         }
         // $downloadurl = $this->downloadUrl($userid, $orderid,$productId);
+        $myaccounturl = url('my-order/'.$orderid);
         $invoiceurl = $this->invoiceUrl($orderid);
         //template
-        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid);
+        $mail = $this->getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl);
     }
 
-    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid)
+    public function getMail($setting, $user, $downloadurl, $invoiceurl, $order, $product, $orderid, $myaccounturl)
     {
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->order_mail;
@@ -255,13 +263,15 @@ class BaseOrderController extends ExtendedOrderController
         $subject = $template->name;
         $data = $template->data;
         $replace = [
-            'name'        => $user->first_name.' '.$user->last_name,
-            'downloadurl' => $downloadurl,
-            'invoiceurl'  => $invoiceurl,
-            'product'     => $product,
-            'number'      => $order->number,
-            'expiry'      => $this->expiry($orderid),
-            'url'         => $this->renew($orderid),
+            'name'         => $user->first_name.' '.$user->last_name,
+             'serialkeyurl'=> $myaccounturl,
+            'downloadurl'  => $downloadurl,
+            'invoiceurl'   => $invoiceurl,
+            'product'      => $product,
+            'number'       => $order->number,
+            'expiry'       => $this->expiry($orderid),
+            'url'          => $this->renew($orderid),
+
             ];
         $type = '';
         if ($template) {

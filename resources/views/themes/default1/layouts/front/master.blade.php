@@ -69,7 +69,7 @@ if($script){
 
              <script type="text/javascript"> //<![CDATA[ 
 
-        var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "http://www.trustlogo.com/");
+        var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "https://www.trustlogo.com/");
         document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
         //]]>
        </script>
@@ -105,7 +105,7 @@ if($script){
                                 <div class="header-row pt-3">
                                     <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
-                                            @if($set->email != NULL)
+                                            @if($set->company_email != NULL)
                                               <li class="nav-item d-none d-sm-block">
                                                   <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>
@@ -437,7 +437,7 @@ if($script){
 
                             <div class="col-md-12">
                                 <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
-                                    <a href="http://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
 

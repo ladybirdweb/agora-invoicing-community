@@ -280,6 +280,7 @@ class TemplateController extends BaseTemplateController
             $page_controller = new \App\Http\Controllers\Front\PageController();
             $transform[0] = $replace;
             $data = $page_controller->transform($type, $data, $transform);
+
             $settings = \App\Model\Common\Setting::find(1);
             $fromname = $settings->company;
             \Mail::send('emails.mail', ['data' => $data], function ($m) use ($from, $to, $subject, $fromname, $toname, $cc, $attach) {
@@ -408,31 +409,39 @@ class TemplateController extends BaseTemplateController
 
     public function leastAmountService($id)
     {
-        $cost = 'Free';
-        $plan = new Plan();
-        $price = '';
-        $plans = $plan->where('product', $id)->get();
-
-        $cart_controller = new \App\Http\Controllers\Front\CartController();
-        $currency = $cart_controller->currency();
-
-        if ($plans->count() > 0) {
-            foreach ($plans as $value) {
-                $days = $value->min('days');
-
-                $month = round($days / 30);
-                $price = $value->planPrice()->where('currency', $currency)->min('add_price');
-            }
-            if ($currency == 'INR') {
-                $symbol = '₹';
+        try {
+            $cost = 'Free';
+            $symbol = '';
+            $price = '';
+            $plan = new Plan();
+            $plans = $plan->where('product', $id)->get();
+            $cart_controller = new \App\Http\Controllers\Front\CartController();
+            $currencyAndSymbol = $cart_controller->currency();
+            $currency = $currencyAndSymbol['currency'];
+            $symbol = $currencyAndSymbol['symbol'];
+            $prices = [];
+            $priceVal[] = [];
+            if ($plans->count() > 0) {
+                foreach ($plans as $value) {
+                    $days = $value->min('days');
+                    $month = round($days / 30);
+                    $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
+                }
+                foreach ($prices as $key => $value) {
+                    $duration = $this->getDuration($value);
+                    $priceVal[] = intval($value);
+                }
+                $price = min($priceVal).' '.$duration;
+                $cost = "$symbol$price";
             } else {
-                $symbol = '$';
+                $cost = 'Free';
             }
-            $price = "$symbol $price";
-        } else {
-            $price = $cart_controller->productCost($id);
-        }
 
-        return $price;
+            return $cost;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

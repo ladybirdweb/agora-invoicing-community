@@ -138,11 +138,12 @@ class ClientController extends BaseClientController
             $order_id = $order->id;
             $endDate = Subscription::select('ends_at')
                  ->where('product_id', $productid)->where('order_id', $order_id)->first();
-
-            foreach ($versions as $version) {
-                if ($version->created_at->toDateTimeString()
+            if ($endDate) {
+                foreach ($versions as $version) {
+                    if ($version->created_at->toDateTimeString()
                < $endDate->ends_at->toDateTimeString()) {
-                    $countExpiry = $countExpiry + 1;
+                        $countExpiry = $countExpiry + 1;
+                    }
                 }
             }
 
@@ -251,9 +252,11 @@ class ClientController extends BaseClientController
             $order_id = $order->id;
             $orderEndDate = Subscription::select('ends_at')
                         ->where('product_id', $productid)->where('order_id', $order_id)->first();
-            foreach ($link as $lin) {
-                if (strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at)) {
-                    $countExpiry = $countExpiry + 1;
+            if ($orderEndDate) {
+                foreach ($link as $lin) {
+                    if (strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at)) {
+                        $countExpiry = $countExpiry + 1;
+                    }
                 }
             }
 

@@ -433,8 +433,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             //$this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
-            app('log')->info($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Invoice');
@@ -452,6 +451,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $cart_cont = new \App\Http\Controllers\Front\CartController();
             if ($cart_cont->checkPlanSession() === true) {
                 $planid = \Session::get('plan');
+            }
+            if ($planid == 0) {
+                //When Product is added from Faveo Website
+                $planid = Plan::where('product', $cart->id)->pluck('id')->first();
             }
             $user_currency = \Auth::user()->currency;
             $subtotal = $this->getSubtotal($user_currency, $cart);
@@ -533,7 +536,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
              $code, $total, $currency, $qty, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/laravel.log');
+            dd($ex);
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
             $result = ['fails' => $ex->getMessage()];
@@ -578,7 +581,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $mode = '';
             $product = $this->product->findOrFail($productid);
             $plan = Plan::where('product', $productid)->first();
-            $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
+            // $price_model = PlanPrice::where('plan_id', $plan->id)->where('currency', $currency)->first();
 
             // $price = $this->getPrice($price, $price_model);
 
@@ -620,6 +623,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $items;
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

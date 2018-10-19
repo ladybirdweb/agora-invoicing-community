@@ -69,7 +69,7 @@ active
                         <div class="form-row">
                         <div class="form-group col{{ $errors->has('first_name') ? 'has-error' : '' }}">
                             <!-- first name -->
-                            <label for "first_name" class="required"><b>First Name</b></label>
+                            <label for "first_name" class="required">First Name</label>
                             <!-- <b>{!! Form::label('first_name',Lang::get('message.first_name')) !!}</b> -->
                             {!! Form::text('first_name',null,['class' => 'form-control input-lg ','id'=>'firstName']) !!}
                            <h6 id="firstNameCheck"></h6>
@@ -78,7 +78,7 @@ active
                        <div class="form-row">
                         <div class="form-group col{{ $errors->has('last_name') ? 'has-error' : '' }}">
                             <!-- last name -->
-                             <label for "last_name" class="required"><b>Last Name</b></label>
+                             <label for "last_name" class="required">Last Name</label>
                             {!! Form::text('last_name',null,['class' => 'form-control input-lg ','id'=>'lastName']) !!}
                              <h6 id="lastNameCheck"></h6>
                         </div>
@@ -86,7 +86,7 @@ active
                       
                          <div class="form-row">
                        <div class="form-group col{{ $errors->has('email') ? 'has-error' : '' }}">
-                             <label for "email" class="required"><b>Email</b></label>
+                             <label for "email" class="required">Email</label>
                             <!-- email -->
                             {!! Form::text('email',null,['class' => 'form-control input-lg ','id'=>'Email']) !!}
                             <h6 id="emailCheck"></h6>
@@ -95,7 +95,7 @@ active
                           <div class="form-row">
                         <div class="form-group col {{ $errors->has('company') ? 'has-error' : '' }}">
                             <!-- company -->
-                            <label for "company" class=""><b>Company</b></label>
+                            <label for "company" class="">Company</label>
                             {!! Form::text('company',null,['class' => 'form-control input-lg','id'=>'Company']) !!}
                             <h6 id="companyCheck"></h6>
                         </div>
@@ -103,7 +103,7 @@ active
                          
                           <div class="form-row">
                         <div class="form-group col {{ $errors->has('mobile_code') ? 'has-error' : '' }}">
-                        <label class="required"><b>Country code</b></label>
+                        <label class="required">Country code</label>
                         <!-- <input class="form-control input-lg" id="mobile_code" name="mobile_code" type="text"> -->
                         {!! Form::text('mobile_code',null,['class'=>'form-control input-lg','id'=>'mobile_code']) !!}
                           <h6 id="mobileCodeCheck"></h6>
@@ -113,7 +113,7 @@ active
                         <div class="form-group col {{ $errors->has('mobile') ? 'has-error' : '' }}">
                             
                             <!-- mobile -->
-                            <label for"mobile" class="required"><b>Mobile</b></label>
+                            <label for"mobile" class="required">Mobile</label>
                             {!! Form::text('mobile',null,['class' => 'form-control input-lg','id'=>'mobile']) !!}
                               <h6 id="mobileCheck"></h6>
                         </div>
@@ -122,7 +122,7 @@ active
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('address') ? 'has-error' : '' }}">
                             <!-- phone number -->
-                            <label for"address" class="required"><b>Address</b></label>
+                            <label for"address" class="required">Address</label>
                             {!! Form::textarea('address',null,['class' => 'form-control input-lg','id'=>'Address']) !!}
                                <h6 id="addressCheck"></h6>
                         </div>
@@ -132,13 +132,13 @@ active
                         <div class="form-row">
                             <div class="form-group col-md-6 {{ $errors->has('town') ? 'has-error' : '' }}">
                                 <!-- mobile -->
-                                 <label for"town" class="required"><b>Town</b></label>
+                                 <label for"town" class="required">Town</label>
                                 {!! Form::text('town',null,['class' => 'form-control input-lg','id'=>'Town']) !!}
                                  <h6 id="townCheck"></h6>
                             </div>
                             <div class="form-group col-md-6 {{ $errors->has('timezone_id') ? 'has-error' : '' }}">
                                 <!-- mobile -->
-                                 <label for"timezone_id" class=""><b>Timezne</b></label>
+                                 <label for"timezone_id" class="">Timezone</label>
                                 {!! Form::select('timezone_id',[Lang::get('message.choose')=>$timezones],null,['class' => 'form-control input-lg','id'=>'timezone']) !!}
 
                                <!--  {!! Form::select('timezone_id', [Lang::get('message.choose')=>$timezones],null,['class' => 'form-control selectpicker','data-live-search'=>'true','required','data-live-search-placeholder' => 'Search','data-dropup-auto'=>'false','data-size'=>'10','id'=>'timezone']) !!}
@@ -150,7 +150,7 @@ active
 
                             <div class="col-md-6 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                                 <!-- name -->
-                              <label for"country" class="required"><b>Country</b></label>
+                              <label for"country" class="required">Country</label>
                                  <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
                                 {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control input-lg ','id'=>'country','onChange'=>'getCountryAttr(this.value);']) !!}
 
@@ -177,7 +177,7 @@ active
                         </div>
                          <div class="form-row">
                         <div class="form-group col {{ $errors->has('zip') ? 'has-error' : '' }}">
-                            <label for"zip" class="required"><b>Zip/Postal Code</b></label>
+                            <label for"zip" class="required">Zip/Postal Code</label>
                             {!! Form::text('zip',null,['class' => 'form-control input-lg','id'=>'Zip']) !!}
                              <h6 id="zipCheck"></h6>
                         </div>
@@ -186,7 +186,7 @@ active
                          <div class="form-row">
                         <div class="form-group {{ $errors->has('profile_pic') ? 'has-error' : '' }}">
                             <!-- profile pic -->
-                             <label for"profile_pic" class=""><b>Profile Picture</b></label>
+                             <label for"profile_pic" class="">Profile Picture</label>
                             {!! Form::file('profile_pic',['id'=>'profilePic']) !!}
                             <h6 id="profilePicCheck"></h6>
                              
@@ -208,11 +208,11 @@ active
                     <div class="box-content">
                             <h4 class="heading-primary text-uppercase mb-3">Change Password</h4>
                         {!! Form::model($user,['url'=>'my-password' , 'method' => 'PATCH']) !!}
-
+                        
                         <!-- old password -->
                         <div class="form-row">
                         <div class="form-group col {{ $errors->has('old_password') ? 'has-error' : '' }}">
-                            <label for"old_password" class="required"><b>Old Password</b></label>
+                            <label for"old_password" class="required">Old Password</label>
                             {!! Form::password('old_password',['class' => 'form-control input-lg','id'=>'old_password']) !!}
                             <h6 id="oldpasswordcheck"></h6>
                            
@@ -221,7 +221,7 @@ active
                         <!-- new password -->
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('new_password') ? 'has-error' : '' }}">
-                            <label for"new_password" class="required"><b>New Password</b></label>
+                            <label for"new_password" class="required">New Password</label>
                             {!! Form::password('new_password',['class' => 'form-control input-lg','id'=>'new_password']) !!}
                            
                             <h6 id="newpasswordcheck"></h6>
@@ -230,7 +230,7 @@ active
                         <!-- cofirm password -->
                         <div class="form-row">
                         <div class="form-group col has-feedback {{ $errors->has('confirm_password') ? 'has-error' : '' }}">
-                            <label for"confirm_password" class="required"><b>Confirm Password</b></label>
+                            <label for"confirm_password" class="required">Confirm Password</label>
                             {!! Form::password('confirm_password',['class' => 'form-control input-lg','id'=>'confirm_password']) !!}
                             <h6 id ="confirmpasswordcheck"></h6>
                            

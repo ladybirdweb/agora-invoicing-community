@@ -56,8 +56,6 @@ class GithubApiController extends Controller
 
             return json_decode($content, true);
         } catch (Exception $ex) {
-            dd($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

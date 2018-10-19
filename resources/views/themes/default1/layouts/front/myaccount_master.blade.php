@@ -371,6 +371,7 @@
 
                                     <li class="@yield('nav-invoice')"><a class="nav-link" href="{{url('my-invoices')}}">My Invoices</a></li>
                                     <li class="@yield('nav-profile')"><a class="nav-link" href="{{url('my-profile')}}">Profile</a></li>
+                                    <li class="@yield('nav-profile')"><a class="nav-link" href="https://support.faveohelpdesk.com/category-list/installation-and-upgrade-guide" target="_blank">Installation Instructions</a></li>
                                     <li><a class="nav-link" href="{{url('auth/logout')}}">Logout</a></li>
                                 </ul>
 
@@ -474,7 +475,7 @@
 
                             <div class="col-md-12">
                                 <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
-                                    <a href="http://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
 

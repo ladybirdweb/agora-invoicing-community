@@ -62,21 +62,15 @@ class CartController extends BaseCartController
 
     public function productList(Request $request)
     {
-        try {
-            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
-            $location = $cont->getLocation();
-        } catch (\Exception $ex) {
-            $location = false;
-            $error = $ex->getMessage();
-        }
-
-        $country = $this->findCountryByGeoip($location['countryCode']);
-        $states = $this->findStateByRegionId($location['countryCode']);
+        $cont = new \App\Http\Controllers\Front\PageController();
+        $location = $cont->getLocation();
+        $country = $this->findCountryByGeoip($location['iso_code']);
+        $states = $this->findStateByRegionId($location['iso_code']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-        $state_code = $location['countryCode'].'-'.$location['region'];
+        $state_code = $location['iso_code'].'-'.$location['state'];
         $state = $this->getStateByCode($state_code);
-        $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
-        $currency = $cont->getCurrency($location);
+        $mobile_code = $this->getMobileCodeByIso($location['iso_code']);
+        $currency = $this->currency();
 
         \Session::put('currency', $currency);
         if (!\Session::has('currency')) {
@@ -162,16 +156,17 @@ class CartController extends BaseCartController
                 'target' => 'item',
                 'value'  => '0%',
             ]);
-            $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+
+            $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
 
-            $country = $this->findCountryByGeoip($location['countryCode']);
-            $states = $this->findStateByRegionId($location['countryCode']);
+            $country = $this->findCountryByGeoip($location['iso_code']);
+            $states = $this->findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = $this->getStateByCode($state_code);
-            $mobile_code = $this->getMobileCodeByIso($location['countryCode']);
-            $country_iso = $location['countryCode'];
+            $mobile_code = $this->getMobileCodeByIso($location['iso_code']);
+            $country_iso = $location['iso_code'];
 
             $geoip_state = $this->getGeoipState($state_code, $user_state);
             $geoip_country = $this->getGeoipCountry($country_iso, $user_country);
@@ -623,11 +618,10 @@ class CartController extends BaseCartController
             $toname = '';
             $to = $set->company_email;
             $data = '';
-            $data .= 'Name: '.$request->input('name').'<br/s>';
-            $data .= 'Email: '.$request->input('email').'<br/>';
-            $data .= 'Message: '.$request->input('message').'<br/>';
-            $data .= 'Mobile: '.$request->input('country_code').$request->input('Mobile').'<br/>';
-
+            $data .= 'Name: '.strip_tags($request->input('name')).'<br/>';
+            $data .= 'Email: '.strip_tags($request->input('email')).'<br/>';
+            $data .= 'Message: '.strip_tags($request->input('message')).'<br/>';
+            $data .= 'Mobile: '.strip_tags($request->input('country_code').$request->input('Mobile')).'<br/>';
             $subject = 'Faveo billing enquiry';
             $this->templateController->Mailing($from, $to, $data, $subject, [], $fromname, $toname);
             //$this->templateController->Mailing($from, $to, $data, $subject);
@@ -875,8 +869,6 @@ class CartController extends BaseCartController
 
             return $products;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -894,9 +886,9 @@ class CartController extends BaseCartController
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
             if (!\Auth::user()) {//When user is not logged in
-                $cont = new \App\Http\Controllers\Front\GetPageTemplateController();
+                $cont = new \App\Http\Controllers\Front\PageController();
                 $location = $cont->getLocation();
-                $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
+                $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
                 $userCountry = Country::where('country_code_char2', $country)->first();
                 $currencyStatus = $userCountry->currency->status;
                 if ($currencyStatus == 1) {
@@ -965,26 +957,26 @@ class CartController extends BaseCartController
      *
      * @return type
      */
-    public function productCost($productid, $userid = '')
-    {
-        try {
-            $sales = 0;
-            $currency = $this->currency($userid);
-            $product = $this->product->find($productid);
-            $price = $product->price()->where('currency', $currency)->first();
-            if ($price) {
-                $sales = $price->sales_price;
-                if ($sales == 0) {
-                    $sales = $price->price;
-                }
-            }
-            //}
+    // public function productCost($productid, $userid = '')
+    // {
+    //     try {
+    //         $sales = 0;
+    //         $currency = $this->currency($userid);
+    //         $product = $this->product->find($productid);
+    //         $price = $product->price()->where('currency', $currency)->first();
+    //         if ($price) {
+    //             $sales = $price->sales_price;
+    //             if ($sales == 0) {
+    //                 $sales = $price->price;
+    //             }
+    //         }
+    //         //}
 
-            return $sales;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
+    //         return $sales;
+    //     } catch (\Exception $ex) {
+    //         throw new \Exception($ex->getMessage());
+    //     }
+    // }
 
     /**
      * @param type $productid

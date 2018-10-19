@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Model\Front\FrontendPage;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class PageController extends GetPageTemplateController
@@ -24,6 +25,22 @@ class PageController extends GetPageTemplateController
             return view('themes.default1.front.page.index');
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function getLocation()
+    {
+        try {
+            $location = \GeoIP::getLocation();
+
+            return $location;
+        } catch (Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+            $error = $ex->getMessage();
+            $location = \Config::get('geoip.default_location');
+
+            return $location;
         }
     }
 
@@ -67,6 +84,9 @@ class PageController extends GetPageTemplateController
 
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -98,6 +118,9 @@ class PageController extends GetPageTemplateController
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -279,14 +302,14 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = $this->getLocation();
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $currency = $this->getCurrency($location);
-
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
+            $cont = new \App\Http\Controllers\Front\CartController();
+            $currency = $cont->currency();
             \Session::put('currency', $currency);
             if (!\Session::has('currency')) {
                 \Session::put('currency', 'INR');
@@ -296,7 +319,7 @@ class PageController extends GetPageTemplateController
             //Helpdesk
             $product = new \App\Model\Product\Product();
             $helpdesk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'helpdesk')
+        ->where('category', '=', 'Helpdesk')
         ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
@@ -308,7 +331,7 @@ class PageController extends GetPageTemplateController
             //Helpdesk VPS
             $helpdesk_vps_product = $product->where('id', '!=', 1)
 
-        ->where('category', '=', 'helpdesk vps')
+        ->where('category', '=', 'Helpdesk VPS')
 
         ->where('hidden', '=', '0')
         ->get()
@@ -318,7 +341,7 @@ class PageController extends GetPageTemplateController
 
             //ServiceDesk Vps
             $servicedesk_vps_product = $product->where('id', '!=', 1)
-        ->where('category', '=', 'servicedesk vps')
+        ->where('category', '=', 'Servicedesk vps')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
@@ -327,7 +350,7 @@ class PageController extends GetPageTemplateController
 
             //servicedesk
             $sevice_desk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'servicedesk')
+        ->where('category', '=', 'Servicedesk')
          ->where('hidden', '=', '0')
         ->orderBy('created_at', 'asc')
         ->get()
@@ -337,7 +360,7 @@ class PageController extends GetPageTemplateController
 
             //Service
             $service = $product->where('id', '!=', 1)
-        ->where('category', '=', 'service')
+        ->where('category', '=', 'Service')
         ->where('hidden', '=', '0')
         ->get()
         ->toArray();
@@ -348,6 +371,9 @@ class PageController extends GetPageTemplateController
             compact('template', 'trasform', 'servicedesk_template', 'trasform1',
                 'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

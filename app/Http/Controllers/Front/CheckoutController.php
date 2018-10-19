@@ -169,6 +169,9 @@ class CheckoutController extends InfoController
                 //$attributes[] = $item->attributes;
             }
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -233,10 +236,11 @@ class CheckoutController extends InfoController
                 }
             } else {
                 $items = new \Illuminate\Support\Collection();
-                $invoice_id = $request->input('invoice_id');
-                $invoice = $this->invoice->find($invoice_id);
+                $invoiceid = $request->input('invoice_id');
+                $invoice = $this->invoice->find($invoiceid);
+                $date = $this->getDate($invoice);
                 $items = $invoice->invoiceItem()->get();
-                $product = $this->product($invoice_id);
+                $product = $this->product($invoiceid);
                 $amount = $invoice->grand_total;
                 $content = Cart::getContent();
                 $attributes = $this->getAttributes($content);
@@ -253,6 +257,10 @@ class CheckoutController extends InfoController
             } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
+
+                //Update Subscriber To Mailchimp
+                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
                 $url = '';
                 if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',
@@ -278,8 +286,6 @@ class CheckoutController extends InfoController
             $invoice_id = $invoice->id;
             $invoice->status = 'success';
             $invoice->save();
-            //dd($invoice->id);
-
             $invoice_items = $this->invoiceItem->where('invoice_id', $invoice->id)->first();
             $product = $invoice_items->product_name;
 

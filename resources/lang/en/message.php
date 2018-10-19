@@ -376,6 +376,12 @@ return [
     'invoice/payment'=> 'Invoice/Payment',
     'invoice-total'  => 'Invoice Total',
     'total-amt'      => 'Total Amount Paid',
+    'comment'        => 'Comment',
+    'comments'       => 'Comments',
+    'add_comment'    => 'Add Comment',
+    'add_new_comment'=> 'Add New Comment',
+    'no-comments'    => 'No Comments',
+    'edit-comment'   => 'Edit Comment',
 
     /*
      * Licence
@@ -530,5 +536,23 @@ return [
       'system-api'     => 'System Api Keys',
       'domain-message' => 'Enter domain name in the form \'domain.com\'',
       'domain-name'    => 'Domain Name',
+      'filters'        => 'Filters',
+      'apply'          => 'Apply',
+
+      /*
+     *Mailchimp Product Groups
+     */
+     'helpdesk_advance'   => 'Faveo Helpdesk Advance',
+     'helpdesk_pro'       => 'Faveo Helpdesk Pro',
+     'helpdesk_smart'     => 'Faveo Helpdesk Smart',
+     'helpdesk_community' => 'Faveo Helpdesk Community',
+     'service_advance'    => 'Faveo ServiceDesk Advance',
+     'service_pro'        => 'Faveo ServiceDesk Pro',
+     'service_smart'      => 'Faveo ServiceDesk Smart',
+     'service_community'  => 'Faveo ServiceDesk Community',
+     'agora-products'     => 'Agora Products',
+     'mailchimp-product'  => 'Mailchimp Group Fields',
+     'list-fields'        => 'List Fields  Mapping',
+     'group-fields'       => 'Group Fields Mapping',
 
 ];

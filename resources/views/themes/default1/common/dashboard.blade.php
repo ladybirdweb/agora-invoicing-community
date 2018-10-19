@@ -127,10 +127,11 @@ Dashboard
                     <li>
                      <a class="users-list-name" href="{{url('clients/'.$user['id'])}}"> <img src="{{$user['profile_pic']}}" alt="User Image"></a>
                       <a class="users-list-name" href="{{url('clients/'.$user['id'])}}">{{$user['first_name']." ".$user['last_name']}}</a>
-
-                      @if ($user['created_at']->toDateString() < $mytime->toDateString())
-                      <span class="users-list-date">{{$user['created_at']->format('M j')}}</span>
-                      @elseif ($user['created_at']->toDateString() < $yesterday->toDateString())
+                       <?php $displayDate = new DateTime($user['created_at']) ;
+                        ?>
+                      @if ($displayDate < $mytime)
+                      <span class="users-list-date">{{($displayDate)->format('M j')}}</span>
+                      @elseif ($displayDate == $yesterday)
                        <span class="users-list-date">Yesterday</span>
                       @else
                       <span class="users-list-date">Today</span>
@@ -286,7 +287,7 @@ Dashboard
          	<div class="col-md-6">
          	   <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Orders Expiring Soon</h3>
+              <h3 class="box-title">Orders Expiring Soon (Next 30 Days)</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -329,6 +330,7 @@ Dashboard
                   $expDate = $date->format('M j, Y ');
                    $product =  \App\Model\Product\Product::where('id',$subscription->product_id)->value('name');
                     $daysLeft = date_diff($todayDate,$expiry)->format('%a days');
+                   
                     ?>
 
                   <tr>
@@ -349,7 +351,8 @@ Dashboard
             </div>
              <div class="box-footer clearfix">
            
-              <a href="{{url('orders')}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a>
+              <a href="{{url('orders?expiry='.$startSubscriptionDate.'&expiryTill='.$endSubscriptionDate)}}" class="btn btn-sm btn-default btn-flat pull-right">View Orders Expiring Soon</a>
+              <!-- <a href="{{url('orders?expiryTill='.$endSubscriptionDate)}}" class="btn btn-sm btn-default btn-flat pull-right">View All Orders</a> -->
                <a href="{{url('invoice/generate')}}" class="btn btn-sm btn-info btn-flat pull-left">Place New Order</a>
             </div>
               

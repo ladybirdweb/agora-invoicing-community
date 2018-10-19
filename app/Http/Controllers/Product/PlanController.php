@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
@@ -57,6 +58,7 @@ class PlanController extends Controller
     public function getPlans()
     {
         $new_plan = Plan::select('id', 'name', 'days', 'product')->get();
+        $defaultCurrency = Setting::where('id', 1)->value('default_currency');
 
         return\ DataTables::of($new_plan)
                         ->addColumn('checkbox', function ($model) {
@@ -81,12 +83,28 @@ class PlanController extends Controller
 
                             return ucfirst($response);
                         })
+                         ->addColumn('price', function ($model) use ($defaultCurrency) {
+                             $price = PlanPrice::where('plan_id', $model->id)->where('currency', $defaultCurrency)
+                            ->pluck('add_price')->first();
+                             if ($price != null) {
+                                 return $price;
+                             } else {
+                                 return 'Not Available';
+                             }
+                         })
+                         ->addColumn('currency', function ($model) use ($defaultCurrency) {
+                             if ($defaultCurrency && $defaultCurrency != null) {
+                                 return $defaultCurrency;
+                             } else {
+                                 return 'Not Available';
+                             }
+                         })
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('plans/'.$model->id.'/edit')." 
                             class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
                             style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
-                        ->rawColumns(['checkbox', 'name', 'days', 'product', 'action'])
+                        ->rawColumns(['checkbox', 'name', 'days', 'product', 'price', 'currency', 'action'])
                         ->make(true);
     }
 

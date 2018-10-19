@@ -141,7 +141,7 @@ class ExtendedBaseCartController extends Controller
             }
             //}
 
-            return $sales;
+            return intval($sales);
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

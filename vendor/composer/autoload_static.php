@@ -73,6 +73,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'd7354eb4c8441fbf08eec280b61c7c73' => __DIR__ . '/..' . '/rachidlaasri/laravel-installer/src/Helpers/functions.php',
         '72b1e3f4a2af9b30b3f137b3ec2057fc' => __DIR__ . '/..' . '/spatie/laravel-activitylog/src/helpers.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
+        '1e298922c3e2134d42dcdb03e6d5f55a' => __DIR__ . '/..' . '/torann/geoip/src/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -99,6 +100,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         ),
         'T' => 
         array (
+            'Torann\\GeoIP\\' => 13,
             'TijsVerkoyen\\CssToInlineStyles\\' => 31,
             'Thomaswelton\\Tests\\LaravelGravatar\\' => 35,
             'Thomaswelton\\LaravelGravatar\\' => 29,
@@ -147,6 +149,9 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MaxMind\\WebService\\' => 19,
+            'MaxMind\\Exception\\' => 18,
+            'MaxMind\\Db\\' => 11,
             'Mailchimp\\' => 10,
             'Maatwebsite\\Excel\\' => 18,
         ),
@@ -167,6 +172,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
             'GrahamCampbell\\Markdown\\' => 24,
+            'GeoIp2\\' => 7,
         ),
         'F' => 
         array (
@@ -244,6 +250,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         array (
             0 => __DIR__ . '/..' . '/anahkiasen/underscore-php/src',
             1 => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests',
+        ),
+        'Torann\\GeoIP\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/torann/geoip/src',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
@@ -389,6 +399,18 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
+        'MaxMind\\WebService\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService',
+        ),
+        'MaxMind\\Exception\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception',
+        ),
+        'MaxMind\\Db\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db',
+        ),
         'Mailchimp\\' => 
         array (
             0 => __DIR__ . '/..' . '/pacely/mailchimp-apiv3/src',
@@ -432,6 +454,10 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'GrahamCampbell\\Markdown\\' => 
         array (
             0 => __DIR__ . '/..' . '/graham-campbell/markdown/src',
+        ),
+        'GeoIp2\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/geoip2/geoip2/src',
         ),
         'FontLib\\' => 
         array (
@@ -673,6 +699,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\BaseModel' => __DIR__ . '/../..' . '/app/BaseModel.php',
         'App\\Box' => __DIR__ . '/../..' . '/app/Box.php',
         'App\\Commands\\Command' => __DIR__ . '/../..' . '/app/Jobs/Command.php',
+        'App\\Comment' => __DIR__ . '/../..' . '/app/Comment.php',
         'App\\Console\\Commands\\ExpiryCron' => __DIR__ . '/../..' . '/app/Console/Commands/ExpiryCron.php',
         'App\\Console\\Commands\\Inspire' => __DIR__ . '/../..' . '/app/Console/Commands/Inspire.php',
         'App\\Console\\Commands\\Install' => __DIR__ . '/../..' . '/app/Console/Commands/Install.php',
@@ -759,6 +786,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Controllers\\ServiceProvider\\ServiceProviderController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServiceProvider/ServiceProviderController.php',
         'App\\Http\\Controllers\\User\\AdvanceSearchController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/AdvanceSearchController.php',
         'App\\Http\\Controllers\\User\\ClientController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/ClientController.php',
+        'App\\Http\\Controllers\\User\\CommentController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/CommentController.php',
         'App\\Http\\Controllers\\User\\ProfileController' => __DIR__ . '/../..' . '/app/Http/Controllers/User/ProfileController.php',
         'App\\Http\\Controllers\\WelcomeController' => __DIR__ . '/../..' . '/app/Http/Controllers/WelcomeController.php',
         'App\\Http\\Kernel' => __DIR__ . '/../..' . '/app/Http/Kernel.php',
@@ -767,6 +795,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Http\\Middleware\\EncryptCookies' => __DIR__ . '/../..' . '/app/Http/Middleware/EncryptCookies.php',
         'App\\Http\\Middleware\\Install' => __DIR__ . '/../..' . '/app/Http/Middleware/Install.php',
         'App\\Http\\Middleware\\IsInstalled' => __DIR__ . '/../..' . '/app/Http/Middleware/IsInstalled.php',
+        'App\\Http\\Middleware\\PreferredDomain' => __DIR__ . '/../..' . '/app/Http/Middleware/PreferredDomain.php',
         'App\\Http\\Middleware\\RedirectIfAuthenticated' => __DIR__ . '/../..' . '/app/Http/Middleware/RedirectIfAuthenticated.php',
         'App\\Http\\Middleware\\TrimStrings' => __DIR__ . '/../..' . '/app/Http/Middleware/TrimStrings.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
@@ -787,6 +816,8 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'App\\Model\\Common\\Country' => __DIR__ . '/../..' . '/app/Model/Common/Country.php',
         'App\\Model\\Common\\Mailchimp\\MailchimpField' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpField.php',
         'App\\Model\\Common\\Mailchimp\\MailchimpFieldAgoraRelation' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpFieldAgoraRelation.php',
+        'App\\Model\\Common\\Mailchimp\\MailchimpGroup' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpGroup.php',
+        'App\\Model\\Common\\Mailchimp\\MailchimpGroupAgoraRelation' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpGroupAgoraRelation.php',
         'App\\Model\\Common\\Mailchimp\\MailchimpLists' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpLists.php',
         'App\\Model\\Common\\Mailchimp\\MailchimpSetting' => __DIR__ . '/../..' . '/app/Model/Common/Mailchimp/MailchimpSetting.php',
         'App\\Model\\Common\\Setting' => __DIR__ . '/../..' . '/app/Model/Common/Setting.php',
@@ -1034,6 +1065,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'CreateCcavanueTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_ccavanue_table.php',
         'CreateCcavenueTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_ccavenue_table.php',
         'CreateChatScriptsTable' => __DIR__ . '/../..' . '/database/migrations/2018_08_23_100152_create_chat_scripts_table.php',
+        'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2018_09_27_140403_create_comments_table.php',
         'CreateCompanySizesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_company_sizes_table.php',
         'CreateCompanyTypesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_company_types_table.php',
         'CreateConfigurableOptionsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_configurable_options_table.php',
@@ -1047,6 +1079,8 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'CreateJobsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_jobs_table.php',
         'CreateMailchimpFieldAgoraRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_mailchimp_field_agora_relations_table.php',
         'CreateMailchimpFieldsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_mailchimp_fields_table.php',
+        'CreateMailchimpGroupAgoraRelationsTable' => __DIR__ . '/../..' . '/database/migrations/2018_10_10_110204_create_mailchimp_group_agora_relations_table.php',
+        'CreateMailchimpGroupsTable' => __DIR__ . '/../..' . '/database/migrations/2018_10_10_092119_create_mailchimp_groups_table.php',
         'CreateMailchimpListsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_mailchimp_lists_table.php',
         'CreateMailchimpSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_mailchimp_settings_table.php',
         'CreateMobileTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062630_create_mobile_table.php',
@@ -2042,6 +2076,36 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'FontLib\\WOFF\\Header' => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib/WOFF/Header.php',
         'FontLib\\WOFF\\TableDirectoryEntry' => __DIR__ . '/..' . '/phenx/php-font-lib/src/FontLib/WOFF/TableDirectoryEntry.php',
         'FrontPageSeeder' => __DIR__ . '/../..' . '/database/seeds/FrontPageSeeder.php',
+        'GeoIp2\\Database\\Reader' => __DIR__ . '/..' . '/geoip2/geoip2/src/Database/Reader.php',
+        'GeoIp2\\Exception\\AddressNotFoundException' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/AddressNotFoundException.php',
+        'GeoIp2\\Exception\\AuthenticationException' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/AuthenticationException.php',
+        'GeoIp2\\Exception\\GeoIp2Exception' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/GeoIp2Exception.php',
+        'GeoIp2\\Exception\\HttpException' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/HttpException.php',
+        'GeoIp2\\Exception\\InvalidRequestException' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/InvalidRequestException.php',
+        'GeoIp2\\Exception\\OutOfQueriesException' => __DIR__ . '/..' . '/geoip2/geoip2/src/Exception/OutOfQueriesException.php',
+        'GeoIp2\\Model\\AbstractModel' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/AbstractModel.php',
+        'GeoIp2\\Model\\AnonymousIp' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/AnonymousIp.php',
+        'GeoIp2\\Model\\Asn' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Asn.php',
+        'GeoIp2\\Model\\City' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/City.php',
+        'GeoIp2\\Model\\ConnectionType' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/ConnectionType.php',
+        'GeoIp2\\Model\\Country' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Country.php',
+        'GeoIp2\\Model\\Domain' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Domain.php',
+        'GeoIp2\\Model\\Enterprise' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Enterprise.php',
+        'GeoIp2\\Model\\Insights' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Insights.php',
+        'GeoIp2\\Model\\Isp' => __DIR__ . '/..' . '/geoip2/geoip2/src/Model/Isp.php',
+        'GeoIp2\\ProviderInterface' => __DIR__ . '/..' . '/geoip2/geoip2/src/ProviderInterface.php',
+        'GeoIp2\\Record\\AbstractPlaceRecord' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/AbstractPlaceRecord.php',
+        'GeoIp2\\Record\\AbstractRecord' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/AbstractRecord.php',
+        'GeoIp2\\Record\\City' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/City.php',
+        'GeoIp2\\Record\\Continent' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Continent.php',
+        'GeoIp2\\Record\\Country' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Country.php',
+        'GeoIp2\\Record\\Location' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Location.php',
+        'GeoIp2\\Record\\MaxMind' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/MaxMind.php',
+        'GeoIp2\\Record\\Postal' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Postal.php',
+        'GeoIp2\\Record\\RepresentedCountry' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/RepresentedCountry.php',
+        'GeoIp2\\Record\\Subdivision' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Subdivision.php',
+        'GeoIp2\\Record\\Traits' => __DIR__ . '/..' . '/geoip2/geoip2/src/Record/Traits.php',
+        'GeoIp2\\WebService\\Client' => __DIR__ . '/..' . '/geoip2/geoip2/src/WebService/Client.php',
         'GitHubTableSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'GrahamCampbell\\Markdown\\Compilers\\MarkdownCompiler' => __DIR__ . '/..' . '/graham-campbell/markdown/src/Compilers/MarkdownCompiler.php',
         'GrahamCampbell\\Markdown\\Engines\\BladeMarkdownEngine' => __DIR__ . '/..' . '/graham-campbell/markdown/src/Engines/BladeMarkdownEngine.php',
@@ -2759,6 +2823,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Illuminate\\Foundation\\Auth\\RedirectsUsers' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/RedirectsUsers.php',
         'Illuminate\\Foundation\\Auth\\RegistersUsers' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/RegistersUsers.php',
         'Illuminate\\Foundation\\Auth\\ResetsPasswords' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/ResetsPasswords.php',
+        'Illuminate\\Foundation\\Auth\\SendsPasswordResetEmails' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/SendsPasswordResetEmails.php',
         'Illuminate\\Foundation\\Auth\\ThrottlesLogins' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/ThrottlesLogins.php',
         'Illuminate\\Foundation\\Auth\\User' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Auth/User.php',
         'Illuminate\\Foundation\\Bootstrap\\BootProviders' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Foundation/Bootstrap/BootProviders.php',
@@ -3448,6 +3513,23 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'Mailchimp\\Mailchimp' => __DIR__ . '/..' . '/pacely/mailchimp-apiv3/src/Mailchimp.php',
         'Mailchimp\\MailchimpFacade' => __DIR__ . '/..' . '/pacely/mailchimp-apiv3/src/MailchimpFacade.php',
         'Mailchimp\\MailchimpServiceProvider' => __DIR__ . '/..' . '/pacely/mailchimp-apiv3/src/MailchimpServiceProvider.php',
+        'MaxMind\\Db\\Reader' => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db/Reader.php',
+        'MaxMind\\Db\\Reader\\Decoder' => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db/Reader/Decoder.php',
+        'MaxMind\\Db\\Reader\\InvalidDatabaseException' => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db/Reader/InvalidDatabaseException.php',
+        'MaxMind\\Db\\Reader\\Metadata' => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db/Reader/Metadata.php',
+        'MaxMind\\Db\\Reader\\Util' => __DIR__ . '/..' . '/maxmind-db/reader/src/MaxMind/Db/Reader/Util.php',
+        'MaxMind\\Exception\\AuthenticationException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/AuthenticationException.php',
+        'MaxMind\\Exception\\HttpException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/HttpException.php',
+        'MaxMind\\Exception\\InsufficientFundsException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/InsufficientFundsException.php',
+        'MaxMind\\Exception\\InvalidInputException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/InvalidInputException.php',
+        'MaxMind\\Exception\\InvalidRequestException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/InvalidRequestException.php',
+        'MaxMind\\Exception\\IpAddressNotFoundException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/IpAddressNotFoundException.php',
+        'MaxMind\\Exception\\PermissionRequiredException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/PermissionRequiredException.php',
+        'MaxMind\\Exception\\WebServiceException' => __DIR__ . '/..' . '/maxmind/web-service-common/src/Exception/WebServiceException.php',
+        'MaxMind\\WebService\\Client' => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService/Client.php',
+        'MaxMind\\WebService\\Http\\CurlRequest' => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService/Http/CurlRequest.php',
+        'MaxMind\\WebService\\Http\\Request' => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService/Http/Request.php',
+        'MaxMind\\WebService\\Http\\RequestFactory' => __DIR__ . '/..' . '/maxmind/web-service-common/src/WebService/Http/RequestFactory.php',
         'Mockery' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryTestCase' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryTestCase.php',
@@ -5912,6 +5994,21 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Property\\Property' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Property/Property.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Processor' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Processor.php',
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
+        'Torann\\GeoIP\\Cache' => __DIR__ . '/..' . '/torann/geoip/src/Cache.php',
+        'Torann\\GeoIP\\Console\\Clear' => __DIR__ . '/..' . '/torann/geoip/src/Console/Clear.php',
+        'Torann\\GeoIP\\Console\\Update' => __DIR__ . '/..' . '/torann/geoip/src/Console/Update.php',
+        'Torann\\GeoIP\\Contracts\\ServiceInterface' => __DIR__ . '/..' . '/torann/geoip/src/Contracts/ServiceInterface.php',
+        'Torann\\GeoIP\\Facades\\GeoIP' => __DIR__ . '/..' . '/torann/geoip/src/Facades/GeoIP.php',
+        'Torann\\GeoIP\\GeoIP' => __DIR__ . '/..' . '/torann/geoip/src/GeoIP.php',
+        'Torann\\GeoIP\\GeoIPServiceProvider' => __DIR__ . '/..' . '/torann/geoip/src/GeoIPServiceProvider.php',
+        'Torann\\GeoIP\\Location' => __DIR__ . '/..' . '/torann/geoip/src/Location.php',
+        'Torann\\GeoIP\\Services\\AbstractService' => __DIR__ . '/..' . '/torann/geoip/src/Services/AbstractService.php',
+        'Torann\\GeoIP\\Services\\IPApi' => __DIR__ . '/..' . '/torann/geoip/src/Services/IPApi.php',
+        'Torann\\GeoIP\\Services\\IPData' => __DIR__ . '/..' . '/torann/geoip/src/Services/IPData.php',
+        'Torann\\GeoIP\\Services\\IPGeoLocation' => __DIR__ . '/..' . '/torann/geoip/src/Services/IPGeoLocation.php',
+        'Torann\\GeoIP\\Services\\MaxMindDatabase' => __DIR__ . '/..' . '/torann/geoip/src/Services/MaxMindDatabase.php',
+        'Torann\\GeoIP\\Services\\MaxMindWebService' => __DIR__ . '/..' . '/torann/geoip/src/Services/MaxMindWebService.php',
+        'Torann\\GeoIP\\Support\\HttpClient' => __DIR__ . '/..' . '/torann/geoip/src/Support/HttpClient.php',
         'Underscore\\Dispatch' => __DIR__ . '/..' . '/anahkiasen/underscore-php/src/Dispatch.php',
         'Underscore\\DispatchTest' => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests/DispatchTest.php',
         'Underscore\\Dummies\\DummyClass' => __DIR__ . '/..' . '/anahkiasen/underscore-php/tests/Dummies/DummyClass.php',

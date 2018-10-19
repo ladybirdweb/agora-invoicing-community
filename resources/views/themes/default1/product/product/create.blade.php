@@ -271,9 +271,7 @@ Create New Product
                             </table>
 
                        
-
-                             
-{!! Form::close() !!}
+        {!! Form::close() !!}
 
  
                                         

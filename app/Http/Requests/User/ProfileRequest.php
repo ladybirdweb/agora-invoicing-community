@@ -46,12 +46,12 @@ class ProfileRequest extends Request
             $userid = \Auth::user()->id;
 
             return [
-                     'first_name'            => 'required|min:3|max:20',
-                    'last_name'              => 'required|max:20',
+                     'first_name'            => 'required|min:3|max:30',
+                    'last_name'              => 'required|max:30',
                      'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                      'email'                 => 'required',
                     'mobile_code'            => 'required|numeric',
-                    'mobile'                 => 'required',
+                    'mobile'                 => 'required|numeric',
                     'zip'                    => 'required|numeric',
                     'address'                => 'required|max:300',
                     'country'                => 'required|exists:countries,country_code_char2',
@@ -69,13 +69,13 @@ class ProfileRequest extends Request
 
         if ($this->segment(1) == 'auth') {
             return [
-                    'first_name'            => 'required|min:3|max:20',
-                    'last_name'             => 'required|max:20',
+                    'first_name'            => 'required|min:3|max:30',
+                    'last_name'             => 'required|max:30',
                     'email'                 => 'required|email|unique:users',
                     'company'               => 'required',
                     'mobile'                => 'required|regex:/[0-9]/|min:5|max:20',
                     'mobile_code'           => 'required|numeric',
-                    'user_name'             => 'required|unique:users|min:3|max:20',
+                    'user_name'             => 'required|unique:users|min:3|max:50',
                     'terms'                 => 'accepted',
                     'zip'                   => 'required',
                     'password'              => 'required|min:6',

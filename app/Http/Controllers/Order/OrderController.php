@@ -76,13 +76,14 @@ class OrderController extends BaseOrderController
             $order_no = $request->input('order_no');
             $product_id = $request->input('product_id');
             $expiry = $request->input('expiry');
+            $expiryTill = $request->input('expiryTill');
             $from = $request->input('from');
             $till = $request->input('till');
             $domain = $request->input('domain');
 
             return view('themes.default1.order.index',
                 compact('products', 'order_no', 'product_id',
-                    'expiry', 'from', 'till', 'domain'));
+                    'expiry', 'from', 'till', 'domain', 'expiryTill'));
         } catch (\Exception $e) {
             Bugsnag::notifyExeption($e);
 
@@ -95,12 +96,13 @@ class OrderController extends BaseOrderController
         $order_no = $request->input('order_no');
         $product_id = $request->input('product_id');
         $expiry = $request->input('expiry');
+        $expiryTill = $request->input('expiryTill');
         $from = $request->input('from');
         $till = $request->input('till');
         $domain = $request->input('domain');
-        $query = $this->advanceSearch($order_no, $product_id, $expiry, $from, $till, $domain);
+        $query = $this->advanceSearch($order_no, $product_id, $expiry, $expiryTill, $from, $till, $domain);
 
-        return \DataTables::of($query->take(100))
+        return \DataTables::of($query->take(50))
                         ->setTotalRecords($query->count())
                         ->addColumn('checkbox', function ($model) {
                             return "<input type='checkbox' class='order_checkbox' value=".
@@ -118,6 +120,12 @@ class OrderController extends BaseOrderController
                             $id = $user->id;
 
                             return '<a href='.url('clients/'.$id).'>'.ucfirst($first).' '.ucfirst($last).'<a>';
+                        })
+                        ->addColumn('productname', function ($model) {
+                            $productid = ($model->product);
+                            $productName = Product::where('id', $productid)->pluck('name')->first();
+
+                            return $productName;
                         })
                         ->addColumn('number', function ($model) {
                             return ucfirst($model->number);
@@ -171,7 +179,7 @@ class OrderController extends BaseOrderController
                               })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'ends_at', 'action', ])
+                          'price_override', 'order_status', 'productname', 'ends_at', 'action', ])
                         ->make(true);
     }
 

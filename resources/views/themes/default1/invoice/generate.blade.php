@@ -22,8 +22,7 @@ Generate An Invoice
       </ol>
 @stop
 @section('content')
-<!-- <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/fonts/font_roboto/roboto.css')!!}" rel="stylesheet" type="text/css" /> -->
-<!-- <link href="{!!asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.css')!!}" rel="stylesheet" type="text/css" /> -->
+
 <div class="box box-primary">
 
     <div class="box-header">
@@ -82,12 +81,12 @@ Generate An Invoice
 
                 @if($user=='')
                 <?php
-                $users = \App\User::pluck('email');
+                $users = [];
                 ?>
 
                 <div class="col-md-4 form-group">
                     {!! Form::label('user',Lang::get('message.clients')) !!}
-                     {!! Form::select('user', [Lang::get('User')=>$users->toArray()],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important",'oninvalid'=>"setCustomValidity('Please Select Client')", 
+                     {!! Form::select('user', [Lang::get('User')=>$users],null,['multiple'=>true,'class'=>"form-control select2" ,'id'=>"users",'required','style'=>"width:100%!important",'oninvalid'=>"setCustomValidity('Please Select Client')", 
                   'onchange'=>"setCustomValidity('')"]) !!}
                  
                 </div>
@@ -341,7 +340,7 @@ Generate An Invoice
 @stop
 
 @section('datepicker')
-<!-- <script src="{{asset('plugins/dhtmlxSuite_v50_std/codebase/dhtmlx.js')}}" type="text/javascript"></script> -->
+
 <script>
    
 

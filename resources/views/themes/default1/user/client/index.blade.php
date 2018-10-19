@@ -144,6 +144,20 @@ All Users
                   </select>
              </div>
 
+               <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('reg_from','Registered From') !!}
+                {!! Form::date('reg_from',null,['class' => 'form-control','id'=>'reg_from']) !!}
+
+            </div>
+
+              <div class="col-md-2 form-group">
+                <!-- first name -->
+                {!! Form::label('from','Registered Till') !!}
+                {!! Form::date('reg_till',null,['class' => 'form-control','id'=>'reg_till']) !!}
+
+            </div>
+
             
             
 
@@ -170,6 +184,8 @@ All Users
                         $('#email').val('');
                         $('#mobile').val('');
                         $('#username').val('');
+                        $('#reg_from').val('');
+                        $('#reg_till').val('');
                         // $('#role').val('');
                     //     var uri = window.location.toString();
 
@@ -263,7 +279,7 @@ All Users
             serverSide: true,
              stateSave: false,
             order: [[ 0, "desc" ]],
-            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position" ) !!}',
+            ajax: '{!! route('get-clients',"name=$name&username=$username&company=$company&mobile=$mobile&email=$email&country=$country&industry=$industry&role=$role&position=$position&reg_from=$reg_from&reg_till=$reg_till" ) !!}',
              
 
             "oLanguage": {

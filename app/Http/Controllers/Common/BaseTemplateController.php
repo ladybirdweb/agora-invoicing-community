@@ -17,16 +17,16 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $shop = $tax_rule->shop_inclusive;
             $cart = $tax_rule->cart_inclusive;
             $result = $price;
-            $controller = new \App\Http\Controllers\Front\GetPageTemplateController();
-            $location = $controller->getLocation();
+            $cont = new \App\Http\Controllers\Front\PageController();
+            $location = $cont->getLocation();
 
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['countryCode']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['countryCode']);
+            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['countryCode'].'-'.$location['region'];
+            $state_code = $location['iso_code'].'-'.$location['state'];
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['countryCode']);
-            $country_iso = $location['countryCode'];
+            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
+            $country_iso = $location['iso_code'];
 
             $geoip_country = '';
             $geoip_state = '';
@@ -163,6 +163,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
             return $price;
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -178,6 +179,7 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
             return $price;
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -191,15 +193,16 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             $tax_amount = '';
             foreach ($taxes as $tax) {
                 if ($tax->compound != 1) {
-                    $rate += $tax->rate;
+                    $rate = $tax->rate;
                 } else {
                     $rate = $tax->rate;
                 }
                 $tax_amount = $this->ifStatement($rate, $price, $cart, $shop, $tax->country, $tax->state);
             }
-            // dd($tax_amount);
+
             return $tax_amount;
         } catch (\Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -236,11 +239,12 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
     public function getDuration($value)
     {
+        $duration = '';
         if (strpos($value, 'Y') == true) {
             $duration = '/Year';
         } elseif (strpos($value, 'M') == true) {
             $duration = '/Month';
-        } else {
+        } elseif (strpos($value, 'O') == true) {
             $duration = '/One-Time';
         }
 

@@ -73,7 +73,7 @@ class RazorpayController extends Controller
             try {
                 //Change order Status as Success if payment is Successful
                 $control = new \App\Http\Controllers\Order\RenewController();
-                //After Payment
+                //After Regular Payment
                 if ($control->checkRenew() === false) {
                     $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
                     $checkout_controller->checkoutAction($invoice);

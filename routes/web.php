@@ -45,6 +45,8 @@
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
         Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
+        Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
+        Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
         Route::get('contact-us', 'Front\CartController@contactUs');
         Route::post('contact-us', 'Front\CartController@postContactUs');
         Route::get('add-cart/{slug}', 'Front\CartController@addCartBySlug');
@@ -148,7 +150,9 @@
          */
 
         Route::resource('clients', 'User\ClientController');
-
+         Route::get('getClientDetail/{id}', 'User\ClientController@getClientDetail');
+          Route::get('getPaymentDetail/{id}', 'User\ClientController@getPaymentDetail');
+          Route::get('getOrderDetail/{id}', 'User\ClientController@getOrderDetail');
         // Route::get('get-clients', 'User\ClientController@GetClients');
          Route::get('get-clients', ['as' => 'get-clients', 'uses' => 'User\ClientController@getClients']);
         Route::get('clients-delete', 'User\ClientController@destroy');
@@ -252,6 +256,12 @@
          Route::resource('category', 'Product\CategoryController');
          Route::get('get-category', 'Product\CategoryController@getCategory')->name('get-category');
          Route::get('category-delete', 'Product\CategoryController@destroy')->name('category-delete');
+
+        /*
+         * Comment
+         */
+         Route::resource('comment', 'User\CommentController');
+         Route::get('comment/{id}/delete', 'User\CommentController@destroy');
 
          /*
          * Product-type

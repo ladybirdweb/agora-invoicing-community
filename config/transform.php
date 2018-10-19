@@ -32,6 +32,7 @@ return[
         'number'      => '{{number}}',
         'expiry'      => '{{expiry}}',
         'url'         => '{{url}}',
+        'serialkeyurl'=> '{{serialkeyurl}}',
     ],
 
     /*

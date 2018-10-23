@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
+use App\Model\Common\StatusSetting;
 use DateTime;
 use DateTimeZone;
-use App\Model\Common\StatusSetting;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
@@ -165,30 +165,30 @@ class BaseSettingsController extends Controller
 
         return $date;
     }
-    
+
     public function getScheduler(StatusSetting $status)
     {
         $cronUrl = base_path('artisan');
-         $status = $status->whereId('1')->first();
+        $status = $status->whereId('1')->first();
         $command = ":- <pre>***** php $cronUrl schedule:run >> /dev/null 2>&1</pre>";
         $shared = ":- <pre>/usr/bin/php-cli -q  $cronUrl schedule:run >> /dev/null 2>&1</pre>";
-        $warn = "";
+        $warn = '';
         $condition = new \App\Model\MailJob\Condition();
-         // $job = $condition->checkActiveJob();
-          $commands = [
-            '' => 'Choose',
-            'everyMinute' => 'Every Minute',
-            'everyFiveMinutes' => 'Every Five Minute',
-            'everyTenMinutes' => 'Every Ten Minute',
+        // $job = $condition->checkActiveJob();
+        $commands = [
+            ''                   => 'Choose',
+            'everyMinute'        => 'Every Minute',
+            'everyFiveMinutes'   => 'Every Five Minute',
+            'everyTenMinutes'    => 'Every Ten Minute',
             'everyThirtyMinutes' => 'Every Thirty Minute',
-            'hourly' => 'Every Hour',
-            'daily' => 'Every Day',
+            'hourly'             => 'Every Hour',
+            'daily'              => 'Every Day',
             // 'dailyAt' => 'Daily at',
-            'weekly' => 'Every Week',
+            'weekly'  => 'Every Week',
             'monthly' => 'Monthly',
-            'yearly' => 'Yearly',
+            'yearly'  => 'Yearly',
         ];
-           return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 'shared','status', 'followup'));
-    }
 
+        return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 'shared', 'status', 'followup'));
+    }
 }

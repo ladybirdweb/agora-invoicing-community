@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateConditionsTable extends Migration
 {
@@ -15,8 +15,8 @@ class CreateConditionsTable extends Migration
     {
         Schema::create('conditions', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('job',255)->nullable();
-            $table->string('value',255)->nullable();
+            $table->string('job', 255)->nullable();
+            $table->string('value', 255)->nullable();
             $table->timestamps();
         });
     }

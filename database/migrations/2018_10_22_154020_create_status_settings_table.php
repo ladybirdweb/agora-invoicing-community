@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateStatusSettingsTable extends Migration
 {
@@ -16,7 +16,7 @@ class CreateStatusSettingsTable extends Migration
         Schema::create('status_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->boolean('expiry_mail')->nullable();
-             $table->boolean('activity_log_delete')->nullable();
+            $table->boolean('activity_log_delete')->nullable();
             $table->timestamps();
         });
     }

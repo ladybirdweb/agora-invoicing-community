@@ -116,6 +116,20 @@ Application Settings
                     </div>
                 </div>
 
+
+                <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{url('job-scheduler')}}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-cog fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >{!! Lang::get('message.cron') !!}</p>
+                    </div>
+                </div>
+
                  <!--/.col-md-2-->
                   
             </div>

@@ -155,6 +155,13 @@ return [
     'choose-mail-template-to-notify-subscription-has-over'         => 'Choose Mail Template To Notify Subscription Has Over',
     'choose-shoping-cart-template'                                 => 'Choose Shoping Cart Template',
     'check-your-mail-for-further-datails'                          => 'Order confirmed. Please check your email for further details.',
+    'cron'                                                         => 'Cron',
+    'cron-setting'                                                 => 'Cron Settings',
+    'cron-set-info'                                                => 'Please set this command in your Cron',
+    'expiry_mail'                                                  => 'Expiry Mails',
+    'enable_expiry-cron'                                           => 'Enable Expiry Cron',
+    'delete_activity'                                              => 'Delete Activity Log',
+    'enable_activity_clean'                                        => 'Enable Activity Clean Log',
     /*
      * Clients
      */

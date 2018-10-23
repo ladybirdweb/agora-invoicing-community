@@ -13,6 +13,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
+use App\Model\Common\StatusSetting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -65,6 +66,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call('UserTableSeeder');
         $this->command->info('User table seeded!');
+        
+        $this->call('StatusSettingSeeder');
+        $this->command->info('Status Setting table seeded!');
 
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
@@ -724,6 +728,19 @@ class GitHubTableSeeder extends Seeder
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
     }
 }
+
+class StatusSettingSeeder extends Seeder
+{
+     public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('status_settings')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>'1', 'activity_log_delete'=>'0']);
+    }
+}
+
+  Email::create(['id' => '1', 'template' => 'default', 'email_fetching' => '1', 'notification_cron' => '0', 'all_emails' => '1', 'email_collaborator' => '1', 'attachment' => '1']);
 
 class UserTableSeeder extends Seeder
 {

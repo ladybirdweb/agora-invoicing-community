@@ -438,6 +438,7 @@
         /*
          * Cron Jobs
          */
+        Route::get('job-scheduler',['as'=>'get.job.scheduler','uses'=>'Common\SettingsController@getScheduler']);
         Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 
         /*

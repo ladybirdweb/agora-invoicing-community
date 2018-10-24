@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Common;
 
 use App\Model\Common\Template;
+use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;

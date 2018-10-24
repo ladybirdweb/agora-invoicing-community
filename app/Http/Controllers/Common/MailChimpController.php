@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Country;
 use App\Model\Common\Mailchimp\MailchimpField;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpGroup;
 use App\Model\Common\Mailchimp\MailchimpGroupAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpLists;
 use App\Model\Common\Mailchimp\MailchimpSetting;
-use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Model\Product\Product;
 use App\User;
@@ -175,10 +175,10 @@ class MailChimpController extends Controller
             $user = new User();
             $setting = new Setting();
             $user = $user->where('email', $email)->first();
-            $country = Country::where('country_code_char2',$user->country)->pluck('nicename')->first();
+            $country = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
             if ($user) {
                 $fields = ['first_name', 'last_name', 'company', 'mobile',
-                 'address', 'town','country', 'state', 'zip', 'active', 'role', 'source', ];
+                 'address', 'town', 'country', 'state', 'zip', 'active', 'role', 'source', ];
                 $relation = $this->relation;
                 $merge_fields = [];
                 foreach ($fields as $field) {
@@ -186,7 +186,7 @@ class MailChimpController extends Controller
                         $merge_fields[$relation->$field] = $user->$field;
                     }
                 }
-                  $merge_fields[$relation->country] = $country;
+                $merge_fields[$relation->country] = $country;
                 $merge_fields[$relation->source] = $setting->findorFail(1)->title;
 
                 return $merge_fields;

@@ -5,13 +5,13 @@ use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
+use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
-USE App\Model\Mailjob\ActivityLogDay;
-use App\Model\Mailjob\Condition;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
@@ -74,10 +74,10 @@ class DatabaseSeeder extends Seeder
 
         $this->call('ConditionSeeder');
         $this->command->info('Condition table seeded!');
-       
+
         $this->call('ActivityLogDelSeeder');
         $this->command->info('Activity Log Days table seeded!');
-      
+
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
@@ -750,13 +750,14 @@ class StatusSettingSeeder extends Seeder
 
 class ConditionSeeder extends Seeder
 {
-     public function run() {
+    public function run()
+    {
         $data = [
-            ["job"=>"expiryMail","value"=>"everyFiveMinutes"],
-            ["job"=>"deleteLogs","value"=>"daily"],
-          
+            ['job'=>'expiryMail', 'value'=>'everyFiveMinutes'],
+            ['job'=> 'deleteLogs', 'value'=>'daily'],
+
         ];
-        foreach($data as $job){
+        foreach ($data as $job) {
             Condition::updateOrCreate($job);
         }
     }
@@ -764,14 +765,14 @@ class ConditionSeeder extends Seeder
 
 class ActivityLogDelSeeder extends Seeder
 {
-    public function run() {
+    public function run()
+    {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         ActivityLogDay::create(['id' => 1, 'days'=>'']);
     }
 }
-
 
 class UserTableSeeder extends Seeder
 {

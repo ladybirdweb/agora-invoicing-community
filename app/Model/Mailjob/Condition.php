@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Condition extends Model
 {
+
 	protected $table = 'conditions';
     protected $fillable =['job','value'];
 
@@ -47,5 +48,6 @@ class Condition extends Model
         return $value;
         
     }
+
 
 }

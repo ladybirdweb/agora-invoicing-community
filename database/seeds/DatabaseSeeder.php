@@ -1,6 +1,7 @@
 <?php
 
 use App\ApiKey;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
@@ -15,7 +16,6 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
-use App\Model\Common\StatusSetting;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -68,7 +68,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call('UserTableSeeder');
         $this->command->info('User table seeded!');
-        
+
         $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
 
@@ -739,7 +739,7 @@ class GitHubTableSeeder extends Seeder
 
 class StatusSettingSeeder extends Seeder
 {
-     public function run()
+    public function run()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();

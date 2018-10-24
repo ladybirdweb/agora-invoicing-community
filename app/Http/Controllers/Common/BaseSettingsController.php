@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
+use App\Model\Common\StatusSetting;
 use DateTime;
 use DateTimeZone;
-use App\Model\Common\StatusSetting;
 use Illuminate\Http\Request;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\ExpiryMailDay;
@@ -167,15 +167,16 @@ class BaseSettingsController extends Controller
 
         return $date;
     }
-    
+
     public function getScheduler(StatusSetting $status)
     {
         $cronUrl = base_path('artisan');
-         $status = $status->whereId('1')->first();
+        $status = $status->whereId('1')->first();
         $command = ":- <pre>***** php $cronUrl schedule:run >> /dev/null 2>&1</pre>";
         $shared = ":- <pre>/usr/bin/php-cli -q  $cronUrl schedule:run >> /dev/null 2>&1</pre>";
-        $warn = "";
+        $warn = '';
         $condition = new \App\Model\MailJob\Condition();
+
          // $job = $condition->checkActiveJob();
           $commands = [
             'everyMinute' => 'Every Minute',
@@ -186,9 +187,11 @@ class BaseSettingsController extends Controller
             'daily' => 'Every Day',
             'dailyAt' => 'Daily at',
             'weekly' => 'Every Week',
+
             'monthly' => 'Monthly',
-            'yearly' => 'Yearly',
+            'yearly'  => 'Yearly',
         ];
+
         $expiryDays = [
             '120'=>'120 Days',
             '90'=>'90 Days',
@@ -298,6 +301,7 @@ class BaseSettingsController extends Controller
       
        return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
     }
+
 
 
 

@@ -12,8 +12,12 @@ Github Setting
         <li class="active">{!! Lang::get('message.cron-setting') !!}</li>
       </ol>
 @stop
+<style>
+    .select2-container--default .select2-selection--multiple {
+    border-radius: 0px;
+</style>
 @section('content')
-<div class="box box-primary">
+
 
     <div class="box-header">
         @if (count($errors) > 0)
@@ -47,6 +51,7 @@ Github Setting
       
 
     </div>
+    <div class="box box-primary">
 <div class="row">
     <div class="col-md-12">
         <!-- Custom Tabs -->
@@ -65,5 +70,101 @@ Github Setting
 </div>
 
 
-{!! Form::close() !!}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <!-- Custom Tabs -->
+  
+     <div class="box box-primary">
+        
+        <!-- /.box-header -->
+       
+              {!! Form::open(['url' => 'cron-days', 'method' => 'PATCH','id'=>'Form']) !!}
+        <div class="box-header with-border">
+
+         <h4>{{Lang::get('message.set_cron_period')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+     </div>
+      <div class="box-body">
+          <div class="row">
+           
+            <!-- /.col -->
+            <div class="col-md-6">
+             
+              <!-- /.form-group -->
+              <div class="form-group select2">
+                <label>{{Lang::get('message.expiry_mail_sent')}}</label>
+                <?php 
+                 if (count($selectedDays) > 0) {
+                foreach ($selectedDays as $selectedDay) {
+                    
+                    $saved[$selectedDay->days] = 'true';
+                }
+            }  else{
+                    $saved=[];
+                }
+                 if (count($saved) > 0) {
+                   foreach ($saved as $key => $value) {
+                    // dd($key);
+                       $savedkey[]=$key;
+                   }
+                   $saved1=$savedkey?$savedkey:[''];
+
+                       }
+                       else{
+                        $saved1=[];
+                       }
+                 ?>
+                <select id ="days" name="expiryday[]" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+                    @foreach ($expiryDays as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $saved1)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                   @endforeach
+                </select>
+              </div>
+              <!-- /.form-group -->
+            </div>
+
+             <div class="col-md-6">
+              <div class="form-group">
+                <label>{{Lang::get('message.log_del_days')}}</label>
+                <select name="logdelday" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" style="width: 100%;">
+                    @foreach ($delLogDays as $key=>$value)
+                  <option value="{{$key}}" <?php echo (in_array($key, $beforeLogDay)) ?  "selected" : "" ;  ?>>{{$value}}</option>
+                  @endforeach
+                </select>
+              </div>
+              <!-- /.form-group -->
+
+              <!-- /.form-group -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+            {!! Form::close() !!}
+        </div>
+        <!-- /.box-body -->
+       
+      </div>
+                <!-- /.tab-pane -->
+            
+         
+        <!-- nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+
+
+
+
+
+<script>
+        $(document).ready(function() {
+    $("#days").select2({
+        placeholder: 'Select Days',
+        tags:true
+    });
+});
+</script>
 @stop
+
+

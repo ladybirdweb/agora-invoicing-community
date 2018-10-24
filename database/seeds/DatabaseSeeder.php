@@ -9,6 +9,8 @@ use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\PromotionType;
+USE App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
@@ -70,6 +72,12 @@ class DatabaseSeeder extends Seeder
         $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
 
+        $this->call('ConditionSeeder');
+        $this->command->info('Condition table seeded!');
+       
+        $this->call('ActivityLogDelSeeder');
+        $this->command->info('Activity Log Days table seeded!');
+      
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
         $this->call(SettingsSeeder::class);
@@ -740,7 +748,30 @@ class StatusSettingSeeder extends Seeder
     }
 }
 
-  Email::create(['id' => '1', 'template' => 'default', 'email_fetching' => '1', 'notification_cron' => '0', 'all_emails' => '1', 'email_collaborator' => '1', 'attachment' => '1']);
+class ConditionSeeder extends Seeder
+{
+     public function run() {
+        $data = [
+            ["job"=>"expiryMail","value"=>"everyFiveMinutes"],
+            ["job"=>"deleteLogs","value"=>"daily"],
+          
+        ];
+        foreach($data as $job){
+            Condition::updateOrCreate($job);
+        }
+    }
+}
+
+class ActivityLogDelSeeder extends Seeder
+{
+    public function run() {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('status_settings')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        ActivityLogDay::create(['id' => 1, 'days'=>'']);
+    }
+}
+
 
 class UserTableSeeder extends Seeder
 {

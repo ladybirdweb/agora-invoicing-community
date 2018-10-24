@@ -2,7 +2,9 @@
 
 namespace App\Console;
 
+use App\Model\MailJob\Condition;
 use Illuminate\Console\Scheduling\Schedule;
+use App\Model\Common\StatusSetting;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -15,7 +17,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         //
          'App\Console\Commands\Inspire',
-        \App\Console\Commands\Install::class,
+         \App\Console\Commands\Install::class,
         'App\Console\Commands\ExpiryCron',
     ];
 
@@ -28,10 +30,63 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('inspire')
-                 ->hourly();
+        $this->execute($schedule, 'expiryMail');
+        $this->execute($schedule, 'deleteLogs');
+    }
 
-        $schedule->command('expiry')->hourly();
+    public function execute($schedule, $task)
+    {
+        $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
+        $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
+        $condition = new Condition();
+        $command = $condition->getConditionValue($task);
+        switch($task) {
+            case "expiryMail":
+               if ( $expiryMailStatus == 1){
+                 return $this->getCondition($schedule->command('expiry:notification'), $command);
+               }
+               
+            case "deleteLogs":
+             if ( $logDeleteStatus == 1){
+                return $this->getCondition($schedule->command('activitylog:clean'), $command);
+                 }
+        }
+    }
+
+        public function getCondition($schedule, $command) {
+        $condition = $command['condition'];
+        $at = $command['at'];
+        switch ($condition) {
+            case "everyMinute":
+                return $schedule->everyMinute();
+            case "everyFiveMinutes":
+                return $schedule->everyFiveMinutes();
+            case "everyTenMinutes":
+                return $schedule->everyTenMinutes();
+            case "everyThirtyMinutes":
+                return $schedule->everyThirtyMinutes();
+            case "hourly":
+                return $schedule->hourly();
+            case "daily":
+                return $schedule->daily();
+            case "dailyAt":
+                return $this->getConditionWithOption($schedule, $condition, $at);
+            case "weekly":
+                return $schedule->weekly();
+            case "monthly":
+                return $schedule->monthly();
+            case "yearly":
+                return $schedule->yearly();
+            default :
+                return $schedule->everyMinute();
+        }
+    }
+
+    public function getConditionWithOption($schedule, $command, $at) {
+        switch ($command) {
+            case "dailyAt":
+                return $schedule->dailyAt($at);
+        }
     }
 
     /**

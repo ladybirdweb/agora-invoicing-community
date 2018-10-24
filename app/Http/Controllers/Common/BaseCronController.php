@@ -41,35 +41,43 @@ class BaseCronController extends Controller
         return $item_id;
     }
 
-    public function getSubscriptions()
+    public function getSubscriptions($allDays)
     {
         $sub = [];
-        if (count($this->get30DaysSubscription())) {
-            array_push($sub, $this->get30DaysSubscription());
-        }
-
-        if (count($this->get15DaysUsers())) {
-            array_push($sub, $this->get15DaysSubscription());
-        }
-
-        if (count($this->get1DaysUsers())) {
+        foreach ($allDays as $allDay) {
+            if($allDay >= 2){
+                  if (count($this->getAllDaysSubscription($allDay))) {
+            array_push($sub, $this->getAllDaysSubscription($allDay));
+               }
+            } elseif ($allDay == 1) {
+                   if (count($this->get1DaysUsers())) {
             array_push($sub, $this->get1DaysSubscription());
-        }
-
-        if (count($this->get0DaysUsers())) {
+        }  
+       } elseif  ($allDay == 0){
+            if (count($this->get0DaysUsers())) {
             array_push($sub, $this->get0DaysSubscription());
         }
-        if (count($this->getPlus1Users())) {
+         if (count($this->getPlus1Users())) {
             array_push($sub, $this->getPlus1Subscription());
-        }
-
-        return $sub;
+            }
+         }
+       
+      }
+           return $sub;
     }
+        // if (count($this->get15DaysUsers())) {
+        //     array_push($sub, $this->get15DaysSubscription());
+        // }
 
-    public function get30DaysSubscription()
+     
+
+       
+    
+
+    public function getAllDaysSubscription($day)
     {
         $users = [];
-        $users = $this->get30DaysExpiryUsers();
+        $users = $this->getAllDaysExpiryUsers($day);
         if (count($users) > 0) {
             return $users[0]['subscription'];
         }
@@ -176,14 +184,13 @@ class BaseCronController extends Controller
         return $sub;
     }
 
-    public function get30DaysExpiryInfo()
+    public function getAllDaysExpiryInfo($day)
     {
-        $plus29days = new Carbon('+29 days');
-        $plus31days = new Carbon('+31 days');
-
+        $minus1day = new Carbon('+'.($day - 1).' days');
+        $plus1day = new Carbon('+'.($day + 1).' days');
         $sub = Subscription::where('ends_at', '!=', '0000-00-00 00:00:00')
             ->whereNotNull('ends_at')
-            ->whereBetween('ends_at', [$plus29days, $plus31days]);
+            ->whereBetween('ends_at', [$minus1day, $plus1day]);
 
         return $sub;
     }

@@ -249,7 +249,7 @@ Create New Product
                                             <div class="row">
                                                 <div class="col-md-2" >
                                                      
-                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px; color:black;" class="select2" multiple="true">
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
                                                         <option value={{$key}}>{{$value}}</option> 

@@ -2,43 +2,11 @@
 {!! Form::model($status,['url' => 'post-scheduler', 'method' => 'PATCH','id'=>'Form']) !!}
 
     <div class="box-header with-border">
-       <h4>{{Lang::get('message.github')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+       <h4>{{Lang::get('message.cron')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
     </div>
 
     <div class="box-body table-responsive"style="overflow:hidden;">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-        @if($warn!=="")
-        <div class="alert alert-warning alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {!!$warn!!}
-        </div>
-        @endif
-        <!-- check whether success or not -->
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <i class="fa  fa-check-circle"></i>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {!!Session::get('success')!!}
-        </div>
-        @endif
-        <!-- failure message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{!! Lang::get('lang.alert') !!}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {!!Session::get('fails')!!}
-        </div>
-        @endif
+ 
 
         
          <div class="alert  alert-dismissable" style="background: #F3F3F3">
@@ -51,18 +19,22 @@
         <div class="col-md-6">
             <div class="info-box">
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 0px"><i class="fa  fa-envelope"></i></span>
+                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-envelope"></i></span>
                 <div class="info-box-content">
 
                     <div class="col-md-6">
                         <div class="form-group">
                             {!! Form::label('email_fetching',Lang::get('message.expiry_mail')) !!}<br>
-                            {!! Form::checkbox('email_fetching',1,null,['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
+                            {!! Form::checkbox('expiry_cron',1,$condition->checkActiveJob()['expiryMail'],['id'=>'email_fetching']) !!}&nbsp;{{Lang::get('message.enable_expiry-cron')}}
                         </div>
 
                     </div>
                     <div class="col-md-6" id="fetching">
-                        {!! Form::select('fetching-commands',$commands,null,['class'=>'form-control','id'=>'fetching-command']) !!}
+                        {!! Form::select('expiry-commands',$commands,$condition->getConditionValue('expiryMail')['condition'],['class'=>'form-control','id'=>'fetching-command']) !!}
+                          <div id='fetching-daily-at'>
+                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control']) !!}
+
+                        </div>
                       
                     </div>
                 </div>
@@ -73,17 +45,21 @@
         <div class="col-md-6">
             <div class="info-box">
                 <!-- Apply any bg-* class to to the icon to color it -->
-                <span class="info-box-icon bg-aqua" style="padding-top: 0px"><i class="fa fa-check-circle"></i></span>
+                <span class="info-box-icon bg-aqua" style="padding-top: 15px"><i class="fa  fa-close"></i></span>
                 <div class="info-box-content">
                     <div class="col-md-6">
                         <div class="form-group">
-                            {!! Form::label('condition',Lang::get('message.delete_activity')) !!}<br>
-                            {!! Form::checkbox('condition',1,null,['id'=>'auto_close']) !!}
+                            {!! Form::label('activity',Lang::get('message.delete_activity')) !!}<br>
+                            {!! Form::checkbox('activity',1,$condition->checkActiveJob()['deleteLogs'],['id'=>'auto_close']) !!}
                                    {{Lang::get('message.enable_activity_clean')}}
                         </div>
                     </div>
                     <div class="col-md-6" id="workflow">
-                        {!! Form::select('work-commands',$commands,'null',['class'=>'form-control','id'=>'workflow-command']) !!}
+                        {!! Form::select('activity-commands',$commands,$condition->getConditionValue('deleteLogs')['condition'],['class'=>'form-control','id'=>'workflow-command']) !!}
+                         <div id='workflow-daily-at'>
+                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control']) !!}
+
+                        </div>
                        
                     </div>
                 </div><!-- /.info-box-content -->
@@ -91,20 +67,8 @@
         </div>
     
         
-    
-  
-        <!-- If ladp plugin is active  -->
-
-
-    
-
     </div>
-    <div class="box-footer">
-    
-<!--                 {!!Form::button('<i class="fa fa-floppy-o" aria-hidden="true">&nbsp;&nbsp;</i>'.Lang::get('lang.save'),['type' => 'submit', 'class' =>'btn btn-primary','onclick'=>'sendForm()'])!!}-->
-                    
-    </div>
-    {!! Form::close() !!}
+ {!! Form::close() !!}
 
 <script>
     $(document).ready(function () {

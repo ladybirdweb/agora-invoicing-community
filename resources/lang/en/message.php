@@ -162,9 +162,9 @@ return [
     'enable_expiry-cron'                                           => 'Enable Expiry Mail Cron',
     'delete_activity'                                              => 'Delete Activity Log',
     'enable_activity_clean'                                        => 'Enable Clean Activity Log Cron',
-    'log_del_days'                                                 =>  'Delete Activity Logs Older than..',
-    'expiry_mail_sent'                                             =>  'Expiry Mail to be sent before..',
-    'set_cron_period'                                              =>   'Set Cron Execution Period',
+    'log_del_days'                                                 => 'Delete Activity Logs Older than..',
+    'expiry_mail_sent'                                             => 'Expiry Mail to be sent before..',
+    'set_cron_period'                                              => 'Set Cron Execution Period',
     /*
      * Clients
      */

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateActivityLogDaysTable extends Migration
 {
@@ -15,7 +15,7 @@ class CreateActivityLogDaysTable extends Migration
     {
         Schema::create('activity_log_days', function (Blueprint $table) {
             $table->increments('id');
-             $table->string('days',255)->nullable();
+            $table->string('days', 255)->nullable();
             $table->timestamps();
         });
     }

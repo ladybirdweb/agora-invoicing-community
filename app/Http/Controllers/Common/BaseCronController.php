@@ -45,34 +45,30 @@ class BaseCronController extends Controller
     {
         $sub = [];
         foreach ($allDays as $allDay) {
-            if($allDay >= 2){
-                  if (count($this->getAllDaysSubscription($allDay))) {
-            array_push($sub, $this->getAllDaysSubscription($allDay));
-               }
+            if ($allDay >= 2) {
+                if (count($this->getAllDaysSubscription($allDay))) {
+                    array_push($sub, $this->getAllDaysSubscription($allDay));
+                }
             } elseif ($allDay == 1) {
-                   if (count($this->get1DaysUsers())) {
-            array_push($sub, $this->get1DaysSubscription());
-        }  
-       } elseif  ($allDay == 0){
-            if (count($this->get0DaysUsers())) {
-            array_push($sub, $this->get0DaysSubscription());
-        }
-         if (count($this->getPlus1Users())) {
-            array_push($sub, $this->getPlus1Subscription());
+                if (count($this->get1DaysUsers())) {
+                    array_push($sub, $this->get1DaysSubscription());
+                }
+            } elseif ($allDay == 0) {
+                if (count($this->get0DaysUsers())) {
+                    array_push($sub, $this->get0DaysSubscription());
+                }
+                if (count($this->getPlus1Users())) {
+                    array_push($sub, $this->getPlus1Subscription());
+                }
             }
-         }
-       
-      }
-           return $sub;
+        }
+
+        return $sub;
     }
-        // if (count($this->get15DaysUsers())) {
-        //     array_push($sub, $this->get15DaysSubscription());
-        // }
 
-     
-
-       
-    
+    // if (count($this->get15DaysUsers())) {
+    //     array_push($sub, $this->get15DaysSubscription());
+    // }
 
     public function getAllDaysSubscription($day)
     {

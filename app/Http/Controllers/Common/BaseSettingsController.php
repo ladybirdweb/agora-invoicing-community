@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Common;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
 use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\ExpiryMailDay;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
-use App\Model\Mailjob\ActivityLogDay;
-use App\Model\Mailjob\ExpiryMailDay;
 use Spatie\Activitylog\Models\Activity;
 
 class BaseSettingsController extends Controller
@@ -177,86 +177,86 @@ class BaseSettingsController extends Controller
         $warn = '';
         $condition = new \App\Model\MailJob\Condition();
 
-         // $job = $condition->checkActiveJob();
-          $commands = [
-            'everyMinute' => 'Every Minute',
-            'everyFiveMinutes' => 'Every Five Minute',
-            'everyTenMinutes' => 'Every Ten Minute',
+        // $job = $condition->checkActiveJob();
+        $commands = [
+            'everyMinute'        => 'Every Minute',
+            'everyFiveMinutes'   => 'Every Five Minute',
+            'everyTenMinutes'    => 'Every Ten Minute',
             'everyThirtyMinutes' => 'Every Thirty Minute',
-            'hourly' => 'Every Hour',
-            'daily' => 'Every Day',
-            'dailyAt' => 'Daily at',
-            'weekly' => 'Every Week',
+            'hourly'             => 'Every Hour',
+            'daily'              => 'Every Day',
+            'dailyAt'            => 'Daily at',
+            'weekly'             => 'Every Week',
 
             'monthly' => 'Monthly',
             'yearly'  => 'Yearly',
         ];
 
         $expiryDays = [
-            '120'=>'120 Days',
-            '90'=>'90 Days',
-            '60'=>'60 Days',
-            '30'=>'30 Days',
-            '15'=>'15 Days',
-            '5'=>'5 Days',
-            '3'=>'3 Days',
-            '1'=>'1 Day',
-            '0'=>'On the Expiry Day',
+            '120'=> '120 Days',
+            '90' => '90 Days',
+            '60' => '60 Days',
+            '30' => '30 Days',
+            '15' => '15 Days',
+            '5'  => '5 Days',
+            '3'  => '3 Days',
+            '1'  => '1 Day',
+            '0'  => 'On the Expiry Day',
         ];
 
         $selectedDays = [];
         $daysLists = ExpiryMailDay::get();
-       if(count($daysLists)>0){
-          foreach ($daysLists as $daysList) {
-           $selectedDays[]= $daysList;
-       }
-       }
-       $delLogDays = [''=>'Disabled','720'=>'720 Days','365'=>'365 days','180'=>'180 Days','150'=>'150 Days','60'=>'60 Days','30'=>'30 Days','15'=>'15 Days','5'=>'5 Days','2'=>'2 Days'];
+        if (count($daysLists) > 0) {
+            foreach ($daysLists as $daysList) {
+                $selectedDays[] = $daysList;
+            }
+        }
+        $delLogDays = [''=>'Disabled', '720'=>'720 Days', '365'=>'365 days', '180'=>'180 Days', '150'=>'150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days'];
         $beforeLogDay[] = ActivityLogDay::first()->days;
-         // dd(count($beforeLogDay));
-       
-        
-           return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 'shared','status', 'expiryDays','selectedDays','delLogDays','beforeLogDay'));
+        // dd(count($beforeLogDay));
+
+        return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 'shared', 'status', 'expiryDays', 'selectedDays', 'delLogDays', 'beforeLogDay'));
     }
 
-    public function postSchedular(StatusSetting $status,Request $request)
+    public function postSchedular(StatusSetting $status, Request $request)
     {
-         $allStatus = $status->whereId('1')->first();
-        if($request->expiry_cron) {
+        $allStatus = $status->whereId('1')->first();
+        if ($request->expiry_cron) {
             $allStatus->expiry_mail = $request->expiry_cron;
         } else {
             $allStatus->expiry_mail = 0;
-         }
-        if($request->activity) {
-              $allStatus->activity_log_delete = $request->activity;
+        }
+        if ($request->activity) {
+            $allStatus->activity_log_delete = $request->activity;
         } else {
             $allStatus->activity_log_delete = 0;
-            }
-       $allStatus->save();
-       $this->saveConditions();
-       /* redirect to Index page with Success Message */
+        }
+        $allStatus->save();
+        $this->saveConditions();
+        /* redirect to Index page with Success Message */
         return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
     }
 
     public function saveConditions()
     {
-         if (\Input::get('expiry-commands') &&  \Input::get('activity-commands')) {
+        if (\Input::get('expiry-commands') && \Input::get('activity-commands')) {
             $expiry_commands = \Input::get('expiry-commands');
             $expiry_dailyAt = \Input::get('expiry-dailyAt');
             $activity_commands = \Input::get('activity-commands');
             $activity_dailyAt = \Input::get('activity-dailyAt');
-             $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
-             $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
-             $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
-              $this->storeCommand($jobs);
-         }
-         
+            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
+            $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
+            $this->storeCommand($jobs);
+        }
     }
 
-    public function getCommand($command, $daily_at) {
+    public function getCommand($command, $daily_at)
+    {
         if ($command == 'dailyAt') {
             $command = "dailyAt,$daily_at";
         }
+
         return $command;
     }
 
@@ -264,7 +264,7 @@ class BaseSettingsController extends Controller
     {
         $command = new \App\Model\MailJob\Condition();
         $commands = $command->get();
-         if ($commands->count() > 0) {
+        if ($commands->count() > 0) {
             foreach ($commands as $condition) {
                 $condition->delete();
             }
@@ -272,7 +272,7 @@ class BaseSettingsController extends Controller
         if (count($array) > 0) {
             foreach ($array as $key => $save) {
                 $command->create([
-                    'job' => $key,
+                    'job'   => $key,
                     'value' => $save,
                 ]);
             }
@@ -286,23 +286,19 @@ class BaseSettingsController extends Controller
         $lists = $daysList->get();
         if ($lists->count() > 0) {
             foreach ($lists  as $list) {
-              $list->delete();
+                $list->delete();
             }
         }
-      if($request['expiryday'] != null) {
-         foreach ($request['expiryday'] as $key => $value) {
-           $daysList->create([
-          'days'=>$value,
+        if ($request['expiryday'] != null) {
+            foreach ($request['expiryday'] as $key => $value) {
+                $daysList->create([
+          'days'=> $value,
            ]);
-       }
-      }
-     \Config::set('activitylog.delete_records_older_than_days',$request->logdelday);
-      ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
-      
-       return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
+            }
+        }
+        \Config::set('activitylog.delete_records_older_than_days', $request->logdelday);
+        ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
-
-
-
-
 }

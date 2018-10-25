@@ -40,6 +40,9 @@ class Kernel extends ConsoleKernel
         $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
         $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
         $delLogDays = ActivityLogDay::pluck('days')->first();
+        if($delLogDays == null) {
+            $delLogDays = 99999999;
+        }
         \Config::set('activitylog.delete_records_older_than_days', $delLogDays);
         $condition = new Condition();
         $command = $condition->getConditionValue($task);

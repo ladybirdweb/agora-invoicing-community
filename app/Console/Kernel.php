@@ -3,8 +3,8 @@
 namespace App\Console;
 
 use App\Model\Common\StatusSetting;
-use App\Model\MailJob\Condition;
 use App\Model\Mailjob\ActivityLogDay;
+use App\Model\MailJob\Condition;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 

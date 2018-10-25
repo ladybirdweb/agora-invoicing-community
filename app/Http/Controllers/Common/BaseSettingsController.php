@@ -211,12 +211,11 @@ class BaseSettingsController extends Controller
            $selectedDays[]= $daysList;
        }
        }
-       $delLogDays = [''=>'Disabled','720'=>'720 Days','365'=>'365 days','180'=>'180 Days','150'=>'150 Days','60'=>'60 Days','30'=>'30 Days','15'=>'15 Days','5'=>'5 Days','2'=>'2 Days'];
+       $delLogDays = ['720'=>'720 Days','365'=>'365 days','180'=>'180 Days',
+       '150'=>'150 Days','60'=>'60 Days','30'=>'30 Days','15'=>'15 Days','5'=>'5 Days','2'=>'2 Days','0'=>'Delete All Logs'];
         $beforeLogDay[] = ActivityLogDay::first()->days;
-         // dd(count($beforeLogDay));
-       
-        
-           return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 'shared','status', 'expiryDays','selectedDays','delLogDays','beforeLogDay'));
+          return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 
+            'shared','status', 'expiryDays','selectedDays','delLogDays','beforeLogDay'));
     }
 
     public function postSchedular(StatusSetting $status,Request $request)
@@ -296,8 +295,7 @@ class BaseSettingsController extends Controller
            ]);
        }
       }
-     \Config::set('activitylog.delete_records_older_than_days',$request->logdelday);
-      ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
+    ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
       
        return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
     }

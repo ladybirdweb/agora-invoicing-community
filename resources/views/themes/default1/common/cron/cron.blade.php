@@ -81,9 +81,19 @@ Github Setting
         <!-- /.box-header -->
        
               {!! Form::open(['url' => 'cron-days', 'method' => 'PATCH','id'=>'Form']) !!}
+              <?php 
+                   $mailStatus = \App\Model\Common\StatusSetting::pluck('expiry_mail')->first();
+                   $activityStatus =\App\Model\Common\StatusSetting::pluck('activity_log_delete')->first();
+                  ?>
         <div class="box-header with-border">
-
-         <h4>{{Lang::get('message.set_cron_period')}}  <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+         
+         <h4>{{Lang::get('message.set_cron_period')}}  
+          @if ( $mailStatus || $activityStatus ==1)
+          <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+          @else
+            <button type="submit" class="btn btn-primary pull-right disabled" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
+            @endif
+        </h4>
      </div>
       <div class="box-body">
           <div class="row">
@@ -97,29 +107,36 @@ Github Setting
                 <?php 
                  if (count($selectedDays) > 0) {
                 foreach ($selectedDays as $selectedDay) {
-                    
                     $saved[$selectedDay->days] = 'true';
                 }
-            }  else{
+               }  else {
                     $saved=[];
                 }
                  if (count($saved) > 0) {
                    foreach ($saved as $key => $value) {
-                    // dd($key);
-                       $savedkey[]=$key;
+                     $savedkey[]=$key;
                    }
                    $saved1=$savedkey?$savedkey:[''];
-
                        }
                        else{
                         $saved1=[];
                        }
                  ?>
+                  
+                   @if ($mailStatus == 0)
+                    <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('message.enable_mail_cron')}}</option>
+                    </select>
+                      @else
                 <select id ="days" name="expiryday[]" class="form-control selectpicker"  data-live-search="true" data-live-search-placeholder="Search" multiple="true" style="width: 100%; color:black;">
+
+                    
                     @foreach ($expiryDays as $key=>$value)
                   <option value="{{$key}}" <?php echo (in_array($key, $saved1)) ?  "selected" : "" ;  ?>>{{$value}}</option>
                    @endforeach
+                   
                 </select>
+                @endif
               </div>
               <!-- /.form-group -->
             </div>
@@ -127,11 +144,17 @@ Github Setting
              <div class="col-md-6">
               <div class="form-group">
                 <label>{{Lang::get('message.log_del_days')}}</label>
+                  @if ($activityStatus == 0)
+                    <select id ="days" name="expiryday[]" class="form-control selectpicker"   style="width: 100%; color:black;" disabled>
+                      <option value="">{{Lang::get('message.enable_activityLog_cron')}}</option>
+                    </select>
+                      @else
                 <select name="logdelday" class="form-control selectpicker" data-live-search="true" data-live-search-placeholder="Search" style="width: 100%;">
                     @foreach ($delLogDays as $key=>$value)
                   <option value="{{$key}}" <?php echo (in_array($key, $beforeLogDay)) ?  "selected" : "" ;  ?>>{{$value}}</option>
                   @endforeach
                 </select>
+                @endif
               </div>
               <!-- /.form-group -->
 

@@ -264,7 +264,7 @@ class ClientController extends AdvanceSearchController
         if ($invoices) {
             foreach ($client->payment()->orderBy('created_at', 'desc')->get() as $payment) {
                 $number = $payment->invoice()->first() ? $payment->invoice()->first()->number : '--';
-                $date = $payment->updated_at;
+                $date = $payment->created_at;
                 $date1 = new DateTime($date);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));

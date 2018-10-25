@@ -62,20 +62,42 @@ Application Settings
                         <p class="box-title">System Settings</p>
                     </div>
                 </div>
-                <!--/.col-md-2-->
-                 <!--col-md-2-->
-               <!--  <div class="col-md-2 col-sm-6">
+               
+
+                <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{ url('settings/error') }}">
+                            <a href="{{url('job-scheduler')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-bug fa-stack-1x"></i>
+                                    <i class="fa fa-tachometer fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >Error Log</p>
+                        <p class="box-title" >{!! Lang::get('message.cron') !!}</p>
                     </div>
-                </div> -->
+                </div>
+
+                 <!--/.col-md-2-->
+                  
+            </div>
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- ./box-body -->
+</div>
+<!-- /.box -->
+
+<div class="box box-primary">
+    <div class="box-header with-border">
+        <h3 class="box-title">{{Lang::get('message.log_setting')}}</h3>
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-md-12">
+                <!--/.col-md-2-->
+               
+               
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -116,19 +138,21 @@ Application Settings
                     </div>
                 </div>
 
-
-                <div class="col-md-2 col-sm-6">
+                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
-                            <a href="{{url('job-scheduler')}}">
+                            <a href="{{ url('settings/maillog') }}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-cog fa-stack-1x"></i>
+                                    <i class="fa fa-archive fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
-                        <p class="box-title" >{!! Lang::get('message.cron') !!}</p>
+                        <p class="box-title" >{{Lang::get('message.cleanup_log')}}</p>
                     </div>
                 </div>
+
+
+               
 
                  <!--/.col-md-2-->
                   
@@ -138,7 +162,8 @@ Application Settings
     </div>
     <!-- ./box-body -->
 </div>
-<!-- /.box -->
+
+
 
 <div class="box box-primary">
     <div class="box-header with-border">

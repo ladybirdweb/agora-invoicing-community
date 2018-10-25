@@ -569,4 +569,10 @@ return [
      'list-fields'        => 'List Fields  Mapping',
      'group-fields'       => 'Group Fields Mapping',
 
+     /*
+     * Settings
+     */
+     'log_setting'     => 'System Logs',
+     'cleanup_log'     => 'Cleanup Logs',
+
 ];

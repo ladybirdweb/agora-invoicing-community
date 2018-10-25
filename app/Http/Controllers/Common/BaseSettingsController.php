@@ -175,7 +175,7 @@ class BaseSettingsController extends Controller
         $command = ":- <pre>***** php $cronUrl schedule:run >> /dev/null 2>&1</pre>";
         $shared = ":- <pre>/usr/bin/php-cli -q  $cronUrl schedule:run >> /dev/null 2>&1</pre>";
         $warn = '';
-        $condition = new \App\Model\MailJob\Condition();
+        $condition = new \App\Model\Mailjob\Condition();
 
         // $job = $condition->checkActiveJob();
         $commands = [
@@ -264,7 +264,7 @@ class BaseSettingsController extends Controller
 
     public function storeCommand($array = [])
     {
-        $command = new \App\Model\MailJob\Condition();
+        $command = new \App\Model\Mailjob\Condition();
         $commands = $command->get();
         if ($commands->count() > 0) {
             foreach ($commands as $condition) {

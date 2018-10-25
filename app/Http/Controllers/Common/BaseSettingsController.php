@@ -207,17 +207,17 @@ class BaseSettingsController extends Controller
         $selectedDays = [];
         $daysLists = ExpiryMailDay::get();
 
-       if(count($daysLists)>0){
-          foreach ($daysLists as $daysList) {
-           $selectedDays[]= $daysList;
-       }
-       }
-       $delLogDays = ['720'=>'720 Days','365'=>'365 days','180'=>'180 Days',
-       '150'=>'150 Days','60'=>'60 Days','30'=>'30 Days','15'=>'15 Days','5'=>'5 Days','2'=>'2 Days','0'=>'Delete All Logs'];
+        if (count($daysLists) > 0) {
+            foreach ($daysLists as $daysList) {
+                $selectedDays[] = $daysList;
+            }
+        }
+        $delLogDays = ['720'=> '720 Days', '365'=>'365 days', '180'=>'180 Days',
+       '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
-          return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition', 
-            'shared','status', 'expiryDays','selectedDays','delLogDays','beforeLogDay'));
 
+        return view('themes.default1.common.cron.cron', compact('templates', 'warn', 'commands', 'condition',
+            'shared', 'status', 'expiryDays', 'selectedDays', 'delLogDays', 'beforeLogDay'));
     }
 
     public function postSchedular(StatusSetting $status, Request $request)
@@ -296,13 +296,10 @@ class BaseSettingsController extends Controller
                 $daysList->create([
           'days'=> $value,
            ]);
+            }
+        }
+        ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
 
-       }
-      }
-    ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
-      
-       return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
-
-    
 }

@@ -635,18 +635,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
  });
 
 
-
-
-
-
-
-
-
-
- 
-
-
-            function verify_otp_check(){
+function verify_otp_check(){
             var userOtp = $('#oneTimePassword').val();
             if (userOtp.length < 4){
                 $('#enterotp').show();

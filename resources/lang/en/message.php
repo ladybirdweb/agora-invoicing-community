@@ -247,6 +247,7 @@ return [
     'tax_compound'                                                                                    => 'Tax Compound',
     'tick-to-apply-compund-taxing'                                                                    => 'Tick to apply compund taxing',
     'deny_after_subscription'                                                                         => 'Deny after subscription',
+    'sku'                                                                                             => 'Product SKU (Stock Keeping Unit)',
     /*
      * Addons
      */

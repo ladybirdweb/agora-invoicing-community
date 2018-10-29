@@ -216,6 +216,21 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
+  function simplePost($post_url, $post_info)
+    {
+    $ch=curl_init();
+    curl_setopt($ch, CURLOPT_URL, $post_url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    $result=curl_exec($ch);
+    curl_close($ch);
+
+    return $result;
+    }
 
         /**
          * Store a newly created resource in storage.
@@ -224,6 +239,7 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
+            $name= $request->input('name');
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
@@ -232,8 +248,11 @@ namespace App\Http\Controllers\Product;
                         'description'=> 'required',
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'product_sku'=> 'required',
                         // 'version' => 'required',
             ]);
+           
+            // dd($a);
             if ($v->fails()) {
                 //     $currency = $input['currency'];
 
@@ -244,6 +263,7 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
+                 $a = $this->simplePost("https://license.faveohelpdesk.com/apl_api/api.php", "api_key_secret=0bs8ArC9Tp1mG6Cg&api_function=products_add&product_title= $name&product_sku=sss&product_status=1");
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';
@@ -257,11 +277,6 @@ namespace App\Http\Controllers\Product;
 
                 $product_id = $product->id;
                 $subscription = $request->input('subscription');
-
-                $price = $request->input('price');
-                // $price=
-
-                $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
                 $taxes = $request->input('tax');
                 if ($taxes) {

@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicenseController;
 use App\Model\User\AccountActivate;
 use App\User;
-use App\Http\Controllers\License\LicenseController;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
 use Validator;
@@ -39,8 +39,8 @@ class AuthController extends BaseAuthController
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
-          $license = new LicenseController();
-            $this->licensing = $license;
+        $license = new LicenseController();
+        $this->licensing = $license;
     }
 
     public function sendActivationByGet($email, Request $request)
@@ -69,7 +69,7 @@ class AuthController extends BaseAuthController
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-               
+
                 $zoho = $this->reqFields($user, $email);
                 $auth = ApiKey::where('id', 1)->value('zoho_api_key');
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
@@ -92,7 +92,7 @@ class AuthController extends BaseAuthController
                 curl_close($ch);
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
-                $addUserToLicensing = $this->licensing->addNewUser($user->first_name,$user->last_name,$user->email);
+                $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');
 

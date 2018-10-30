@@ -17,6 +17,7 @@ namespace App\Http\Controllers\Product;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
+    use App\Http\Controllers\License\LicenseController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
@@ -77,6 +78,9 @@ namespace App\Http\Controllers\Product;
 
             $product_upload = new ProductUpload();
             $this->product_upload = $product_upload;
+
+            $license = new LicenseController();
+            $this->licensing = $license;
         }
 
         /**
@@ -216,21 +220,7 @@ namespace App\Http\Controllers\Product;
                 return redirect()->back()->with('fails', $e->getMessage());
             }
         }
-  function simplePost($post_url, $post_info)
-    {
-    $ch=curl_init();
-    curl_setopt($ch, CURLOPT_URL, $post_url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    $result=curl_exec($ch);
-    curl_close($ch);
 
-    return $result;
-    }
 
         /**
          * Store a newly created resource in storage.
@@ -239,7 +229,6 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
-            $name= $request->input('name');
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
@@ -248,7 +237,7 @@ namespace App\Http\Controllers\Product;
                         'description'=> 'required',
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
-                        'product_sku'=> 'required',
+                        'product_sku'=> 'required|unique:products,product_sku',
                         // 'version' => 'required',
             ]);
            
@@ -263,7 +252,7 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
-                 $a = $this->simplePost("https://license.faveohelpdesk.com/apl_api/api.php", "api_key_secret=0bs8ArC9Tp1mG6Cg&api_function=products_add&product_title= $name&product_sku=sss&product_status=1");
+                $addProductToLicensing = $this->licensing->addNewProduct($input['name'],$input['product_sku']);
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';
@@ -350,6 +339,7 @@ namespace App\Http\Controllers\Product;
                         'group'      => 'required',
                         'description'=> 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'product_sku'=> 'required',
       ]);
 
             if ($v->fails()) {
@@ -357,6 +347,7 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
+              $addProductInLicensing = $this->licensing->editProduct($input['name'],$input['product_sku']); 
                 $product = $this->product->where('id', $id)->first();
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();

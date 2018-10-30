@@ -286,6 +286,7 @@ class DashboardController extends Controller
     public function getProductNameList($productSoldlists)
     {
         try {
+            $productNameList= array();
             foreach ($productSoldlists as $productSoldlist) {
                 if ($productSoldlist && $productSoldlist->name) {
                     $productNameList[] = $productSoldlist->name;

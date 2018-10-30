@@ -153,11 +153,20 @@ Edit Product
                                         <li>
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
+                                                {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
+                                                {!! Form::text('product_sku',null,['class' => 'form-control']) !!}
+
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
+                                                <!-- last name -->
                                                 {!! Form::label('parent',Lang::get('message.parent')) !!}
                                                 {!! Form::select('parent[]',['Products'=>$products],null,['class' => 'form-control']) !!}
 
                                             </div>
                                         </li>
+
                                         <li>
                                         <div class="form-group {{ $errors->has('image') ? 'has-error' : '' }}">
                                                         <!-- last name -->

@@ -14,6 +14,7 @@ use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Log;
+use App\Http\Controllers\License\LicenseController;
 
 class ClientController extends AdvanceSearchController
 {
@@ -31,6 +32,8 @@ class ClientController extends AdvanceSearchController
         $this->activate = $activate;
         $product = new \App\Model\Product\Product();
         $this->product = $product;
+        $license = new LicenseController();
+        $this->licensing = $license;
     }
 
     /**
@@ -186,6 +189,7 @@ class ClientController extends AdvanceSearchController
             $this->sendWelcomeMail($user);
             // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             // $r = $mailchimp->addSubscriber($user->email);
+            $addUserToLicensing = $this->licensing->addNewUser($request->first_name,$request->last_name,$request->email);
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
@@ -419,7 +423,7 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-
+            $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name,$user->last_name,$user->email);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

@@ -222,6 +222,7 @@ namespace App\Http\Controllers\Product;
         }
 
 
+
         /**
          * Store a newly created resource in storage.
          *
@@ -229,6 +230,7 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
+
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
@@ -240,7 +242,7 @@ namespace App\Http\Controllers\Product;
                         'product_sku'=> 'required|unique:products,product_sku',
                         // 'version' => 'required',
             ]);
-           
+
             // dd($a);
             if ($v->fails()) {
                 //     $currency = $input['currency'];
@@ -252,7 +254,9 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
+
                 $addProductToLicensing = $this->licensing->addNewProduct($input['name'],$input['product_sku']);
+
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';

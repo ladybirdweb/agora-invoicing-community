@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
+    use App\Http\Controllers\License\LicenseController;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -17,7 +18,6 @@ namespace App\Http\Controllers\Product;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
-    use App\Http\Controllers\License\LicenseController;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
@@ -221,8 +221,6 @@ namespace App\Http\Controllers\Product;
             }
         }
 
-
-
         /**
          * Store a newly created resource in storage.
          *
@@ -230,7 +228,6 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
-
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
@@ -254,8 +251,7 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
-
-                $addProductToLicensing = $this->licensing->addNewProduct($input['name'],$input['product_sku']);
+                $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
 
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
@@ -351,7 +347,7 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
-              $addProductInLicensing = $this->licensing->editProduct($input['name'],$input['product_sku']); 
+                $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
                 $product = $this->product->where('id', $id)->first();
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();

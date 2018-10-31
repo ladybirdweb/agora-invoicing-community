@@ -179,7 +179,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user;
-            $str = str_random(6);
+            $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
             $cont = new \App\Http\Controllers\Front\PageController();

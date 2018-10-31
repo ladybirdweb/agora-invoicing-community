@@ -69,7 +69,6 @@ class BaseOrderController extends ExtendedOrderController
             return 'success';
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -163,7 +162,11 @@ class BaseOrderController extends ExtendedOrderController
                     'plan_id'                          => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at,
                      'version'                         => $version, 'product_id' =>$product, ]);
             }
+            $cont = new \App\Http\Controllers\License\LicenseController;
+            $createNewLicense = $cont->createNewLicene($orderid,$product,$user_id,$ends_at);
+
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');

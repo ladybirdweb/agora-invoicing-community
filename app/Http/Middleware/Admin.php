@@ -37,7 +37,7 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        // dd(\Auth::user()->role);
+      // dd(\Auth::user()->role);
         if (\Auth::user()->role == 'admin') {
             return $next($request);
         } elseif (\Auth::user()->role == 'user') {
@@ -48,7 +48,6 @@ class Admin
 
                 return redirect($url);
             }
-
             return redirect('/home');
         } else {
             \Auth::logout();

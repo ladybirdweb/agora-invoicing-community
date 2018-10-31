@@ -88,6 +88,7 @@ class ExtendedBaseInvoiceController extends Controller
             $status = $request->input('status');
             $paid = $request->input('paid');
             $invoice = Invoice::where('id', $invoiceid)->update(['grand_total'=>$total, 'status'=>$status]);
+            $order = Order::where('invoice_id',$invoiceid)->update(['price_override'=>$total]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

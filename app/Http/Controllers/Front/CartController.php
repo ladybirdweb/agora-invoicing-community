@@ -55,7 +55,6 @@ class CartController extends BaseCartController
 
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
-
     }
 
     public function productList(Request $request)

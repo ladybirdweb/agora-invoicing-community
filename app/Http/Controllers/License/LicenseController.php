@@ -136,6 +136,5 @@ class LicenseController extends Controller
    }
 
 
-        return $userId;
-    }
+    
 }

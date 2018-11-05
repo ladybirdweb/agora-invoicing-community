@@ -214,7 +214,7 @@ class HomeController extends BaseHomeController
             $order = new Order();
 //            $faveo_decrypted_order = self::decryptByFaveoPrivateKey($faveo_encrypted_order_number);
 
-            $this_order = $order->where('number', $faveo_decrypted_order)->first();
+           $this_order = $order->where('number', "LIKE", $faveo_decrypted_order)->first();
             if (!$this_order) {
                 return;
             } else {

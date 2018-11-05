@@ -468,7 +468,7 @@ if($script){
           <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
-          
+          <script src='https://www.google.com/recaptcha/api.js'></script>s
           <!-- Theme Custom -->
           <script src="{{asset('js/custom.js')}}"></script>
           

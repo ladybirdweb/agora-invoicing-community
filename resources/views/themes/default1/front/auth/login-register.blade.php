@@ -397,6 +397,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                           </div>
                                                     </div>
                                                 </div>
+                                                <div class="g-recaptcha" data-sitekey="6LfaLjQUAAAAAIiiihF5q8DC41FH28m5IMo1VNwa"></div>
                                                 
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6 ">

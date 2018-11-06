@@ -94,9 +94,9 @@ class ProfileRequest extends Request
     public function messages()
     {
         return[
-            'bussiness.required'   => 'Choose one Industry',
-            'mobile_code.required' => 'Enter Country code (mobile)',
-            'g-recaptcha-response-1.required'=>'Robot Verification Failed. Please Try Again',
+            'bussiness.required'             => 'Choose one Industry',
+            'mobile_code.required'           => 'Enter Country code (mobile)',
+            'g-recaptcha-response-1.required'=> 'Robot Verification Failed. Please Try Again',
         ];
     }
 }

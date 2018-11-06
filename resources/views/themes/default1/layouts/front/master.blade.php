@@ -436,7 +436,7 @@ if($script){
 
 
                             <div class="col-md-12">
-                                <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
+                                <p>Copyright 漏 <?php echo date('Y') ?> 路 <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
                                     <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
@@ -448,7 +448,8 @@ if($script){
         </div>
 
         <!-- Vendor -->
-       
+    </script>
+         <script>{!! NoCaptcha::renderJs('fr', true, 'recaptchaCallback') !!}  </script>
         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
@@ -468,7 +469,6 @@ if($script){
           <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
-          <script src='https://www.google.com/recaptcha/api.js'></script>s
           <!-- Theme Custom -->
           <script src="{{asset('js/custom.js')}}"></script>
           

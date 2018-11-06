@@ -85,6 +85,7 @@ class ProfileRequest extends Request
                     'bussiness'             => 'required',
                     'company_type'          => 'required',
                     'company_size'          => 'required',
+                    'g-recaptcha-response-1'=> 'sometimes|required|captcha',
 
         ];
         }
@@ -95,6 +96,7 @@ class ProfileRequest extends Request
         return[
             'bussiness.required'   => 'Choose one Industry',
             'mobile_code.required' => 'Enter Country code (mobile)',
+            'g-recaptcha-response-1.required'=>'Robot Verification Failed. Please Try Again',
         ];
     }
 }

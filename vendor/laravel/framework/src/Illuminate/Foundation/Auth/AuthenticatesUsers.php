@@ -52,14 +52,15 @@ trait AuthenticatesUsers
      */
     public function postLogin(Request $request)
     {//here
-         
-         $this->validate($request, [
+          $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
+            'g-recaptcha-response' => 'sometimes|required|captcha'
                 ], [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required'    => 'Username/Email is required',
             'password1.required' => 'Password is required',
         ]);
-        $usernameinput = $request->input('email1');
+       $usernameinput = $request->input('email1');
         //$email = $request->input('email');
         $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
         $password = $request->input('password1');

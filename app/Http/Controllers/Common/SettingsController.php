@@ -338,6 +338,7 @@ class SettingsController extends BaseSettingsController
                               })
                              ->addColumn('cc', function ($model) {
                                  $cc = '--';
+
                                  return $cc;
                              })
 
@@ -345,9 +346,10 @@ class SettingsController extends BaseSettingsController
                                    return ucfirst($model->subject);
                                })
                                 ->addColumn('headers', function ($model) {
-                                  $headers = Markdown::convertToHtml(ucfirst($model->headers));
-                                  return $headers;
-                              })
+                                    $headers = Markdown::convertToHtml(ucfirst($model->headers));
+
+                                    return $headers;
+                                })
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })
@@ -357,6 +359,7 @@ class SettingsController extends BaseSettingsController
                             ->make(true);
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
+
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }

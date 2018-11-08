@@ -168,6 +168,14 @@ return [
     'set_cron_period'                                              => 'Set Cron Execution Period',
     'enable_mail_cron'                                             => 'Please Enable Expiry Mail Cron',
     'enable_activityLog_cron'                                      => 'Please Enable Clean Activity Log Cron',
+    'specify-php-executable'                                       => 'Specify PHP executable Path',
+    'copy-cron-command-description'                                => 'Copy the command and setup in crontab of your hosting system',
+    'invalid-php-path'               => 'Specified PHP exectable path is not valid.',
+      'invalid-php-version-or-path'    => 'Path/Version of specified PHP exectable is not valid.',
+      'valid-php-path'                 => 'Specified PHP exectable path valid',
+      'cron-command-copied'            => 'Cron command copied to clipboard.',
+      'cron-command-not-copied'        => 'Cron command can not be copied to clipboard.',
+      'please_enable_php_exec_for_cronjob_check'=>'WARNING: Please enable PHP `exec` function to validate the cron job setting',
 
     /*
      * Clients

@@ -1,3 +1,35 @@
+@section('custom-css')
+
+<style type="text/css">
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+</style>
+@stop
+<div class="box-body table-responsive"style="overflow:hidden;">
+      {{-- alert block --}}
+        <div class="alert alert-success cron-success alert-dismissable" style="display: none;">
+            <i class="fa  fa-check-circle"></i>
+            <span class="alert-success-message"></span>
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        </div>
+        <div class="alert alert-danger cron-danger" style="display: none;">
+            <i class="fa fa-ban"></i>
+            <span class="alert-danger-message"></span>
+             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        </div>
+        {{-- alert block end --}}
+        @if(!$execEnabled)
+        <div class="alert alert-warning">
+            {{ trans('lang.please_enable_php_exec_for_cronjob_check') }}
+        </div>
+        @endif
 
 {!! Form::model($status,['url' => 'post-scheduler', 'method' => 'PATCH','id'=>'Form']) !!}
 
@@ -6,13 +38,41 @@
     </div>
 
     <div class="box-body table-responsive"style="overflow:hidden;">
- 
+  <div class="row">
+                <div class="col-md-12">
+                   <p>{{ Lang::get('message.copy-cron-command-description')}} </p>
+                </div>
+        </div>
 
         
          <div class="alert  alert-dismissable" style="background: #F3F3F3">
-            <i class="fa  fa-info-circle"></i>&nbsp;{!! Lang::get('message.cron-set-info')!!}
-            {!! $shared !!}<br>
-           
+            <div class="row">
+            <div class="col-md-2 copy-command1">
+                    <span style="font-size: 20px">*&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;*&nbsp;&nbsp;&nbsp;*</span>
+                </div>
+             <div class="col-md-4">
+                    <select class="form-control" id="phpExecutableList" onchange="checksome()">
+                        <option value="0">{{ Lang::get('message.specify-php-executable')}}</option>
+                        @foreach($paths as $path)
+                            <option>{{$path}}</option>
+                        @endforeach
+                        <option value="Other">Other</option>
+                    </select>
+                    <div class="has-feedback" id='phpExecutableTextArea' style="display: none;">
+                        <div class="has-feedback">
+                            <input type="text" class="form-control input-sm" style=" padding:5px;height:34px" name="phpExecutableText" id="phpExecutableText" placeholder="{{Lang::get('message.specify-php-executable')}}">
+                            <span class="fa fa-close form-control-feedback" style="pointer-events: initial; cursor: pointer; color: #74777a" onclick="checksome(false)"></span>
+                        </div>
+                    </div>
+                </div>
+                  <div class="col-md-5 copy-command2">
+                   <span style="font-size: 15px">-q {{$cronPath}} schedule:run 2>&1 </span> 
+                </div>
+                <div class="col-md-1">
+                    <span style="font-size: 20px" id="copyBtn" title="{{Lang::get('message.verify-and-copy-command')}}" onclick="verifyPHPExecutableAndCopyCommand()"><i class="fa fa-clipboard"></i></span>
+                    <span style="font-size: 20px; display:none;" id="loader"><i class="fa fa-circle-o-notch fa-spin"></i></span>
+                </div>
+            </div>
         </div>
         
      
@@ -32,7 +92,7 @@
                     <div class="col-md-6" id="fetching">
                         {!! Form::select('expiry-commands',$commands,$condition->getConditionValue('expiryMail')['condition'],['class'=>'form-control','id'=>'fetching-command']) !!}
                           <div id='fetching-daily-at'>
-                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control']) !!}
+                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM",'required'=>'required']) !!}
 
                         </div>
                       
@@ -57,7 +117,7 @@
                     <div class="col-md-6" id="workflow">
                         {!! Form::select('activity-commands',$commands,$condition->getConditionValue('deleteLogs')['condition'],['class'=>'form-control','id'=>'workflow-command']) !!}
                          <div id='workflow-daily-at'>
-                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control']) !!}
+                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM",'required'=>'required']) !!}
 
                         </div>
                        
@@ -66,13 +126,16 @@
             </div><!-- /.info-box -->
         </div>
     
-        
+        </div>
     </div>
  {!! Form::close() !!}
 
 <script>
     $(document).ready(function () {
-
+$(".time-picker").datetimepicker({
+        format: 'HH:ss',
+        // useCurrent: false, //Important! See issue #1075
+    });
 
 $('#tab2url').click(function(){
     $('#tab1').removeClass('active')
@@ -101,43 +164,15 @@ $('#tab2url').click(function(){
         function showDailyAt(command) {
             if (command === 'dailyAt') {
                 $("#fetching-daily-at").show();
+                // $("input").prop('required',true);
             } else {
                 $("#fetching-daily-at").hide();
             }
         }
 
-        // Ldap cron settings start //
-        // hide if checked on ready
-        if ( $("#ldapCron").is(':checked') ) {
-            $("#ldapCronTimeSelect").show();
-        } else {
-            $("#ldapCronTimeSelect").hide();
-        }
+      
 
-        // show fetch time on ready
-        if ( $("#adUserFetchingCommand").val() === 'dailyAt') {
-            $("#adUserFetchDailyAt").show();
-        } else {
-            $("#adUserFetchDailyAt").hide();
-        }
 
-        // on click of checkbox
-        $("#ldapCron").on('click', function () {
-            if ( $(this).is(':checked') ) {
-                $("#ldapCronTimeSelect").show();
-            } else {
-                $("#ldapCronTimeSelect").hide();
-            }
-        });
-
-        // show fetch time on change
-        $("#adUserFetchingCommand").on('change', function () {
-            if ( $(this).val() === 'dailyAt') {
-            $("#adUserFetchDailyAt").show();
-        } else {
-            $("#adUserFetchDailyAt").hide();
-        }
-        });
 
         // Ldap cron settings end //
     });
@@ -226,33 +261,66 @@ $('#tab2url').click(function(){
             }
         }
     });
-//escalation
-$(document).ready(function () {
-        var checked = $("#escalation_cron").is(':checked');
-        check(checked, 'escalation_cron');
-        $("#escalation_cron").on('click', function () {
-            checked = $("#escalation_cron").is(':checked');
-            check(checked);
-        });
-        var command = $("#escalation-command").val();
-        showDailyAt(command);
-        $("#escalation-command").on('change', function () {
-            command = $("#escalation-command").val();
-            showDailyAt(command);
-        });
-        function check(checked, id) {
-            if (checked) {
-                $("#notification2").show();
-            } else {
-                $("#notification2").hide();
-            }
+
+//-------------------------------------------------------------//
+
+    function checksome(showtext = true)
+    {
+        if (!showtext) {
+            $("#phpExecutableList").css('display', "block");
+            $("#phpExecutableList").val(0)
+            $("#phpExecutableTextArea").css('display', "none");
+        } else if($("#phpExecutableList").val() == 'Other') {
+            $("#phpExecutableList").css('display', "none");
+            $("#phpExecutableTextArea").css('display', "block");
         }
-        function showDailyAt(command) {
-            if (command === 'dailyAt') {
-                $("#notification-daily-at2").show();
-            } else {
-                $("#notification-daily-at2").hide();
-            }
+    }
+
+    function verifyPHPExecutableAndCopyCommand()
+    {
+        copy = false;
+        var path = ($("#phpExecutableList").val()=="Other")? $("#phpExecutableText").val(): $("#phpExecutableList").val();
+        var text = "* * * * * "+path.trim()+" "+$(".copy-command2").text().trim();
+        copyToClipboard(text);
+
+        $.ajax({
+            'method': 'POST',
+            'url': "{{route('verify-cron')}}",
+            data: {
+                "_token": "{{ csrf_token() }}",
+                "path": path
+            },
+            beforeSend: function() {
+                $("#loader").css("display", "block");
+                $(".alert-danger, .alert-success, #copyBtn").css('display', 'none');
+            },
+            success: function (result,status,xhr) {
+                $(".alert-success-message").html("{{Lang::get('message.cron-command-copied')}} "+result.message);
+                $(".cron-success, #copyBtn").css('display', 'block');
+                $("#loader").css("display", "none");
+                copy = true
+            },
+            error: function(xhr,status,error) {
+                $('#clearClipBoard').click();
+                $(".cron-danger, #copyBtn").css('display', 'block');
+                $("#loader").css("display", "none");
+                $(".alert-danger-message").html("{{Lang::get('message.cron-command-not-copied')}} "+xhr.responseJSON.message);
+            },
+        });
+    }
+
+    function copyToClipboard(text = " ")
+    {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            var successful = document.execCommand('copy');
+            var msg = successful ? 'successful' : 'unsuccessful';
+        } catch (err) {
         }
-    });
+        console.log(msg);
+        document.body.removeChild(textArea);
+    }
 </script>

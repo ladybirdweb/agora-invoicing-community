@@ -1521,9 +1521,9 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
               
            $('#error').show();
             document.getElementById('error').innerHTML = html;
-            setTimeout(function(){ 
-                $('#error').hide(); 
-            }, 50000);
+            setInterval(function(){ 
+                $('#error').slideUp(3000); 
+            }, 8000);
           }
         });
       }

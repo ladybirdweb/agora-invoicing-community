@@ -48,11 +48,11 @@ Github Setting
             {{Session::get('fails')}}
         </div>
         @endif
-      
+
 
     </div>
     <div class="box box-primary">
-<div class="row">
+      <div class="row">
     <div class="col-md-12">
         <!-- Custom Tabs -->
   
@@ -181,12 +181,7 @@ Github Setting
 
 
 <script>
-        $(document).ready(function() {
-    $("#days").select2({
-        placeholder: 'Select Days',
-        tags:true
-    });
-});
+
 </script>
 @stop
 

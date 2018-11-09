@@ -4,7 +4,6 @@ namespace App\Console;
 
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
-use App\Model\MailJob\Condition;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -44,7 +43,7 @@ class Kernel extends ConsoleKernel
             $delLogDays = 99999999;
         }
         \Config::set('activitylog.delete_records_older_than_days', $delLogDays);
-        $condition = new Condition();
+        $condition = new \App\Model\Mailjob\Condition();
         $command = $condition->getConditionValue($task);
         switch ($task) {
             case 'expiryMail':

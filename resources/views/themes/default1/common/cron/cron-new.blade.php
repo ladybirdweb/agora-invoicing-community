@@ -92,7 +92,7 @@
                     <div class="col-md-6" id="fetching">
                         {!! Form::select('expiry-commands',$commands,$condition->getConditionValue('expiryMail')['condition'],['class'=>'form-control','id'=>'fetching-command']) !!}
                           <div id='fetching-daily-at'>
-                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM",'required'=>'required']) !!}
+                            {!! Form::text('expiry-dailyAt',$condition->getConditionValue('expiryMail')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
 
                         </div>
                       
@@ -117,7 +117,7 @@
                     <div class="col-md-6" id="workflow">
                         {!! Form::select('activity-commands',$commands,$condition->getConditionValue('deleteLogs')['condition'],['class'=>'form-control','id'=>'workflow-command']) !!}
                          <div id='workflow-daily-at'>
-                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM",'required'=>'required']) !!}
+                            {!! Form::text('activity-dailyAt',$condition->getConditionValue('deleteLogs')['at'],['class'=>'form-control time-picker',"placeholder" => "HH:MM"]) !!}
 
                         </div>
                        

@@ -178,6 +178,7 @@ return [
       'please_enable_php_exec_for_cronjob_check'=>'WARNING: Please enable PHP `exec` function to validate the cron job setting',
       'verify-and-copy-command' => 'Click to Verify Command and copy to Clipboard',
 
+
     /*
      * Clients
      */

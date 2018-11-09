@@ -34,25 +34,29 @@ function isInstall()
 
 // For API response
 /**
- * Format the error message into json error response
+ * Format the error message into json error response.
  *
- * @param string|array $message Error message
- * @param int $statusCode
+ * @param string|array $message    Error message
+ * @param int          $statusCode
+ *
  * @return HTTP json response
  */
-function errorResponse($message, $statusCode = 400) {
+function errorResponse($message, $statusCode = 400)
+{
     return response()->json(['success' => false, 'message' => $message], $statusCode);
 }
 
 /**
- * Format success message/data into json success response
+ * Format success message/data into json success response.
  *
- * @param string $message Success message
- * @param array|string $data Data of the response
- * @param int $statusCode
+ * @param string       $message    Success message
+ * @param array|string $data       Data of the response
+ * @param int          $statusCode
+ *
  * @return HTTP json response
  */
-function successResponse($message = '', $data = '', $statusCode = 200) {
+function successResponse($message = '', $data = '', $statusCode = 200)
+{
     $response = ['success' => true];
 
     // if message given
@@ -67,5 +71,3 @@ function successResponse($message = '', $data = '', $statusCode = 200) {
 
     return response()->json($response, $statusCode);
 }
-
-

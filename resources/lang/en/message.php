@@ -504,8 +504,8 @@ return [
     /*
      * client panel
      */
-    'coupon-code' => 'Coupon Code',
-    'domain_updated' =>'Domain Name Updated',
+    'coupon-code'    => 'Coupon Code',
+    'domain_updated' => 'Domain Name Updated',
 
     /*
      * Payments

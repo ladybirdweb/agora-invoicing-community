@@ -132,4 +132,64 @@ class LicenseController extends Controller
         $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&client_id=$userId
       &license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=5&license_expire_date=$expiry&license_disable_ip_verification=0");
     }
+
+    /*
+    *  Edit Existing License
+    */
+    public function updateLicensedDomain($clientEmail, $domain)
+    {
+        $url = 'https://license.faveohelpdesk.com/apl_api/api.php';
+        $api_key_secret = '0bs8ArC9Tp1mG6Cg';
+      
+        $searchLicense = $this->searchLicenseId($clientEmail);
+        $licenseId =  $searchLicense['licenseId'];
+        $productId = $searchLicense['productId'];
+        $userId   = $searchLicense['userId'];
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=0&license_domain=$domain");
+        //Uninstall The Script to Install on anther server
+    }
+
+    public function searchLicenseId($email) 
+    {
+        $url = 'https://license.faveohelpdesk.com/apl_api/api.php';
+        $api_key_secret = '0bs8ArC9Tp1mG6Cg';
+        $getLicenseId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
+      &search_type=license&search_keyword=$email");
+
+        $details = json_decode($getLicenseId);
+        if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+            $licenseId = $details->page_message[0]->license_id;
+            $productId = $details->page_message[0]->product_id;
+            $userId = $details->page_message[0]->client_id;
+        }
+        
+        return (['productId'=>$productId,'userId'=>$userId,'licenseId'=>$licenseId]);
+    }
+
+    //Update the Installation status as Inactive after Licensed Domain Is Chnaged
+    public function updateInstalledDomain($email)
+    {
+        $installation_id = '';
+        $installation_ip = '';
+        $url = 'https://license.faveohelpdesk.com/apl_api/api.php';
+        $api_key_secret = '0bs8ArC9Tp1mG6Cg';
+        //Search for the Installation Id
+         $searchInstallationId = $this->searchInstallationId($email);
+           $details = json_decode($searchInstallationId);
+             if ($details->api_error_detected == 0 && is_array($details->page_message)) {
+            $installation_id = $details->page_message[0]->installation_id;
+            $installation_ip = $details->page_message[0]->installation_ip;
+        }
+       // delete The Existing Installation
+          $updateInstallation= $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=installations_edit&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0");
+    }
+
+     public function searchInstallationId($email) 
+     {
+        $url = 'https://license.faveohelpdesk.com/apl_api/api.php';
+        $api_key_secret = '0bs8ArC9Tp1mG6Cg';
+        $getInstallId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
+      &search_type=installation&search_keyword=$email");
+        return $getInstallId;
+     }
 }

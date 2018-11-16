@@ -279,7 +279,7 @@
         Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
         Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
-        Route::get('change-domain', 'Order\OrderController@domainChange');
+        Route::PATCH('change-domain', 'Order\ExtendedOrderController@changeDomain');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
 
         /*

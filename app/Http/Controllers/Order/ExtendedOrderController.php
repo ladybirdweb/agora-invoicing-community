@@ -149,12 +149,19 @@ class ExtendedOrderController extends Controller
         }
     }
 
-    public function domainChange(Request $request)
+    public function changeDomain(Request $request)
     {
+
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = Order::find($id);
+        $clientEmail = $order->user->email;
         $order->domain = $domain;
         $order->save();
+        $cont = new \App\Http\Controllers\License\LicenseController();
+        $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $domain);
+        //Now make Installation status as inactive
+        $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
+        return (['message' => 'success','update'=>'Licensed Domain Updated']);
     }
 }

@@ -151,7 +151,6 @@ class ExtendedOrderController extends Controller
 
     public function changeDomain(Request $request)
     {
-
         $domain = $request->input('domain');
         $id = $request->input('id');
         $order = Order::find($id);
@@ -162,6 +161,7 @@ class ExtendedOrderController extends Controller
         $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $domain);
         //Now make Installation status as inactive
         $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
-        return (['message' => 'success','update'=>'Licensed Domain Updated']);
+
+        return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
 }

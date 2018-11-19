@@ -145,7 +145,7 @@ class LicenseController extends Controller
         $licenseId =  $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $userId   = $searchLicense['userId'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=0&license_domain=$domain");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_domain=$domain");
         //Uninstall The Script to Install on anther server
     }
 

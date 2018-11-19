@@ -230,7 +230,12 @@ Create New Product
                                                       <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
                                                     {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
                                                 </div>
-
+                                                <div class="col-md-4">
+                                                     {!! Form::hidden('perpetual_license',0) !!}
+                                                    {!! Form::checkbox('perpetual_license',1,true) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual_license-detail') !!}">
+                                                    {!! Form::label('perpetual_license',Lang::get('message.perpetual_license')) !!}
+                                                </div>
                                                
 
                                             </div>

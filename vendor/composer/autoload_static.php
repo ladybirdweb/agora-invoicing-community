@@ -699,6 +699,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddForeignKeysToTemplatesTable' => __DIR__ . '/../..' . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
         'AddGstNoColumnToTaxRulesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_19_132715_add_Gst_No_column_to_tax_rules_table.php',
         'AddMsg91AuthKeyToApiKeys' => __DIR__ . '/../..' . '/database/migrations/2018_07_09_092247_add_msg91_auth_key_to_api_keys.php',
+        'AddPerpetualLicenseToProductsTable' => __DIR__ . '/../..' . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
         'AddProductSkuToProducts' => __DIR__ . '/../..' . '/database/migrations/2018_10_26_151347_add_product_sku_to_products.php',
         'AddStateCodeColumnsToTaxByStatesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
         'AddStateColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',

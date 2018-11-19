@@ -257,6 +257,8 @@ return [
     'tick-to-apply-compund-taxing'                                                                    => 'Tick to apply compund taxing',
     'deny_after_subscription'                                                                         => 'Deny after subscription',
     'sku'                                                                                             => 'Product SKU (Stock Keeping Unit)',
+    'perpetual_license'                                                                               =>'Perpetual License',
+    'perpetual_license-detail'  =>  'If selected ,the license expiration date would not be generated, ie, the product can be used perpetually' ,
     /*
      * Addons
      */

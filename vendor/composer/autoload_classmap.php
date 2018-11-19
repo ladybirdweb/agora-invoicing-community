@@ -35,6 +35,7 @@ return array(
     'AddForeignKeysToTemplatesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
     'AddGstNoColumnToTaxRulesTable' => $baseDir . '/database/migrations/2018_04_19_132715_add_Gst_No_column_to_tax_rules_table.php',
     'AddMsg91AuthKeyToApiKeys' => $baseDir . '/database/migrations/2018_07_09_092247_add_msg91_auth_key_to_api_keys.php',
+    'AddPerpetualLicenseToProductsTable' => $baseDir . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
     'AddProductSkuToProducts' => $baseDir . '/database/migrations/2018_10_26_151347_add_product_sku_to_products.php',
     'AddStateCodeColumnsToTaxByStatesTable' => $baseDir . '/database/migrations/2018_04_13_130552_add_state_code_columns_to_tax_by_states_table.php',
     'AddStateColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092417_add_state_colums_to_settings_table.php',

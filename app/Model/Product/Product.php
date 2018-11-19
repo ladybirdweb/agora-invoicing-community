@@ -14,7 +14,7 @@ class Product extends BaseModel
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually',
         'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner',
         'github_repository',
-        'deny_after_subscription', 'version', 'parent', 'subscription', 'product_sku', 'perpetual_license'];
+        'deny_after_subscription', 'version', 'parent', 'subscription', 'product_sku', 'perpetual_license', ];
 
     protected static $logName = 'Product';
 

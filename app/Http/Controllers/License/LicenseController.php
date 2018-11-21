@@ -123,7 +123,7 @@ class LicenseController extends Controller
         $api_key_secret = '0bs8ArC9Tp1mG6Cg';
         $sku = Product::where('id', $product)->first()->product_sku;
         $licenseExpirationCheck = Product::where('id', $product)->first()->perpetual_license;
-        $expiry = ($licenseExpirationCheck == 1) ? $ends_at->toDateString() : "" ; 
+        $expiry = ($licenseExpirationCheck == 1) ? $ends_at->toDateString() : '';
         $order = Order::where('id', $orderid)->first();
         $orderNo = $order->number;
         $domain = $order->domain;

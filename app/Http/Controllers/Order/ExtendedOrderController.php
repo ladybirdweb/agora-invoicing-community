@@ -152,11 +152,11 @@ class ExtendedOrderController extends Controller
     public function changeDomain(Request $request)
     {
         $domain = '';
-       $haystack = $request->input('domain');
-       $needle   = "www";
-       $customDomain = ( strpos( $haystack, $needle ) !== false) ? str_replace('www.', '', $haystack) : 'www.'.$haystack;
-       $domain = ($haystack.','.$customDomain);
-       $id = $request->input('id');
+        $haystack = $request->input('domain');
+        $needle = 'www';
+        $customDomain = (strpos($haystack, $needle) !== false) ? str_replace('www.', '', $haystack) : 'www.'.$haystack;
+        $domain = ($haystack.','.$customDomain);
+        $id = $request->input('id');
         $order = Order::find($id);
         $clientEmail = $order->user->email;
         $order->domain = $domain;

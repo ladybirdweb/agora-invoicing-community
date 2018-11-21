@@ -177,6 +177,8 @@ return [
       'cron-command-not-copied'                                    => 'Cron command can not be copied to clipboard.',
       'please_enable_php_exec_for_cronjob_check'                   => 'WARNING: Please enable PHP `exec` function to validate the cron job setting',
       'verify-and-copy-command'                                    => 'Click to Verify Command and copy to Clipboard',
+      'lic_api_secret'                                             => 'API Secret',
+      'lic_api_url'                                                => 'API URL',
 
     /*
      * Clients

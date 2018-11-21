@@ -78,89 +78,58 @@ API Keys
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              <table class="table table-bordered">
+              <table class="table table-striped ">
                 <tr>
                  
                   <th>Options</th>
                   <th>Status</th>
                    <th>Fields</th>
-                  <th style="width: 40px">Action</th>
+                  <th>Action</th>
                 </tr>
                 <tr>
-                  
+                   <div id="alertMessage"></div>
                   <td>License Manager</td>
                   <td>
                     <label class="switch toggle_event_editing">
-                            <input type="hidden" name="module_id" class="module_id" value="1" onchange="licenseManagerSwitch(this)" >
-                         <input type="checkbox"  value="1" onchange="licenseManagerSwitch(this)" name="modules_settings" 
-                          class="modules_settings_value" >
+                          
+                         <input type="checkbox" value="1"  name="modules_settings" 
+                          class="checkbox" id="License">
                           <span class="slider round"></span>
                     </label>
  
                   </td>
 
-                  <td style="display:none";>
+                  <td class="licenseEmptyField">
+                  {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('license_api_secret',null,['class' => 'form-control','disabled'=>'disabled','style'=>'width:400px']) !!}
+                        <h6 id=""></h6>
+                         
+                  
+                        <!-- last name -->
+                        {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('license_api_url',null,['class' => 'form-control','disabled'=>'disabled','style'=>'width:400px']) !!}
+                        <h6 id=""></h6>
+                  </td>
+                  <td class="LicenseField hide">
                     
                    
                         <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!}
-                        {!! Form::text('rzp_secret',null,['class' => '']) !!}
-                         <br/><br/>
+                        {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('license_api_secret',null,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:400px']) !!}
+                         <h6 id="license_apiCheck"></h6>
+                         <br/>
                   
                         <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!}
-                        {!! Form::text('rzp_secret',null,['class' => '']) !!}
-
+                        {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('license_api_url',null,['class' => 'form-control','id'=>'license_api_url','style'=>'width:400px']) !!}
+                        <h6 id="license_urlCheck"></h6>
                    
-               
             </td>
-                  <td><span class="badge bg-red">55%</span></td>
+                  <td><button type="submit" class="form-group btn btn-primary" onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
-                <tr>
-                  
-                  <td>Clean database</td>
-                  <td>
-                    <div class="progress progress-xs">
-                      <div class="progress-bar progress-bar-yellow" style="width: 70%"></div>
-                    </div>
-                  </td>
-                    <td>
-                    
-                   
-                        <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!}
-                        {!! Form::text('rzp_secret',null,['class' => '']) !!}
 
-                  
-                        <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!}
-                        {!! Form::text('rzp_secret',null,['class' => '']) !!}
 
-                   
-               
-            </td>
-                  <td><span class="badge bg-yellow">70%</span></td>
-                </tr>
-                <tr>
-                
-                  <td>Cron job running</td>
-                  <td>
-                    <div class="progress progress-xs progress-striped active">
-                      <div class="progress-bar progress-bar-primary" style="width: 30%"></div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-light-blue">30%</span></td>
-                </tr>
-                <tr>
-                
-                  <td>Fix and squish bugs</td>
-                  <td>
-                    <div class="progress progress-xs progress-striped active">
-                      <div class="progress-bar progress-bar-success" style="width: 90%"></div>
-                    </div>
-                  </td>
-                  <td><span class="badge bg-green">90%</span></td>
-                </tr>
+      
               </table>
             </div>
             <!-- /.box-body -->
@@ -220,7 +189,7 @@ API Keys
             <div class="col-md-12">
 
 
-
+               
                 <div class="row">
 
                     <div class="col-md-6 form-group {{ $errors->has('username') ? 'has-error' : '' }}">
@@ -330,8 +299,61 @@ API Keys
 
 {!! Form::close() !!}
 <script>
-   function licenseManagerSwitch(x) {
-  console.log($(x).val());
-   } 
+ $('#license_apiCheck').hide();
+    $('#License').change(function () {
+        if ($(this).prop("checked")) {
+            // checked
+            $('.LicenseField').removeClass("hide");
+            $('.licenseEmptyField').addClass("hide");
+        }
+        else{
+            $('.LicenseField').addClass("hide");
+               $('.licenseEmptyField').removeClass("hide");
+        }
+    });
+
+function licenseDetails(){
+
+if ($('#License').prop("checked")) {
+          var checkboxvalue = 1;
+          if ($('#license_api_secret').val() =="" ) {
+             $('#license_apiCheck').show();
+             $('#license_apiCheck').html("Please Enter API Secret Key");
+              $('#license_api_secret').css("border-color","red");
+              $('#license_apiCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+            if ($('#license_api_url').val() =="" ) {
+             $('#license_urlCheck').show();
+             $('#license_urlCheck').html("Please Enter API URL");
+              $('#license_api_url').css("border-color","red");
+              $('#license_urlCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         
+    }
+    else{
+          var checkboxvalue = 0;
+         }
+       $("#submit").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+  $.ajax({
+    
+    url : '{{url("licenseDetails")}}',
+    type : 'post',
+    data: {
+       "status": checkboxvalue,
+       "license_api_secret": $('#license_api_secret').val(),
+       "license_api_url" :$('#license_api_url').val(),
+      },
+      success: function (response) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+          },
+
+ });
+ };
+
 </script>
 @stop

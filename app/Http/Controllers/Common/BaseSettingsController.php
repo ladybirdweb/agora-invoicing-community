@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
 use App\Model\Common\StatusSetting;
@@ -365,5 +366,15 @@ class BaseSettingsController extends Controller
         ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }
+
+    public function licenseDetails(Request $request)
+    {
+       $status = $request->input('status');
+       $licenseApiSecret  = $request->input('license_api_secret');
+       $licenseApiUrl = $request->input('license_api_url');
+       StatusSetting::where('id',1)->update(['license_status'=>$status]);
+       ApiKey::where('id',1)->update(['license_api_secret'=>$licenseApiSecret,'license_api_url'=>$licenseApiUrl]);
+         return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
     }
 }

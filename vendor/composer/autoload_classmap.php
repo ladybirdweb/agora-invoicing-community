@@ -34,6 +34,8 @@ return array(
     'AddForeignKeysToTaxProductRelationsTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_tax_product_relations_table.php',
     'AddForeignKeysToTemplatesTable' => $baseDir . '/database/migrations/2017_06_10_062632_add_foreign_keys_to_templates_table.php',
     'AddGstNoColumnToTaxRulesTable' => $baseDir . '/database/migrations/2018_04_19_132715_add_Gst_No_column_to_tax_rules_table.php',
+    'AddLicenseApiSecretToApiKeys' => $baseDir . '/database/migrations/2018_11_20_135020_add_license_api_secret_to_api_keys.php',
+    'AddLicenseStatusToStatusSettings' => $baseDir . '/database/migrations/2018_11_20_104359_add_license_status_to_status_settings.php',
     'AddMsg91AuthKeyToApiKeys' => $baseDir . '/database/migrations/2018_07_09_092247_add_msg91_auth_key_to_api_keys.php',
     'AddPerpetualLicenseToProductsTable' => $baseDir . '/database/migrations/2018_11_19_190929_add_perpetual_license_to_products_table.php',
     'AddProductSkuToProducts' => $baseDir . '/database/migrations/2018_10_26_151347_add_product_sku_to_products.php',

@@ -3,7 +3,7 @@
 	<div class="modal-content">
 		<div class="modal-header">
 			<h4 class="modal-title" id="defaultModalLabel">Enter Domain</h4>
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
 		</div>
 		<div class="modal-body">
 			<div id="response"></div>
@@ -14,8 +14,11 @@
                     {!! Form::text('domain',null,['class' => 'form-control domainss' ,'id'=>'newDomain']) !!}
                            <h6 id ="domaincheck"></h6>
                 </div>
-                
+          <div class="form-group">
+			<span style="color:red;">*&nbsp By changing the existing licensed domain, all Installation on the current domain will be aborted. </span>
+		</div>  
 		</div>
+		
 		  <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
                 <input type="submit" id="licenseSave" class="btn btn-primary" value="{{Lang::get('message.save')}}">

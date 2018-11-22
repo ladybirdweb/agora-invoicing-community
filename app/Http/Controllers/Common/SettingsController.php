@@ -48,13 +48,13 @@ class SettingsController extends BaseSettingsController
         try {
             $licenseSecret = $apikeys->pluck('license_api_secret')->first();
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
-            $status =  StatusSetting::pluck('license_status')->first();
-            $captchaStatus =   StatusSetting::pluck('recaptcha_status')->first();
+            $status = StatusSetting::pluck('license_status')->first();
+            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
-             $model = $apikeys->find(1);
-            return view('themes.default1.common.apikey', compact('model','status','licenseSecret','licenseUrl','siteKey','secretKey','captchaStatus'));
+            $model = $apikeys->find(1);
 
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

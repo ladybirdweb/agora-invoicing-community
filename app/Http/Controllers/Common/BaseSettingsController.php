@@ -370,11 +370,12 @@ class BaseSettingsController extends Controller
 
     public function licenseDetails(Request $request)
     {
-       $status = $request->input('status');
-       $licenseApiSecret  = $request->input('license_api_secret');
-       $licenseApiUrl = $request->input('license_api_url');
-       StatusSetting::where('id',1)->update(['license_status'=>$status]);
-       ApiKey::where('id',1)->update(['license_api_secret'=>$licenseApiSecret,'license_api_url'=>$licenseApiUrl]);
-         return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
+        $status = $request->input('status');
+        $licenseApiSecret = $request->input('license_api_secret');
+        $licenseApiUrl = $request->input('license_api_url');
+        StatusSetting::where('id', 1)->update(['license_status'=>$status]);
+        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl]);
+
+        return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
     }
 }

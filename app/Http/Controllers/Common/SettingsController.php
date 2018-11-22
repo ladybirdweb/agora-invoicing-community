@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Payment\Currency;
-use App\Model\Common\StatusSetting;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
@@ -54,6 +54,7 @@ class SettingsController extends BaseSettingsController
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
              $model = $apikeys->find(1);
             return view('themes.default1.common.apikey', compact('model','status','licenseSecret','licenseUrl','siteKey','secretKey','captchaStatus'));
+
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

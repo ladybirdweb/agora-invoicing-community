@@ -9,7 +9,6 @@ use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
-use App\Model\Common\StatusSetting;
 use Validator;
 
 class AuthController extends BaseAuthController

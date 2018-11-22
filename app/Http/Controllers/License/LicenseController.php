@@ -2,27 +2,26 @@
 
 namespace App\Http\Controllers\License;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\User;
-use App\ApiKey;
 
 class LicenseController extends Controller
 {
     public $api_key_secret;
     public $url;
     public $license;
-  
+
     public function __construct()
     {
-        $model = new ApiKey;
+        $model = new ApiKey();
         $this->license = $model->firstOrFail();
 
         $this->api_key_secret = $this->license->license_api_secret;
         $this->url = $this->license->license_api_url;
     }
-
 
     public function postCurl($post_url, $post_info)
     {
@@ -45,8 +44,8 @@ class LicenseController extends Controller
     */
     public function addNewProduct($product_name, $product_sku)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_add&product_title=$product_name&product_sku=$product_sku&product_status=1");
     }
 
@@ -55,8 +54,8 @@ class LicenseController extends Controller
    */
     public function addNewUser($first_name, $last_name, $email)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=clients_add
       &client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1");
     }
@@ -67,8 +66,8 @@ class LicenseController extends Controller
     public function editProduct($product_name, $product_sku)
     {
         $productId = $this->searchProductId($product_sku);
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=products_edit
       &product_id=$productId&product_title=$product_name&product_sku=$product_sku&product_status=1");
     }
@@ -80,8 +79,8 @@ class LicenseController extends Controller
     {
         try {
             $productId = '';
-            $url =   $this->url;
-            $api_key_secret =  $this->api_key_secret;
+            $url = $this->url;
+            $api_key_secret = $this->api_key_secret;
             $getProductId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=product&search_keyword=$product_sku");
 
@@ -104,8 +103,8 @@ class LicenseController extends Controller
     public function editUserInLicensing($first_name, $last_name, $email)
     {
         $userId = $this->searchForUserId($email);
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $addProduct = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=clients_edit&client_id=$userId
       &client_fname=$first_name&client_lname=$last_name&client_email=$email&client_status=1");
     }
@@ -116,8 +115,8 @@ class LicenseController extends Controller
     public function searchForUserId($email)
     {
         $userId = '';
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $getUserId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=client&search_keyword=$email");
 
@@ -134,8 +133,8 @@ class LicenseController extends Controller
     */
     public function createNewLicene($orderid, $product, $user_id, $ends_at)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $sku = Product::where('id', $product)->first()->product_sku;
         $licenseExpirationCheck = Product::where('id', $product)->first()->perpetual_license;
         $expiry = ($licenseExpirationCheck == 1) ? $ends_at->toDateString() : '';
@@ -154,20 +153,19 @@ class LicenseController extends Controller
     */
     public function updateLicensedDomain($clientEmail, $domain)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($clientEmail);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $userId = $searchLicense['userId'];
         $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_domain=$domain");
-       
     }
 
     public function searchLicenseId($email)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $getLicenseId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=license&search_keyword=$email");
 
@@ -186,8 +184,8 @@ class LicenseController extends Controller
     {
         $installation_id = '';
         $installation_ip = '';
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         //Search for the Installation Id
         $searchInstallationId = $this->searchInstallationId($email);
         $details = json_decode($searchInstallationId);
@@ -201,8 +199,8 @@ class LicenseController extends Controller
 
     public function searchInstallationId($email)
     {
-        $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $getInstallId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=installation&search_keyword=$email");
 
@@ -210,15 +208,14 @@ class LicenseController extends Controller
     }
 
     //Update Expiration Date After Renewal
-    public function updateExpirationDate($clientEmail,$expiryDate)
+    public function updateExpirationDate($clientEmail, $expiryDate)
     {
-         $url =   $this->url;
-        $api_key_secret =  $this->api_key_secret;
+        $url = $this->url;
+        $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($clientEmail);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $userId = $searchLicense['userId'];
         $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_expire_date=$expiryDate");
-       
     }
 }

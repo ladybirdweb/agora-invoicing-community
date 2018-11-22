@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
+    use App\Model\Common\StatusSetting;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -21,7 +22,6 @@ namespace App\Http\Controllers\Product;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
-    use App\Model\Common\StatusSetting;
 
     // use Input;
 
@@ -253,7 +253,7 @@ namespace App\Http\Controllers\Product;
 
             try {
                 $licenseStatus = StatusSetting::pluck('license_status')->first();
-                if ($licenseStatus ==1) { //If License Setting Status is on,Add Product to the License Manager 
+                if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                     $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
                 }
                 if ($request->hasFile('image')) {
@@ -350,11 +350,11 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
-                 $licenseStatus = StatusSetting::pluck('license_status')->first();
-                 if($licenseStatus == 1) {
-                     $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
-                 }
-               $product = $this->product->where('id', $id)->first();
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) {
+                    $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
+                }
+                $product = $this->product->where('id', $id)->first();
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';

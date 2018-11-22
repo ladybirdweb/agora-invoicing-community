@@ -78,7 +78,7 @@ API Keys
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-              
+               <div id="alertMessage"></div>
               <table class="table table-striped ">
                 <tr>
                  
@@ -88,7 +88,7 @@ API Keys
                   <th>Action</th>
                 </tr>
                 <tr>
-                   <div id="alertMessage"></div>
+                  
                   <td>License Manager</td>
                   <td>
                     <label class="switch toggle_event_editing">
@@ -102,31 +102,75 @@ API Keys
 
                   <td class="licenseEmptyField">
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:400px']) !!}
-                        <h6 id=""></h6>
+                        {!! Form::text('license_api_secret',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                     
                          
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:400px']) !!}
-                        <h6 id=""></h6>
+                        {!! Form::text('license_api_url',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        
                   </td>
                   <td class="LicenseField hide">
                     
                    
                         <!-- last name -->
                         {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:300px']) !!}
                          <h6 id="license_apiCheck"></h6>
                          <br/>
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url','style'=>'width:300px']) !!}
                         <h6 id="license_urlCheck"></h6>
                    
             </td>
                   <td><button type="submit" class="form-group btn btn-primary" onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+
+
+                 <tr>
+                 
+                  <td>Google reCAPTCHA</td>
+                  <td>
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$captchaStatus}}"  name="modules_settings" 
+                          class="checkbox2" id="captcha">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+
+                  <td class="captchaEmptyField">
+                  {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
+                        {!! Form::text('nocaptcha_secret1',null,['class' => 'form-control nocapsecretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        <h6 id=""></h6>
+                         
+                  
+                        <!-- last name -->
+                        {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
+                        {!! Form::text('nocaptcha_sitekey1',null,['class' => 'form-control siteKeyHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        <h6 id=""></h6>
+                  </td>
+                  <td class="captchaField hide">
+                    
+                   
+                        <!-- last name -->
+                        {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
+                        {!! Form::text('nocaptcha_secret',$secretKey,['class' => 'form-control','id'=>'nocaptcha_secret','style'=>'width:300px']) !!}
+                         <h6 id="captcha_secretCheck"></h6>
+                         <br/>
+                  
+                        <!-- last name -->
+                        {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
+                        {!! Form::text('nocaptcha_sitekey',$siteKey,['class' => 'form-control','id'=>'nocaptcha_sitekey','style'=>'width:300px']) !!}
+                        <h6 id="captcha_sitekeyCheck"></h6>
+                   
+            </td>
+                  <td><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -300,6 +344,7 @@ API Keys
 
 {!! Form::close() !!}
 <script>
+  //License Manager
   $(document).ready(function(){
       var status = $('.checkbox').val();
      if(status ==1) {
@@ -323,8 +368,8 @@ API Keys
         }
         else{
             $('.LicenseField').addClass("hide");
-             $('.secretHide').val('');
-                $('.urlHide').val('');
+             $('.nocapsecretHide').val('');
+                $('.siteKeyHide').val('');
                $('.licenseEmptyField').removeClass("hide");
                
                
@@ -358,7 +403,7 @@ if ($('#License').prop("checked")) {
   $.ajax({
     
     url : '{{url("licenseDetails")}}',
-    type : 'post',
+    type : 'get',
     data: {
        "status": checkboxvalue,
        "license_api_secret": $('#license_api_secret').val(),
@@ -366,9 +411,91 @@ if ($('#License').prop("checked")) {
       },
       success: function (response) {
             $('#alertMessage').show();
-            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+                setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+
+
+ });
+ };
+
+
+ //Google Recaptcha
+   $(document).ready(function(){
+      var status = $('.checkbox2').val();
+     if(status ==1) {
+     $('#captcha').prop('checked', true);
+       $('.captchaField').removeClass("hide");
+       $('.captchaEmptyField').addClass("hide");
+     } else if(status ==0) {
+       $('.captchaField').addClass("hide");
+               $('.captchaEmptyField').removeClass("hide");
+              
+     }
+      });
+ $('#captcha_secretCheck').hide();
+   $('#captcha').change(function () {
+        if ($(this).prop("checked")) {
+            // checked
+           $('#nocaptcha_secret').val();
+                $('#nocaptcha_sitekey').val();
+            $('.captchaField').removeClass("hide");
+            $('.captchaEmptyField').addClass("hide");
+        }
+        else{
+            $('.captchaField').addClass("hide");
+             $('.secretHide').val('');
+                $('.urlHide').val('');
+               $('.captchaEmptyField').removeClass("hide");
+               
+               
+        }
+    });
+
+function captchaDetails(){
+if ($('#captcha').prop("checked")) {
+          var checkboxvalue = 1;
+          if ($('#nocaptcha_secret').val() =="" ) {
+             $('#captcha_secretCheck').show();
+             $('#captcha_secretCheck').html("Please Enter Secret Key");
+              $('#captcha_secret').css("border-color","red");
+              $('#captcha_secretCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+            if ($('#nocaptcha_sitekey').val() =="" ) {
+             $('#captcha_sitekeyCheck').show();
+             $('#captcha_sitekeyCheck').html("Please Enter Sitekey");
+              $('#nocaptcha_sitekey').css("border-color","red");
+              $('#captcha_sitekeyCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         
+    }
+    else{
+          var checkboxvalue = 0;
+         }
+       $("#submit2").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+  $.ajax({
+    
+    url : '{{url("captchaDetails")}}',
+    type : 'get',
+    data: {
+       "status": checkboxvalue,
+       "nocaptcha_sitekey": $('#nocaptcha_sitekey').val(),
+       "nocaptcha_secret" :$('#nocaptcha_secret').val(),
+      },
+      success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit2").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
           },
 
  });

@@ -378,4 +378,17 @@ class BaseSettingsController extends Controller
 
         return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
     }
+   
+   //Save Google recaptch site key and secret in Database
+    public function captchaDetails(Request $request)
+    {
+        $status = $request->input('status');
+        $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
+        $captcha_secretCheck = $request->input('nocaptcha_secret');
+        StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);
+        ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=>$nocaptcha_sitekey,
+         'captcha_secretCheck'=>$captcha_secretCheck]);
+
+        return ['message' => 'success', 'update'=>'Recaptcha Settings Updated'];
+    }
 }

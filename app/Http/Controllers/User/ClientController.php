@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use Log;
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
@@ -13,8 +14,8 @@ use App\User;
 use Bugsnag;
 use DateTime;
 use DateTimeZone;
+use App\Model\Common\StatusSetting;
 use Illuminate\Http\Request;
-use Log;
 
 class ClientController extends AdvanceSearchController
 {
@@ -186,10 +187,14 @@ class ClientController extends AdvanceSearchController
             $location = $cont->getLocation();
             $user->ip = $location['ip'];
             $user->fill($request->input())->save();
-            $this->sendWelcomeMail($user);
+            // $this->sendWelcomeMail($user);
             // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             // $r = $mailchimp->addSubscriber($user->email);
-            $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
+             $licenseStatus = StatusSetting::pluck('license_status')->first();
+             if( $licenseStatus ==1) {
+                $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
+             }
+            
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
@@ -423,7 +428,11 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-            $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
+             $licenseStatus = StatusSetting::pluck('license_status')->first();
+             if($licenseStatus ==1) {
+                $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
+             }
+            
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

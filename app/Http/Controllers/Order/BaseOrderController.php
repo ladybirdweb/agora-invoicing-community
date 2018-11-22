@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use App\Model\Common\StatusSetting;
 use App\User;
 use Bugsnag;
 use DateTime;
@@ -103,7 +104,7 @@ class BaseOrderController extends ExtendedOrderController
         if ($this->checkOrderCreateSubscription($order->id) == true) {
             $this->addSubscription($order->id, $plan_id, $version, $product);
         }
-        $this->sendOrderMail($user_id, $order->id, $item->id);
+        // $this->sendOrderMail($user_id, $order->id, $item->id);
         //Update Subscriber To Mailchimp
         $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
         $email = User::where('id', $user_id)->pluck('email')->first();
@@ -163,10 +164,13 @@ class BaseOrderController extends ExtendedOrderController
                     'plan_id'                          => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at,
                      'version'                         => $version, 'product_id' =>$product, ]);
             }
-            $cont = new \App\Http\Controllers\License\LicenseController();
+              $licenseStatus = StatusSetting::pluck('license_status')->first();
+              if($licenseStatus ==1){
+                 $cont = new \App\Http\Controllers\License\LicenseController();
             $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at);
+              }
+           
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not Generate Subscription');

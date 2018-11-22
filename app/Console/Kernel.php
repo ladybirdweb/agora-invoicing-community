@@ -36,7 +36,9 @@ class Kernel extends ConsoleKernel
 
     public function execute($schedule, $task)
     {
-        $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
+         $env = base_path('.env');
+         if (\File::exists($env) && (env('DB_INSTALL')==1)) {
+                    $expiryMailStatus = StatusSetting::pluck('expiry_mail')->first();
         $logDeleteStatus = StatusSetting::pluck('activity_log_delete')->first();
         $delLogDays = ActivityLogDay::pluck('days')->first();
         if ($delLogDays == null) {
@@ -54,7 +56,8 @@ class Kernel extends ConsoleKernel
             case 'deleteLogs':
              if ($logDeleteStatus == 1) {
                  return $this->getCondition($schedule->command('activitylog:clean'), $command);
-             }
+              }
+            }
         }
     }
 

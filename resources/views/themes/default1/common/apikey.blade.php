@@ -78,6 +78,7 @@ API Keys
             </div>
             <!-- /.box-header -->
             <div class="box-body">
+              
               <table class="table table-striped ">
                 <tr>
                  
@@ -92,7 +93,7 @@ API Keys
                   <td>
                     <label class="switch toggle_event_editing">
                           
-                         <input type="checkbox" value="1"  name="modules_settings" 
+                         <input type="checkbox" value="{{$status}}"  name="modules_settings" 
                           class="checkbox" id="License">
                           <span class="slider round"></span>
                     </label>
@@ -101,13 +102,13 @@ API Keys
 
                   <td class="licenseEmptyField">
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',null,['class' => 'form-control','disabled'=>'disabled','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_secret',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:400px']) !!}
                         <h6 id=""></h6>
                          
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',null,['class' => 'form-control','disabled'=>'disabled','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_url',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:400px']) !!}
                         <h6 id=""></h6>
                   </td>
                   <td class="LicenseField hide">
@@ -115,13 +116,13 @@ API Keys
                    
                         <!-- last name -->
                         {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',null,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:400px']) !!}
                          <h6 id="license_apiCheck"></h6>
                          <br/>
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',null,['class' => 'form-control','id'=>'license_api_url','style'=>'width:400px']) !!}
+                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url','style'=>'width:400px']) !!}
                         <h6 id="license_urlCheck"></h6>
                    
             </td>
@@ -299,16 +300,34 @@ API Keys
 
 {!! Form::close() !!}
 <script>
+  $(document).ready(function(){
+      var status = $('.checkbox').val();
+     if(status ==1) {
+     $('#License').prop('checked', true);
+       $('.LicenseField').removeClass("hide");
+            $('.licenseEmptyField').addClass("hide");
+     } else if(status ==0) {
+       $('.LicenseField').addClass("hide");
+               $('.licenseEmptyField').removeClass("hide");
+              
+     }
+      });
  $('#license_apiCheck').hide();
-    $('#License').change(function () {
+   $('#License').change(function () {
         if ($(this).prop("checked")) {
             // checked
+           $('#license_api_secret').val();
+                $('#license_api_url').val();
             $('.LicenseField').removeClass("hide");
             $('.licenseEmptyField').addClass("hide");
         }
         else{
             $('.LicenseField').addClass("hide");
+             $('.secretHide').val('');
+                $('.urlHide').val('');
                $('.licenseEmptyField').removeClass("hide");
+               
+               
         }
     });
 

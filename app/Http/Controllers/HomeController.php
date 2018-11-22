@@ -90,7 +90,7 @@ class HomeController extends BaseHomeController
             $faveo_name = $request->input('name');
             $faveo_version = $request->input('version');
             $order_number = $this->checkOrder($faveo_encrypted_order_number);
-            $domain = $this->getDomain($request->input('domain'));
+            $domain = $request->input('domain');
             $domain = $this->checkDomain($domain);
             $serial_key = $this->checkSerialKey($faveo_encrypted_key, $order_number);
 

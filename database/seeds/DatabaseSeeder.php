@@ -149,7 +149,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => null, 'rzp_secret' => null, 'apilayer_key' => null, 'bugsnag_api_key' => null, 'zoho_api_key'=>null, 'msg91_auth_key'=>null, 'twitter_consumer_key'=>null, 'twitter_consumer_secret'=>null, 'twitter_access_token'=>null, 'access_tooken_secret'=>null]);
+        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'','license_api_secret'=>'','license_spi_url'=>'']);
     }
 }
 
@@ -744,7 +744,8 @@ class StatusSettingSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>'1', 'activity_log_delete'=>'0']);
+        StatusSetting::create(['id' => '1', 'expiry_mail'=>'0', 'activity_log_delete'=>'0','license_status'=>'0','github_status'=>'0',
+            'mailchimp_status'=>'0','twitter_status'=>'0','msg91_status'=>'0','emailverification_status'=>'0']);
     }
 }
 

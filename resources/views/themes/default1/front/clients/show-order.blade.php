@@ -84,7 +84,7 @@ active
                                         <table class="table table-hover">
                                             <div class="col-md-6">
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
-                                                <tr><td><b>Domain Name:</b></td>     <td>{{$order->domain}}
+                                                <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
                                                 <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
                                                 >
                                 Reissue Licesnse</button>
@@ -287,6 +287,21 @@ active
            $("#orderId").val(oldDomainId);
         });
         $("#licenseSave").on('click',function(){
+      var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
+              if (pattern.test($('#newDomain').val())){
+                 $('#domaincheck').hide();
+                 $('#newDomain').css("border-color","");
+              }
+              else{
+                 $('#domaincheck').show();
+               $('#domaincheck').html("Please enter a valid Domain");
+                 $('#domaincheck').focus();
+                  $('#newDomain').css("border-color","red");
+                 $('#domaincheck').css({"color":"red","margin-top":"5px"});
+                   domErr = false;
+                    return false;
+              
+      }
             var domain = $('#newDomain').val();
             var id = $('#orderId').val();
              

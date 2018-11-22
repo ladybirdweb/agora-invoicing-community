@@ -41,6 +41,11 @@ class Subscription extends Model
         return $this->belongsTo('App\Model\Payment\Plan');
     }
 
+      public function product()
+    {
+        return $this->belongsTo('App\Model\Product\Product');
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User');

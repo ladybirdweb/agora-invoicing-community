@@ -47,6 +47,11 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Order\Order');
     }
 
+     public function subscription()
+    {
+        return $this->hasMany('App\Model\Product\Subscription');
+    }
+
     public function type()
     {
         return $this->belongsTo('App\Model\Product\Type', 'type');

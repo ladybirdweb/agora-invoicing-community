@@ -6,6 +6,7 @@ use App\ApiKey;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Payment\Currency;
+use App\Model\Common\StatusSetting;
 use App\Model\Plugin;
 use App\User;
 use Bugsnag;
@@ -45,9 +46,11 @@ class SettingsController extends BaseSettingsController
     public function getKeys(ApiKey $apikeys)
     {
         try {
-            $model = $apikeys->find(1);
-
-            return view('themes.default1.common.apikey', compact('model'));
+            $licenseSecret = $apikeys->pluck('license_api_secret')->first();
+            $licenseUrl = $apikeys->pluck('license_api_url')->first();
+            $status =  StatusSetting::pluck('license_status')->first(); 
+             $model = $apikeys->find(1);
+            return view('themes.default1.common.apikey', compact('model','status','licenseSecret','licenseUrl'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

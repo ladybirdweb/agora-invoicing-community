@@ -9,6 +9,7 @@ use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 use Illuminate\Http\Request;
+use App\Model\Common\StatusSetting;
 use Validator;
 
 class AuthController extends BaseAuthController
@@ -92,6 +93,7 @@ class AuthController extends BaseAuthController
                 curl_close($ch);
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
+
                 $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');

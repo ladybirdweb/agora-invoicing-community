@@ -587,9 +587,9 @@ return [
      /*
      * Settings
      */
-     'log_setting'     => 'System Logs',
-     'cleanup_log'     => 'Cleanup Logs',
-     'nocaptcha_secret'=> 'NOCAPTCHA_SECRET',
-     'nocaptcha_sitekey'=>'NOCAPTCHA_SITEKEY',
+     'log_setting'      => 'System Logs',
+     'cleanup_log'      => 'Cleanup Logs',
+     'nocaptcha_secret' => 'NOCAPTCHA_SECRET',
+     'nocaptcha_sitekey'=> 'NOCAPTCHA_SITEKEY',
 
 ];

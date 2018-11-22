@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddRecaptchaStatusToStatusSettingsTable extends Migration
 {
@@ -14,7 +14,7 @@ class AddRecaptchaStatusToStatusSettingsTable extends Migration
     public function up()
     {
         Schema::table('status_settings', function (Blueprint $table) {
-             $table->boolean('recaptcha_status')->nullable();
+            $table->boolean('recaptcha_status')->nullable();
         });
     }
 
@@ -25,6 +25,6 @@ class AddRecaptchaStatusToStatusSettingsTable extends Migration
      */
     public function down()
     {
-       Schema::dropIfExists('status_settings');
+        Schema::dropIfExists('status_settings');
     }
 }

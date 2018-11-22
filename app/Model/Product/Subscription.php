@@ -41,7 +41,7 @@ class Subscription extends Model
         return $this->belongsTo('App\Model\Payment\Plan');
     }
 
-      public function product()
+    public function product()
     {
         return $this->belongsTo('App\Model\Product\Product');
     }

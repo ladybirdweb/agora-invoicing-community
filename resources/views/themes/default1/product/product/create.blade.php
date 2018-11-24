@@ -89,7 +89,7 @@ Create New Product
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
                                     {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
   
                                 </div>
@@ -99,7 +99,7 @@ Create New Product
                                        
                                         ?>
                                     <!-- last name -->
-                                    {!! Form::label('category',Lang::get('message.category')) !!}
+                                    {!! Form::label('category',Lang::get('message.category'),['class'=>'required']) !!}
                                    <!--  {!! Form::select('category',['helpdesk'=>'Helpdesk','servicedesk'=>'ServiceDesk','service'=>'Service','satellite helpdesk'=>'Satellite Helpdesk','plugin'=>'Plugins','helpdeskvps'=>'HelpDesk VPS','servicedesk vps'=>'ServiceDesk VPS'],null,['class' => 'form-control']) !!} -->
 
                                      <select name="category" value= "Choose" class="form-control">
@@ -142,6 +142,15 @@ Create New Product
                                         </div>
                                 <div class="col-md-6">
                                     <ul class="list-unstyled">
+                                          <li>
+                                            <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
+                                                <!-- last name -->
+                                                {!! Form::label('sku',Lang::get('message.sku'),['class'=>'required']) !!}
+                                                {!! Form::text('product_sku',null,['class' => 'form-control']) !!}
+
+                                            </div>
+                                        </li>
+
                                         <li>
                                             <div class="form-group {{ $errors->has('parent') ? 'has-error' : '' }}">
                                                 <!-- last name -->
@@ -150,6 +159,8 @@ Create New Product
 
                                             </div>
                                         </li>
+
+                                       
                            
                                         <li>
                                             <div class="form-group {{ $errors->has('require_domain') ? 'has-error' : '' }}">
@@ -219,7 +230,12 @@ Create New Product
                                                       <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
                                                     {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
                                                 </div>
-
+                                                <div class="col-md-4">
+                                                     {!! Form::hidden('perpetual_license',0) !!}
+                                                    {!! Form::checkbox('perpetual_license',1,true) !!}
+                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual_license-detail') !!}">
+                                                    {!! Form::label('perpetual_license',Lang::get('message.perpetual_license')) !!}
+                                                </div>
                                                
 
                                             </div>
@@ -249,7 +265,7 @@ Create New Product
                                             <div class="row">
                                                 <div class="col-md-2" >
                                                      
-                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px; color:black;" class="select2" multiple="true">
+                                                    <select id="Tax" placeholder="Select Taxes" name="tax[]" style="width:500px;" class="select2" multiple="true">
                                                        <option></option>
                                                        @foreach($taxes as $key => $value)
                                                         <option value={{$key}}>{{$value}}</option> 

@@ -1,9 +1,12 @@
 <?php
 
 use App\ApiKey;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
+use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\Condition;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
 use App\Model\Payment\Plan;
@@ -65,6 +68,15 @@ class DatabaseSeeder extends Seeder
 
         $this->call('UserTableSeeder');
         $this->command->info('User table seeded!');
+
+        $this->call('StatusSettingSeeder');
+        $this->command->info('Status Setting table seeded!');
+
+        $this->call('ConditionSeeder');
+        $this->command->info('Condition table seeded!');
+
+        $this->call('ActivityLogDelSeeder');
+        $this->command->info('Activity Log Days table seeded!');
 
         $this->call(CompanySize::class);
         $this->call(CompanyType::class);
@@ -137,7 +149,7 @@ class ApiKeyTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('api_keys')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        ApiKey::create(['id' => 1, 'rzp_key' => null, 'rzp_secret' => null, 'apilayer_key' => null, 'bugsnag_api_key' => null, 'zoho_api_key'=>null, 'msg91_auth_key'=>null, 'twitter_consumer_key'=>null, 'twitter_consumer_secret'=>null, 'twitter_access_token'=>null, 'access_tooken_secret'=>null]);
+        ApiKey::create(['id' => 1, 'rzp_key' => '', 'rzp_secret' => '', 'apilayer_key' => '', 'bugsnag_api_key' => '', 'zoho_api_key'=>'', 'msg91_auth_key'=>'', 'twitter_consumer_key'=>'', 'twitter_consumer_secret'=>'', 'twitter_access_token'=>'', 'access_tooken_secret'=>'', 'license_api_secret'=>'', 'license_spi_url'=>'']);
     }
 }
 
@@ -722,6 +734,44 @@ class GitHubTableSeeder extends Seeder
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+    }
+}
+
+class StatusSettingSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('status_settings')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        StatusSetting::create(['id' => '1', 'expiry_mail'=>'0', 'activity_log_delete'=>'0', 'license_status'=>'0', 'github_status'=>'0',
+            'mailchimp_status'      => '0', 'twitter_status'=>'0', 'msg91_status'=>'0', 'emailverification_status'=>'0', ]);
+    }
+}
+
+class ConditionSeeder extends Seeder
+{
+    public function run()
+    {
+        $data = [
+            ['job'=>'expiryMail', 'value'=>'everyFiveMinutes'],
+            ['job'=> 'deleteLogs', 'value'=>'daily'],
+
+        ];
+        foreach ($data as $job) {
+            Condition::updateOrCreate($job);
+        }
+    }
+}
+
+class ActivityLogDelSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('status_settings')->truncate();
+        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        ActivityLogDay::create(['id' => 1, 'days'=>'']);
     }
 }
 

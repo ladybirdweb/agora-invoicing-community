@@ -10,6 +10,7 @@ class BaseHomeController extends Controller
 {
     public static function decryptByFaveoPrivateKey($encrypted)
     {
+        // dump($encrypted);
         $encrypted = json_decode($encrypted);
         $sealed_data = $encrypted->seal;
         $envelope = $encrypted->envelope;

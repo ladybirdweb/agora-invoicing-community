@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Model\Common\Template;
+use App\Model\Mailjob\ExpiryMailDay;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
@@ -48,9 +49,9 @@ class CronController extends BaseCronController
         return $sub;
     }
 
-    public function get30DaysExpiryUsers()
+    public function getAllDaysExpiryUsers($day)
     {
-        $sub = $this->get30DaysExpiryInfo();
+        $sub = $this->getAllDaysExpiryInfo($day);
         //dd($sub->get());
         $users = [];
         if ($sub->get()->count() > 0) {
@@ -247,8 +248,8 @@ class CronController extends BaseCronController
 
     public function eachSubscription()
     {
-        $sub = $this->getSubscriptions();
-
+        $allDays = ExpiryMailDay::pluck('days')->toArray();
+        $sub = $this->getSubscriptions($allDays);
         foreach ($sub as $value) {
             $userid = $value->user_id;
             $user = $this->getUserById($userid);

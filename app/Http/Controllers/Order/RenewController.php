@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
 use App\Model\Order\Order;
@@ -58,12 +59,18 @@ class RenewController extends BaseRenewController
             $ends = $this->getExpiryDate($current, $days);
             $sub->ends_at = $ends;
             $sub->save();
+            $clientEmail = $sub->user->email;
+            $checkIfProductHasExpiryDate = $sub->product->perpetual_license; //Check if product has Perpetual License
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1 && $checkIfProductHasExpiryDate == 1) {
+                $expiryDate = Carbon::parse($ends)->format('Y-m-d');
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $updateLicensedDomain = $cont->updateExpirationDate($clientEmail, $expiryDate);
+            }
             $this->invoiceBySubscriptionId($id, $planid, $cost);
 
             return $sub;
         } catch (Exception $ex) {
-            dd($ex);
-
             throw new Exception($ex->getMessage());
         }
     }
@@ -80,10 +87,18 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
+            $clientEmail = $sub->user->email;
             $current = $sub->ends_at;
             $ends = $this->getExpiryDate($current, $days);
             $sub->ends_at = $ends;
             $sub->save();
+            $checkIfProductHasExpiryDate = $sub->product->perpetual_license; //Check if product has Perpetual License
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1 && $checkIfProductHasExpiryDate == 1) {
+                $expiryDate = Carbon::parse($ends)->format('Y-m-d');
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $updateLicensedDomain = $cont->updateExpirationDate($clientEmail, $expiryDate);
+            }
             $this->removeSession();
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
@@ -209,7 +224,7 @@ class RenewController extends BaseRenewController
 
             return redirect()->back()->with('fails', 'Can not Process');
         } catch (Exception $ex) {
-            return redirect()->back()->back()->with('fails', $ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 
@@ -277,6 +292,11 @@ class RenewController extends BaseRenewController
     {
         $date = Carbon::parse($end);
         $expiry_date = $date->addDay($days);
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            // $createNewLicense = $cont->updateExpirationDate($orderid, $product, $user_id, $ends_at);
+        }
 
         return $expiry_date;
     }

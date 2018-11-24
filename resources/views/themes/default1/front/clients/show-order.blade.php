@@ -26,7 +26,7 @@ active
     border-top: 1px solid #dee2e6;
     </style>
 <div class="col-md-12">
-    
+     @include('themes.default1.front.clients.reissue-licenseModal')
     <div class="featured-boxes">
 
         <div class="row">
@@ -80,11 +80,18 @@ active
                                             </tbody> </div>
                                         </table>
                                    
-                                    
+                                      
                                         <table class="table table-hover">
                                             <div class="col-md-6">
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
-                                                <tr><td><b>Domain Name:</b></td>     <td>{{$order->domain}}</td></tr>
+                                                <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
+                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
+                                                >
+                                Reissue Licesnse</button>
+                                                </td>
+                                           
+                                                 </tr>
+
                                                 <?php
                                                 
                                                 if (!$subscription || $subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
@@ -270,6 +277,55 @@ active
             "fnPreDrawCallback": function(oSettings, json) {
                 $('.loader').css('display', 'block');
             },
+        });
+
+        $("#reissueLic").click(function(){
+            var oldDomainName = $(this).attr('data-name');
+            var oldDomainId = $(this).attr('data-id');
+            $("#licesnseModal").modal();
+           $("#newDomain").val(oldDomainName);
+           $("#orderId").val(oldDomainId);
+        });
+        $("#licenseSave").on('click',function(){
+      var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
+              if (pattern.test($('#newDomain').val())){
+                 $('#domaincheck').hide();
+                 $('#newDomain').css("border-color","");
+              }
+              else{
+                 $('#domaincheck').show();
+               $('#domaincheck').html("Please enter a valid Domain");
+                 $('#domaincheck').focus();
+                  $('#newDomain').css("border-color","red");
+                 $('#domaincheck').css({"color":"red","margin-top":"5px"});
+                   domErr = false;
+                    return false;
+              
+      }
+            var domain = $('#newDomain').val();
+            var id = $('#orderId').val();
+             
+            $.ajax ({
+                type: 'patch',
+                url : "{{url('change-domain')}}",
+                data : {'domain':domain,'id':id},
+                  beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
+
+                },
+                success: function (data) {
+               if (data.message =='success'){
+                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="far fa-thumbs-up"></i> Well Done! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                  $('#response').html(result);
+                     $('#response').css('color', 'green');
+                setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                  }
+               
+                }
+                
+            });
         });
     </script>
 

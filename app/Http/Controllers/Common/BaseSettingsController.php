@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Common;
 
+use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
+use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\ExpiryMailDay;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
@@ -163,5 +167,247 @@ class BaseSettingsController extends Controller
         $date = $created->format('Y-m-d H:m:i');
 
         return $date;
+    }
+
+    public function getScheduler(StatusSetting $status)
+    {
+        $cronPath = base_path('artisan');
+        $status = $status->whereId('1')->first();
+        $execEnabled = $this->execEnabled();
+        $paths = $this->getPHPBinPath();
+        // $command = ":- <pre>***** php $cronUrl schedule:run >> /dev/null 2>&1</pre>";
+        // $shared = ":- <pre>/usr/bin/php-cli -q  $cronUrl schedule:run >> /dev/null 2>&1</pre>";
+        $warn = '';
+        $condition = new \App\Model\Mailjob\Condition();
+
+        // $job = $condition->checkActiveJob();
+        $commands = [
+            'everyMinute'        => 'Every Minute',
+            'everyFiveMinutes'   => 'Every Five Minute',
+            'everyTenMinutes'    => 'Every Ten Minute',
+            'everyThirtyMinutes' => 'Every Thirty Minute',
+            'hourly'             => 'Every Hour',
+            'daily'              => 'Every Day',
+            'dailyAt'            => 'Daily at',
+            'weekly'             => 'Every Week',
+
+            'monthly' => 'Monthly',
+            'yearly'  => 'Yearly',
+        ];
+
+        $expiryDays = [
+            '120'=> '120 Days',
+            '90' => '90 Days',
+            '60' => '60 Days',
+            '30' => '30 Days',
+            '15' => '15 Days',
+            '5'  => '5 Days',
+            '3'  => '3 Days',
+            '1'  => '1 Day',
+            '0'  => 'On the Expiry Day',
+        ];
+
+        $selectedDays = [];
+        $daysLists = ExpiryMailDay::get();
+        if (count($daysLists) > 0) {
+            foreach ($daysLists as $daysList) {
+                $selectedDays[] = $daysList;
+            }
+        }
+        $delLogDays = ['720'=> '720 Days', '365'=>'365 days', '180'=>'180 Days',
+       '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
+        $beforeLogDay[] = ActivityLogDay::first()->days;
+
+        return view('themes.default1.common.cron.cron', compact('cronPath','warn', 'commands', 'condition',
+             'status', 'expiryDays', 'selectedDays', 'delLogDays', 'beforeLogDay', 'execEnabled', 'paths'));
+    }
+
+    public function postSchedular(StatusSetting $status, Request $request)
+    {
+        $allStatus = $status->whereId('1')->first();
+        if ($request->expiry_cron) {
+            $allStatus->expiry_mail = $request->expiry_cron;
+        } else {
+            $allStatus->expiry_mail = 0;
+        }
+        if ($request->activity) {
+            $allStatus->activity_log_delete = $request->activity;
+        } else {
+            $allStatus->activity_log_delete = 0;
+        }
+        $allStatus->save();
+        $this->saveConditions();
+        /* redirect to Index page with Success Message */
+        return redirect('job-scheduler')->with('success', \Lang::get('message.updated-successfully'));
+    }
+
+    /**
+     * Check if exec() function is available.
+     *
+     * @return bool
+     */
+    private function execEnabled()
+    {
+        try {
+            // make a small test
+            return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
+        } catch (\Exception $ex) {
+            return false;
+        }
+    }
+
+    private function getPHPBinPath()
+    {
+        $paths = [
+            '/usr/bin/php',
+            '/usr/local/bin/php',
+            '/bin/php',
+            '/usr/bin/php7',
+            '/usr/bin/php7.1',
+            '/usr/bin/php71',
+            '/opt/plesk/php/7.1/bin/php',
+        ];
+        // try to detect system's PHP CLI
+        if ($this->execEnabled()) {
+            try {
+                $paths = array_unique(array_merge($paths, explode(' ', exec('whereis php'))));
+            } catch (\Exception $e) {
+                // @todo: system logging here
+                echo $e->getMessage();
+            }
+        }
+
+        // validate detected / default PHP CLI
+        // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
+        $paths = array_values(array_filter($paths, function ($path) {
+            return is_executable($path) && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
+        }));
+
+        return $paths;
+    }
+
+    protected function checkPHPExecutablePath(Request $request)
+    {
+        $path = $request->get('path');
+        $version = '5.6';
+        if (!file_exists($path) || !is_executable($path)) {
+            return errorResponse(\Lang::get('message.invalid-php-path'));
+        }
+
+        if ($this->execEnabled()) {
+            $exec_script = $path.' '.public_path('cron-test.php');
+            $version = exec($exec_script, $output);
+
+            return (version_compare($version, '7.1.3', '>=') == 1) ? successResponse(\Lang::get('message.valid-php-path')) : errorResponse(\Lang::get('message.invalid-php-version-or-path'));
+        } else {
+            return successResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
+        }
+    }
+
+    public function saveConditions()
+    {
+        if (\Input::get('expiry-commands') && \Input::get('activity-commands')) {
+            $expiry_commands = \Input::get('expiry-commands');
+            $expiry_dailyAt = \Input::get('expiry-dailyAt');
+            $activity_commands = \Input::get('activity-commands');
+            $activity_dailyAt = \Input::get('activity-dailyAt');
+            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
+            $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
+            $this->storeCommand($jobs);
+        }
+    }
+
+    public function getCommand($command, $daily_at)
+    {
+        if ($command == 'dailyAt') {
+            $command = "dailyAt,$daily_at";
+        }
+
+        return $command;
+    }
+
+    public function storeCommand($array = [])
+    {
+        $command = new \App\Model\Mailjob\Condition();
+        $commands = $command->get();
+        if ($commands->count() > 0) {
+            foreach ($commands as $condition) {
+                $condition->delete();
+            }
+        }
+        if (count($array) > 0) {
+            foreach ($array as $key => $save) {
+                $command->create([
+                    'job'   => $key,
+                    'value' => $save,
+                ]);
+            }
+        }
+    }
+
+    //Save the Cron Days for expiry Mails and Activity Log
+    public function saveCronDays(Request $request)
+    {
+        $daysList = new \App\Model\Mailjob\ExpiryMailDay();
+        $lists = $daysList->get();
+        if ($lists->count() > 0) {
+            foreach ($lists  as $list) {
+                $list->delete();
+            }
+        }
+        if ($request['expiryday'] != null) {
+            foreach ($request['expiryday'] as $key => $value) {
+                $daysList->create([
+          'days'=> $value,
+           ]);
+            }
+        }
+        ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
+    }
+
+    public function licenseDetails(Request $request)
+    {
+        $status = $request->input('status');
+        $licenseApiSecret = $request->input('license_api_secret');
+        $licenseApiUrl = $request->input('license_api_url');
+        StatusSetting::where('id', 1)->update(['license_status'=>$status]);
+        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl]);
+
+        return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
+    }
+
+    //Save Google recaptch site key and secret in Database
+    public function captchaDetails(Request $request)
+    {
+        $status = $request->input('status');
+        if ($status == 1) {
+            $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
+            $captcha_secretCheck = $request->input('nocaptcha_secret');
+            $path_to_file = base_path('.env');
+            $file_contents = file_get_contents($path_to_file);
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
+            $file_contents_nocaptcha_secret = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+            file_put_contents($path_to_file, $file_contents_nocaptcha_secret);
+        } else {
+            $nocaptcha_sitekey = '00';
+            $captcha_secretCheck = '00';
+            $path_to_file = base_path('.env');
+            $file_contents = file_get_contents($path_to_file);
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
+
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
+        }
+
+        StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);
+        ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=> $nocaptcha_sitekey,
+         'captcha_secretCheck'                             => $captcha_secretCheck, ]);
+
+        return ['message' => 'success', 'update'=>'Recaptcha Settings Updated'];
     }
 }

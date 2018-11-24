@@ -155,6 +155,31 @@ return [
     'choose-mail-template-to-notify-subscription-has-over'         => 'Choose Mail Template To Notify Subscription Has Over',
     'choose-shoping-cart-template'                                 => 'Choose Shoping Cart Template',
     'check-your-mail-for-further-datails'                          => 'Order confirmed. Please check your email for further details.',
+    'cron'                                                         => 'Cron',
+    'cron-setting'                                                 => 'Cron Settings',
+    'cron-set-info'                                                => 'Please set this command in your Cron',
+    'expiry_mail'                                                  => 'Expiry Mails',
+    'enable_expiry-cron'                                           => 'Enable Expiry Mail Cron',
+    'delete_activity'                                              => 'Delete Activity Log',
+    'enable_activity_clean'                                        => 'Enable Clean Activity Log Cron',
+
+    'log_del_days'                                                 => 'Delete Activity Logs Older than..',
+    'expiry_mail_sent'                                             => 'Expiry Mail to be sent before..',
+    'set_cron_period'                                              => 'Set Cron Execution Period',
+    'enable_mail_cron'                                             => 'Please Enable Expiry Mail Cron',
+    'enable_activityLog_cron'                                      => 'Please Enable Clean Activity Log Cron',
+    'specify-php-executable'                                       => 'Specify PHP executable Path',
+    'copy-cron-command-description'                                => 'Copy the command and setup in crontab of your hosting system',
+    'invalid-php-path'                                             => 'Specified PHP exectable path is not valid.',
+      'invalid-php-version-or-path'                                => 'Path/Version of specified PHP exectable is not valid.',
+      'valid-php-path'                                             => 'Specified PHP exectable path valid',
+      'cron-command-copied'                                        => 'Cron command copied to clipboard.',
+      'cron-command-not-copied'                                    => 'Cron command can not be copied to clipboard.',
+      'please_enable_php_exec_for_cronjob_check'                   => 'WARNING: Please enable PHP `exec` function to validate the cron job setting',
+      'verify-and-copy-command'                                    => 'Click to Verify Command and copy to Clipboard',
+      'lic_api_secret'                                             => 'API Secret',
+      'lic_api_url'                                                => 'API URL',
+
     /*
      * Clients
      */
@@ -233,6 +258,9 @@ return [
     'tax_compound'                                                                                    => 'Tax Compound',
     'tick-to-apply-compund-taxing'                                                                    => 'Tick to apply compund taxing',
     'deny_after_subscription'                                                                         => 'Deny after subscription',
+    'sku'                                                                                             => 'Product SKU (Stock Keeping Unit)',
+    'perpetual_license'                                                                               => 'Perpetual License',
+    'perpetual_license-detail'                                                                        => 'If selected ,the license expiration date would not be generated, ie, the product can be used perpetually',
     /*
      * Addons
      */
@@ -480,7 +508,8 @@ return [
     /*
      * client panel
      */
-    'coupon-code' => 'Coupon Code',
+    'coupon-code'    => 'Coupon Code',
+    'domain_updated' => 'Domain Name Updated',
 
     /*
      * Payments
@@ -554,5 +583,13 @@ return [
      'mailchimp-product'  => 'Mailchimp Group Fields',
      'list-fields'        => 'List Fields  Mapping',
      'group-fields'       => 'Group Fields Mapping',
+
+     /*
+     * Settings
+     */
+     'log_setting'      => 'System Logs',
+     'cleanup_log'      => 'Cleanup Logs',
+     'nocaptcha_secret' => 'NOCAPTCHA_SECRET',
+     'nocaptcha_sitekey'=> 'NOCAPTCHA_SITEKEY',
 
 ];

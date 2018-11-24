@@ -144,6 +144,8 @@
           Route::get('get-email', ['as' => 'get-email', 'uses' => 'Common\SettingsController@getMails']);
          Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
           Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
+           Route::get('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
+            Route::get('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
 
         /*
          * Client
@@ -279,7 +281,7 @@
         Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
         Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');
         Route::get('order/execute', 'Order\OrderController@orderExecute');
-        Route::get('change-domain', 'Order\OrderController@domainChange');
+        Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
 
         /*
@@ -438,6 +440,12 @@
         /*
          * Cron Jobs
          */
+
+        Route::get('job-scheduler', ['as'=>'get.job.scheduler', 'uses'=>'Common\SettingsController@getScheduler']);
+         Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
+         Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
+         Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
+
         Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 
         /*

@@ -3,7 +3,6 @@
 namespace App\Model\Product;
 
 use App\BaseModel;
-use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Product extends BaseModel
@@ -15,18 +14,17 @@ class Product extends BaseModel
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually',
         'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner',
         'github_repository',
-        'deny_after_subscription', 'version', 'parent', 'subscription', ];
+        'deny_after_subscription', 'version', 'parent', 'subscription', 'product_sku', 'perpetual_license', ];
 
     protected static $logName = 'Product';
 
     protected static $logAttributes = ['name', 'description', 'type', 'file', 'category',
-         'github_owner', 'github_repository', 'version',  'subscription', 'hidden', ];
+         'github_owner', 'github_repository', 'version',  'subscription', 'hidden', 'product_sku', ];
 
     protected static $logOnlyDirty = true;
 
     public function getDescriptionForEvent(string $eventName): string
     {
-        // dd(Activity::where('subject_id',)->pluck('subject_id'));
         if ($eventName == 'created') {
             return 'Product '.$this->name.' was created';
         }
@@ -40,9 +38,6 @@ class Product extends BaseModel
         }
 
         return '';
-
-        // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
     }
 
     // protected static $recordEvents = ['deleted'];
@@ -50,6 +45,11 @@ class Product extends BaseModel
     public function order()
     {
         return $this->hasMany('App\Model\Order\Order');
+    }
+
+    public function subscription()
+    {
+        return $this->hasMany('App\Model\Product\Subscription');
     }
 
     public function type()

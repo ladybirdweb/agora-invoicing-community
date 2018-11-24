@@ -11,6 +11,7 @@ filter:
         - 'views/*'
 tools:
     php_analyzer: true
+    sensiolabs_security_checker: true
     external_code_coverage: true
     php_mess_detector: true
     php_changetracking: true

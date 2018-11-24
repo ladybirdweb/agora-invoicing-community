@@ -40,7 +40,7 @@ Order Details
                             </div>
                         </div>
                         <div class="col-md-6">
-
+     @include('themes.default1.front.clients.reissue-licenseModal')
                             <table class="table table-hover">
                                 <tbody><tr><td><b>Name:</b></td><td><a href="{{url('clients/'.$user->id)}}">{{ucfirst($user->first_name)}}</a></td></tr>
                                     <tr><td><b>Email:</b></td><td>{{$user->email}}</td></tr>
@@ -66,7 +66,11 @@ Order Details
                                         
                                             <td>
                                                  <label name="domain" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.domain-message') !!}">
-                                                    <b>Domain Name:</b></td><td contenteditable="true" id="domain">{{$order->domain}}</td></tr>
+                                                    <b>Licensed Domain:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
+                                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
+                                                >
+                                Reissue Licesnse</button>
+                            </td></tr>
                                     <?php
                                     $date = "--";
                                     if ($subscription) {
@@ -284,23 +288,55 @@ Order Details
 @stop
 @section('datepicker')
 <script>
+        $("#reissueLic").click(function(){
+            var oldDomainName = $(this).attr('data-name');
+            var oldDomainId = $(this).attr('data-id');
+            $("#licesnseModal").modal();
+           $("#newDomain").val(oldDomainName);
+           $("#orderId").val(oldDomainId);
+        });
+        $("#licenseSave").on('click',function(){
+        var pattern = new RegExp(/^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9\-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/);
+              if (pattern.test($('#newDomain').val())){
+                 $('#domaincheck').hide();
+                 $('#newDomain').css("border-color","");
+              }
+              else{
+                 $('#domaincheck').show();
+               $('#domaincheck').html("Please enter a valid Domain");
+                 $('#domaincheck').focus();
+                  $('#newDomain').css("border-color","red");
+                 $('#domaincheck').css({"color":"red","margin-top":"5px"});
+                   domErr = false;
+                    return false;
+              
+      }
+            var domain = $('#newDomain').val();
+            var id = $('#orderId').val();
+             
+            $.ajax ({
+                type: 'patch',
+                url : "{{url('change-domain')}}",
+                data : {'domain':domain,'id':id},
+                  beforeSend: function () {
+                 $('#response').html( "<img id='blur-bg' class='backgroundfadein' style='top:40%;left:50%; width: 50px; height:50 px; display: block; position:    fixed;' src='{!! asset('lb-faveo/media/images/gifloader3.gif') !!}'>");
 
-    $("#domain").blur(function () {
-        var value = $(this).text();
-                var id = {{$order-> id}};
-            $.ajax({
-            type: "GET",
-                    url: "{{url('change-domain')}}",
-                    data: {'domain':value, 'id':id},
-                    success: function () {
-                        alert('Domain Name Updated');
-                    },
-                    error: function () {
-                        alert('Invalid URL');
-                    }
-
+                },
+          
+                success: function (data) {
+               if (data.message =='success'){
+                 var result =  '<div class="alert alert-success alert-dismissable"><strong><i class="fa fa-check"></i> Success! </strong> '+data.update+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>';
+                  $('#response').html(result);
+                     $('#response').css('color', 'green');
+                setTimeout(function(){
+                    window.location.reload();
+                },3000);
+                  }
+               
+                }
+                
             });
-    });
+        });
 
 
 </script>

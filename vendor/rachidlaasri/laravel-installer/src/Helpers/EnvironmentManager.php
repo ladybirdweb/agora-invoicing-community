@@ -122,7 +122,9 @@ class EnvironmentManager
         'MAIL_ENCRYPTION=' . $request->mail_encryption . "\n\n" .
         'PUSHER_APP_ID=' . $request->pusher_app_id . "\n" .
         'PUSHER_APP_KEY=' . $request->pusher_app_key . "\n" .
-        'PUSHER_APP_SECRET=' . $request->pusher_app_secret;
+        'PUSHER_APP_SECRET=' . $request->pusher_app_secret. "\n" .
+        'NOCAPTCHA_SECRET=' ."00". "\n".
+        'NOCAPTCHA_SITEKEY=' ."00";     
 
         try {
             file_put_contents($this->envPath, $envFileData);

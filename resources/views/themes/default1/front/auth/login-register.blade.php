@@ -141,7 +141,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                             <div class="box-content">
                                              
                                                 <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
-                                                  @if ((env('NOCAPTCHA_SECRET')!='' && env('NOCAPTCHA_SITEKEY') != ''))  
+                                                  @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
                                                 {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
                                                 @else
                                                 {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
@@ -179,9 +179,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         
                                                     </div>
                                                 </div>
-                                               
-                                                @if ((env('NOCAPTCHA_SECRET') != '' && env('NOCAPTCHA_SITEKEY') != ''))  
-                                          {!! NoCaptcha::display() !!}
+                                                
+                                                @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                              {!! NoCaptcha::display() !!}
                                              <div class="loginrobot-verification"></div>
                                                 @endif
                                                  <div class="form-row">
@@ -396,7 +396,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                               <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
  -->                                            
-                                                 @if ((env('NOCAPTCHA_SECRET')!='' && env('NOCAPTCHA_SITEKEY') != ''))  
+                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
                                                  {!! NoCaptcha::display() !!}
                                            <div class="robot-verification"></div>
                                                 @endif

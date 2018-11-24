@@ -4,6 +4,8 @@ namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 use Illuminate\Validation\ValidationException;
 use Bugsnag;
 use App\User;
@@ -27,8 +29,11 @@ trait AuthenticatesUsers
         try{
            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
            $cont = new \App\Http\Controllers\Front\PageController();
+           $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+           $captchaSiteKey = ApiKey::pluck('nocaptcha_sitekey')->first();
+           $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
             $location = $cont->getLocation();
-         return view('themes.default1.front.auth.login-register', compact('bussinesses','location'));
+         return view('themes.default1.front.auth.login-register', compact('bussinesses','location','captchaStatus','captchaSiteKey','captchaSecretKey'));
 
           }catch(\Exception $ex){
             app('log')->error($ex->getMessage());

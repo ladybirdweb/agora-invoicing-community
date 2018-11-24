@@ -378,8 +378,8 @@ class BaseSettingsController extends Controller
 
         return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
     }
-   
-   //Save Google recaptch site key and secret in Database
+
+    //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)
     {
 

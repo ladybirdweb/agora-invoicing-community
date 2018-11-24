@@ -501,5 +501,8 @@ if ($('#captcha').prop("checked")) {
  });
  };
 
+
+//Twitter
+
 </script>
 @stop

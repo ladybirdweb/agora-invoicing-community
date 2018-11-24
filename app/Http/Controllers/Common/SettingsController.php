@@ -18,7 +18,7 @@ use Spatie\Activitylog\Models\Activity;
 class SettingsController extends BaseSettingsController
 {
     public $apikey;
-   
+
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
@@ -26,7 +26,6 @@ class SettingsController extends BaseSettingsController
 
         $apikey = new ApiKey();
         $this->apikey = $apikey;
-
     }
 
     public function settings(Setting $settings)
@@ -54,8 +53,8 @@ class SettingsController extends BaseSettingsController
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
             $model = $apikeys->find(1);
-            return view('themes.default1.common.apikey', compact('model','status','licenseSecret','licenseUrl','siteKey','secretKey','captchaStatus'));
 
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
 
             return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
         } catch (\Exception $ex) {

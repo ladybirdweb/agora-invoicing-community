@@ -382,33 +382,32 @@ class BaseSettingsController extends Controller
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)
     {
-
         $status = $request->input('status');
-        if($status==1) {
-        $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
-        $captcha_secretCheck = $request->input('nocaptcha_secret');
-            $path_to_file =  base_path('.env');
+        if ($status == 1) {
+            $nocaptcha_sitekey = $request->input('nocaptcha_sitekey');
+            $captcha_secretCheck = $request->input('nocaptcha_secret');
+            $path_to_file = base_path('.env');
             $file_contents = file_get_contents($path_to_file);
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey,$file_contents);
-            file_put_contents($path_to_file,$file_contents_sitekey);
-            $file_contents_nocaptcha_secret = str_replace(env('NOCAPTCHA_SECRET'),$captcha_secretCheck,$file_contents);
-            file_put_contents($path_to_file,$file_contents_nocaptcha_secret);
-        
-            } else {
-          $nocaptcha_sitekey = "00";
-          $captcha_secretCheck = "00";
-           $path_to_file =  base_path('.env');
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
+            $file_contents_nocaptcha_secret = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+            file_put_contents($path_to_file, $file_contents_nocaptcha_secret);
+        } else {
+            $nocaptcha_sitekey = '00';
+            $captcha_secretCheck = '00';
+            $path_to_file = base_path('.env');
             $file_contents = file_get_contents($path_to_file);
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'),$nocaptcha_sitekey,$file_contents);
-            file_put_contents($path_to_file,$file_contents_sitekey);
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SITEKEY'), $nocaptcha_sitekey, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
 
-            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck ,$file_contents);
-            file_put_contents($path_to_file,$file_contents_sitekey);
+            $file_contents_sitekey = str_replace(env('NOCAPTCHA_SECRET'), $captcha_secretCheck, $file_contents);
+            file_put_contents($path_to_file, $file_contents_sitekey);
         }
-        
+
         StatusSetting::where('id', 1)->update(['recaptcha_status'=>$status]);
-        ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=>$nocaptcha_sitekey,
-         'captcha_secretCheck'=>$captcha_secretCheck]);
+        ApiKey::where('id', 1)->update(['nocaptcha_sitekey'=> $nocaptcha_sitekey,
+         'captcha_secretCheck'                             => $captcha_secretCheck, ]);
+
         return ['message' => 'success', 'update'=>'Recaptcha Settings Updated'];
     }
 }

@@ -17,7 +17,7 @@ class CreateFrontendPagesTable extends Migration
             $table->integer('parent_page_id');
             $table->string('slug');
             $table->string('name');
-            $table->text('content', 65535);
+            $table->longtext('content');
             $table->string('url');
             $table->string('type', 225);
             $table->integer('publish');

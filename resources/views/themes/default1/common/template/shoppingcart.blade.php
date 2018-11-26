@@ -66,77 +66,18 @@ main
                             <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">Helpdesk Self Hosted Pricing</h4>
                         
                     </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
+   
         {!! html_entity_decode($template) !!}
-    </div>
-        </div>
-    </div>
+ 
     <br/>    <br/>    <br/>    <br/>  <br/> <br/>
-           <div class="row">
-                        
-            
-            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px;margin-top: 65px">Helpdesk VPS Hosting Pricing</h4>
-                        
-                    </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
-        {!! html_entity_decode($helpdesk_vps_template) !!}
-    </div>
-        </div>
-    </div>
 
 
 
-                    <div class="row">
-                       
-                            <!-- <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top: 65px;margin-left:400px"><strong><center>Service Desk Self Hosted Pricing
 
 
-</center></strong></h4>
-                      
-                    </div>
-  <div class="col-md-12">
-   <div class="pricing-table princig-table-flat">
-     <div class="row">
-        {!! html_entity_decode($servicedesk_template) !!}
-        </div>
-    </div>
-
-</div>
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
 
-            <div class="row">
-                        
-            
-            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px;margin-top: 65px">ServiceDesk VPS Hosting Pricing</h4>
-                        
-                    </div>
-    <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
-            <div class="row">
-        {!! html_entity_decode($servicedesk_vps_template) !!}
-    </div>
-        </div>
-    </div>
 
-  <div class="row">
-                       
-                           <!--  <hr class="tall mt-none"> -->
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-top:65px;margin-left:450px;"><strong><center>Services Pricing</center></strong></h4>
-                      
-                    </div>
-<div class="col-md-12" style="margin-bottom:40px;">
-   <div class="pricing-table princig-table-flat">
-    <div class= "row">
-        {!! html_entity_decode($service_template) !!}
-    </div>
-        </div>
-
-</div>
 
 
 

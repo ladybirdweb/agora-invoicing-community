@@ -14,7 +14,7 @@ class GetPageTemplateController extends Controller
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         if (count($helpdesk_products) > 0) {
             foreach ($helpdesk_products as $key => $value) {
-                  $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
                 $trasform[$value['id']]['subscription'] = $temp_controller

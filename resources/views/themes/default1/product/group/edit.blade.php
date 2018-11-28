@@ -40,7 +40,7 @@
 
                 <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
-                    {!! Form::submit(Lang::get('message.save'),['class'=>'btn btn-primary pull-right'])!!}
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 </div>
 
                 <table class="table table-condensed">
@@ -99,42 +99,7 @@
                         </td>
 
                     </tr>
-                    <tr>
 
-                        <td><b>{!! Form::label('features',Lang::get('message.features'),['class'=>'required']) !!}</b></td>
-                        <td>
-
-                            <div class="form-group {{ $errors->has('features.0.name') ? 'has-error' : '' }}">
-
-
-
-                                <div class="input_fields_wrap ">
-                                    <div class='row form-group'>
-
-                                        <div class="col-md-6 ">
-                                            <div class="form-group">
-                                                <input type="text" name="features[][name]" class="form-control" value="{{$features[0]->features}}">
-                                            </div>
-                                            @for($i=1;$i<count($features);$i++)
-                                                <div class="form-group">
-                                                    <input type="text" name="features[][name]" class="form-control" value="{{$features[$i]->features}}">
-                                                    <a href="#" class="remove_field">Remove</a>
-                                                </div>
-                                                @endfor
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a href="#" class="add_field_button btn btn-primary">Add More Features</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
 
 
                     <tr>
@@ -143,16 +108,16 @@
                         <td>
                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
 
-                                <?php
-                                $hidden = $group->hidden;
-                                if ($hidden == 1) {
-                                    $value = true;
-                                } else {
-                                    $value = '';
-                                }
-                                ?>
+                                                {!! Form::hidden('hidden', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if($group->hidden==1){
+                                                 $value = 'true';   
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
 
-                                <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
+                               
 
 
                             </div>
@@ -160,7 +125,7 @@
 
                     </tr>
 
-                    <tr>
+                   <!--  <tr>
 
                         <td>
 
@@ -278,7 +243,7 @@
 
                         </td>
 
-                    </tr>
+                    </tr> -->
 
                     {!! Form::close() !!}
                 </table>

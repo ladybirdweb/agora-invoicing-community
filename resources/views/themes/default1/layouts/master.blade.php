@@ -333,7 +333,7 @@ function move() {
 
 
         </div><!-- ./wrapper -->
-
+       
         <!-- Bootstrap 3.3.2 JS -->
          <script src="{{asset('js/theme.init.js')}}"></script>
           <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
@@ -358,6 +358,9 @@ function move() {
         
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->
+         <script src="{{asset('plugins/input-mask/jquery.inputmask.js')}}"></script>
+<script src="{{asset('plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
+<script src="{{asset('plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
         <script src="{{asset('dist/js/demo.js')}}" type="text/javascript"></script>
         <script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
         <script src="{{asset("plugins/datepicker/bootstrap-datetimepicker4.7.14.min.js")}}" type="text/javascript"></script>

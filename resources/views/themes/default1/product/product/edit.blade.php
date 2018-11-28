@@ -108,16 +108,23 @@ Edit Product
                    
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
+                                    {!! Form::label('type',Lang::get('message.type')) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
-
+                                <?php
+                               $groups = DB::table('product_groups')->pluck('name','id')->toarray();
+                                ?>
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
-
+                                        <select name="group"  class="form-control">
+                            <option value="0">Choose</option>
+                            @foreach($groups as $key=>$group)
+                                   <option value="{{$key}}" <?php  if(in_array($group, $selectedGroup) ) { echo "selected";} ?>>{{$group}}</option>
+                           
+                             @endforeach
+                              </select>
                                 </div>
                                 <?php
                                $types = DB::table('product_categories')->pluck('category_name')->toarray();
@@ -352,7 +359,6 @@ Edit Product
                                                
                                                 if (count($saved) > 0) {
                                                foreach ($saved as $key => $value) {
-                                                // dd($key);
                                                    $savedkey[]=$key;
                                                }
                                                $saved1=$savedkey?$savedkey:[];

@@ -14,12 +14,12 @@ class CreateProductGroupsTable extends Migration
     {
         Schema::create('product_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->string('headline');
-            $table->string('tagline');
-            $table->string('available_payment');
-            $table->integer('hidden');
-            $table->string('cart_link');
+            $table->string('name')->nullable();
+            $table->string('headline')->nullable();
+            $table->string('tagline')->nullable();
+            $table->string('available_payment')->nullable();
+            $table->integer('hidden')->nullable();
+            $table->string('cart_link')->nullable();
             $table->timestamps();
         });
     }

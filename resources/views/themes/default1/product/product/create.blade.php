@@ -89,8 +89,14 @@ Create New Product
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
+                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                          <select name="group" value= "Choose" class="form-control">
+                             <option value="">Choose</option>
+                           @foreach($group as $key=>$value)
+
+                             <option value={{$key}}>{{$value}}</option>
+                          @endforeach
+                          </select>
   
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">

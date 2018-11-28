@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Front;
 
 use App\Model\Front\FrontendPage;
+use App\DefaultPage;
 use Bugsnag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Model\Product\ProductGroup;
 
 class PageController extends GetPageTemplateController
 {
@@ -32,7 +35,6 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
-
             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -96,9 +98,13 @@ class PageController extends GetPageTemplateController
         try {
             $page = $this->page->where('id', $id)->first();
             $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
+           $selectedDefault =  DefaultPage::value('page_id');
+             $date = $this->page->where('id', $id)->pluck('created_at')->first();
+            $publishingDate = date("d/m/Y", strtotime($date) );
+            return view('themes.default1.front.page.edit', compact('parents', 'page','default','selectedDefault','publishingDate'));
 
-            return view('themes.default1.front.page.edit', compact('parents', 'page'));
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -133,12 +139,20 @@ class PageController extends GetPageTemplateController
             'slug'    => 'required',
             'url'     => 'required',
             'content' => 'required',
+            'default_page_id'=>'required',
+            'created_at'=>'required',
         ]);
 
         try {
             $page = $this->page->where('id', $id)->first();
-            $page->fill($request->input())->save();
+            $page->fill($request->except('created_at'))->save();
+            // $date = $request->input('created_at');
 
+         $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
+        $page->created_at = $date->format('Y-m-d H:i:s');
+            $page->save();
+            $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
+            DefaultPage::findorFail(1)->update(['page_id'=>$request->input('default_page_id'),'page_url'=>$defaultUrl]);
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -191,7 +205,7 @@ class PageController extends GetPageTemplateController
     {
         try {
             $page = $this->page->where('slug', $slug)->where('publish', 1)->first();
-            if ($page->type == 'cart') {
+            if ($page && $page->type == 'cart') {
                 return $this->cart();
             }
 
@@ -212,8 +226,12 @@ class PageController extends GetPageTemplateController
     {
         try {
             $ids = $request->input('select');
+            $defaultPageId = DefaultPage::pluck('page_id')->first();
             if (!empty($ids)) {
                 foreach ($ids as $id) {
+                    if ($id != $defaultPageId) {
+
+
                     $page = $this->page->where('id', $id)->first();
                     if ($page) {
                         // dd($page);
@@ -229,8 +247,7 @@ class PageController extends GetPageTemplateController
                 </div>';
                         //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
                     }
-                }
-                echo "<div class='alert alert-success alert-dismissable'>
+                          echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
                     <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
@@ -240,6 +257,17 @@ class PageController extends GetPageTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
+                } else {
+                      echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default-page').'
+                </div>';
+                }
+          
+             }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
@@ -316,62 +344,45 @@ class PageController extends GetPageTemplateController
             }
             $pages = $this->page->find(1);
             $data = $pages->content;
-            //Helpdesk
             $product = new \App\Model\Product\Product();
-            $helpdesk_products = $product->where('id', '!=', 1)
-        // ->where('category', '=', 'Helpdesk')
-        ->where('hidden', '=', '0')
-        ->orderBy('created_at', 'asc')
-        ->get()
-        ->toArray();
-            // dd($helpdesk_products);
-            $temp_controller = new \App\Http\Controllers\Common\TemplateController();
-            $trasform = [];
-            // $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
-            $template = $data;
-            // $template = $this->getTemplate($helpdesk_products,$template, $trasform);
-            //Helpdesk VPS
-            //     $helpdesk_vps_product = $product->where('id', '!=', 1)
+             $groups = ProductGroup::get()->toArray();
+             $template = [];
+             $heading = [];
+             $tagline = [];
+             $trasform  =[];
+             if ($groups) {
+                  for($i=0 ; $i <count($groups) ; $i++) {
+                 $products = $product->where('id', '!=', 1)
+                ->where('group', '=', $groups[$i]['id'])
+                ->where('hidden', '=', '0')
+                ->orderBy('created_at', 'asc')
+                ->get()
+                ->toArray();
+               $heading1 = $groups[$i]['hidden'] =='0' ? $groups[$i]['headline'] : '';
+               $tagline1 = $groups[$i]['hidden'] =='0' ? $groups[$i]['tagline'] : '';
+              $template1 =($this->getTemplateOne($products, $data, $trasform));
+                
+                $templates= array_push($template,$template1);
+                $headings =  array_push($heading,$heading1);
+                $taglines = array_push($tagline,$tagline1);
 
-            // ->where('category', '=', 'Helpdesk VPS')
+            }
+             } else {
+                 $products = $product->where('id', '!=', 1)
+                ->where('hidden', '=', '0')
+                ->orderBy('created_at', 'asc')
+                ->get()
+                ->toArray();
+              if($products) {
+              $template1 =($this->getTemplateOne($products, $data, $trasform));
+                }
+                 $templates= array_push($template,$template1);
+                 $heading[0] = '';
+                 $tagline[0] = '';
+             }
 
-            // ->where('hidden', '=', '0')
-            // ->get()
-            // ->toArray();
-            //     $trasform3 = [];
-            //     $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
+     return view('themes.default1.common.template.shoppingcart',compact('template1','heading','heading1','heading2','groups','template','heading','tagline'));
 
-            //     //ServiceDesk Vps
-            //     $servicedesk_vps_product = $product->where('id', '!=', 1)
-            // ->where('category', '=', 'Servicedesk vps')
-            // ->where('hidden', '=', '0')
-            // ->get()
-            // ->toArray();
-            //     $trasform4 = [];
-            //     $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
-
-            //     //servicedesk
-            //     $sevice_desk_products = $product->where('id', '!=', 1)
-            // ->where('category', '=', 'Servicedesk')
-            //  ->where('hidden', '=', '0')
-            // ->orderBy('created_at', 'asc')
-            // ->get()
-            // ->toArray();
-            //     $trasform1 = [];
-            //     $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
-
-            //     //Service
-            //     $service = $product->where('id', '!=', 1)
-            // ->where('category', '=', 'Service')
-            // ->where('hidden', '=', '0')
-            // ->get()
-            // ->toArray();
-            //     $trasform2 = [];
-            //     $service_template = $this->getServiceTemplate($service, $data, $trasform2);
-
-            return view('themes.default1.common.template.shoppingcart',
-            compact('template', 'trasform', 'servicedesk_template', 'trasform1',
-                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);

@@ -19,6 +19,11 @@ class ProductGroup extends BaseModel
         return $this->hasMany('App\Model\Product\GroupFeatures', 'group_id');
     }
 
+    public function product()
+    {
+         return $this->hasMany('App\Model\Product\Product', 'group');
+    }
+
     public function delete()
     {
         $this->config()->delete();

@@ -77,6 +77,7 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Product\ProductUpload', 'product_id');
     }
 
+
     public function delete()
     {
         $this->tax()->delete();
@@ -115,6 +116,11 @@ class Product extends BaseModel
         $related = "App\Model\Payment\Plan";
 
         return $this->hasMany($related, 'product');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo("App\Model\Product\ProductGroup");
     }
 
     public function plan()

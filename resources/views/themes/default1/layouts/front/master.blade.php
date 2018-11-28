@@ -5,8 +5,6 @@ if($script){
 }else{
   $script = null;
 }
-
-
  ?>
 <!DOCTYPE html>
 <html>

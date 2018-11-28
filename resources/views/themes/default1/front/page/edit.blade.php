@@ -92,10 +92,45 @@ Edit Page
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
-                        {!! Form::select('parent_page_id',[$parents],null,['class' => 'form-control']) !!}
+                        {!! Form::select('parent_page_id',['Choose'=>$parents],'null',['class' => 'form-control']) !!}
 
                     </div>
+                    <?php
+                         $defaults = DB::table('frontend_pages')->pluck('name','id')->toArray();
+                         ?>
+                       <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('default_page_id',Lang::get('message.default-page'),['class'=>'required']) !!}
+                                   <select name="default_page_id"  class="form-control">
+                         @foreach($defaults as $key=>$value)
+                                   <option value="{{$key}}" <?php  if($key == $selectedDefault)  { echo "selected";} ?>>{{$value}}</option>
+                           
+                             @endforeach
+                              </select>
 
+                    </div>
+                    <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
+                        <div class="form-group">
+                         <div class="input-group date">
+                  <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                  </div>
+                     <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                </div>
+              </div>
+
+                          <!-- <div class="form-group">
+                                    <div class='input-group date' id='datetimepicker1'>
+                                        <input type='text' name="valid_from" id="valid_from" class="form-control" />
+                                        <span class="input-group-addon">
+                                            <span class="glyphicon glyphicon-calendar"></span>
+                                        </span>
+                                    </div>
+                                </div> -->
+
+                    </div>
 
 
 
@@ -154,7 +189,10 @@ Edit Page
 {!! Form::close() !!}
 
 <script>
-
+  $(function () {
+   //Datemask dd/mm/yyyy
+  $('[data-mask]').inputmask()
+  });
     $(document).on('input', '#name', function () {
 
         $.ajax({

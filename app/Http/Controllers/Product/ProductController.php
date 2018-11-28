@@ -233,7 +233,6 @@ namespace App\Http\Controllers\Product;
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
                         'type'       => 'required',
-                        'group'      => 'required',
                         'description'=> 'required',
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
@@ -308,6 +307,8 @@ namespace App\Http\Controllers\Product;
                 $url = $this->GetMyUrl();
                 $cartUrl = $url.'/cart?id='.$id;
                 $product = $this->product->where('id', $id)->first();
+                $selectedGroup = ProductGroup:: where('id', $product->group)->pluck('name')->toArray();
+                $taxes = $this->tax_class->pluck('name', 'id')->toArray();
                 $selectedCategory = \App\Model\Product\ProductCategory::
                 where('category_name', $product->category)->pluck('category_name')->toArray();
                 $taxes = $this->tax_class->pluck('name', 'id')->toArray();
@@ -318,7 +319,7 @@ namespace App\Http\Controllers\Product;
                 return view('themes.default1.product.product.edit',
                     compact('product', 'periods', 'type', 'subscription',
                         'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory'));
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory','selectedGroup'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -334,12 +335,11 @@ namespace App\Http\Controllers\Product;
          * @return \Response
          */
         public function update($id, Request $request)
-        {
+        { 
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required',
                         'type'       => 'required',
-                        'group'      => 'required',
                         'description'=> 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required',

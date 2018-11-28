@@ -42,8 +42,8 @@ class DatabaseSeeder extends Seeder
         $this->call('TemplateTableSeeder');
         $this->command->info('Template table seeded!');
 
-        $this->call('GroupTableSeeder');
-        $this->command->info('Product Group table seeded!');
+        // $this->call('GroupTableSeeder');
+        // $this->command->info('Product Group table seeded!');
 
         $this->call('ProductTypesTableSeeder');
         $this->command->info('Product Types table seeded!');

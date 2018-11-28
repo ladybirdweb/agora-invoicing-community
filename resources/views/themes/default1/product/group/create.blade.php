@@ -40,7 +40,7 @@
 
                 <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
-                    {!! Form::submit(Lang::get('message.save'),['class'=>'btn btn-primary pull-right'])!!}
+                     <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 </div>
 
                 <table class="table table-condensed">
@@ -99,7 +99,7 @@
                         </td>
 
                     </tr>
-                    <tr>
+      <!--               <tr>
 
                         <td><b>{!! Form::label('features',Lang::get('message.features'),['class'=>'required']) !!}</b></td>
                         <td>
@@ -125,7 +125,7 @@
                             </div>
                         </td>
 
-                    </tr>
+                    </tr> -->
 
 
                     <tr>
@@ -143,7 +143,7 @@
 
                     </tr>
 
-                    <tr>
+                   <!--  <tr>
 
                         <td>
 
@@ -228,7 +228,7 @@
 
                         </td>
 
-                    </tr>
+                    </tr> -->
 
                     {!! Form::close() !!}
                 </table>

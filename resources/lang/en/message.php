@@ -44,6 +44,7 @@ return [
     'name'                   => 'Name',
     'description'            => 'Description',
     'can-not-delete-default' => 'Can not delete default',
+    'can-not-delete-default-page' =>'Can not delete default Page',
     'no-payment'             => 'No Payment',
     'add-new'                => 'Add New',
     'all-users'              => 'All Users',
@@ -451,6 +452,8 @@ return [
     'publish'     => 'Publish',
     'slug'        => 'Slug',
     'parent-page' => 'Parent Page',
+    'default-page' => 'Default Page',
+    'publish-date' => 'Publishing Date',
     /*
      * Widgets
      */

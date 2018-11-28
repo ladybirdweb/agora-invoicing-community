@@ -60,22 +60,31 @@ main
                     {{Session::get('fails')}}
                 </div>
                 @endif
-    <div class="row">
-                        
-                            
-                            <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">Helpdesk Self Hosted Pricing</h4>
-                        
-                    </div>
    
-        {!! html_entity_decode($template) !!}
- 
-    <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+   
+        <div class="row">
+             @for ($i =0; $i < sizeof($template); $i++)
 
-
-
-
-
+               <div class="row">
+          <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">{{$heading[$i]}}</h4>
+      </div>
+       <h4 style="font-size: 20px;text-align: center;margin-left:400px">{{$tagline[$i]}}</h4>
+         <div class="col-md-12">
+        <div class="pricing-table princig-table-flat">
+            <div class="row">
+        {!! html_entity_decode($template[$i]) !!}
+    </div>
+        </div>
+    </div>
+     <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+      @endfor   
+          
+      </div>
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
+
+
+
+
 
 
 

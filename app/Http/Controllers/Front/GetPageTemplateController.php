@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Model\Product\ProductGroup;
 
 class GetPageTemplateController extends Controller
 {
@@ -15,8 +14,8 @@ class GetPageTemplateController extends Controller
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         if (count($helpdesk_products) > 0) {
             foreach ($helpdesk_products as $key => $value) {
-                 // $trasform[$value['id']]['group']
-               $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
+                // $trasform[$value['id']]['group']
+                $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
                 $trasform[$value['id']]['feature'] = $value['description'];
                 $trasform[$value['id']]['subscription'] = $temp_controller
@@ -130,8 +129,7 @@ class GetPageTemplateController extends Controller
         return $service_template;
     }
 
-
-        /**
+    /**
      * Get  Template For Service Desk Products.
      */
     // public function getTemplate($products, $data, $trasformmew)
@@ -145,7 +143,7 @@ class GetPageTemplateController extends Controller
     //             $trasformmew[$value['id']]['subscription'] = $temp_controller
     //             ->plans($value['shoping_cart_link'], $value['id']);
 
-    //             $trasformmew[$value['id']]['url'] = "<input type='submit' 
+    //             $trasformmew[$value['id']]['url'] = "<input type='submit'
     //             value='Order Now' class='btn btn-primary'></form>";
     //         }
     //         $newtemplate = $this->transform('cart', $data, $trasformmew);
@@ -155,8 +153,6 @@ class GetPageTemplateController extends Controller
 
     //     return $newtemplate;
     // }
-
-
 
     public function checkConfigKey($config, $transform)
     {

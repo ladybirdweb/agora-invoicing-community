@@ -319,7 +319,7 @@ namespace App\Http\Controllers\Product;
                 return view('themes.default1.product.product.edit',
                     compact('product', 'periods', 'type', 'subscription',
                         'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory','selectedGroup'));
+                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory', 'selectedGroup'));
             } catch (\Exception $e) {
                 Bugsnag::notifyException($e);
 
@@ -335,7 +335,7 @@ namespace App\Http\Controllers\Product;
          * @return \Response
          */
         public function update($id, Request $request)
-        { 
+        {
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required',

@@ -5,7 +5,7 @@ return[
      * Cart page
      */
     'cart' => [
-        'group'       =>  '{{group}}',
+        'group'        => '{{group}}',
         'name'         => '{{name}}',
         'price'        => '{{price}}',
         'feature'      => '<li>{{feature}}</li>',

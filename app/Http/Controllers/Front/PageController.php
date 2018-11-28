@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Model\Front\FrontendPage;
 use App\DefaultPage;
-use Bugsnag;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
+use App\Model\Front\FrontendPage;
 use App\Model\Product\ProductGroup;
+use Bugsnag;
+use Illuminate\Http\Request;
 
 class PageController extends GetPageTemplateController
 {
@@ -35,6 +34,7 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
+
             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -98,13 +98,14 @@ class PageController extends GetPageTemplateController
         try {
             $page = $this->page->where('id', $id)->first();
             $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
-           $selectedDefault =  DefaultPage::value('page_id');
-             $date = $this->page->where('id', $id)->pluck('created_at')->first();
-            $publishingDate = date("d/m/Y", strtotime($date) );
-            return view('themes.default1.front.page.edit', compact('parents', 'page','default','selectedDefault','publishingDate'));
+            $selectedDefault = DefaultPage::value('page_id');
+            $date = $this->page->where('id', $id)->pluck('created_at')->first();
+            $publishingDate = date('d/m/Y', strtotime($date));
 
+            return view('themes.default1.front.page.edit', compact('parents', 'page', 'default', 'selectedDefault', 'publishingDate'));
         } catch (\Exception $ex) {
             dd($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -134,13 +135,13 @@ class PageController extends GetPageTemplateController
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'name'    => 'required',
-            'publish' => 'required',
-            'slug'    => 'required',
-            'url'     => 'required',
-            'content' => 'required',
-            'default_page_id'=>'required',
-            'created_at'=>'required',
+            'name'           => 'required',
+            'publish'        => 'required',
+            'slug'           => 'required',
+            'url'            => 'required',
+            'content'        => 'required',
+            'default_page_id'=> 'required',
+            'created_at'     => 'required',
         ]);
 
         try {
@@ -148,11 +149,12 @@ class PageController extends GetPageTemplateController
             $page->fill($request->except('created_at'))->save();
             // $date = $request->input('created_at');
 
-         $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
-        $page->created_at = $date->format('Y-m-d H:i:s');
+            $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
+            $page->created_at = $date->format('Y-m-d H:i:s');
             $page->save();
             $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
-            DefaultPage::findorFail(1)->update(['page_id'=>$request->input('default_page_id'),'page_url'=>$defaultUrl]);
+            DefaultPage::findorFail(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -230,14 +232,12 @@ class PageController extends GetPageTemplateController
             if (!empty($ids)) {
                 foreach ($ids as $id) {
                     if ($id != $defaultPageId) {
-
-
-                    $page = $this->page->where('id', $id)->first();
-                    if ($page) {
-                        // dd($page);
-                        $page->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
+                        $page = $this->page->where('id', $id)->first();
+                        if ($page) {
+                            // dd($page);
+                            $page->delete();
+                        } else {
+                            echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */
@@ -245,9 +245,9 @@ class PageController extends GetPageTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                          echo "<div class='alert alert-success alert-dismissable'>
+                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                        }
+                        echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
                     <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
@@ -257,17 +257,16 @@ class PageController extends GetPageTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
-                } else {
-                      echo "<div class='alert alert-danger alert-dismissable'>
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default-page').'
                 </div>';
+                    }
                 }
-          
-             }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
@@ -345,44 +344,42 @@ class PageController extends GetPageTemplateController
             $pages = $this->page->find(1);
             $data = $pages->content;
             $product = new \App\Model\Product\Product();
-             $groups = ProductGroup::get()->toArray();
-             $template = [];
-             $heading = [];
-             $tagline = [];
-             $trasform  =[];
-             if ($groups) {
-                  for($i=0 ; $i <count($groups) ; $i++) {
-                 $products = $product->where('id', '!=', 1)
+            $groups = ProductGroup::get()->toArray();
+            $template = [];
+            $heading = [];
+            $tagline = [];
+            $trasform = [];
+            if ($groups) {
+                for ($i = 0; $i < count($groups); $i++) {
+                    $products = $product->where('id', '!=', 1)
                 ->where('group', '=', $groups[$i]['id'])
                 ->where('hidden', '=', '0')
                 ->orderBy('created_at', 'asc')
                 ->get()
                 ->toArray();
-               $heading1 = $groups[$i]['hidden'] =='0' ? $groups[$i]['headline'] : '';
-               $tagline1 = $groups[$i]['hidden'] =='0' ? $groups[$i]['tagline'] : '';
-              $template1 =($this->getTemplateOne($products, $data, $trasform));
-                
-                $templates= array_push($template,$template1);
-                $headings =  array_push($heading,$heading1);
-                $taglines = array_push($tagline,$tagline1);
+                    $heading1 = $groups[$i]['hidden'] == '0' ? $groups[$i]['headline'] : '';
+                    $tagline1 = $groups[$i]['hidden'] == '0' ? $groups[$i]['tagline'] : '';
+                    $template1 = ($this->getTemplateOne($products, $data, $trasform));
 
-            }
-             } else {
-                 $products = $product->where('id', '!=', 1)
+                    $templates = array_push($template, $template1);
+                    $headings = array_push($heading, $heading1);
+                    $taglines = array_push($tagline, $tagline1);
+                }
+            } else {
+                $products = $product->where('id', '!=', 1)
                 ->where('hidden', '=', '0')
                 ->orderBy('created_at', 'asc')
                 ->get()
                 ->toArray();
-              if($products) {
-              $template1 =($this->getTemplateOne($products, $data, $trasform));
+                if ($products) {
+                    $template1 = ($this->getTemplateOne($products, $data, $trasform));
                 }
-                 $templates= array_push($template,$template1);
-                 $heading[0] = '';
-                 $tagline[0] = '';
-             }
+                $templates = array_push($template, $template1);
+                $heading[0] = '';
+                $tagline[0] = '';
+            }
 
-     return view('themes.default1.common.template.shoppingcart',compact('template1','heading','heading1','heading2','groups','template','heading','tagline'));
-
+            return view('themes.default1.common.template.shoppingcart', compact('template1', 'heading', 'heading1', 'heading2', 'groups', 'template', 'heading', 'tagline'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);

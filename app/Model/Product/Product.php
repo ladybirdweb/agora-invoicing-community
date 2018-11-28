@@ -77,7 +77,6 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Product\ProductUpload', 'product_id');
     }
 
-
     public function delete()
     {
         $this->tax()->delete();

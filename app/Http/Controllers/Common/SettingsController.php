@@ -55,7 +55,6 @@ class SettingsController extends BaseSettingsController
             $model = $apikeys->find(1);
 
             return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
-
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

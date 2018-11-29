@@ -1467,7 +1467,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "company_type": $('#company_type').val(),
                 "company_size": $('#company_size').val(),
                 "country": $('#country').val(),
-                "mobile_code": $('#mobile_code').val(),
+                "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
                 "mobile": $('#mobilenum').val(),
                 "address": $('#address').val(),
                 "city": $('#city').val(),

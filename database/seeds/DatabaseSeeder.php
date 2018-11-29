@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
         $this->call('GitHubTableSeeder');
         $this->command->info('Github table seeded!');
 
-       $this->call('StatusSettingSeeder');
+        $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
 
         $this->call('UserTableSeeder');
@@ -731,14 +731,12 @@ class StatusSettingSeeder extends Seeder
 {
     public function run()
     {
-
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0,'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0,'recaptcha_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
-
 
 class GitHubTableSeeder extends Seeder
 {
@@ -750,8 +748,6 @@ class GitHubTableSeeder extends Seeder
         Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
     }
 }
-
-
 
 class ConditionSeeder extends Seeder
 {

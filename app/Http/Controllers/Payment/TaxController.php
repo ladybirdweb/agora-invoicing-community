@@ -160,7 +160,7 @@ class TaxController extends Controller
 
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
-            if (count($classes) == 0) {
+            if ($classes) {
                 $classes = $this->tax_class->get();
             }
 

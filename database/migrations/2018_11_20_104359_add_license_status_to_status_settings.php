@@ -14,12 +14,13 @@ class AddLicenseStatusToStatusSettings extends Migration
     public function up()
     {
         Schema::table('status_settings', function (Blueprint $table) {
-            $table->boolean('license_status')->nullable();
-            $table->boolean('github_status')->nullable();
-            $table->boolean('mailchimp_status')->nullable();
-            $table->boolean('twitter_status')->nullable();
-            $table->boolean('msg91_status')->nullable();
-            $table->boolean('emailverification_status')->nullable();
+            $table->integer('license_status');
+            $table->integer('github_status');
+            $table->integer('mailchimp_status');
+            $table->integer('twitter_status');
+            $table->integer('msg91_status');
+            $table->integer('emailverification_status');
+            $table->integer('recaptcha_status');
         });
     }
 
@@ -30,6 +31,6 @@ class AddLicenseStatusToStatusSettings extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('status_settings');
     }
 }

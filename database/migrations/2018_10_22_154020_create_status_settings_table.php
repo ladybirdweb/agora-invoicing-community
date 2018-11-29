@@ -15,9 +15,8 @@ class CreateStatusSettingsTable extends Migration
     {
         Schema::create('status_settings', function (Blueprint $table) {
             $table->increments('id');
-            $table->boolean('expiry_mail')->nullable();
-            $table->boolean('activity_log_delete')->nullable();
-            $table->timestamps();
+            $table->boolean('expiry_mail');
+            $table->boolean('activity_log_delete');
         });
     }
 

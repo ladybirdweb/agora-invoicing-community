@@ -9,6 +9,13 @@ class Github extends BaseModel
     protected $table = 'githubs';
     protected $fillable = ['client_id', 'client_secret', 'username', 'password'];
 
+
+    public function setPasswordAttribute($value)
+    {
+        $value = \Crypt::encrypt($value);
+        $this->attributes['password'] = $value;
+    }
+
     public function getPasswordAttribute($value)
     {
         if ($value) {
@@ -18,9 +25,4 @@ class Github extends BaseModel
         return $value;
     }
 
-    public function setPasswordAttribute($value)
-    {
-        $value = \Crypt::encrypt($value);
-        $this->attributes['password'] = $value;
-    }
 }

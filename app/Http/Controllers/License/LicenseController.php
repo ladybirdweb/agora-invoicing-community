@@ -137,7 +137,7 @@ class LicenseController extends Controller
         $api_key_secret = $this->api_key_secret;
         $sku = Product::where('id', $product)->first()->product_sku;
         $licenseExpirationCheck = Product::where('id', $product)->first()->perpetual_license;
-        $expiry = ($licenseExpirationCheck == 1) ? $ends_at->toDateString() : '';
+        $expiry = ($licenseExpirationCheck == 0) ? $ends_at->toDateString() : '';
         $order = Order::where('id', $orderid)->first();
         $orderNo = $order->number;
         $domain = $order->domain;
@@ -154,12 +154,20 @@ class LicenseController extends Controller
     public function updateLicensedDomain($clientEmail, $domain)
     {
         $url = $this->url;
+          $isIP = (bool)ip2long($domain);
+         if($isIP == true) {
+           $ip = $domain;
+           $domain = '';
+         } else {
+          $domain = $domain ;
+          $ip= '';
+      }
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($clientEmail);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $userId = $searchLicense['userId'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_domain=$domain");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_domain=$domain&license_ip=$ip");
     }
 
     public function searchLicenseId($email)
@@ -193,7 +201,7 @@ class LicenseController extends Controller
             $installation_id = $details->page_message[0]->installation_id;
             $installation_ip = $details->page_message[0]->installation_ip;
         }
-        // delete The Existing Installation
+        // deactivate The Existing Installation
         $updateInstallation = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=installations_edit&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0");
     }
 

@@ -276,7 +276,9 @@
          * Order
          */
 
-        Route::resource('orders', 'Order\OrderController');
+        // Route::resource('orders', 'Order\change-domain');
+         // Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\change-domain@getOrders'])->name('get-orders');
+          Route::resource('orders', 'Order\OrderController');
          // Route::get('get-orders', ['as' => 'get-orders', 'uses' => 'Order\OrderController@getOrders'])->name('get-orders');
         Route::get('get-orders', 'Order\OrderController@getOrders')->name('get-orders');
         Route::get('orders-delete', 'Order\OrderController@destroy')->name('orders-delete');

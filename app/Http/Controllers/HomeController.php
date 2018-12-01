@@ -98,7 +98,7 @@ class HomeController extends BaseHomeController
              'serial'                             => $serial_key, 'order' => $order_number, ]));
             $result = [];
             if ($request_type == 'install') {
-                $result = $this->verificationResult($order_number, $serial_key, $domain);
+                $result = $this->verificationResult($order_number, $serial_key);
             }
             if ($request_type == 'check_update') {
                 $result = $this->checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version);
@@ -134,7 +134,7 @@ class HomeController extends BaseHomeController
             //return $serial_key;
             $result = [];
             if ($request_type == 'install') {
-                $result = $this->verificationResult($order_number, $serial_key, $domain);
+                $result = $this->verificationResult($order_number, $serial_key);
             }
             if ($request_type == 'check_update') {
                 $result = $this->checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version);

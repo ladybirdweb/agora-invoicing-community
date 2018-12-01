@@ -152,20 +152,38 @@ class ExtendedOrderController extends Controller
     public function changeDomain(Request $request)
     {
         $domain = '';
-        $haystack = $request->input('domain');
-        $needle = 'www';
-        $customDomain = (strpos($haystack, $needle) !== false) ? str_replace('www.', '', $haystack) : 'www.'.$haystack;
-        $domain = ($haystack.','.$customDomain);
+        $arrayOfDomains = array();
+        $allDomains = $request->input('domain');
+        $seperateDomains = explode(',', $allDomains);//Bifurcate the domains here
+          
+        $allowedDomains =$this->getAllowedDomains( $seperateDomains);
         $id = $request->input('id');
-        $order = Order::find($id);
+        $order = Order::findorFail($id);
         $clientEmail = $order->user->email;
-        $order->domain = $domain;
+        $order->domain = implode(",", $allowedDomains);
         $order->save();
         $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $domain);
+        $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail,$order->domain);
         //Now make Installation status as inactive
         $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
 
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
+    }
+
+
+    public function getAllowedDomains($seperateDomains)
+    {
+        $needle = 'www';
+        foreach ($seperateDomains as $domain) {
+         $isIP = (bool)ip2long($domain);
+         if($isIP == true) {
+           $allowedDomains[] = $domain;
+         } else {
+          $customDomain = (strpos($domain, $needle) !== false) ? str_replace('www.', '', $domain) : 'www.'.$domain;
+          $allowedDomains[] = ($domain.','.$customDomain);
+         
+         }
+       }
+        return  $allowedDomains;
     }
 }

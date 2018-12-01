@@ -154,14 +154,14 @@ class LicenseController extends Controller
     public function updateLicensedDomain($clientEmail, $domain)
     {
         $url = $this->url;
-          $isIP = (bool)ip2long($domain);
-         if($isIP == true) {
-           $ip = $domain;
-           $domain = '';
-         } else {
-          $domain = $domain ;
-          $ip= '';
-      }
+        $isIP = (bool) ip2long($domain);
+        if ($isIP == true) {
+            $ip = $domain;
+            $domain = '';
+        } else {
+            $domain = $domain;
+            $ip = '';
+        }
         $api_key_secret = $this->api_key_secret;
         $searchLicense = $this->searchLicenseId($clientEmail);
         $licenseId = $searchLicense['licenseId'];

@@ -67,11 +67,10 @@ Order Details
                                             <td>
                                                  <label name="domain" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.domain-message') !!}">
                                                     <b>Licensed Domain:</b></td><td contenteditable="false" id="domain">{{$order->domain}}
-                                       
-                            </td></tr>
-                                           <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
+                                                      <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
                                                 >
                                 Reissue Licesnse</button>
+                            </td></tr>
                                     <?php
                                     $date = "--";
                                     if ($subscription) {

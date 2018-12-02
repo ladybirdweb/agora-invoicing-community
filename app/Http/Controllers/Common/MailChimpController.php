@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\Country;
 use App\Model\Common\Mailchimp\MailchimpField;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpGroup;
@@ -136,6 +137,7 @@ class MailChimpController extends Controller
                  //refer to https://us7.api.mailchimp.com/playground
               ]);
         } catch (Exception $ex) {
+            dd($ex);
             $exe = json_decode($ex->getMessage(), true);
         }
     }
@@ -173,9 +175,10 @@ class MailChimpController extends Controller
             $user = new User();
             $setting = new Setting();
             $user = $user->where('email', $email)->first();
+            $country = Country::where('country_code_char2', $user->country)->pluck('nicename')->first();
             if ($user) {
                 $fields = ['first_name', 'last_name', 'company', 'mobile',
-                 'address', 'town', 'state', 'zip', 'active', 'role', 'source', ];
+                 'address', 'town', 'country', 'state', 'zip', 'active', 'role', 'source', ];
                 $relation = $this->relation;
                 $merge_fields = [];
                 foreach ($fields as $field) {
@@ -183,6 +186,7 @@ class MailChimpController extends Controller
                         $merge_fields[$relation->$field] = $user->$field;
                     }
                 }
+                $merge_fields[$relation->country] = $country;
                 $merge_fields[$relation->source] = $setting->findorFail(1)->title;
 
                 return $merge_fields;
@@ -190,7 +194,6 @@ class MailChimpController extends Controller
                 return redirect()->back()->with('fails', 'user not found');
             }
         } catch (Exception $ex) {
-            //dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

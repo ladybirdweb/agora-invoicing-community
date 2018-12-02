@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
@@ -31,6 +33,8 @@ class ClientController extends AdvanceSearchController
         $this->activate = $activate;
         $product = new \App\Model\Product\Product();
         $this->product = $product;
+        $license = new LicenseController();
+        $this->licensing = $license;
     }
 
     /**
@@ -176,7 +180,7 @@ class ClientController extends AdvanceSearchController
     {
         try {
             $user = $this->user;
-            $str = str_random(6);
+            $str = 'demopass';
             $password = \Hash::make($str);
             $user->password = $password;
             $cont = new \App\Http\Controllers\Front\PageController();
@@ -184,8 +188,12 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
-            // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-            // $r = $mailchimp->addSubscriber($user->email);
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $r = $mailchimp->addSubscriber($user->email);
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1) {
+                $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
+            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
@@ -264,7 +272,7 @@ class ClientController extends AdvanceSearchController
         if ($invoices) {
             foreach ($client->payment()->orderBy('created_at', 'desc')->get() as $payment) {
                 $number = $payment->invoice()->first() ? $payment->invoice()->first()->number : '--';
-                $date = $payment->updated_at;
+                $date = $payment->created_at;
                 $date1 = new DateTime($date);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));
@@ -419,6 +427,10 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1) {
+                $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
+            }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

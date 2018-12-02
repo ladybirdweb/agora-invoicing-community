@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\User;
@@ -162,6 +163,11 @@ class BaseOrderController extends ExtendedOrderController
                 $this->subscription->create(['user_id' => $user_id,
                     'plan_id'                          => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at,
                      'version'                         => $version, 'product_id' =>$product, ]);
+            }
+            $licenseStatus = StatusSetting::pluck('license_status')->first();
+            if ($licenseStatus == 1) {
+                $cont = new \App\Http\Controllers\License\LicenseController();
+                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at);
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
+    use App\Http\Controllers\License\LicenseController;
+    use App\Model\Common\StatusSetting;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -77,6 +79,9 @@ namespace App\Http\Controllers\Product;
 
             $product_upload = new ProductUpload();
             $this->product_upload = $product_upload;
+
+            $license = new LicenseController();
+            $this->licensing = $license;
         }
 
         /**
@@ -232,8 +237,11 @@ namespace App\Http\Controllers\Product;
                         'description'=> 'required',
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'product_sku'=> 'required|unique:products,product_sku',
                         // 'version' => 'required',
             ]);
+
+            // dd($a);
             if ($v->fails()) {
                 //     $currency = $input['currency'];
 
@@ -244,6 +252,10 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
+                    $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
+                }
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';
@@ -257,11 +269,6 @@ namespace App\Http\Controllers\Product;
 
                 $product_id = $product->id;
                 $subscription = $request->input('subscription');
-
-                $price = $request->input('price');
-                // $price=
-
-                $sales_price = $request->input('sales_price');
                 $currencies = $request->input('currency');
                 $taxes = $request->input('tax');
                 if ($taxes) {
@@ -335,6 +342,7 @@ namespace App\Http\Controllers\Product;
                         'group'      => 'required',
                         'description'=> 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
+                        'product_sku'=> 'required',
       ]);
 
             if ($v->fails()) {
@@ -342,6 +350,10 @@ namespace App\Http\Controllers\Product;
             }
 
             try {
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) {
+                    $addProductInLicensing = $this->licensing->editProduct($input['name'], $input['product_sku']);
+                }
                 $product = $this->product->where('id', $id)->first();
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();

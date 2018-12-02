@@ -32,26 +32,42 @@ function isInstall()
     return $check;
 }
 
-/*
-* This function return time zone name with GMT format  ex:-(GMT-11:00)Pacific/Midway
-* @return type array
-*/
+// For API response
+/**
+ * Format the error message into json error response.
+ *
+ * @param string|array $message    Error message
+ * @param int          $statusCode
+ *
+ * @return HTTP json response
+ */
+function errorResponse($message, $statusCode = 400)
+{
+    return response()->json(['success' => false, 'message' => $message], $statusCode);
+}
 
-// function agoratime($date, $hour = 0, $min = 0, $sec = 0, $tz = '')
-// {
-//     if (is_bool($hour) && $hour === true) {
-//         $hour = $date->hour;
-//     }
-//     if (is_bool($min) && $min === true) {
-//         $min = $date->minute;
-//     }
-//     if (is_bool($sec) && $sec === true) {
-//         $sec = $date->second;
-//     }
-//     if (!$tz) {
-//         $tz = /* @scrutinizer ignore-call */ timezone();
-//     }
-//     $date1 = \Carbon\Carbon::create($date->year, $date->month, $date->day, $hour, $min, $sec, $tz);
+/**
+ * Format success message/data into json success response.
+ *
+ * @param string       $message    Success message
+ * @param array|string $data       Data of the response
+ * @param int          $statusCode
+ *
+ * @return HTTP json response
+ */
+function successResponse($message = '', $data = '', $statusCode = 200)
+{
+    $response = ['success' => true];
 
-//     return $date1->hour($hour)->minute($min)->second($sec);
-// }
+    // if message given
+    if (!empty($message)) {
+        $response['message'] = $message;
+    }
+
+    // If data given
+    if (!empty($data)) {
+        $response['data'] = $data;
+    }
+
+    return response()->json($response, $statusCode);
+}

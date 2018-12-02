@@ -64,7 +64,12 @@
        height: 40px;
        border-radius: 40px;
     }
-
+ .select2-selection{
+    border-radius:0px !important;
+ }
+ .select2-selection__choice{
+    background-color:grey !important; 
+ }
 
 </style>
 <script type="text/javascript">
@@ -346,6 +351,7 @@ function move() {
         <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
         <script src="{{asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
+        <script src="{{asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>

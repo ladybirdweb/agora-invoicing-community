@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use Bugsnag;
@@ -149,12 +150,43 @@ class ExtendedOrderController extends Controller
         }
     }
 
-    public function domainChange(Request $request)
+    public function changeDomain(Request $request)
     {
-        $domain = $request->input('domain');
+        $domain = '';
+        $arrayOfDomains = [];
+        $allDomains = $request->input('domain');
+        $seperateDomains = explode(',', $allDomains); //Bifurcate the domains here
+
+        $allowedDomains = $this->getAllowedDomains($seperateDomains);
         $id = $request->input('id');
-        $order = Order::find($id);
-        $order->domain = $domain;
+        $order = Order::findorFail($id);
+        $clientEmail = $order->user->email;
+        $order->domain = implode(',', $allowedDomains);
         $order->save();
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain);
+            //Now make Installation status as inactive
+            $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
+        }
+
+        return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
+    }
+
+    public function getAllowedDomains($seperateDomains)
+    {
+        $needle = 'www';
+        foreach ($seperateDomains as $domain) {
+            $isIP = (bool) ip2long($domain);
+            if ($isIP == true) {
+                $allowedDomains[] = $domain;
+            } else {
+                $customDomain = (strpos($domain, $needle) !== false) ? str_replace('www.', '', $domain) : 'www.'.$domain;
+                $allowedDomains[] = ($domain.','.$customDomain);
+            }
+        }
+
+        return  $allowedDomains;
     }
 }

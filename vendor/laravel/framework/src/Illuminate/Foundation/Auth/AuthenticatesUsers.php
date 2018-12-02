@@ -4,6 +4,8 @@ namespace Illuminate\Foundation\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Model\Common\StatusSetting;
+use App\ApiKey;
 use Illuminate\Validation\ValidationException;
 use Bugsnag;
 use App\User;
@@ -27,8 +29,11 @@ trait AuthenticatesUsers
         try{
            $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
            $cont = new \App\Http\Controllers\Front\PageController();
+           $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+           $captchaSiteKey = ApiKey::pluck('nocaptcha_sitekey')->first();
+           $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
             $location = $cont->getLocation();
-         return view('themes.default1.front.auth.login-register', compact('bussinesses','location'));
+         return view('themes.default1.front.auth.login-register', compact('bussinesses','location','captchaStatus','captchaSiteKey','captchaSecretKey'));
 
           }catch(\Exception $ex){
             app('log')->error($ex->getMessage());
@@ -52,50 +57,45 @@ trait AuthenticatesUsers
      */
     public function postLogin(Request $request)
     {//here
-        
-         $this->validate($request, [
+          $this->validate($request, [
             'email1' => 'required', 'password1' => 'required',
+            'g-recaptcha-response' => 'sometimes|required|captcha'
                 ], [
+            'g-recaptcha-response.required' => 'Robot Verification Failed. Please Try Again.',
             'email1.required'    => 'Username/Email is required',
             'password1.required' => 'Password is required',
         ]);
-        $usernameinput = $request->input('email1');
-        //$email = $request->input('email');
-        $field = filter_var($usernameinput, FILTER_VALIDATE_EMAIL) ? 'email' : 'user_name';
+       $usernameinput = $request->input('email1');
         $password = $request->input('password1');
-        $credentials = [$field => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
-         $auth = \Auth::attempt($credentials, $request->has('remember'));
-         if (!$auth) {
+        $credentialsForEmail = ['email' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+         $auth = \Auth::attempt($credentialsForEmail, $request->has('remember'));
+           if (!$auth) {
+            $credentialsForusername = ['user_name' => $usernameinput, 'password' => $password,'active' => '1' , 'mobile_verified' => '1'];
+            $auth = \Auth::attempt($credentialsForusername, $request->has('remember'));
+        } if(!$auth){
             $user = User::where('email', $usernameinput)->orWhere('user_name', $usernameinput)->first();
            if($user==null){
-
-                  return redirect()->back()
+                        return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
                                 'email1' => 'Invalid Email and/or Password',
             ]);  
-            }
-              if(!Hash::check($password ,$user->password)){
+            } 
+            if(!Hash::check($password ,$user->password)){
          return redirect()->back()
                             ->withInput($request->only('email1', 'remember'))
                             ->withErrors([
-                                'email1' => 'Invalid Email and/or Password',
-            ]);   
-        }
-
-             if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
+                            'email1' => 'Invalid Email and/or Password',
+                    ]);   
+              }
+          if ($user && ($user->active !== 1 || $user->mobile_verified !== 1)) {
                   return redirect('verify')->with('user', $user);
              
          }
-                
-            
-            
-           }else{
+           } else{
                  activity()->log('Logged In');
                  return redirect()->intended($this->redirectPath());
-
-            
-        }
+         }
     }
 
 
@@ -202,17 +202,6 @@ trait AuthenticatesUsers
                 ?: redirect()->intended($this->redirectPath());
     }
 
-    /**
-     * The user has been authenticated.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  mixed  $user
-     * @return mixed
-     */
-    protected function authenticated(Request $request, $user)
-    {
-        //
-    }
 
     /**
      * Get the failed login response instance.

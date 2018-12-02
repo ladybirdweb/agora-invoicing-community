@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicenseController;
+use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -38,6 +40,8 @@ class AuthController extends BaseAuthController
     public function __construct()
     {
         $this->middleware('guest', ['except' => 'getLogout']);
+        $license = new LicenseController();
+        $this->licensing = $license;
     }
 
     public function sendActivationByGet($email, Request $request)
@@ -87,6 +91,11 @@ class AuthController extends BaseAuthController
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
+                $licenseStatus = StatusSetting::pluck('license_status')->first();
+                if ($licenseStatus == 1) {
+                    $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
+                }
+
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);
 

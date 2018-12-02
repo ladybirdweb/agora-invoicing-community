@@ -55,9 +55,6 @@ class CartController extends BaseCartController
 
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
-
-        // $this->middleware('Inatall');
-        // $this->middleware('admin');
     }
 
     public function productList(Request $request)

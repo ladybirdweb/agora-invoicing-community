@@ -19,6 +19,7 @@ class CreateProductTest extends TestCase
         'name'           => 'helpdesk',
         'type'           => $product->type,
         'group'          => $product->group,
+        'product_sku'    => 'FAVEO-HD',
         'category'       => $product->category,
         'description'    => $product->description,
         'require_domain' => 1,

@@ -6,7 +6,6 @@ use App\Http\Controllers\Product\ProductController;
 use App\Model\Common\Setting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
-use App\Model\licence\Licence;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
@@ -28,7 +27,6 @@ class TemplateController extends BaseTemplateController
     public $price;
     public $subscription;
     public $plan;
-    public $licence;
     public $tax_relation;
     public $tax;
     public $tax_class;
@@ -57,9 +55,6 @@ class TemplateController extends BaseTemplateController
 
         $plan = new Plan();
         $this->plan = $plan;
-
-        $licence = new Licence();
-        $this->licence = $licence;
 
         $tax_relation = new TaxProductRelation();
         $this->tax_relation = $tax_relation;

@@ -139,8 +139,13 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                    <div class="col-sm-6">
                                         <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
+                                             
                                                 <h4 class="heading-primary text-uppercase mb-3">I'm a Returning Customer</h4>
+                                                  @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                                {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid','onsubmit'=>'return validateform()']) !!}
+                                                @else
                                                 {!!  Form::open(['action'=>'Auth\LoginController@postLogin', 'method'=>'post','id'=>'formoid']) !!}
+                                                @endif
                                                  <div class="form-row">
                                                     <div class="form-group col {{ $errors->has('email1') ? 'has-error' : '' }}">
                                                        
@@ -174,6 +179,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                         
                                                     </div>
                                                 </div>
+                                                
+                                                @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                              {!! NoCaptcha::display() !!}
+                                             <div class="loginrobot-verification"></div>
+                                                @endif
                                                  <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <div class="form-check form-check-inline">
@@ -200,7 +210,9 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                          <div class="featured-box featured-box-primary text-left mt-5">
                                             <div class="box-content">
                                                <h4 class="heading-primary text-uppercase mb-3">Register An Account</h4>
-                                                <form name="registerForm" id="regiser-form" >
+                                               
+                                                <form name="registerForm" id="regiser-form">
+                                              
                                                 <div class="row">
                                                    
                                                         <div class="form-group col-lg-6 {{ $errors->has('first_name') ? 'has-error' : '' }}">
@@ -383,20 +395,28 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                 </div>
 
                                               <!--   <input type="checkbox" name="checkbox" id="option" value="{{old('option')}}"><label for="option"><span></span> <p>I agree to the <a href="#">terms</a></p></label>
- -->
+ -->                                            
+                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                                 {!! NoCaptcha::display() !!}
+                                           <div class="robot-verification"></div>
+                                                @endif
                                                <div class="form-row">
                                                     <div class="form-group col-lg-6">
                                                         <label>
 
-                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="http://www.faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
+                                                            <input type="checkbox" value="false"  id="term" > {{Lang::get('message.i-agree-to-the')}} <a href="https://faveohelpdesk.com/terms-conditions" target="_blank">{{Lang::get('message.terms')}}</a>
                                                         </label>
                                                     </div>
-                                                    <div class="form-row">
+                                             
+                                                  
                                                           <div class="form-group col-lg-6">
-                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()" style="margin-right:-230px;margin-top:4px;">Submit</button>
+                                                              <button type="button"  class="btn btn-primary pull-right marginright mb-xl next-step" data-loading-text="Loading..." name="register" id="register" onclick="registerUser()">Submit</button>
                                                           </div>
-                                                    </div>
+                                                   
                                                 </div>
+                                               
+                                                     
+
                                                 
                                                 <div class="form-row">
                                                     <div class="form-group col-lg-6 ">
@@ -553,9 +573,24 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 @stop 
 @section('script')
 
+<script>
+   {!! NoCaptcha::renderJs($lang = 'en', $callback = true, $onLoadClass = 'recaptchaCallback') !!}
+  // {!! NoCaptcha::renderJs('en', true, 'recaptchaCallback') !!}
+</script>
+
+  <script>
+    function recaptchaCallback() {
+      document.querySelectorAll('.g-recaptcha').forEach(function (el) {
+        grecaptcha.render(el);
+      });
+    }
+  </script>
+
 <script type="text/javascript">
 
 
+      
+        
     //Login Form Jquery validation
  $(document).ready(function(){
    $('#usercheck').hide();
@@ -635,18 +670,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
  });
 
 
-
-
-
-
-
-
-
-
- 
-
-
-            function verify_otp_check(){
+function verify_otp_check(){
             var userOtp = $('#oneTimePassword').val();
             if (userOtp.length < 4){
                 $('#enterotp').show();
@@ -790,8 +814,6 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
 
 
-
-
 <script type="text/javascript">
               $('#verify_email').keyup(function(){
                  verify_email_check();
@@ -862,6 +884,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
         var newemail = $('#verify_email').val(); // this.value
         var oldnumber = sessionStorage.getItem('oldemail');
         var newnumber = $('#verify_number').val();
+
        
         $("#sendOtp").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Sending...");
         var data = {
@@ -999,7 +1022,42 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
  });
 
+   
+   //robot validation for Login Form
+   function validateform() {
+    var input = $(".g-recaptcha :input[name='g-recaptcha-response']"); 
+    console.log(input.val());
+        if(input.val() == null || input.val()==""){
+            $('.loginrobot-verification').empty()
+            $('.loginrobot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+            return false;
+        }
+        else{
+           return true;
+        }
+   }
 
+    // //Robot Vadidation for registration form
+    // function robotverification(){
+    //   var input = $(".g-recaptcha :input[name='g-recaptcha-response']");
+    //   console.log(input.val());
+    //   if (typeof input.val() === "undefined") {
+    //       alert('sa');
+    //       return true;
+    //   }
+    //    else if(input.val() == null || input.val()=="") {
+    //        alert('dsf');
+    //        $('.robot-verification').empty()
+    //         $('.robot-verification').append("<p style='color:red'>Robot verification failed, please try again.</p>")
+    //         return false;
+    //   } else {
+    //       alert('aaaa');
+    //       return true;
+    //   }
+      
+    //  }
+                  
+                  
 //Registration Form Validation
  function first_namecheck(){
     var firrstname_val = $('#first_name').val();
@@ -1392,7 +1450,8 @@ function registerUser() {
           var conPassErr = true;
 
      // con_password_check();
-if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck())
+
+if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && mobile_codecheck() && addresscheck() && towncheck()  && zipcheck() && bussinesscheck() && company_typecheck() && company_sizecheck() && countrycheck() && user_namecheck() && password1check() && conpasscheck() ) 
      {
       console.log($('#term').val())
      $("#register").html("<i class='fas fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
@@ -1408,7 +1467,7 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "company_type": $('#company_type').val(),
                 "company_size": $('#company_size').val(),
                 "country": $('#country').val(),
-                "mobile_code": $('#mobile_code').val(),
+                "mobile_code": $('#mobile_code').val().replace(/\s/g, '') ,
                 "mobile": $('#mobilenum').val(),
                 "address": $('#address').val(),
                 "city": $('#city').val(),
@@ -1417,7 +1476,9 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 "user_name": $('#user_name').val(),
                 "password": $('#password').val(),
                 "password_confirmation": $('#confirm_pass').val(),
+                "g-recaptcha-response-1":$('#g-recaptcha-response-1').val(),
                 "terms": $('#term').val(),
+
                 "_token": "{!! csrf_token() !!}",
           },
           success: function (response) {
@@ -1446,39 +1507,28 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                 }, 3000);*/
             }
           },
-          error: function (ex) {
-            var data = JSON.parse(ex.responseText);
-            // console.log(data.errors);
+          error: function (data) {
             $("#register").html("Register");
             $('html, body').animate({scrollTop:0}, 500);
-            var res = "";
+           
 
-                function ash(idx, topic) {
-                    // console.log(idx);
-                   if(typeof topic==="object"){
-                      $.each(topic, ash);
-                   }
-                   else{
-                    
-                     res += '<li>' + topic + '</li>';
-                     
-                   }
-                };
-                 $.each(data, ash);
-                // console.log(res)
-                $('#error').html('<div class="alert alert-danger"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.message+'<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'+res+'</div>');
+                var html = '<div class="alert alert-success alert-dismissable"><strong><i class="fas fa-exclamation-triangle"></i>Oh Snap! </strong>'+data.responseJSON.message+' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><br><ul>';
+                 for (var key in data.responseJSON.errors)
+                  {
+                      html += '<li>' + data.responseJSON.errors[key][0] + '</li>'
+                  }
+                  html += '</ul></div>';
               
-            $('#error').show();
-            setTimeout(function(){ 
-                $('#error').hide(); 
-            }, 500000);
+           $('#error').show();
+            document.getElementById('error').innerHTML = html;
+            setInterval(function(){ 
+                $('#error').slideUp(3000); 
+            }, 8000);
           }
         });
-     }
-    
-       else{
+      }
+     else{
         return false;
-          
      }
     };
       

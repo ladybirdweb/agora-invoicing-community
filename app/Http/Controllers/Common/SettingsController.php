@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Payment\Currency;
 use App\Model\Plugin;
@@ -45,9 +46,15 @@ class SettingsController extends BaseSettingsController
     public function getKeys(ApiKey $apikeys)
     {
         try {
+            $licenseSecret = $apikeys->pluck('license_api_secret')->first();
+            $licenseUrl = $apikeys->pluck('license_api_url')->first();
+            $status = StatusSetting::pluck('license_status')->first();
+            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
+            $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -345,12 +352,11 @@ class SettingsController extends BaseSettingsController
                                ->addColumn('subject', function ($model) {
                                    return ucfirst($model->subject);
                                })
+                                ->addColumn('headers', function ($model) {
+                                    $headers = Markdown::convertToHtml(ucfirst($model->headers));
 
-                              ->addColumn('headers', function ($model) {
-                                  $headers = Markdown::convertToHtml(ucfirst($model->headers));
-
-                                  return $headers;
-                              })
+                                    return $headers;
+                                })
                               ->addColumn('status', function ($model) {
                                   return ucfirst($model->status);
                               })

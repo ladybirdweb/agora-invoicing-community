@@ -10,6 +10,7 @@ class BaseHomeController extends Controller
 {
     public static function decryptByFaveoPrivateKey($encrypted)
     {
+        // dump($encrypted);
         $encrypted = json_decode($encrypted);
         $sealed_data = $encrypted->seal;
         $envelope = $encrypted->envelope;
@@ -68,18 +69,18 @@ class BaseHomeController extends Controller
         }
     }
 
-    public function verifyOrder($order_number, $serial_key, $domain)
+    public function verifyOrder($order_number, $serial_key)
     {
-        if (ends_with($domain, '/')) {
-            $domain = substr_replace($domain, '', -1, 1);
-        }
+        // if (ends_with($domain, '/')) {
+        //     $domain = substr_replace($domain, '', -1, 1);
+        // }
         //dd($domain);
         try {
             $order = new Order();
             $this_order = $order
                     ->where('number', $order_number)
                     //->where('serial_key', $serial_key)
-                    ->where('domain', $domain)
+                    // ->where('domain', $domain)
                     ->first();
 
             return $this_order;
@@ -115,11 +116,11 @@ class BaseHomeController extends Controller
         return $domain;
     }
 
-    public function verificationResult($order_number, $serial_key, $domain)
+    public function verificationResult($order_number, $serial_key)
     {
         try {
-            if ($order_number && $domain && $serial_key) {
-                $order = $this->verifyOrder($order_number, $serial_key, $domain);
+            if ($order_number && $serial_key) {
+                $order = $this->verifyOrder($order_number, $serial_key);
                 if ($order) {
                     return ['status' => 'success', 'message' => 'this-is-a-valid-request',
                     'order_number'   => $order_number, 'serial' => $serial_key, ];

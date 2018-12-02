@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Common\BaseSettingsController;
 use App\Http\Controllers\Controller;
-use App\Model\Order\Order;
 use App\Model\Common\StatusSetting;
+use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Crypt;
@@ -163,13 +163,14 @@ class ExtendedOrderController extends Controller
         $clientEmail = $order->user->email;
         $order->domain = implode(',', $allowedDomains);
         $order->save();
-          $licenseStatus = StatusSetting::pluck('license_status')->first();
-         if ($licenseStatus == 1) {
-             $cont = new \App\Http\Controllers\License\LicenseController();
-        $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain);
-        //Now make Installation status as inactive
-        $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
-            }
+        $licenseStatus = StatusSetting::pluck('license_status')->first();
+        if ($licenseStatus == 1) {
+            $cont = new \App\Http\Controllers\License\LicenseController();
+            $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain);
+            //Now make Installation status as inactive
+            $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
+        }
+
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
 

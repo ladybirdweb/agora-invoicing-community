@@ -104,7 +104,7 @@ class BaseOrderController extends ExtendedOrderController
         if ($this->checkOrderCreateSubscription($order->id) == true) {
             $this->addSubscription($order->id, $plan_id, $version, $product);
         }
-        // $this->sendOrderMail($user_id, $order->id, $item->id);
+        $this->sendOrderMail($user_id, $order->id, $item->id);
         //Update Subscriber To Mailchimp
         $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
         $email = User::where('id', $user_id)->pluck('email')->first();

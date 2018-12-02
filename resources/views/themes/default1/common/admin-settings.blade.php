@@ -138,7 +138,7 @@ Application Settings
                     </div>
                 </div>
 
-                 <div class="col-md-2 col-sm-6">
+          <!--        <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
                             <a href="{{ url('settings/maillog') }}">
@@ -149,7 +149,7 @@ Application Settings
                         </div>
                         <p class="box-title" >{{Lang::get('message.cleanup_log')}}</p>
                     </div>
-                </div>
+                </div> -->
 
 
                

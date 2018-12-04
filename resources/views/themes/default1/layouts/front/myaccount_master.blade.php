@@ -90,7 +90,7 @@
                                 <div class="header-row pt-3">
                                      <nav class="header-nav-top">
                                           <ul class="nav nav-pills">
-                                            @if($set->email != NULL)
+                                            @if($set->company_email != NULL)
                                               <li class="nav-item d-none d-sm-block">
                                                   <a class="nav-link" href="mailto:{{$set->company_email}}"><i class="fas fa-envelope"></i> {{$set->company_email}}</a>
                                               </li>
@@ -126,9 +126,9 @@
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
                                                     <li class="dropdown">
-                                                        <a  class="nav-link" href="{{url('home')}}">
+                                                     <!--    <a  class="nav-link" href="{{url('home')}}">
                                                             pricing
-                                                        </a>
+                                                        </a> -->
 
                                                     </li>
                                                     <li class="dropdown dropdown-mega">
@@ -138,7 +138,7 @@
 
                                                     </li>
 
-                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
+                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
                                                     @foreach($pages as $page)
                                                     <li class="dropdown">
 
@@ -146,9 +146,9 @@
                                                         <?php
                                                         $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
                                                         if ($ifdrop > 0) {
-                                                            $class = 'dropdown-toggle';
+                                                            $class = 'nav-link dropdown-toggle';
                                                         } else {
-                                                            $class = '';
+                                                            $class = 'nav-link';
                                                         }
                                                         ?>
                                                         <a class="{{$class}}" href="{{$page->url}}">

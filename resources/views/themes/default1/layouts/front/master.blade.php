@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
 if($script){
@@ -6,7 +7,6 @@ if($script){
   $script = null;
 }
  ?>
-<!DOCTYPE html>
 <html>
 
 
@@ -71,11 +71,7 @@ if($script){
         document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
         //]]>
        </script>
-
-         
-    
-  
-      </head>
+   </head>
 
     <body>
 
@@ -139,12 +135,12 @@ if($script){
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    <li class="dropdown">
+                                                  <!--   <li class="dropdown">
                                                         <a  class="nav-link" href="{{url('home')}}">
                                                             pricing
                                                         </a>
 
-                                                    </li>
+                                                    </li> -->
                                                     <li class="dropdown dropdown-mega">
                                                         <a class="nav-link" href="{{url('contact-us')}}">
                                                             contact us
@@ -152,18 +148,17 @@ if($script){
 
                                                     </li>
  
-                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
+                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
 
                                                     @foreach($pages as $page)
                                                     <li class="dropdown">
-
                                                         @if($page->parent_page_id==0)
                                                         <?php
                                                         $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
                                                         if ($ifdrop > 0) {
-                                                            $class = 'dropdown-toggle';
+                                                            $class = 'nav-link dropdown-toggle';
                                                         } else {
-                                                            $class = '';
+                                                            $class = 'nav-link';
                                                         }
                                                         ?>
                                                         <a class="{{$class}}" href="{{$page->url}}">
@@ -447,7 +442,6 @@ if($script){
 
         <!-- Vendor -->
     </script>
-         <script>{!! NoCaptcha::renderJs('fr', true, 'recaptchaCallback') !!}  </script>
         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
@@ -463,8 +457,6 @@ if($script){
           <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
           <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
-              <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
-          <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
           <!-- Theme Custom -->

@@ -64,8 +64,7 @@ main
    
         <div class="row">
              @for ($i =0; $i < sizeof($template); $i++)
-
-               <div class="row">
+          <div class="row">
           <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">{{$heading[$i]}}</h4>
       </div>
        <h4 style="font-size: 20px;text-align: center;margin-left:400px">{{$tagline[$i]}}</h4>

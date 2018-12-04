@@ -93,7 +93,7 @@ Create New Page
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
-                        {!! Form::select('parent_page_id',[''=>'Select','Parent Pages'=>$parents],null,['class' => 'form-control']) !!}
+                        {!! Form::select('parent_page_id',['0'=>'Choose','Parent Pages'=>$parents],null,['class' => 'form-control']) !!}
 
                     </div>
 

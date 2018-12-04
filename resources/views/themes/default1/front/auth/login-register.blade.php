@@ -574,10 +574,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 @stop 
 @section('script')
 
-<script>
-   {!! NoCaptcha::renderJs($lang = 'en', $callback = true, $onLoadClass = 'recaptchaCallback') !!}
-  // {!! NoCaptcha::renderJs('en', true, 'recaptchaCallback') !!}
-</script>
+
 
   <script>
     function recaptchaCallback() {
@@ -1701,7 +1698,7 @@ fbq('track', 'CompleteRegistration');
   src="//www.googleadservices.com/pagead/conversion_async.js">
 </script>
 <!-- Facebook Pixel Code -->
-<script>
+<!-- <script>
 !function(f,b,e,v,n,t,s)
 {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
 n.callMethod.apply(n,arguments):n.queue.push(arguments)};
@@ -1713,7 +1710,7 @@ s.parentNode.insertBefore(t,s)}(window,document,'script',
  fbq('init', '308328899511239'); 
 fbq('track', 'PageView');
 
-</script>
+</script> -->
 
 <script type="text/javascript"
   src="//www.googleadservices.com/pagead/conversion_async.js">
@@ -1768,7 +1765,6 @@ function prevTab(elem) {
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
-<script src="{{asset("lb-faveo/js/intlTelInput.js")}}"></script>
 <script type="text/javascript">
     var telInput = $('#mobilenum');
     telInput.intlTelInput({
@@ -1780,7 +1776,6 @@ function prevTab(elem) {
         },
         initialCountry: "auto",
         separateDialCode: true,
-        utilsScript: "{{asset('lb-faveo/js/utils.js')}}"
     });
     $('.intl-tel-input').css('width', '100%');
 

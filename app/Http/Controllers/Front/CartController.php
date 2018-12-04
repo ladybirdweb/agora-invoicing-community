@@ -59,9 +59,10 @@ class CartController extends BaseCartController
 
     public function productList(Request $request)
     {
+        try {
         $cont = new \App\Http\Controllers\Front\PageController();
         $location = $cont->getLocation();
-        $country = $this->findCountryByGeoip($location['iso_code']);
+         $country = $this->findCountryByGeoip($location['iso_code']);
         $states = $this->findStateByRegionId($location['iso_code']);
         $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
         $state_code = $location['iso_code'].'-'.$location['state'];
@@ -73,11 +74,8 @@ class CartController extends BaseCartController
         if (!\Session::has('currency')) {
             \Session::put('currency', 'INR');
         }
-
-        try {
-            $page_controller = new PageController();
-
-            return $page_controller->cart();
+       $page_controller = new PageController();
+       return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

@@ -92,8 +92,14 @@ Edit Page
                     <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
-                        {!! Form::select('parent_page_id',['Choose'=>$parents],'null',['class' => 'form-control']) !!}
+                        <select name="parent_page_id"  class="form-control">
+                            <option value="0">Choose</option>
+                            @foreach($parents as $key=>$parent)
 
+                                   <option value="{{$key}}" <?php  if(in_array($parent, $parentName) ) { echo "selected";} ?>>{{$parent}}</option>
+                           
+                             @endforeach
+                        </select>
                     </div>
                     <?php
                          $defaults = DB::table('frontend_pages')->pluck('name','id')->toArray();

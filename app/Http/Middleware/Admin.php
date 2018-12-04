@@ -2,10 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
-//use Illuminate\Routing\Middleware;
-use Illuminate\Contracts\Auth\Guard;
 use App\DefaultPage;
+//use Illuminate\Routing\Middleware;
+use Closure;
+use Illuminate\Contracts\Auth\Guard;
 
 class Admin
 {
@@ -42,7 +42,6 @@ class Admin
         if (\Auth::user()->role == 'admin') {
             return $next($request);
         } elseif (\Auth::user()->role == 'user') {
-
             $url = \Session::get('session-url');
             if ($url) {
                 $content = \Session::get('content');
@@ -50,7 +49,7 @@ class Admin
 
                 return redirect($url);
             }
-            
+
             return redirect($defaulturl);
         } else {
             \Auth::logout();

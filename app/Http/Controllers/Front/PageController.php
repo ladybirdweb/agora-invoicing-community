@@ -102,7 +102,8 @@ class PageController extends GetPageTemplateController
             $date = $this->page->where('id', $id)->pluck('created_at')->first();
             $publishingDate = date('d/m/Y', strtotime($date));
             $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
-            $parentName = $this->page->where('id', $selectedParent)->pluck('name','id')->toArray();
+            $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
+
             return view('themes.default1.front.page.edit', compact('parents', 'page', 'default', 'selectedDefault', 'publishingDate','selectedParent',
                 'parentName'));
         } catch (\Exception $ex) {
@@ -383,6 +384,7 @@ class PageController extends GetPageTemplateController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

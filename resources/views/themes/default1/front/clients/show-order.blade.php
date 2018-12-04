@@ -85,9 +85,10 @@ active
                                             <div class="col-md-6">
                                             <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
-                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}"
-                                                >
-                                Reissue Licesnse</button>
+                                                    @if ($licenseStatus == 1)
+                                                <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
+                                               Reissue License</button>
+                                               @endif
                                                 </td>
                                            
                                                  </tr>

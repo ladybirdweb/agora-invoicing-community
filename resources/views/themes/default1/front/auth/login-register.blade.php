@@ -181,6 +181,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                 </div>
                                                 
                                                 @if ($captchaStatus==1 && $captchaSiteKey != '00' && $captchaSecretKey != '00')  
+                                                {!! NoCaptcha::renderJs() !!}
                                               {!! NoCaptcha::display() !!}
                                              <div class="loginrobot-verification"></div>
                                                 @endif

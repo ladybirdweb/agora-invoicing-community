@@ -151,8 +151,11 @@ class LicenseController extends Controller
     /*
     *  Edit Existing License
     */
-    public function updateLicensedDomain($clientEmail, $domain)
+    public function updateLicensedDomain($clientEmail, $domain,$productId,$expiryDate,$orderNo)
     {
+        if($expiryDate) {
+            $expiryDate = $expiryDate->toDateString();
+        }
         $url = $this->url;
         $isIP = (bool) ip2long($domain);
         if ($isIP == true) {
@@ -163,32 +166,35 @@ class LicenseController extends Controller
             $ip = '';
         }
         $api_key_secret = $this->api_key_secret;
-        $searchLicense = $this->searchLicenseId($clientEmail);
+        $searchLicense = $this->searchLicenseId($clientEmail,$productId);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $userId = $searchLicense['userId'];
-        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_require_domain=1&license_status=1&license_domain=$domain&license_ip=$ip");
+        $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&client_id=$userId&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=1&license_status=1&license_expire_date=$expiryDate&license_domain=$domain&license_ip=$ip");
     }
 
-    public function searchLicenseId($email)
+    public function searchLicenseId($email,$productId)
     {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $getLicenseId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=license&search_keyword=$email");
-
         $details = json_decode($getLicenseId);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-            $licenseId = $details->page_message[0]->license_id;
-            $productId = $details->page_message[0]->product_id;
-            $userId = $details->page_message[0]->client_id;
+            foreach ($details->page_message as $detail) {
+                if($detail->product_id == $productId) {
+                     $licenseId = $detail->license_id;
+                    $productId = $detail->product_id;
+                    $userId = $detail->client_id;
+                }
+            }
         }
-
-        return ['productId'=>$productId, 'userId'=>$userId, 'licenseId'=>$licenseId];
+          return ['productId'=>$productId, 'userId'=>$userId, 'licenseId'=>$licenseId];
     }
 
+
     //Update the Installation status as Inactive after Licensed Domain Is Chnaged
-    public function updateInstalledDomain($email)
+    public function updateInstalledDomain($email,$productId)
     {
         $installation_id = '';
         $installation_ip = '';
@@ -198,9 +204,13 @@ class LicenseController extends Controller
         $searchInstallationId = $this->searchInstallationId($email);
         $details = json_decode($searchInstallationId);
         if ($details->api_error_detected == 0 && is_array($details->page_message)) {
-            $installation_id = $details->page_message[0]->installation_id;
-            $installation_ip = $details->page_message[0]->installation_ip;
-        }
+              foreach ($details->page_message as $detail) {
+                if($detail->product_id == $productId) {
+                     $installation_id = $detail->installation_id;
+                    $installation_ip = $detail->installation_ip;
+                }
+            }
+    }
         // deactivate The Existing Installation
         $updateInstallation = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=installations_edit&installation_id=$installation_id&installation_ip=$installation_ip&installation_status=0");
     }

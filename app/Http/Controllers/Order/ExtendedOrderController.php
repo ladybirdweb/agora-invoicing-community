@@ -165,10 +165,11 @@ class ExtendedOrderController extends Controller
         $order->save();
         $licenseStatus = StatusSetting::pluck('license_status')->first();
         if ($licenseStatus == 1) {
+              $expiryDate = $order->subscription->ends_at;
             $cont = new \App\Http\Controllers\License\LicenseController();
-            $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain);
+            $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain,$order->product,$expiryDate,$order->number);
             //Now make Installation status as inactive
-            $updateInstallStatus = $cont->updateInstalledDomain($clientEmail);
+            $updateInstallStatus = $cont->updateInstalledDomain($clientEmail,$order->product);
         }
 
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];

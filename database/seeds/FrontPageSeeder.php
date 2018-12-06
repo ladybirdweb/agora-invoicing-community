@@ -48,6 +48,7 @@ class FrontPageSeeder extends Seeder
         \App\DefaultPage::create([
             'page_id'          => '1',
             'page_url'          => 'http://'.url('/pages/pricing'),
+        ]);
            
 
     }

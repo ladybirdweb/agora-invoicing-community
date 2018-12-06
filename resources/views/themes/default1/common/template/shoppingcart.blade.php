@@ -91,20 +91,6 @@ main
 
 </div>
 
-<script type="text/javascript">
-    
-
-    $( document ).ready(function() {
-        var printitem= sessionStorage.getItem('successmessage');
-
-         var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Well Done! </strong>'+printitem+'!</div>';
-         $('#alertMessage1').html(result);
-         sessionStorage.removeItem('successmessage');
-    
-});
-</script>
-
-
 @stop
 
 

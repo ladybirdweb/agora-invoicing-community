@@ -119,7 +119,7 @@ Edit Product
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
                                         <select name="group"  class="form-control">
-                            <option value="0">Choose</option>
+                            <option>Choose</option>
                             @foreach($groups as $key=>$group)
                                    <option value="{{$key}}" <?php  if(in_array($group, $selectedGroup) ) { echo "selected";} ?>>{{$group}}</option>
                            

@@ -99,21 +99,21 @@ class GroupController extends Controller
         try {
             $this->group->fill($request->input())->save();
 
-            $features = $request->input('features');
-            foreach ($features as $feature) {
-                $this->feature->create(['group_id' => $this->group->id, 'features' => $feature['name']]);
-            }
+            // $features = $request->input('features');
+            // foreach ($features as $feature) {
+            //     $this->feature->create(['group_id' => $this->group->id, 'features' => $feature['name']]);
+            // }
 
-            $values = $request->input('value');
-            $prices = $request->input('price');
-            $title = $request->input('title');
-            $type = $request->input('type');
-            $c = count($prices);
-            for ($i = 0; $i < $c; $i++) {
-                $this->config->create(['group_id' => $this->group->id, 'type' => $type,
-                    'title'                       => $title, 'options' => $values[$i]['name'],
-                    'price'                       => $prices[$i]['name'], ]);
-            }
+            // $values = $request->input('value');
+            // $prices = $request->input('price');
+            // $title = $request->input('title');
+            // $type = $request->input('type');
+            // $c = count($prices);
+            // for ($i = 0; $i < $c; $i++) {
+            //     $this->config->create(['group_id' => $this->group->id, 'type' => $type,
+            //         'title'                       => $title, 'options' => $values[$i]['name'],
+            //         'price'                       => $prices[$i]['name'], ]);
+            // }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
@@ -143,12 +143,8 @@ class GroupController extends Controller
     {
         try {
             $group = $this->group->where('id', $id)->first();
-            $features = $this->feature->select('id', 'group_id', 'features')->where('group_id', $id)->get();
-            $configs = $this->config->select('price', 'options')->where('group_id', $id)->get();
-            $title = $this->config->where('group_id', $id)->first()->title;
-            $type = $this->config->where('group_id', $id)->first()->type;
 
-            return view('themes.default1.product.group.edit', compact('group', 'features', 'configs', 'title', 'type'));
+            return view('themes.default1.product.group.edit', compact('group'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

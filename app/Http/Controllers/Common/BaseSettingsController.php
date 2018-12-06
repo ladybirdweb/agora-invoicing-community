@@ -13,7 +13,7 @@ use DateTimeZone;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
-class BaseSettingsController extends Controller
+class BaseSettingsController extends PaymentSettingsController
 {
     /**
      * Get the logged activity.

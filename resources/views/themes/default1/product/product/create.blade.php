@@ -91,7 +91,7 @@ Create New Product
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
                           <select name="group" value= "Choose" class="form-control">
-                             <option value="">Choose</option>
+                             <option>Choose</option>
                            @foreach($group as $key=>$value)
 
                              <option value={{$key}}>{{$value}}</option>

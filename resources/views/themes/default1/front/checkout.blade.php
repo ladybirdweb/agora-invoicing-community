@@ -166,9 +166,16 @@ $sum = 0;
                 
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
                 $total = Cart::getSubTotal();
-                                                        $sum = $item->getPriceSum();
-                                                        $tax = $total-$sum;
+                $sum = $item->getPriceSum();
+                 $tax = $total-$sum;
+                  // 
                 ?>
+                  <div class="form-group">
+
+                    <div class="col-md-6">
+                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                    </div>
+                </div>
                 <div class="form-group">
 
 

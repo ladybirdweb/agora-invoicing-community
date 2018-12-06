@@ -34,7 +34,6 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
-
             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -147,8 +146,6 @@ class PageController extends GetPageTemplateController
         try {
             $page = $this->page->where('id', $id)->first();
             $page->fill($request->except('created_at'))->save();
-            // $date = $request->input('created_at');
-
             $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
             $page->created_at = $date->format('Y-m-d H:i:s');
             $page->save();

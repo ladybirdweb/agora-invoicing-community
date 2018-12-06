@@ -102,9 +102,9 @@ class BaseOrderController extends ExtendedOrderController
         ]);
         $this->addOrderInvoiceRelation($invoiceid, $order->id);
         if ($this->checkOrderCreateSubscription($order->id) == true) {
-            $this->addSubscription($order->id, $plan_id, $version, $product);
+            $this->addSubscription($order->id, $plan_id, $version, $product,$serial_key);
         }
-        $this->sendOrderMail($user_id, $order->id, $item->id);
+        // $this->sendOrderMail($user_id, $order->id, $item->id);
         //Update Subscriber To Mailchimp
         $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
         $email = User::where('id', $user_id)->pluck('email')->first();
@@ -143,7 +143,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @throws \Exception
      */
-    public function addSubscription($orderid, $planid, $version, $product)
+    public function addSubscription($orderid, $planid, $version, $product,$serial_key)
     {
         try {
             if ($version == null) {
@@ -167,7 +167,8 @@ class BaseOrderController extends ExtendedOrderController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at);
+                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at, $serial_key);
+
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

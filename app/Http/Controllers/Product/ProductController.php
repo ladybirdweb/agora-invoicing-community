@@ -229,6 +229,7 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
+            dd($request->all());
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',
@@ -237,6 +238,7 @@ namespace App\Http\Controllers\Product;
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required|unique:products,product_sku',
+                        'group'      => 'sometimes|required|group',
                         // 'version' => 'required',
             ]);
 
@@ -343,6 +345,7 @@ namespace App\Http\Controllers\Product;
                         'description'=> 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required',
+                        'group'      => 'required',
       ]);
 
             if ($v->fails()) {

@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers\Common;
 
-use Illuminate\Http\Request;
-use App\Model\Common\Setting;
-use App\Model\Plugin;
-use Illuminate\Support\Collection;
 use App\Http\Controllers\Controller;
+use App\Model\Plugin;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class PaymentSettingsController extends Controller
 {
     public function getPlugin()
     {
         $plugins = $this->fetchConfig();
+
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
@@ -67,7 +67,7 @@ class PaymentSettingsController extends Controller
                             ->make(true);
     }
 
-     public function fetchConfig()
+    public function fetchConfig()
     {
         $configs = $this->readConfigs();
         //dd($configs);
@@ -99,11 +99,11 @@ class PaymentSettingsController extends Controller
                 $attributes[$key]['author'] = $field['author'];
             }
         }
+
         return $attributes;
     }
 
-
-     public function readConfigs()
+    public function readConfigs()
     {
         $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR;
         $directories = scandir($dir);
@@ -144,7 +144,6 @@ class PaymentSettingsController extends Controller
             return 'null';
         }
     }
-
 
     public function statusPlugin($slug)
     {
@@ -188,7 +187,6 @@ class PaymentSettingsController extends Controller
 
         return redirect()->back()->with('success', 'Status has changed');
     }
-
 
     public function postPlugins(Request $request)
     {
@@ -290,8 +288,7 @@ class PaymentSettingsController extends Controller
         return rmdir($dir);
     }
 
-
-        /**
+    /**
      * Reading the Filedirectory.
      *
      * @return type
@@ -303,5 +300,4 @@ class PaymentSettingsController extends Controller
 
         return $plugins;
     }
-
 }

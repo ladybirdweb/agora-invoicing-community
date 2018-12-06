@@ -246,8 +246,8 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-            \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
-            
+                \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+
                 $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');

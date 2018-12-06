@@ -4,7 +4,6 @@ namespace App\Plugins;
 
 abstract class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    
     public function boot()
     {
         if ($module = $this->getModule(func_get_args())) {
@@ -32,6 +31,7 @@ abstract class ServiceProvider extends \Illuminate\Support\ServiceProvider
     public function getModule($args)
     {
         $module = (isset($args[0]) and is_string($args[0])) ? $args[0] : null;
+
         return $module;
     }
 }

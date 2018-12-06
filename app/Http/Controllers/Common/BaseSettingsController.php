@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;

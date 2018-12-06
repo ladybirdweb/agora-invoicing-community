@@ -102,7 +102,7 @@ class BaseOrderController extends ExtendedOrderController
         ]);
         $this->addOrderInvoiceRelation($invoiceid, $order->id);
         if ($this->checkOrderCreateSubscription($order->id) == true) {
-            $this->addSubscription($order->id, $plan_id, $version, $product,$serial_key);
+            $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
         }
         // $this->sendOrderMail($user_id, $order->id, $item->id);
         //Update Subscriber To Mailchimp
@@ -143,7 +143,7 @@ class BaseOrderController extends ExtendedOrderController
      *
      * @throws \Exception
      */
-    public function addSubscription($orderid, $planid, $version, $product,$serial_key)
+    public function addSubscription($orderid, $planid, $version, $product, $serial_key)
     {
         try {
             if ($version == null) {
@@ -168,7 +168,6 @@ class BaseOrderController extends ExtendedOrderController
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
                 $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at, $serial_key);
-
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

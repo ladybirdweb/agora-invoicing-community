@@ -12,7 +12,7 @@ return [
     'version' => '1.0.0',
 
     'settings' => 'payment-gateway/ccavanue',
-    
+
     'website' => 'http://www.faveohelpdesk.com/',
 
 ];

@@ -459,7 +459,6 @@
         Route::post('get-renew-cost', 'Order\RenewController@getCost');
         Route::post('client/renew/{id}', 'Order\RenewController@renewByClient');
 
-        
         Route::get('generate-keys', 'HomeController@createEncryptionKeys');
 
         Route::get('get-code', 'WelcomeController@getCode');
@@ -496,7 +495,7 @@
 
             return redirect('auth/login');
         });
-        
+
         Route::post('serial', 'HomeController@serial');
         Route::post('v2/serial', 'HomeController@serialV2');
         Route::post('download/faveo', 'HomeController@downloadForFaveo');

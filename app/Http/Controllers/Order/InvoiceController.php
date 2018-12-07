@@ -1033,7 +1033,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     public function postRazorpayPayment($invoiceid, $grand_total)
     {
         try {
-            $payment_method =\Session::get('payment_method');
+            $payment_method = \Session::get('payment_method');
             $payment_status = 'success';
             $payment_date = \Carbon\Carbon::now()->toDateTimeString();
             $amount = $grand_total;

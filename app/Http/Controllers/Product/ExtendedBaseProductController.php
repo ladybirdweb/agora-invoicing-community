@@ -128,7 +128,8 @@ class ExtendedBaseProductController extends Controller
                 return response()->json(['error'=>$e->getMessage()]);
             }
             Bugsnag::notifyException($e);
-             return redirect()->back()->with('fails', $e->getMessage());
+
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 }

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
-use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
@@ -190,6 +189,7 @@ class ClientController extends AdvanceSearchController
             $this->sendWelcomeMail($user);
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $r = $mailchimp->addSubscriber($user->email);
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has been created successfully
@@ -403,6 +403,7 @@ class ClientController extends AdvanceSearchController
                      'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -421,6 +422,7 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

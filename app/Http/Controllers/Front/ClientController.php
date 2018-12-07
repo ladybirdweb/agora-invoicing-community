@@ -327,7 +327,7 @@ class ClientController extends BaseClientController
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
-                               $tz = \Auth::user()->timezone()->first()->name;
+                                $tz = \Auth::user()->timezone()->first()->name;
                                 $end = $this->getExpiryDate($model);
 
                                 return $end;

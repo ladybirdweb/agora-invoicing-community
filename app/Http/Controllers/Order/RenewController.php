@@ -100,7 +100,7 @@ class RenewController extends BaseRenewController
                 $orderNo = $sub->order->number;
                 $expiryDate = Carbon::parse($ends)->format('Y-m-d');
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate,$productId,$domain,$orderNo);
+                $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo);
             }
             $this->removeSession();
         } catch (Exception $ex) {

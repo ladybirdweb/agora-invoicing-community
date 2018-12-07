@@ -300,4 +300,25 @@ class PaymentSettingsController extends Controller
 
         return $plugins;
     }
+
+    public function deletePlugin($slug)
+    {
+        $dir = app_path().DIRECTORY_SEPARATOR.'Plugins'.DIRECTORY_SEPARATOR.$slug;
+        $this->deleteDirectory($dir);
+        /*
+         * remove service provider from app.php
+         */
+        $str = "'App\\Plugins\\$slug"."\\ServiceProvider',";
+        $path_to_file = base_path().DIRECTORY_SEPARATOR.'config'.DIRECTORY_SEPARATOR.'app.php';
+        $file_contents = file_get_contents($path_to_file);
+        $file_contents = str_replace($str, '//', $file_contents);
+        file_put_contents($path_to_file, $file_contents);
+        $plugin = new Plugin();
+        $plugin = $plugin->where('path', $slug)->first();
+        if ($plugin) {
+            $plugin->delete();
+        }
+
+        return redirect()->back()->with('success', 'Deleted Successfully');
+    }
 }

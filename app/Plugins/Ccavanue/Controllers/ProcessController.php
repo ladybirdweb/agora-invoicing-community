@@ -29,8 +29,8 @@ class ProcessController extends Controller
                 \Cart::clear();
                 \Session::set('invoiceid', $order->id);
             }
-
-            if ($request->input('payment_gateway') == 'ccavenue') {
+          
+            if ($request->input('payment_gateway') == 'ccavanue') {
                 if (!\Schema::hasTable('ccavenue')) {
                     throw new \Exception('Ccavanue is not configured');
                 }
@@ -82,7 +82,6 @@ class ProcessController extends Controller
             }
         } catch (\Exception $ex) {
             dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -94,7 +93,6 @@ class ProcessController extends Controller
             \View::addNamespace('plugins', $path);
             echo view('plugins::middle-page', compact('data', 'url', 'access_code', 'working_key'));
         } catch (\Exception $ex) {
-            dd($ex);
         }
     }
 
@@ -102,8 +100,7 @@ class ProcessController extends Controller
     {
         try {
             //dd($url);
-            $crypto = new Crypto();
-            $encrypted_data = $crypto->encrypt($data, $working_key); // Method for encrypting the data.
+            $encrypted_data =\Crypt::encrypt($data, $working_key); // Method for encrypting the data.
             echo "<form action=$url method=post name=redirect>";
             echo '<input type=hidden name=_token value=csrf_token()/>';
             echo "<input type=hidden name=encRequest value=$encrypted_data>";
@@ -125,7 +122,7 @@ class ProcessController extends Controller
             $workingKey = $ccavanue->working_key;  //Working Key should be provided here.
             $encResponse = $request->get('encResp');   //This is the response sent by the CCAvenue Server
 
-            $rcvdString = $crypto->decrypt($encResponse, $workingKey);  //Crypto Decryption used as per the specified working key.
+            $rcvdString = \Crypt::decrypt($encResponse, $workingKey);  //Crypto Decryption used as per the specified working key.
             $order_status = '';
             $decryptValues = explode('&', $rcvdString);
             $dataSize = count($decryptValues);

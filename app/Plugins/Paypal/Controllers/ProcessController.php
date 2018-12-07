@@ -104,8 +104,9 @@ class ProcessController extends Controller
 
                 $items = $invoice->invoiceItem()->get()->toArray();
                 //dd($items);
+                $c = count($items);
                 if (count($items) > 0) {
-                    for ($i = 0; $i < count($items); $i++) {
+                    for ($i = 0; $i < $c; $i++) {
                         $n = $i + 1;
                         $item = [
                             "item_name_$n" => $items[$i]['product_name'],
@@ -223,13 +224,14 @@ class ProcessController extends Controller
     public function success($invoiceid)
     {
         $control = new \App\Http\Controllers\Order\RenewController();
-        if ($control->checkRenew() == false) {
+        if ($control->checkRenew() === false) {
             $invoice = new \App\Model\Order\Invoice();
             $invoice = $invoice->findOrFail($invoiceid);
             $checkout_controller = new \App\Http\Controllers\Front\CheckoutController();
             $checkout_controller->checkoutAction($invoice);
         } else {
-            $control->successRenew();
+            $control->/* @scrutinizer ignore-call */
+            successRenew();
         }
         \Cart::clear();
     }

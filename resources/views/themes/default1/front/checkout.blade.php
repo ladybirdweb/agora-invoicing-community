@@ -170,17 +170,22 @@ $sum = 0;
                  $tax = $total-$sum;
                   // 
                 ?>
+                @if($gateways) {
                   <div class="form-group">
 
                     <div class="col-md-6">
                         {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
                 </div>
+            }
+            @endif
+                
                 <div class="form-group">
 
 
                    <div class="form-row">
                     <div class="col-md-6">
+                        {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                 </div>

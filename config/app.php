@@ -100,7 +100,9 @@ return [
     |--------------------------------------------------------------------------
     |
     | This key is used by the Illuminate encrypter service and should be set
-////
+
+
+			'App\Plugins\Paypal\ServiceProvider',
 
 'App\Plugins\Ccavenue\ServiceProvider',
 'App\Plugins\Ccavenue\ServiceProvider',
@@ -147,7 +149,7 @@ return [
 
     'providers' => [
 
-            'App\Plugins\Paypal\ServiceProvider',
+            //
 
             'App\Plugins\Ccavanue\ServiceProvider',
 

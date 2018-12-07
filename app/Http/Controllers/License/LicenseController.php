@@ -23,7 +23,7 @@ class LicenseController extends Controller
         $this->url = $this->license->license_api_url;
     }
 
-    public function postCurl($post_url, $post_info)
+    private function postCurl($post_url, $post_info)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $post_url);

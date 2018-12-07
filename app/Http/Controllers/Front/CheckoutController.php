@@ -200,9 +200,15 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
+         $v = $this->validate($request, [
+                'payment_gateway' => 'required',
+                    ], [
+                'payment_gateway.required' => 'Please choose a payment gateway',
+            ]);
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
+        \Session::put('payment_method',$payment_method);
         $paynow = false;
         if ($request->input('invoice_id')) {
             $paynow = true;
@@ -246,9 +252,8 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                // \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
-
-                $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
+              if($payment_method == 'razorpay') {
+                      $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                 $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                 $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
@@ -257,10 +262,13 @@ class CheckoutController extends InfoController
                         'phone', 'invoice', 'items', 'product', 'paynow', 'attributes',
                         'rzp_key', 'rzp_secret', 'apilayer_key'));
             } else {
+                  \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
+            }
+              
+            } else {
                 $action = $this->checkoutAction($invoice);
                 $check_product_category = $this->product($invoiceid);
-
-                //Update Subscriber To Mailchimp
+                 //Update Subscriber To Mailchimp
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
                 $url = '';
@@ -275,7 +283,6 @@ class CheckoutController extends InfoController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -317,15 +324,12 @@ class CheckoutController extends InfoController
     {
         try {
             $invoice = $this->invoiceItem->where('invoice_id', $invoiceid)->first();
-            // dd($invoice);
             $name = $invoice->product_name;
             $product = $this->product->where('name', $name)->first();
-
-            return $product;
+             return $product;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

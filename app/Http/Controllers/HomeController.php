@@ -345,6 +345,7 @@ class HomeController extends BaseHomeController
     {
         try {
             $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
+
             // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
             // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
             $this_order = $order

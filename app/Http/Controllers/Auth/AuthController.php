@@ -91,10 +91,7 @@ class AuthController extends BaseAuthController
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
-                $licenseStatus = StatusSetting::pluck('license_status')->first();
-                if ($licenseStatus == 1) {
-                    $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
-                }
+              
 
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);

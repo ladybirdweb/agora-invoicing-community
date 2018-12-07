@@ -190,11 +190,6 @@ class ClientController extends AdvanceSearchController
             $this->sendWelcomeMail($user);
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $r = $mailchimp->addSubscriber($user->email);
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
-            }
-
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
             return redirect()->back()->with('warning', 'User has been created successfully
@@ -408,7 +403,6 @@ class ClientController extends AdvanceSearchController
                      'selectedIndustry', 'selectedCompanySize'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -427,11 +421,6 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
-            }
-
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

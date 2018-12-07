@@ -327,7 +327,7 @@ class ClientController extends BaseClientController
                                 return $model->product()->first()->name;
                             })
                             ->addColumn('expiry', function ($model) {
-                                $tz = \Auth::user()->timezone()->first()->name;
+                               $tz = \Auth::user()->timezone()->first()->name;
                                 $end = $this->getExpiryDate($model);
 
                                 return $end;
@@ -355,6 +355,7 @@ class ClientController extends BaseClientController
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }

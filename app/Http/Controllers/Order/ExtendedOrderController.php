@@ -124,19 +124,14 @@ class ExtendedOrderController extends Controller
      *
      * @return type
      */
-    public function generateSerialKey($product_type)
+    public function generateSerialKey()
     {
         try {
-            // if ($product_type == 2) {
             $str = str_random(16);
             $str = strtoupper($str);
-            $str = Crypt::encrypt($str);
-
             return $str;
-            // }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
@@ -156,22 +151,20 @@ class ExtendedOrderController extends Controller
         $arrayOfDomains = [];
         $allDomains = $request->input('domain');
         $seperateDomains = explode(',', $allDomains); //Bifurcate the domains here
-
         $allowedDomains = $this->getAllowedDomains($seperateDomains);
         $id = $request->input('id');
         $order = Order::findorFail($id);
-        $clientEmail = $order->user->email;
+        $licenseCode = $order->serial_key;
         $order->domain = implode(',', $allowedDomains);
         $order->save();
         $licenseStatus = StatusSetting::pluck('license_status')->first();
         if ($licenseStatus == 1) {
             $expiryDate = $order->subscription->ends_at;
             $cont = new \App\Http\Controllers\License\LicenseController();
-            $updateLicensedDomain = $cont->updateLicensedDomain($clientEmail, $order->domain, $order->product, $expiryDate, $order->number);
+            $updateLicensedDomain = $cont->updateLicensedDomain($licenseCode, $order->domain, $order->product, $expiryDate, $order->number);
             //Now make Installation status as inactive
-            $updateInstallStatus = $cont->updateInstalledDomain($clientEmail, $order->product);
+            $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
-
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
 

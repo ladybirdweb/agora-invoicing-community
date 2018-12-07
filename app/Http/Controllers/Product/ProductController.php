@@ -229,7 +229,6 @@ namespace App\Http\Controllers\Product;
          */
         public function store(Request $request)
         {
-            dd($request->all());
             $input = $request->all();
             $v = \Validator::make($input, [
                         'name'       => 'required|unique:products,name',

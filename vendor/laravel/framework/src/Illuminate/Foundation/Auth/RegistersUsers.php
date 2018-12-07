@@ -50,7 +50,7 @@ trait RegistersUsers
             $country = $request->input('country');
             $currency = Setting::find(1)->default_currency;
             $currency_symbol = Setting::find(1)->default_symbol;
-           $cont = new \App\Http\Controllers\Front\PageController();
+            $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
             
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
@@ -102,7 +102,7 @@ trait RegistersUsers
                 return response()->json($response);
             }
         } catch (\Exception $ex) {
-            dd($ex);
+              app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
              return response()->json($result);
         }
@@ -133,7 +133,6 @@ trait RegistersUsers
             if (!$user) {
                 return redirect()->back()->with('fails', 'Invalid Email');
             }
-            
             if ($method == 'GET') {
                 $activate_model = $activate_model->where('email', $email)->first();
                 $token = $activate_model->token;

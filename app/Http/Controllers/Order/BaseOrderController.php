@@ -7,6 +7,7 @@ use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\User;
 use Bugsnag;
+use Crypt;
 use DateTime;
 use DateTimeZone;
 
@@ -84,8 +85,7 @@ class BaseOrderController extends ExtendedOrderController
         }
         $price = $item->subtotal;
         $qty = $item->quantity;
-        $serial_key = $this->checkProductForSerialKey($product);
-
+        $serial_key = $this->generateSerialKey();
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
         $order = $this->order->create([
@@ -93,7 +93,7 @@ class BaseOrderController extends ExtendedOrderController
             'invoice_item_id' => $item->id,
             'client'          => $user_id,
             'order_status'    => $order_status,
-            'serial_key'      => $serial_key,
+            'serial_key'      => Crypt::encrypt($serial_key),
             'product'         => $product,
             'price_override'  => $price,
             'qty'             => $qty,
@@ -208,28 +208,6 @@ class BaseOrderController extends ExtendedOrderController
         return $result;
     }
 
-    /**
-     * check wheather the product require serial key or not.
-     *
-     * @param type $product_id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function checkProductForSerialKey($product_id)
-    {
-        try {
-            $product = $this->product->where('id', $product_id)->first();
-            $product_type = $product->type;
-
-            return $this->generateSerialKey($product_type);
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     public function sendOrderMail($userid, $orderid, $itemid)
     {

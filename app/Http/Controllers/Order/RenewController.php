@@ -87,7 +87,7 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-            $clientEmail = $sub->user->email;
+            $licenseCode = $sub->order->serial_key;
             $current = $sub->ends_at;
             $ends = $this->getExpiryDate($current, $days);
             $sub->ends_at = $ends;
@@ -95,9 +95,12 @@ class RenewController extends BaseRenewController
             $checkIfProductHasExpiryDate = $sub->product->perpetual_license; //Check if product has Perpetual License
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1 && $checkIfProductHasExpiryDate == 1) {
+                $productId = $sub->product_id;
+                $domain = $sub->order->domain;
+                $orderNo = $sub->order->number;
                 $expiryDate = Carbon::parse($ends)->format('Y-m-d');
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $updateLicensedDomain = $cont->updateExpirationDate($clientEmail, $expiryDate);
+                $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate,$productId,$domain,$orderNo);
             }
             $this->removeSession();
         } catch (Exception $ex) {

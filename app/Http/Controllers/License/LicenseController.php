@@ -170,10 +170,12 @@ class LicenseController extends Controller
         $licenseCode = $searchLicense['code'];
         $updateLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_edit&product_id=$productId&license_code=$licenseCode&license_id=$licenseId&license_order_number=$orderNo&license_require_domain=1&license_status=1&license_expire_date=$expiryDate&license_domain=$domain&license_ip=$ip");
     }
- 
+
     public function searchLicenseId($licenseCode, $productId)
-    {   
-         $license='' ; $product = '' ; $code = '';
+    {
+        $license = '';
+        $product = '';
+        $code = '';
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $getLicenseId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
@@ -188,6 +190,7 @@ class LicenseController extends Controller
                 }
             }
         }
+
         return ['productId'=>$product, 'code'=>$code, 'licenseId'=>$license];
     }
 
@@ -219,15 +222,16 @@ class LicenseController extends Controller
         $api_key_secret = $this->api_key_secret;
         $getInstallId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
       &search_type=installation&search_keyword=$licenseCode");
-          return $getInstallId;
+
+        return $getInstallId;
     }
 
     //Update Expiration Date After Renewal
-    public function updateExpirationDate($licenseCode, $expiryDate,$productId,$domain,$orderNo)
+    public function updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo)
     {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
-        $searchLicense = $this->searchLicenseId($licenseCode,$productId);
+        $searchLicense = $this->searchLicenseId($licenseCode, $productId);
         $licenseId = $searchLicense['licenseId'];
         $productId = $searchLicense['productId'];
         $code = $searchLicense['code'];

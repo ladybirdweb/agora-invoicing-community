@@ -8,7 +8,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Subscription;
 use Bugsnag;
-use Crypt;
 use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
@@ -129,9 +128,11 @@ class ExtendedOrderController extends Controller
         try {
             $str = str_random(16);
             $str = strtoupper($str);
+
             return $str;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -165,6 +166,7 @@ class ExtendedOrderController extends Controller
             //Now make Installation status as inactive
             $updateInstallStatus = $cont->updateInstalledDomain($licenseCode, $order->product);
         }
+
         return ['message' => 'success', 'update'=>'Licensed Domain Updated'];
     }
 

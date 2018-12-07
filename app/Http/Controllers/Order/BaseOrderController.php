@@ -208,7 +208,6 @@ class BaseOrderController extends ExtendedOrderController
         return $result;
     }
 
-
     public function sendOrderMail($userid, $orderid, $itemid)
     {
         //order

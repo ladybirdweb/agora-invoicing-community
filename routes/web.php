@@ -145,6 +145,7 @@
          Route::get('activity-delete', 'Common\SettingsController@destroy')->name('activity-delete');
           Route::get('email-delete', 'Common\SettingsController@destroyEmail')->name('email-delete');
            Route::get('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
+            Route::get('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
             Route::get('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
 
         /*

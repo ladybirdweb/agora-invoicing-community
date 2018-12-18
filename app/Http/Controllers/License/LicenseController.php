@@ -11,8 +11,8 @@ use App\User;
 class LicenseController extends Controller
 {
     private $api_key_secret;
-    public $url;
-    public $license;
+    private $url;
+    private $license;
 
     public function __construct()
     {
@@ -35,7 +35,6 @@ class LicenseController extends Controller
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         $result = curl_exec($ch);
         curl_close($ch);
-
         return $result;
     }
 
@@ -82,17 +81,14 @@ class LicenseController extends Controller
             $url = $this->url;
             $api_key_secret = $this->api_key_secret;
             $getProductId = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
-      &search_type=product&search_keyword=$product_sku");
-
+            &search_type=product&search_keyword=$product_sku");
             $details = json_decode($getProductId);
             if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if Product_sku is updated
                 $productId = $details->page_message[0]->product_id;
             }
-
             return $productId;
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
-
             return response()->json(compact('result'), 500);
         }
     }

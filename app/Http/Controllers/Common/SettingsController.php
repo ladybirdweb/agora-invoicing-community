@@ -50,11 +50,14 @@ class SettingsController extends BaseSettingsController
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $updateStatus = StatusSetting::pluck('update_settings')->first();
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
+            $updateSecret = $apikeys->pluck('update_api_secret')->first();
+            $updateUrl = $apikeys->pluck('update_api_url')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -113,8 +116,10 @@ class SettingsController extends BaseSettingsController
             ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system',
-                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
+            return view(
+                'themes.default1.common.setting.system',
+                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency')
+            );
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -282,11 +287,11 @@ class SettingsController extends BaseSettingsController
                           ->addColumn('username', function ($model) {
                               $causer_id = $model->causer_id;
                               $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
-                              foreach ($names as $key => $value) {
+                            foreach ($names as $key => $value) {
                                   $fullName = $key.' '.$value;
 
                                   return $fullName;
-                              }
+                            }
                           })
                               ->addColumn('role', function ($model) {
                                   $causer_id = $model->causer_id;

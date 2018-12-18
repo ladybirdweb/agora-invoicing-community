@@ -270,7 +270,6 @@ class BaseProductController extends ExtendedBaseProductController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

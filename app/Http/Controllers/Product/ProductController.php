@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
+    use Validator;
     use App\Model\Common\StatusSetting;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
@@ -25,22 +26,22 @@ namespace App\Http\Controllers\Product;
 
     // use Input;
 
-    class ProductController extends BaseProductController
-    {
-        public $product;
-        public $price;
-        public $type;
-        public $subscription;
-        public $currency;
-        public $group;
-        public $plan;
-        public $tax;
-        public $tax_relation;
-        public $tax_class;
-        public $product_upload;
+class ProductController extends BaseProductController
+{
+    public $product;
+    public $price;
+    public $type;
+    public $subscription;
+    public $currency;
+    public $group;
+    public $plan;
+    public $tax;
+    public $tax_relation;
+    public $tax_class;
+    public $product_upload;
 
-        public function __construct()
-        {
+    public function __construct()
+    {
             $this->middleware('auth');
             $this->middleware('admin', ['except' => ['adminDownload', 'userDownload']]);
 
@@ -82,7 +83,7 @@ namespace App\Http\Controllers\Product;
 
             $license = new LicenseController();
             $this->licensing = $license;
-        }
+    }
 
         /**
          * Display a listing of the resource.
@@ -227,7 +228,7 @@ namespace App\Http\Controllers\Product;
          *
          * @return \Response
          */
-        public function store(Request $request)
+    public function store(Request $request)
         {
             $input = $request->all();
             $v = \Validator::make($input, [
@@ -237,7 +238,7 @@ namespace App\Http\Controllers\Product;
                         'category'   => 'required',
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required|unique:products,product_sku',
-                        'group'      => 'sometimes|required|group',
+                        'group'      => 'required',
                         // 'version' => 'required',
             ]);
 
@@ -246,9 +247,7 @@ namespace App\Http\Controllers\Product;
                 //     $currency = $input['currency'];
 
                 return redirect()->back()
-                        ->withErrors($v)
-                        ->withInput()
-                        ->with('currency');
+                        ->withErrors($v);
             }
 
             try {
@@ -256,6 +255,8 @@ namespace App\Http\Controllers\Product;
                 if ($licenseStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
                     $addProductToLicensing = $this->licensing->addNewProduct($input['name'], $input['product_sku']);
                 }
+                $licenseCont = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+                $addProductToLicensing = $licenseCont->addNewProduct($input['name'],$input['product_sku']);
                 if ($request->hasFile('image')) {
                     $image = $request->file('image')->getClientOriginalName();
                     $imagedestinationPath = 'dist/product/images';

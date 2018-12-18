@@ -200,11 +200,7 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-        $v = $this->validate($request, [
-                'payment_gateway' => 'required',
-                    ], [
-                'payment_gateway.required' => 'Please choose a payment gateway',
-            ]);
+      
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
@@ -252,6 +248,11 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
+                  $v = $this->validate($request, [
+                'payment_gateway' => 'required',
+                ], [
+                'payment_gateway.required' => 'Please choose a payment gateway',
+                ]);
                 if ($payment_method == 'razorpay') {
                     $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');

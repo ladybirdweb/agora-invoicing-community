@@ -74,11 +74,11 @@ API Keys
          <div class="row">
           <div class="box box-primary">
             <div class="box-header">
-              <h3 class="box-title">Striped Full Width Table</h3>
+              <h3 class="box-title">Api Keys Settings</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
-               <div id="alertMessage"></div>
+            
               <table class="table table-striped ">
                 <tr>
                  
@@ -87,9 +87,10 @@ API Keys
                    <th>Fields</th>
                   <th>Action</th>
                 </tr>
+                   <div id="alertMessage"></div>
                 <tr>
                   
-                  <td>License Manager</td>
+                  <td>Auto PHP Licenser</td>
                   <td>
                     <label class="switch toggle_event_editing">
                           
@@ -102,13 +103,13 @@ API Keys
 
                   <td class="licenseEmptyField">
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
                      
                          
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:300px']) !!}
                         
                   </td>
                   <td class="LicenseField hide">
@@ -127,6 +128,49 @@ API Keys
                    
             </td>
                   <td><button type="submit" class="form-group btn btn-primary" onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+
+                <tr>
+                
+                  <td>Auto Update</td>
+                  <td>
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$updateStatus}}"  name="modules_settings" 
+                          class="checkbox3" id="update">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+
+                  <td class="updateEmptyField">
+                  {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('update_api',null,['class' => 'form-control updatesecretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                     
+                         
+                  
+                        <!-- last name -->
+                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('update_api',null,['class' => 'form-control updateurlHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        
+                  </td>
+                  <td class="updateField hide">
+                    
+                   
+                        <!-- last name -->
+                        {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('update_api_secret',$updateSecret,['class' => 'form-control','id'=>'update_api_secret','style'=>'width:300px']) !!}
+                         <h6 id="update_apiCheck"></h6>
+                         <br/>
+                  
+                        <!-- last name -->
+                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('update_api_url',$updateUrl,['class' => 'form-control','id'=>'update_api_url','style'=>'width:300px']) !!}
+                        <h6 id="update_urlCheck"></h6>
+                   
+               </td>
+                  <td><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
@@ -424,6 +468,92 @@ if ($('#License').prop("checked")) {
  };
 
 
+
+ //Auto Update
+    $(document).ready(function(){
+
+      var status = $('.checkbox3').val();
+     if(status ==1) {
+     $('#update').prop('checked', true);
+       $('.updateField').removeClass("hide");
+            $('.updateEmptyField').addClass("hide");
+     } else if(status ==0) {
+       $('.updateField').addClass("hide");
+               $('.updateEmptyField').removeClass("hide");
+              
+     }
+      });
+ $('#update_apiCheck').hide();
+   $('#update').change(function () {
+        if ($(this).prop("checked")) {
+            // checked
+           $('#update_api_secret').val();
+                $('#update_api_url').val();
+            $('.updateField').removeClass("hide");
+            $('.updateEmptyField').addClass("hide");
+        }
+        else{
+            $('.updateField').addClass("hide");
+             $('.updatesecretHide').val('');
+                $('.updateurlHide').val('');
+               $('.updateEmptyField').removeClass("hide");
+               
+               
+        }
+    });
+
+function updateDetails(){
+if ($('#update').prop("checked")) {
+  console.log($('#update_api_secret').val());
+          var checkboxvalue = 1;
+          if ($('#update_api_secret').val() == '' ) {
+             $('#update_apiCheck').show();
+             $('#update_apiCheck').html("Please Enter API Secret Key");
+              $('#update_api_secret').css("border-color","red");
+              $('#update_apiCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         if ($('#update_api_url').val() == '' ) {
+            alert('df');
+             $('#update_urlCheck').show();
+             $('#update_urlCheck').html("Please Enter API URL");
+              $('#update_api_url').css("border-color","red");
+              $('#update_urlCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         
+    }
+    else{
+          var checkboxvalue = 0;
+         }
+       $("#submitudpate").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+  $.ajax({
+    
+    url : '{{url("updateDetails")}}',
+    type : 'get',
+    data: {
+       "status": checkboxvalue,
+       "update_api_secret": $('#update_api_secret').val(),
+       "update_api_url" :$('#update_api_url').val(),
+      },
+      success: function (response) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submitudpate").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+                setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+
+
+ });
+ };
+
+
+
+
+
  //Google Recaptcha
    $(document).ready(function(){
       var status = $('.checkbox2').val();
@@ -502,7 +632,7 @@ if ($('#captcha').prop("checked")) {
  };
 
 
-//Twitter
+
 
 </script>
 @stop

@@ -130,6 +130,7 @@ class BaseOrderController extends ExtendedOrderController
             return $this->product->where('name', $name)->first();
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

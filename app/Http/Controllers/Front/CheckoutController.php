@@ -200,7 +200,6 @@ class CheckoutController extends InfoController
 
     public function postCheckout(Request $request)
     {
-      
         $invoice_controller = new \App\Http\Controllers\Order\InvoiceController();
         $info_cont = new \App\Http\Controllers\Front\InfoController();
         $payment_method = $request->input('payment_gateway');
@@ -248,7 +247,7 @@ class CheckoutController extends InfoController
                 $attributes = $this->getAttributes($content);
             }
             if (Cart::getSubTotal() != 0 || $cost > 0) {
-                  $v = $this->validate($request, [
+                $v = $this->validate($request, [
                 'payment_gateway' => 'required',
                 ], [
                 'payment_gateway.required' => 'Please choose a payment gateway',

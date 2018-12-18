@@ -220,7 +220,7 @@ class BaseSettingsController extends PaymentSettingsController
                 $selectedDays[] = $daysList;
             }
         }
-        $delLogDays = ['720'=> '720 Days', '365'=>'365 days', '180'=>'180 Days',
+        $delLogDays = ['720' => '720 Days', '365'=>'365 days', '180'=>'180 Days',
         '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
 
@@ -399,13 +399,13 @@ class BaseSettingsController extends PaymentSettingsController
     //Save Auto Update status in Database
     public function updateDetails(Request $request)
     {
-            $status = $request->input('status');
-            $updateApiSecret = $request->input('update_api_secret');
-            $updateApiUrl = $request->input('update_api_url');
-            StatusSetting::where('id', 1)->update(['update_settings'=>$status]);
-            ApiKey::where('id', 1)->update(['update_api_secret'=>$updateApiSecret, 'update_api_url'=>$updateApiUrl]);
+        $status = $request->input('status');
+        $updateApiSecret = $request->input('update_api_secret');
+        $updateApiUrl = $request->input('update_api_url');
+        StatusSetting::where('id', 1)->update(['update_settings'=>$status]);
+        ApiKey::where('id', 1)->update(['update_api_secret'=>$updateApiSecret, 'update_api_url'=>$updateApiUrl]);
 
-            return ['message' => 'success', 'update'=>'Auto Update Settings Updated'];
+        return ['message' => 'success', 'update'=>'Auto Update Settings Updated'];
     }
 
     //Save Google recaptch site key and secret in Database

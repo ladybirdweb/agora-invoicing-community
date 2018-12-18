@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers\AutoUpdate;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class AutoUpdateController extends Controller
 {
     private function postCurl($post_url, $post_info)
     {
-        $ch=curl_init();
+        $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $post_url);
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_info);
@@ -17,12 +16,12 @@ class AutoUpdateController extends Controller
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        $result=curl_exec($ch);
+        $result = curl_exec($ch);
         curl_close($ch);
 
         return $result;
     }
-    
+
     /*
     *  Add New Product
     */

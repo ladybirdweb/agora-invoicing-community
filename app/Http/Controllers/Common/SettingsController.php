@@ -287,11 +287,11 @@ class SettingsController extends BaseSettingsController
                           ->addColumn('username', function ($model) {
                               $causer_id = $model->causer_id;
                               $names = User::where('id', $causer_id)->pluck('last_name', 'first_name');
-                            foreach ($names as $key => $value) {
+                              foreach ($names as $key => $value) {
                                   $fullName = $key.' '.$value;
 
                                   return $fullName;
-                            }
+                              }
                           })
                               ->addColumn('role', function ($model) {
                                   $causer_id = $model->causer_id;

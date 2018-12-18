@@ -35,6 +35,7 @@ class LicenseController extends Controller
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
         $result = curl_exec($ch);
         curl_close($ch);
+
         return $result;
     }
 
@@ -86,9 +87,11 @@ class LicenseController extends Controller
             if ($details->api_error_detected == 0 && is_array($details->page_message)) {//This is not true if Product_sku is updated
                 $productId = $details->page_message[0]->product_id;
             }
+
             return $productId;
         } catch (\Exception $ex) {
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }

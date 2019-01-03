@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
+use App\Model\Common\StatusSetting;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
-use App\Model\Common\StatusSetting;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -57,11 +57,11 @@ class ExtendedBaseProductController extends Controller
         $file_upload->title = $request->input('title');
         $file_upload->description = $request->input('description');
         $file_upload->version = $request->input('version');
-          $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
+        $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
         if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
             $productSku = $file_upload->product->product_sku;
-               $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-               $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
+            $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+            $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
         }
         if ($request->file) {
             $file = $request->file('file')->getClientOriginalName();
@@ -71,7 +71,7 @@ class ExtendedBaseProductController extends Controller
             $file_upload->file = $file;
         }
         $file_upload->save();
-       
+
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 

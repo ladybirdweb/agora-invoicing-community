@@ -16,10 +16,9 @@ class AutoUpdateController extends Controller
         $model = new ApiKey();
         $this->update = $model->firstOrFail();
 
-        $this->api_key_secret =  $this->update->update_api_secret;
+        $this->api_key_secret = $this->update->update_api_secret;
         $this->url = $this->update->update_api_url;
     }
-
 
     private function postCurl($post_url, $post_info)
     {
@@ -70,14 +69,13 @@ class AutoUpdateController extends Controller
         $addNewVersion = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=versions_edit&product_id=productId&version_id=$versionId&version_number=$version_number&version_status=1");
     }
 
-
     /*
     *  Search Version
     */
     public function searchVersion($version_number, $product_sku)
     {
-        $versionId = '' ;
-        $productId = '' ;
+        $versionId = '';
+        $productId = '';
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $getVersion = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=search
@@ -91,6 +89,7 @@ class AutoUpdateController extends Controller
                 }
             }
         }
+
         return ['version_id'=>$versionId, 'product_id'=>$productId];
     }
 }

@@ -280,7 +280,7 @@ class HomeController extends BaseHomeController
         echo '</form>';
         echo"<script language='javascript'>document.redirect.submit();</script>";
     }
-   
+
     public function checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version)
     {
         try {
@@ -400,19 +400,19 @@ class HomeController extends BaseHomeController
     public function checkUpdatesExpiry(Request $request)
     {
         $v = \Validator::make($request->all(), [
-          'order_number' =>'required',
+          'order_number' => 'required',
         ]);
         if ($v->fails()) {
             $error = $v->errors();
+
             return response()->json(compact('error'));
         }
+
         try {
             $licenseCode = $request->input('licenseCode');
             $encryptedCode = \Crypt::encrypt($licenseCode);
-            $orderId = Order::where('serial_key',$$encryptedCode)->pluck('id')->first();
-
+            $orderId = Order::where('serial_key', $$encryptedCode)->pluck('id')->first();
         } catch (\Exception $e) {
         }
     }
 }
-

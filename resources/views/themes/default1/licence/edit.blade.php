@@ -1,96 +1,23 @@
-@extends('themes.default1.layouts.master')
-@section('content')
-<div class="box box-primary">
-
-    <div class="content-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-        {!! Form::model($licence,['url'=>'licences/'.$licence->id,'method'=>'patch']) !!}
-        <h4>{{Lang::get('message.licences')}}	{!! Form::submit(Lang::get('message.save'),['class'=>'form-group btn btn-primary pull-right'])!!}</h4>
-
-    </div>
-
-    <div class="box-body">
-
-        <div class="row">
-
-            <div class="col-md-12">
-
-
-
-                <div class="row">
-
-                    <div class="col-md-12 form-group {{ $errors->has('name') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('name',Lang::get('message.name'),['class'=>'required']) !!}
-                        {!! Form::text('name',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-12 form-group {{ $errors->has('description') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('description',Lang::get('message.description')) !!}
-                        {!! Form::textarea('description',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-12 form-group {{ $errors->has('price') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}
-                        {!! Form::text('price',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-12 form-group {{ $errors->has('number_of_sla') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('number_of_sla',Lang::get('message.number_of_sla')) !!}
-                        {!! Form::text('number_of_sla',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-12 form-group {{ $errors->has('shoping_cart_link') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('shoping_cart_link',Lang::get('message.shoping_cart_link')) !!}
-                        {!! Form::text('shoping_cart_link',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-
-                </div>
-
-
+ <div class="modal fade" id="edit-type">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">{{Lang::get('message.edit-license-type')}}</h4>
             </div>
-
+           {!! Form::open(['method' => 'patch', 'id' =>  'type-edit-form'])!!}
+            <div class="modal-body">
+                
+                <div class= "form-group {{ $errors->has('name') ? 'has-error' : '' }}">
+                    {!! Form::label('name',Lang::get('message.license-type-name'),['class'=>'required']) !!}
+                    <input type="text" name="name" id="tname" class="form-control" required="required">
+                </div>
+            </div>
+            <div class="modal-footer">
+                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary " id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-refresh">&nbsp;&nbsp;</i>{!!Lang::get('message.update')!!}</button>
+            </div>
+            {!! Form::close() !!}
         </div>
-
     </div>
-
 </div>
-
-
-{!! Form::close() !!}
-@stop

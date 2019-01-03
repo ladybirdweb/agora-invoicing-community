@@ -141,8 +141,7 @@ class LicenseController extends Controller
         $orderNo = $order->number;
         $domain = $order->domain;
         $productId = $this->searchProductId($sku);
-        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key
-        &license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=5&license_expire_date=$expiry&license_disable_ip_verification=0");
+        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=2&license_expire_date=$expiry&license_updates_date=2019-09-28&license_disable_ip_verification=0");
     }
 
     /*

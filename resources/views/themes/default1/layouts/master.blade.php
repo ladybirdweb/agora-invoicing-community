@@ -355,6 +355,9 @@ function move() {
         <!-- icheck -->
         <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
+        <script>
+
+        </script>
         
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->

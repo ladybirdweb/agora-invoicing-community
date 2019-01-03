@@ -151,7 +151,6 @@ class HomeController extends BaseHomeController
     public static function decryptByFaveoPrivateKeyold($encrypted)
     {
         try {
-
             // Get the private Key
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);
@@ -281,7 +280,7 @@ class HomeController extends BaseHomeController
         echo '</form>';
         echo"<script language='javascript'>document.redirect.submit();</script>";
     }
-
+   
     public function checkUpdate($order_number, $serial_key, $domain, $faveo_name, $faveo_version)
     {
         try {
@@ -391,4 +390,29 @@ class HomeController extends BaseHomeController
 
         return response()->json($message);
     }
+
+    /*
+     * Check if the Product is valid For Auto Updates
+    * @params string Serial Key in encrypted
+    * @return array
+    */
+
+    public function checkUpdatesExpiry(Request $request)
+    {
+        $v = \Validator::make($request->all(), [
+          'order_number' =>'required',
+        ]);
+        if ($v->fails()) {
+            $error = $v->errors();
+            return response()->json(compact('error'));
+        }
+        try {
+            $licenseCode = $request->input('licenseCode');
+            $encryptedCode = \Crypt::encrypt($licenseCode);
+            $orderId = Order::where('serial_key',$$encryptedCode)->pluck('id')->first();
+
+        } catch (\Exception $e) {
+        }
+    }
 }
+

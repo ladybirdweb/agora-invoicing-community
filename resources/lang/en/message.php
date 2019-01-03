@@ -595,4 +595,15 @@ return [
      'nocaptcha_secret' => 'NOCAPTCHA_SECRET',
      'nocaptcha_sitekey'=> 'NOCAPTCHA_SITEKEY',
 
+     /*
+     * License
+     */
+
+     'create-license-type' => 'Create New License Type',
+     'edit-license-type'  => 'Edit License Type',
+     'license-type'        => 'License Type',
+     'license-type-name'   =>  'License Type Name',
+     'add-permissions'     => 'Add Permissions',
+     'permissions'         => 'Permissions',
+
 ];

@@ -165,7 +165,7 @@ class ProductController extends BaseProductController
     public function save(Request $request)
     {
         try {
-            $product_id = Product::where('name', '=', $request->input('product'))->select('id')->first();
+            $product_id = Product::where('name', $request->input('product'))->select('id')->first();
 
             $this->product_upload->product_id = $product_id->id;
             $this->product_upload->title = $request->input('title');
@@ -181,11 +181,15 @@ class ProductController extends BaseProductController
             }
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
-
+            $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
+            if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
+                $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+                $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), '1');
+            }
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
+            app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-
             return redirect()->with('fails', $e->getMessage());
         }
     }
@@ -212,9 +216,19 @@ class ProductController extends BaseProductController
             $periods = $this->period->pluck('name', 'days')->toArray();
             $taxes = $this->tax_class->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.product.product.create',
-                    compact('subscription', 'type', 'periods', 'currency',
-                        'group', 'cartUrl', 'products', 'taxes'));
+            return view(
+                'themes.default1.product.product.create',
+                compact(
+                    'subscription',
+                    'type',
+                    'periods',
+                    'currency',
+                    'group',
+                    'cartUrl',
+                    'products',
+                    'taxes'
+                )
+            );
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 
@@ -272,7 +286,7 @@ class ProductController extends BaseProductController
             $currencies = $request->input('currency');
             $taxes = $request->input('tax');
             if ($taxes) {
-                foreach ($taxes as $key=>$value) {
+                foreach ($taxes as $key => $value) {
                     $newtax = new TaxProductRelation();
                     $newtax->product_id = $product_id;
                     $newtax->tax_class_id = $value;
@@ -317,10 +331,27 @@ class ProductController extends BaseProductController
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
             $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
 
-            return view('themes.default1.product.product.edit',
-                    compact('product', 'periods', 'type', 'subscription',
-                        'currency', 'group', 'price', 'cartUrl', 'products',
-                        'regular', 'sales', 'taxes', 'saved_taxes', 'savedTaxes', 'selectedCategory', 'selectedGroup'));
+            return view(
+                'themes.default1.product.product.edit',
+                compact(
+                    'product',
+                    'periods',
+                    'type',
+                    'subscription',
+                    'currency',
+                    'group',
+                    'price',
+                    'cartUrl',
+                    'products',
+                    'regular',
+                    'sales',
+                    'taxes',
+                    'saved_taxes',
+                    'savedTaxes',
+                    'selectedCategory',
+                    'selectedGroup'
+                )
+            );
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 
@@ -345,7 +376,7 @@ class ProductController extends BaseProductController
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required',
                         'group'      => 'required',
-      ]);
+        ]);
 
         if ($v->fails()) {
             return redirect()->back()->with('errors', $v->errors());
@@ -420,7 +451,7 @@ class ProductController extends BaseProductController
                         echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */
-                    \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
+                        \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';

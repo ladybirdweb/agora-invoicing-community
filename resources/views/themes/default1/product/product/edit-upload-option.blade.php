@@ -39,7 +39,7 @@
                 <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('Version',Lang::get('Version'),['class'=>'required']) !!}
-                    <input type="text" id="product-version" class="form-control" name="version">
+                    <input type="text" id="product-version" class="form-control" name="version" readonly>
                  </div>
 
                   <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">

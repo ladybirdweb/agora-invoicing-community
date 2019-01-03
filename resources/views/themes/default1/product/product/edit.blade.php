@@ -547,8 +547,6 @@ Edit Product
          var title = $(e).data('title')
         
         var version= $(e).data('version')
-        console.log(title,description,version)
-
         var description = $(e).data('description') 
         tinymce.get('product-description').setContent(description);
          $("#product-title").val(title)
@@ -557,10 +555,7 @@ Edit Product
          
           $("#upload-edit-form").attr('action', url)
 
-
-
-
-     }
+    }
         </script>
         <script>
         function checking(e){

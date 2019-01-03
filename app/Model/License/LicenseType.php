@@ -14,18 +14,18 @@ class LicenseType extends Model
 
     protected static $logOnlyDirty = true;
 
-
     public function getDescriptionForEvent(string $eventName): string
     {
         if ($eventName == 'created') {
             return 'License Type '.$this->name.' was created';
         }
-		if ($eventName == 'updated') {
+        if ($eventName == 'updated') {
             return 'License Type  <strong> '.$this->name.'</strong> was updated';
         }
         if ($eventName == 'deleted') {
             return 'License Type <strong> '.$this->name.' </strong> was deleted';
         }
+
         return '';
     }
 
@@ -36,6 +36,6 @@ class LicenseType extends Model
 
     public function delete()
     {
-       $this->permissions()->detach();
+        $this->permissions()->detach();
     }
 }

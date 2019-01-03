@@ -142,6 +142,7 @@ class BaseOrderController extends ExtendedOrderController
      * @param type $planid
      *
      * @throws \Exception
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)
@@ -162,8 +163,8 @@ class BaseOrderController extends ExtendedOrderController
                 }
                 $user_id = $this->order->find($orderid)->client;
                 $this->subscription->create(['user_id' => $user_id,
-                    'plan_id'  => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'update_ends_at' =>$ends_at,
-                     'version' => $version, 'product_id' =>$product, ]);
+                    'plan_id'                          => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'update_ends_at' =>$ends_at,
+                     'version'                         => $version, 'product_id' =>$product, ]);
             }
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {

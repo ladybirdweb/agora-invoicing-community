@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\License;
 
+use App\Http\Controllers\Controller;
+use App\Model\License\LicensePermission;
+use App\Model\License\licenseType;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Model\License\licenseType;
-use App\Model\License\LicensePermission;
-use App\Http\Controllers\Controller;
 
 /*
 * Operations for License Permissions Module to be performed here
@@ -15,6 +15,7 @@ use App\Http\Controllers\Controller;
 class LicensePermissionsController extends Controller
 {
     public $licensePermission;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -23,23 +24,24 @@ class LicensePermissionsController extends Controller
         $licensePermission = new LicensePermission();
         $this->licensePermission = $licensePermission;
     }
-    
-    
+
     public function index()
     {
-        $allPermissions =  $this->licensePermission->select('id', 'permissions')->get();
+        $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
         $allLicense = LicenseType::select('name', 'id')->get();
+
         return view('themes.default1.licence.permissions.index', compact('allPermissions', 'allLicense'));
     }
-    
+
     /*
     * Get all the License  and their links with their permissions
     */
     public function getPermissions()
     {
         try {
-            $allPermissions =  $this->licensePermission->select('id', 'permissions')->get();
+            $allPermissions = $this->licensePermission->select('id', 'permissions')->get();
             $licenseType = LicenseType::select('id', 'name')->get();
+
             return \DataTables::of($licenseType)
             ->addColumn('checkbox', function ($model) {
                 return "<input type='checkbox' class='type_checkbox' 
@@ -48,13 +50,15 @@ class LicensePermissionsController extends Controller
             ->addColumn('license_type', function ($model) {
                 return ucfirst($model->name);
             })
-			->addColumn('permissions', function ($model) {
+            ->addColumn('permissions', function ($model) {
                 $permissions = $model->permissions->pluck('permissions');
                 $allPermissions = $this->showPermissions($permissions);
+
                 return $allPermissions;
             })
-		    ->addColumn('action', function ($model) {
+            ->addColumn('action', function ($model) {
                 $selectedPermission = $model->permissions->pluck('id');
+
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-permission= '$selectedPermission' 
              class='btn btn-sm btn-primary btn-xs addPermission'><i class='fa fa-plus'
@@ -65,6 +69,7 @@ class LicensePermissionsController extends Controller
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -74,14 +79,16 @@ class LicensePermissionsController extends Controller
     */
     public function showPermissions($permissions)
     {
-        if (count($permissions)>0) {
+        if (count($permissions) > 0) {
             $html = '<ul>';
             foreach ($permissions as $permission) {
-                $html .= '<li><b>' . $permission . '</b></li>';
+                $html .= '<li><b>'.$permission.'</b></li>';
             }
-            return $html . '</ul>';
+
+            return $html.'</ul>';
         } else {
             $html = 'No Permissions Selected';
+
             return $html;
         }
     }
@@ -97,11 +104,13 @@ class LicensePermissionsController extends Controller
             \DB::table('license_license_permissions')->where('license_type_id', $license)->delete();
             $licenseType = LicenseType::find($request->input('licenseId'));
             $licenseType->permissions()->attach($request->input('permissionid'));
-            return ['message' =>'success' , 'update'=> 'Permissions Updated Successfully'];
+
+            return ['message' =>'success', 'update'=> 'Permissions Updated Successfully'];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
+
             return response()->json(compact('result'), 500);
         }
     }
@@ -111,13 +120,14 @@ class LicensePermissionsController extends Controller
     */
     public function tickPermission(Request $request)
     {
-        $licenseTypeInstance =LicenseType::find($request->input('license'));
+        $licenseTypeInstance = LicenseType::find($request->input('license'));
         $allPermission = $licenseTypeInstance->permissions;
-        if (count($allPermission)>0) {
+        if (count($allPermission) > 0) {
             $permissionsArray = $allPermission->pluck('id');
         } else {
-            $permissionsArray =[];
+            $permissionsArray = [];
         }
-        return response()->json(['permissions'=> $permissionsArray , 'message'=>'success']);
+
+        return response()->json(['permissions'=> $permissionsArray, 'message'=>'success']);
     }
 }

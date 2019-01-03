@@ -11,7 +11,7 @@ class Subscription extends Model
 {
     use LogsActivity;
     protected $table = 'subscriptions';
-    protected $fillable = ['name', 'description', 'days', 'ends_at','update_ends_at',
+    protected $fillable = ['name', 'description', 'days', 'ends_at', 'update_ends_at',
     'user_id', 'plan_id', 'order_id', 'deny_after_subscription', 'version', 'product_id', ];
     protected $dates = ['ends_at'];
     protected static $logName = 'Subscription';

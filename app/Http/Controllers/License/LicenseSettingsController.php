@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers\License;
 
-use Bugsnag;
 use App\Model\License\licenseType;
+use Bugsnag;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class LicenseSettingsController extends LicensePermissionsController
 {
     private $licenseType;
+
     public function __construct()
     {
         $this->middleware('auth');
@@ -18,6 +18,7 @@ class LicenseSettingsController extends LicensePermissionsController
         $licenseType = new licenseType();
         $this->licenseType = $licenseType;
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -94,7 +95,8 @@ class LicenseSettingsController extends LicensePermissionsController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -102,12 +104,11 @@ class LicenseSettingsController extends LicensePermissionsController
         //
     }
 
-
-
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request)
@@ -116,21 +117,20 @@ class LicenseSettingsController extends LicensePermissionsController
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                
-                        $type = $this->licenseType->where('id', $id)->first();
-                        if ($type) {
-                            $type->delete();
-                        } else {
-                            echo "<div class='alert alert-danger alert-dismissable'>
+                    $type = $this->licenseType->where('id', $id)->first();
+                    if ($type) {
+                        $type->delete();
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
-                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                        }
-                        echo "<div class='alert alert-success alert-dismissable'>
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
+                    echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
@@ -139,7 +139,6 @@ class LicenseSettingsController extends LicensePermissionsController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
-            
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>

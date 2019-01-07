@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Product;
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
     use App\Model\Common\StatusSetting;
+    use App\Model\License\LicenseType;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -12,7 +13,6 @@ namespace App\Http\Controllers\Product;
     use App\Model\Payment\Tax;
     use App\Model\Payment\TaxClass;
     use App\Model\Payment\TaxProductRelation;
-    use App\Model\License\LicenseType;
     use App\Model\Product\Price;
     use App\Model\Product\Product;
     use App\Model\Product\ProductGroup;
@@ -53,8 +53,6 @@ class ProductController extends BaseProductController
 
         $type = new LicenseType();
         $this->type = $type;
-
-
 
         $subscription = new Subscription();
         $this->subscription = $subscription;

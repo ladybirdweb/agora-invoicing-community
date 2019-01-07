@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\License;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Controller;
+use App\Model\License\LicensePermission;
 use App\Model\License\LicensePermission;
 use App\Model\License\licenseType;
-use Bugsnag;
-use Illuminate\Http\Request;
 use App\Model\License\licenseType;
 use App\Model\Product\Product;
-use App\Model\License\LicensePermission;
-use App\Http\Controllers\Controller;
+use Bugsnag;
+use Illuminate\Http\Request;
 
 /*
 * Operations for License Permissions Module to be performed here
@@ -122,13 +122,12 @@ class LicensePermissionsController extends Controller
     /*
      For Ticking permission for a License Type
     */
-   
 
     public function tickPermission(Request $request)
     {
 
         //sdfrde
-        $licenseTypeInstance =LicenseType::find($request->input('license'));
+        $licenseTypeInstance = LicenseType::find($request->input('license'));
         $allPermission = $licenseTypeInstance->permissions;
         if (count($allPermission) > 0) {
             $permissionsArray = $allPermission->pluck('id');
@@ -138,16 +137,18 @@ class LicensePermissionsController extends Controller
 
         return response()->json(['permissions'=> $permissionsArray, 'message'=>'success']);
     }
-    
+
     /**
-     * Get All the Permissions Allowed for a Product
-     * @param  int    $productid Id of the Product
-     * @return [array]            Returns all the Permissions in booleam Form.
+     * Get All the Permissions Allowed for a Product.
+     *
+     * @param int $productid Id of the Product
+     *
+     * @return [array] Returns all the Permissions in booleam Form.
      */
     public static function getPermissionsForProduct(int $productid)
     {
         try {
-            $permissions = Product::find($productid)->licenseType->permissions->pluck('permissions');//Get All the permissions related to patrticular Product
+            $permissions = Product::find($productid)->licenseType->permissions->pluck('permissions'); //Get All the permissions related to patrticular Product
             $generateUpdatesxpiryDate = 0;
             $generateLicenseExpiryDate = 0;
             $generateSupportExpiryDate = 0;
@@ -160,7 +161,7 @@ class LicensePermissionsController extends Controller
                     $generateUpdatesxpiryDate = 1; //Has Permission for generating Updates Expiry
                 }
                 if ($permission == 'Generate License Expiry Date') {
-                    $generateLicenseExpiryDate = 1 ; //Has Permission for generating License Expiry
+                    $generateLicenseExpiryDate = 1; //Has Permission for generating License Expiry
                 }
                 if ($permission == 'Generate Support Expiry Date') {
                     $generateSupportExpiryDate = 1; //Has Permission for generating Support Expiry
@@ -176,12 +177,13 @@ class LicensePermissionsController extends Controller
                 }
             }
 
-            return ['generateUpdatesxpiryDate'=>$generateUpdatesxpiryDate , 'generateLicenseExpiryDate'=>$generateLicenseExpiryDate,
-            'generateSupportExpiryDate'=>$generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
-            'allowDownloadTillExpiry'=>$allowDownloadTillExpiry];
+            return ['generateUpdatesxpiryDate'=> $generateUpdatesxpiryDate, 'generateLicenseExpiryDate'=>$generateLicenseExpiryDate,
+            'generateSupportExpiryDate'       => $generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
+            'allowDownloadTillExpiry'         => $allowDownloadTillExpiry, ];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
             app('log')->error($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

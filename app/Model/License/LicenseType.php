@@ -31,7 +31,6 @@ class LicenseType extends Model
 
     public function permissions()
     {
-        
         return $this->belongsToMany(LicensePermission::class, 'license_license_permissions')->withTimestamps();
     }
 

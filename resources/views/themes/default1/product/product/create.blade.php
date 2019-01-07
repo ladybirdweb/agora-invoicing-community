@@ -81,7 +81,7 @@ Create New Product
 
                                  <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>

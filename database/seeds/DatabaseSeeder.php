@@ -42,6 +42,9 @@ class DatabaseSeeder extends Seeder
         $this->call('TemplateTableSeeder');
         $this->command->info('Template table seeded!');
 
+        $this->call('LicensePermissionTableSeeder');
+        $this->command->info('License Permission table seeded');
+
         // $this->call('GroupTableSeeder');
         // $this->command->info('Product Group table seeded!');
 
@@ -724,6 +727,22 @@ class TemplateTableSeeder extends Seeder
 <p>Regards,</p>
 <p>{{manager_first_name}}{{manager_last_name}}</p>
 <p>Account Manager,<br /> Faveo Helpdesk<br /> Mobile :{{manager_code}} {{manager_mobile}}<br /> Skype ID : {{manager_skype}}<br /> Email : {{manager_email}}</p>']);
+    }
+}
+
+
+class LicensePermissionTableSeeder()
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('license_permissions')->truncate();
+        LicensePermission::create(['id'=>1 , 'permissions'=> 'Can be Downloaded']);
+        LicensePermission::create(['id'=>2 , 'permissions'=> 'Generate License Expiry Date']);
+        LicensePermission::create(['id'=>3 , 'permissions'=> 'Generate Updates Expiry Date']);
+        LicensePermission::create(['id'=>4 , 'permissions'=> 'Generate Support Expiry Date']);
+        LicensePermission::create(['id'=>5 , 'permissions'=> 'No Permissions']);
+        LicensePermission::create(['id'=>6 , 'permissions'=> 'Allow Downloads Before Updates Expire']);
     }
 }
 

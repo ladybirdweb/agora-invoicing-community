@@ -13,8 +13,7 @@ class LicenseType extends Model
     protected static $logName = 'License Type';
 
     protected static $logOnlyDirty = true;
-
-
+    
     public function getDescriptionForEvent(string $eventName): string
     {
         if ($eventName == 'created') {
@@ -31,7 +30,13 @@ class LicenseType extends Model
 
     public function permissions()
     {
+        
         return $this->belongsToMany(LicensePermission::class, 'license_license_permissions')->withTimestamps();
+    }
+
+    public function products()
+    {
+        return $this->hasOne(Product::class);
     }
 
     public function delete()

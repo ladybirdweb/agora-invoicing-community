@@ -52,9 +52,9 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Product\Subscription');
     }
 
-    public function type()
+    public function licenseType()
     {
-        return $this->belongsTo('App\Model\Product\Type', 'type');
+        return $this->belongsTo('App\Model\License\LicenseType','type');
     }
 
     public function price()

@@ -12,6 +12,7 @@ namespace App\Http\Controllers\Product;
     use App\Model\Payment\Tax;
     use App\Model\Payment\TaxClass;
     use App\Model\Payment\TaxProductRelation;
+    use App\Model\License\LicenseType;
     use App\Model\Product\Price;
     use App\Model\Product\Product;
     use App\Model\Product\ProductGroup;
@@ -50,8 +51,10 @@ class ProductController extends BaseProductController
         $price = new Price();
         $this->price = $price;
 
-        $type = new Type();
+        $type = new LicenseType();
         $this->type = $type;
+
+
 
         $subscription = new Subscription();
         $this->subscription = $subscription;

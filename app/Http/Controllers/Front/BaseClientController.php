@@ -2,42 +2,49 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\User\ProfileRequest;
-use App\Model\Order\Invoice;
-use App\Model\Order\Order;
-use App\Model\Product\Product;
-use App\Model\Product\Subscription;
+use Hash;
 use Bugsnag;
 use DateTime;
-use DateTimeZone;
 use Exception;
-use Hash;
+use DateTimeZone;
+use App\Model\Order\Order;
+use App\Model\Order\Invoice;
+use App\Model\Product\Product;
+use App\Model\Product\Subscription;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\User\ProfileRequest;
+use App\Http\Controllers\License\LicensePermissionsController;
+
 
 class BaseClientController extends Controller
 {
+
     /**
      * Get the version list popup for the Product.
      *
-     * @param type $orders
-     * @param type $productid
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
-     * @return type
+     * @date   2019-01-06
+     *
+     * @param  Order      $orders    Order For the Client
+     * @param  int        $productid Product id for the Order 
+     *
+     * @return array                Show Modal Popup if Condition Satisfies
      */
-    public function getPopup($orders, $productid)
+    public function getPopup(Order $orders, int $productid)
     {
         $listUrl = '';
+        $permissions = LicensePermissionsController::getPermissionsForProduct($productid);
         $productCheck = $orders->product()
         ->select('github_owner', 'github_repository', 'type')
         ->where('id', $orders->product)->first();
-        if ($productCheck->type == 2) {
+        if ($permissions['downloadPermission'] == 1) { //If the Product has doownlaod permission
             if (!$productCheck->github_owner == '' && !$productCheck->github_repository == '') {
                 $listUrl = $this->downloadGithubPopup($orders->client, $orders->invoice()->first()->id, $productid);
             } else {
                 $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
             }
         }
-
         return $listUrl;
     }
 
@@ -84,9 +91,9 @@ class BaseClientController extends Controller
 
     public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)
     {
-        $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
-        if ($getDownloadCondition == 1) {
-            if (strtotime($link['created_at']) < strtotime($orderEndDate->ends_at)) {
+         $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
+        if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
+            if (strtotime($link['created_at']) < strtotime($orderEndDate->update_ends_at)) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
 
                 $link = $githubApi->getCurl1($link['zipball_url']);
@@ -100,7 +107,7 @@ class BaseClientController extends Controller
                 return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
             }
-        } elseif ($getDownloadCondition == 0) {
+        } elseif ($downloadPermission['allowDownloadTillExpiry'] ==0) {
             if ($countExpiry == $countVersions) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
                 $link = $githubApi->getCurl1($link['zipball_url']);

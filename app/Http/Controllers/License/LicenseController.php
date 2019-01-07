@@ -130,18 +130,18 @@ class LicenseController extends Controller
     /*
     *  Create New License For User
     */
-    public function createNewLicene($orderid, $product, $user_id, $ends_at, $serial_key)
+    public function createNewLicene($orderid, $product, $user_id, $ends_at, $update_ends_at, $serial_key)
     {
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $sku = Product::where('id', $product)->first()->product_sku;
-        $licenseExpirationCheck = Product::where('id', $product)->first()->perpetual_license;
-        $expiry = ($licenseExpirationCheck == 0) ? $ends_at->toDateString() : '';
+        $licenseExpiry =  ($ends_at != '') ? $ends_at->toDateString() : '';
+        $updatesExpiry = ($update_ends_at != '') ? $update_ends_at->toDateString() : '';
         $order = Order::where('id', $orderid)->first();
         $orderNo = $order->number;
         $domain = $order->domain;
         $productId = $this->searchProductId($sku);
-        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=2&license_expire_date=$expiry&license_updates_date=2019-09-28&license_disable_ip_verification=0");
+        $addLicense = $this->postCurl($url, "api_key_secret=$api_key_secret&api_function=licenses_add&product_id=$productId&license_code=$serial_key&license_require_domain=1&license_status=1&license_order_number=$orderNo&license_domain=$domain&license_limit=2&license_expire_date=$licenseExpiry&license_updates_date=$updatesExpiry&license_disable_ip_verification=0");
     }
 
     /*

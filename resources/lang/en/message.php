@@ -223,7 +223,7 @@ return [
     'product'                                                                                         => 'Product',
     'all-products'                                                                                    => 'All Products',
     'add-products'                                                                                    => 'Add Products',
-    'type'                                                                                            => 'Type',
+    'lic_type'                                                                                        => 'License Type',
     'related-services'                                                                                => 'Related Services',
     'related-addons'                                                                                  => 'Related Addons',
     'file'                                                                                            => 'File',

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\License;
 use Bugsnag;
 use Illuminate\Http\Request;
 use App\Model\License\licenseType;
+use App\Model\Product\Product;
 use App\Model\License\LicensePermission;
 use App\Http\Controllers\Controller;
 
@@ -48,12 +49,12 @@ class LicensePermissionsController extends Controller
             ->addColumn('license_type', function ($model) {
                 return ucfirst($model->name);
             })
-			->addColumn('permissions', function ($model) {
+            ->addColumn('permissions', function ($model) {
                 $permissions = $model->permissions->pluck('permissions');
                 $allPermissions = $this->showPermissions($permissions);
                 return $allPermissions;
             })
-		    ->addColumn('action', function ($model) {
+            ->addColumn('action', function ($model) {
                 $selectedPermission = $model->permissions->pluck('id');
                 return "<p><button data-toggle='modal' 
              data-id=".$model->id." data-permission= '$selectedPermission' 
@@ -109,8 +110,11 @@ class LicensePermissionsController extends Controller
     /*
      For Ticking permission for a License Type
     */
+   
+
     public function tickPermission(Request $request)
     {
+        //sdfrde
         $licenseTypeInstance =LicenseType::find($request->input('license'));
         $allPermission = $licenseTypeInstance->permissions;
         if (count($allPermission)>0) {
@@ -119,5 +123,53 @@ class LicensePermissionsController extends Controller
             $permissionsArray =[];
         }
         return response()->json(['permissions'=> $permissionsArray , 'message'=>'success']);
+    }
+    
+    /**
+     * Get All the Permissions Allowed for a Product
+     * @param  int    $productid Id of the Product
+     * @return [array]            Returns all the Permissions in booleam Form.
+     */
+    public static function getPermissionsForProduct(int $productid)
+    {
+        try {
+            $permissions = Product::find($productid)->licenseType->permissions->pluck('permissions');//Get All the permissions related to patrticular Product
+            $generateUpdatesxpiryDate = 0;
+            $generateLicenseExpiryDate = 0;
+            $generateSupportExpiryDate = 0;
+            $downloadPermission = 0;
+            $noPermissions = 0;
+            $allowDownloadTillExpiry = 0;
+            $retireAllDownloads = 0;
+            foreach ($permissions as $permission) {
+                if ($permission == 'Generate Updates Expiry Date') {
+                    $generateUpdatesxpiryDate = 1; //Has Permission for generating Updates Expiry
+                }
+                if ($permission == 'Generate License Expiry Date') {
+                    $generateLicenseExpiryDate = 1 ; //Has Permission for generating License Expiry
+                }
+                if ($permission == 'Generate Support Expiry Date') {
+                    $generateSupportExpiryDate = 1; //Has Permission for generating Support Expiry
+                }
+                if ($permission == 'Can be Downloaded') {
+                    $downloadPermission = 1; //Has Permission for Download
+                }
+                if ($permission == 'No Permissions') {
+                    $noPermissions = 1;  //Has No Permission
+                }
+                if ($permission == 'Allow Downloads Before Updates Expire') {
+                    $allowDownloadTillExpiry = 1;  //allow download after Expiry
+                }
+                
+            }
+
+            return ['generateUpdatesxpiryDate'=>$generateUpdatesxpiryDate , 'generateLicenseExpiryDate'=>$generateLicenseExpiryDate,
+            'generateSupportExpiryDate'=>$generateSupportExpiryDate, 'downloadPermission'=>$downloadPermission, 'noPermissions'=>$noPermissions,
+            'allowDownloadTillExpiry'=>$allowDownloadTillExpiry];
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex->getMessage());
+            app('log')->error($ex->getMessage());
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

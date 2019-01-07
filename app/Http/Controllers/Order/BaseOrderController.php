@@ -10,6 +10,7 @@ use Bugsnag;
 use Crypt;
 use DateTime;
 use DateTimeZone;
+use App\Http\Controllers\License\LicensePermissionsController;
 
 class BaseOrderController extends ExtendedOrderController
 {
@@ -138,43 +139,73 @@ class BaseOrderController extends ExtendedOrderController
     /**
      * inserting the values to subscription table.
      *
-     * @param type $orderid
-     * @param type $planid
-     *
+     * @param int $orderid
+     * @param int $planid
+     * @param string $version
+     * @param int $product
+      * @param string $serial_key
+
      * @throws \Exception
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)
     {
         try {
+            $permissions = LicensePermissionsController::getPermissionsForProduct($product);
             if ($version == null) {
                 $version = '';
             }
             if ($planid != 0) {
                 $days = $this->plan->where('id', $planid)->first()->days;
-
-                if ($days > 0) {
-                    $dt = \Carbon\Carbon::now();
-                    $user_id = \Auth::user()->id;
-                    $ends_at = $dt->addDays($days);
-                } else {
-                    $ends_at = '';
-                }
+                $licenseExpiry =  $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
+                $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
                 $user_id = $this->order->find($orderid)->client;
                 $this->subscription->create(['user_id' => $user_id,
-                    'plan_id'  => $planid, 'order_id' => $orderid, 'ends_at' => $ends_at, 'update_ends_at' =>$ends_at,
+                    'plan_id'  => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry,
                      'version' => $version, 'product_id' =>$product, ]);
             }
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $ends_at, $serial_key);
+                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry,$updatesExpiry,$serial_key);
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
+            app('log')->error($ex->getMessage());
             throw new \Exception('Can not Generate Subscription');
         }
+    }
+    
+    /**
+     *  Get the Expiry Date for License.
+     * @param  boolean    $permissions [Whether Permissons for generating License Expiry Date are there or not]
+     * @param  int    $days        [No of days that would get addeed to the current date ]
+     * @return string              [The final License Expiry date that is generated]
+     */
+    protected function getLicenseExpiryDate(bool $permissions, int $days)
+    {
+        $ends_at = '';
+        if ($days > 0 && $permissions == 1) {
+            $dt = \Carbon\Carbon::now();
+            $ends_at = $dt->addDays($days);
+        }
+        return $ends_at;
+    }
+    
+    /**
+    *  Get the Expiry Date for Updates.
+    * @param  boolean    $permissions [Whether Permissons for generating Updates Expiry Date are there or not]
+    * @param  int    $days        [No of days that would get added to the current date ]
+    * @return string              [The final Updates Expiry date that is generated]
+    */
+    protected function getUpdatesExpiryDate(bool $permissions, int $days)
+    {
+        $update_ends_at = '';
+        if ($days > 0 && $permissions == 1) {
+            $dt = \Carbon\Carbon::now();
+            $update_ends_at = $dt->addDays($days);
+        }
+        return $update_ends_at;
     }
 
     public function addOrderInvoiceRelation($invoiceid, $orderid)

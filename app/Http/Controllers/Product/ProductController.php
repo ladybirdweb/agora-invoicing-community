@@ -189,10 +189,12 @@ class ProductController extends BaseProductController
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), '1');
             }
+
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
+
             return redirect()->with('fails', $e->getMessage());
         }
     }

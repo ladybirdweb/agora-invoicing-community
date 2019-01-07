@@ -146,6 +146,7 @@ class BaseOrderController extends ExtendedOrderController
       * @param string $serial_key
 
      * @throws \Exception
+     *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      */
     public function addSubscription($orderid, $planid, $version, $product, $serial_key)

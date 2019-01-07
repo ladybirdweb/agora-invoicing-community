@@ -279,10 +279,10 @@
          Route::resource('license-type', 'License\LicenseSettingsController');
          Route::get('get-license-type', 'License\LicenseSettingsController@getLicenseTypes')->name('get-license-type');
          Route::get('license-type-delete', 'License\LicenseSettingsController@destroy')->name('license-type-delete');
-         Route::get('license-permissions','License\LicensePermissionsController@index');
-         Route::get('get-license-permission','License\LicensePermissionsController@getPermissions')->name('get-license-permission');
-         Route::get('add-permission','License\LicensePermissionsController@addPermission')->name('add-permission');
-         Route::get('tick-permission','License\LicensePermissionsController@tickPermission')->name('tick-permission');
+         Route::get('license-permissions', 'License\LicensePermissionsController@index');
+         Route::get('get-license-permission', 'License\LicensePermissionsController@getPermissions')->name('get-license-permission');
+         Route::get('add-permission', 'License\LicensePermissionsController@addPermission')->name('add-permission');
+         Route::get('tick-permission', 'License\LicensePermissionsController@tickPermission')->name('tick-permission');
         /*
          * Order
          */
@@ -513,7 +513,7 @@
         Route::post('v2/serial', 'HomeController@serialV2');
         Route::post('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
-        Route::get('v1/checkUpdatesExpiry','HomeController@checkUpdatesExpiry');
+        Route::get('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
 
         Route::get('404', ['as' => 'error404', function () {
             return view('errors.404');

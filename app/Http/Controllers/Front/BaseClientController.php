@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Front;
 
-use Hash;
-use Bugsnag;
-use DateTime;
-use Exception;
-use DateTimeZone;
-use App\Model\Order\Order;
+use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicensePermissionsController;
+use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
+use App\Model\Order\Order;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\User\ProfileRequest;
-use App\Http\Controllers\License\LicensePermissionsController;
-
+use Bugsnag;
+use DateTime;
+use DateTimeZone;
+use Exception;
+use Hash;
 
 class BaseClientController extends Controller
 {
-
     /**
      * Get the version list popup for the Product.
      *
@@ -26,10 +24,10 @@ class BaseClientController extends Controller
      *
      * @date   2019-01-06
      *
-     * @param  Order      $orders    Order For the Client
-     * @param  int        $productid Product id for the Order 
+     * @param Order $orders    Order For the Client
+     * @param int   $productid Product id for the Order
      *
-     * @return array                Show Modal Popup if Condition Satisfies
+     * @return array Show Modal Popup if Condition Satisfies
      */
     public function getPopup(Order $orders, int $productid)
     {
@@ -45,6 +43,7 @@ class BaseClientController extends Controller
                 $listUrl = $this->downloadPopup($orders->client, $orders->invoice()->first()->number, $productid);
             }
         }
+
         return $listUrl;
     }
 
@@ -91,7 +90,7 @@ class BaseClientController extends Controller
 
     public function getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid)
     {
-         $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
+        $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
         if ($downloadPermission['allowDownloadTillExpiry'] == 1) {
             if (strtotime($link['created_at']) < strtotime($orderEndDate->update_ends_at)) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
@@ -107,7 +106,7 @@ class BaseClientController extends Controller
                 return '<button class="btn btn-primary btn-sm disabled tooltip">
             Download <span class="tooltiptext">Please Renew!!</span></button>';
             }
-        } elseif ($downloadPermission['allowDownloadTillExpiry'] ==0) {
+        } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {
             if ($countExpiry == $countVersions) {
                 $githubApi = new \App\Http\Controllers\Github\GithubApiController();
                 $link = $githubApi->getCurl1($link['zipball_url']);

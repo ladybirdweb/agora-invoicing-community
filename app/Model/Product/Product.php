@@ -54,7 +54,7 @@ class Product extends BaseModel
 
     public function licenseType()
     {
-        return $this->belongsTo('App\Model\License\LicenseType','type');
+        return $this->belongsTo('App\Model\License\LicenseType', 'type');
     }
 
     public function price()

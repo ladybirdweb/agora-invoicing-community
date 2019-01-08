@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Http\Controllers\Github\GithubApiController;
+use App\Http\Controllers\License\LicensePermissionsController;
+use App\Model\Common\StatusSetting;
+use App\Model\Github\Github;
+use App\Model\Order\Invoice;
+use App\Model\Order\Order;
+use App\Model\Order\Payment;
+use App\Model\Product\Product;
+use App\Model\Product\ProductUpload;
+use App\Model\Product\Subscription;
+use App\User;
 use Auth;
 use Bugsnag;
 use DateTime;
-use Exception;
 use DateTimeZone;
-use App\User;
-use App\Model\Order\Order;
-use App\Model\Github\Github;
-use App\Model\Order\Invoice;
-use App\Model\Order\Payment;
-use App\Model\Product\Product;
-use App\Model\Product\Subscription;
-use App\Model\Common\StatusSetting;
-use App\Model\Product\ProductUpload;
+use Exception;
 use GrahamCampbell\Markdown\Facades\Markdown;
-use App\Http\Controllers\Github\GithubApiController;
-use App\Http\Controllers\License\LicensePermissionsController;
 
 class ClientController extends BaseClientController
 {
@@ -151,7 +151,6 @@ class ClientController extends BaseClientController
                     < $updatesEndDate->update_ends_at) {
                         $countExpiry = $countExpiry + 1;
                     }
-
                 }
             }
 
@@ -208,7 +207,7 @@ class ClientController extends BaseClientController
 
        </p>';
         } else {
-             return '<button class="btn btn-danger 
+            return '<button class="btn btn-danger 
         btn-sm disabled">Please Renew </button>';
         }
     }

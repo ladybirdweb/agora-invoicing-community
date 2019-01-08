@@ -135,7 +135,7 @@ class LicenseController extends Controller
         $url = $this->url;
         $api_key_secret = $this->api_key_secret;
         $sku = Product::where('id', $product)->first()->product_sku;
-        $licenseExpiry =  ($ends_at != '') ? $ends_at->toDateString() : '';
+        $licenseExpiry = ($ends_at != '') ? $ends_at->toDateString() : '';
         $updatesExpiry = ($update_ends_at != '') ? $update_ends_at->toDateString() : '';
         $order = Order::where('id', $orderid)->first();
         $orderNo = $order->number;

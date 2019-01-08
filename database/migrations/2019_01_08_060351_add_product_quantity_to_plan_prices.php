@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddProductQuantityToPlanPrices extends Migration
 {
@@ -13,8 +13,8 @@ class AddProductQuantityToPlanPrices extends Migration
      */
     public function up()
     {
-          Schema::table('plan_prices', function (Blueprint $table) {
-            $table->string('price_description',225)->nullable();
+        Schema::table('plan_prices', function (Blueprint $table) {
+            $table->string('price_description', 225)->nullable();
             $table->string('product_quantity')->unsigned()->nullable();
             $table->string('no_of_agents')->unsigned()->nullable();
         });

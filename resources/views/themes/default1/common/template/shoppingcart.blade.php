@@ -69,7 +69,7 @@ main
       </div>
        <h4 style="font-size: 20px;text-align: center;margin-left:400px">{{$tagline[$i]}}</h4>
          <div class="col-md-12">
-        <div class="pricing-table princig-table-flat">
+        <div class="pricing-table mb-4">
             <div class="row">
         {!! html_entity_decode($template[$i]) !!}
     </div>

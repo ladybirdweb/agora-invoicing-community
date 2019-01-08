@@ -7,10 +7,7 @@ use App\Model\License\LicensePermission;
 use App\Model\License\licenseType;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Model\License\licenseType;
 use App\Model\Product\Product;
-use App\Model\License\LicensePermission;
-use App\Http\Controllers\Controller;
 
 /*
 * Operations for License Permissions Module to be performed here

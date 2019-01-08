@@ -21,7 +21,7 @@ class GetPageTemplateController extends Controller
                 $trasform[$value['id']]['subscription'] = $temp_controller
                 ->plans($value['shoping_cart_link'], $value['id']);
                 $trasform[$value['id']]['url'] = "<input type='submit' 
-                value='Order Now' class='btn btn-primary'></form>";
+                value='Order Now' class='btn btn-dark btn-modern btn-outline py-2 px-4'></form>";
             }
             $template = $this->transform('cart', $data, $trasform);
         } else {

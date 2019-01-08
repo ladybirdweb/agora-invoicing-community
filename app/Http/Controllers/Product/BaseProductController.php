@@ -100,8 +100,12 @@ class BaseProductController extends ExtendedBaseProductController
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */
                         \Lang::get('message.subscription').'</label>
-                       '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null,
-                        ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
+                       '.\Form::select(
+                            'plan',
+                            ['' => 'Select', 'Plans' => $plans],
+                            null,
+                            ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']
+                        ).'
                 </div>'.$script;
             } else {
                 $userid = $request->input('user');
@@ -238,7 +242,6 @@ class BaseProductController extends ExtendedBaseProductController
     {
         try {
             $id = $request->input('product');
-            // dd($id);
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();

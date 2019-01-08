@@ -297,7 +297,6 @@ console.log(invoice);
       data: data,
           success: function (response) {
             $('#alertMessage').show();
-            console.log(response)
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.message+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#submit").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");

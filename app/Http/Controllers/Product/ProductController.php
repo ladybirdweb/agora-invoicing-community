@@ -257,10 +257,12 @@ class ProductController extends BaseProductController
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required|unique:products,product_sku',
                         'group'      => 'required',
+                        'show_agent'=> 'required',
                         // 'version' => 'required',
+            ],[
+            'show_agent.required' => 'Select you Cart Page Preference',
             ]);
 
-        // dd($a);
         if ($v->fails()) {
             //     $currency = $input['currency'];
 
@@ -281,14 +283,13 @@ class ProductController extends BaseProductController
                 $request->file('image')->move($imagedestinationPath, $image);
                 $this->product->image = $image;
             }
-
+            $can_modify_agent = $request->input('can_modify_agent');
+            $can_modify_quantity = $request->input('can_modify_quantity');
             $product = $this->product;
-            $product->fill($request->except('image', 'file'))->save();
-            // Product::where('id',$product->id)->update(['name'=>$request->names]);
-
+            $product->fill($request->except('image', 'file','cartquantity','can_modify_agent','can_modify_quantity'))->save();
+             $this->saveCartValues($input,$can_modify_agent,$can_modify_quantity);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
-            $currencies = $request->input('currency');
             $taxes = $request->input('tax');
             if ($taxes) {
                 foreach ($taxes as $key => $value) {
@@ -306,6 +307,8 @@ class ProductController extends BaseProductController
             return redirect()->with('fails', $e->getMessage());
         }
     }
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -335,7 +338,10 @@ class ProductController extends BaseProductController
             // dd($taxes);
             $saved_taxes = $this->tax_relation->where('product_id', $id)->get();
             $savedTaxes = $this->tax_relation->where('product_id', $id)->pluck('tax_class_id')->toArray();
-
+            $showagent = $product->show_agent;
+            $showProductQuantity = $product->show_product_quantity;
+            $canModifyAgent = $product->can_modify_agent;
+            $canModifyQuantity = $product->can_modify_quantity;
             return view(
                 'themes.default1.product.product.edit',
                 compact(
@@ -354,7 +360,11 @@ class ProductController extends BaseProductController
                     'saved_taxes',
                     'savedTaxes',
                     'selectedCategory',
-                    'selectedGroup'
+                    'selectedGroup',
+                    'showagent',
+                    'showProductQuantity',
+                    'canModifyAgent',
+                    'canModifyQuantity'
                 )
             );
         } catch (\Exception $e) {
@@ -372,7 +382,7 @@ class ProductController extends BaseProductController
      * @return \Response
      */
     public function update($id, Request $request)
-    {
+    { 
         $input = $request->all();
         $v = \Validator::make($input, [
                         'name'       => 'required',
@@ -405,7 +415,10 @@ class ProductController extends BaseProductController
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
-            $product->fill($request->except('image', 'file'))->save();
+            $product->fill($request->except('image', 'file','cartquantity','product_multiple_qty','agent_multiple_qty'))->save();
+            $this->saveCartDetailsWhileUpdating($input,$request,$product);
+
+            //$this->saveCartValues($input,$can_modify_agent,$can_modify_quantity);
             $this->updateVersionFromGithub($product->id);
 
             $product_id = $product->id;
@@ -425,7 +438,9 @@ class ProductController extends BaseProductController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
+    
 
+       
     /**
      * Remove the specified resource from storage.
      *
@@ -491,6 +506,7 @@ class ProductController extends BaseProductController
                 </div>';
         }
     }
+    
 
     /**
      * Remove the specified resource from storage.

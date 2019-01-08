@@ -12,8 +12,9 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Illuminate\Http\Request;
+use App\Http\Controllers\License\LicensePermissionsController;
 
-class PlanController extends Controller
+class PlanController extends ExtendedPlanController
 {
     protected $currency;
     protected $price;
@@ -69,9 +70,11 @@ class PlanController extends Controller
                             return ucfirst($model->name);
                         })
                         ->addColumn('days', function ($model) {
-                            $months = $model->days / 30;
-
-                            return round($months);
+                            if ($model->days != '') {
+                                $months = $model->days / 30;
+                                return round($months);
+                            }
+                            return 'No Period Selected';
                         })
                         ->addColumn('product', function ($model) {
                             $productid = $model->product;
@@ -123,13 +126,21 @@ class PlanController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store the Plans Detaiuls While Plan Creation
      *
-     * @return \Response
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-08T13:32:57+0530
+     *
+     * @param  Request                  $request  Plan Form Details
+     *
+     * @return [type]                            Saves Plan
      */
     public function store(Request $request)
     {
-        $subs = Product::where('id', $request->input('product'))->value('subscription');
+        $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
+        $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
+           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
@@ -137,12 +148,17 @@ class PlanController extends Controller
             'days'        => $days_rule.'numeric',
             'add_price.*' => 'required',
             'product'     => 'required',
+            'product_quantity' => 'required_without:no_of_agents|integer|min:0',
+            'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
         ]);
-
+        $product_quantity = $request->input('product_quantity');
+        $no_of_agents =$request->input('no_of_agents');
         $this->plan->fill($request->input())->save();
         $add_prices = $request->input('add_price');
         $renew_prices = $request->input('renew_price');
         $product = $request->input('product');
+        $priceDescription = $request->input('price_description');
+
         if (count($add_prices) > 0) {
             foreach ($add_prices as $key => $price) {
                 $renew_price = '';
@@ -154,7 +170,9 @@ class PlanController extends Controller
                     'currency'    => $key,
                     'add_price'   => $price,
                     'renew_price' => $renew_price,
-                    'product'     => $product,
+                    'price_description' => $priceDescription,
+                    'product_quantity'  => $product_quantity,
+                    'no_of_agents'      => $no_of_agents,
                 ]);
             }
         }
@@ -162,16 +180,6 @@ class PlanController extends Controller
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Response
-     */
-    public function show($id)
-    {
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -188,6 +196,9 @@ class PlanController extends Controller
         $renew_price = $this->price->where('plan_id', $id)->pluck('renew_price', 'currency')->toArray();
         $periods = $this->period->pluck('name', 'days')->toArray();
         $products = $this->product->pluck('name', 'id')->toArray();
+        $priceDescription = $plan->planPrice->first()->price_description;
+        $productQunatity = $plan->planPrice->first()->product_quantity;
+         $agentQuantity = $plan->planPrice->first()->no_of_agents;
         foreach ($products as $key => $product) {
             $selectedProduct = $this->product->where('id', $plan->product)
           ->pluck('name', 'id', 'subscription')->toArray();
@@ -195,9 +206,22 @@ class PlanController extends Controller
         $selectedPeriods = $this->period->where('days', $plan->days)
        ->pluck('name', 'days')->toArray();
 
-        return view('themes.default1.product.plan.edit',
-            compact('plan', 'currency', 'add_price', 'renew_price', 'periods', 'products',
-                'selectedPeriods', 'selectedProduct'));
+        return view(
+            'themes.default1.product.plan.edit',
+            compact(
+                'plan',
+                'currency',
+                'add_price',
+                'renew_price',
+                'periods',
+                'products',
+                'selectedPeriods',
+                'selectedProduct',
+                'priceDescription',
+                'productQunatity',
+                'agentQuantity'
+            )
+        );
     }
 
     /**
@@ -209,7 +233,9 @@ class PlanController extends Controller
      */
     public function update($id, Request $request)
     {
-        $subs = Product::where('id', $request->input('product'))->value('subscription');
+        $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
+        $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
+           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
@@ -217,7 +243,12 @@ class PlanController extends Controller
             'add_price.*'   => 'required',
             'product'       => 'required',
               'days'        => $days_rule.'numeric',
+               'product_quantity' => 'required_without:no_of_agents|integer|min:0',
+            'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
         ]);
+        $product_quantity = $request->input('product_quantity');
+        $no_of_agents =$request->input('no_of_agents');
+         $priceDescription = $request->input('price_description');
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();
         $add_prices = $request->input('add_price');
@@ -243,7 +274,9 @@ class PlanController extends Controller
                     'currency'    => $key,
                     'add_price'   => $price,
                     'renew_price' => $renew_price,
-                    'product'     => $product,
+                    'price_description' => $priceDescription,
+                    'product_quantity'  => $product_quantity,
+                    'no_of_agents'      => $no_of_agents,
                 ]);
             }
         }
@@ -295,14 +328,29 @@ class PlanController extends Controller
             //echo \Lang::get('message.select-a-row');
         }
     }
-
+  
+    /**
+     * Whether to show Periods when Product Selected
+     * Whether to show Product Quantity or No of Agents when Product Is Selected
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-08T12:30:09+0530
+     *
+     * @param  Request                  $request Receive Product Id as Paramater
+     *
+     * @return json                              Returns Boolean value FOR Whether Periods/Agents Enabled for Product
+     */
     public function checkSubscription(Request $request)
     {
         try {
             $product_id = $request->input('product_id');
-            $checkSubscription = Product::where('id', $product_id)->value('subscription');
-            $result = ['subscription'=> $checkSubscription];
-
+            $permissions =LicensePermissionsController::getPermissionsForProduct($product_id);
+            $checkSubscription = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
+           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
+            $product = Product::find($product_id);
+            $checkIfAgentEnabled = ($product->show_agent == 1) ? 1 : 0;
+            $result = ['subscription'=> $checkSubscription,'agentEnable'=>$checkIfAgentEnabled];
             return response()->json($result);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

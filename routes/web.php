@@ -189,7 +189,7 @@
         // Route::get('get-plans', 'Product\PlanController@GetPlans');
         Route::get('plans-delete', 'Product\PlanController@destroy')->name('plans-delete');
         Route::get('get-period', 'Product\PlanController@checkSubscription')->name('get-period');
-        Route::post('postInsertPeriod','Product\PlanController@postInsertPeriod');
+        Route::post('postInsertPeriod', 'Product\PlanController@postInsertPeriod');
 
         /*
          * Addons

@@ -255,9 +255,9 @@ class ProductController extends BaseProductController
                         'image'      => 'sometimes | mimes:jpeg,jpg,png,gif | max:1000',
                         'product_sku'=> 'required|unique:products,product_sku',
                         'group'      => 'required',
-                        'show_agent'=> 'required',
+                        'show_agent' => 'required',
                         // 'version' => 'required',
-            ],[
+            ], [
             'show_agent.required' => 'Select you Cart Page Preference',
             ]);
 
@@ -284,8 +284,8 @@ class ProductController extends BaseProductController
             $can_modify_agent = $request->input('can_modify_agent');
             $can_modify_quantity = $request->input('can_modify_quantity');
             $product = $this->product;
-            $product->fill($request->except('image', 'file','cartquantity','can_modify_agent','can_modify_quantity'))->save();
-             $this->saveCartValues($input,$can_modify_agent,$can_modify_quantity);
+            $product->fill($request->except('image', 'file', 'cartquantity', 'can_modify_agent', 'can_modify_quantity'))->save();
+            $this->saveCartValues($input, $can_modify_agent, $can_modify_quantity);
             $product_id = $product->id;
             $subscription = $request->input('subscription');
             $taxes = $request->input('tax');
@@ -305,8 +305,6 @@ class ProductController extends BaseProductController
             return redirect()->with('fails', $e->getMessage());
         }
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -340,6 +338,7 @@ class ProductController extends BaseProductController
             $showProductQuantity = $product->show_product_quantity;
             $canModifyAgent = $product->can_modify_agent;
             $canModifyQuantity = $product->can_modify_quantity;
+
             return view(
                 'themes.default1.product.product.edit',
                 compact(
@@ -380,7 +379,7 @@ class ProductController extends BaseProductController
      * @return \Response
      */
     public function update($id, Request $request)
-    { 
+    {
         $input = $request->all();
         $v = \Validator::make($input, [
                         'name'       => 'required',
@@ -413,8 +412,8 @@ class ProductController extends BaseProductController
                 $request->file('file')->move($filedestinationPath, $file);
                 $product->file = $file;
             }
-            $product->fill($request->except('image', 'file','cartquantity','product_multiple_qty','agent_multiple_qty'))->save();
-            $this->saveCartDetailsWhileUpdating($input,$request,$product);
+            $product->fill($request->except('image', 'file', 'cartquantity', 'product_multiple_qty', 'agent_multiple_qty'))->save();
+            $this->saveCartDetailsWhileUpdating($input, $request, $product);
 
             //$this->saveCartValues($input,$can_modify_agent,$can_modify_quantity);
             $this->updateVersionFromGithub($product->id);
@@ -436,9 +435,7 @@ class ProductController extends BaseProductController
             return redirect()->back()->with('fails', $e->getMessage());
         }
     }
-    
 
-       
     /**
      * Remove the specified resource from storage.
      *
@@ -504,7 +501,6 @@ class ProductController extends BaseProductController
                 </div>';
         }
     }
-    
 
     /**
      * Remove the specified resource from storage.

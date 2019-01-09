@@ -140,44 +140,42 @@ class ExtendedBaseProductController extends Controller
     }
 
     /**
-     * Save Values Related to Cart(eg: whether show Agents or Quantity in Cart etc)
+     * Save Values Related to Cart(eg: whether show Agents or Quantity in Cart etc).
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-07T14:34:54+0530
      *
-     * @param  Illuminate\Http\Request     $input      All the Product Detais Sent from  the form
-     * @param  bool       $can_modify_agent    Whether Agents can be modified by customer
-     * @param  bool       $can_modify_quantity Whether Product Quantity can be modified by Customers
+     * @param Illuminate\Http\Request $input               All the Product Detais Sent from  the form
+     * @param bool                    $can_modify_agent    Whether Agents can be modified by customer
+     * @param bool                    $can_modify_quantity Whether Product Quantity can be modified by Customers
      *
      * @return
      */
     public function saveCartValues($input, bool $can_modify_agent, bool $can_modify_quantity)
     {
-        $this->product->show_agent = $input['show_agent'] ==1 ? 1 : 0; //if Show Agents Selected
+        $this->product->show_agent = $input['show_agent'] == 1 ? 1 : 0; //if Show Agents Selected
         $this->product->can_modify_agent = $can_modify_agent;
         $this->product->can_modify_quantity = $can_modify_quantity;
         $this->product->save();
     }
 
-
-
     /**
-     * Save Values Related to Cart while Updating Produc(eg: whether show Agents or Quantityof Product in Cart etc)
+     * Save Values Related to Cart while Updating Produc(eg: whether show Agents or Quantityof Product in Cart etc).
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-07T20:40:20+0530
      *
      *@param  Illuminate\Http\Request     $input      All the Product Detais Sent from  the form
-     * @param  Illuminate\Http\Request;               $request
-     * @param  array                     $product     instance of the Product
+     * @param Illuminate\Http\Request; $request
+     * @param array                    $product instance of the Product
      *
-     * @return                                        Save The Details
+     * @return Save The Details
      */
     public function saveCartDetailsWhileUpdating($input, $request, $product)
     {
-        $product->show_agent = $input['show_agent'] ==1 ? 1 : 0; //if Show Agents Selected
+        $product->show_agent = $input['show_agent'] == 1 ? 1 : 0; //if Show Agents Selected
         if ($product->show_agent == 1) {
             $product->can_modify_quantity = 0;
             if ($request->has('can_modify_agent')) {
@@ -193,9 +191,9 @@ class ExtendedBaseProductController extends Controller
             } else {
                 $product->can_modify_agent = 0;
                 $product->can_modify_quantity = 0;
-            };
+            }
         }
-        
+
         $product->save();
     }
 }

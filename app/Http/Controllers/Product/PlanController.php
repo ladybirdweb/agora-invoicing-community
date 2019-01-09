@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Period;
@@ -12,7 +12,6 @@ use App\Model\Product\Product;
 use App\Model\Product\Subscription;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Http\Controllers\License\LicensePermissionsController;
 
 class PlanController extends ExtendedPlanController
 {
@@ -72,9 +71,12 @@ class PlanController extends ExtendedPlanController
                         ->addColumn('days', function ($model) {
                             if ($model->days != '') {
                                 $months = $model->days / 30;
+
                                 return round($months);
                             }
+
                             return 'Not Available';
+
                         })
                         ->addColumn('product', function ($model) {
                             $productid = $model->product;
@@ -126,33 +128,33 @@ class PlanController extends ExtendedPlanController
     }
 
     /**
-     * Store the Plans Detaiuls While Plan Creation
+     * Store the Plans Detaiuls While Plan Creation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-08T13:32:57+0530
      *
-     * @param  Request                  $request  Plan Form Details
+     * @param Request $request Plan Form Details
      *
-     * @return [type]                            Saves Plan
+     * @return [type] Saves Plan
      */
     public function store(Request $request)
     {
         $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
         $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
-           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
+           || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
-            'name'        => 'required',
-            'days'        => $days_rule.'numeric',
-            'add_price.*' => 'required',
-            'product'     => 'required',
+            'name'             => 'required',
+            'days'             => $days_rule.'numeric',
+            'add_price.*'      => 'required',
+            'product'          => 'required',
             'product_quantity' => 'required_without:no_of_agents|integer|min:0',
             'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
         ]);
         $product_quantity = $request->input('product_quantity');
-        $no_of_agents =$request->input('no_of_agents');
+        $no_of_agents = $request->input('no_of_agents');
         $this->plan->fill($request->input())->save();
         if($request->input('days') != '') {
          $period = Period::where('days',$request->input('days'))->first()->id;
@@ -171,10 +173,10 @@ class PlanController extends ExtendedPlanController
                     $renew_price = $renew_prices[$key];
                 }
                 $this->price->create([
-                    'plan_id'     => $this->plan->id,
-                    'currency'    => $key,
-                    'add_price'   => $price,
-                    'renew_price' => $renew_price,
+                    'plan_id'           => $this->plan->id,
+                    'currency'          => $key,
+                    'add_price'         => $price,
+                    'renew_price'       => $renew_price,
                     'price_description' => $priceDescription,
                     'product_quantity'  => $product_quantity,
                     'no_of_agents'      => $no_of_agents,
@@ -184,7 +186,6 @@ class PlanController extends ExtendedPlanController
 
         return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
-
 
     /**
      * Show the form for editing the specified resource.
@@ -203,7 +204,7 @@ class PlanController extends ExtendedPlanController
         $products = $this->product->pluck('name', 'id')->toArray();
         $priceDescription = $plan->planPrice->first()->price_description;
         $productQunatity = $plan->planPrice->first()->product_quantity;
-         $agentQuantity = $plan->planPrice->first()->no_of_agents;
+        $agentQuantity = $plan->planPrice->first()->no_of_agents;
         foreach ($products as $key => $product) {
             $selectedProduct = $this->product->where('id', $plan->product)
           ->pluck('name', 'id', 'subscription')->toArray();
@@ -240,20 +241,20 @@ class PlanController extends ExtendedPlanController
     {
         $permissions = LicensePermissionsController::getPermissionsForProduct($request->input('product'));
         $subs = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
-           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
+           || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
         $days_rule = $subs == 1 ? 'required|' : 'sometimes|';
 
         $this->validate($request, [
-            'name'          => 'required',
-            'add_price.*'   => 'required',
-            'product'       => 'required',
-              'days'        => $days_rule.'numeric',
+            'name'                => 'required',
+            'add_price.*'         => 'required',
+            'product'             => 'required',
+              'days'              => $days_rule.'numeric',
                'product_quantity' => 'required_without:no_of_agents|integer|min:0',
-            'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
+            'no_of_agents'        => 'required_without:product_quantity|integer|min:0',
         ]);
         $product_quantity = $request->input('product_quantity');
-        $no_of_agents =$request->input('no_of_agents');
-         $priceDescription = $request->input('price_description');
+        $no_of_agents = $request->input('no_of_agents');
+        $priceDescription = $request->input('price_description');
         $plan = $this->plan->where('id', $id)->first();
         $plan->fill($request->input())->save();
         $add_prices = $request->input('add_price');
@@ -275,10 +276,10 @@ class PlanController extends ExtendedPlanController
                     $renew_price = $renew_prices[$key];
                 }
                 $this->price->create([
-                    'plan_id'     => $plan->id,
-                    'currency'    => $key,
-                    'add_price'   => $price,
-                    'renew_price' => $renew_price,
+                    'plan_id'           => $plan->id,
+                    'currency'          => $key,
+                    'add_price'         => $price,
+                    'renew_price'       => $renew_price,
                     'price_description' => $priceDescription,
                     'product_quantity'  => $product_quantity,
                     'no_of_agents'      => $no_of_agents,
@@ -333,29 +334,30 @@ class PlanController extends ExtendedPlanController
             //echo \Lang::get('message.select-a-row');
         }
     }
-  
+
     /**
      * Whether to show Periods when Product Selected
-     * Whether to show Product Quantity or No of Agents when Product Is Selected
+     * Whether to show Product Quantity or No of Agents when Product Is Selected.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-08T12:30:09+0530
      *
-     * @param  Request                  $request Receive Product Id as Paramater
+     * @param Request $request Receive Product Id as Paramater
      *
-     * @return json                              Returns Boolean value FOR Whether Periods/Agents Enabled for Product
+     * @return json Returns Boolean value FOR Whether Periods/Agents Enabled for Product
      */
     public function checkSubscription(Request $request)
     {
         try {
             $product_id = $request->input('product_id');
-            $permissions =LicensePermissionsController::getPermissionsForProduct($product_id);
+            $permissions = LicensePermissionsController::getPermissionsForProduct($product_id);
             $checkSubscription = $permissions['generateUpdatesxpiryDate'] != 0 || $permissions['generateLicenseExpiryDate'] != 0
-           || $permissions['generateSupportExpiryDate'] != 0  ? 1 : 0;
+           || $permissions['generateSupportExpiryDate'] != 0 ? 1 : 0;
             $product = Product::find($product_id);
             $checkIfAgentEnabled = ($product->show_agent == 1) ? 1 : 0;
-            $result = ['subscription'=> $checkSubscription,'agentEnable'=>$checkIfAgentEnabled];
+            $result = ['subscription'=> $checkSubscription, 'agentEnable'=>$checkIfAgentEnabled];
+
             return response()->json($result);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);

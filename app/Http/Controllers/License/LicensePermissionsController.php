@@ -5,10 +5,9 @@ namespace App\Http\Controllers\License;
 use App\Http\Controllers\Controller;
 use App\Model\License\LicensePermission;
 use App\Model\License\licenseType;
+use App\Model\Product\Product;
 use Bugsnag;
 use Illuminate\Http\Request;
-use App\Model\Product\Product;
-
 
 /*
 * Operations for License Permissions Module to be performed here

@@ -46,7 +46,7 @@ class Plan extends BaseModel
 
     public function periods()
     {
-        return $this->belongstoMany('App\Model\Payment\Period','plans_periods_relation')->withTimestamps();
+        return $this->belongstoMany('App\Model\Payment\Period', 'plans_periods_relation')->withTimestamps();
     }
 
     public function delete()

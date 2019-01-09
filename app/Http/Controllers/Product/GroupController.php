@@ -84,8 +84,9 @@ class GroupController extends Controller
     public function create()
     {
         try {
-            $pricingTemplates = PricingTemplate::select('image','id','name')->get();
-            return view('themes.default1.product.group.create',compact('pricingTemplates'));
+            $pricingTemplates = PricingTemplate::select('image', 'id', 'name')->get();
+
+            return view('themes.default1.product.group.create', compact('pricingTemplates'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -98,24 +99,23 @@ class GroupController extends Controller
      */
     public function store(GroupRequest $request)
     {
-         $this->validate($request,[
-            'name' => 'required',
-            'headline' =>'required',
-            'cart_link' => 'required',
-            'pricing_templates_id' =>'required',
-            ],[
-                'pricing_templates_id.required'=>'Please Select a Template',
+        $this->validate($request, [
+            'name'                 => 'required',
+            'headline'             => 'required',
+            'cart_link'            => 'required',
+            'pricing_templates_id' => 'required',
+            ], [
+                'pricing_templates_id.required'=> 'Please Select a Template',
           ]);
+
         try {
-           $this->group->fill($request->input())->save();
+            $this->group->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -128,9 +128,10 @@ class GroupController extends Controller
     {
         try {
             $group = $this->group->where('id', $id)->first();
-             $selectedTemplate= $group->pricing_templates_id;
+            $selectedTemplate = $group->pricing_templates_id;
             $pricingTemplates = PricingTemplate::get();
-            return view('themes.default1.product.group.edit', compact('group','selectedTemplate','pricingTemplates'));
+
+            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'pricingTemplates'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -148,6 +149,7 @@ class GroupController extends Controller
         try {
             $group = $this->group->where('id', $id)->first();
             $group->fill($request->input())->save();
+
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
@@ -210,29 +212,30 @@ class GroupController extends Controller
                 </div>';
         }
     }
- 
+
     /**
-     * Generate Slug url for A group
+     * Generate Slug url for A group.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-09T18:20:16+0530
      *
-     * @param  Request                  $request Slug Url that is sent
+     * @param Request $request Slug Url that is sent
      *
-     * @return string                            The Group Url
+     * @return string The Group Url
      */
     public function generateGroupUrl(Request $request)
     {
-        if($request->has('url')) {
+        if ($request->has('url')) {
             $url = $request->input('url');
+
             return $this->getGroupUrl($url);
         }
     }
 
     protected function getGroupUrl($url)
     {
-        $slug =url('/').'/group/'.str_slug($url,'-');
+        $slug = url('/').'/group/'.str_slug($url, '-');
         echo $slug;
     }
 }

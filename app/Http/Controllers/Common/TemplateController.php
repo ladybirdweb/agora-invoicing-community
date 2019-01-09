@@ -380,10 +380,12 @@ class TemplateController extends BaseTemplateController
                 }
                 $price = min($prices);
                 $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$price;
-            } 
+            }
+
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

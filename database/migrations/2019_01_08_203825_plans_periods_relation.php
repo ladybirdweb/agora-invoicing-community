@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class PlansPeriodsRelation extends Migration
 {
@@ -13,7 +13,7 @@ class PlansPeriodsRelation extends Migration
      */
     public function up()
     {
-           Schema::create('plans_periods_relation', function (Blueprint $table) {
+        Schema::create('plans_periods_relation', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('plan_id');
             $table->unsignedInteger('period_id');
@@ -31,6 +31,6 @@ class PlansPeriodsRelation extends Migration
      */
     public function down()
     {
-         Schema::dropIfExists('plans_periods_relation');
+        Schema::dropIfExists('plans_periods_relation');
     }
 }

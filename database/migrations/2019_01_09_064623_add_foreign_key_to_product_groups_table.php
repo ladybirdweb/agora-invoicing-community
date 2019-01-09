@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddForeignKeyToProductGroupsTable extends Migration
 {
@@ -14,8 +14,8 @@ class AddForeignKeyToProductGroupsTable extends Migration
     public function up()
     {
         Schema::table('product_groups', function (Blueprint $table) {
-           $table->unsignedInteger('pricing_templates_id');
-           $table->foreign('pricing_templates_id')->references('id')->on('pricing_templates');
+            $table->unsignedInteger('pricing_templates_id');
+            $table->foreign('pricing_templates_id')->references('id')->on('pricing_templates');
         });
     }
 
@@ -27,7 +27,7 @@ class AddForeignKeyToProductGroupsTable extends Migration
     public function down()
     {
         Schema::table('product_groups', function (Blueprint $table) {
-             $table->dropForeign('pricing_templates');
+            $table->dropForeign('pricing_templates');
         });
     }
 }

@@ -5,13 +5,13 @@ return[
      * Cart page
      */
     'cart' => [
-        'group'        => '{{group}}',
-        'name'         => '{{name}}',
-        'price'        => '{{price}}',
+        'group'             => '{{group}}',
+        'name'              => '{{name}}',
+        'price'             => '{{price}}',
         'price-description' => '{{price-description}}',
-        'feature'      => '<li>{{feature}}</li>',
-        'subscription' => '{{subscription}}',
-        'url'          => '{{url}}',
+        'feature'           => '<li>{{feature}}</li>',
+        'subscription'      => '{{subscription}}',
+        'url'               => '{{url}}',
     ],
     /*
      * This is for welcome mail content

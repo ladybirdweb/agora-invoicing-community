@@ -11,6 +11,6 @@ class Period extends Model
 
     public function plans()
     {
-    	return $this->hasMany('App\Model\Payment\Plan','plans_periods_relation')->withTimestamps();
+        return $this->hasMany('App\Model\Payment\Plan', 'plans_periods_relation')->withTimestamps();
     }
 }

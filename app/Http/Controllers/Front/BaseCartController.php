@@ -248,42 +248,7 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    /**
-     * @param type $userid
-     *
-     * @throws \Exception
-     *
-     * @return string
-     */
-    public function currency($userid = '')
-    {
-        try {
-            $currency = 'INR';
-            if ($this->checkCurrencySession() === true) {
-                $currency = Session::get('currency');
-            }
 
-            if (\Auth::user()) {
-                $currency = \Auth::user()->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                }
-            }
-            if ($userid != '') {
-                $user = new \App\User();
-                $currency = $user->find($userid)->currency;
-                if ($currency == 'USD' || $currency == '1') {
-                    $currency = 'USD';
-                } else {
-                    $currency = 'INR';
-                }
-            }
-
-            return $currency;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * @param type $id

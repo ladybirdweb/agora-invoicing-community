@@ -33,4 +33,5 @@ class PlanPrice extends Model
         // return "Product  has been {$eventName}";
          // \Auth::user()->activity;
     }
+
 }

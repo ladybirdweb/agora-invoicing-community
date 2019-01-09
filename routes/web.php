@@ -178,6 +178,7 @@
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
         Route::post('upload/save', 'Product\ProductController@save');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
+        Route::get('get-group-url', 'Product\GroupController@generateGroupUrl');
 
         /*
          * Plan

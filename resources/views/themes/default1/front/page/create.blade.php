@@ -174,7 +174,7 @@ Create New Page
             data:{'slug':this.value},
             url: "{{url('get-url')}}",
             success: function (data) {
-                $("#slug").val(data)
+               $("#slug").val(data);
             }
         });
     });

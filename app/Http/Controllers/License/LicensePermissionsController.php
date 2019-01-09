@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\License;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Controller;
-use App\Model\License\LicensePermission;
 use App\Model\License\LicensePermission;
 use App\Model\License\licenseType;
 use Bugsnag;

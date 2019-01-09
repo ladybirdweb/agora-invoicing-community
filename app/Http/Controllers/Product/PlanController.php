@@ -74,7 +74,7 @@ class PlanController extends ExtendedPlanController
                                 $months = $model->days / 30;
                                 return round($months);
                             }
-                            return 'No Period Selected';
+                            return 'Not Available';
                         })
                         ->addColumn('product', function ($model) {
                             $productid = $model->product;
@@ -154,6 +154,11 @@ class PlanController extends ExtendedPlanController
         $product_quantity = $request->input('product_quantity');
         $no_of_agents =$request->input('no_of_agents');
         $this->plan->fill($request->input())->save();
+        if($request->input('days') != '') {
+         $period = Period::where('days',$request->input('days'))->first()->id;
+         $this->plan->periods()->attach($period);
+        }
+        
         $add_prices = $request->input('add_price');
         $renew_prices = $request->input('renew_price');
         $product = $request->input('product');

@@ -4,9 +4,15 @@
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
-            @if (count($errors) > 0)
+
+
+            <div class="box-body">
+                {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch']) !!}
+
+                <div class="box-header">
+                                @if (count($errors) > 0)
             <div class="alert alert-danger">
                 <strong>Whoops!</strong> There were some problems with your input.<br><br>
                 <ul>
@@ -34,11 +40,6 @@
                 {{Session::get('fails')}}
             </div>
             @endif
-
-            <div class="box-body">
-                {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch']) !!}
-
-                <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
                     <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 </div>
@@ -54,7 +55,7 @@
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('name',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -72,7 +73,7 @@
                             <div class="form-group {{ $errors->has('headline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('headline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -89,7 +90,7 @@
                             <div class="form-group {{ $errors->has('tagline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('tagline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -121,6 +122,51 @@
 
 
                             </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                     <td><b>{!! Form::label('link',Lang::get('message.group_link')) !!}</b></td>
+                        <td>
+                            <div class="form-group">
+
+
+                                 <div class='row'>
+                                    <div class="col-md-10">
+                                        {!! Form::text('cart_link',null,['class' => 'form-control','id'=>'groupslug']) !!}
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    <tr>
+                          
+                        <td><b>{!! Form::label('design',Lang::get('message.select_design')) !!}</b></td>
+                        <td>
+
+                           <div class="form-group">
+                            @foreach($pricingTemplates as $template)
+                            <div class="col-md-4">
+                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <br/>
+                             @if($template->id == $selectedTemplate)
+                             <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" checked style="text-align: center;">
+                             @else
+                             <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" style="text-align: center;">
+                             @endif
+                            {{$template->name}}
+
+                             <br/><br/>
+                        </div>
+                   
+                            @endforeach
+                            </div> 
                         </td>
 
                     </tr>
@@ -166,6 +212,8 @@ $(document).ready(function () {
         x--;
     })
 });
+
+
 </script>
 
 <script>

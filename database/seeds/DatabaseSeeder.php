@@ -16,7 +16,9 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
+use App\Model\License\LicensePermission;
 use Illuminate\Database\Eloquent\Model;
+use App\Model\Common\PricingTemplate;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -71,6 +73,9 @@ class DatabaseSeeder extends Seeder
 
         $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
+
+        $this->call('PricingTemplateSeeder')
+        $this->command->info('Pricing Template Table Seeded!');
 
         $this->call('UserTableSeeder');
         $this->command->info('User table seeded!');
@@ -754,6 +759,38 @@ class StatusSettingSeeder extends Seeder
         \DB::table('status_settings')->truncate();
         StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+}
+
+class PricingTemplateSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('status_settings')->truncate();
+        PricingTemplate::create(['id'=>1 ,'data'=>'<div class="col-md-3 col-sm-6">
+                            <div class="plan">
+                                <div class="plan-header">
+                                    <h3>{{name}}</h3>
+                                </div>
+                                <div class="plan-price">
+                                    <span class="price">{{price}}</span>
+                                    
+                                    <label class="price-label">{{price-description}}</label>
+                                </div>
+                                <div class="plan-features">
+                                    <ul>
+                                    <li>{{feature}}</li>
+                                </ul>
+                                     
+                                </div>
+                                <div class="plan-footer">
+                                <div class="subscription">{{subscription}}</div><br/>
+                                <div>{{url}} </div>
+                                </div>
+                                
+                            </div>
+                        </div>', 'image'=>'pricing_template1.png' ,'name'=>'Porto Theme(With Gap Style)'])
     }
 }
 

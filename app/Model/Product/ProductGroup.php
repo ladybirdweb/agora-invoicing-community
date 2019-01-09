@@ -7,7 +7,7 @@ use App\BaseModel;
 class ProductGroup extends BaseModel
 {
     protected $table = 'product_groups';
-    protected $fillable = ['id', 'name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link'];
+    protected $fillable = ['id', 'name', 'headline', 'tagline', 'available_payment', 'hidden', 'cart_link','pricing_templates_id'];
 
     public function config()
     {
@@ -22,6 +22,11 @@ class ProductGroup extends BaseModel
     public function product()
     {
         return $this->hasMany('App\Model\Product\Product', 'group');
+    }
+
+    public function pricingTemplate()
+    {
+        return $this->belongsTo('App\Model\Common\PricingTemplate');
     }
 
     public function delete()

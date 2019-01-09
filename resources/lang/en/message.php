@@ -280,6 +280,8 @@ return [
     'auto-active-payment'                                                                 => 'Auto Activate on Payment',
     'suspend-parent-product'                                                              => 'Suspend Parent Product',
     'applicable-products'                                                                 => 'Applicable Products',
+    'select_design'                                                                       =>'Pricing Form Template',
+    'group_link'                                                                          => 'Group Url',
     /*
      * Services
      */

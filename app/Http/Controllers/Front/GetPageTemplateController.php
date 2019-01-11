@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Front;
 
-use Bugsnag;
-use App\Model\Product\Product;
 use App\Http\Controllers\Controller;
+use App\Model\Product\Product;
+use Bugsnag;
 
 class GetPageTemplateController extends Controller
 {
@@ -16,7 +16,7 @@ class GetPageTemplateController extends Controller
         $temp_controller = new \App\Http\Controllers\Common\TemplateController();
         if (count($helpdesk_products) > 0) {
             foreach ($helpdesk_products as $key => $value) {
-                 //Store all the values in $trasform variable for shortcodes to read from
+                //Store all the values in $trasform variable for shortcodes to read from
                 $trasform[$value['id']]['price'] = $temp_controller->leastAmount($value['id']);
                 $trasform[$value['id']]['price-description'] = self::getPriceDescription($value['id']);
                 $trasform[$value['id']]['name'] = $value['name'];
@@ -33,32 +33,33 @@ class GetPageTemplateController extends Controller
 
         return $template;
     }
-    
+
     /**
-     * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product
+     * Get Price Description(eg: Per Year,Per Month ,One-Time) for a Product.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-09T00:20:09+0530
      *
+
      * @param  integer               $productid              Id of the Product
      *
      * @return String                $priceDescriptio        The Description of the Price
+
      */
     public function getPriceDescription(int $productid)
     {
         try {
-          $plan = Product::find($productid)->plan();
-          $priceDescription = $plan ? $plan->planPrice->first()->price_description : '';
-         return  $priceDescription; 
+            $plan = Product::find($productid)->plan();
+            $priceDescription = $plan ? $plan->planPrice->first()->price_description : '';
+
+            return  $priceDescription;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());
-             app('log')->error($ex->getMessage());
-             return redirect()->back()->with('fails', $ex->getMessage());
-        }
-       
+            app('log')->error($ex->getMessage());
 
-       
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 
 

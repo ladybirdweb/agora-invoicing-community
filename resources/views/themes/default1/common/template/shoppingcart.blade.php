@@ -62,23 +62,19 @@ main
                 @endif
    
    
-        <div class="row">
-             @for ($i =0; $i < sizeof($template); $i++)
-          <div class="row">
-          <h4 style="font-size: 30px;text-align: center;font-weight: bold;margin-left:400px">{{$heading[$i]}}</h4>
-      </div>
-       <h4 style="font-size: 20px;text-align: center;margin-left:400px">{{$tagline[$i]}}</h4>
+      
+        
+      
          <div class="col-md-12">
         <div class="pricing-table mb-4">
-            <div class="row">
-        {!! html_entity_decode($template[$i]) !!}
-    </div>
+           
+        {!! html_entity_decode($templates) !!}
+   
         </div>
     </div>
      <br/>    <br/>    <br/>    <br/>  <br/> <br/>
-      @endfor   
-          
-      </div>
+    
+    
  <br/>    <br/>    <br/>    <br/>  <br/> <br/>
 
 

@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\Front;
 
+use Bugsnag;
 use App\DefaultPage;
+use Illuminate\Http\Request;
+use App\Model\Product\Product;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\ProductGroup;
-use Bugsnag;
-use Illuminate\Http\Request;
+use App\Model\Common\PricingTemplate;
+use App\Http\Controllers\Front\CartController;
 
 class PageController extends GetPageTemplateController
 {
@@ -34,15 +37,12 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
-
-            return $location;
+             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $error = $ex->getMessage();
+            Bugsnag::notifyException($ex->getMessage());
             $location = \Config::get('geoip.default_location');
-
-            return $location;
+             return $location;
         }
     }
 
@@ -323,66 +323,36 @@ class PageController extends GetPageTemplateController
             return true;
         }
     }
-
-    public function cart()
+    
+    /**
+     * Get Page Template when Group in Store Dropdown is 
+     * selected on the basis of Group id
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-10T01:20:52+0530
+     *
+     * @param  int                      $groupid      Group id
+     * @param  int                      $templateid   Id of the Template
+     * @return longtext                               The Template to be displayed
+     */
+    public function pageTemplates(int $templateid, int $groupid)
     {
         try {
-            $location = $this->getLocation();
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
-            $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['iso_code'].'-'.$location['state'];
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
-            $cont = new \App\Http\Controllers\Front\CartController();
-            $currency = $cont->currency();
+            $cont = new CartController();
+            $currency =  $cont->currency();
             \Session::put('currency', $currency);
             if (!\Session::has('currency')) {
                 \Session::put('currency', 'INR');
             }
-            $pages = $this->page->find(1);
-            $data = $pages->content;
-            $product = new \App\Model\Product\Product();
-            $groups = ProductGroup::get()->toArray();
-            $template = [];
-            $heading = [];
-            $tagline = [];
+            $data = PricingTemplate::find($templateid)->data;
+            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden','!=',1)->get(); //Get ALL the Products Related to the Group
             $trasform = [];
-            if ($groups) {
-                for ($i = 0; $i < count($groups); $i++) {
-                    $products = $product->where('id', '!=', 1)
-                ->where('group', '=', $groups[$i]['id'])
-                ->where('hidden', '=', '0')
-                ->orderBy('created_at', 'asc')
-                ->get()
-                ->toArray();
-                    $heading1 = $groups[$i]['hidden'] == '0' ? $groups[$i]['headline'] : '';
-                    $tagline1 = $groups[$i]['hidden'] == '0' ? $groups[$i]['tagline'] : '';
-                    $template1 = ($this->getTemplateOne($products, $data, $trasform));
-
-                    $templates = array_push($template, $template1);
-                    $headings = array_push($heading, $heading1);
-                    $taglines = array_push($tagline, $tagline1);
-                }
-            } else {
-                $products = $product->where('id', '!=', 1)
-                ->where('hidden', '=', '0')
-                ->orderBy('created_at', 'asc')
-                ->get()
-                ->toArray();
-                if ($products) {
-                    $template1 = ($this->getTemplateOne($products, $data, $trasform));
-                }
-                $templates = array_push($template, $template1);
-                $heading[0] = '';
-                $tagline[0] = '';
-            }
-
-            return view('themes.default1.common.template.shoppingcart', compact('heading', 'groups', 'template', 'tagline'));
+            $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
+            return view('themes.default1.common.template.shoppingcart', compact('templates'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

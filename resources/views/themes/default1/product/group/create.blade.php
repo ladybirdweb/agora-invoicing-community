@@ -107,9 +107,10 @@
 
                         <td><b>{!! Form::label('hidden',Lang::get('message.hidden')) !!}</b></td>
                         <td>
+                             <p>{!! Form::hidden('hidden',0) !!}</p>
                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
 
-
+                               
                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
 
 

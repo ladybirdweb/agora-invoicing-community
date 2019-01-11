@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
+use App\Model\Common\Country;
 use Bugsnag;
 use Cart;
 use Exception;
@@ -178,13 +179,7 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-    public function cartRemove(Request $request)
-    {
-        $id = $request->input('id');
-        Cart::remove($id);
 
-        return 'success';
-    }
 
     public function reduseQty(Request $request)
     {
@@ -209,42 +204,38 @@ class BaseCartController extends ExtendedBaseCartController
 
         return 'success';
     }
-
-    public function addProduct($id)
+    
+    /**
+     * Returns the Collection to be added to cart
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-10T18:14:09+0530
+     *
+     * @param  int                   $id Product Id
+     */
+    public function addProduct(int $id)
     {
         try {
-            $qty = 1;
-
             $currency = $this->currency();
             $product = Product::where('id', $id)->first();
             if ($product) {
                 $actualPrice = $this->cost($product->id);
-                $currency = $this->currency();
-                $productName = $product->name;
                 $planid = 0;
                 if ($this->checkPlanSession() === true) {
                     $planid = Session::get('plan');
                 }
-                $isTaxApply = $product->tax_apply;
                 $taxConditions = $this->checkTax($id);
-
-                /*
-                 * Check if this product allow multiple qty
-                 */
-                if ($product->multiple_qty == 1) {
-                    // Allow
-                } else {
-                    $qty = 1;
-                }
-
-                $items = ['id' => $id, 'name' => $productName, 'price' => $actualPrice,
-                 'quantity'    => $qty, 'attributes' => ['currency' => [[$currency]]], ];
+                $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
+                 'quantity'    => 1, 'attributes' => ['currency' => [[$currency]]], ];
                 $items = array_merge($items, $taxConditions);
 
                 return $items;
             }
         } catch (\Exception $e) {
+            app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
+            return redirect()->back()->with('fails',$e->getMessage());
         }
     }
 
@@ -306,5 +297,24 @@ class BaseCartController extends ExtendedBaseCartController
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }
+    }
+     
+     /**
+      * Get Currency Status(ON/oFF) on the basis of Country detected by Geoip 
+      * when User is not Logged In
+      *
+      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+      *
+      * @date   2019-01-10T01:56:32+0530
+      *
+      * @return int                  Currency Status
+      */
+    public function getStatuswhenNotLoggedin()
+    {
+        $cont = new \App\Http\Controllers\Front\PageController();
+        $location = $cont->getLocation();
+        $country = self::findCountryByGeoip($location['iso_code']);
+        $currencyStatus = $userCountry->currency->status;
+        return $currencyStatus;
     }
 }

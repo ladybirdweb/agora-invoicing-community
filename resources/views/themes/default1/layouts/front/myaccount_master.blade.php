@@ -125,11 +125,24 @@
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    <li class="dropdown">
-                                                     <!--    <a  class="nav-link" href="{{url('home')}}">
-                                                            pricing
-                                                        </a> -->
-
+                                                      <?php 
+                                                $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                                              ?>
+                                                    
+                                                     <li class="dropdown">
+                                                      <a class="dropdown-item dropdown-toggle" href="#">
+                                                        Store
+                                                      </a>
+                                                      <ul class="dropdown-menu">
+                                                        @if(count($groups)>0)
+                                                        @foreach($groups as $group)
+                                                        
+                                                        <li><a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">{{$group->name}}</a></li>
+                                                        @endforeach
+                                                        @else
+                                                         <li><a class="dropdown-item">No Groups Added</a></li>
+                                                         @endif
+                                                      </ul>
                                                     </li>
                                                     <li class="dropdown dropdown-mega">
                                                         <a class="nav-link" href="{{url('contact-us')}}">

@@ -81,33 +81,44 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /*
+     * The first request to the cart Page comes here
+     * Get Plan id and Product id as Request
+     * 
+     * @param  int  $plan   Planid;
+     * @param  int  $id     Productid;
+     */
     public function cart(Request $request)
     {
         try {
             $plan = '';
-
-            if ($request->has('subscription')) {
+            if ($request->has('subscription')) {//put he Plan id sent into session variable
                 $plan = $request->get('subscription');
-
                 Session::put('plan', $plan);
             }
             $id = $request->input('id');
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-                \Cart::add($items);
+                \Cart::add($items);//Add Items To the Cart Collection
             }
-
             return redirect('show/cart');
         } catch (\Exception $ex) {
+          dd($ex);
+            app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex->getMessage());
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /*
+     * Show the cart with all the Cart Attributes and Cart Collections
+     * Link: https://github.com/darryldecode/laravelshoppingcart
+     */
     public function showCart()
     {
         try {
-            $currency = 'INR';
+             $currency = 'INR';
             $cart_currency = 'INR';
             $attributes = [];
             $cartCollection = Cart::getContent();
@@ -134,8 +145,8 @@ class CartController extends BaseCartController
 
             return view('themes.default1.front.cart', compact('cartCollection', 'attributes'));
         } catch (\Exception $ex) {
-            //dd($ex);
-
+             app('log')->error($ex->getMessage());
+            Bugsnag::notifyException($ex->getMessage());
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -331,7 +342,6 @@ class CartController extends BaseCartController
             ]);
                 }
             }
-            // dd($tax_attribute,$taxCondition);
             $currency_attribute = $this->addCurrencyAttributes($productid);
 
             return ['conditions' => $taxCondition,
@@ -387,7 +397,7 @@ class CartController extends BaseCartController
     }
 
     /**
-     *  Get tax value for Union Territory States.
+     *  Get tax value for Union Territory.
      *
      * @param type $productid
      * @param type $c_gst
@@ -688,8 +698,7 @@ class CartController extends BaseCartController
             $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
             if ($subregion) {
                 $result = ['id' => $subregion->state_subdivision_code,
-
-                     'name' => $subregion->state_subdivision_name, ];
+                 'name' => $subregion->state_subdivision_name, ];
             }
 
             return $result;
@@ -876,7 +885,7 @@ class CartController extends BaseCartController
      *
      * @return string
      */
-    public function currency($userid = '')
+    public static function currency($userid = '')
     {
         try {
             $currency = Setting::find(1)->default_currency;
@@ -884,7 +893,7 @@ class CartController extends BaseCartController
             if (!\Auth::user()) {//When user is not logged in
                 $cont = new \App\Http\Controllers\Front\PageController();
                 $location = $cont->getLocation();
-                $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
+                $country = self::findCountryByGeoip($location['iso_code']);
                 $userCountry = Country::where('country_code_char2', $country)->first();
                 $currencyStatus = $userCountry->currency->status;
                 if ($currencyStatus == 1) {
@@ -925,107 +934,23 @@ class CartController extends BaseCartController
     }
 
     /**
-     * @param type $productid
-     * @param type $userid
-     * @param type $planid
+     * @param int $productid
+     * @param int $userid
+     * @param int $planid
      *
-     * @return type
+     * @return string 
      */
     public function cost($productid, $userid = '', $planid = '')
     {
         try {
-            $cost = $this->planCost($productid, $userid, $planid);
-            if ($cost == 0) {
-                $cost = $this->productCost($productid, $userid);
-            }
-
-            return self::rounding($cost);
-        } catch (\Exception $ex) {
-            // throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $productid
-     * @param type $userid
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    // public function productCost($productid, $userid = '')
-    // {
-    //     try {
-    //         $sales = 0;
-    //         $currency = $this->currency($userid);
-    //         $product = $this->product->find($productid);
-    //         $price = $product->price()->where('currency', $currency)->first();
-    //         if ($price) {
-    //             $sales = $price->sales_price;
-    //             if ($sales == 0) {
-    //                 $sales = $price->price;
-    //             }
-    //         }
-    //         //}
-
-    //         return $sales;
-    //     } catch (\Exception $ex) {
-    //         throw new \Exception($ex->getMessage());
-    //     }
-    // }
-
-    /**
-     * @param type $productid
-     * @param type $userid
-     * @param type $planid
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function planCost($productid, $userid, $planid = '')
-    {
-        try {
-            $cost = 0;
-            if ($this->checkPlanSession() === true) {
-                $planid = Session::get('plan');
-            }
-
-            $plan = new \App\Model\Payment\Plan();
-            $plan = $plan->where('id', $planid)->where('product', $productid)->first();
-
-            if ($plan) {
-                $currency = $this->currency($userid);
-
-                $price = $plan->planPrice()
-                                    ->where('currency', $currency)
-                                    ->first();
-                if ($price != null) {
-                    $price = $price->add_price;
-                } else {
-                    $currency = Setting::find(1)->default_currency;
-                    $symbol = Setting::find(1)->default_symbol;
-                    $price = $plan->planPrice()
-                                    ->where('currency', $currency)->first()->add_price;
-                }
-
-                $days = $plan->days;
-                if ($days >= '365') {
-                    $months = $days / 30 / 12;
-                } else {
-                    $months = $days / 30;
-                }
-                $price = intval($price);
-                $cost = round($months) * $price;
-            }
-
+           $cost = $this->planCost($productid, $userid, $planid);
             return $cost;
         } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
+           
         }
     }
 
-    /**
+/**
      * @throws \Exception
      *
      * @return bool

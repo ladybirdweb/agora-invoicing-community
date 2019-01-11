@@ -116,27 +116,16 @@ if (count($attributes) > 0) {
                                                     <td class="product-price">
                                                         <?php
                                                         $domain = [];
-                                                        $price = 0;
                                                         $product = App\Model\Product\Product::where('id', $item->id)->first();
-                                                        $cart_controller = new App\Http\Controllers\Front\CartController();
-                                                        $value = $cart_controller->cost($product->id);
-                                                        $price += $value;
-                                                    
                                                         if ($product->require_domain == 1) {
                                                             $domain[$key] = $product->id;
 
                                                         }
-                                                        $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
-                                                        
-                                                        
-                                                        $total = Cart::getSubTotal();
-                                                        
+                                                        $cont = new \App\Http\Controllers\Product\ProductController();
+                                                        $isAgentAllowed = $cont->allowQuantityOrAgent($item->id);
 
-                                                        $sum = $item->getPriceSum();
-                                                    
-                                                        $tax = $total-$sum;
-                                                      
-                                                        
+                                                        $multi_product = \App\Http\Controllers\Product\ProductController::checkMultiProduct($item->id);
+                                                        $isTaxInclusive = $cont->isTaxInclusive();
                                                         ?>
 
                                                         <img width="100" height="100" alt="" class="img-responsive" src="{{$product->image}}">
@@ -150,9 +139,9 @@ if (count($attributes) > 0) {
 
 
                                                          <span class="amount">{!! $symbol !!}&nbsp;
-
-
-                                                         {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}
+                                                            
+                                                            {{$item->price}}
+                                                         <!-- {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSumWithConditions())}} -->
                                                      </span>
                                                       
                                                     </td>
@@ -168,7 +157,13 @@ if (count($attributes) > 0) {
                                                     <td class="product-subtotal">
 
 
-                                                              <span class="amount">{!! $symbol !!}&nbsp;{{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
+                                                              <span class="amount">{!! $symbol !!}&nbsp;
+                                                                @if ($isTaxInclusive == true)
+                                                                {{$item->getPriceSumWithConditions()}}
+                                                                @else
+                                                                {{$item->getPriceSum()}}
+                                                                @endif
+                                                            </span>
 
 
                                                             
@@ -221,7 +216,13 @@ if (count($attributes) > 0) {
                                         <td>
 
 
-                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>    {{\App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}</span></strong>
+                                            <strong><span class="amount"><small>{!! $symbol !!}&nbsp;</small>  
+                                             @if ($isTaxInclusive == true)
+                                                                {{Cart::getSubTotal()}}
+                                                                @else
+                                                                {{Cart::getSubTotalWithoutConditions()}}
+                                                                @endif  
+                                           </span></strong>
 
 
                                         </td>

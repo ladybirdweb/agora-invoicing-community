@@ -29,6 +29,8 @@ class ProductGroup extends BaseModel
         return $this->belongsTo('App\Model\Common\PricingTemplate');
     }
 
+
+
     public function delete()
     {
         $this->config()->delete();

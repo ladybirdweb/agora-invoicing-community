@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\Model\Common\Country;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
 use App\Model\Product\Product;
-use App\Model\Common\Country;
 use Bugsnag;
 use Cart;
 use Exception;
@@ -179,8 +179,6 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-
-
     public function reduseQty(Request $request)
     {
         $id = $request->input('id');
@@ -204,15 +202,15 @@ class BaseCartController extends ExtendedBaseCartController
 
         return 'success';
     }
-    
+
     /**
-     * Returns the Collection to be added to cart
+     * Returns the Collection to be added to cart.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-10T18:14:09+0530
      *
-     * @param  int                   $id Product Id
+     * @param int $id Product Id
      */
     public function addProduct(int $id)
     {
@@ -235,7 +233,8 @@ class BaseCartController extends ExtendedBaseCartController
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-            return redirect()->back()->with('fails',$e->getMessage());
+
+            return redirect()->back()->with('fails', $e->getMessage());
         }
     }
 
@@ -296,23 +295,24 @@ class BaseCartController extends ExtendedBaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
-     
-     /**
-      * Get Currency Status(ON/oFF) on the basis of Country detected by Geoip 
-      * when User is not Logged In
-      *
-      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-      *
-      * @date   2019-01-10T01:56:32+0530
-      *
-      * @return int                  Currency Status
-      */
+
+    /**
+     * Get Currency Status(ON/oFF) on the basis of Country detected by Geoip
+     * when User is not Logged In.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-10T01:56:32+0530
+     *
+     * @return int Currency Status
+     */
     public function getStatuswhenNotLoggedin()
     {
         $cont = new \App\Http\Controllers\Front\PageController();
         $location = $cont->getLocation();
         $country = self::findCountryByGeoip($location['iso_code']);
         $currencyStatus = $userCountry->currency->status;
+
         return $currencyStatus;
     }
 }

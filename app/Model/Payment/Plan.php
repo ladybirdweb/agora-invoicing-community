@@ -49,12 +49,10 @@ class Plan extends BaseModel
         return $this->belongstoMany('App\Model\Payment\Period', 'plans_periods_relation')->withTimestamps();
     }
 
-     
-
     public function delete()
     {
         $this->planPrice()->delete();
-         $this->plans()->detach();
+        $this->plans()->detach();
         parent::delete();
     }
 }

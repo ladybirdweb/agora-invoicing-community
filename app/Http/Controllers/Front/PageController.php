@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers\Front;
 
-use Bugsnag;
 use App\DefaultPage;
-use Illuminate\Http\Request;
-use App\Model\Product\Product;
+use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
 use App\Model\Product\ProductGroup;
-use App\Model\Common\PricingTemplate;
-use App\Http\Controllers\Front\CartController;
+use Bugsnag;
+use Illuminate\Http\Request;
 
 class PageController extends GetPageTemplateController
 {
@@ -37,12 +35,14 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
-             return $location;
+
+            return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
             $location = \Config::get('geoip.default_location');
-             return $location;
+
+            return $location;
         }
     }
 
@@ -323,36 +323,39 @@ class PageController extends GetPageTemplateController
             return true;
         }
     }
-    
+
     /**
-     * Get Page Template when Group in Store Dropdown is 
-     * selected on the basis of Group id
+     * Get Page Template when Group in Store Dropdown is
+     * selected on the basis of Group id.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-10T01:20:52+0530
      *
-     * @param  int                      $groupid      Group id
-     * @param  int                      $templateid   Id of the Template
-     * @return longtext                               The Template to be displayed
+     * @param int $groupid    Group id
+     * @param int $templateid Id of the Template
+     *
+     * @return longtext The Template to be displayed
      */
     public function pageTemplates(int $templateid, int $groupid)
     {
         try {
             $cont = new CartController();
-            $currency =  $cont->currency();
+            $currency = $cont->currency();
             \Session::put('currency', $currency);
             if (!\Session::has('currency')) {
                 \Session::put('currency', 'INR');
             }
             $data = PricingTemplate::find($templateid)->data;
-            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden','!=',1)->get(); //Get ALL the Products Related to the Group
+            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)->get(); //Get ALL the Products Related to the Group
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
+
             return view('themes.default1.common.template.shoppingcart', compact('templates'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

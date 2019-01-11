@@ -13,6 +13,4 @@ class PricingTemplate extends Model
     {
         return $this->hasMany('App\Model\Product\ProductGroup');
     }
-
-  
 }

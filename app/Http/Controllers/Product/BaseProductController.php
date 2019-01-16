@@ -275,36 +275,11 @@ class BaseProductController extends ExtendedBaseProductController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }
     
-    /**
-     * Check if multiple quantity is Allowed for Agents or For No. of Products
-     *
-     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
-     *
-     * @date   2019-01-10T23:56:07+0530
-     *
-     * @param  int          $productid 
-     *
-     * @return boolean      Whether No. of Agents Allowed or Product Qunatity on cart
-     */
-    public static function checkMultiProduct(int $productid)
-    {
-        try {
-             $product = Product::find($productid);
-            if ($product) {
-                if ($product->multiple_qty == 1) {
-                    return true;
-                }
-            }
-             return false;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-        }
-    }
+
     
     /**
      * Check Whether No. of Agents Allowed or Product Qunatity on cart
@@ -324,21 +299,21 @@ class BaseProductController extends ExtendedBaseProductController
         return $allowAgents;
     }
     
-    /*
-      * Check if Price is Inclusive or Exclusive of Taxes
-     */
-    public function isTaxInclusive()
-    {
-        $taxOption = TaxOption::first();
-          $cont = neW PageController();
-          $location = $cont->getLocation();
-        if($location['iso_code'] == 'IN') {
-        $result = $taxOption->tax_enable ==1 && $taxOption->inclusive ==1 ? true : false;
-        return $result;
-        } 
-        $result = $taxOption->inclusive ==1 ? true : false;
-        return $result;
+   
     
+    /**
+     * Checks Permission for Incresing the no. of Agents/Quantity i nCart
+     *
+     * @param  int     $productid        The id of the Product added to the cart
+     *
+     * @return array                     The permissons for Agents and Quantity                 
+     */
+    public function isAllowedtoEdit(int $productid)
+    {
+        $product = Product::where('id',$productid)->first();
+        $agentModifyPermission = $product->can_modify_agent;
+        $quantityModifyPermission = $product->can_modify_quantity;
+        return ['agent'=>$agentModifyPermission , 'quantity'=>$quantityModifyPermission];
     }
 
 

@@ -11,11 +11,14 @@
                 {!! Form::open(['url'=>'checkout','method'=>'get','id'=>'domain1']) !!}
                 
                 @foreach($domain as $product)
-                
+                <?php
+                $name =  App\Model\Product\Product::where('id', $product)->first()->name;
+                ?>
                 <div class="form-group {{ $errors->has('domain') ? 'has-error' : '' }}">
                     <!-- name -->
+                    <b>{{$name}}</b>
                     {!! Form::label('domain',Lang::get('message.domain'),['class'=>'required']) !!}
-                    {!! Form::text('domain['.$product.']',null,['class' => 'form-control' ,'id'=>'validDomain']) !!}
+                    {!! Form::text('domain['.$product.']',null,['class' => 'form-control' ,'id'=>'validDomain', 'required'=>'required   ']) !!}
                            <h6 id ="domaincheck"></h6>
                 </div>
                 

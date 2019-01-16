@@ -475,6 +475,7 @@ if($script){
           <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
+          <!-- <script src="{{asset('js/views/view.shop.js')}}"></script> -->
           <!-- Theme Custom -->
           <script src="{{asset('js/custom.js')}}"></script>
           
@@ -497,17 +498,17 @@ if($script){
                       
 
         
-         function removeItem(id) {
+                             function removeItem(id) {
 
-                         $.ajax({
-                        type: "GET",
-                     data:"id=" + id,
-                url: "{{url('cart/remove/')}}",
-                        success: function (data) {
-                            location.reload();
-                                                 }
-                                });
-                                }
+                                             $.ajax({
+                                            type: "GET",
+                                         data:"id=" + id,
+                                    url: "{{url('cart/remove/')}}",
+                                            success: function (data) {
+                                                location.reload();
+                                                                     }
+                                                    });
+                                                    }
 
 
         </script>

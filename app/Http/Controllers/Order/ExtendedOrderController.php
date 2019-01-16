@@ -115,24 +115,47 @@ class ExtendedOrderController extends Controller
     }
 
     /**
-     * generating serial key if product type is downloadable.
+     * generate serial key and add no of agents in the last 4 digits og the 16 string/digit serial key .
      *
-     * @param type $product_type
+     * @param int $productid
      *
      * @throws \Exception
      *
-     * @return type
+     * @return string   The Final Serial Key after adding no of agents in the last 4 digits
      */
-    public function generateSerialKey()
+    public function generateSerialKey(int $productid)
     {
         try {
-            $str = str_random(16);
-            $str = strtoupper($str);
-
-            return $str;
+            $contents = \Cart::getContent();//get All the content from the cart for gretting no of agents;
+            foreach ($contents as $content) {
+                if($content->id == $productid) {
+                   $noOfAgents = $content->attributes->agents; //Get No of Agents for the Product
+                }
+            }
+            $a = strlen($noOfAgents);
+            switch ($a) {//Get Last Four digits based on No.Of Agents
+                case '1':
+                   $lastFour = '000'.$noOfAgents;
+                    break;
+                   case '2': 
+                    $lastFour = '00'.$noOfAgents;
+                     break;
+                      case '3': 
+                    $lastFour = '0'.$noOfAgents;
+                     break;
+                      case '4': 
+                    $lastFour = $noOfAgents;
+                     break;
+                default:
+                    $lastFour = '0000';
+                    break;
+            }
+            $str = strtoupper(str_random(12));
+            $licCode = $str.$lastFour;
+            return $licCode;
         } catch (\Exception $ex) {
+              app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             throw new \Exception($ex->getMessage());
         }
     }

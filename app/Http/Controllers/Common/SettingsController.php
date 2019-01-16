@@ -74,7 +74,14 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /**
+     * PAyment Gateway that is shown on the basis of currency
+     *
+     * @param  string $currency   The currency of the Product Selected
+     *
+     * @return String              Name of the Payment Gateway
+     */
     public static function checkPaymentGateway($currency)
     {
         try {
@@ -89,7 +96,7 @@ class SettingsController extends BaseSettingsController
                     $pluginName[] = $plugin->name; //get the name of active plugin
                 }
 
-                if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement,that plugin name is returned
+                if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
                     for ($i = 0; $i < count($pluginName); $i++) {
                         $currencies = explode(',', $models[$i]->currencies);
                         if (in_array($currency, $currencies)) {
@@ -270,9 +277,6 @@ class SettingsController extends BaseSettingsController
             $delFrom = $request->input('delFrom');
             $delTill = $request->input('delTill');
             $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
-            // $activity_log = Activity::select('id', 'log_name', 'description',
-            //     'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
-
             return \DataTables::of($query->take(50))
              ->setTotalRecords($query->count())
              ->addColumn('checkbox', function ($model) {

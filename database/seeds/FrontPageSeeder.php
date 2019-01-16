@@ -36,7 +36,7 @@ class FrontPageSeeder extends Seeder
                          
                            
                         ',
-            'url'     => 'http://'.url('/pages/pricing'),
+            'url'     => 'http://'.url('/my-invoices'),
             'type'    => 'cart',
             'publish' => 1,
             'hidden'  => 1,
@@ -47,7 +47,7 @@ class FrontPageSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         \App\DefaultPage::create([
             'page_id'           => '1',
-            'page_url'          => 'http://'.url('/pages/pricing'),
+            'page_url'          => 'http://'.url('/my-invoices'),
         ]);
     }
 }

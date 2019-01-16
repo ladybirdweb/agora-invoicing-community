@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\ApiKey;
 use App\Http\Controllers\Common\MailChimpController;
 use App\Http\Controllers\Common\TemplateController;
+use App\Http\Controllers\Front\CartController;
 use App\Model\Common\Setting;
 use App\Model\Common\State;
 use App\Model\Common\Template;
@@ -74,61 +75,41 @@ class CheckoutController extends InfoController
         // $mailchimp = new MailChimpController();
         // $this->mailchimp = $mailchimp;
     }
-
+    
+    /*
+      * When Proceed to chekout button clicked first request comes here
+     */
     public function checkoutForm(Request $request)
     {
-        $currency = 'INR';
-        $cart_currency = 'INR';
-        if (!\Auth::user()) {
-            $url = $request->segments();
-            $content = Cart::getContent();
-
+        if (!\Auth::user()) {//If User is not Logged in then send him to login Page
+            $url = $request->segments();//The requested url (chekout).Save it in Session
             \Session::put('session-url', $url[0]);
+            $content = Cart::getContent();
             $domain = $request->input('domain');
             if ($domain) {
                 foreach ($domain as $key => $value) {
-                    \Session::put('domain'.$key, $value);
+                    \Session::put('domain'.$key, $value);//Store all the domains Entered in Cart Page in Session
                 }
             }
             \Session::put('content', $content);
-
             return redirect('auth/login')->with('fails', 'Please login');
         }
-
         if (\Session::has('items')) {
             $content = \Session::get('items');
             $attributes = $this->getAttributes($content);
         } else {
             $content = Cart::getContent();
             $attributes = $this->getAttributes($content);
+            
+            $content = Cart::getContent();
         }
-
-        $require = [];
-
-        //        if ($content->count() == 0) {
-        //            return redirect('home');
-        //        }
-        if ($cart_currency != $currency) {
-            return redirect('checkout');
-        }
-        if (count($require) > 0) {
-            $this->validate($request, [
-                'domain.*' => 'required',
-                    ], [
-                'domain.*.required' => 'Please provide Domain name',
-                //'domain.*.url'      => 'Domain name is not valid',
-                       ]);
-        }
-
         try {
             $domain = $request->input('domain');
-
-            if ($domain) {
+            if ($domain) {//Store the Domain  in session when user Logged In
                 foreach ($domain as $key => $value) {
                     \Session::put('domain'.$key, $value);
                 }
             }
-
             return view('themes.default1.front.checkout', compact('content', 'attributes'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -137,41 +118,45 @@ class CheckoutController extends InfoController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /**
+     * Get all the Attributes Sent From the cart along with Tax Conditions
+     *
+     * @param  array $content   Collection of the Cart Values
+     *
+     * @return array             Items along with their details,Attributes(Currency,Agents) and Tax Conditions
+     */
     public function getAttributes($content)
     {
         try {
-            $attributes = [];
-            foreach ($content as $key => $item) {
-                $attributes[] = $item->attributes;
-                $cart_currency = $attributes[0]['currency'][0]['code'];
-                $user_currency = \Auth::user()->currency;
-                $currency = 'INR';
-                if ($user_currency == 1 || $user_currency == 'USD') {
-                    $currency = 'USD';
+            if (count($content)>0) {//after ProductPurchase this is not true as cart is cleared
+                foreach ($content as $key => $item) {
+                    $attributes[] = $item->attributes;
+                    $cart_currency = $attributes[0]['currency']['currency'];//Get the currency of Product in the cart
+                    $currency = \Auth::user()->currency != $cart_currency ? \Auth::user()->currency : $cart_currency; //If User Currency and cart currency are different the currency es set to user currency.
+                    if ($cart_currency != $currency) {
+                        $id = $item->id;
+                        Cart::remove($id);
+                    }
+                    $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
+                    $require = [];
+                    if ($require_domain == 1) {
+                        $require[$key] = $item->id;
+                    }
+                    $cont = new CartController();
+                    $taxConditions = $cont->checkTax($item->id);//Calculate Tax Condition by passing ProductId
+                    Cart::remove($item->id);
+              
+                    //Return array of Product Details,attributes and their conditions
+                    $items[] = ['id' => $item->id, 'name' => $item->name, 'price' => $item->price,
+                    'quantity'    => $item->quantity, 'attributes' => ['currency'=>$attributes[0]['currency'],
+                    'agents'=>$attributes[0]['agents'],'tax'=>$taxConditions['tax_attributes']] ,'conditions'=>$taxConditions['conditions']];
                 }
-                if ($cart_currency != $currency) {
-                    $id = $item->id;
-                    Cart::remove($id);
-                    $controller = new CartController();
-                    $items = $controller->addProduct($id);
-                    Cart::add($items);
-                    //
-                }
-
-                $require_domain = $this->product->where('id', $item->id)->first()->require_domain;
-                $require = [];
-                if ($require_domain == 1) {
-                    $require[$key] = $item->id;
-                }
-
-                return $attributes;
-                //$attributes[] = $item->attributes;
+                Cart::add($items);
             }
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -210,7 +195,6 @@ class CheckoutController extends InfoController
         }
         $cost = $request->input('cost');
         $state = $this->getState();
-
         try {
             if ($paynow === false) {
                 /*
@@ -257,10 +241,25 @@ class CheckoutController extends InfoController
                     $rzp_secret = ApiKey::where('id', 1)->value('rzp_secret');
                     $apilayer_key = ApiKey::where('id', 1)->value('apilayer_key');
 
-                    return view('themes.default1.front.postCheckout',
-                    compact('amount', 'invoice_no', ' invoiceid', ' payment_method',
-                        'phone', 'invoice', 'items', 'product', 'paynow', 'attributes',
-                        'rzp_key', 'rzp_secret', 'apilayer_key'));
+                    return view(
+                        'themes.default1.front.postCheckout',
+                        compact(
+                            'amount',
+                            'invoice_no',
+                            ' invoiceid',
+                            ' payment_method',
+                            'phone',
+                            'invoice',
+                            'items',
+                            'product',
+                            'paynow',
+                            'content',
+                            'attributes',
+                            'rzp_key',
+                            'rzp_secret',
+                            'apilayer_key'
+                        )
+                    );
                 } else {
                     \Event::fire(new \App\Events\PaymentGateway(['request' => $request, 'cart' => Cart::getContent(), 'order' => $invoice]));
                 }
@@ -272,8 +271,14 @@ class CheckoutController extends InfoController
                 $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
                 $url = '';
                 if ($check_product_category->category) {
-                    $url = view('themes.default1.front.postCheckoutTemplate', compact('invoice','date',
-                        'product', 'items', 'attributes', 'state'))->render();
+                    $url = view('themes.default1.front.postCheckoutTemplate', compact(
+                        'invoice',
+                        'date',
+                        'product',
+                        'items',
+                        'attributes',
+                        'state'
+                    ))->render();
                 }
                 \Cart::clear();
 
@@ -295,21 +300,17 @@ class CheckoutController extends InfoController
             $invoice_id = $invoice->id;
             $invoice->status = 'success';
             $invoice->save();
-            $invoice_items = $this->invoiceItem->where('invoice_id', $invoice->id)->first();
-            $product = $invoice_items->product_name;
-
             $user_id = \Auth::user()->id;
 
             $url = '';
-            $check_product_category = $this->product($invoice_id);
-            if ($check_product_category->category) {
-                $url = url("download/$user_id/$invoice_number");
-                //execute the order
-                $order = new \App\Http\Controllers\Order\OrderController();
-                $order->executeOrder($invoice->id, $order_status = 'executed');
-                $payment = new \App\Http\Controllers\Order\InvoiceController();
-                $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
-            }
+           
+            $url = url("download/$user_id/$invoice->number");
+            //execute the order
+            $order = new \App\Http\Controllers\Order\OrderController();
+            $order->executeOrder($invoice->id, $order_status = 'executed');
+            $payment = new \App\Http\Controllers\Order\InvoiceController();
+            $payment->postRazorpayPayment($invoice_id, $invoice->grand_total);
+            
 
             return 'success';
         } catch (\Exception $ex) {
@@ -342,7 +343,6 @@ class CheckoutController extends InfoController
             $products = [];
             $items = \Cart::getContent();
             foreach ($items as $item) {
-
                //this is product
                 $id = $item->id;
                 $this->AddProductToOrder($id);

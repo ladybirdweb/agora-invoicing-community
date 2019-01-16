@@ -27,7 +27,10 @@
         Route::get('pricing', 'Front\CartController@cart');
         Route::get('group/{templateid}/{groupid}/','Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
-        Route::get('update-qty', 'Front\CartController@updateQty');
+        Route::get('update-agent-qty', 'Front\CartController@updateAgentQty');
+        Route::get('update-qty', 'Front\CartController@updateProductQty');
+        Route::get('reduce-product-qty', 'Front\CartController@reduceProductQty');
+        Route::get('reduce-agent-qty', 'Front\CartController@reduceAgentQty');
         Route::get('cart/addon/{id}', 'Front\CartController@addAddons');
         Route::get('cart/clear', 'Front\CartController@clearCart');
         Route::get('show/cart', 'Front\CartController@showCart');
@@ -56,7 +59,7 @@
          * Front Client Pages
          */
 
-        Route::get('my-invoices', 'Front\ClientController@invoices');
+        Route::get('my-invoices', 'Front\ClientController@invoices')->name('my-invoices');
 
         Route::get('get-my-invoices', 'Front\ClientController@getInvoices')->name('get-my-invoices');
         Route::get('get-my-invoices/{orderid}/{userid}', 'Front\ClientController@getInvoicesByOrderId');

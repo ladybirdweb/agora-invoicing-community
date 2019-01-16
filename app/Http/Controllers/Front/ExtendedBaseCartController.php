@@ -195,28 +195,18 @@ class ExtendedBaseCartController extends Controller
     /**
      * When from same Indian State.
      */
-    public function getTaxWhenIndianSameState(
-        $user_state,
-        $origin_state,
-        $productid,
-        $c_gst,
-        $s_gst,
-        $state_code,
-        $status
-    ) {
-        $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
-        if ($taxClassId) {
+    public function getTaxWhenIndianSameState( $user_state,$origin_state,$productid,$c_gst,$s_gst,$state_code,$status)
+        {
+         $taxes = [0];
+         $value = '';
+         $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
+         if ($taxClassId) {
             $taxes = $this->getTaxByPriority($taxClassId);
             $value = $this->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
-
-            if ($value == '') {
+            if ($value == 0) {
                 $status = 0;
             }
-        } else {
-            $taxes = [0];
-            $value = '';
-        }
-
+        } 
         return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
     }
 
@@ -225,6 +215,8 @@ class ExtendedBaseCartController extends Controller
      */
     public function getTaxWhenIndianOtherState($user_state, $origin_state, $productid, $i_gst, $state_code, $status)
     {
+        $taxes = [0];
+        $value = '';
         $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
             $taxes = $this->getTaxByPriority($taxClassId);
@@ -232,11 +224,7 @@ class ExtendedBaseCartController extends Controller
             if ($value == '') {
                 $status = 0;
             }
-        } else {
-            $taxes = [0];
-            $value = '';
-        }
-
+        } 
         return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
     }
 

@@ -56,10 +56,8 @@ class BaseCartController extends ExtendedBaseCartController
     public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
     {
         try {
-            $value = '';
             $value = $taxes->toArray()[0]['active'] ?
-
-                  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
+                    (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
                         $c_gst + $s_gst.'%' : 0) : 0;
 
             return $value;
@@ -180,28 +178,88 @@ class BaseCartController extends ExtendedBaseCartController
     }
 
 
-
-    public function reduseQty(Request $request)
+   /**
+    * Reduce No. of Agents When Minus button Is Clicked
+    *
+    * @param  Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
+    *
+    * @return success
+    */
+    public function reduceAgentQty(Request $request)
     {
-        $id = $request->input('id');
+       $id = $request->input('productid');
+        $agtqty = $request->input('agtQty');
+        $price = $request->input('actualAgentprice');
+        $currency = $request->input('currency');
+        $symbol = $request->input('symbol');
         Cart::update($id, [
-            'quantity' => -1, // so if the current product has a quantity of 4, it will subtract 1 and will result to 3
+             'price'  => $price,
+           'attributes' => ['agents' => $agtqty,'currency'=>['currency'=>$currency,'symbol'=>$symbol]],
         ]);
 
         return 'success';
     }
-
-    public function updateQty(Request $request)
+    
+    /**
+     * Update The Quantity And Price in cart when No of Agents Increasd
+     *
+     * @param  Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
+     *
+     * @return success
+     */
+    public function updateAgentQty(Request $request)
+    {
+        $id = $request->input('productid');
+        $agtqty = $request->input('agtQty');
+        $price = $request->input('actualAgentprice');
+        $currency = $request->input('currency');
+        $symbol = $request->input('symbol');
+        Cart::update($id, [
+           'price'  => $price,
+           'attributes' => ['agents' =>  $agtqty,'currency'=>['currency'=>$currency,'symbol'=>$symbol]],
+        ]);
+        return 'success';
+    }
+    
+        /**
+     * Reduce The Quantity And Price in cart whenMinus Button is Clicked
+     *
+     * @param  Request $request Get productid , Product quantity ,Price as Request
+     *
+     * @return success
+     */
+    public function reduceProductQty(Request $request)
     {
         $id = $request->input('productid');
         $qty = $request->input('qty');
+        $price = $request->input('actualprice');
         Cart::update($id, [
-            'quantity' => [
+                'quantity' => -1,
+                'price'  => $price,
+        ]);
+        return 'success';
+    }
+
+    
+    /**
+     * Update The Quantity And Price in cart when No of Products Increasd
+     *
+     * @param  Request $request Get productid , Product quantity ,Price as Request
+     *
+     * @return success
+     */
+    public function updateProductQty(Request $request)
+    {
+        $id = $request->input('productid');
+        $qty = $request->input('qty');
+        $price = $request->input('actualprice');
+        Cart::update($id, [
+                'quantity' => [
                 'relative' => false,
                 'value'    => $qty,
             ],
+           'price'  => $price,
         ]);
-
         return 'success';
     }
     
@@ -213,25 +271,31 @@ class BaseCartController extends ExtendedBaseCartController
      * @date   2019-01-10T18:14:09+0530
      *
      * @param  int                   $id Product Id
+     * @return array                 $items  Array of items and Tax conditions to the cart
      */
     public function addProduct(int $id)
     {
         try {
-            $currency = $this->currency();
-            $product = Product::where('id', $id)->first();
-            if ($product) {
-                $actualPrice = $this->cost($product->id);
-                $planid = 0;
-                if ($this->checkPlanSession() === true) {
-                    $planid = Session::get('plan');
-                }
-                $taxConditions = $this->checkTax($id);
-                $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
-                 'quantity'    => 1, 'attributes' => ['currency' => [[$currency]]], ];
-                $items = array_merge($items, $taxConditions);
-
-                return $items;
+            $qty = 1;
+            $agents =0; //Unlmited Agents
+            $planid = $this->checkPlanSession() === true ? Session::get('plan') : 0;//Get Plan id From Session
+            $product = Product::find($id);
+            $plan = $product->planRelation->find($planid);
+            if($plan) { //If Plan For a Product exists
+                 $quantity = $plan->planPrice->first()->product_quantity; 
+                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1; 
+                  $qty = $quantity != null ? $quantity : 1;
+                  $agtQty = $plan->planPrice->first()->no_of_agents; 
+                  // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents; 
+                  $agents = $agtQty != null ? $agtQty : 0; 
             }
+            $currency = $this->currency();
+            $actualPrice = $this->cost($product->id);
+               // $taxConditions = $this->checkTax($id);
+                $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
+                 'quantity'    => $qty, 'attributes' => ['currency' => $currency,'agents'=> $agents], ];
+                return $items;
+            
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);

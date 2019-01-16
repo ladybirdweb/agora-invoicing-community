@@ -394,13 +394,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      *
      * @throws \Exception
      */
+    
+    //Is this Method only for cliet?? because Auth::user->id?
     public function generateInvoice()
     {
         try {
             $tax_rule = new \App\Model\Payment\TaxOption();
             $rule = $tax_rule->findOrFail(1);
             $rounding = $rule->rounding;
-
             $user_id = \Auth::user()->id;
             if (\Auth::user()->currency == 'INR') {
                 $grand_total = \Cart::getSubTotal();
@@ -411,7 +412,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $number = rand(11111111, 99999999);
             $date = \Carbon\Carbon::now();
-
             if ($rounding == 1) {
                 $grand_total = round($grand_total);
             }
@@ -420,17 +420,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             foreach ($content as $key => $item) {
                 $attributes[] = $item->attributes;
             }
-
-            $symbol = $attributes[0]['currency'][0]['code'];
-            //dd($symbol);
-            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
-             'date'                                      => $date, 'grand_total' => $grand_total, 'status' => 'pending',
+            $symbol = $attributes[0]['currency']['symbol'];
+           $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
+             'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
              'currency'                                  => $symbol, ]);
-
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
-            //$this->sendMail($user_id, $invoice->id);
+            $this->sendMail($user_id, $invoice->id);
             return $invoice;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

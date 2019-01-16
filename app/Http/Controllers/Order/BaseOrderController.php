@@ -71,6 +71,7 @@ class BaseOrderController extends ExtendedOrderController
 
             return 'success';
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -79,14 +80,15 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getIfItemPresent($item, $invoiceid, $user_id, $order_status)
     {
-        $product = $this->getProductByName($item->product_name)->id;
-        $version = $this->getProductByName($item->product_name)->version;
+        try{
+
+        $product = $this->product->where('name', $item->product_name)->first()->id;
+        $version = $this->product->where('name', $item->product_name)->first()->version;
         if ($version == null) {
-            $version = $this->product_upload->select('version')->where('product_id', $product)->first();
+            //Get Version from Product Upload Table
+            $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
         }
-        $price = $item->subtotal;
-        $qty = $item->quantity;
-        $serial_key = $this->generateSerialKey();
+        $serial_key = $this->generateSerialKey($product);//Send Product Id to generate Serial Key
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
         $order = $this->order->create([
@@ -96,45 +98,31 @@ class BaseOrderController extends ExtendedOrderController
             'order_status'    => $order_status,
             'serial_key'      => Crypt::encrypt($serial_key),
             'product'         => $product,
-            'price_override'  => $price,
-            'qty'             => $qty,
+            'price_override'  => $item->subtotal,
+            'qty'             => $item->quantity,
             'domain'          => $domain,
             'number'          => $this->generateNumber(),
         ]);
         $this->addOrderInvoiceRelation($invoiceid, $order->id);
-        if ($this->checkOrderCreateSubscription($order->id) == true) {
-            $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
-        }
+         $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
         $this->sendOrderMail($user_id, $order->id, $item->id);
         //Update Subscriber To Mailchimp
-        $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+        // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
         $email = User::where('id', $user_id)->pluck('email')->first();
-        if ($price > 0) {
-            $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
-        } else {
-            $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
-        }
+        // if ($item->subtotal > 0) {
+        //     $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+        // } else {
+        //     $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+        // }
+     } catch (\Exception $ex) {
+       Bugsnag::notifyException($ex);
+       app('log')->error($ex->getMessage());
+         throw new \Exception('Can not Generate Order');
+     }
+
     }
 
-    /**
-     * get the product model by name.
-     *
-     * @param type $name
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getProductByName($name)
-    {
-        try {
-            return $this->product->where('name', $name)->first();
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     /**
      * inserting the values to subscription table.
@@ -160,15 +148,15 @@ class BaseOrderController extends ExtendedOrderController
                 $days = $this->plan->where('id', $planid)->first()->days;
                 $licenseExpiry = $this->getLicenseExpiryDate($permissions['generateLicenseExpiryDate'], $days);
                 $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $days);
+                $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
                 $user_id = $this->order->find($orderid)->client;
                 $this->subscription->create(['user_id' => $user_id,
-                    'plan_id'                          => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry,
-                     'version'                         => $version, 'product_id' =>$product, ]);
+                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry,'support_ends_at'=>$supportExpiry,'version'=> $version, 'product_id' =>$product, ]);
             }
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $serial_key);
+                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry,$supportExpiry, $serial_key);
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -216,6 +204,24 @@ class BaseOrderController extends ExtendedOrderController
         return $update_ends_at;
     }
 
+     /**
+     *  Get the Expiry Date for Support.
+     *
+     * @param bool $permissions [Whether Permissons for generating Updates Expiry Date are there or not]
+     * @param int  $days        [No of days that would get added to the current date ]
+     *
+     * @return string [The final Suport Expiry date that is generated]
+     */
+    protected function getSupportExpiryDate(bool $permissions, int $days)
+    {
+        $support_ends_at = '';
+        if ($days > 0 && $permissions == 1) {
+            $dt = \Carbon\Carbon::now();
+            $support_ends_at = $dt->addDays($days);
+        }
+        return $support_ends_at;
+    }
+
     public function addOrderInvoiceRelation($invoiceid, $orderid)
     {
         try {
@@ -228,25 +234,6 @@ class BaseOrderController extends ExtendedOrderController
         }
     }
 
-    public function checkOrderCreateSubscription($orderid)
-    {
-        $order = $this->order->find($orderid);
-        $result = true;
-        $invoice = $this->invoice_items->where('invoice_id', $order->invoice_id)->first();
-        if ($invoice) {
-            $product_name = $invoice->product_name;
-            $renew_con = new RenewController();
-            $product = $renew_con->getProductByName($product_name);
-            if ($product) {
-                $subscription = $product->subscription;
-                if ($subscription == 0) {
-                    $result = false;
-                }
-            }
-        }
-
-        return $result;
-    }
 
     public function sendOrderMail($userid, $orderid, $itemid)
     {

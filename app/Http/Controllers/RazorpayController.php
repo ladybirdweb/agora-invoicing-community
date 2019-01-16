@@ -39,10 +39,10 @@ class RazorpayController extends Controller
 
         return view('themes.default1.front.checkout', compact('api'));
     }
-     
-     /*
-     * Create Order And Payment for invoice paid with Razorpay
-      */
+
+    /*
+    * Create Order And Payment for invoice paid with Razorpay
+     */
     public function payment($invoice, Request $request)
     {
         //Input items of form

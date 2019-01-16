@@ -24,7 +24,7 @@ class ApiController extends Controller
             $domain2 = 'www.'.$domain1;
             $domain = $domain1.','.$domain2;
             $orders = new Order();
-            $order = $orders->where('domain', $domain)->orWhere('domain',$domain1)->first();
+            $order = $orders->where('domain', $domain)->orWhere('domain', $domain1)->first();
             if ($order) {
                 $result = 'success';
             }

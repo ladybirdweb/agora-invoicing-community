@@ -43,9 +43,7 @@ class GetPageTemplateController extends Controller
      *
      * @param int $productid Id of the Product
      *
-
-     * @return String                $priceDescription        The Description of the Price
-
+     * @return string $priceDescription        The Description of the Price
      */
     public function getPriceDescription(int $productid)
     {

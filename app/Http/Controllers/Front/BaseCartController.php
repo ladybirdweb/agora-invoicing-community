@@ -177,35 +177,32 @@ class BaseCartController extends ExtendedBaseCartController
         }
     }
 
-
-
-   /**
-    * Reduce No. of Agents When Minus button Is Clicked
-    *
-    * @param  Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
-    *
-    * @return success
-    */
+    /**
+     * Reduce No. of Agents When Minus button Is Clicked.
+     *
+     * @param Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
+     *
+     * @return success
+     */
     public function reduceAgentQty(Request $request)
-
     {
-       $id = $request->input('productid');
+        $id = $request->input('productid');
         $agtqty = $request->input('agtQty');
         $price = $request->input('actualAgentprice');
         $currency = $request->input('currency');
         $symbol = $request->input('symbol');
         Cart::update($id, [
-             'price'  => $price,
-           'attributes' => ['agents' => $agtqty,'currency'=>['currency'=>$currency,'symbol'=>$symbol]],
+             'price'    => $price,
+           'attributes' => ['agents' => $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
         ]);
 
         return 'success';
     }
-    
+
     /**
-     * Update The Quantity And Price in cart when No of Agents Increasd
+     * Update The Quantity And Price in cart when No of Agents Increasd.
      *
-     * @param  Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
+     * @param Request $request Get productid , Product quantity ,Price,Currency,Symbol as Request
      *
      * @return success
      */
@@ -217,16 +214,17 @@ class BaseCartController extends ExtendedBaseCartController
         $currency = $request->input('currency');
         $symbol = $request->input('symbol');
         Cart::update($id, [
-           'price'  => $price,
-           'attributes' => ['agents' =>  $agtqty,'currency'=>['currency'=>$currency,'symbol'=>$symbol]],
+           'price'      => $price,
+           'attributes' => ['agents' =>  $agtqty, 'currency'=>['currency'=>$currency, 'symbol'=>$symbol]],
         ]);
+
         return 'success';
     }
-    
-        /**
-     * Reduce The Quantity And Price in cart whenMinus Button is Clicked
+
+    /**
+     * Reduce The Quantity And Price in cart whenMinus Button is Clicked.
      *
-     * @param  Request $request Get productid , Product quantity ,Price as Request
+     * @param Request $request Get productid , Product quantity ,Price as Request
      *
      * @return success
      */
@@ -237,16 +235,16 @@ class BaseCartController extends ExtendedBaseCartController
         $price = $request->input('actualprice');
         Cart::update($id, [
                 'quantity' => -1,
-                'price'  => $price,
+                'price'    => $price,
         ]);
+
         return 'success';
     }
 
-    
     /**
-     * Update The Quantity And Price in cart when No of Products Increasd
+     * Update The Quantity And Price in cart when No of Products Increasd.
      *
-     * @param  Request $request Get productid , Product quantity ,Price as Request
+     * @param Request $request Get productid , Product quantity ,Price as Request
      *
      * @return success
      */
@@ -262,6 +260,7 @@ class BaseCartController extends ExtendedBaseCartController
             ],
            'price'  => $price,
         ]);
+
         return 'success';
     }
 
@@ -272,34 +271,33 @@ class BaseCartController extends ExtendedBaseCartController
      *
      * @date   2019-01-10T18:14:09+0530
      *
-
-     * @param  int                   $id Product Id
-     * @return array                 $items  Array of items and Tax conditions to the cart
-
+     * @param int $id Product Id
+     *
+     * @return array $items  Array of items and Tax conditions to the cart
      */
     public function addProduct(int $id)
     {
         try {
             $qty = 1;
-            $agents =0; //Unlmited Agents
-            $planid = $this->checkPlanSession() === true ? Session::get('plan') : 0;//Get Plan id From Session
+            $agents = 0; //Unlmited Agents
+            $planid = $this->checkPlanSession() === true ? Session::get('plan') : 0; //Get Plan id From Session
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
-            if($plan) { //If Plan For a Product exists
-                 $quantity = $plan->planPrice->first()->product_quantity; 
-                 //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1; 
-                  $qty = $quantity != null ? $quantity : 1;
-                  $agtQty = $plan->planPrice->first()->no_of_agents; 
-                  // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents; 
-                  $agents = $agtQty != null ? $agtQty : 0; 
+            if ($plan) { //If Plan For a Product exists
+                $quantity = $plan->planPrice->first()->product_quantity;
+                //If Product quantity is null(when show agent in Product Seting Selected),then set quantity as 1;
+                $qty = $quantity != null ? $quantity : 1;
+                $agtQty = $plan->planPrice->first()->no_of_agents;
+                // //If Agent qty is null(when show quantity in Product Setting Selected),then set Agent as 0,ie Unlimited Agents;
+                $agents = $agtQty != null ? $agtQty : 0;
             }
             $currency = $this->currency();
             $actualPrice = $this->cost($product->id);
-               // $taxConditions = $this->checkTax($id);
-                $items = ['id' => $id, 'name' => $product->name, 'price' => $actualPrice,
-                 'quantity'    => $qty, 'attributes' => ['currency' => $currency,'agents'=> $agents], ];
-                return $items;
-            
+            // $taxConditions = $this->checkTax($id);
+            $items = ['id'     => $id, 'name' => $product->name, 'price' => $actualPrice,
+                 'quantity'    => $qty, 'attributes' => ['currency' => $currency, 'agents'=> $agents], ];
+
+            return $items;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);

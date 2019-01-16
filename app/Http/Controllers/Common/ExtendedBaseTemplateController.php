@@ -3,9 +3,6 @@
 namespace App\Http\Controllers\Common;
 
 use App\Http\Controllers\Controller;
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxProductRelation;
-use App\Model\Product\Product;
 use Bugsnag;
 
 class ExtendedBaseTemplateController extends Controller
@@ -52,5 +49,4 @@ class ExtendedBaseTemplateController extends Controller
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

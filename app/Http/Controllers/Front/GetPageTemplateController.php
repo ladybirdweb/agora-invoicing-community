@@ -41,9 +41,9 @@ class GetPageTemplateController extends Controller
      *
      * @date   2019-01-09T00:20:09+0530
      *
-
-     * @param  integer               $productid              Id of the Product
+     * @param int $productid Id of the Product
      *
+
      * @return String                $priceDescription        The Description of the Price
 
      */
@@ -62,8 +62,6 @@ class GetPageTemplateController extends Controller
         }
     }
 
-
-
     public function checkConfigKey($config, $transform)
     {
         $result = [];
@@ -78,7 +76,7 @@ class GetPageTemplateController extends Controller
         return $result;
     }
 
-  public function keyArray($array)
+    public function keyArray($array)
     {
         $result = [];
         foreach ($array as $key => $value) {

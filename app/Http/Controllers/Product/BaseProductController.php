@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Product;
 
-use Bugsnag;
-use App\Model\Payment\TaxOption;
+use App\Http\Controllers\Front\PageController;
 use App\Model\Payment\Plan;
+use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
-use App\Http\Controllers\Front\PageController;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 class BaseProductController extends ExtendedBaseProductController
@@ -278,26 +278,26 @@ class BaseProductController extends ExtendedBaseProductController
             throw new \Exception($ex->getMessage());
         }
     }
-    
 
-    
     /**
-     * Check Whether No. of Agents Allowed or Product Qunatity on cart
+     * Check Whether No. of Agents Allowed or Product Qunatity on cart.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-11T00:18:49+0530
      *
-     * @param  int $productid
+     * @param int $productid
      *
-     * @return boolean
+     * @return bool
      */
     public function allowQuantityOrAgent(int $productid)
     {
         $product = Product::find($productid);
         $allowAgents = $product->show_agent == 1 ? true : false;
+
         return $allowAgents;
     }
+
     
    
     
@@ -307,15 +307,17 @@ class BaseProductController extends ExtendedBaseProductController
      * @param  int     $productid        The id of the Product added to the cart
      *
      * @return array                     The permissons for Agents and Quantity                 
+
      */
     public function isAllowedtoEdit(int $productid)
     {
+
         $product = Product::where('id',$productid)->first();
         $agentModifyPermission = $product->can_modify_agent;
         $quantityModifyPermission = $product->can_modify_quantity;
         return ['agent'=>$agentModifyPermission , 'quantity'=>$quantityModifyPermission];
-    }
 
+    }
 
     public function getDescriptionField($productid)
     {

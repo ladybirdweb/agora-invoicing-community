@@ -25,7 +25,7 @@
         Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
 
         Route::get('pricing', 'Front\CartController@cart');
-        Route::get('group/{templateid}/{groupid}/','Front\PageController@pageTemplates');
+        Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');
         Route::get('cart/remove', 'Front\CartController@cartRemove');
         Route::get('update-agent-qty', 'Front\CartController@updateAgentQty');
         Route::get('update-qty', 'Front\CartController@updateProductQty');
@@ -310,7 +310,6 @@
         Route::resource('groups', 'Product\GroupController');
         Route::get('get-groups', 'Product\GroupController@getGroups')->name('get-groups');
         Route::get('groups-delete', 'Product\GroupController@destroy');
-
 
         /*
          * Templates

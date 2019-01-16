@@ -60,7 +60,7 @@ class CartController extends BaseCartController
         $this->tax_by_state = new $tax_by_state();
     }
 
-    
+
     /*
      * The first request to the cart Page comes here
      * Get Plan id and Product id as Request
@@ -79,16 +79,18 @@ class CartController extends BaseCartController
             $id = $request->input('id');
             if (!array_key_exists($id, Cart::getContent())) {
                 $items = $this->addProduct($id);
-                \Cart::add($items);//Add Items To the Cart Collection
+                \Cart::add($items); //Add Items To the Cart Collection
             }
+
             return redirect('show/cart');
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
+
     /*
      * Show the cart with all the Cart Attributes and Cart Collections
      * Link: https://github.com/darryldecode/laravelshoppingcart
@@ -116,6 +118,7 @@ class CartController extends BaseCartController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
@@ -491,7 +494,7 @@ class CartController extends BaseCartController
             $subregion = \App\Model\Common\State::where('state_subdivision_code', $code)->first();
             if ($subregion) {
                 $result = ['id' => $subregion->state_subdivision_code,
-                 'name' => $subregion->state_subdivision_name, ];
+                 'name'         => $subregion->state_subdivision_name, ];
             }
 
             return $result;
@@ -636,16 +639,19 @@ class CartController extends BaseCartController
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
+
             return $cost;
         } catch (\Exception $ex) {
         }
     }
 
     /**
+
          * @throws \Exception
          *
          * @return bool
          */
+
     public function checkCurrencySession()
     {
         try {

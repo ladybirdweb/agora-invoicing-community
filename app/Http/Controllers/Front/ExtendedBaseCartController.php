@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers\Front;
 
-use Cart;
-use Bugsnag;
-use Session;
-use App\Model\Payment\Tax;
-use App\Model\Payment\Plan;
-use App\Model\Common\Setting;
-use App\Model\Product\Product;
-use App\Model\Payment\TaxClass;
-use App\Model\Payment\PlanPrice;
 use App\Http\Controllers\Controller;
+use App\Model\Payment\Plan;
+use App\Model\Payment\Tax;
+use App\Model\Payment\TaxClass;
+use App\Model\Product\Product;
+use Bugsnag;
+use Cart;
+use Session;
 
 class ExtendedBaseCartController extends Controller
 {
@@ -85,6 +83,7 @@ class ExtendedBaseCartController extends Controller
             if (Session::has('plan')) {
                 return true;
             }
+
             return false;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -115,9 +114,8 @@ class ExtendedBaseCartController extends Controller
         }
     }
 
-
     /**
-     * Get Cost For a particular Plan
+     * Get Cost For a particular Plan.
      *
      * @param int $productid
      * @param int $userid
@@ -125,7 +123,7 @@ class ExtendedBaseCartController extends Controller
      *
      * @throws \Exception
      *
-     * @return integer
+     * @return int
      */
     public function planCost($productid, $userid, $planid = '')
     {
@@ -148,6 +146,7 @@ class ExtendedBaseCartController extends Controller
                 $finalPrice = str_replace(',', '', $price);
                 $cost = round($months) * $finalPrice;
             }
+
             return $cost;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());

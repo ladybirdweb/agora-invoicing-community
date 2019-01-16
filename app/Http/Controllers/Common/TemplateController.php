@@ -388,6 +388,4 @@ class TemplateController extends BaseTemplateController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 }

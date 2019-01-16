@@ -121,15 +121,15 @@ class ExtendedOrderController extends Controller
      *
      * @throws \Exception
      *
-     * @return string   The Final Serial Key after adding no of agents in the last 4 digits
+     * @return string The Final Serial Key after adding no of agents in the last 4 digits
      */
     public function generateSerialKey(int $productid)
     {
         try {
-            $contents = \Cart::getContent();//get All the content from the cart for gretting no of agents;
+            $contents = \Cart::getContent(); //get All the content from the cart for gretting no of agents;
             foreach ($contents as $content) {
-                if($content->id == $productid) {
-                   $noOfAgents = $content->attributes->agents; //Get No of Agents for the Product
+                if ($content->id == $productid) {
+                    $noOfAgents = $content->attributes->agents; //Get No of Agents for the Product
                 }
             }
             $a = strlen($noOfAgents);
@@ -137,13 +137,13 @@ class ExtendedOrderController extends Controller
                 case '1':
                    $lastFour = '000'.$noOfAgents;
                     break;
-                   case '2': 
+                   case '2':
                     $lastFour = '00'.$noOfAgents;
                      break;
-                      case '3': 
+                      case '3':
                     $lastFour = '0'.$noOfAgents;
                      break;
-                      case '4': 
+                      case '4':
                     $lastFour = $noOfAgents;
                      break;
                 default:
@@ -152,10 +152,12 @@ class ExtendedOrderController extends Controller
             }
             $str = strtoupper(str_random(12));
             $licCode = $str.$lastFour;
+
             return $licCode;
         } catch (\Exception $ex) {
-              app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

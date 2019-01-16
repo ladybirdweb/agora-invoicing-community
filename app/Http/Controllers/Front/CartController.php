@@ -60,7 +60,6 @@ class CartController extends BaseCartController
         $this->tax_by_state = new $tax_by_state();
     }
 
-
     /*
      * The first request to the cart Page comes here
      * Get Plan id and Product id as Request
@@ -127,7 +126,7 @@ class CartController extends BaseCartController
     {
         try {
             $taxCondition = [];
-             $tax_attribute = [];
+            $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -137,10 +136,10 @@ class CartController extends BaseCartController
             ]);
             $cont = new \App\Http\Controllers\Front\PageController();
             $location = $cont->getLocation();
-            $country = $this->findCountryByGeoip($location['iso_code']);//Get country by geopip
+            $country = $this->findCountryByGeoip($location['iso_code']); //Get country by geopip
             $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
             $state_code = $location['iso_code'].'-'.$location['state'];
-            $state = $this->getStateByCode($state_code);//match the geoip state with billing table state.
+            $state = $this->getStateByCode($state_code); //match the geoip state with billing table state.
             $geoip_state = $this->getGeoipState($state_code, $user_state);
             $geoip_country = $this->getGeoipCountry($location['iso_code'], $user_country);
 
@@ -153,47 +152,47 @@ class CartController extends BaseCartController
 
                 if (count($tax_class_id) > 0) {//If the product is allowed for tax (Check in tax_product relation table)
                     if ($tax_enable == 1) {//If GST is Enabled
-                         $details = $this->getDetailsWhenUserStateIsIndian($user_state, $origin_state, 
-                          $productid,$geoip_state, $geoip_country);
-                         $c_gst = $details['cgst'];
-                          $s_gst = $details['sgst'];
-                          $i_gst = $details['igst'];
-                          $ut_gst = $details['utgst'];
-                          $state_code =  $details['statecode'];
-                          $status = $details['status'];
-                            $taxes = $details['taxes'];
-                            $status = $details['status'];
-                            $value = $details['value'];
-                            $rate = $details['rate'];
-                            foreach ($taxes as $key => $tax) {
+                         $details = $this->getDetailsWhenUserStateIsIndian($user_state, $origin_state,
+                          $productid, $geoip_state, $geoip_country);
+                        $c_gst = $details['cgst'];
+                        $s_gst = $details['sgst'];
+                        $i_gst = $details['igst'];
+                        $ut_gst = $details['utgst'];
+                        $state_code = $details['statecode'];
+                        $status = $details['status'];
+                        $taxes = $details['taxes'];
+                        $status = $details['status'];
+                        $value = $details['value'];
+                        $rate = $details['rate'];
+                        foreach ($taxes as $key => $tax) {
                             //All the da a attribute that is sent to the checkout Page if tax_compound=0
                             if ($taxes[0]) {
-                               $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
-                               's_gst'  => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
-                                'state'  => $state_code, 'origin_state'=>$origin_state,
-                                 'tax_enable'  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
+                                $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
+                               's_gst'                         => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
+                                'state'                        => $state_code, 'origin_state'=>$origin_state,
+                                 'tax_enable'                  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
 
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
-                                            'name'   => 'no compound','type'   => 'tax',
+                                            'name'   => 'no compound', 'type'   => 'tax',
                                             'target' => 'item', 'value'  => $value,
                                           ]);
                             } else {
-                              $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
+                                $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                                            'name'   => 'null', 'type'   => 'tax',
-                                           'target' => 'item','value'  => '0%',
-                                           'rate' => 0, 'tax_enable' =>0
+                                           'target' => 'item', 'value'  => '0%',
+                                           'rate'   => 0, 'tax_enable' =>0,
                                          ]);
                             }
                         }
                     } elseif ($tax_enable == 0) {//If Tax enable is 0 and other tax is available
-                            $details = $this->whenOtherTaxAvailableAndTaxNotEnable($taxClassId, $productid, $geoip_state, $geoip_country);
-                            $taxes = $details['taxes'];
-                            $value = $details['value'];
-                            $status = $details['status'];
+                        $details = $this->whenOtherTaxAvailableAndTaxNotEnable($taxClassId, $productid, $geoip_state, $geoip_country);
+                        $taxes = $details['taxes'];
+                        $value = $details['value'];
+                        $status = $details['status'];
                         foreach ($taxes as $key => $tax) {
                             $tax_attribute[$key] = ['name' => $tax->name,
-                            'rate'   => $value, 'tax_enable'=>0, 'status' => $status, ];
+                            'rate'                         => $value, 'tax_enable'=>0, 'status' => $status, ];
                             $taxCondition[$key] = new \Darryldecode\Cart\CartCondition([
                                 'name'   => $tax->name,
                                 'type'   => 'tax',
@@ -204,9 +203,11 @@ class CartController extends BaseCartController
                     }
                 }
             }
+
             return ['conditions' => $taxCondition, 'tax_attributes'=>  $tax_attribute];
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception('Can not check the tax');
         }
     }
@@ -299,9 +300,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-
-
-
     /**
      * @param type $id
      * @param type $key
@@ -320,7 +318,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     /**
      * @return type
@@ -525,8 +522,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
     /**
      * @param type $rate
      * @param type $price
@@ -550,9 +545,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
-
 
     /**
      * @param type $ids
@@ -646,12 +638,10 @@ class CartController extends BaseCartController
     }
 
     /**
-
-         * @throws \Exception
-         *
-         * @return bool
-         */
-
+     * @throws \Exception
+     *
+     * @return bool
+     */
     public function checkCurrencySession()
     {
         try {

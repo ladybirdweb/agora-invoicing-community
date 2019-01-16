@@ -6,41 +6,42 @@ use App\Model\Payment\Tax;
 
 trait TaxCalculation
 {
-    public function getDetailsWhenUserStateIsIndian($user_state, $origin_state,$productid,$geoip_state, $geoip_country,$status=1)
+    public function getDetailsWhenUserStateIsIndian($user_state, $origin_state, $productid, $geoip_state, $geoip_country, $status = 1)
     {
         if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user,if user from INdia
-        $c_gst = $user_state->c_gst;
-        $s_gst = $user_state->s_gst;
-        $i_gst = $user_state->i_gst;
-        $ut_gst = $user_state->ut_gst;
-        $state_code = $user_state->state_code;
+            $c_gst = $user_state->c_gst;
+            $s_gst = $user_state->s_gst;
+            $i_gst = $user_state->i_gst;
+            $ut_gst = $user_state->ut_gst;
+            $state_code = $user_state->state_code;
 
-        if ($state_code == $origin_state) {//If user and origin state are same
-            $rateForSameState = $this->getTaxWhenIndianSameState($user_state, $origin_state, $productid, $c_gst, $s_gst, $state_code, $status);
-            $taxes = $rateForSameState['taxes'];
-            $status = $rateForSameState['status'];
-            $value = $rateForSameState['value'];
-        } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
-            $rateForOtherState = $this->getTaxWhenIndianOtherState($user_state, $origin_state, $productid, $i_gst, $state_code, $status);
-            $taxes = $rateForOtherState['taxes'];
-            $status = $rateForOtherState['status'];
-            $value = $rateForOtherState['value'];
-        } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
-            $rateForUnionTerritory = $this->getTaxWhenUnionTerritory($user_state, $origin_state, $productid, $c_gst, $ut_gst, $state_code, $status);
-            $taxes = $rateForUnionTerritory['taxes'];
-            $status = $rateForUnionTerritory['status'];
-            $value = $rateForUnionTerritory['value'];
-           }
+            if ($state_code == $origin_state) {//If user and origin state are same
+                $rateForSameState = $this->getTaxWhenIndianSameState($user_state, $origin_state, $productid, $c_gst, $s_gst, $state_code, $status);
+                $taxes = $rateForSameState['taxes'];
+                $status = $rateForSameState['status'];
+                $value = $rateForSameState['value'];
+            } elseif ($state_code != $origin_state && $ut_gst == 'NULL') {//If user is from other state
+                $rateForOtherState = $this->getTaxWhenIndianOtherState($user_state, $origin_state, $productid, $i_gst, $state_code, $status);
+                $taxes = $rateForOtherState['taxes'];
+                $status = $rateForOtherState['status'];
+                $value = $rateForOtherState['value'];
+            } elseif ($state_code != $origin_state && $ut_gst != 'NULL') {//if user from Union Territory
+                $rateForUnionTerritory = $this->getTaxWhenUnionTerritory($user_state, $origin_state, $productid, $c_gst, $ut_gst, $state_code, $status);
+                $taxes = $rateForUnionTerritory['taxes'];
+                $status = $rateForUnionTerritory['status'];
+                $value = $rateForUnionTerritory['value'];
+            }
         } else {
             $details = $this->getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status);
+
             return $details;
         }
-        return ['taxes'=>$taxes , 'status'=>$status , 'value'=>$value,
-        'rate'=>$value,'cgst'=>$c_gst,'sgst'=>$s_gst,'igst'=>$i_gst,'utgst'=>$ut_gst,'statecode'=>$state_code];
+
+        return ['taxes'=> $taxes, 'status'=>$status, 'value'=>$value,
+        'rate'         => $value, 'cgst'=>$c_gst, 'sgst'=>$s_gst, 'igst'=>$i_gst, 'utgst'=>$ut_gst, 'statecode'=>$state_code, ];
     }
 
-
-    public function getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status=1)
+    public function getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status = 1)
     {
         $taxClassId = Tax::where('state', $geoip_state)
                 ->orWhere('country', $geoip_country)
@@ -67,7 +68,8 @@ trait TaxCalculation
                 $taxes = [0];
             }
         }
-        return ['taxes'=>$taxes , 'status'=>  $status , 'value'=>$value , 'rate'=>$rate,'cgst'=>'','sgst'=>'','igst'=>'','utgst'=>'','statecode'=>''];
+
+        return ['taxes'=>$taxes, 'status'=>  $status, 'value'=>$value, 'rate'=>$rate, 'cgst'=>'', 'sgst'=>'', 'igst'=>'', 'utgst'=>'', 'statecode'=>''];
     }
 
     public function whenOtherTaxAvailableAndTaxNotEnable($taxClassId, $productid)
@@ -99,6 +101,7 @@ trait TaxCalculation
                 $rate = $value;
             }
         }
-        return ['taxes'=>$taxes , 'value'=>$value,'status'=>$status];
+
+        return ['taxes'=>$taxes, 'value'=>$value, 'status'=>$status];
     }
 }

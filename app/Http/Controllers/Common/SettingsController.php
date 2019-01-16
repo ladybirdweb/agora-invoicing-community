@@ -74,13 +74,13 @@ class SettingsController extends BaseSettingsController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-    
+
     /**
-     * PAyment Gateway that is shown on the basis of currency
+     * PAyment Gateway that is shown on the basis of currency.
      *
-     * @param  string $currency   The currency of the Product Selected
+     * @param string $currency The currency of the Product Selected
      *
-     * @return String              Name of the Payment Gateway
+     * @return string Name of the Payment Gateway
      */
     public static function checkPaymentGateway($currency)
     {
@@ -277,6 +277,7 @@ class SettingsController extends BaseSettingsController
             $delFrom = $request->input('delFrom');
             $delTill = $request->input('delTill');
             $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
+
             return \DataTables::of($query->take(50))
              ->setTotalRecords($query->count())
              ->addColumn('checkbox', function ($model) {

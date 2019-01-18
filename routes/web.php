@@ -151,7 +151,12 @@
            Route::get('licenseDetails', 'Common\BaseSettingsController@licenseDetails')->name('licenseDetails');
             Route::get('updateDetails', 'Common\BaseSettingsController@updateDetails')->name('updateDetails');
             Route::get('captchaDetails', 'Common\BaseSettingsController@captchaDetails')->name('captchaDetails');
-
+            Route::get('updatemobileDetails', 'Common\BaseSettingsController@updateMobileDetails')->name('updatemobileDetails');
+            Route::get('updateemailDetails', 'Common\BaseSettingsController@updateEmailDetails')->name('updateemailDetails');
+            Route::get('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
+            Route::get('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
+             Route::get('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
+ 
         /*
          * Client
          */

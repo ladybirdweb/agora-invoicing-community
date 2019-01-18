@@ -13,13 +13,8 @@
 
                 <!-- Content Header (Page header) -->
                 <?php $set = App\Model\Common\Setting::where("id", "1")->first(); ?>
-                 <?php    
-            if($invoice->currency == 'INR'){
-                $symbol = 'INR';
-             }
-             else{
-                $symbol = 'USD';
-             }
+             
+            
                 ?>
 
                 <!-- Main content -->
@@ -163,43 +158,43 @@
                                    $taxInstance= new \App\Http\Controllers\Front\CartController();
                                     $taxes= $taxInstance->checkTax($productId,$user->state,$user->country);
                                      ?>
-                                   @if ($taxes['attributes']['currency'][0]['code']== 'INR' && $user->country == 'IN')
+                                  @if ($currency['currency'] == 'INR' && $user->country == 'IN')
                                     @if($set->state == $user->state)
                                              <tr class="Taxes">
                             <th>
-                                <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
-                                <strong>SGST<span>@</span>{{$taxes['attributes']['tax'][0]['s_gst']}}%</strong><br/>
+                               <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
+                                <strong>SGST<span>@</span>{{$taxes['tax_attributes'][0]['s_gst']}}%</strong><br/>
                                
                             </th>
                             <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}} <br/>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['s_gst'],$item->regular_price)}} <br/>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}} <br/>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['s_gst'],$item->regular_price)}} <br/>
                              </td>
                               </tr>
                                     @endif
-                                      @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] == "NULL")
+                                      @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] == "NULL")
                                       <tr>
                                       <th>
-                                <strong>IGST<span>@</span>{{$taxes['attributes']['tax'][0]['i_gst']}}%</strong><br/>
+                                <strong>IGST<span>@</span>{{$taxes['tax_attributes'][0]['i_gst']}}%</strong><br/>
                                   
                             </th>
                             <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['i_gst'],$item->regular_price)}} <br/>
+                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['i_gst'],$item->regular_price)}} <br/>
                               
                              </td>
                          </tr>
                                      @endif
                                      <tr>
-                                     @if($set->state != $user->state && $taxes['attributes']['tax'][0]['ut_gst'] != "NULL")
+                                   @if($set->state != $user->state && $taxes['tax_attributes'][0]['ut_gst'] != "NULL")
                                      <th>
-                                 <strong>UTGST<span>@</span>{{$taxes['attributes']['tax'][0]['ut_gst']}}%</strong><br/>
-                                 <strong>CGST<span>@</span>{{$taxes['attributes']['tax'][0]['c_gst']}}%</strong><br/>
+                                 <strong>UTGST<span>@</span>{{$taxes['tax_attributes'][0]['ut_gst']}}%</strong><br/>
+                                 <strong>CGST<span>@</span>{{$taxes['tax_attributes'][0]['c_gst']}}%</strong><br/>
 
-                                  
-                            </th>
+                        </th>
                             <td>
-                                {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['ut_gst'],$item->regular_price)}} <br/>
-                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['attributes']['tax'][0]['c_gst'],$item->regular_price)}}
+                               {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['ut_gst'],$item->regular_price)}} <br/>
+                                 {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($taxes['tax_attributes'][0]['c_gst'],$item->regular_price)}}
+
 
                               
                              </td>
@@ -207,7 +202,7 @@
                                      @endif
                                      @endif
                                       
-                                        @if ($taxes['attributes']['currency'][0]['code']!= 'INR')
+                                      @if ($currency['currency'] != 'INR')
                                      <tr>
                                         <th>
                                             <strong>{{ucfirst($tax_name[0])}}<span>@</span>{{$tax_percentage[0]}} </strong>

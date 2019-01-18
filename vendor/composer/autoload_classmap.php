@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'ActivityLogDelSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
+    'AddAgentsToInvoiceItems' => $baseDir . '/database/migrations/2019_01_18_045523_add_agents_to_invoice_items.php',
     'AddAmtToCreditToPayments' => $baseDir . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',
     'AddCgstColumnToTaxesTable' => $baseDir . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
     'AddCityColumsToSettingsTable' => $baseDir . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
@@ -52,6 +53,7 @@ return array(
     'AddTwitterKeysToApiKeys' => $baseDir . '/database/migrations/2018_09_07_092457_add_twitter_keys_to_api_keys.php',
     'AddUpdateApiUrlToApiKeys' => $baseDir . '/database/migrations/2018_12_17_122829_add_update_api_url_to_api_keys.php',
     'AddUpdateStatusToStatusSettings' => $baseDir . '/database/migrations/2018_12_17_113603_add_update_status_to_status_settings.php',
+    'AddZohoStatusToStatusSettings' => $baseDir . '/database/migrations/2019_01_17_125806_add_zoho_status_to_status_settings.php',
     'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha' => $vendorDir . '/anhskohbo/no-captcha/src/Facades/NoCaptcha.php',
     'Anhskohbo\\NoCaptcha\\NoCaptcha' => $vendorDir . '/anhskohbo/no-captcha/src/NoCaptcha.php',
     'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider' => $vendorDir . '/anhskohbo/no-captcha/src/NoCaptchaServiceProvider.php',

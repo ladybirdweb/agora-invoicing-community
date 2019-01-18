@@ -671,6 +671,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
 
     public static $classMap = array (
         'ActivityLogDelSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'AddAgentsToInvoiceItems' => __DIR__ . '/../..' . '/database/migrations/2019_01_18_045523_add_agents_to_invoice_items.php',
         'AddAmtToCreditToPayments' => __DIR__ . '/../..' . '/database/migrations/2018_08_21_094543_add_amt_to_credit_to_payments.php',
         'AddCgstColumnToTaxesTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_174307_add_cgst_column_to_taxes_table.php',
         'AddCityColumsToSettingsTable' => __DIR__ . '/../..' . '/database/migrations/2018_04_13_092835_add_city_colums_to_settings_table.php',
@@ -716,6 +717,7 @@ class ComposerStaticInitbb14d002d94c2a0afc906c0d693f6d84
         'AddTwitterKeysToApiKeys' => __DIR__ . '/../..' . '/database/migrations/2018_09_07_092457_add_twitter_keys_to_api_keys.php',
         'AddUpdateApiUrlToApiKeys' => __DIR__ . '/../..' . '/database/migrations/2018_12_17_122829_add_update_api_url_to_api_keys.php',
         'AddUpdateStatusToStatusSettings' => __DIR__ . '/../..' . '/database/migrations/2018_12_17_113603_add_update_status_to_status_settings.php',
+        'AddZohoStatusToStatusSettings' => __DIR__ . '/../..' . '/database/migrations/2019_01_17_125806_add_zoho_status_to_status_settings.php',
         'Anhskohbo\\NoCaptcha\\Facades\\NoCaptcha' => __DIR__ . '/..' . '/anhskohbo/no-captcha/src/Facades/NoCaptcha.php',
         'Anhskohbo\\NoCaptcha\\NoCaptcha' => __DIR__ . '/..' . '/anhskohbo/no-captcha/src/NoCaptcha.php',
         'Anhskohbo\\NoCaptcha\\NoCaptchaServiceProvider' => __DIR__ . '/..' . '/anhskohbo/no-captcha/src/NoCaptchaServiceProvider.php',

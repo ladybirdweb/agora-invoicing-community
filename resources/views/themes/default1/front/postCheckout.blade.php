@@ -26,16 +26,9 @@ Checkout
     return $randomString;
 }
      $api = new Api($rzp_key, $rzp_secret);
-
-    $displayCurrency=$invoice->currency;;
-    $symbol = $invoice->currency;
- if ($symbol !== 'INR')
-{
-    $data['display_currency']  = 'USD';
-    // $data['display_amount']    = $_POST['amount'];
-    
-}
-
+   
+    $displayCurrency=$content->first()->attributes->currency['currency'];
+    $symbol = $content->first()->attributes->currency['currency'];
     if ($symbol == 'INR'){
 
 
@@ -52,9 +45,8 @@ $orderData = [
 ];
 
 
-}
-else
-{
+} else {
+ 
      $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
      $exchange = json_decode(file_get_contents($url));
 

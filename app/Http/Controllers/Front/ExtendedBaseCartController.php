@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
+use App\Http\Controllers\Front\CartController;
 use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
 use Bugsnag;
@@ -136,7 +137,8 @@ class ExtendedBaseCartController extends Controller
             $plan = Plan::where('id', $planid)->where('product', $productid)->first();
             if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
                 $months = 1;
-                $currency = $this->currency($userid);
+                $cont = new CartController();
+                $currency = $cont->currency($userid);
                 $product = Product::find($productid);
                 $days = $plan->periods->pluck('days')->first();
                 $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
@@ -149,6 +151,7 @@ class ExtendedBaseCartController extends Controller
 
             return $cost;
         } catch (\Exception $ex) {
+            dd($ex);
             throw new \Exception($ex->getMessage());
         }
     }

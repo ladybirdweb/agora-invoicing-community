@@ -59,7 +59,31 @@ class CartController extends BaseCartController
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
     }
+    public function productList(Request $request)
+    {
+        $cont = new \App\Http\Controllers\Front\PageController();
+        $location = $cont->getLocation();
+        $country = $this->findCountryByGeoip($location['iso_code']);
+        $states = $this->findStateByRegionId($location['iso_code']);
+        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+        $state_code = $location['iso_code'].'-'.$location['state'];
+        $state = $this->getStateByCode($state_code);
+        $mobile_code = $this->getMobileCodeByIso($location['iso_code']);
+        $currency = $this->currency();
 
+        \Session::put('currency', $currency);
+        if (!\Session::has('currency')) {
+            \Session::put('currency', 'INR');
+        }
+
+        try {
+            $page_controller = new PageController();
+
+            return $page_controller->cart();
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 
     /*
      * The first request to the cart Page comes here
@@ -127,7 +151,7 @@ class CartController extends BaseCartController
     {
         try {
             $taxCondition = [];
-             $tax_attribute = [];
+            $tax_attribute = [];
             $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
             $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                 'name'   => 'null',
@@ -153,22 +177,27 @@ class CartController extends BaseCartController
 
                 if (count($tax_class_id) > 0) {//If the product is allowed for tax (Check in tax_product relation table)
                     if ($tax_enable == 1) {//If GST is Enabled
-                         $details = $this->getDetailsWhenUserStateIsIndian($user_state, $origin_state, 
-                          $productid,$geoip_state, $geoip_country);
-                         $c_gst = $details['cgst'];
-                          $s_gst = $details['sgst'];
-                          $i_gst = $details['igst'];
-                          $ut_gst = $details['utgst'];
-                          $state_code =  $details['statecode'];
-                          $status = $details['status'];
-                            $taxes = $details['taxes'];
-                            $status = $details['status'];
-                            $value = $details['value'];
-                            $rate = $details['rate'];
-                            foreach ($taxes as $key => $tax) {
+                         $details = $this->getDetailsWhenUserStateIsIndian(
+                             $user_state,
+                             $origin_state,
+                          $productid,
+                             $geoip_state,
+                             $geoip_country
+                         );
+                        $c_gst = $details['cgst'];
+                        $s_gst = $details['sgst'];
+                        $i_gst = $details['igst'];
+                        $ut_gst = $details['utgst'];
+                        $state_code =  $details['statecode'];
+                        $status = $details['status'];
+                        $taxes = $details['taxes'];
+                        $status = $details['status'];
+                        $value = $details['value'];
+                        $rate = $details['rate'];
+                        foreach ($taxes as $key => $tax) {
                             //All the da a attribute that is sent to the checkout Page if tax_compound=0
                             if ($taxes[0]) {
-                               $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
+                                $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
                                's_gst'  => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
                                 'state'  => $state_code, 'origin_state'=>$origin_state,
                                  'tax_enable'  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
@@ -178,7 +207,7 @@ class CartController extends BaseCartController
                                             'target' => 'item', 'value'  => $value,
                                           ]);
                             } else {
-                              $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
+                                $tax_attribute[0] = ['name' => 'null', 'rate' => 0, 'tax_enable' =>0];
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                                            'name'   => 'null', 'type'   => 'tax',
                                            'target' => 'item','value'  => '0%',
@@ -187,10 +216,10 @@ class CartController extends BaseCartController
                             }
                         }
                     } elseif ($tax_enable == 0) {//If Tax enable is 0 and other tax is available
-                            $details = $this->whenOtherTaxAvailableAndTaxNotEnable($taxClassId, $productid, $geoip_state, $geoip_country);
-                            $taxes = $details['taxes'];
-                            $value = $details['value'];
-                            $status = $details['status'];
+                        $details = $this->whenOtherTaxAvailableAndTaxNotEnable($tax_class_id, $productid, $geoip_state, $geoip_country);
+                        $taxes = $details['taxes'];
+                        $value = $details['value'];
+                        $status = $details['status'];
                         foreach ($taxes as $key => $tax) {
                             $tax_attribute[$key] = ['name' => $tax->name,
                             'rate'   => $value, 'tax_enable'=>0, 'status' => $status, ];
@@ -211,86 +240,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     *   Get tax value for Same State.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $s_gst
-     *                        return type
-     */
-    public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
-    {
-        try {
-            $value = '';
-            $value = $taxes->toArray()[0]['active'] ?
-
-                  (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $c_gst + $s_gst.'%' : 0) : 0;
-
-            return $value;
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     *   Get tax value for Other States.
-     *
-     * @param type $productid
-     * @param type $i_gst
-     *                        return type
-     */
-    public function getValueForOtherState($productid, $i_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ? //If the Current Class is active
-              (TaxProductRelation::where('product_id', $productid)->where('tax_class_id', $taxClassId)->count() ?
-                        $i_gst.'%' : 0) : 0; //IGST
-
-        return $value;
-    }
-
-    /**
-     *  Get tax value for Union Territory.
-     *
-     * @param type $productid
-     * @param type $c_gst
-     * @param type $ut_gst
-     *                        return type
-     */
-    public function getValueForUnionTerritory($productid, $c_gst, $ut_gst, $taxClassId, $taxes)
-    {
-        $value = '';
-        $value = $taxes->toArray()[0]['active'] ?
-             (TaxProductRelation::where('product_id', $productid)
-              ->where('tax_class_id', $taxClassId)->count() ? $ut_gst + $c_gst.'%' : 0) : 0;
-
-        return $value;
-    }
-
-    public function otherRate($productid)
-    {
-        $otherRate = '';
-
-        return $otherRate;
-    }
-
-    public function getValueForOthers($productid, $taxClassId, $taxes)
-    {
-        $otherRate = 0;
-        $status = $taxes->toArray()[0]['active'];
-        if ($status && (TaxProductRelation::where('product_id', $productid)
-          ->where('tax_class_id', $taxClassId)->count() > 0)) {
-            $otherRate = Tax::where('tax_classes_id', $taxClassId)->first()->rate;
-        }
-        $value = $otherRate.'%';
-
-        return $value;
-    }
-
+   
     public function cartRemove(Request $request)
     {
         $id = $request->input('id');
@@ -299,27 +249,6 @@ class CartController extends BaseCartController
         return 'success';
     }
 
-
-
-
-    /**
-     * @param type $id
-     * @param type $key
-     * @param type $value
-     */
-    public function cartUpdate($id, $key, $value)
-    {
-        try {
-            Cart::update(
-                $id,
-                [
-                $key => $value, // new item name
-                    ]
-            );
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
 
     /**
@@ -342,26 +271,6 @@ class CartController extends BaseCartController
             return redirect()->back();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $tax_class_id
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getTaxByPriority($taxClassId)
-    {
-        try {
-            $taxe_relation = $this->tax->where('tax_classes_id', $taxClassId)->get();
-
-            return $taxe_relation;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception('error in get tax priority');
         }
     }
 
@@ -462,17 +371,13 @@ class CartController extends BaseCartController
     public static function getTimezoneByName($name)
     {
         try {
-            if ($name) {
-                $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
-                if ($timezone) {
-                    $timezone = $timezone->id;
-                } else {
-                    $timezone = '114';
-                }
+            $timezone = \App\Model\Common\Timezone::where('name', $name)->first();
+            if ($timezone) {
+                $timezone = $timezone->id;
             } else {
                 $timezone = '114';
             }
-
+          
             return $timezone;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -552,31 +457,6 @@ class CartController extends BaseCartController
     }
 
 
-
-
-    /**
-     * @param type $ids
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public function getProductById($ids)
-    {
-        try {
-            $products = [];
-            if (count($ids) > 0) {
-                $products = $this->product
-                        ->whereIn('id', $ids)
-                        ->get();
-            }
-
-            return $products;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
     /**
      * @param type $userid
      *
@@ -605,7 +485,7 @@ class CartController extends BaseCartController
                 $currency_symbol = \Auth::user()->currency_symbol;
             }
             if ($userid != '') {//For Admin Panel Clients
-                $currencyAndSymbol = $this->getCurrency($userid);
+                $currencyAndSymbol = self::getCurrency($userid);
                 $currency = $currencyAndSymbol['currency'];
                 $currency_symbol = $currencyAndSymbol['symbol'];
             }
@@ -619,7 +499,7 @@ class CartController extends BaseCartController
     /*
     * Get Currency And Symbol For Admin Panel Clients
     */
-    public function getCurrency($userid)
+    public static function getCurrency($userid)
     {
         $user = new \App\User();
         $currency = $user->find($userid)->currency;
@@ -639,9 +519,10 @@ class CartController extends BaseCartController
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
-
             return $cost;
         } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex->getMessage());
+            app('log')->error($ex->getMessage());
         }
     }
 
@@ -660,30 +541,6 @@ class CartController extends BaseCartController
             }
 
             return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $productid
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function allowSubscription($productid)
-    {
-        try {
-            $reponse = false;
-            $product = $this->product->find($productid);
-            if ($product) {
-                if ($product->subscription == 1) {
-                    $reponse = true;
-                }
-            }
-
-            return $reponse;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
         }

@@ -12,62 +12,198 @@ use Illuminate\Http\Request;
 
 class ExtendedOrderController extends Controller
 {
-    public function advanceSearch($order_no = '', $product_id = '', $expiry = '',
-        $expiryTill = '', $from = '', $till = '', $domain = '')
-    {
+    /**
+     * Perform Advance Search for Orders Page
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-19T01:35:08+0530
+     *
+     * @param  string $order_no
+     * @param  string $product_id
+     * @param  string $expiry
+     * @param  string $expiryTill
+     * @param  string $from
+     * @param  string $till
+     * @param  string $domain
+     *
+     * @return array
+     */
+    public function advanceSearch(
+        $order_no = '',
+        $product_id = '',
+        $expiry = '',
+        $expiryTill = '',
+        $from = '',
+        $till = '',
+        $domain = ''
+    ) {
         try {
             $join = Order::leftJoin('subscriptions', 'orders.id', '=', 'subscriptions.order_id');
-            if ($order_no) {
-                $join = $join->where('number', $order_no);
-            }
-            if ($product_id) {
-                $join = $join->where('product', $product_id);
-            }
-            if ($expiry) {
-                $expiryFrom = (new BaseSettingsController())->getDateFormat($expiry);
-                $tills = (new BaseSettingsController())->getDateFormat();
+            ($this->orderNum($order_no, $join));
+            $this->product($product_id, $join);
+            $this->expiry($expiryTill, $expiry, $join);
+            $this->expiryTill($expiry, $expiryTill, $join);
+            $this->orderFrom($till, $from, $join);
+            $this->orderTill($from, $till, $join);
+            $this->domain($domain, $join);
 
-                $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
-                $join = $join->whereBetween('subscriptions.ends_at', [$expiryFrom, $tillDate]);
-            }
-
-            if ($expiryTill) {
-                $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
-                $froms = Subscription::first()->ends_at;
-                $fromDate = $this->getFromDate($expiry, $froms);
-                $join = $join->whereBetween('subscriptions.ends_at', [$fromDate, $exptill]);
-            }
-            if ($from) {
-                $fromdate = date_create($from);
-
-                $from = date_format($fromdate, 'Y-m-d H:m:i');
-                $tills = date('Y-m-d H:m:i');
-
-                $tillDate = $this->getTillDate($from, $till, $tills);
-                $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
-            }
-            if ($till) {
-                $tilldate = date_create($till);
-                $till = date_format($tilldate, 'Y-m-d H:m:i');
-                $froms = Order::first()->created_at;
-                $fromDate = $this->getFromDate($from, $froms);
-                $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);
-            }
-            if ($domain) {
-                if (str_finish($domain, '/')) {
-                    $domain = substr_replace($domain, '', -1, 0);
-                }
-                $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
-            }
-            // dd($join->get());
             $join = $join->orderBy('created_at', 'desc')
-        ->select('orders.id', 'orders.created_at', 'client',
-            'price_override', 'order_status', 'product', 'number', 'serial_key');
+           ->select(
+               'orders.id',
+               'orders.created_at',
+               'client',
+            'price_override',
+               'order_status',
+               'product',
+               'number',
+               'serial_key'
+           );
 
             return $join;
         } catch (\Exception $ex) {
             dd($ex);
         }
+    }
+    
+
+    /**
+     * Searches for Order No.
+     *
+     * @param  int              $order_no  The Order NO to be searched
+     * @param  App\Model\Order  $join      The Order instance
+     *
+     * @return $join
+     */
+    private function orderNum($order_no, $join)
+    {
+        if ($order_no) {
+            $join = $join->where('number', $order_no);
+            return $join;
+        }
+        return;
+    }
+    
+    /**
+     * Searches for Product
+     *
+     * @param  int              $order_no  The Order NO to be searched
+     * @param  App\Model\Order  $join      The Order instance
+     *
+     * @return $join
+     */
+    private function product($product_id, $join)
+    {
+        if ($product_id) {
+            $join = $join->where('product', $product_id);
+            return $join;
+        }
+        return;
+    }
+    
+    /**
+     * Searches for Expiry From
+     *
+     * @param  string $expiry The Expiry From Date
+     * @param  Object $join
+     *
+     * @return Query
+     */
+    private function expiry($expiryTill, $expiry, $join)
+    {
+        if ($expiry) {
+            $expiryFrom = (new BaseSettingsController())->getDateFormat($expiry);
+            $tills = (new BaseSettingsController())->getDateFormat();
+
+            $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
+            $join = $join->whereBetween('subscriptions.ends_at', [$expiryFrom, $tillDate]);
+            return $join;
+        }
+        return;
+    }
+
+    /**
+     * Searches for Expiry Till
+     *
+     * @param  string $expiry The Expiry Till Date
+     * @param  Object $join
+     *
+     * @return Query
+     */
+    private function expiryTill($expiry, $expiryTill, $join)
+    {
+        if ($expiryTill) {
+            $exptill = (new BaseSettingsController())->getDateFormat($expiryTill);
+            $froms = Subscription::first()->ends_at;
+            $fromDate = $this->getFromDate($expiry, $froms);
+            $join = $join->whereBetween('subscriptions.ends_at', [$fromDate, $exptill]);
+            return $join;
+        }
+        return;
+    }
+    
+    /**
+     * Searches for Order From Date
+     *
+     * @param  string $expiry The Order From Date
+     * @param  Object $join
+     *
+     * @return Query
+     */
+    public function orderFrom($till, $from, $join)
+    {
+        if ($from) {
+            $fromdate = date_create($from);
+
+            $from = date_format($fromdate, 'Y-m-d H:m:i');
+            $tills = date('Y-m-d H:m:i');
+
+            $tillDate = $this->getTillDate($from, $till, $tills);
+            $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
+            return $join;
+        }
+        return;
+    }
+    
+    /**
+     * Searches for Order Till Date
+     *
+     * @param  string $expiry The Order Till Date
+     * @param  Object $join
+     *
+     * @return Query
+     */
+    public function orderTill($from, $till, $join)
+    {
+        if ($till) {
+            $tilldate = date_create($till);
+            $till = date_format($tilldate, 'Y-m-d H:m:i');
+            $froms = Order::first()->created_at;
+            $fromDate = $this->getFromDate($from, $froms);
+            $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);
+            return $join;
+        }
+        return;
+    }
+    
+    /**
+     * Searches for Domain
+     *
+     * @param  string $domain domaiin
+     * @param  Object $join
+     *
+     * @return Query
+     */
+    public function domain($domain, $join)
+    {
+        if ($domain) {
+            if (str_finish($domain, '/')) {
+                $domain = substr_replace($domain, '', -1, 0);
+            }
+            $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
+            return $join;
+        }
+        return;
     }
 
     public function getTillDate($from, $till, $tills)
@@ -118,33 +254,27 @@ class ExtendedOrderController extends Controller
      * generate serial key and add no of agents in the last 4 digits og the 16 string/digit serial key .
      *
      * @param int $productid
-     *
+     * @param int  $agents       No Of Agents
      * @throws \Exception
      *
      * @return string   The Final Serial Key after adding no of agents in the last 4 digits
      */
-    public function generateSerialKey(int $productid)
+    public function generateSerialKey(int $productid, $agents)
     {
         try {
-            $contents = \Cart::getContent();//get All the content from the cart for gretting no of agents;
-            foreach ($contents as $content) {
-                if($content->id == $productid) {
-                   $noOfAgents = $content->attributes->agents; //Get No of Agents for the Product
-                }
-            }
-            $a = strlen($noOfAgents);
-            switch ($a) {//Get Last Four digits based on No.Of Agents
+            $len = strlen($agents);
+            switch ($len) {//Get Last Four digits based on No.Of Agents
                 case '1':
-                   $lastFour = '000'.$noOfAgents;
+                   $lastFour = '000'.$agents;
                     break;
-                   case '2': 
-                    $lastFour = '00'.$noOfAgents;
+                   case '2':
+                    $lastFour = '00'.$agents;
                      break;
-                      case '3': 
-                    $lastFour = '0'.$noOfAgents;
+                      case '3':
+                    $lastFour = '0'.$agents;
                      break;
-                      case '4': 
-                    $lastFour = $noOfAgents;
+                      case '4':
+                    $lastFour = $agents;
                      break;
                 default:
                     $lastFour = '0000';
@@ -154,7 +284,7 @@ class ExtendedOrderController extends Controller
             $licCode = $str.$lastFour;
             return $licCode;
         } catch (\Exception $ex) {
-              app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
             throw new \Exception($ex->getMessage());
         }

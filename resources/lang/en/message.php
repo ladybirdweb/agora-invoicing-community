@@ -180,6 +180,16 @@ return [
       'verify-and-copy-command'                                    => 'Click to Verify Command and copy to Clipboard',
       'lic_api_secret'                                             => 'API Secret',
       'lic_api_url'                                                => 'API URL',
+      'msg91_key'                                                  => 'Msg91 Auth Key',
+      'consumer_key'                                               => 'Twitter Consumer Key',
+      'consumer_secret'                                            => 'Twitter Consumer Secret',
+      'access_token'                                               => 'Twitter Access Token',
+      'token_secret'                                               =>  'Twitter Access Tken Secret',
+      'rzp_key'                                                    =>  'Razorpay Key',
+      'rzp_secret'                                                 =>  'Razorpay Secret',
+      'apilayer_key'                                               =>  'ApiLayer Access Key(For Exchange Rate Conversion)',
+      'zoho_crm'                                                   =>  'Zoho CRM',
+
 
     /*
      * Clients
@@ -374,6 +384,7 @@ return [
     'domain'                         => 'Domain',
     'price-override'                 => 'Price Override',
     'quantity'                       => 'Quantity',
+    'agent'                          => 'No. of Agents',
     'place-an-order'                 => 'Place an Order',
     'generate'                       => 'Generate',
     'invoice-generated-successfully' => 'Invoice generated successfully',

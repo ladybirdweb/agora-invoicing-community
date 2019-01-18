@@ -35,7 +35,6 @@ class PageController extends GetPageTemplateController
     {
         try {
             $location = \GeoIP::getLocation();
-
             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());

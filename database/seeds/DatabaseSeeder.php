@@ -757,7 +757,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0,'zoho_status'=>0,'rzp_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
@@ -767,7 +767,7 @@ class PricingTemplateSeeder extends Seeder
     public function run()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('status_settings')->truncate();
+        \DB::table('pricing_templates')->truncate();
         PricingTemplate::create(['id'=>1 ,'data'=>'<div class="col-md-3 col-sm-6">
                             <div class="plan">
                                 <div class="plan-header">

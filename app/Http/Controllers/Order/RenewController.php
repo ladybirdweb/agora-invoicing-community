@@ -204,7 +204,10 @@ class RenewController extends BaseRenewController
             throw new \Exception($ex->getMessage());
         }
     }
-
+    
+    /*
+        Renew From Admin Panel
+     */
     public function renew($id, Request $request)
     {
         $this->validate($request, [
@@ -230,15 +233,20 @@ class RenewController extends BaseRenewController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
+    
+    /**
+     * Show the Renew Page from by clicking onRenew in All Orders (Admin Panel)
+     *
+     * @param  int $id    Subscription id for the order
+     *
+     */
     public function renewForm($id)
     {
         try {
             $sub = $this->sub->find($id);
             $userid = $sub->user_id;
             $plans = $this->plan->pluck('name', 'id')->toArray();
-
-            return view('themes.default1.renew.renew', compact('id', 'plans', 'userid'));
+           return view('themes.default1.renew.renew', compact('id', 'plans', 'userid'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -295,12 +303,7 @@ class RenewController extends BaseRenewController
     {
         $date = Carbon::parse($end);
         $expiry_date = $date->addDay($days);
-        $licenseStatus = StatusSetting::pluck('license_status')->first();
-        if ($licenseStatus == 1) {
-            $cont = new \App\Http\Controllers\License\LicenseController();
-            // $createNewLicense = $cont->updateExpirationDate($orderid, $product, $user_id, $ends_at);
-        }
-
+      
         return $expiry_date;
     }
 }

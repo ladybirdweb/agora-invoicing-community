@@ -127,7 +127,7 @@ class PlanController extends ExtendedPlanController
     }
 
     /**
-     * Store the Plans Detaiuls While Plan Creation.
+     * Store the Plans Details While Plan Creation.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
@@ -149,7 +149,7 @@ class PlanController extends ExtendedPlanController
             'days'             => $days_rule.'numeric',
             'add_price.*'      => 'required',
             'product'          => 'required',
-            'product_quantity' => 'required_without:no_of_agents|integer|min:0',
+            'product_quantity' => 'required_without:no_of_agents|integer|min:1',
             'no_of_agents'     => 'required_without:product_quantity|integer|min:0',
         ]);
         $product_quantity = $request->input('product_quantity');

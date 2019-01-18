@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
 if($script){
@@ -7,8 +8,6 @@ if($script){
   $script = null;
 }
  ?>
-<html>
-
 
     <head>
   

@@ -75,25 +75,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         return $result;
     }
 
-    public function currency($invoiceid)
-    {
-        $invoice = Invoice::find($invoiceid);
-        $currency_code = $invoice->currency;
-        $cur = ' ';
-        if ($invoice->grand_total == 0) {
-            return $cur;
-        }
-        $currency = Currency::where('code', $currency_code)->first();
-        if ($currency) {
-            $cur = $currency->symbol;
-            if (!$cur) {
-                $cur = $currency->code;
-            }
-        }
-
-        return $cur;
-    }
-
     /**
      * get Subtotal.
      */
@@ -133,17 +114,7 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-    public function getPrice($price, $price_model)
-    {
-        if ($price == '') {
-            $price = $price_model->sales_price;
-            if (!$price) {
-                $price = $price_model->price;
-            }
-        }
 
-        return $price;
-    }
 
     public function checkExecution($invoiceid)
     {

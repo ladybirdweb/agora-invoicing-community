@@ -32,8 +32,11 @@ trait AuthenticatesUsers
            $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
            $captchaSiteKey = ApiKey::pluck('nocaptcha_sitekey')->first();
            $captchaSecretKey = ApiKey::pluck('captcha_secretCheck')->first();
+           $mobileStatus = StatusSetting::pluck('msg91_status')->first();
+           $msg91Key = ApiKey::pluck('msg91_auth_key')->first(); 
+           $emailStatus = StatusSetting::pluck('emailverification_status')->first();
             $location = $cont->getLocation();
-         return view('themes.default1.front.auth.login-register', compact('bussinesses','location','captchaStatus','captchaSiteKey','captchaSecretKey'));
+         return view('themes.default1.front.auth.login-register', compact('bussinesses','location','captchaStatus','captchaSiteKey','captchaSecretKey','mobileStatus','msg91Key','emailStatus'));
 
           }catch(\Exception $ex){
             app('log')->error($ex->getMessage());

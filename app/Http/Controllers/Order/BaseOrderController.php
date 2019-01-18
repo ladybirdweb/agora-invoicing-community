@@ -88,7 +88,7 @@ class BaseOrderController extends ExtendedOrderController
             //Get Version from Product Upload Table
             $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
         }
-        $serial_key = $this->generateSerialKey($product);//Send Product Id to generate Serial Key
+        $serial_key = $this->generateSerialKey($product,$item->agents);//Send Product Id and Agents to generate Serial Key
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
         $order = $this->order->create([
@@ -115,6 +115,7 @@ class BaseOrderController extends ExtendedOrderController
         //     $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
         // }
      } catch (\Exception $ex) {
+        dd($ex);
        Bugsnag::notifyException($ex);
        app('log')->error($ex->getMessage());
          throw new \Exception('Can not Generate Order');

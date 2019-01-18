@@ -87,14 +87,18 @@ class ExtendedBaseProductController extends Controller
             }
         }
     }
-
-    public function getProductField($productid)
+    
+    /**
+     * Whether the Product Requires the domain to be entered
+     *
+     * @param  int $productid
+     */
+    public function getProductField(int $productid)
     {
         try {
             $field = '';
             $product = Product::find($productid);
-            if ($product) {
-                if ($product->require_domain == 1) {
+             if ($product->require_domain == 1) {
                     $field .= "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */
                          \Lang::get('message.domain')."</label>
@@ -102,7 +106,7 @@ class ExtendedBaseProductController extends Controller
                         id='domain' placeholder='http://example.com'>
                 </div>";
                 }
-            }
+            
 
             return $field;
         } catch (\Exception $ex) {

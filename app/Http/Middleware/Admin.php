@@ -4,8 +4,8 @@ namespace App\Http\Middleware;
 
 use App\DefaultPage;
 //use Illuminate\Routing\Middleware;
-use Closure;
 use Cart;
+use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
 class Admin
@@ -46,13 +46,14 @@ class Admin
             $url = \Session::get('session-url');
             if ($url) {
                 $content = \Cart::getContent();
-                $currency  = (\Session::get('currency'));
+                $currency = (\Session::get('currency'));
                 if (\Auth::user()->currency != $currency['currency']) {//If user currency is not equal to the cart currency then redirect to default url and clear his cart items and let the customer add the Product again so that the tax could be calculated properly
                     foreach ($content as $key => $item) {
                         $id = $item->id;
                         Cart::remove($id);
                     }
                     \Session::forget('content');
+
                     return redirect($defaulturl);
                 }
                 $domain = \Session::get('domain');

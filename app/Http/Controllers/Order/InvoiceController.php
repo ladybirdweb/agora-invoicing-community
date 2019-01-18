@@ -282,7 +282,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
      *
      * @throws \Exception
      */
-    
+
     //Is this Method only for cliet?? because Auth::user->id?
     public function generateInvoice()
     {
@@ -309,13 +309,14 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 $attributes[] = $item->attributes;
             }
             $symbol = $attributes[0]['currency']['symbol'];
-           $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
-             'date'=> $date, 'grand_total' => $grand_total, 'status' => 'pending',
+            $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
+             'date'                                      => $date, 'grand_total' => $grand_total, 'status' => 'pending',
              'currency'                                  => $symbol, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }
             $this->sendMail($user_id, $invoice->id);
+
             return $invoice;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());

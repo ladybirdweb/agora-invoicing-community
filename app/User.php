@@ -55,6 +55,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         $lastActivity = Activity::all()->last(); //returns the last logged activity
         if ($eventName == 'updated') {
             $this->enableLogging();
+
             return 'User  <strong> '.$this->first_name.' '.$this->last_name.'</strong> was updated';
         }
 

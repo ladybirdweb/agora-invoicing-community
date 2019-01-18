@@ -257,17 +257,20 @@ class ExtendedOrderController extends Controller
      * @param int  $agents       No Of Agents
      * @throws \Exception
      *
-     * @return string   The Final Serial Key after adding no of agents in the last 4 digits
+     * @return string The Final Serial Key after adding no of agents in the last 4 digits
      */
     public function generateSerialKey(int $productid, $agents)
     {
         try {
+
             $len = strlen($agents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
+
                 case '1':
                    $lastFour = '000'.$agents;
                     break;
                    case '2':
+
                     $lastFour = '00'.$agents;
                      break;
                       case '3':
@@ -275,6 +278,7 @@ class ExtendedOrderController extends Controller
                      break;
                       case '4':
                     $lastFour = $agents;
+
                      break;
                 default:
                     $lastFour = '0000';
@@ -282,10 +286,12 @@ class ExtendedOrderController extends Controller
             }
             $str = strtoupper(str_random(12));
             $licCode = $str.$lastFour;
+
             return $licCode;
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

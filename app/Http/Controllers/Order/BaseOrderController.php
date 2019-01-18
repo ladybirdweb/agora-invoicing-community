@@ -80,6 +80,7 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getIfItemPresent($item, $invoiceid, $user_id, $order_status)
     {
+
         try{
 
         $product = $this->product->where('name', $item->product_name)->first()->id;
@@ -92,6 +93,7 @@ class BaseOrderController extends ExtendedOrderController
         $domain = $item->domain;
         $plan_id = $this->plan($item->id);
         $order = $this->order->create([
+
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
             'client'          => $user_id,
@@ -103,17 +105,18 @@ class BaseOrderController extends ExtendedOrderController
             'domain'          => $domain,
             'number'          => $this->generateNumber(),
         ]);
-        $this->addOrderInvoiceRelation($invoiceid, $order->id);
-         $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
-        $this->sendOrderMail($user_id, $order->id, $item->id);
-        //Update Subscriber To Mailchimp
-        // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-        $email = User::where('id', $user_id)->pluck('email')->first();
-        // if ($item->subtotal > 0) {
+            $this->addOrderInvoiceRelation($invoiceid, $order->id);
+            $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
+            $this->sendOrderMail($user_id, $order->id, $item->id);
+            //Update Subscriber To Mailchimp
+            // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $email = User::where('id', $user_id)->pluck('email')->first();
+            // if ($item->subtotal > 0) {
         //     $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
         // } else {
         //     $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
         // }
+
      } catch (\Exception $ex) {
         dd($ex);
        Bugsnag::notifyException($ex);
@@ -121,9 +124,10 @@ class BaseOrderController extends ExtendedOrderController
          throw new \Exception('Can not Generate Order');
      }
 
+
+            throw new \Exception('Can not Generate Order');
+        }
     }
-
-
 
     /**
      * inserting the values to subscription table.
@@ -152,12 +156,12 @@ class BaseOrderController extends ExtendedOrderController
                 $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $days);
                 $user_id = $this->order->find($orderid)->client;
                 $this->subscription->create(['user_id' => $user_id,
-                'plan_id' => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry,'support_ends_at'=>$supportExpiry,'version'=> $version, 'product_id' =>$product, ]);
+                'plan_id'                              => $planid, 'order_id' => $orderid, 'update_ends_at' =>$updatesExpiry, 'ends_at' => $licenseExpiry, 'support_ends_at'=>$supportExpiry, 'version'=> $version, 'product_id' =>$product, ]);
             }
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             if ($licenseStatus == 1) {
                 $cont = new \App\Http\Controllers\License\LicenseController();
-                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry,$supportExpiry, $serial_key);
+                $createNewLicense = $cont->createNewLicene($orderid, $product, $user_id, $licenseExpiry, $updatesExpiry, $supportExpiry, $serial_key);
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -205,7 +209,7 @@ class BaseOrderController extends ExtendedOrderController
         return $update_ends_at;
     }
 
-     /**
+    /**
      *  Get the Expiry Date for Support.
      *
      * @param bool $permissions [Whether Permissons for generating Updates Expiry Date are there or not]
@@ -220,6 +224,7 @@ class BaseOrderController extends ExtendedOrderController
             $dt = \Carbon\Carbon::now();
             $support_ends_at = $dt->addDays($days);
         }
+
         return $support_ends_at;
     }
 
@@ -234,7 +239,6 @@ class BaseOrderController extends ExtendedOrderController
             throw new \Exception($ex->getMessage());
         }
     }
-
 
     public function sendOrderMail($userid, $orderid, $itemid)
     {

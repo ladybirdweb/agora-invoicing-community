@@ -7,6 +7,7 @@ use App\Model\Payment\TaxProductRelation;
 
 trait TaxCalculation
 {
+
     public function __construct($s_gst='', $c_gst='', $state_code='', $ut_gst='', $i_gst='')
     {
         $this->c_gst =  $c_gst;
@@ -19,6 +20,7 @@ trait TaxCalculation
 
 
     public function getDetailsWhenUserStateIsIndian($user_state, $origin_state, $productid, $geoip_state, $geoip_country, $status=1)
+
     {
         if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user,if user from INdia
             $c_gst = $user_state->c_gst;
@@ -45,14 +47,15 @@ trait TaxCalculation
             }
         } else {
             $details = $this->getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status);
+
             return $details;
         }
-        return ['taxes'=>$taxes , 'status'=>$status , 'value'=>$value,
-        'rate'=>$value,'cgst'=>$c_gst,'sgst'=>$s_gst,'igst'=>$i_gst,'utgst'=>$ut_gst,'statecode'=>$state_code];
+
+        return ['taxes'=> $taxes, 'status'=>$status, 'value'=>$value,
+        'rate'         => $value, 'cgst'=>$c_gst, 'sgst'=>$s_gst, 'igst'=>$i_gst, 'utgst'=>$ut_gst, 'statecode'=>$state_code, ];
     }
 
-
-    public function getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status=1)
+    public function getDetailsWhenUserFromOtherCountry($user_state, $geoip_state, $geoip_country, $productid, $status = 1)
     {
         $taxClassId = Tax::where('state', $geoip_state)
                 ->orWhere('country', $geoip_country)
@@ -79,7 +82,8 @@ trait TaxCalculation
                 $taxes = [0];
             }
         }
-        return ['taxes'=>$taxes , 'status'=>  $status , 'value'=>$value , 'rate'=>$rate,'cgst'=>'','sgst'=>'','igst'=>'','utgst'=>'','statecode'=>''];
+
+        return ['taxes'=>$taxes, 'status'=>  $status, 'value'=>$value, 'rate'=>$rate, 'cgst'=>'', 'sgst'=>'', 'igst'=>'', 'utgst'=>'', 'statecode'=>''];
     }
 
     public function whenOtherTaxAvailableAndTaxNotEnable($taxClassId, $productid)
@@ -111,7 +115,8 @@ trait TaxCalculation
                 $rate = $value;
             }
         }
-        return ['taxes'=>$taxes , 'value'=>$value,'status'=>$status];
+
+        return ['taxes'=>$taxes, 'value'=>$value, 'status'=>$status];
     }
 
 

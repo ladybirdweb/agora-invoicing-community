@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Http\Controllers\Front\PageController;
 use App\Model\Payment\Plan;
-use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
@@ -357,6 +355,7 @@ class BaseProductController extends ExtendedBaseProductController
             }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -380,22 +379,25 @@ class BaseProductController extends ExtendedBaseProductController
         return $allowAgents;
     }
 
+
     
    /**
      * Checks Permission for Incresing the no. of Agents/Quantity in Cart
-     *
-     * @param  int     $productid        The id of the Product added to the cart
-     *
-     * @return array                     The permissons for Agents and Quantity                 
 
+     *
+     * @param int $productid The id of the Product added to the cart
+     *
+     * @return array The permissons for Agents and Quantity
      */
     public function isAllowedtoEdit(int $productid)
     {
+
         $product = Product::where('id',$productid)->first();
+
         $agentModifyPermission = $product->can_modify_agent;
         $quantityModifyPermission = $product->can_modify_quantity;
-        return ['agent'=>$agentModifyPermission , 'quantity'=>$quantityModifyPermission];
 
+        return ['agent'=>$agentModifyPermission, 'quantity'=>$quantityModifyPermission];
     }
 
 }

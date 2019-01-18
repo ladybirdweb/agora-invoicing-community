@@ -9,7 +9,6 @@ use Bugsnag;
 
 class BaseTemplateController extends ExtendedBaseTemplateController
 {
-    
     public function getPrice($months, $price, $priceDescription, $value, $cost, $symbol)
     {
         $price[$value->id] = $months.'  '.$symbol.$cost.' '.$priceDescription;
@@ -51,12 +50,8 @@ class BaseTemplateController extends ExtendedBaseTemplateController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
+
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-   
-
-
-
 }

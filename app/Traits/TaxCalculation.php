@@ -7,20 +7,16 @@ use App\Model\Payment\TaxProductRelation;
 
 trait TaxCalculation
 {
-
-    public function __construct($s_gst='', $c_gst='', $state_code='', $ut_gst='', $i_gst='')
+    public function __construct($s_gst = '', $c_gst = '', $state_code = '', $ut_gst = '', $i_gst = '')
     {
-        $this->c_gst =  $c_gst;
-        $this->s_gst =  $s_gst;
-        $this->state_code =  $state_code;
-        $this->ut_gst =  $ut_gst;
-        $this->ut_gst =  $i_gst;
+        $this->c_gst = $c_gst;
+        $this->s_gst = $s_gst;
+        $this->state_code = $state_code;
+        $this->ut_gst = $ut_gst;
+        $this->ut_gst = $i_gst;
     }
-   
 
-
-    public function getDetailsWhenUserStateIsIndian($user_state, $origin_state, $productid, $geoip_state, $geoip_country, $status=1)
-
+    public function getDetailsWhenUserStateIsIndian($user_state, $origin_state, $productid, $geoip_state, $geoip_country, $status = 1)
     {
         if ($user_state != '') {//Get the CGST,SGST,IGST,STATE_CODE of the user,if user from INdia
             $c_gst = $user_state->c_gst;
@@ -119,15 +115,14 @@ trait TaxCalculation
         return ['taxes'=>$taxes, 'value'=>$value, 'status'=>$status];
     }
 
-
     /**
-    *   Get tax value for Same State.
-    *
-    * @param int $productid
-    * @param type $c_gst
-    * @param type $s_gst
-    *                        return type
-    */
+     *   Get tax value for Same State.
+     *
+     * @param int  $productid
+     * @param type $c_gst
+     * @param type $s_gst
+     *                        return type
+     */
     public function getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes)
     {
         try {
@@ -199,7 +194,6 @@ trait TaxCalculation
 
         return $value;
     }
-
 
     /**
      * @param type $tax_class_id

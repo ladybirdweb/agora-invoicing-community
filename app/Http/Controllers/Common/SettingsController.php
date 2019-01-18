@@ -19,6 +19,7 @@ class SettingsController extends BaseSettingsController
 {
     public $apikey;
     public $statusSetting;
+
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
@@ -45,12 +46,11 @@ class SettingsController extends BaseSettingsController
     {
         return view('themes.default1.common.plugins');
     }
-    
+
     /**
-     * Get the Status and Api Keys for Settings Module
+     * Get the Status and Api Keys for Settings Module.
      *
-     * @param  ApiKey $apikeys
-     *
+     * @param ApiKey $apikeys
      */
     public function getKeys(ApiKey $apikeys)
     {
@@ -64,19 +64,19 @@ class SettingsController extends BaseSettingsController
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
             $updateSecret = $apikeys->pluck('update_api_secret')->first();
-            $mobileauthkey  = $apikeys->pluck('msg91_auth_key')->first();
+            $mobileauthkey = $apikeys->pluck('msg91_auth_key')->first();
             $updateUrl = $apikeys->pluck('update_api_url')->first();
             $emailStatus = StatusSetting::pluck('emailverification_status')->first();
-            $twitterKeys =  $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
-                'twitter_access_token','access_tooken_secret')->first();
+            $twitterKeys = $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
+                'twitter_access_token', 'access_tooken_secret')->first();
             $twitterStatus = $this->statusSetting->pluck('twitter_status')->first();
             $zohoStatus = $this->statusSetting->pluck('zoho_status')->first();
             $zohoKey = $apikeys->pluck('zoho_api_key')->first();
             $rzpStatus = $this->statusSetting->pluck('rzp_status')->first();
-            $rzpKeys = $apikeys->select('rzp_key','rzp_secret','apilayer_key')->first();
+            $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl','mobileStatus','mobileauthkey','emailStatus','twitterStatus','twitterKeys','zohoStatus','zohoKey','rzpStatus','rzpKeys'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

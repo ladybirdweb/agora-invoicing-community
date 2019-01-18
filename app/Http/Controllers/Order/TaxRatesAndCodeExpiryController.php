@@ -114,8 +114,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         }
     }
 
-
-
     public function checkExecution($invoiceid)
     {
         try {

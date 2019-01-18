@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
 use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
-use App\Model\Common\Setting;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -90,9 +90,9 @@ class BaseAuthController extends Controller
     public function requestOtpFromAjax(Request $request)
     {
         $this->validate($request, [
-            'verify_email'  => 'sometimes|required|verify_email|email',
+            'verify_email'   => 'sometimes|required|verify_email|email',
             'verify_email'   => 'sometimes|required||verify_country_code|numeric',
-            'verify_email' => 'sometimes|required|verify_number|numeric',
+            'verify_email'   => 'sometimes|required|verify_number|numeric',
         ]);
         $email = $request->oldemail;
         $newEmail = $request->newemail;
@@ -108,26 +108,25 @@ class BaseAuthController extends Controller
             $pass = $request->input('password');
             $number = $code.$mobile;
             $mobileStatus = StatusSetting::pluck('msg91_status')->first();
-             $companyEmail = Setting::find(1)->company_email;
-            $msg1='';
+            $companyEmail = Setting::find(1)->company_email;
+            $msg1 = '';
             $msg2 = '';
-            if($mobileStatus ==1) {
-            $result = $this->sendOtp($mobile, $code);
-            $msg1 = 'OTP has been sent to '.$number.'.<br>Please enter the 
+            if ($mobileStatus == 1) {
+                $result = $this->sendOtp($mobile, $code);
+                $msg1 = 'OTP has been sent to '.$number.'.<br>Please enter the 
             OTP received on your mobile No below. Incase you did not recieve OTP,
             please get in touch with us on <a href="mailto:'.$companyEmail.'>
             '.$companyEmail.'</a>';
             }
-           $method = 'POST';
+            $method = 'POST';
             $emailStatus = StatusSetting::pluck('emailverification_status')->first();
-            if($emailStatus ==1) {
+            if ($emailStatus == 1) {
                 $this->sendActivation($email, $method, $pass);
-                $msg2 =  'Activation link has been sent to '.$email ;
+                $msg2 = 'Activation link has been sent to '.$email;
             }
-           
-            
+
             $response = ['type' => 'success',
-            'message'           => $msg1.'<br>'.$msg2 ];
+            'message'           => $msg1.'<br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {

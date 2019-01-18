@@ -25,15 +25,15 @@ class BaseRenewController extends Controller
             throw new Exception($ex->getMessage());
         }
     }
+
     /**
-     * generate Invoice and Invoice Item after Increasing the subscription date from Admin Panel
+     * generate Invoice and Invoice Item after Increasing the subscription date from Admin Panel.
      *
-     * @param  int $orderid   The Order ID
-     * @param  int $planid    The Plan Id related t the Subscription
-     * @param  int $cost      The Renew cost for for the Paln
-     *
+     * @param int $orderid The Order ID
+     * @param int $planid  The Plan Id related t the Subscription
+     * @param int $cost    The Renew cost for for the Paln
      */
-    public function getInvoiceByOrderId(int $orderid,int $planid, $cost)
+    public function getInvoiceByOrderId(int $orderid, int $planid, $cost)
     {
         try {
             $order = Order::find($orderid);
@@ -53,7 +53,7 @@ class BaseRenewController extends Controller
                 throw new Exception('Product has removed from database');
             }
 
-            return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '',$item->agents);
+            return $this->generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $item->agents);
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
@@ -100,7 +100,7 @@ class BaseRenewController extends Controller
         }
     }
 
-    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '',$agents='')
+    public function generateInvoice($product, $user, $orderid, $planid, $cost, $code = '', $agents = '')
     {
         try {
             $controller = new InvoiceController();
@@ -125,7 +125,7 @@ class BaseRenewController extends Controller
             ]);
             $this->createOrderInvoiceRelation($orderid, $invoice->id);
             $items = $controller->createInvoiceItemsByAdmin($invoice->id, $product->id,
-             $code, $cost, $currency, $qty = 1,$agents);
+             $code, $cost, $currency, $qty = 1, $agents);
 
             return $items;
         } catch (Exception $ex) {

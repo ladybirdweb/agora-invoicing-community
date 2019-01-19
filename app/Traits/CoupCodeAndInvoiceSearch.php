@@ -101,8 +101,8 @@ trait CoupCodeAndInvoiceSearch
         $this->status($status, $join);
         $this->currency($currency, $join);
 
-        $this->invoice_from($from,$till,$join);
-        $this->till_date($till,$from,$join);
+        $this->invoice_from($from, $till, $join);
+        $this->till_date($till, $from, $join);
 
         $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
@@ -404,37 +404,35 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-
-    public function getAgents($agents,$productid,$plan)
+    public function getAgents($agents, $productid, $plan)
     {
-         if(!$agents){//If agents is not received in the request in the case when
-         // 'modify agent' is not allowed for the Product,get the no of Agents from the Plan Table.
-         $planForAgent = Product::find($productid)->planRelation->find($plan);
-         if($planForAgent) {//If Plan Exists For the Product ie not a Product without Plan
-         $noOfAgents = $planForAgent->planPrice->first()->no_of_agents;
-         $agents = $noOfAgents ? $noOfAgents : 0; //If no. of Agents is specified then that,else 0(Unlimited Agents) 
-         } else{    
-              $agents = 0;
-         }
-            
+        if (!$agents) {//If agents is not received in the request in the case when
+            // 'modify agent' is not allowed for the Product,get the no of Agents from the Plan Table.
+            $planForAgent = Product::find($productid)->planRelation->find($plan);
+            if ($planForAgent) {//If Plan Exists For the Product ie not a Product without Plan
+                $noOfAgents = $planForAgent->planPrice->first()->no_of_agents;
+                $agents = $noOfAgents ? $noOfAgents : 0; //If no. of Agents is specified then that,else 0(Unlimited Agents)
+            } else {
+                $agents = 0;
+            }
         }
+
         return $agents;
     }
 
-    public function getQuantity($qty,$productid,$plan)
+    public function getQuantity($qty, $productid, $plan)
     {
-        if(!$qty) {//If quantity is not received in the request in the case when 'modify quantity' is not allowed for the Product,get the Product qUANTITY from the Plan Table.
-         $planForQty = Product::find($productid)->planRelation->find($plan);
-         if($planForQty){
-         $quantity = Product::find($productid)->planRelation->find($plan)->planPrice->first()->product_quantity;
-         $qty = $quantity ? $quantity : 1; //If no. of Agents is specified then that,else 0(Unlimited Agents)  
-         } else{
-            $qty = 1;
-         }
-           
+        if (!$qty) {//If quantity is not received in the request in the case when 'modify quantity' is not allowed for the Product,get the Product qUANTITY from the Plan Table.
+            $planForQty = Product::find($productid)->planRelation->find($plan);
+            if ($planForQty) {
+                $quantity = Product::find($productid)->planRelation->find($plan)->planPrice->first()->product_quantity;
+                $qty = $quantity ? $quantity : 1; //If no. of Agents is specified then that,else 0(Unlimited Agents)
+            } else {
+                $qty = 1;
+            }
         }
+
         return $qty;
-            
     }
 
     public function pdf(Request $request)
@@ -456,10 +454,11 @@ trait CoupCodeAndInvoiceSearch
             if (!$user) {
                 return redirect()->back()->with('fails', 'No User');
             }
-           $cont = new \App\Http\Controllers\Front\CartController();
-           $currency = $cont->currency($user->id);
-           $symbol =  $currency['currency'];
-            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user','currency','symbol'));
+            $cont = new \App\Http\Controllers\Front\CartController();
+            $currency = $cont->currency($user->id);
+            $symbol = $currency['currency'];
+            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
+
             return $pdf->download($user->first_name.'-invoice.pdf');
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
@@ -495,6 +494,4 @@ trait CoupCodeAndInvoiceSearch
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 }

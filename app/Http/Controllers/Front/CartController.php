@@ -249,8 +249,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
     /**
      * @return type
      */
@@ -273,8 +271,6 @@ class CartController extends BaseCartController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-   
 
     /**
      * @return type
@@ -411,8 +407,6 @@ class CartController extends BaseCartController
         }
     }
 
-
-
     /**
      * @param type $userid
      *
@@ -482,6 +476,4 @@ class CartController extends BaseCartController
             app('log')->error($ex->getMessage());
         }
     }
-
-
 }

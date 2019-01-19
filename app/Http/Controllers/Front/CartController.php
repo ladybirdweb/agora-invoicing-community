@@ -59,6 +59,7 @@ class CartController extends BaseCartController
         $tax_by_state = new TaxByState();
         $this->tax_by_state = new $tax_by_state();
     }
+
     public function productList(Request $request)
     {
         $cont = new \App\Http\Controllers\Front\PageController();
@@ -183,7 +184,7 @@ class CartController extends BaseCartController
                          $details = $this->getDetailsWhenUserStateIsIndian(
                              $user_state,
                              $origin_state,
-                          $productid,
+                             $productid,
                              $geoip_state,
                              $geoip_country
                          );
@@ -253,15 +254,6 @@ class CartController extends BaseCartController
     }
 
    
-    public function cartRemove(Request $request)
-    {
-        $id = $request->input('id');
-        Cart::remove($id);
-
-        return 'success';
-    }
-
-
 
     /**
      * @return type
@@ -286,26 +278,7 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @param type $price
-     *
-     * @throws \Exception
-     *
-     * @return type
-     */
-    public static function rounding($price)
-    {
-        try {
-            $tax_rule = new \App\Model\Payment\TaxOption();
-            $rule = $tax_rule->findOrFail(1);
-            $rounding = $rule->rounding;
-
-            return $price;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-            // throw new \Exception('error in get tax priority');
-        }
-    }
+   
 
     /**
      * @return type
@@ -442,31 +415,6 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @param type $rate
-     * @param type $price
-     *
-     * @return type
-     */
-    public static function taxValue($rate, $price)
-    {
-        try {
-            $result = '';
-            if ($rate) {
-                $rate = str_replace('%', '', $rate);
-                $tax = intval($price) * ($rate / 100);
-                $result = $tax;
-
-                $result = self::rounding($result);
-            }
-
-            return $result;
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-
 
     /**
      * @param type $userid
@@ -537,21 +485,5 @@ class CartController extends BaseCartController
         }
     }
 
-    /**
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public function checkCurrencySession()
-    {
-        try {
-            if (Session::has('currency')) {
-                return true;
-            }
 
-            return false;
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
 }

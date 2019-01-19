@@ -214,7 +214,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoice = $this->invoice->where('id', $id)->first();
             $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
             $user = $this->user->find($invoice->user_id);
-            $currency = CartController::currency($user);
+            $currency = CartController::currency($user->id);
             $symbol =  $currency['symbol'];
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user','currency','symbol'));
         } catch (\Exception $ex) {
@@ -382,26 +382,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $productid = $request->input('product');
              $plan = $request->input('plan');
-            if(!$agents){//If agents is not received in the request in the case when 'modify agent' is not allowed for the Product,get the no of Agents from the Plan Table.
-             $planForAgent = Product::find($productid)->planRelation->find($plan);
-             if($planForAgent) {//If Plan Exists For the Product ie not a Product without Plan
-             $noOfAgents = $planForAgent->planPrice->first()->no_of_agents;
-             $agents = $noOfAgents ? $noOfAgents : 0; //If no. of Agents is specified then that,else 0(Unlimited Agents) 
-             } else{
-                  $agents = 0;
-             }
-            
-        }
-        if(!$qty) {//If quantity is not received in the request in the case when 'modify quantity' is not allowed for the Product,get the Product qUANTITY from the Plan Table.
-             $planForQty = Product::find($productid)->planRelation->find($plan);
-             if($planForQty){
-             $quantity = Product::find($productid)->planRelation->find($plan)->planPrice->first()->product_quantity;
-             $qty = $quantity ? $quantity : 1; //If no. of Agents is specified then that,else 0(Unlimited Agents)  
-             } else{
-                $qty = 1;
-             }
-           
-        }
+             $agents = $this->getAgents($agents,$productid,$plan);
+             $qty = $this->getQuantity($qty,$productid,$plan);
             $code = $request->input('code');
             $total = $request->input('price');
             $description = $request->input('description');
@@ -449,33 +431,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return response()->json(compact('result'));
     }
 
-    public function doPayment($payment_method, $invoiceid, $amount,
-        $parent_id = '', $userid = '', $payment_status = 'pending')
-    {
-        try {
-            if ($amount > 0) {
-                if ($userid == '') {
-                    $userid = \Auth::user()->id;
-                }
-                if ($amount == 0) {
-                    $payment_status = 'success';
-                }
-                $this->payment->create([
-                    'parent_id'      => $parent_id,
-                    'invoice_id'     => $invoiceid,
-                    'user_id'        => $userid,
-                    'amount'         => $amount,
-                    'payment_method' => $payment_method,
-                    'payment_status' => $payment_status,
-                ]);
-                $this->updateInvoice($invoiceid);
-            }
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            throw new \Exception($ex->getMessage());
-        }
-    }
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,
         $currency, $qty,$agents,$planid = '', $userid = '', $tax_name = '', $tax_rate = '')
@@ -630,42 +586,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
 
-
-
-
-    public function pdf(Request $request)
-    {
-        try {
-            $id = $request->input('invoiceid');
-            if (!$id) {
-                return redirect()->back()->with('fails', \Lang::get('message.no-invoice-id'));
-            }
-            $invoice = $this->invoice->where('id', $id)->first();
-            if (!$invoice) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
-            if ($invoiceItems->count() == 0) {
-                return redirect()->back()->with('fails', \Lang::get('message.invalid-invoice-id'));
-            }
-            $user = $this->user->find($invoice->user_id);
-            if (!$user) {
-                return redirect()->back()->with('fails', 'No User');
-            }
-           $cont = new \App\Http\Controllers\Front\CartController();
-           $currency = $cont->currency($user);
-           $symbol =  $currency['currency'];
-            $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user','currency','symbol'));
-            return $pdf->download($user->first_name.'-invoice.pdf');
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-
-    public function payment(Request $request)
+  public function payment(Request $request)
     {
         try {
             if ($request->has('invoiceid')) {

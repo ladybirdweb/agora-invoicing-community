@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use Cart;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
 
@@ -14,7 +15,7 @@ trait TaxCalculation
         $this->s_gst =  $s_gst;
         $this->state_code =  $state_code;
         $this->ut_gst =  $ut_gst;
-        $this->ut_gst =  $i_gst;
+        $this->i_gst =  $i_gst;
     }
    
 
@@ -220,4 +221,76 @@ trait TaxCalculation
             throw new \Exception('error in get tax priority');
         }
     }
+
+    public function cartRemove(Request $request)
+    {
+        $id = $request->input('id');
+        Cart::remove($id);
+
+        return 'success';
+    }
+
+     /**
+     * @param type $price
+     *
+     * @throws \Exception
+     *
+     * @return type
+     */
+    public static function rounding($price)
+    {
+        try {
+            $tax_rule = new \App\Model\Payment\TaxOption();
+            $rule = $tax_rule->findOrFail(1);
+            $rounding = $rule->rounding;
+
+            return $price;
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+            // throw new \Exception('error in get tax priority');
+        }
+    }
+
+        /**
+     * @param type $rate
+     * @param type $price
+     *
+     * @return type
+     */
+    public static function taxValue($rate, $price)
+    {
+        try {
+            $result = '';
+            if ($rate) {
+                $rate = str_replace('%', '', $rate);
+                $tax = intval($price) * ($rate / 100);
+                $result = $tax;
+
+                $result = self::rounding($result);
+            }
+
+            return $result;
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+        /**
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function checkCurrencySession()
+    {
+        try {
+            if (Session::has('currency')) {
+                return true;
+            }
+
+            return false;
+        } catch (\Exception $ex) {
+            throw new \Exception($ex->getMessage());
+        }
+    }
+
 }

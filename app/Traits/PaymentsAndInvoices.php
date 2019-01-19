@@ -88,7 +88,6 @@ use Illuminate\Http\Request;
             }
         }
 
-
         public function getAgents($agents, $productid, $plan)
         {
             if (!$agents) {//If agents is not received in the request in the case when
@@ -101,6 +100,7 @@ use Illuminate\Http\Request;
                     $agents = 0;
                 }
             }
+
             return $agents;
         }
 
@@ -115,6 +115,7 @@ use Illuminate\Http\Request;
                     $qty = 1;
                 }
             }
+
             return $qty;
         }
 
@@ -234,7 +235,6 @@ use Illuminate\Http\Request;
             }
         }
 
-
         public function deletePayment(Request $request)
         {
             try {
@@ -311,8 +311,9 @@ use Illuminate\Http\Request;
                 }
                 $cont = new \App\Http\Controllers\Front\CartController();
                 $currency = $cont->currency($user->id);
-                $symbol =  $currency['currency'];
+                $symbol = $currency['currency'];
                 $pdf = \PDF::loadView('themes.default1.invoice.newpdf', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
+
                 return $pdf->download($user->first_name.'-invoice.pdf');
             } catch (\Exception $ex) {
                 Bugsnag::notifyException($ex);

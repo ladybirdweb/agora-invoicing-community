@@ -257,7 +257,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    
     /**
      * Generate invoice.
      *
@@ -567,11 +566,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
 
-
-
-
-
-
     public function setDomain($productid, $domain)
     {
         try {
@@ -600,6 +594,4 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             throw new \Exception($ex->getMessage());
         }
     }
-
-  
 }

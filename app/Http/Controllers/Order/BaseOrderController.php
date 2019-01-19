@@ -80,19 +80,17 @@ class BaseOrderController extends ExtendedOrderController
 
     public function getIfItemPresent($item, $invoiceid, $user_id, $order_status)
     {
-
-        try{
-
-        $product = $this->product->where('name', $item->product_name)->first()->id;
-        $version = $this->product->where('name', $item->product_name)->first()->version;
-        if ($version == null) {
-            //Get Version from Product Upload Table
-            $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
-        }
-        $serial_key = $this->generateSerialKey($product,$item->agents);//Send Product Id and Agents to generate Serial Key
-        $domain = $item->domain;
-        $plan_id = $this->plan($item->id);
-        $order = $this->order->create([
+        try {
+            $product = $this->product->where('name', $item->product_name)->first()->id;
+            $version = $this->product->where('name', $item->product_name)->first()->version;
+            if ($version == null) {
+                //Get Version from Product Upload Table
+                $version = $this->product_upload->where('product_id', $product)->pluck('version')->first();
+            }
+            $serial_key = $this->generateSerialKey($product, $item->agents); //Send Product Id and Agents to generate Serial Key
+            $domain = $item->domain;
+            $plan_id = $this->plan($item->id);
+            $order = $this->order->create([
 
             'invoice_id'      => $invoiceid,
             'invoice_item_id' => $item->id,
@@ -116,13 +114,12 @@ class BaseOrderController extends ExtendedOrderController
         // } else {
         //     $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
         // }
+        } catch (\Exception $ex) {
+            Bugsnag::notifyException($ex);
+            app('log')->error($ex->getMessage());
 
-     } catch (\Exception $ex) {
-       Bugsnag::notifyException($ex);
-       app('log')->error($ex->getMessage());
-         throw new \Exception('Can not Generate Order');
-     }
-
+            throw new \Exception('Can not Generate Order');
+        }
     }
 
     /**

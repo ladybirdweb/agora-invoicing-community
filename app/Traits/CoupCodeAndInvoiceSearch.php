@@ -101,8 +101,8 @@ trait CoupCodeAndInvoiceSearch
         $this->status($status, $join);
         $this->currency($currency, $join);
 
-        $this->invoice_from($from,$till,$join);
-        $this->till_date($till,$from,$join);
+        $this->invoice_from($from, $till, $join);
+        $this->till_date($till, $from, $join);
 
         $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
@@ -320,13 +320,5 @@ trait CoupCodeAndInvoiceSearch
                 </div>';
         }
     }
-
-
-
-
-
-
-
-
 
 }

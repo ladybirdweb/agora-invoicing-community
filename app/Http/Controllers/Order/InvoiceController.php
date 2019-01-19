@@ -215,9 +215,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $invoiceItems = $this->invoiceItem->where('invoice_id', $id)->get();
             $user = $this->user->find($invoice->user_id);
             $currency = CartController::currency($user->id);
-            $symbol =  $currency['symbol'];
-            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user','currency','symbol'));
+            $symbol = $currency['symbol'];
 
+            return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -365,9 +365,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             }
             $productid = $request->input('product');
 
-             $plan = $request->input('plan');
-             $agents = $this->getAgents($agents,$productid,$plan);
-             $qty = $this->getQuantity($qty,$productid,$plan);
+            $plan = $request->input('plan');
+            $agents = $this->getAgents($agents, $productid, $plan);
+            $qty = $this->getQuantity($qty, $productid, $plan);
 
             $code = $request->input('code');
             $total = $request->input('price');
@@ -415,8 +415,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return response()->json(compact('result'));
     }
-
-
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,
         $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
@@ -568,6 +566,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
         return ['taxs'=>$tax_attribute, 'value'=>$tax_value];
     }
+
+
 
 
 

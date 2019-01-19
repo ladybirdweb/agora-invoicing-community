@@ -2,21 +2,19 @@
 
 namespace App\Traits;
 
-use Cart;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxProductRelation;
+use Cart;
 
 trait TaxCalculation
 {
     public function __construct($s_gst = '', $c_gst = '', $state_code = '', $ut_gst = '', $i_gst = '')
     {
-
-        $this->c_gst =  $c_gst;
-        $this->s_gst =  $s_gst;
-        $this->state_code =  $state_code;
-        $this->ut_gst =  $ut_gst;
-        $this->i_gst =  $i_gst;
-
+        $this->c_gst = $c_gst;
+        $this->s_gst = $s_gst;
+        $this->state_code = $state_code;
+        $this->ut_gst = $ut_gst;
+        $this->i_gst = $i_gst;
     }
 
     public function getDetailsWhenUserStateIsIndian($user_state, $origin_state, $productid, $geoip_state, $geoip_country, $status = 1)
@@ -226,7 +224,7 @@ trait TaxCalculation
         return 'success';
     }
 
-     /**
+    /**
      * @param type $price
      *
      * @throws \Exception
@@ -247,7 +245,7 @@ trait TaxCalculation
         }
     }
 
-        /**
+    /**
      * @param type $rate
      * @param type $price
      *
@@ -271,7 +269,7 @@ trait TaxCalculation
         }
     }
 
-        /**
+    /**
      * @throws \Exception
      *
      * @return bool
@@ -288,5 +286,4 @@ trait TaxCalculation
             throw new \Exception($ex->getMessage());
         }
     }
-
 }

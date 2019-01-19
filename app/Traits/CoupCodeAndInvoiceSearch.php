@@ -2,13 +2,12 @@
 
 namespace App\Traits;
 
+use App\Model\Order\Invoice;
 use App\Model\Payment\Plan;
 use App\Model\Payment\PlanPrice;
-use App\Model\Product\Product;
-use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
-use Illuminate\Http\Request;
 use App\Model\Payment\Promotion;
+use App\Model\Product\Product;
+use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////
 // ADVANCE SEARCH FOR INVOICE AND COUPON CODE CALCULATION
@@ -101,8 +100,10 @@ trait CoupCodeAndInvoiceSearch
         $this->invoice_no($invoice_no, $join);
         $this->status($status, $join);
         $this->currency($currency, $join);
+
         $this->invoice_from($from,$till,$join);
         $this->till_date($till,$from,$join);
+
         $join = $join->select('id', 'user_id', 'number', 'date', 'grand_total', 'currency', 'status', 'created_at');
 
         $join = $join->orderBy('created_at', 'desc')
@@ -123,62 +124,65 @@ trait CoupCodeAndInvoiceSearch
     {
         if ($name) {
             $join = $join->where('first_name', $name);
+
             return $join;
         }
-        return;
     }
 
-    public function invoice_no($invoice_no,$join)
+    public function invoice_no($invoice_no, $join)
     {
         if ($invoice_no) {
             $join = $join->where('number', $invoice_no);
+
             return $join;
         }
-        return;
     }
 
     public function status($status, $join)
     {
         if ($status) {
             $join = $join->where('status', $status);
+
             return $join;
         }
-        return;
     }
 
     public function currency($currency, $join)
     {
         if ($currency) {
             $join = $join->where('invoices.currency', $currency);
+
             return $join;
         }
         $return;
     }
 
-    public function invoice_from($from,$till,$join)
+    public function invoice_from($from, $till, $join)
     {
-          if ($from) {
+        if ($from) {
             $fromdate = date_create($from);
             $from = date_format($fromdate, 'Y-m-d H:m:i');
             $tills = date('Y-m-d H:m:i');
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('invoices.created_at', [$from, $tillDate]);
+
             return $join;
         }
+
         return $join;
     }
 
-    public function till_date($till,$from,$join)
+    public function till_date($till, $from, $join)
     {
-         if ($till) {
+        if ($till) {
             $tilldate = date_create($till);
             $till = date_format($tilldate, 'Y-m-d H:m:i');
             $froms = Invoice::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('invoices.created_at', [$fromDate, $till]);
+
             return $join;
         }
-        return;
     }
 
     public function getExpiryStatus($start, $end, $now)
@@ -197,7 +201,7 @@ trait CoupCodeAndInvoiceSearch
         }
         $whenBothAreSet = $this->whenBothSet($start, $end, $now);
         if ($whenBothAreSet) {
-        return $whenBothAreSet;
+            return $whenBothAreSet;
         }
     }
 
@@ -272,9 +276,6 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-
-
-
     public function updateInvoice($invoiceid)
     {
         try {
@@ -303,7 +304,7 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-        /**
+    /**
      * Remove the specified resource from storage.
      *
      * @param int $id
@@ -360,8 +361,7 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-
-        /*
+    /*
     *Edit payment Total.
     */
     public function paymentTotalChange(Request $request)
@@ -403,6 +403,7 @@ trait CoupCodeAndInvoiceSearch
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
+
 
     public function getAgents($agents,$productid,$plan)
     {
@@ -494,7 +495,6 @@ trait CoupCodeAndInvoiceSearch
             throw new \Exception($ex->getMessage());
         }
     }
-
 
 
 }

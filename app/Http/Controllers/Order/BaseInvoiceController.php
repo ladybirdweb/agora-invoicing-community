@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
+use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
-use App\Model\Order\Invoice;
-use App\Model\Order\InvoiceItem;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -189,7 +189,7 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         }
     }
 
-        /*
+    /*
     *Edit Invoice Total.
     */
     public function invoiceTotalChange(Request $request)

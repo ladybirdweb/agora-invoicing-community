@@ -13,19 +13,19 @@ use Illuminate\Http\Request;
 class ExtendedOrderController extends Controller
 {
     /**
-     * Perform Advance Search for Orders Page
+     * Perform Advance Search for Orders Page.
      *
      * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
      *
      * @date   2019-01-19T01:35:08+0530
      *
-     * @param  string $order_no
-     * @param  string $product_id
-     * @param  string $expiry
-     * @param  string $expiryTill
-     * @param  string $from
-     * @param  string $till
-     * @param  string $domain
+     * @param string $order_no
+     * @param string $product_id
+     * @param string $expiry
+     * @param string $expiryTill
+     * @param string $from
+     * @param string $till
+     * @param string $domain
      *
      * @return array
      */
@@ -65,13 +65,12 @@ class ExtendedOrderController extends Controller
             dd($ex);
         }
     }
-    
 
     /**
      * Searches for Order No.
      *
-     * @param  int              $order_no  The Order NO to be searched
-     * @param  App\Model\Order  $join      The Order instance
+     * @param int             $order_no The Order NO to be searched
+     * @param App\Model\Order $join     The Order instance
      *
      * @return $join
      */
@@ -79,16 +78,16 @@ class ExtendedOrderController extends Controller
     {
         if ($order_no) {
             $join = $join->where('number', $order_no);
+
             return $join;
         }
-        return;
     }
-    
+
     /**
-     * Searches for Product
+     * Searches for Product.
      *
-     * @param  int              $order_no  The Order NO to be searched
-     * @param  App\Model\Order  $join      The Order instance
+     * @param int             $order_no The Order NO to be searched
+     * @param App\Model\Order $join     The Order instance
      *
      * @return $join
      */
@@ -96,16 +95,16 @@ class ExtendedOrderController extends Controller
     {
         if ($product_id) {
             $join = $join->where('product', $product_id);
+
             return $join;
         }
-        return;
     }
-    
+
     /**
-     * Searches for Expiry From
+     * Searches for Expiry From.
      *
-     * @param  string $expiry The Expiry From Date
-     * @param  Object $join
+     * @param string $expiry The Expiry From Date
+     * @param object $join
      *
      * @return Query
      */
@@ -117,16 +116,16 @@ class ExtendedOrderController extends Controller
 
             $tillDate = $this->getTillDate($expiryFrom, $expiryTill, $tills);
             $join = $join->whereBetween('subscriptions.ends_at', [$expiryFrom, $tillDate]);
+
             return $join;
         }
-        return;
     }
 
     /**
-     * Searches for Expiry Till
+     * Searches for Expiry Till.
      *
-     * @param  string $expiry The Expiry Till Date
-     * @param  Object $join
+     * @param string $expiry The Expiry Till Date
+     * @param object $join
      *
      * @return Query
      */
@@ -137,16 +136,16 @@ class ExtendedOrderController extends Controller
             $froms = Subscription::first()->ends_at;
             $fromDate = $this->getFromDate($expiry, $froms);
             $join = $join->whereBetween('subscriptions.ends_at', [$fromDate, $exptill]);
+
             return $join;
         }
-        return;
     }
-    
+
     /**
-     * Searches for Order From Date
+     * Searches for Order From Date.
      *
-     * @param  string $expiry The Order From Date
-     * @param  Object $join
+     * @param string $expiry The Order From Date
+     * @param object $join
      *
      * @return Query
      */
@@ -160,16 +159,16 @@ class ExtendedOrderController extends Controller
 
             $tillDate = $this->getTillDate($from, $till, $tills);
             $join = $join->whereBetween('orders.created_at', [$from, $tillDate]);
+
             return $join;
         }
-        return;
     }
-    
+
     /**
-     * Searches for Order Till Date
+     * Searches for Order Till Date.
      *
-     * @param  string $expiry The Order Till Date
-     * @param  Object $join
+     * @param string $expiry The Order Till Date
+     * @param object $join
      *
      * @return Query
      */
@@ -181,16 +180,16 @@ class ExtendedOrderController extends Controller
             $froms = Order::first()->created_at;
             $fromDate = $this->getFromDate($from, $froms);
             $join = $join->whereBetween('orders.created_at', [$fromDate, $till]);
+
             return $join;
         }
-        return;
     }
-    
+
     /**
-     * Searches for Domain
+     * Searches for Domain.
      *
-     * @param  string $domain domaiin
-     * @param  Object $join
+     * @param string $domain domaiin
+     * @param object $join
      *
      * @return Query
      */
@@ -201,9 +200,9 @@ class ExtendedOrderController extends Controller
                 $domain = substr_replace($domain, '', -1, 0);
             }
             $join = $join->where('domain', 'LIKE', '%'.$domain.'%');
+
             return $join;
         }
-        return;
     }
 
     public function getTillDate($from, $till, $tills)
@@ -254,7 +253,8 @@ class ExtendedOrderController extends Controller
      * generate serial key and add no of agents in the last 4 digits og the 16 string/digit serial key .
      *
      * @param int $productid
-     * @param int  $agents       No Of Agents
+     * @param int $agents    No Of Agents
+     *
      * @throws \Exception
      *
      * @return string The Final Serial Key after adding no of agents in the last 4 digits
@@ -262,7 +262,6 @@ class ExtendedOrderController extends Controller
     public function generateSerialKey(int $productid, $agents)
     {
         try {
-
             $len = strlen($agents);
             switch ($len) {//Get Last Four digits based on No.Of Agents
 

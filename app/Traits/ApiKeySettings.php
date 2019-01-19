@@ -3,8 +3,8 @@
 namespace App\Traits;
 
 use App\ApiKey;
-use Illuminate\Http\Request;
 use App\Model\Common\StatusSetting;
+use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////
 //TRAIT FOR SAVING API STATUS AND API KEYS //
@@ -44,6 +44,7 @@ trait ApiKeySettings
         $key = $request->input('msg91_auth_key');
         StatusSetting::find(1)->update(['msg91_status'=>$status]);
         ApiKey::find(1)->update(['msg91_auth_key'=>$key]);
+
         return ['message' => 'success', 'update'=>'Msg91 Settings Updated'];
     }
 
@@ -56,6 +57,7 @@ trait ApiKeySettings
         $key = $request->input('zoho_key');
         StatusSetting::find(1)->update(['zoho_status'=>$status]);
         ApiKey::find(1)->update(['zoho_api_key'=>$key]);
+
         return ['message' => 'success', 'update'=>'Zoho Settings Updated'];
     }
 
@@ -66,6 +68,7 @@ trait ApiKeySettings
     {
         $status = $request->input('status');
         StatusSetting::find(1)->update(['emailverification_status'=>$status]);
+
         return ['message' => 'success', 'update'=>'Email Verification Status Updated'];
     }
 
@@ -76,12 +79,12 @@ trait ApiKeySettings
     {
         $consumer_key = $request->input('consumer_key');
         $consumer_secret = $request->input('consumer_secret');
-        $access_token =  $request->input('access_token');
+        $access_token = $request->input('access_token');
         $token_secret = $request->input('token_secret');
         $status = $request->input('status');
         StatusSetting::find(1)->update(['twitter_status'=>$status]);
-        ApiKey::find(1)->update(['twitter_consumer_key'=>$consumer_key,'twitter_consumer_secret'=>$consumer_secret
-            ,'twitter_access_token'=>$access_token,'access_tooken_secret'=>$token_secret]);
+        ApiKey::find(1)->update(['twitter_consumer_key'=>$consumer_key, 'twitter_consumer_secret'=>$consumer_secret, 'twitter_access_token'=>$access_token, 'access_tooken_secret'=>$token_secret]);
+
         return ['message' => 'success', 'update'=>'Twitter Settings Updated'];
     }
 
@@ -92,11 +95,11 @@ trait ApiKeySettings
     {
         $rzp_key = $request->input('rzp_key');
         $rzp_secret = $request->input('rzp_secret');
-        $apilayer_key =  $request->input('apilayer_key');
+        $apilayer_key = $request->input('apilayer_key');
         $status = $request->input('status');
         StatusSetting::find(1)->update(['rzp_status'=>$status]);
-        ApiKey::find(1)->update(['rzp_key'=>$rzp_key,'rzp_secret'=>$rzp_secret
-            ,'apilayer_key'=>$apilayer_key]);
+        ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
+
         return ['message' => 'success', 'update'=>'Razorpay Settings Updated'];
     }
 }

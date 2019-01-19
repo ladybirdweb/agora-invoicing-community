@@ -184,12 +184,11 @@ return [
       'consumer_key'                                               => 'Twitter Consumer Key',
       'consumer_secret'                                            => 'Twitter Consumer Secret',
       'access_token'                                               => 'Twitter Access Token',
-      'token_secret'                                               =>  'Twitter Access Tken Secret',
-      'rzp_key'                                                    =>  'Razorpay Key',
-      'rzp_secret'                                                 =>  'Razorpay Secret',
-      'apilayer_key'                                               =>  'ApiLayer Access Key(For Exchange Rate Conversion)',
-      'zoho_crm'                                                   =>  'Zoho CRM',
-
+      'token_secret'                                               => 'Twitter Access Tken Secret',
+      'rzp_key'                                                    => 'Razorpay Key',
+      'rzp_secret'                                                 => 'Razorpay Secret',
+      'apilayer_key'                                               => 'ApiLayer Access Key(For Exchange Rate Conversion)',
+      'zoho_crm'                                                   => 'Zoho CRM',
 
     /*
      * Clients

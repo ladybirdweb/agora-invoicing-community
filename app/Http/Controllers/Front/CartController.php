@@ -15,7 +15,6 @@ use App\Model\Product\Product;
 use App\Traits\TaxCalculation;
 use Bugsnag;
 use Cart;
-use Exception;
 use Illuminate\Http\Request;
 use Session;
 
@@ -80,13 +79,11 @@ class CartController extends BaseCartController
         try {
             $page_controller = new PageController();
 
-
             return $page_controller->cart();
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     /*
      * The first request to the cart Page comes here
@@ -194,7 +191,7 @@ class CartController extends BaseCartController
                         $i_gst = $details['igst'];
                         $ut_gst = $details['utgst'];
 
-                        $state_code =  $details['statecode'];
+                        $state_code = $details['statecode'];
 
                         $status = $details['status'];
                         $taxes = $details['taxes'];
@@ -206,10 +203,9 @@ class CartController extends BaseCartController
                             if ($taxes[0]) {
                                 $tax_attribute[$key] = ['name' => $tax->name, 'c_gst'=>$c_gst,
 
-                               's_gst'  => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
-                                'state'  => $state_code, 'origin_state'=>$origin_state,
+                               's_gst'         => $s_gst, 'i_gst'=>$i_gst, 'ut_gst'=>$ut_gst,
+                                'state'        => $state_code, 'origin_state'=>$origin_state,
                                  'tax_enable'  => $tax_enable, 'rate'=>$value, 'status'=>$status, ];
-
 
                                 $taxCondition[0] = new \Darryldecode\Cart\CartCondition([
                                             'name'   => 'no compound', 'type'   => 'tax',
@@ -253,7 +249,7 @@ class CartController extends BaseCartController
         }
     }
 
-   
+
 
     /**
      * @return type
@@ -362,7 +358,7 @@ class CartController extends BaseCartController
             } else {
                 $timezone = '114';
             }
-          
+
             return $timezone;
         } catch (\Exception $ex) {
             throw new \Exception($ex->getMessage());
@@ -414,6 +410,7 @@ class CartController extends BaseCartController
             throw new \Exception($ex->getMessage());
         }
     }
+
 
 
     /**
@@ -478,6 +475,7 @@ class CartController extends BaseCartController
     {
         try {
             $cost = $this->planCost($productid, $userid, $planid);
+
             return $cost;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());

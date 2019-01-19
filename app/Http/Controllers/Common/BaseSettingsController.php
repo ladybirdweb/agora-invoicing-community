@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Common;
 
-use DateTime;
 use App\ApiKey;
+use App\Http\Controllers\Order\ExtendedOrderController;
+use App\Model\Common\StatusSetting;
+use App\Model\Mailjob\ActivityLogDay;
+use App\Model\Mailjob\ExpiryMailDay;
+use App\Traits\ApiKeySettings;
+use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
-use App\Traits\ApiKeySettings;
-use App\Model\Common\StatusSetting;
-use App\Model\Mailjob\ExpiryMailDay;
-use App\Model\Mailjob\ActivityLogDay;
 use Spatie\Activitylog\Models\Activity;
-use App\Http\Controllers\Order\ExtendedOrderController;
 
 class BaseSettingsController extends PaymentSettingsController
 {
     use ApiKeySettings;
+
     /**
      * Get the logged activity.
      */
@@ -386,10 +387,6 @@ class BaseSettingsController extends PaymentSettingsController
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
-
-    
-
-    
 
     //Save Google recaptch site key and secret in Database
     public function captchaDetails(Request $request)

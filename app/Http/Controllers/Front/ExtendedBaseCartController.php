@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
 use App\Model\Payment\Tax;
-use App\Http\Controllers\Front\CartController;
 use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
 use Bugsnag;
@@ -152,6 +151,7 @@ class ExtendedBaseCartController extends Controller
             return $cost;
         } catch (\Exception $ex) {
             dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }

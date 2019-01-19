@@ -11,7 +11,6 @@ use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxByState;
@@ -202,10 +201,9 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
     /**
-     * Shoe Invoice when view Invoice is selected from dropdown in Admin Panel
+     * Shoe Invoice when view Invoice is selected from dropdown in Admin Panel.
      *
-     * @param  Request $request   Get InvoiceId as Request
-     *
+     * @param Request $request Get InvoiceId as Request
      */
     public function show(Request $request)
     {
@@ -217,6 +215,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             $currency = CartController::currency($user->id);
             $symbol =  $currency['symbol'];
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user','currency','symbol'));
+
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -255,8 +254,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
- 
- 
+
     public function sendmailClientAgent($userid, $invoiceid)
     {
         try {
@@ -363,27 +361,31 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'subtotal'       => $subtotal,
                 'domain'         => $domain,
                 'plan_id'        => $planid,
-                'agents'         => $agents, 
+                'agents'         => $agents,
             ]);
+
             return $invoiceItem;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
+
             throw new \Exception('Can not create Invoice Items');
         }
     }
 
     public function invoiceGenerateByForm(Request $request, $user_id = '')
     {
-       try {
-             $agents = $request->input('agents');
-             $qty = $request->input('quantity');
+        try {
+            $agents = $request->input('agents');
+            $qty = $request->input('quantity');
             if ($user_id == '') {
                 $user_id = \Request::input('user');
             }
             $productid = $request->input('product');
+
              $plan = $request->input('plan');
              $agents = $this->getAgents($agents,$productid,$plan);
              $qty = $this->getQuantity($qty,$productid,$plan);
+
             $code = $request->input('code');
             $total = $request->input('price');
             $description = $request->input('description');
@@ -420,7 +422,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
                 'currency'                        => $currency, 'status' => 'pending', 'description' => $description, ]);
 
             $items = $this->createInvoiceItemsByAdmin($invoice->id, $productid,
-             $code, $total, $currency, $qty,$agents, $plan, $user_id, $tax_name, $tax_rate);
+             $code, $total, $currency, $qty, $agents, $plan, $user_id, $tax_name, $tax_rate);
             $result = $this->getMessage($items, $user_id);
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
@@ -434,7 +436,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
 
     public function createInvoiceItemsByAdmin($invoiceid, $productid, $code, $price,
-        $currency, $qty,$agents,$planid = '', $userid = '', $tax_name = '', $tax_rate = '')
+        $currency, $qty, $agents, $planid = '', $userid = '', $tax_name = '', $tax_rate = '')
     {
         try {
             $discount = '';
@@ -479,11 +481,10 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             return $items;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
-             return redirect()->back()->with('fails', $ex->getMessage());
+
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-
 
     public function checkTax($productid, $userid)
     {
@@ -587,6 +588,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
 
   public function payment(Request $request)
+
     {
         try {
             if ($request->has('invoiceid')) {
@@ -637,8 +639,6 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             throw new \Exception($ex->getMessage());
         }
     }
-
-
 
     public function sendMail($userid, $invoiceid)
     {

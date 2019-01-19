@@ -18,6 +18,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Traits\CoupCodeAndInvoiceSearch;
+use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
 use Illuminate\Http\Request;
@@ -27,6 +28,7 @@ use Log;
 class InvoiceController extends TaxRatesAndCodeExpiryController
 {
     use  CoupCodeAndInvoiceSearch;
+    use  PaymentsAndInvoices;
 
     public $invoice;
     public $invoiceItem;
@@ -255,26 +257,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function sendmailClientAgent($userid, $invoiceid)
-    {
-        try {
-            $agent = \Input::get('agent');
-            $client = \Input::get('client');
-            if ($agent == 1) {
-                $id = \Auth::user()->id;
-                $this->sendMail($id, $invoiceid);
-            }
-            if ($client == 1) {
-                $this->sendMail($userid, $invoiceid);
-            }
-        } catch (\Exception $ex) {
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
-
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
+    
     /**
      * Generate invoice.
      *
@@ -587,44 +570,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
     }
 
 
-  public function payment(Request $request)
 
-    {
-        try {
-            if ($request->has('invoiceid')) {
-                $invoice_id = $request->input('invoiceid');
-                $invoice = $this->invoice->find($invoice_id);
-                $userid = $invoice->user_id;
-                //dd($invoice);
-                $invoice_status = '';
-                $payment_status = '';
-                $payment_method = '';
-                $domain = '';
-                if ($invoice) {
-                    $invoice_status = $invoice->status;
-                    $items = $invoice->invoiceItem()->first();
-                    if ($items) {
-                        $domain = $items->domain;
-                    }
-                }
-                $payment = $this->payment->where('invoice_id', $invoice_id)->first();
-                if ($payment) {
-                    $payment_status = $payment->payment_status;
-                    $payment_method = $payment->payment_method;
-                }
-
-                return view('themes.default1.invoice.payment',
-                 compact('invoice_status', 'payment_status',
-                  'payment_method', 'invoice_id', 'domain', 'invoice', 'userid'));
-            }
-
-            return redirect()->back();
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function setDomain($productid, $domain)
     {
@@ -655,58 +601,5 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
         }
     }
 
-    public function deletePayment(Request $request)
-    {
-        try {
-            $ids = $request->input('select');
-            if (!empty($ids)) {
-                foreach ($ids as $id) {
-                    $payment = $this->payment->where('id', $id)->first();
-                    if ($payment) {
-                        $invoice = $this->invoice->find($payment->invoice_id);
-                        if ($invoice) {
-                            $invoice->status = 'pending';
-                            $invoice->save();
-                        }
-                        $payment->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> 
-                    './* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
-                </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                }
-                echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */
-                    \Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
-            } else {
-                echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
-                //echo \Lang::get('message.select-a-row');
-            }
-        } catch (\Exception $e) {
-            Bugsnag::notifyException($e);
-            echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */ \Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.$e->getMessage().'
-                </div>';
-        }
-    }
+  
 }

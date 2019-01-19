@@ -118,15 +118,11 @@ class BaseOrderController extends ExtendedOrderController
         // }
 
      } catch (\Exception $ex) {
-        dd($ex);
        Bugsnag::notifyException($ex);
        app('log')->error($ex->getMessage());
          throw new \Exception('Can not Generate Order');
      }
 
-
-            throw new \Exception('Can not Generate Order');
-        }
     }
 
     /**

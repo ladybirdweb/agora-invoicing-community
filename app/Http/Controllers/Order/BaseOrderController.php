@@ -272,15 +272,15 @@ class BaseOrderController extends ExtendedOrderController
         $subject = $template->name;
         $data = $template->data;
         $replace = [
-            'name'         => $user->first_name.' '.$user->last_name,
-             'serialkeyurl'=> $myaccounturl,
-            'downloadurl'  => $downloadurl,
-            'invoiceurl'   => $invoiceurl,
-            'product'      => $product,
-            'number'       => $order->number,
-            'expiry'       => $this->expiry($orderid),
-            'url'          => $this->renew($orderid),
-            'knowledge_base'=>$knowledgeBaseUrl,
+            'name'          => $user->first_name.' '.$user->last_name,
+             'serialkeyurl' => $myaccounturl,
+            'downloadurl'   => $downloadurl,
+            'invoiceurl'    => $invoiceurl,
+            'product'       => $product,
+            'number'        => $order->number,
+            'expiry'        => $this->expiry($orderid),
+            'url'           => $this->renew($orderid),
+            'knowledge_base'=> $knowledgeBaseUrl,
 
             ];
         $type = '';

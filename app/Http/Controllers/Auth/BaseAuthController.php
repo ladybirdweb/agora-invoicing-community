@@ -171,7 +171,7 @@ class BaseAuthController extends Controller
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url,'website_url'=>$website_url ];
+            'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
             $type = '';
 
             if ($template) {

@@ -38,7 +38,6 @@ class AuthController extends BaseAuthController
 
     public function __construct()
     {
-        
         $this->middleware('guest', ['except' => 'getLogout']);
         $license = new LicenseController();
         $this->licensing = $license;
@@ -204,7 +203,7 @@ class AuthController extends BaseAuthController
     public function verifyOtp($mobile, $code, $otp)
     {
         $client = new \GuzzleHttp\Client();
-         $key = ApiKey::where('id', 1)->value('msg91_auth_key');
+        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
             'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],

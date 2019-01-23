@@ -159,7 +159,8 @@ class ExtendedBaseInvoiceController extends Controller
                         $invoice->status = $invoice_status;
                         $invoice->save();
                     }
-                } elseif (count($invoiceChecked) == 1 || $amtToCredit > 0) {//If Payment is not linked to any invoice and is to be credited to User Accunt
+                }
+                 elseif (count($invoiceChecked) == 1 || $amtToCredit > 0) {//If Payment is not linked to any invoice and is to be credited to User Accunt
                     $payment = Payment::create([
                 'invoice_id'     => $value,
                 'user_id'        => $clientid,
@@ -171,7 +172,7 @@ class ExtendedBaseInvoiceController extends Controller
                 }
             }
 
-            return $payment;
+            // return $payment;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -226,7 +227,8 @@ class ExtendedBaseInvoiceController extends Controller
             foreach ($invoiceChecked as $key => $value) {
                 if ($key != 0) {//If Payment is linked to Invoice
                     $invoice = Invoice::find($value);
-                    Payment::where('user_id', $clientid)->where('invoice_id', 0)->update(['amt_to_credit'=>$amtToCredit]);
+                     Payment::where('user_id', $clientid)->where('invoice_id', 0)
+                     ->update(['amt_to_credit'=>$amtToCredit]);
                     $invoice_status = 'pending';
                     $payment = Payment::create([
                 'invoice_id'     => $value,
@@ -263,8 +265,9 @@ class ExtendedBaseInvoiceController extends Controller
         // }
             }
 
-            return $payment;
-        } catch (Exception $e) {
+            // return $payment;
+        } catch (Exception $ex) {
+            dd($ex);
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 

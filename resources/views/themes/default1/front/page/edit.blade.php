@@ -82,14 +82,14 @@ Edit Page
                 </div>
                 <div class="row">
 
-                    <div class="col-md-6 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('url') ? 'has-error' : '' }}">
                         <!-- first name -->
                         {!! Form::label('url',Lang::get('message.url'),['class'=>'required']) !!}
                         {!! Form::text('url',null,['class' => 'form-control','id'=>'url']) !!}
 
                     </div>
 
-                    <div class="col-md-6 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                    <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('parent_page_id',Lang::get('message.parent-page')) !!}
                         <select name="parent_page_id"  class="form-control">
@@ -100,6 +100,13 @@ Edit Page
                            
                              @endforeach
                         </select>
+                    </div>
+
+                     <div class="col-md-4 form-group {{ $errors->has('parent_page_id') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('type',Lang::get('message.page_type')) !!}
+                          {!! Form::select('type',['none'=>'None','contactus'=>'Contact Us'],null,['class' => 'form-control']) !!} 
+
                     </div>
                     <?php
                          $defaults = DB::table('frontend_pages')->pluck('name','id')->toArray();

@@ -83,7 +83,6 @@ class PageController extends GetPageTemplateController
     {
         try {
             $parents = $this->page->pluck('name', 'id')->toArray();
-
             return view('themes.default1.front.page.create', compact('parents'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
@@ -152,10 +151,11 @@ class PageController extends GetPageTemplateController
             $page->created_at = $date->format('Y-m-d H:i:s');
             $page->save();
             $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
-            DefaultPage::findorFail(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
+            DefaultPage::find(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
+            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

@@ -214,10 +214,11 @@ class ClientController extends AdvanceSearchController
             $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
-            $pendingAmount = $invoiceSum - $amountReceived;
-            if ($pendingAmount < 0) {
-                $pendingAmount = 0;
-            }
+            $pendingAmount = $invoiceSum-$amountReceived ;
+            // $pendingAmount = $invoiceSum - $amountReceived;
+            // if ($pendingAmount < 0) {
+            //     $pendingAmount = 0;
+            // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
 
@@ -255,7 +256,7 @@ class ClientController extends AdvanceSearchController
         return $responseData;
     }
 
-    //Get Paymetn Details on Invoice Page
+    //Get Payment Details on Invoice Page
     public function getPaymentDetail($id)
     {
         $client = $this->user->where('id', $id)->first();
@@ -303,17 +304,16 @@ class ClientController extends AdvanceSearchController
     public function getExtraAmt($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)
-            ->where('invoice_id', 0)
-            ->select('amt_to_credit')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amt_to_credit;
-            }
+                $amounts = Payment::where('user_id', $userId)->select('amt_to_credit')->get();
+                 $balance = 0;
+                foreach ($amounts as $amount) {
+                    if ($amount) {
+                        $balance = $balance + $amount->amt_to_credit ;
+                    }
+                }
+        return $balance;
 
-            return $paidSum;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -327,8 +327,8 @@ class ClientController extends AdvanceSearchController
     public function getAmountPaid($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)->select('amount')->get();
-            $paidSum = 0;
+            $amounts = Payment::where('user_id', $userId)->select('amount','amt_to_credit')->get();
+             $paidSum = 0;
             foreach ($amounts as $amount) {
                 if ($amount) {
                     $paidSum = $paidSum + $amount->amount;

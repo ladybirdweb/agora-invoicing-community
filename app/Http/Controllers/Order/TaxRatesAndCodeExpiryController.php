@@ -236,7 +236,6 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
     {
         try {
             $cltCont = new \App\Http\Controllers\User\ClientController();
-            $amountReceived = $cltCont->getAmountPaid($id);
             $payment = Payment::find($id);
             $clientid = $payment->user_id;
             $invoice = new Invoice();

@@ -469,6 +469,7 @@ return [
     'parent-page'  => 'Parent Page',
     'default-page' => 'Default Page',
     'publish-date' => 'Publishing Date',
+    'page_type'    => 'Page Type',
     /*
      * Widgets
      */

@@ -154,18 +154,19 @@ if($script){
                                                     </li>
 
 
-                                                    <li class="dropdown dropdown-mega">
+                                               <!--      <li class="dropdown dropdown-mega">
                                                         <a class="nav-link" href="{{url('contact-us')}}">
                                                             contact us
                                                         </a>
 
                                                     </li>
-
+ -->
                                                 
  
                                                     <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
 
                                                     @foreach($pages as $page)
+
                                                     <li class="dropdown">
                                                         @if($page->parent_page_id==0)
                                                         <?php
@@ -176,7 +177,11 @@ if($script){
                                                             $class = 'nav-link';
                                                         }
                                                         ?>
+                                                        @if($page->type == 'contactus')
+                                                         <a class="nav-link" href="{{url('contact-us')}}">
+                                                        @else
                                                         <a class="{{$class}}" href="{{$page->url}}">
+                                                          @endif
                                                             {{ucfirst($page->name)}}
                                                         </a>
                                                         @endif

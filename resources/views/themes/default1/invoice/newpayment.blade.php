@@ -158,7 +158,7 @@ Payment
                                                
                                             </td>
                                             <td class="changeamt">
-                                                <input type="text" class="changeamt" name="amount" id="{{$invoice->id}}">
+                                                <input type="text" class="changeamt" name="amount" id="{{$invoice->id}}" disabled="disabled">
                                                 
                                             </td>
                                            

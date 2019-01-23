@@ -45,8 +45,6 @@ class ProcessController extends Controller
                 $this->middlePage($data);
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -121,8 +119,6 @@ class ProcessController extends Controller
 
             return $data;
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }
@@ -145,10 +141,7 @@ class ProcessController extends Controller
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $output = curl_exec($ch);
             curl_close($ch);
-            dd($output);
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

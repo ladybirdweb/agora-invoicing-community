@@ -275,7 +275,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="https://www.billing.faveohelpdesk.com/">https://www.billing.faveohelpdesk.com</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="https://www.billing.faveohelpdesk.com/public/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
+<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{{website_url}}">{{website_url}}</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="{{website_url}}/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
@@ -367,7 +367,7 @@ class TemplateTableSeeder extends Seeder
 </tbody>
 </table>
 <p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your Serial Key.</p>
-<p><a class="moz-txt-link-abbreviated" href="https://www.support.faveohelpdesk.com/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
+<p><a class="moz-txt-link-abbreviated" href="{{knowledge_base}}/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
 <p style="color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Click below to login to your Control Panel to view invoice or to pay for any pending invoice.</p>
 </td>
 <td style="background: #fff; border-right: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -429,7 +429,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{{url}}">{{url}}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="https://www.faveohelpdesk.com/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
+<p>Dear {{name}},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{{url}}">{{url}}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="{{contact-us}}/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>

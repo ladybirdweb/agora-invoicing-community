@@ -320,5 +320,4 @@ trait CoupCodeAndInvoiceSearch
                 </div>';
         }
     }
-
 }

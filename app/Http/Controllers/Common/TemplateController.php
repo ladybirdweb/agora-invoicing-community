@@ -298,7 +298,7 @@ class TemplateController extends BaseTemplateController
                 }
             });
             \DB::table('email_log')->insert([
-                'date' => date('Y-m-d H:i:s'),
+            'date' => date('Y-m-d H:i:s'),
             'from'     => $from,
             'to'       => $to,
              'subject' => $subject,

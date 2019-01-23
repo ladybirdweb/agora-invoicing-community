@@ -269,6 +269,7 @@ class BaseOrderController extends ExtendedOrderController
         $templates = new \App\Model\Common\Template();
         $temp_id = $setting->order_mail;
         $template = $templates->where('id', $temp_id)->first();
+        $knowledgeBaseUrl = $setting->company_url;
         $from = $setting->email;
         $to = $user->email;
         $subject = $template->name;
@@ -282,6 +283,7 @@ class BaseOrderController extends ExtendedOrderController
             'number'       => $order->number,
             'expiry'       => $this->expiry($orderid),
             'url'          => $this->renew($orderid),
+            'knowledge_base'=>$knowledgeBaseUrl,
 
             ];
         $type = '';

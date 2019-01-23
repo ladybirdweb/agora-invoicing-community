@@ -17,6 +17,7 @@ return[
      * This is for welcome mail content
      */
     'welcome_mail' => [
+        'website_url'=>'{{website_url}}',
         'name'     => '{{name}}',
         'username' => '{{username}}',
         'password' => '{{password}}',
@@ -35,6 +36,7 @@ return[
         'expiry'      => '{{expiry}}',
         'url'         => '{{url}}',
         'serialkeyurl'=> '{{serialkeyurl}}',
+        'knowledge_base'=>'{{knowledge_base}}',
     ],
 
     /*
@@ -56,6 +58,7 @@ return[
     'forgot_password_mail' => [
         'name' => '{{name}}',
         'url'  => '{{url}}',
+        'contact-us'=>'{{contact-us}}'
 
     ],
 

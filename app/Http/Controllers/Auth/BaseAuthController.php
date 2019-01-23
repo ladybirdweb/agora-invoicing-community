@@ -166,13 +166,12 @@ class BaseAuthController extends Controller
             $temp_id = $settings->where('id', 1)->first()->welcome_mail;
             $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
-            // var_dump($temp_id);
-            //  die();
             $to = $user->email;
+            $website_url = url('/');
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            'username'         => $user->email, 'password' => $str, 'url' => $url,'website_url'=>$website_url ];
             $type = '';
 
             if ($template) {

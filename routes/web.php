@@ -363,7 +363,7 @@
         Route::post('payment/receive/{id}', 'Order\InvoiceController@postPayment');
         Route::get('payment-delete', 'Order\InvoiceController@deletePayment')->name('payment-delete');
         Route::get('payments/{id}/delete', 'Order\InvoiceController@paymentDeleleById');
-        Route::get('payments/{id}/edit', 'Order\InvoiceController@paymentEditById');
+        Route::get('payments/{payment_id}/edit', 'Order\InvoiceController@paymentEditById');
         Route::post('newMultiplePayment/receive/{clientid}', 'Order\InvoiceController@postNewMultiplePayment');
          Route::post('newMultiplePayment/update/{clientid}', 'Order\InvoiceController@updateNewMultiplePayment');
 

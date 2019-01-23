@@ -225,8 +225,6 @@ trait CoupCodeAndInvoiceSearch
         return $froms;
     }
 
-    
-
     public function updateInvoicePayment($invoiceid, $payment_method, $payment_status, $payment_date, $amount)
     {
         try {
@@ -261,8 +259,6 @@ trait CoupCodeAndInvoiceSearch
             throw new \Exception($ex->getMessage());
         }
     }
-
-   
 
     /**
      * Remove the specified resource from storage.

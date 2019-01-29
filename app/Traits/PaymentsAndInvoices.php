@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\Model\Order\Invoice;
 use App\Model\Product\Product;
 use Illuminate\Http\Request;
+use App\Model\Order\Payment;
 
 //////////////////////////////////////////////////////////////////////////////
 // PAYMENTS AND EXTRA FUNCTIONALITIES FOR INVOICES
@@ -321,4 +322,24 @@ use Illuminate\Http\Request;
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
         }
+
+    public function getExtraAmtPaid($userId)
+    {
+        try {
+                $amounts = Payment::where('user_id', $userId)->where('invoice_id',0)->select('amt_to_credit')->get();
+                 $balance = 0;
+                foreach ($amounts as $amount) {
+                    if ($amount) {
+                        $balance = $balance + $amount->amt_to_credit ;
+                    }
+                }
+        return $balance;
+
+        } catch (\Exception $ex) {
+            app('log')->info($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
     }

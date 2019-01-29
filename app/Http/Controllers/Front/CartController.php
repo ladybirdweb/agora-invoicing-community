@@ -185,8 +185,7 @@ class CartController extends BaseCartController
                              $geoip_state,
                              $geoip_country
                          );
-
-                        $c_gst = $details['cgst'];
+                          $c_gst = $details['cgst'];
                         $s_gst = $details['sgst'];
                         $i_gst = $details['igst'];
                         $ut_gst = $details['utgst'];
@@ -246,29 +245,6 @@ class CartController extends BaseCartController
             Bugsnag::notifyException($ex);
 
             throw new \Exception('Can not check the tax');
-        }
-    }
-
-    /**
-     * @return type
-     */
-    public function addCouponUpdate()
-    {
-        try {
-            $code = \Input::get('coupon');
-            $cart = Cart::getContent();
-            foreach ($cart as $item) {
-                $id = $item->id;
-            }
-            $promo_controller = new \App\Http\Controllers\Payment\PromotionController();
-            $result = $promo_controller->checkCode($code, $id);
-            if ($result == 'success') {
-                return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-            }
-
-            return redirect()->back();
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 

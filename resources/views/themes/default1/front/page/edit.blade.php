@@ -127,12 +127,12 @@ Edit Page
                         {!! Form::label('publish_date',Lang::get('message.publish-date')) !!}
                         <div class="form-group">
                          <div class="input-group date">
-                  <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                  </div>
+                             <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                         </div>
                      <input name="created_at" type="text" value="{{$publishingDate}}" class="form-control" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
-                </div>
-              </div>
+                        </div>
+                      </div>
 
                           <!-- <div class="form-group">
                                     <div class='input-group date' id='datetimepicker1'>

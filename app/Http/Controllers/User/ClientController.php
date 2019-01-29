@@ -8,6 +8,7 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
+use App\Traits\PaymentsAndInvoices;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
@@ -18,6 +19,8 @@ use Log;
 
 class ClientController extends AdvanceSearchController
 {
+    use PaymentsAndInvoices;
+
     public $user;
     public $activate;
     public $product;
@@ -262,7 +265,7 @@ class ClientController extends AdvanceSearchController
         $client = $this->user->where('id', $id)->first();
         $invoice = new Invoice();
         $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-        $extraAmt = $this->getExtraAmt($id);
+        $extraAmt = $this->getExtraAmtPaid($id);
         $date = '';
         $responseData = [];
         if ($invoices) {
@@ -304,7 +307,7 @@ class ClientController extends AdvanceSearchController
     public function getExtraAmt($userId)
     {
         try {
-                $amounts = Payment::where('user_id', $userId)->select('amt_to_credit')->get();
+                $amounts = Payment::where('user_id', $userId)->where('invoice_id',0)->select('amt_to_credit')->get();
                  $balance = 0;
                 foreach ($amounts as $amount) {
                     if ($amount) {
@@ -332,9 +335,9 @@ class ClientController extends AdvanceSearchController
             foreach ($amounts as $amount) {
                 if ($amount) {
                     $paidSum = $paidSum + $amount->amount;
+                   // $credit = $paidSum + $amount->amt_to_credit;
                 }
             }
-
             return $paidSum;
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());

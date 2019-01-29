@@ -52,12 +52,6 @@ class DatabaseManager
     private function seed($outputLog)
     {
         try{
-           // $path = storage_path() . '\dummy-data.sql';
-           //      $path1= storage_path() . '\agora.sql';
-           //      $path2 = storage_path() . '\states.sql';
-           //      DB::unprepared(DB::raw(file_get_contents($path)));
-           //        DB::unprepared(DB::raw(file_get_contents($path1)));
-           //          DB::unprepared(DB::raw(file_get_contents($path2)));
                Artisan::call('db:seed', [], $outputLog);
         }
         catch(Exception $e){

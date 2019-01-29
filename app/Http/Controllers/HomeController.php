@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Crypt;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
 use Exception;
@@ -343,15 +344,12 @@ class HomeController extends BaseHomeController
     public function downloadForFaveo(Request $request, Order $order)
     {
         try {
-            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
-
-            // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
-            // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
+            $faveo_encrypted_order_number = $request->input('order_number');
+            $faveo_serial_key = $request->input('serial_key');
+            $encrypted_serial = Crypt::encrypt($faveo_serial_key);
             $this_order = $order
                      ->where('number', $faveo_encrypted_order_number)
-                    // ->where('number', $request->input('order_number'))
-                    //->where('serial_key', $faveo_encrypted_key)
-                    //->where('domain', $faveo_encrypted_domain)
+                    ->where('serial_key', $encrypted_serial)
                     ->first();
             if ($this_order) {
                 $product_id = $this_order->product;

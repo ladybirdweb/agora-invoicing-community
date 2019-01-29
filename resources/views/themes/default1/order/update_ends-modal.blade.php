@@ -1,27 +1,33 @@
-<div class="modal fade" id="licesnseModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
+<div class="modal fade" id="updateEndsModal" tabindex="-1" role="dialog" aria-labelledby="defaultModalLabel" aria-hidden="true">
 <div class="modal-dialog">
 	<div class="modal-content">
 		<div class="modal-header">
-			<h4 class="modal-title" id="defaultModalLabel">Enter Domain</h4>
+			<h4 class="modal-title" id="defaultModalLabel">Enter Updates Expiry Date</h4>
 			<!-- <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button> -->
 		</div>
 		<div class="modal-body">
-			<div id="response"></div>
-			   <input type="hidden" name="orderId" id="orderId">
-		  <div class="form-group {{ $errors->has('domain') ? 'has-error' : '' }}">
+      <div id="error2"></div>
+			 <div id="response2"></div>
+			   <input type="hidden" name="orderId" value="" id="order">
+		  <div class="form-group">
                     <!-- name -->
-                    {!! Form::label('domain',Lang::get('message.domain'),['class'=>'required']) !!}
-                    {!! Form::text('domain',null,['class' => 'form-control domainss' ,'id'=>'newDomain','required'=>'required']) !!}
+                    {!! Form::label('updates',Lang::get('message.update_end'),['class'=>'required']) !!}
+                   
+                         <div class="input-group date">
+                             <div class="input-group-addon">
+                      <i class="fa fa-calendar"></i>
+                         </div>
+                     <input name="update_ends_at" type="text" value="" class="form-control" id="newDate" data-inputmask="'alias': 'dd/mm/yyyy'" data-mask>
+                        </div>
+                    
                            <h6 id ="domaincheck"></h6>
                 </div>
-          <div class="form-group">
-			<span style="color:red;">*&nbsp By changing the domain, license on the current domain will be cancelled and all Installation on the current domain will be aborted. </span>
-		</div>  
+        
 		</div>
 		
 		  <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                <input type="submit" id="licenseSave" onclick="validdomaincheck()" class="btn btn-primary" value="{{Lang::get('message.save')}}">
+                <input type="submit" id="updatesSave" class="btn btn-primary" value="{{Lang::get('message.save')}}">
             </div>
 	</div>
 </div>

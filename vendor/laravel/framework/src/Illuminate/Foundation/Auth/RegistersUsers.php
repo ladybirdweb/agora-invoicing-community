@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Auth\Events\Registered;
 use App\Model\Payment\Currency;
+use App\Model\Common\StatusSetting;
 use App\Model\Common\Country;
 use App\Model\Common\Setting;
 use App\Http\Controllers\Controller;
@@ -90,17 +91,32 @@ trait RegistersUsers
             $user->manager = $account_manager;
             $user->ip = $location['ip'];
             $user->currency = $currency;
-            $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
-             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
-            $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
-            //$this->sendActivation($user->email, $request->method(), $pass);
-            $this->accountManagerMail($user);
-
-            if ($user) {
+            $emailMobileSetting = StatusSetting::select('emailverification_status','msg91_status')->first();
+            if($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1){
+                  $user->mobile_verified=0; 
+                 $user->active=1;
+                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
+            } elseif( $emailMobileSetting->emailverification_status ==1 && $emailMobileSetting->msg91_status ==0) {
+                $user->mobile_verified=1; 
+                 $user->active=0;
+                  $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
+               } elseif($emailMobileSetting->emailverification_status ==0 && $emailMobileSetting->msg91_status ==0) {
+                $user->mobile_verified=1; 
+                 $user->active=1;
+                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
+            } else {
+               $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
+                if ($user) {
                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
-
-                return response()->json($response);
+                 }
             }
+              $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
+             $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
+             activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
+            $this->accountManagerMail($user);
+             
+           
+                return response()->json($response);
         } catch (\Exception $ex) {
               app('log')->error($ex->getMessage());
             $result = [$ex->getMessage()];
@@ -172,7 +188,7 @@ trait RegistersUsers
 
     public function Activate($token, AccountActivate $activate, Request $request, User $user)
     {
-        try {
+        try {dd('df');
             if ($activate->where('token', $token)->first()) {
                 $email = $activate->where('token', $token)->first()->email;
             } else {
@@ -181,7 +197,11 @@ trait RegistersUsers
             
             $url = 'auth/login';
             $user = $user->where('email', $email)->first();
+            $mobileStatus = StatusSetting::pluck('msg91_status')->first();
             if ($user->where('email', $email)->first()) {
+                if ($mobileStatus == 0){//If Mobile Verification is not on from Admin Panel 
+                    $user->mobile_verified = 1;
+                }
                 $user->active = 1;
                 $user->save();
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();

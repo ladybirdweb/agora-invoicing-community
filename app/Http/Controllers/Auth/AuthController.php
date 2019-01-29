@@ -70,8 +70,9 @@ class AuthController extends BaseAuthController
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
-
-                $zoho = $this->reqFields($user, $email);
+            $zohoStatus = StatusSetting::pluck('zoho_status')->first();
+            if ($zohoStatus) {
+                 $zoho = $this->reqFields($user, $email);
                 $auth = ApiKey::where('id', 1)->value('zoho_api_key');
                 $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
                 $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
@@ -91,6 +92,8 @@ class AuthController extends BaseAuthController
                 //Execute cUrl session
                 $response = curl_exec($ch);
                 curl_close($ch);
+            }
+               
 
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                 $r = $mailchimp->addSubscriber($user->email);

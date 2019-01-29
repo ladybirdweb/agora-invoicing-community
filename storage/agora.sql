@@ -455,7 +455,7 @@ INSERT INTO `countries` (`country_id`, `country_code_char2`, `country_name`, `ni
 
 
 
-INSERT INTO `currencies` (`id`, `code`, `symbol`, `name`, `base_conversion`, `status`) VALUES
+INSERT INTO `currencies` (`id`, `code`, `symbol`, `name`, `dashboard_currency`, `status`) VALUES
 (1, 'AFN','؋ ','Afghani',NULL,0),
 (2, 'ALL','L','Albanian lek',NULL,0),
 (3, 'DZD',' دج  ','Algerian dinar',NULL,0),

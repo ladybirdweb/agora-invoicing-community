@@ -226,6 +226,7 @@
         Route::get('currency-delete', 'Payment\CurrencyController@destroy')->name('currency-delete');
 
           Route::post('change/currency/status', ['as' => 'change.currency.status', 'uses' => 'Payment\CurrencyController@updatecurrency']);
+        Route::get('dashboard-currency/{id}','Payment\CurrencyController@setDashboardCurrency');
 
         /*
          * Tax
@@ -307,7 +308,9 @@
         Route::get('order/execute', 'Order\OrderController@orderExecute');
         Route::patch('change-domain', 'Order\ExtendedOrderController@changeDomain');
         Route::get('orders/{id}/delete', 'Order\OrderController@deleleById');
-
+        Route::get('edit-update-expiry', 'Order\BaseOrderController@editUpdateExpiry');
+        Route::get('edit-license-expiry', 'Order\BaseOrderController@editLicenseExpiry');
+        Route::get('edit-support-expiry', 'Order\BaseOrderController@editSupportExpiry');
         /*
          * Groups
          */
@@ -421,7 +424,7 @@
         Route::get('github-one-release', 'Github\GithubController@getReleaseByTag');
         Route::get('github-downloads', 'Github\GithubController@getDownloadCount');
         Route::get('github', 'Github\GithubController@getSettings');
-        Route::patch('github', 'Github\GithubController@postSettings');
+        Route::get('github-setting', 'Github\GithubController@postSettings');
 
         /*
          * download

@@ -387,6 +387,9 @@ return [
     'place-an-order'                 => 'Place an Order',
     'generate'                       => 'Generate',
     'invoice-generated-successfully' => 'Invoice generated successfully',
+    'update_end'                     =>'Update Ends At',
+    'license_end'                    => 'License Ends At',
+    'support_end'                    => 'Support Ends At',
     /*
      * Groups
      */
@@ -475,6 +478,8 @@ return [
      */
     'widget'  => 'Widget',
     'widgets' => 'Widgets',
+    'allow_tweets' => 'Allow Tweets',
+    'allow_mailchimp' => 'Allow Mailchimp Textbox',
     /*
      * Service Provider
      */

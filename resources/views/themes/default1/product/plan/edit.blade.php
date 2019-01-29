@@ -200,7 +200,7 @@ Edit Plan
             else{
                $('.plandays').show();
             }
-            if(data.agentEnable != 1) {//Check if Product quantity to be shown or No. of Agents
+            if(data.agentEnable != 1) {//Check if Product quantity to be sh`own or No. of Agents
               document.getElementById("prodquant").disabled = false;
               document.getElementById("agentquant").disabled = true;
              
@@ -245,7 +245,6 @@ Edit Plan
            
            }
          });
- // console.log(product)
 }
 </script>
 

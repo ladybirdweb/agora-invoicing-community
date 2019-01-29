@@ -458,10 +458,11 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                           
                      <form class="form-horizontal" novalidate="novalidate" name="verifyForm">
 
-                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email and Mobile</h4>
+                                <h4 class="heading-primary text-uppercase mb-md">Confirm Email/Mobile</h4>
                                            
                                 <input type="hidden" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
+                                <input type="hidden" id="checkEmailStatus" value="{{$emailStatus}}">
                              @if($emailStatus == 1)
                               <p>You will be sent a verification email by an automated system, Please click on the verification link in the email. Click next to continue</p>
                               <div class="form-row">
@@ -785,7 +786,7 @@ function verify_otp_check(){
     function resendOTP() {
         var data = {
             "mobile":   $('#verify_number').val(),
-            "code"  :   $('#verify_country_code').val(),
+            "code"  :    trim($('#verify_country_code').val()),
         };
         $.ajax({
           url: '{{url('resend_otp')}}',
@@ -909,7 +910,7 @@ function verify_otp_check(){
             "oldemail": oldemail,
             "email": $('#verify_email').val(),
             "mobile": $('#verify_number').val(),
-            'code': $('#verify_country_code').val().replace(/\s/g, ''),
+            'code': $('#verify_country_code').val(),
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
@@ -919,7 +920,7 @@ function verify_otp_check(){
           type: 'GET',
           data: data,
           success: function (response) {
-            
+            console.log(response)
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
              if (($("#checkOtpStatus").val()) == 1 ) {
                 $('#successMessage2').html(result);
@@ -936,25 +937,25 @@ function verify_otp_check(){
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
-          alert('d')
         } else {//Show Only Email Success Message when Mobile Status is Not Active
-          alert('dfg')
                   $('#emailsuccess').html(result);
                 $('#successMessage1').hide();
+                 $("#sendOtp").html("Send");
                 $('#error1').hide();
                 }
               },
           error: function (ex) {
-
+            
             var myJSON = JSON.parse(ex.responseText);
+            console.log(myJSON);
             var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
             $("#sendOtp").html("Send");
-            for (var key in myJSON)
-            {
-                html += '<li>' + myJSON[key][0] + '</li>'
-            }
+           
+                html += '<li>' + myJSON.message + '</li>'
+            
             html += '</ul></div>';
             $('#alertMessage1').hide();
+            $('#successMessage1').hide();
             $('#error1').show();
             document.getElementById('error1').innerHTML = html;
             setTimeout(function(){ 
@@ -1491,9 +1492,17 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
           success: function (response) {
 
             if(response.type == 'success'){
-                var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
-                $('#successMessage1').html(result);
+               
                 $('.wizard-inner').css('display','block');
+                   if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
+                    alert('refd');
+                 var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                $('#alertMessage1').html(result);
+                 window.scrollTo(0,0);
+                 $("#register").html("Submit");
+                 } else {
+                   var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
+                $('#successMessage1').html(result);
                 var $active = $('.wizard .nav-tabs li.active');
                 $active.next().removeClass('disabled');
                 nextTab($active);
@@ -1505,6 +1514,9 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
 
                 }
                
+                 }
+
+          
                  
 
                 verifyForm.elements['verify_country_code'].value =$('#mobile_code').val();
@@ -1605,7 +1617,6 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
             success: function (data) {
 
             $("#state-list").html('<option value="">Please select Country</option>').val('');
-                console.log()
 
 
               $("#state-list").html(data).val(state.id);

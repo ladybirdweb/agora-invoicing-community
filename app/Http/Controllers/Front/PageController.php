@@ -155,7 +155,6 @@ class PageController extends GetPageTemplateController
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
-            dd($ex);
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

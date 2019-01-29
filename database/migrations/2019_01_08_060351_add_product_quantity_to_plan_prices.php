@@ -15,8 +15,8 @@ class AddProductQuantityToPlanPrices extends Migration
     {
         Schema::table('plan_prices', function (Blueprint $table) {
             $table->string('price_description', 225)->nullable();
-            $table->string('product_quantity')->unsigned()->nullable();
-            $table->string('no_of_agents')->unsigned()->nullable();
+            $table->string('product_quantity')->nullable();
+            $table->string('no_of_agents')->nullable();
         });
     }
 

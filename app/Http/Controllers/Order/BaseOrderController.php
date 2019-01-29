@@ -6,6 +6,8 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use Illuminate\Http\Request;
+use App\Traits\Order\UpdateDates;
 use App\User;
 use Bugsnag;
 use Crypt;
@@ -14,6 +16,8 @@ use DateTimeZone;
 
 class BaseOrderController extends ExtendedOrderController
 {
+    use UpdateDates;
+
     public function getEndDate($model)
     {
         $end = '--';
@@ -71,7 +75,6 @@ class BaseOrderController extends ExtendedOrderController
 
             return 'success';
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
 
             throw new \Exception($ex->getMessage());
@@ -335,4 +338,6 @@ class BaseOrderController extends ExtendedOrderController
 
         return $url;
     }
+
+  
 }

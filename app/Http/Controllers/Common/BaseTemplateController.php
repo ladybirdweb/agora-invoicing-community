@@ -39,7 +39,8 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                     $currency = \Auth::user()->update(['currency' => $def_currency]);
                     $symbol = \Auth::user()->update(['currency_symbol'=>$def_currency_symbol]);
                 }
-                $priceDescription = $value->planPrice->first()->price_description;
+                $priceDescription = $value->planPrice->first();
+                $priceDescription = $priceDescription ? $priceDescription->price_description : '';
                 $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
                 $duration = $value->periods;
                 $months = count($duration) > 0 ? $duration->first()->name : '';

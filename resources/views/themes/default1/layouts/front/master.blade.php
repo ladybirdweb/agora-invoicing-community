@@ -136,6 +136,7 @@ if($script){
                                                 <ul class="nav nav-pills" id="mainNav">
                                               <?php 
                                                 $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                                              
                                               ?>
                                                     
                                                      <li class="dropdown">
@@ -374,24 +375,28 @@ if($script){
             <footer id="footer">
                 <div class="container">
                     <div class="row">
-                        <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
-                            <span>Get in Touch</span>
-                        </div> -->
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->first(); ?>
+                         <?php
+                         
+                        
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                            $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                           }
+                            $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                            
                           <div class="newsletter">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 <p> {!! $widgets->content !!}</p>
-
+                                  {!! $tweetDetails !!}
                                 <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
-
                                 <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                <?php $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);?>
-                                @if($mailchimpKey != null)
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
                                     <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
@@ -400,40 +405,109 @@ if($script){
                                     </span>
                                 </div>
                                 {!! Form::close() !!}
+                               
                                 @endif
                             </div>
                         </div>
                         @endif
-                          <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->first(); ?>
+                          <?php 
+                       
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                           $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
-                            <div id="tweets" class="twitter" >
-                            <p>Please wait...</p>
-                            </div>
+                               {!! $tweetDetails !!}  
+                                   <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                         </div>
+                        
                         @endif
-                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->first(); ?>
+                        <?php
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                        if ($widgets) {
+                           $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                        }
+
+                        
+                            ?>
                        @if($widgets != null)
                         <div class="col-md-3">
                             <div class="contact-details">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 {!! $widgets->content !!}
+                                
+                                 {!! $tweetDetails !!}
+                                 <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                  @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                             </div>
                         </div>
+                        
                          @endif
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->first(); ?>
+                         <?php 
+                        
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         if ($widgets) {
+                          $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                          
                         <div class="col-md-2">
                           @if($widgets != null)
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
+                               <p>{!! $tweetDetails !!}   </p>
+                               <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                             <ul class="social-icons">
                                 @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
+                           
                           @endif
                             <br>
                        

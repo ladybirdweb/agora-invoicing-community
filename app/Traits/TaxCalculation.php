@@ -2,9 +2,11 @@
 
 namespace App\Traits;
 
-use App\Model\Payment\Tax;
-use App\Model\Payment\TaxProductRelation;
 use Cart;
+use Session;
+use App\Model\Payment\Tax;
+use Illuminate\Http\Request;
+use App\Model\Payment\TaxProductRelation;
 
 trait TaxCalculation
 {

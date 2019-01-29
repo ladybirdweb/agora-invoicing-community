@@ -32,9 +32,6 @@ class DatabaseSeeder extends Seeder
     {
         //Model::unguard();
 
-        $this->call('PlanTableSeeder');
-        $this->command->info('Plan table seeded!');
-
         $this->call('TemplateTypeTableSeeder');
         $this->command->info('Template Type table seeded!');
 
@@ -74,7 +71,7 @@ class DatabaseSeeder extends Seeder
         $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
 
-        $this->call('PricingTemplateSeeder')
+        $this->call('PricingTemplateSeeder');
         $this->command->info('Pricing Template Table Seeded!');
 
         $this->call('UserTableSeeder');
@@ -98,28 +95,28 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-class PlanTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('plans')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $subcriptions = [
-            0 => ['name' => 'no subcription', 'days' => 0],
-            1 => ['name' => 'one week', 'days' => 7],
-            2 => ['name' => 'one month', 'days' => 30],
-            3 => ['name' => 'three months', 'days' => 90],
-            4 => ['name' => 'six months', 'days' => 180],
-            5 => ['name' => 'one year', 'days' => 365],
-            6 => ['name' => 'three year', 'days' => 1095],
-            ];
-        //var_dump($subcriptions);
-        for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
-        }
-    }
-}
+// class PlanTableSeeder extends Seeder
+// {
+//     public function run()
+//     {
+//         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//         \DB::table('plans')->truncate();
+//         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+//         $subcriptions = [
+//             0 => ['name' => 'no subcription', 'days' => 0],
+//             1 => ['name' => 'one week', 'days' => 7],
+//             2 => ['name' => 'one month', 'days' => 30],
+//             3 => ['name' => 'three months', 'days' => 90],
+//             4 => ['name' => 'six months', 'days' => 180],
+//             5 => ['name' => 'one year', 'days' => 365],
+//             6 => ['name' => 'three year', 'days' => 1095],
+//             ];
+//         //var_dump($subcriptions);
+//         for ($i = 0; $i < count($subcriptions); $i++) {
+//             Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
+//         }
+//     }
+// }
 
 class ProductTypesTableSeeder extends Seeder
 {
@@ -736,7 +733,7 @@ class TemplateTableSeeder extends Seeder
 }
 
 
-class LicensePermissionTableSeeder()
+class LicensePermissionTableSeeder extends Seeder
 {
     public function run()
     {
@@ -790,7 +787,7 @@ class PricingTemplateSeeder extends Seeder
                                 </div>
                                 
                             </div>
-                        </div>', 'image'=>'pricing_template1.png' ,'name'=>'Porto Theme(With Gap Style)'])
+                        </div>', 'image'=>'pricing_template1.png' ,'name'=>'Porto Theme(With Gap Style)']);
     }
 }
 
@@ -801,7 +798,7 @@ class GitHubTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+        Github::create(['id' => 1, 'client_id'=>NULL, 'client_secret'=>NULL, 'username'=>NULL, 'password'=>NULL]);
     }
 }
 

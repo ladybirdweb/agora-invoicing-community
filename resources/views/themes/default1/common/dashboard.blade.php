@@ -17,11 +17,11 @@ Dashboard
             <div class="inner">
               <h4>Total Sales</h4>
               <?php
-              $rupeeSum = number_format($totalSalesINR,2);
-              $dollarSum = number_format($totalSalesUSD,2);
+              $rupeeSum = number_format($totalSalesCurrency2,2);
+              $dollarSum = number_format($totalSalesCurrency1,2);
               ?>
-              <span>INR: &nbsp;  ₹ {{$rupeeSum}}</span><br/>
-               <span>USD: &nbsp;  $ {{$dollarSum}} </span>
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{$currency2Symbol}} {{$rupeeSum}}</span><br/>
+               <span>{{$allowedCurrencies1}}: &nbsp;  {{$currency1Symbol}} {{$dollarSum}} </span>
             </div>
 
             <div class="icon">
@@ -37,13 +37,13 @@ Dashboard
             <div class="inner">
             	<h4>Yearly Sales</h4>
                 <?php
-              $rupeeYearlySum = number_format($yearlySalesINR,2);
-              $dollarYearlySum = number_format($yearlySalesUSD,2);
+              $rupeeYearlySum = number_format($yearlySalesCurrency2,2);
+              $dollarYearlySum = number_format($yearlySalesCurrency1,2);
               $startingDateOfYear = (date('Y-01-01'));
               
               ?>
-              <span>INR:&nbsp;  ₹ {{$rupeeYearlySum}}   </span><br/>
-               <span>USD:&nbsp; $ {{$dollarYearlySum}} </span>
+              <span>{{$allowedCurrencies2}}:&nbsp;  {{$currency2Symbol}} {{$rupeeYearlySum}}   </span><br/>
+               <span>{{$allowedCurrencies1}}:&nbsp; {{$currency1Symbol}} {{$dollarYearlySum}} </span>
             </div>
             <div class="icon">
               <i class="ion ion-stats-bars"></i>
@@ -58,13 +58,13 @@ Dashboard
             <div class="inner">
             	<h4>Monthly Sales</h4>
                <?php
-              $rupeeMonthlySum = number_format($monthlySalesINR,2);
-              $dollarMonthlySum = number_format($monthlySalesUSD,2);
+              $rupeeMonthlySum = number_format($monthlySalesCurrency2,2);
+              $dollarMonthlySum = number_format($monthlySalesCurrency1,2);
               $startMonthDate = date('Y-m-01');
               $endMonthDate = date('Y-m-t');
                ?>
-              <span>INR:&nbsp; ₹ {{$rupeeMonthlySum}}</span><br/>
-              <span>USD:&nbsp; $ {{$dollarMonthlySum}}</span>
+              <span>{{$allowedCurrencies2}}:&nbsp; {{$currency2Symbol}} {{$rupeeMonthlySum}}</span><br/>
+              <span>{{$allowedCurrencies1}}:&nbsp; {{$currency1Symbol}} {{$dollarMonthlySum}}</span>
              
             </div>
             <div class="icon">
@@ -80,11 +80,11 @@ Dashboard
             <div class="inner">
               <h4>Pending Payments</h4>
                 <?php
-              $rupeePendingSum = number_format($pendingPaymentINR,2);
-              $dollarPendingSum = number_format($pendingPaymentUSD,2);
+              $rupeePendingSum = number_format($pendingPaymentCurrency2,2);
+              $dollarPendingSum = number_format($pendingPaymentCurrency1,2);
               ?>
-              <span>INR: &nbsp;  ₹ {{$rupeePendingSum}}</span><br/>
-               <span>USD: &nbsp;  $ {{$dollarPendingSum}} </span>
+              <span>{{$allowedCurrencies2}}: &nbsp;  {{$currency2Symbol}} {{$rupeePendingSum}}</span><br/>
+               <span>{{$allowedCurrencies1}}: &nbsp;  {{$currency1Symbol}} {{$dollarPendingSum}} </span>
             </div>
             <div class="icon">
              <i class="ion ion-ios-cart-outline"></i>
@@ -400,10 +400,7 @@ Dashboard
                    @endif
                     @foreach($invoices as $invoice)
                     <?php
-                    if($invoice->currency == 'INR')
-                    $currency = '₹';
-                    else
-                    $currency = '$'; 
+                   $currency  = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
                    $payment = \App\Model\Order\Payment::where('invoice_id',$invoice->id)->select('amount')->get();
                    $c=count($payment);
                    $sum= 0;

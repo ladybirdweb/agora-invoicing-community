@@ -161,7 +161,13 @@ class ExtendedBaseInvoiceController extends Controller
                     }
                 }
                  elseif (count($invoiceChecked) == 1 || $amtToCredit > 0) {//If Payment is not linked to any invoice and is to be credited to User Accunt
-                    $payment = Payment::create([
+                    $totalExtraSum = Payment::where('user_id',$clientid)->where('invoice_id',0)
+                    ->pluck('amt_to_credit')->first();//Get the total Extra Amt Paid
+                    if($totalExtraSum) {
+                        $amtToCredit = $totalExtraSum + $amtToCredit ;//Add the total extra amt to the existing extra amt paid before deleting
+                        Payment::where('user_id',$clientid)->delete();
+                    }
+                    $payment = Payment::updateOrCreate([
                 'invoice_id'     => $value,
                 'user_id'        => $clientid,
                 'amt_to_credit'  => $amtToCredit,

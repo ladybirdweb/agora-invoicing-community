@@ -17,26 +17,26 @@ return[
      * This is for welcome mail content
      */
     'welcome_mail' => [
-        'website_url'=>'{{website_url}}',
-        'name'     => '{{name}}',
-        'username' => '{{username}}',
-        'password' => '{{password}}',
-        'url'      => '{{url}}',
+        'website_url'=> '{{website_url}}',
+        'name'       => '{{name}}',
+        'username'   => '{{username}}',
+        'password'   => '{{password}}',
+        'url'        => '{{url}}',
     ],
 
     /*
      * This is for order mail content
      */
     'order_mail' => [
-        'name'        => '{{name}}',
-        'downloadurl' => '{{downloadurl}}',
-        'invoiceurl'  => '{{invoiceurl}}',
-        'product'     => '{{product}}',
-        'number'      => '{{number}}',
-        'expiry'      => '{{expiry}}',
-        'url'         => '{{url}}',
-        'serialkeyurl'=> '{{serialkeyurl}}',
-        'knowledge_base'=>'{{knowledge_base}}',
+        'name'          => '{{name}}',
+        'downloadurl'   => '{{downloadurl}}',
+        'invoiceurl'    => '{{invoiceurl}}',
+        'product'       => '{{product}}',
+        'number'        => '{{number}}',
+        'expiry'        => '{{expiry}}',
+        'url'           => '{{url}}',
+        'serialkeyurl'  => '{{serialkeyurl}}',
+        'knowledge_base'=> '{{knowledge_base}}',
     ],
 
     /*
@@ -56,9 +56,9 @@ return[
      * This is for forgot password mail content
      */
     'forgot_password_mail' => [
-        'name' => '{{name}}',
-        'url'  => '{{url}}',
-        'contact-us'=>'{{contact-us}}'
+        'name'      => '{{name}}',
+        'url'       => '{{url}}',
+        'contact-us'=> '{{contact-us}}',
 
     ],
 

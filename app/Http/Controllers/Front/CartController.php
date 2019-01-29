@@ -59,31 +59,31 @@ class CartController extends BaseCartController
         $this->tax_by_state = new $tax_by_state();
     }
 
-    public function productList(Request $request)
-    {
-        $cont = new \App\Http\Controllers\Front\PageController();
-        $location = $cont->getLocation();
-        $country = $this->findCountryByGeoip($location['iso_code']);
-        $states = $this->findStateByRegionId($location['iso_code']);
-        $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-        $state_code = $location['iso_code'].'-'.$location['state'];
-        $state = $this->getStateByCode($state_code);
-        $mobile_code = $this->getMobileCodeByIso($location['iso_code']);
-        $currency = $this->currency();
+    // public function productList(Request $request)
+    // {
+    //     $cont = new \App\Http\Controllers\Front\PageController();
+    //     $location = $cont->getLocation();
+    //     $country = $this->findCountryByGeoip($location['iso_code']);
+    //     $states = $this->findStateByRegionId($location['iso_code']);
+    //     $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
+    //     $state_code = $location['iso_code'].'-'.$location['state'];
+    //     $state = $this->getStateByCode($state_code);
+    //     $mobile_code = $this->getMobileCodeByIso($location['iso_code']);
+    //     $currency = $this->currency();
 
-        \Session::put('currency', $currency);
-        if (!\Session::has('currency')) {
-            \Session::put('currency', 'INR');
-        }
+    //     \Session::put('currency', $currency);
+    //     if (!\Session::has('currency')) {
+    //         \Session::put('currency', 'INR');
+    //     }
 
-        try {
-            $page_controller = new PageController();
+    //     try {
+    //         $page_controller = new PageController();
 
-            return $page_controller->cart();
-        } catch (\Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+    //         return $page_controller->cart();
+    //     } catch (\Exception $ex) {
+    //         return redirect()->back()->with('fails', $ex->getMessage());
+    //     }
+    // }
 
     /*
      * The first request to the cart Page comes here
@@ -110,7 +110,6 @@ class CartController extends BaseCartController
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex->getMessage());
-
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }

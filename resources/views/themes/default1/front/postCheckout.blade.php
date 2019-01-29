@@ -26,9 +26,8 @@ Checkout
     return $randomString;
 }
      $api = new Api($rzp_key, $rzp_secret);
-   
-    $displayCurrency=$content->first()->attributes->currency['currency'];
-    $symbol = $content->first()->attributes->currency['currency'];
+    $displayCurrency = $invoice->currency;
+    $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
     if ($symbol == 'INR'){
 
 

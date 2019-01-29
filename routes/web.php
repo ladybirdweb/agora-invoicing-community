@@ -22,7 +22,7 @@
          * Front end
          */
 
-        Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
+        // Route::match(['get', 'post'], 'home', 'Front\CartController@productList');
 
         Route::get('pricing', 'Front\CartController@cart');
         Route::get('group/{templateid}/{groupid}/', 'Front\PageController@pageTemplates');

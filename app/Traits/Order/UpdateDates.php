@@ -52,9 +52,9 @@ trait UpdateDates
     public function editUpdateDateInAPL($orderId,$expiryDate,$licenseSupportExpiry)
     {
         $order = Order::find($orderId);
-        $licenseExpiry =  Carbon::parse($licenseSupportExpiry->ends_at)->format('Y-m-d');
-        $supportExpiry = Carbon::parse($licenseSupportExpiry->support_ends_at)->format('Y-m-d');
-        $expiryDate = Carbon::parse($expiryDate)->format('Y-m-d');
+        $licenseExpiry =  $licenseSupportExpiry->ends_at ? Carbon::parse($licenseSupportExpiry->ends_at)->format('Y-m-d') :'';
+        $supportExpiry = $licenseSupportExpiry->support_ends_at ? Carbon::parse($licenseSupportExpiry->support_ends_at)->format('Y-m-d') : '';
+        $expiryDate = $expiryDate ? Carbon::parse($expiryDate)->format('Y-m-d') :'';
         $cont = new \App\Http\Controllers\License\LicenseController();
         $updateLicensedDomain = $cont->updateExpirationDate($order->serial_key, $expiryDate, $order->product,$order->domain, $order->number,$licenseExpiry,$supportExpiry);
     }

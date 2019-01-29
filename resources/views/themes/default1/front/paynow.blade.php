@@ -14,12 +14,7 @@ Checkout
 <?php
 
     $currency = $invoice->currency;
-    if ($currency == 'INR'){
-        $symbol = '₹';
-    }
-    else {
-        $symbol = '$';
-    }
+    $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
 
 ?>
 <div class="container">

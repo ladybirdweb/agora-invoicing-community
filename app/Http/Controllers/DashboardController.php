@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Product\Subscription;
 use App\User;
@@ -23,8 +23,8 @@ class DashboardController extends Controller
     {
         $allowedCurrencies1 = Setting::find(1)->value('default_currency');
         $currency1Symbol = Setting::find(1)->value('default_symbol');
-        $allowedCurrencies2 = Currency::where('dashboard_currency',1)->pluck('code')->first();
-        $currency2Symbol = Currency::where('dashboard_currency',1)->pluck('symbol')->first();
+        $allowedCurrencies2 = Currency::where('dashboard_currency', 1)->pluck('code')->first();
+        $currency2Symbol = Currency::where('dashboard_currency', 1)->pluck('symbol')->first();
         $totalSalesCurrency1 = $this->getTotalSalesInCur1($allowedCurrencies1);
         $totalSalesCurrency2 = $this->getTotalSalesInCur2($allowedCurrencies2);
         $yearlySalesCurrency2 = $this->getYearlySalesCur2($allowedCurrencies2);

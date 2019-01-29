@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Crypt;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use Crypt;
 use Exception;
 use Illuminate\Http\Request;
 

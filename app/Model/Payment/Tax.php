@@ -33,6 +33,6 @@ class Tax extends BaseModel
 
     public function taxClass()
     {
-        return $this->belongsTo('App\Model\Payment\TaxClass','tax_classes_id');
+        return $this->belongsTo('App\Model\Payment\TaxClass', 'tax_classes_id');
     }
 }

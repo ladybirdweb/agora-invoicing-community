@@ -185,7 +185,7 @@ class CartController extends BaseCartController
                              $geoip_state,
                              $geoip_country
                          );
-                          $c_gst = $details['cgst'];
+                        $c_gst = $details['cgst'];
                         $s_gst = $details['sgst'];
                         $i_gst = $details['igst'];
                         $ut_gst = $details['utgst'];

@@ -71,6 +71,20 @@ Edit Widget
 
                     </div>
 
+                    <div class="col-md-4 form-group {{ $errors->has('allow_tweets') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('allow_tweets',Lang::get('message.allow_tweets'),['class'=>'required']) !!}
+                        {!! Form::select('allow_tweets',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
+
+                    </div>
+
+                    <div class="col-md-4 form-group {{ $errors->has('allow_mailchimp') ? 'has-error' : '' }}">
+                        <!-- last name -->
+                        {!! Form::label('allow_mailchimp',Lang::get('message.allow_mailchimp'),['class'=>'required']) !!}
+                        {!! Form::select('allow_mailchimp',[1=>'Yes',0=>'No'],null,['class' => 'form-control']) !!}
+
+                    </div>
+
                     <div class="col-md-4 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('type',Lang::get('message.type')) !!}

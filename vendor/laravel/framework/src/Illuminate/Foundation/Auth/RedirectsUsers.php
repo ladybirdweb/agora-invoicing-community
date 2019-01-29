@@ -14,6 +14,6 @@ trait RedirectsUsers
         if (method_exists($this, 'redirectTo')) {
             return $this->redirectTo();
         }
-      return property_exists($this, 'redirectTo') ? $this->redirectTo : '/home';
+      return property_exists($this, 'redirectTo') ? '/pages/pricing' : '/pages/pricing';
     }
 }

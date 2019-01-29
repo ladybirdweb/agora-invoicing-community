@@ -22,7 +22,7 @@ class SettingsSeeder extends Seeder
             'country'                   => 'IN',
             'default_currency'          => 'USD',
             'default_symbol'            => '$',
-            'website'                   => 'http://www.ladybirdweb.com',
+            'website'                   => 'https://www.ladybirdweb.com',
             'admin_logo'                => 'faveo1.png',
             'fav_icon'                  => 'faveo.png',
             'error_log'                 => 1,

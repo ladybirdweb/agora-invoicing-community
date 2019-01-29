@@ -59,6 +59,10 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.scrollit {
+    overflow:scroll;
+    height:600px;
+}
 </style>
 <h1>
 API Keys
@@ -70,27 +74,31 @@ API Keys
       </ol>
 @stop
 @section('content')
-     <section class="content">
-         <div class="row">
+   
+         
           <div class="box box-primary">
             <div class="box-header">
-              <h3 class="box-title">Striped Full Width Table</h3>
+              <h3 class="box-title">Api Keys Settings</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
                <div id="alertMessage"></div>
+              <div class="scrollit">
+               <div class="col-md-12">
+                <div class="row">
               <table class="table table-striped ">
                 <tr>
                  
                   <th>Options</th>
                   <th>Status</th>
                    <th>Fields</th>
-                  <th>Action</th>
+                  <th style="padding-left: 250px;">Action</th>
                 </tr>
+                  
                 <tr>
                   
-                  <td>License Manager</td>
-                  <td>
+                  <td class="col-md-2">Auto PHP Licenser</td>
+                  <td class="col-md-2">
                     <label class="switch toggle_event_editing">
                           
                          <input type="checkbox" value="{{$status}}"  name="modules_settings" 
@@ -100,41 +108,85 @@ API Keys
  
                   </td>
 
-                  <td class="licenseEmptyField">
+                  <td class="col-md-4 licenseEmptyField">
                   {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',null,['class' => 'form-control secretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api',null,['class' => 'form-control secretHide','disabled'=>'disabled'
+                        ]) !!}
                      
                          
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',null,['class' => 'form-control urlHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api',null,['class' => 'form-control urlHide','disabled'=>'disabled']) !!}
                         
                   </td>
-                  <td class="LicenseField hide">
+                  <td class="col-md-4 LicenseField hide">
                     
                    
                         <!-- last name -->
                         {!! Form::label('lic_api_secret',Lang::get('message.lic_api_secret')) !!}
-                        {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api_secret',$licenseSecret,['class' => 'form-control','id'=>'license_api_secret']) !!}
                          <h6 id="license_apiCheck"></h6>
                          <br/>
                   
                         <!-- last name -->
                         {!! Form::label('lic_api_url',Lang::get('message.lic_api_url')) !!} :
-                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url','style'=>'width:300px']) !!}
+                        {!! Form::text('license_api_url',$licenseUrl,['class' => 'form-control','id'=>'license_api_url']) !!}
                         <h6 id="license_urlCheck"></h6>
                    
-            </td>
-                  <td><button type="submit" class="form-group btn btn-primary" onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+               </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  onclick="licenseDetails()" id="submit"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+
+                <tr>
+                
+                  <td class="col-md-2">Auto Update</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$updateStatus}}"  name="modules_settings" 
+                          class="checkbox3" id="update">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+
+                  <td class="col-md-4 updateEmptyField">
+                  {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('update_api',null,['class' => 'form-control updatesecretHide','disabled'=>'disabled']) !!}
+                     
+                         
+                  
+                        <!-- last name -->
+                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('update_api',null,['class' => 'form-control updateurlHide','disabled'=>'disabled']) !!}
+                        
+                  </td>
+                  <td class="col-md-4 updateField hide">
+                    
+                   
+                        <!-- last name -->
+                        {!! Form::label('update_api_secret',Lang::get('message.lic_api_secret')) !!}
+                        {!! Form::text('update_api_secret',$updateSecret,['class' => 'form-control','id'=>'update_api_secret']) !!}
+                         <h6 id="update_apiCheck"></h6>
+                         <br/>
+                  
+                        <!-- last name -->
+                        {!! Form::label('update_api_url',Lang::get('message.lic_api_url')) !!} :
+                        {!! Form::text('update_api_url',$updateUrl,['class' => 'form-control','id'=>'update_api_url']) !!}
+                        <h6 id="update_urlCheck"></h6>
+                   
+               </td>
+                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary" onclick="updateDetails()" id="submitudpate"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
 
                  <tr>
                  
-                  <td>Google reCAPTCHA</td>
-                  <td>
+                  <td class="col-md-2">Google reCAPTCHA</td>
+                  <td class="col-md-2">
                     <label class="switch toggle_event_editing">
                           
                          <input type="checkbox" value="{{$captchaStatus}}"  name="modules_settings" 
@@ -144,202 +196,205 @@ API Keys
  
                   </td>
 
-                  <td class="captchaEmptyField">
+                  <td class="col-md-4 captchaEmptyField">
                   {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
-                        {!! Form::text('nocaptcha_secret1',null,['class' => 'form-control nocapsecretHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('nocaptcha_secret1',null,['class' => 'form-control nocapsecretHide','disabled'=>'disabled']) !!}
                         <h6 id=""></h6>
                          
                   
                         <!-- last name -->
                         {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
-                        {!! Form::text('nocaptcha_sitekey1',null,['class' => 'form-control siteKeyHide','disabled'=>'disabled','style'=>'width:300px']) !!}
+                        {!! Form::text('nocaptcha_sitekey1',null,['class' => 'form-control siteKeyHide','disabled'=>'disabled']) !!}
                         <h6 id=""></h6>
                   </td>
-                  <td class="captchaField hide">
+                  <td class="col-md-4 captchaField hide">
                     
                    
                         <!-- last name -->
                         {!! Form::label('nocaptcha_secret',Lang::get('message.nocaptcha_secret')) !!}
-                        {!! Form::text('nocaptcha_secret',$secretKey,['class' => 'form-control','id'=>'nocaptcha_secret','style'=>'width:300px']) !!}
+                        {!! Form::text('nocaptcha_secret',$secretKey,['class' => 'form-control','id'=>'nocaptcha_secret']) !!}
                          <h6 id="captcha_secretCheck"></h6>
                          <br/>
                   
                         <!-- last name -->
                         {!! Form::label('nocaptcha_sitekey',Lang::get('message.nocaptcha_sitekey')) !!} :
-                        {!! Form::text('nocaptcha_sitekey',$siteKey,['class' => 'form-control','id'=>'nocaptcha_sitekey','style'=>'width:300px']) !!}
+                        {!! Form::text('nocaptcha_sitekey',$siteKey,['class' => 'form-control','id'=>'nocaptcha_sitekey']) !!}
                         <h6 id="captcha_sitekeyCheck"></h6>
                    
-            </td>
-                  <td><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </td>
+                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary" onclick="captchaDetails()" id="submit2"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                 </tr>
+
+                  <tr>
+                 
+                  <td class="col-md-2">Msg 91(Mobile Verification)</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$mobileStatus}}"  name="mobile_settings" 
+                          class="checkbox4" id="mobile">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                      <td class="col-md-4 mobileverify">
+                    
+                       <input type ="hidden" id="hiddenMobValue" value="{{$mobileauthkey}}">
+                        <!-- last name -->
+                        {!! Form::label('mobile',Lang::get('message.msg91_key')) !!}
+                        {!! Form::text('msg91_auth_key',$mobileauthkey,['class' => 'form-control mobile_authkey','id'=>'mobile_authkey']) !!}
+                         <h6 id="mobile_check"></h6>
+                         <br/>
+                  
+                   
+                  </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+
+   
+
+                
+                <tr>
+                 
+                  <td class="col-md-2">Email Verification</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$emailStatus}}"  name="email_settings" 
+                          class="checkbox5" id="email">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                      <td class="col-md-4 mobileverify">
+                    
+                      <b>Not Available</b>
+                  
+                   
+                  </td>
+                  <td class="col-md-4" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit4"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+
+                <tr>
+                 
+                  <td class="col-md-2">Twitter</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$twitterStatus}}"  name="twitter_settings" 
+                          class="checkbox6" id="twitter">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+               
+                      <td class="col-md-2 twitterverify">
+                        <input type ="hidden" id="hidden_consumer_key" value="{{$twitterKeys->twitter_consumer_key}}">
+                         <input type ="hidden" id="hidden_consumer_secret" value="{{$twitterKeys->twitter_consumer_secret}}">
+                          <input type ="hidden" id="hidden_access_token" value="{{$twitterKeys->twitter_access_token}}">
+                           <input type ="hidden" id="hidden_token_secret" value="{{$twitterKeys->access_tooken_secret}}">
+                        {!! Form::label('consumer_key',Lang::get('message.consumer_key')) !!}
+                        {!! Form::text('consumer_key',$twitterKeys->twitter_consumer_key,['class' => 'form-control consumer_key','id'=>'consumer_key']) !!}
+                         <h6 id="consumer_keycheck"></h6>
+                        
+                  
+                        <!-- last name -->
+                        {!! Form::label('consumer_secret',Lang::get('message.consumer_secret')) !!} 
+                        {!! Form::text('consumer_secret',$twitterKeys->twitter_consumer_secret,['class' => 'form-control consumer_secret','id'=>'consumer_secret']) !!}
+                        <h6 id="consumer_secretcheck"></h6>
+                     
+                  
+                    
+                        {!! Form::label('access_token',Lang::get('message.access_token')) !!}
+                        {!! Form::text('access_token',$twitterKeys->twitter_access_token,['class' => 'form-control access_token','id'=>'access_token']) !!}
+                         <h6 id="access_tokencheck"></h6>
+                       
+                  
+                        
+                        {!! Form::label('token_secret',Lang::get('message.token_secret')) !!} 
+                        {!! Form::text('token_secret',$twitterKeys->access_tooken_secret,['class' => 'form-control token_secret','id'=>'token_secret']) !!}
+                        <h6 id="token_secretcheck"></h6>
+                  
+                   
+                  </td>
+
+                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit5"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+               <tr>
+                 
+                  <td class="col-md-2">Zoho CRM</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$zohoStatus}}"  name="zoho_settings" 
+                          class="checkbox8" id="zoho">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                      <td class="col-md-4 zohoverify">
+                    
+                       <input type ="hidden" id="hidden_zoho_key" value="{{$zohoKey}}">
+                        <!-- last name -->
+                        {!! Form::label('zoho_key',Lang::get('message.zoho_crm')) !!}
+                        {!! Form::text('zoho_key',$zohoKey,['class' => 'form-control zoho_key','id'=>'zoho_key']) !!}
+                         <h6 id="zoho_keycheck"></h6>
+                         <br/>
+                  
+                   
+                  </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit7"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
+
+                  <tr>
+                 
+                  <td class="col-md-2">Razorpay(Payment Gateway)</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$rzpStatus}}"  name="rzp_settings" 
+                          class="checkbox7" id="razorpay">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+               
+                      <td class="col-md-2 rzpverify">
+                        <input type ="hidden" id="hidden_rzp_key" value="{{$rzpKeys->rzp_key}}">
+                         <input type ="hidden" id="hidden_rzp_secret" value="{{$rzpKeys->rzp_secret}}">
+                          <input type ="hidden" id="hidden_apilayer_key" value="{{$rzpKeys->apilayer_key}}">
+                        {!! Form::label('rzp_key',Lang::get('message.rzp_key')) !!}
+                        {!! Form::text('rzp_key',$rzpKeys->rzp_key,['class' => 'form-control rzp_key','id'=>'rzp_key']) !!}
+                         <h6 id="rzp_keycheck"></h6>
+                        
+                  
+                        <!-- last name -->
+                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!} 
+                        {!! Form::text('rzp_secret',$rzpKeys->rzp_secret,['class' => 'form-control rzp_secret','id'=>'rzp_secret']) !!}
+                        <h6 id="rzp_secretcheck"></h6>
+                     
+                  
+                    
+                        {!! Form::label('apilayer_key',Lang::get('message.apilayer_key')) !!}
+                        {!! Form::text('apilayer_key',$rzpKeys->apilayer_key,['class' => 'form-control apilayer_key','id'=>'apilayer_key']) !!}
+                         <h6 id="apilayer_keycheck"></h6>
+                  </td>
+
+                  <td class="col-md-2" style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit6"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
 
 
       
               </table>
+               </div>
+             </div>
+           </div>
             </div>
             <!-- /.box-body -->
           </div>
-      </div>
-  </section>
-<div class="box box-primary">
-
-    <div class="box-header">
-        @if (count($errors) > 0)
-        <div class="alert alert-danger">
-            <strong>Whoops!</strong> There were some problems with your input.<br><br>
-            <ul>
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        @if(Session::has('success'))
-        <div class="alert alert-success alert-dismissable">
-            <i class="fa fa-check"></i>
-            <b>{{Lang::get('message.success')}}!</b>
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('success')}}
-        </div>
-        @endif
-        <!-- fail message -->
-        @if(Session::has('fails'))
-        <div class="alert alert-danger alert-dismissable">
-            <i class="fa fa-ban"></i>
-            <b>{{Lang::get('message.alert')}}!</b> {{Lang::get('message.failed')}}.
-            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-            {{Session::get('fails')}}
-        </div>
-        @endif
-    </div>
-     <div  class="box-body">
- 
-        {!! Form::model($model,['url'=>'apikeys','method'=>'patch']) !!}
-          <tr>
-         <h3 class="box-title" style="margin-top:0px;margin-left: 10px;">{{Lang::get('message.system-api')}}</h3>
-       <button type="submit" class="btn btn-primary pull-right" id="submit" style="margin-top:-40px;
-                        margin-right:15px;"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
-         </tr>
-        
-
-
-
-
-
-   
-
-       
-
-            <div class="col-md-12">
-
-
-               
-                <div class="row">
-
-                    <div class="col-md-6 form-group {{ $errors->has('username') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('rzp_key',Lang::get('message.rzp_key')) !!}
-                        {!! Form::text('rzp_key',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-6 form-group {{ $errors->has('password') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('rzp_secret',Lang::get('message.rzp_secret')) !!}
-                        {!! Form::text('rzp_secret',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-
-
-                </div>
-
-
-
-                <div class="row">
-
-                    <div class="col-md-6 form-group {{ $errors->has('client_id') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('apilayer_key',Lang::get('message.apilayer')) !!}
-                        {!! Form::text('apilayer_key',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    <div class="col-md-6 form-group {{ $errors->has('client_secret') ? 'has-error' : '' }}">
-                        <!-- last name -->
-                        {!! Form::label('zoho_api_key',Lang::get('message.zoho_key')) !!}
-                        {!! Form::text('zoho_api_key',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                </div>
-
-                 <div class="row">
-
-                    <div class="col-md-6 form-group {{ $errors->has('client_id') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('msg91_auth_key',Lang::get('message.msg91key')) !!}
-                        {!! Form::text('msg91_auth_key',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    
-
-                
-
-                    <div class="col-md-6 form-group {{ $errors->has('twitter_consumer_key') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('twitter_consumer_key',Lang::get('message.twitter_consumer_key')) !!}
-                        {!! Form::text('twitter_consumer_key',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    
-
-               
-                    <div class="col-md-6 form-group {{ $errors->has('twitter_consumer_secret') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('twitter_consumer_secret',Lang::get('message.twitter_consumer_secret')) !!}
-                        {!! Form::text('twitter_consumer_secret',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    
-
-               
-
-                    <div class="col-md-6 form-group {{ $errors->has('twitter_access_token') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('twitter_access_token',Lang::get('message.twitter_access_token')) !!}
-                        {!! Form::text('twitter_access_token',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    
-
-               
-                    <div class="col-md-6 form-group {{ $errors->has('twitter_access_token_secret') ? 'has-error' : '' }}">
-                        <!-- first name -->
-                        {!! Form::label('access_tooken_secret',Lang::get('message.twitter_access_tooken_secret')) !!}
-                        {!! Form::text('access_tooken_secret',null,['class' => 'form-control']) !!}
-
-                    </div>
-
-                    
-
-                </div>
-
-
-
-
-            </div>
-
-       
-
-    </div>
-
-</div>
 
 
 {!! Form::close() !!}
@@ -424,7 +479,95 @@ if ($('#License').prop("checked")) {
  };
 
 
- //Google Recaptcha
+
+ //Auto Update
+    $(document).ready(function(){
+
+      var status = $('.checkbox3').val();
+     if(status ==1) {
+     $('#update').prop('checked', true);
+       $('.updateField').removeClass("hide");
+            $('.updateEmptyField').addClass("hide");
+     } else if(status ==0) {
+       $('.updateField').addClass("hide");
+               $('.updateEmptyField').removeClass("hide");
+              
+     }
+      });
+ $('#update_apiCheck').hide();
+   $('#update').change(function () {
+        if ($(this).prop("checked")) {
+            // checked
+           $('#update_api_secret').val();
+                $('#update_api_url').val();
+            $('.updateField').removeClass("hide");
+            $('.updateEmptyField').addClass("hide");
+        }
+        else{
+            $('.updateField').addClass("hide");
+             $('.updatesecretHide').val('');
+                $('.updateurlHide').val('');
+               $('.updateEmptyField').removeClass("hide");
+               
+               
+        }
+    });
+
+function updateDetails(){
+if ($('#update').prop("checked")) {
+          var checkboxvalue = 1;
+          if ($('#update_api_secret').val() == '' ) {
+             $('#update_apiCheck').show();
+             $('#update_apiCheck').html("Please Enter API Secret Key");
+              $('#update_api_secret').css("border-color","red");
+              $('#update_apiCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         if ($('#update_api_url').val() == '' ) {
+            alert('df');
+             $('#update_urlCheck').show();
+             $('#update_urlCheck').html("Please Enter API URL");
+              $('#update_api_url').css("border-color","red");
+              $('#update_urlCheck').css({"color":"red","margin-top":"5px"});
+              return false;
+          }
+         
+    }
+    else{
+          var checkboxvalue = 0;
+         }
+       $("#submitudpate").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");     
+  $.ajax({
+    
+    url : '{{url("updateDetails")}}',
+    type : 'get',
+    data: {
+       "status": checkboxvalue,
+       "update_api_secret": $('#update_api_secret').val(),
+       "update_api_url" :$('#update_api_url').val(),
+      },
+      success: function (response) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+response.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submitudpate").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+                setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+
+
+ });
+ };
+
+
+
+
+
+/**
+ * Google ReCAPTCHA
+ *
+ */
    $(document).ready(function(){
       var status = $('.checkbox2').val();
      if(status ==1) {
@@ -437,7 +580,7 @@ if ($('#License').prop("checked")) {
               
      }
       });
- $('#captcha_secretCheck').hide();
+   $('#captcha_secretCheck').hide();
    $('#captcha').change(function () {
         if ($(this).prop("checked")) {
             // checked
@@ -456,8 +599,8 @@ if ($('#License').prop("checked")) {
         }
     });
 
-function captchaDetails(){
-if ($('#captcha').prop("checked")) {
+ function captchaDetails(){
+ if ($('#captcha').prop("checked")) {
           var checkboxvalue = 1;
           if ($('#nocaptcha_secret').val() =="" ) {
              $('#captcha_secretCheck').show();
@@ -502,7 +645,388 @@ if ($('#captcha').prop("checked")) {
  };
 
 
-//Twitter
+
+
+ <!--------------------------------------------------------------------------------------------->
+  /*
+ *MSG 91
+  */
+   $(document).ready(function (){
+  var mobilestatus =  $('.checkbox4').val();
+    if(mobilestatus ==1)
+     {
+        $('#mobile').prop('checked',true);
+       $('.mobile_authkey').attr('enabled', true);
+     } else if(mobilestatus ==0){
+      $('#mobile').prop('checked',false);
+        $('.mobile_authkey').attr('disabled', true);
+     }
+  });
+ $("#mobile").on('change',function (){
+    if($(this).prop('checked')) {
+      var mobilekey =  $('#hiddenMobValue').val();
+      $('.mobile_authkey').attr('disabled', false);
+       $('#mobile_authkey').val(mobilekey);
+
+     } else {
+        $('.mobile_authkey').attr('disabled', true);
+         $('.mobile_authkey').val('');
+
+
+    }
+ });
+ //Validate and pass value through ajax
+  $("#submit3").on('click',function (){ //When Submit button is checked
+     if ($('#mobile').prop('checked')) {//if button is on
+             var mobilestatus = 1;
+           if ($('#mobile_authkey').val() == "") { //if value is not entered
+            $('#mobile_check').show();
+            $('#mobile_check').html("Please Enter Auth Key");
+            $('#mobile_authkey').css("border-color","red");
+            $('#mobile_check').css({"color":"red","margin-top":"5px"});
+            return false;
+          }
+    } else {
+       $('#mobile_check').html("");
+       $('#mobile_authkey').css("border-color","");
+         var mobilestatus = 0;
+        
+  }
+    $("#submit3").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updatemobileDetails")}}',
+      type : 'get',
+      data: {
+       "status": mobilestatus,
+       "msg91_auth_key": $('#mobile_authkey').val(),
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit3").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+
+
+
+<!------------------------------------------------------------------------------------------------------------------->
+/*
+ * Email Status Setting
+ */
+   $(document).ready(function (){
+  var emailstatus =  $('.checkbox5').val();
+    if(emailstatus ==1)
+     {
+        $('#email').prop('checked',true);
+     } else if(emailstatus ==0){
+      $('#email').prop('checked',false);
+     }
+  });
+   //Validate and pass value through ajax
+  $("#submit4").on('click',function (){ //When Submit button is checked
+    if ($('#email').prop('checked')) {//if button is on
+       var emailstatus = 1;
+      } else {
+         var emailstatus = 0;
+     }
+      $("#submit4").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+     $.ajax ({
+      url: '{{url("updateemailDetails")}}',
+      type : 'get',
+      data: {
+       "status": emailstatus,
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit4").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    });
+   });
+
+<!------------------------------------------------------------------------------------------------------------------->
+/*
+ * Twitter Settings
+ */
+  $(document).ready(function (){
+  var twitterstatus =  $('.checkbox6').val();
+    if(twitterstatus ==1)
+     {
+        $('#twitter').prop('checked',true);
+       $('#consumer_key').attr('enabled', true);
+       $('#consumer_secret').attr('enabled', true);
+       $('#access_token').attr('enabled', true);
+       $('#token_secret').attr('enabled', true);
+
+     } else if(twitterstatus ==0){
+      $('#twitter').prop('checked',false);
+        $('.consumer_key').attr('disabled', true);
+       $('.consumer_secret').attr('disabled', true);
+       $('.access_token').attr('disabled', true);
+       $('.token_secret').attr('disabled', true);
+     }
+  });
+
+   $("#twitter").on('change',function (){
+    if($(this).prop('checked')) {
+      var consumer_key =  $('#hidden_consumer_key').val();
+       var consumer_secret =  $('#hidden_consumer_secret').val();
+        var access_token =  $('#hidden_access_token').val();
+         var token_secret =  $('#hidden_token_secret').val();
+      $('.consumer_key').attr('disabled', false);
+      $('.consumer_secret').attr('disabled', false);
+      $('.access_token').attr('disabled', false);
+      $('.token_secret').attr('disabled', false);
+       $('#consumer_key').val(consumer_key);
+       $('#consumer_secret').val(consumer_secret);
+       $('#access_token').val(access_token);
+       $('#token_secret').val(token_secret);
+
+     } else {
+        $('.consumer_key').attr('disabled', true);
+      $('.consumer_secret').attr('disabled', true);
+      $('.access_token').attr('disabled', true);
+      $('.token_secret').attr('disabled', true);
+       $('#consumer_key').val('');
+       $('#consumer_secret').val('');
+       $('#access_token').val('');
+       $('#token_secret').val('');
+
+
+    }
+ });
+
+    //Validate and pass value through ajax
+  $("#submit5").on('click',function (){ //When Submit button is clicked
+     if ($('#twitter').prop('checked')) {//if button is on
+             var twitterstatus = 1;
+           if ($('#consumer_key').val() == "") { //if value is not entered
+            $('#consumer_keycheck').show();
+            $('#consumer_keycheck').html("Please Enter Twitter Consumer Key");
+            $('#consumer_key').css("border-color","red");
+            $('#consumer_keycheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          } else if ($('#consumer_secret').val() == "") {
+             $('#consumer_secretcheck').show();
+            $('#consumer_secretcheck').html("Please Enter Twitter Consumer Secret");
+            $('#consumer_secret').css("border-color","red");
+            $('#consumer_secretcheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          } else if ($('#access_token').val() == "") {
+             $('#access_tokencheck').show();
+            $('#access_tokencheck').html("Please Enter Twitter Access Token");
+            $('#access_token').css("border-color","red");
+            $('#access_tokencheck').css({"color":"red","margin-top":"5px"});
+             return false;
+          } else if ($('#token_secret').val() == "") {
+             $('#token_secretcheck').show();
+            $('#token_secretcheck').html("Please Enter Twitter Token Secret");
+            $('#token_secret').css("border-color","red");
+            $('#token_secretcheck').css({"color":"red","margin-top":"5px"});
+             return false;
+          }
+    } else {
+       $('#consumer_keycheck').html("");
+       $('#consumer_key').css("border-color","");
+       $('#consumer_secretcheck').html("");
+       $('#consumer_secret').css("border-color","");
+        $('#access_tokencheck').html("");
+       $('#access_token').css("border-color","");
+       $('#token_secretcheck').html("");
+       $('#token_secret').css("border-color","");
+         var twitterstatus = 0;
+  }
+    $("#submit5").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updatetwitterDetails")}}',
+      type : 'get',
+      data: {
+       "status": twitterstatus,
+       "consumer_key": $('#consumer_key').val(),"consumer_secret" : $('#consumer_secret').val() ,
+        "access_token":$('#access_token').val() ,  "token_secret" : $('#token_secret').val()
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit5").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+
+<!----------------------------------------------------------------------------------------------------------------------------->
+
+/*
+ * Razorpay Settings
+ */  
+  $(document).ready(function (){
+  var razorpaystatus =  $('.checkbox7').val();
+    if(razorpaystatus ==1)
+     {
+        $('#razorpay').prop('checked',true);
+       $('#rzp_key').attr('enabled', true);
+       $('#rzp_secret').attr('enabled', true);
+       $('#apilayer_key').attr('enabled', true);
+
+     } else if(razorpaystatus ==0){
+      $('#razorpay').prop('checked',false);
+        $('.rzp_key').attr('disabled', true);
+       $('.rzp_secret').attr('disabled', true);
+       $('.apilayer_key').attr('disabled', true);
+     }
+  });
+
+   $("#razorpay").on('change',function (){
+    if($(this).prop('checked')) {
+      var rzp_key =  $('#hidden_rzp_key').val();
+       var rzp_secret =  $('#hidden_rzp_secret').val();
+        var apilayer_key =  $('#hidden_apilayer_key').val();
+      $('.rzp_key').attr('disabled', false);
+      $('.rzp_secret').attr('disabled', false);
+      $('.apilayer_key').attr('disabled', false);
+       $('#rzp_key').val(rzp_key);
+       $('#rzp_secret').val(rzp_secret);
+       $('#apilayer_key').val(apilayer_key);
+
+     } else {
+        $('.rzp_key').attr('disabled', true);
+      $('.rzp_secret').attr('disabled', true);
+      $('.apilayer_key').attr('disabled', true);
+      $('#rzp_key').val('');
+       $('#rzp_secret').val('');
+       $('#apilayer_key').val('');
+     }
+  });
+
+  //Validate and pass value through ajax
+  $("#submit6").on('click',function (){ //When Submit button is checked
+     if ($('#razorpay').prop('checked')) {//if button is on
+             var rzpstatus = 1;
+           if ($('#rzp_key').val() == "") { //if value is not entered
+            $('#rzp_keycheck').show();
+            $('#rzp_keycheck').html("Please Enter Razorpay Key");
+            $('#rzp_key').css("border-color","red");
+            $('#rzp_keycheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          } else if ($('#rzp_secret').val() == "") {
+             $('#rzp_secretcheck').show();
+            $('#rzp_secretcheck').html("Please Enter Razorpay Secret");
+            $('#rzp_secret').css("border-color","red");
+            $('#rzp_secretcheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          } else if ($('#apilayer_key').val() == "") {
+             $('#apilayer_keycheck').show();
+            $('#apilayer_keycheck').html("Please Enter ApiLayer Access Key");
+            $('#apilayer_key').css("border-color","red");
+            $('#apilayer_keycheck').css({"color":"red","margin-top":"5px"});
+             return false;
+          } 
+    } else {
+       $('#rzp_keycheck').html("");
+       $('#rzp_key').css("border-color","");
+       $('#rzp_secretcheck').html("");
+       $('#rzp_secret').css("border-color","");
+        $('#apilayer_keycheck').html("");
+       $('#apilayer_key').css("border-color","");
+       var rzpstatus = 0;
+  }
+    $("#submit6").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updaterzpDetails")}}',
+      type : 'get',
+      data: {
+       "status": rzpstatus,
+       "rzp_key": $('#rzp_key').val(),"rzp_secret" : $('#rzp_secret').val() ,
+        "apilayer_key":$('#apilayer_key').val() },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit6").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+
+
+<!---------------------------------------------------------------------------------------------------------------->
+  /*
+ *Zoho
+  */
+   $(document).ready(function (){
+  var zohostatus =  $('.checkbox8').val();
+    if(zohostatus ==1)
+     {
+        $('#zoho').prop('checked',true);
+       $('.zoho_key').attr('enabled', true);
+     } else if(zohostatus ==0){
+      $('#zoho').prop('checked',false);
+        $('.zoho_key').attr('disabled', true);
+     }
+  });
+ $("#zoho").on('change',function (){
+    if($(this).prop('checked')) {
+      var zohokey =  $('#hidden_zoho_key').val();
+      $('.zoho_key').attr('disabled', false);
+       $('#zoho_key').val(zohokey);
+
+     } else {
+        $('.zoho_key').attr('disabled', true);
+         $('.zoho_key').val('');
+
+
+    }
+ });
+ //Validate and pass value through ajax
+  $("#submit7").on('click',function (){ //When Submit button is checked
+     if ($('#zoho').prop('checked')) {//if button is on
+             var zohostatus = 1;
+           if ($('#zoho_key').val() == "") { //if value is not entered
+            $('#zoho_keycheck').show();
+            $('#zoho_keycheck').html("Please Enter Zoho Key");
+            $('#zoho_key').css("border-color","red");
+            $('#zoho_keycheck').css({"color":"red","margin-top":"5px"});
+            return false;
+          }
+    } else {
+       $('#zoho_keycheck').html("");
+       $('#zoho_key').css("border-color","");
+         var zohostatus = 0;
+        
+  }
+    $("#submit7").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updatezohoDetails")}}',
+      type : 'get',
+      data: {
+       "status": zohostatus,
+       "zoho_key": $('#zoho_key').val(),
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit7").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
 
 </script>
 @stop

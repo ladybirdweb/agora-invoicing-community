@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Github\GithubApiController;
+use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Github\Github;
 use App\Model\Order\Invoice;
@@ -85,9 +86,7 @@ class ClientController extends BaseClientController
                                 $date = $model->created_at;
 
                                 return $date;
-                                // $myobject->created_at->timezone($this->auth->user()->timezone);
                             })
-                            // ->showColumns('created_at')
                             ->addColumn('total', function ($model) {
                                 return $model->grand_total;
                             })
@@ -129,20 +128,27 @@ class ClientController extends BaseClientController
     {
         try {
             $versions = ProductUpload::where('product_id', $productid)
-            ->select('id', 'product_id', 'version',
-             'title', 'description', 'file', 'created_at')->get();
+            ->select(
+                'id',
+                'product_id',
+                'version',
+                'title',
+                'description',
+                'file',
+                'created_at'
+            )->get();
             $countVersions = count($versions);
             $countExpiry = 0;
             $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
 
             $order_id = $order->id;
-            $endDate = Subscription::select('ends_at')
+            $updatesEndDate = Subscription::select('update_ends_at')
                  ->where('product_id', $productid)->where('order_id', $order_id)->first();
-            if ($endDate) {
+            if ($updatesEndDate) {
                 foreach ($versions as $version) {
                     if ($version->created_at->toDateTimeString()
-               < $endDate->ends_at->toDateTimeString()) {
+                    < $updatesEndDate->update_ends_at) {
                         $countExpiry = $countExpiry + 1;
                     }
                 }
@@ -161,23 +167,22 @@ class ClientController extends BaseClientController
                             ->addColumn('description', function ($versions) {
                                 return ucfirst($versions->description);
                             })
-                            ->addColumn('file', function ($versions) use ($countExpiry, $countVersions,$clientid, $invoiceid, $productid) {
+                            ->addColumn('file', function ($versions) use ($countExpiry, $countVersions, $clientid, $invoiceid, $productid) {
                                 $invoice_id = Invoice::where('number', $invoiceid)->pluck('id')->first();
                                 $order = Order::where('invoice_id', '=', $invoice_id)->first();
                                 $order_id = $order->id;
-                                $getDownloadCondition = Product::where('id', $productid)->value('deny_after_subscription');
-                                $endDate = Subscription::select('ends_at')
+                                $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
+                                $updateEndDate = Subscription::select('update_ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
 
-                                //if product has expiry date ie sunscriptioon is generated
-                                if ($endDate) {
-                                    if ($getDownloadCondition == 1) {//Perpetual download till expiry selected
-                                        $getDownload = $this->whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid);
+                                //if product has Update expiry date ie subscription is generated
+                                if ($updateEndDate) {
+                                    if ($downloadPermission['allowDownloadTillExpiry'] == 1) {//Perpetual download till expiry permission selected
+                                        $getDownload = $this->whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid);
 
                                         return $getDownload;
-                                    } elseif ($getDownloadCondition == 0) {//When download retires after subscription
-
-                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid);
+                                    } elseif ($downloadPermission['allowDownloadTillExpiry'] == 0) {//When download retires after subscription
+                                        $getDownload = $this->whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updateEndDate, $productid, $versions, $clientid, $invoiceid);
 
                                         return $getDownload;
                                     }
@@ -191,11 +196,10 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function whenDownloadTillExpiry($endDate, $productid, $versions, $clientid, $invoiceid)
+    public function whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid)
     {
         if ($versions->created_at->toDateTimeString()
-
-        < $endDate->ends_at->toDateTimeString()) {
+        < $updateEndDate->update_ends_at) {
             return '<p><a href='.url('download/'.$productid.'/'
             .$clientid.'/'.$invoiceid.'/'.$versions->id).
             " class='btn btn-sm btn-primary'><i class='fa fa-download'>
@@ -203,13 +207,12 @@ class ClientController extends BaseClientController
 
        </p>';
         } else {
-            return '<button class="btn btn-primary 
-        btn-sm disabled tooltip">Download <span class="tooltiptext">
-        Please Renew!!</span></button>';
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
         }
     }
 
-    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $endDate, $productid, $versions, $clientid, $invoiceid)
+    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updatesEndDate, $productid, $versions, $clientid, $invoiceid)
     {
         if ($countExpiry == $countVersions) {
             return '<p><a href='.url('download/'.$productid.'/'
@@ -219,9 +222,8 @@ class ClientController extends BaseClientController
 
        </p>';
         } else {
-            return '<button class="btn btn-primary 
-        btn-sm disabled tooltip">Download <span class="tooltiptext">
-        Please Renew!!</span></button>';
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
         }
     }
 
@@ -251,11 +253,11 @@ class ClientController extends BaseClientController
             $link = (array_slice($link, 0, 10, true));
             $order = Order::where('invoice_id', '=', $invoiceid)->first();
             $order_id = $order->id;
-            $orderEndDate = Subscription::select('ends_at')
+            $orderEndDate = Subscription::select('update_ends_at')
                         ->where('product_id', $productid)->where('order_id', $order_id)->first();
             if ($orderEndDate) {
                 foreach ($link as $lin) {
-                    if (strtotime($lin['created_at']) < strtotime($orderEndDate->ends_at)) {
+                    if (strtotime($lin['created_at']) < strtotime($orderEndDate->update_ends_at)) {
                         $countExpiry = $countExpiry + 1;
                     }
                 }
@@ -273,10 +275,10 @@ class ClientController extends BaseClientController
 
                                 return $markdown;
                             })
-                            ->addColumn('file', function ($link) use ($countExpiry,$countVersions,$invoiceid, $productid) {
+                            ->addColumn('file', function ($link) use ($countExpiry, $countVersions, $invoiceid, $productid) {
                                 $order = Order::where('invoice_id', '=', $invoiceid)->first();
                                 $order_id = $order->id;
-                                $orderEndDate = Subscription::select('ends_at')
+                                $orderEndDate = Subscription::select('update_ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
                                 if ($orderEndDate) {
                                     $actionButton = $this->getActionButton($countExpiry, $countVersions, $link, $orderEndDate, $productid);
@@ -355,6 +357,7 @@ class ClientController extends BaseClientController
                             ->rawColumns(['id', 'created_at', 'ends_at', 'product', 'Action'])
                             ->make(true);
         } catch (Exception $ex) {
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
             echo $ex->getMessage();
         }
@@ -393,8 +396,10 @@ class ClientController extends BaseClientController
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($user->country);
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.front.clients.profile',
-             compact('user', 'timezones', 'state', 'states', 'bussinesses'));
+            return view(
+                'themes.default1.front.clients.profile',
+                compact('user', 'timezones', 'state', 'states', 'bussinesses')
+            );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 
@@ -435,8 +440,10 @@ class ClientController extends BaseClientController
             $licenseStatus = StatusSetting::pluck('license_status')->first();
             $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-order',
-                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus'));
+            return view(
+                'themes.default1.front.clients.show-order',
+                compact('invoice', 'order', 'user', 'plan', 'product', 'subscription', 'licenseStatus')
+            );
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

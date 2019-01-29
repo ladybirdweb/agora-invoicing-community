@@ -11,7 +11,7 @@
 		  <div class="form-group {{ $errors->has('domain') ? 'has-error' : '' }}">
                     <!-- name -->
                     {!! Form::label('domain',Lang::get('message.domain'),['class'=>'required']) !!}
-                    {!! Form::text('domain',null,['class' => 'form-control domainss' ,'id'=>'newDomain']) !!}
+                    {!! Form::text('domain',null,['class' => 'form-control domainss' ,'id'=>'newDomain','required'=>'required']) !!}
                            <h6 id ="domaincheck"></h6>
                 </div>
           <div class="form-group">

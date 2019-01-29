@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Order;
 
+use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
@@ -87,22 +88,37 @@ class RenewController extends BaseRenewController
             $plan = $this->plan->find($planid);
             $days = $plan->days;
             $sub = $this->sub->find($id);
-            $clientEmail = $sub->user->email;
-            $current = $sub->ends_at;
-            $ends = $this->getExpiryDate($current, $days);
-            $sub->ends_at = $ends;
+
+            $permissions = LicensePermissionsController::getPermissionsForProduct($sub->product_id);
+            $licenseExpiry = $this->getExpiryDate($permissions['generateLicenseExpiryDate'], $sub, $days);
+            $updatesExpiry = $this->getUpdatesExpiryDate($permissions['generateUpdatesxpiryDate'], $sub, $days);
+            $supportExpiry = $this->getSupportExpiryDate($permissions['generateSupportExpiryDate'], $sub, $days);
+            $sub->ends_at = $licenseExpiry;
+            $sub->update_ends_at = $updatesExpiry;
+            $sub->support_ends_at = $supportExpiry;
             $sub->save();
-            $checkIfProductHasExpiryDate = $sub->product->perpetual_license; //Check if product has Perpetual License
+
             $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1 && $checkIfProductHasExpiryDate == 1) {
-                $expiryDate = Carbon::parse($ends)->format('Y-m-d');
-                $cont = new \App\Http\Controllers\License\LicenseController();
-                $updateLicensedDomain = $cont->updateExpirationDate($clientEmail, $expiryDate);
+            if ($licenseStatus == 1) {
+                $this->editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry);
             }
             $this->removeSession();
         } catch (Exception $ex) {
             throw new Exception($ex->getMessage());
         }
+    }
+
+    public function editDateInAPL($sub, $updatesExpiry, $licenseExpiry, $supportExpiry)
+    {
+        $productId = $sub->product_id;
+        $domain = $sub->order->domain;
+        $orderNo = $sub->order->number;
+        $licenseCode = $sub->order->serial_key;
+        $expiryDate = $updatesExpiry ? Carbon::parse($updatesExpiry)->format('Y-m-d') : '';
+        $licenseExpiry = $licenseExpiry ? Carbon::parse($licenseExpiry)->format('Y-m-d') : '';
+        $supportExpiry = $supportExpiry ? Carbon::parse($supportExpiry)->format('Y-m-d') : '';
+        $cont = new \App\Http\Controllers\License\LicenseController();
+        $updateLicensedDomain = $cont->updateExpirationDate($licenseCode, $expiryDate, $productId, $domain, $orderNo, $licenseExpiry, $supportExpiry);
     }
 
     //Tuesday, June 13, 2017 08:06 AM
@@ -202,6 +218,9 @@ class RenewController extends BaseRenewController
         }
     }
 
+    /*
+        Renew From Admin Panel
+     */
     public function renew($id, Request $request)
     {
         $this->validate($request, [
@@ -228,6 +247,11 @@ class RenewController extends BaseRenewController
         }
     }
 
+    /**
+     * Show the Renew Page from by clicking onRenew in All Orders (Admin Panel).
+     *
+     * @param int $id Subscription id for the order
+     */
     public function renewForm($id)
     {
         try {
@@ -288,14 +312,37 @@ class RenewController extends BaseRenewController
         return $res;
     }
 
-    public function getExpiryDate($end, $days)
+    //Update License Expiry Date
+    public function getExpiryDate($permissions, $sub, $days)
     {
-        $date = Carbon::parse($end);
-        $expiry_date = $date->addDay($days);
-        $licenseStatus = StatusSetting::pluck('license_status')->first();
-        if ($licenseStatus == 1) {
-            $cont = new \App\Http\Controllers\License\LicenseController();
-            // $createNewLicense = $cont->updateExpirationDate($orderid, $product, $user_id, $ends_at);
+        $expiry_date = '';
+        if ($days > 0 && $permissions == 1) {
+            $date = \Carbon\Carbon::parse($sub->ends_at);
+            $expiry_date = $date->addDays($days);
+        }
+
+        return $expiry_date;
+    }
+
+    //Update Updates Expiry Date
+    public function getUpdatesExpiryDate($permissions, $sub, $days)
+    {
+        $expiry_date = '';
+        if ($days > 0 && $permissions == 1) {
+            $date = \Carbon\Carbon::parse($sub->update_ends_at);
+            $expiry_date = $date->addDays($days);
+        }
+
+        return $expiry_date;
+    }
+
+    //Update Support Expiry Date
+    public function getSupportExpiryDate($permissions, $sub, $days)
+    {
+        $expiry_date = '';
+        if ($days > 0 && $permissions == 1) {
+            $date = \Carbon\Carbon::parse($sub->support_ends_at);
+            $expiry_date = $date->addDays($days);
         }
 
         return $expiry_date;

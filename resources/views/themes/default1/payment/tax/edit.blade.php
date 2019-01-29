@@ -65,11 +65,20 @@ Edit Tax Class
                         {!! Form::text('name',null,['class' => 'form-control']) !!}
 
                     </div>
-                 
+                    <?php
+                    $defaultValue = \App\Model\Payment\TaxClass::pluck('name','id')->toArray();
+                    ?>
                     <div class="col-md-4 form-group {{ $errors->has('tax_class') ? 'has-error' : '' }}">
                         <!-- name -->
                         {!! Form::label('tax_class',Lang::get('Tax Type'),['class'=>'required']) !!}
-                        {!! Form::select('tax_classes_id',[''=>'Select a Class','Tax Type'=>$defaultValue],$classes,['id' => 'editTax','class' => 'form-control']) !!}
+                         <select name="tax_classes_id"  id="editTax"  class="form-control">
+                            <option value="">Choose</option>
+                         @foreach($defaultValue as $key=>$value)
+                             <option value="{{$value}}" <?php  if(in_array($value, $taxClassName) ) { echo "selected";} ?>>{{$value}}</option>
+                           
+                             @endforeach
+                              </select>
+
 
                     </div>
                    
@@ -101,43 +110,25 @@ Edit Tax Class
                     <div class="col-md-4 form-group {{ $errors->has('country') ? 'has-error' : '' }}">
                         
                    <?php $countries = \App\Model\Common\Country::pluck('nicename', 'country_code_char2')->toArray(); ?>
+                  
                         <!-- name -->
                         {!! Form::label('country',Lang::get('message.country')) !!}
+                     {!! Form::select('country',[''=>'Any Country','Countries'=>$countries],null,['class' => 'form-control country hidden']) !!}
+
                        @if($tax['country']=='IN')
                          <input type='text' name="country1" id= "country2" class="form-control country1" value="IN" disabled>
                          @else
                         
                         {!! Form::select('country',[''=>'Any Country','Countries'=>$countries],null,['class' => 'form-control','id'=>'country']) !!}
                         @endif
-
-
-
-                       <!--  {!! Form::select('country',[''=>'Select a Country','Countries'=>$countries],null,['class' => 'form-control country hide','id'=>'country']) !!}
-
- -->
-                         <input type='text' name="country1" id= "country1" class="form-control country1 hide" value="IN" disabled>
-
-
-
-                    </div>
+                       <input type='text' name="country1" id= "country1" class="form-control country1 hide" value="IN" disabled>
+                      </div>
                   
                     <div class="col-md-4 form-group changegststate">
                         <!-- name -->
                         {!! Form::label('state',Lang::get('message.state')) !!}
-                       
-                        <select name="state" id="state-list" class="form-control">
-                            
-                            @if(count($state)>0)
-                            <option value="{{$state['id']}}">{{$state['name']}}</option>
-                            @endif
-                            <option value="">Any State</option>
-                            @if(count($states)>0)
-                            @foreach($states as $key=>$value)
-                            <option value="{{$key}}">{{$value}}</option>
-                            @endforeach
-                            @endif
-                           
-                        </select>
+                         {!! Form::select('state',['Any State'=>'Any State','state'=>$states],null,['class' => 'form-control','id'=>'state-list']) !!}
+                      
 
                     </div>
             
@@ -239,7 +230,6 @@ Edit Tax Class
      $(document).ready(function(){
          var inicial=$('#hiddenvalue').val();
          var taxValue=$('#editTax').val();
-
          if (inicial != 'IN' || taxValue == 0)
       {
          $(document).find('.changegst').hide();
@@ -248,25 +238,18 @@ Edit Tax Class
         
          
       }
-      console.log(inicial);
 if (inicial == 'IN'){
 $(document).find('.changegststate').addClass('hide');
         $(document).find('.changegstrate').addClass('hide');
 
 }
 
-
-         
-    $('#editTax').on('change', function() {
-
-
+  $('#editTax').on('change', function() {
         var val= $(this).val();
-       console.log(val);
-     if (val == 0)
+     if (val == 'Others')
       {
          $(document).find('.changegst').hide();
-
-        $(document).find('#country').removeClass('hide');
+        $(document).find('.country').removeClass('hidden');
         $(document).find('.changegststate').removeClass('hide');
         $(document).find('.changegstrate').removeClass('hide');
         $(document).find('.country1').addClass('hide');
@@ -274,15 +257,14 @@ $(document).find('.changegststate').addClass('hide');
 
          
       }
-      if (val > 0)
-     
-        {
+      else {
              $(document).find('.changegst').show();
              $(document).find('.changegststate').addClass('hide');
              $(document).find('.changegstrate').addClass('hide');
              $(document).find('#country').addClass('hide');
              $(document).find('#country1').removeClass('hide');
              $(document).find('#country2').addClass('hide');
+             $(document).find('.country').removeClass('hidden');
            }
 
     });

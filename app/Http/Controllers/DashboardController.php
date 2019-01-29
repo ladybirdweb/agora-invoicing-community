@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Model\Common\Setting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
+use App\Model\Payment\Currency;
 use App\Model\Product\Subscription;
 use App\User;
 use Carbon\Carbon;
@@ -19,14 +21,18 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        $totalSalesINR = $this->getTotalSalesInInr();
-        $totalSalesUSD = $this->getTotalSalesInUsd();
-        $yearlySalesINR = $this->getYearlySalesInInr();
-        $yearlySalesUSD = $this->getYearlySalesInUsd();
-        $monthlySalesINR = $this->getMonthlySalesInInr();
-        $monthlySalesUSD = $this->getMonthlySalesInUsd();
-        $pendingPaymentINR = $this->getPendingPaymentsInInr();
-        $pendingPaymentUSD = $this->getPendingPaymentsInUsd();
+        $allowedCurrencies1 = Setting::find(1)->value('default_currency');
+        $currency1Symbol = Setting::find(1)->value('default_symbol');
+        $allowedCurrencies2 = Currency::where('dashboard_currency', 1)->pluck('code')->first();
+        $currency2Symbol = Currency::where('dashboard_currency', 1)->pluck('symbol')->first();
+        $totalSalesCurrency1 = $this->getTotalSalesInCur1($allowedCurrencies1);
+        $totalSalesCurrency2 = $this->getTotalSalesInCur2($allowedCurrencies2);
+        $yearlySalesCurrency2 = $this->getYearlySalesCur2($allowedCurrencies2);
+        $yearlySalesCurrency1 = $this->getYearlySalesCur1($allowedCurrencies1);
+        $monthlySalesCurrency2 = $this->getMonthlySalesCur2($allowedCurrencies2);
+        $monthlySalesCurrency1 = $this->getMonthlySalesInCur1($allowedCurrencies1);
+        $pendingPaymentCurrency2 = $this->getPendingPaymentsCur2($allowedCurrencies2);
+        $pendingPaymentCurrency1 = $this->getPendingPaymentsCur1($allowedCurrencies1);
         $users = $this->getAllUsers();
         $count_users = User::get()->count();
         $productNameList = [];
@@ -53,21 +59,18 @@ class DashboardController extends Controller
         $endSubscriptionDate = date('Y-m-d', strtotime('+3 months'));
         $status = $request->input('status');
 
-        return view('themes.default1.common.dashboard', compact('totalSalesINR', 'totalSalesUSD',
-                'yearlySalesINR', 'yearlySalesUSD', 'monthlySalesINR', 'monthlySalesUSD', 'users',
-                'count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices',
-                 'products', 'arrayCountList', 'pendingPaymentINR', 'pendingPaymentUSD', 'status','startSubscriptionDate',
+        return view('themes.default1.common.dashboard', compact('allowedCurrencies1','allowedCurrencies2','currency1Symbol','currency2Symbol','totalSalesCurrency2', 'totalSalesCurrency1', 'yearlySalesCurrency2', 'yearlySalesCurrency1', 'monthlySalesCurrency2', 'monthlySalesCurrency1', 'users','count_users', 'arraylists', 'productSoldlists','orders','subscriptions','invoices', 'products', 'arrayCountList', 'pendingPaymentCurrency2', 'pendingPaymentCurrency1', 'status','startSubscriptionDate',
                  'endSubscriptionDate'));
     }
 
     /**
-     * Get Total Sales in Indian Currency.
+     * Get Total Sales in Allowed Dashboard Currency.
      *
      * @return float
      */
-    public function getTotalSalesInInr()
+    public function getTotalSalesInCur2($allowedCurrencies2)
     {
-        $total = Invoice::where('currency', 'INR')
+        $total = Invoice::where('currency', $allowedCurrencies2)
         ->where('status', '=', 'success')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -76,13 +79,13 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get total sales in US Dollar.
+     * Get total sales in Default Currency.
      *
      * @return float
      */
-    public function getTotalSalesInUsd()
+    public function getTotalSalesInCur1($allowedCurrencies1)
     {
-        $total = Invoice::where('currency', 'USD')
+        $total = Invoice::where('currency', $allowedCurrencies1)
         ->where('status', '=', 'success')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -91,16 +94,16 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get  Total yearly sale of present year IN INR.
+     * Get  Total yearly sale of present year IN Allowed Dashboard Currency.
      *
      * @return type
      */
-    public function getYearlySalesInInr()
+    public function getYearlySalesCur2($allowedCurrencies2)
     {
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)
         ->where('status', '=', 'success')
-        ->where('currency', 'INR')
+        ->where('currency', $allowedCurrencies2)
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -112,12 +115,12 @@ class DashboardController extends Controller
      *
      * @return type
      */
-    public function getYearlySalesInUsd()
+    public function getYearlySalesCur1($allowedCurrencies1)
     {
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)
         ->where('status', '=', 'success')
-        ->where('currency', 'USD')
+        ->where('currency', $allowedCurrencies1)
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
 
@@ -125,16 +128,16 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get  Total Monthly sale of present month in Inr.
+     * Get  Total Monthly sale of present month in Allowed Dashboard Currency.
      *
      * @return type
      */
-    public function getMonthlySalesInInr()
+    public function getMonthlySalesCur2($allowedCurrencies2)
     {
         $currentMonth = date('m');
         $currentYear = date('Y');
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
-                ->where('currency', 'INR')
+                ->where('currency', $allowedCurrencies2)
                 ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -143,17 +146,17 @@ class DashboardController extends Controller
     }
 
     /**
-     * Get  Total Monthly sale of present month in Usd.
+     * Get  Total Monthly sale of present month in System Default Currency.
      *
      * @return type
      */
-    public function getMonthlySalesInUsd()
+    public function getMonthlySalesInCur1($allowedCurrencies1)
     {
         $currentMonth = date('m');
         $currentYear = date('Y');
         // dd($currentYear,$currentMonth );
         $total = Invoice::whereYear('created_at', '=', $currentYear)->whereMonth('created_at', '=', $currentMonth)
-                ->where('currency', 'USD')
+                ->where('currency', $allowedCurrencies1)
                  ->where('status', '=', 'success')
                 ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -166,9 +169,9 @@ class DashboardController extends Controller
      *
      * @return type
      */
-    public function getPendingPaymentsInInr()
+    public function getPendingPaymentsCur2($allowedCurrencies2)
     {
-        $total = Invoice::where('currency', 'INR')
+        $total = Invoice::where('currency', $allowedCurrencies2)
         ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);
@@ -181,9 +184,9 @@ class DashboardController extends Controller
      *
      * @return type
      */
-    public function getPendingPaymentsInUsd()
+    public function getPendingPaymentsCur1($allowedCurrencies1)
     {
-        $total = Invoice::where('currency', 'USD')
+        $total = Invoice::where('currency', $allowedCurrencies1)
         ->where('status', '=', 'pending')
         ->pluck('grand_total')->all();
         $grandTotal = array_sum($total);

@@ -18,7 +18,7 @@ class BaseProductController extends ExtendedBaseProductController
         $server['path'] = dirname($server['path']);
         $server = parse_url($server['path']);
         $server['path'] = dirname($server['path']);
-        $server = 'http://'.$_SERVER['HTTP_HOST'].$server['path'];
+        $server = 'https://'.$_SERVER['HTTP_HOST'].$server['path'];
 
         return $server;
     }
@@ -68,15 +68,21 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function getProductQtyCheck($productid)
+    /*
+    * Get Product Qty if Product can be modified
+     */
+    public function getProductQtyCheck($productid, $planid)
     {
         try {
             $check = self::checkMultiProduct($productid);
             if ($check == true) {
+                $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->product_quantity;
+                $value = $value == null ? 1 : $value;
+
                 return "<div class='col-md-4 form-group'>
 	                        <label class='required'>"./* @scrutinizer ignore-type */
                             \Lang::get('message.quantity')."</label>
-	                        <input type='text' name='quantity' class='form-control' id='quantity' value='1'>
+	                        <input type='text' name='quantity' class='form-control' id='quantity' value='$value'>
 	                </div>";
             }
         } catch (\Exception $ex) {
@@ -86,28 +92,98 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public function getSubscriptionCheck($productid, Request $request)
+    /*
+    * Check whether Product is allowed for Increasing the Quantity fromAdmin Panel
+    * @param int $productid
+    *
+    * @return boolean
+     */
+    public function checkMultiProduct(int $productid)
+    {
+        $product = new Product();
+        $product = $product->find($productid);
+        if ($product) {
+            if ($product->can_modify_quantity == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function getAgentQtyCheck($productid, $planid)
+    {
+        try {
+            $check = self::checkMultiAgent($productid);
+            if ($check == true) {
+                $value = Product::find($productid)->planRelation->find($planid)->planPrice->first()->no_of_agents;
+                $value = $value == null ? 0 : $value;
+
+                return "<div class='col-md-4 form-group'>
+                            <label class='required'>"./* @scrutinizer ignore-type */
+                            \Lang::get('message.agent')."</label>
+                            <input type='text' name='agents' class='form-control' id='agents' value='$value'>
+                    </div>";
+            }
+        } catch (\Exception $ex) {
+            dd($ex);
+            Bugsnag::notifyException($ex);
+
+            return $ex->getMessage();
+        }
+    }
+
+    /*
+    * Check whether No of the GAents can be modified or not fromAdmin Panel
+    * @param int $productid
+    *
+    * @return boolean
+     */
+    public function checkMultiAgent(int $productid)
+    {
+        $product = new Product();
+        $product = $product->find($productid);
+        if ($product) {
+            if ($product->can_modify_agent == 1) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the Subscription and Price Based on the Product Selected while generating Invoice (Admin Panel).
+     *
+     * @param int     $productid
+     * @param Request $request
+     *
+     * @return [type]
+     */
+    public function getSubscriptionCheck(int $productid, Request $request)
     {
         try {
             $controller = new \App\Http\Controllers\Front\CartController();
-            $check = $controller->allowSubscription($productid);
             $field = '';
             $price = '';
-            if ($check === true) {
-                $plan = new Plan();
-                $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
-                $script = ''; //$this->getSubscriptionCheckScript();
+
+            $plan = new Plan();
+            $plans = $plan->where('product', $productid)->pluck('name', 'id')->toArray();
+            if (count($plans) > 0) {//If Plan Exist For A product, Display Dropdown for Plans
                 $field = "<div class='col-md-4 form-group'>
                         <label class='required'>"./* @scrutinizer ignore-type */
                         \Lang::get('message.subscription').'</label>
-                       '.\Form::select('plan', ['' => 'Select', 'Plans' => $plans], null,
-                        ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']).'
-                </div>'.$script;
-            } else {
+                       '.\Form::select(
+                            'plan',
+                            ['' => 'Select', 'Plans' => $plans],
+                            null,
+                            ['class' => 'form-control', 'id' => 'plan', 'onchange' => 'getPrice(this.value)']
+                        ).'
+                </div>';
+            } else {//If No Plan Exist For A Product
                 $userid = $request->input('user');
-                $price = $controller->productCost($productid, $userid);
+                $price = $controller->cost($productid, $userid);
             }
-            $field .= $this->getDescriptionField($productid);
             $result = ['price' => $price, 'field' => $field];
 
             return response()->json($result);
@@ -234,18 +310,25 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
+    /**
+     * Get Price For a Particular Plan Selected.
+     *
+     * get productid,userid,plan id as request
+     *
+     * @return json The final Price of the Prduct
+     */
     public function getPrice(Request $request)
     {
         try {
             $id = $request->input('product');
-            // dd($id);
             $userid = $request->input('user');
             $plan = $request->input('plan');
             $controller = new \App\Http\Controllers\Front\CartController();
             $price = $controller->cost($id, $userid, $plan);
-            $field = $this->getProductField($id).$this->getProductQtyCheck($id);
-
-            $result = ['price' => $price, 'field' => $field];
+            $field = $this->getProductField($id);
+            $quantity = $this->getProductQtyCheck($id, $plan);
+            $agents = $this->getAgentQtyCheck($id, $plan);
+            $result = ['price' => $price, 'field' => $field, 'quantity'=>$quantity, 'agents'=>$agents];
 
             return response()->json($result);
         } catch (\Exception $ex) {
@@ -275,44 +358,40 @@ class BaseProductController extends ExtendedBaseProductController
         }
     }
 
-    public static function checkMultiProduct($productid)
+    /**
+     * Check Whether No. of Agents Allowed or Product Qunatity on cart.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-11T00:18:49+0530
+     *
+     * @param int $productid
+     *
+     * @return bool
+     */
+    public function allowQuantityOrAgent(int $productid)
     {
-        try {
-            $product = new Product();
-            $product = $product->find($productid);
-            if ($product) {
-                // dd($product->multiple_qty == 1);
-                if ($product->multiple_qty == 1) {
-                    return true;
-                }
-            }
+        $product = Product::find($productid);
+        $allowAgents = $product->show_agent == 1 ? true : false;
 
-            return false;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-        }
+        return $allowAgents;
     }
 
-    public function getDescriptionField($productid)
+    /**
+     * Checks Permission for Incresing the no. of Agents/Quantity in Cart.
+     *
+     *
+     * @param int $productid The id of the Product added to the cart
+     *
+     * @return array The permissons for Agents and Quantity
+     */
+    public function isAllowedtoEdit(int $productid)
     {
-        try {
-            $product = Product::find($productid);
-            $field = '';
+        $product = Product::where('id', $productid)->first();
 
-            if ($product->retired == 1) {
-                $field .= "<div class='col-md-4 form-group'>
-	                        <label class='required'>"./* @scrutinizer ignore-type */
-                             \Lang::get('message.description')."</label>
-	                        <textarea name='description' class='form-control'
-                             id='description' placeholder='Description'></textarea>
-	                </div>";
-            }
+        $agentModifyPermission = $product->can_modify_agent;
+        $quantityModifyPermission = $product->can_modify_quantity;
 
-            return $field;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return $ex->getMessage();
-        }
+        return ['agent'=>$agentModifyPermission, 'quantity'=>$quantityModifyPermission];
     }
 }

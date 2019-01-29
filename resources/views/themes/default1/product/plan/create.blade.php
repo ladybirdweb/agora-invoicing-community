@@ -1,6 +1,7 @@
 <div class="modal fade" id="create-plan-option">
     <div class="modal-dialog">
         <div class="modal-content">
+           
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title">Create Plans</h4>
@@ -11,6 +12,7 @@
 
    
     {!! Form::open(['url'=>'plans','method'=>'post','id'=> 'plan']) !!}
+
       <div class="box-body">
 
         <div class="row">
@@ -44,14 +46,17 @@
                       <div class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
-                        <select name="days" value= "Choose" class="form-control" id="plandays" onchange="myFunction()">
+                      <div class="input-group">
+                        <select name="days" value= "Choose" class="form-control" id="plandays">
                              <option value="">Choose</option>
                            @foreach($periods as $key=>$period)
                               <option value={{$key}}>{{$period}}</option>
                           @endforeach
                           </select>
+                           <span class="input-group-addon" id="period"><i class="fa fa-plus"></i></span>
+                        </div>
                            <h6 id="dayscheck"></h6>
-                   
+                    
                         <!-- {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!} -->
                          </div>
 
@@ -94,6 +99,8 @@
                                                 <h6 id= "currencycheck2"></h6>
 
                                             </td>
+
+
                                          
                                         </tr>
                                         @endforeach
@@ -104,9 +111,29 @@
                         </table>
                       
                     </div>
-
+                        <div class="col-md-12 form-group">
+                        <!-- last name -->
+                        {!! Form::label('description','Price Description') !!}
+                        {!! Form::text("price_description",null,['class' => 'form-control' ,'placeholder'=>'Enter Price Description to be Shown on Pricing Page. eg: Yearly,Monthly,One-Time']) !!}
+                           <h6 id="dayscheck"></h6>
                     
+                        <!-- {!! Form::select('days',[''=>'Select','Periods'=>$periods],null,['class' => 'form-control','id'=>'plandays']) !!} -->
+                         </div>
+                       
+                        <div class="col-md-6 form-group">
+                        <!-- last name -->
+                        {!! Form::label('product_quantity','Product Quantity') !!}
+                        {!! Form::number("product_quantity",null,['class' => 'form-control','disabled'=>'disabled','id'=>'prodquant','placeholder'=>'Pricing for No. of Products']) !!}
                     
+                         </div>
+                        
+                        <div class="col-md-6 form-group">
+                        <!-- last name -->
+                        <label data-toggle="tooltip" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents">
+                         {!! Form::label('agents','No. of Agents') !!}</label>
+                        {!! Form::number("no_of_agents",null,['class' => 'form-control' ,'disabled'=>'disabled','id'=>'agentquant','placeholder'=>'Pricing for No. of Agents']) !!}
+                    
+                         </div>
 
 
                 </div>
@@ -136,24 +163,54 @@
 
 
 <script>
-   function myFunction(){
-    var period = document.getElementById('plandays').value;
-   if (period == 365){
+  /**
+   * Add Periods In the same Modal as Create Plan
+   *
+   * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+   *
+   * @date   2019-01-08T10:35:38+0530
+   *
+   */
+  $(function(){
+      $("#period").on('click',function(){
+        $("#period-modal-show").modal();
+      })
+      $('.save-periods').on('click',function(){
+        $("#submit1").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+        $.ajax ({
+          type : 'POST',
+          url: "{{url('postInsertPeriod')}}",
+          data : { "name": $('#new-period').val(),
+                    "days": $('#new-days').val()},
+          success:  function(data){
+            $('#plandays').append($("<option/>",{
+              value : data.id,
+              text  : data.name,
+            }))
+             $('#new-period').val("");
+              $('#new-days').val("");
+             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>Period Added Successfully</div>';
+              $('#error').hide();
+              $('#alertMessage').show();
+            $('#alertMessage').html(result+ ".");
+            $("#submit1").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+          },
+          error: function (error){
+            var html = '<div class="alert alert-danger"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+            for (key in error.responseJSON.errors) {
+              html += '<li>'+ error.responseJSON.errors[key][0] + '</li>'
+            }
+             html += '</ul></div>';
+             $('#alertMessage').hide();
+             $('#error').show();
+              document.getElementById('error').innerHTML = html;
+              $("#submit1").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+          }
 
-     period = '/ One-Time' ; 
-   }
-    else if (period >= 30 && period < 365){
-    period = '/ Month' ;
-   }
-  else if (period > 365){
-    period= '/ Year';
-  }
-  else{
-    period= '';
-  }
-    $('.periodChange').val(period);
-  
-  }
+        })
+       })
+  })
+
 </script>
 <script>
    function myProduct(){
@@ -163,21 +220,23 @@
             url : "{{url('get-period')}}",
             data: {'product_id':product},
            success: function (data){
-            console.log(data.subscription);
-
-            if(data.subscription != 1 ){
+            if(data.subscription != 1 ){ //Check if Periods to be shown or nor
               $('.plandays').hide();
             }
-            else{
+            else{ 
                $('.plandays').show();
             }
-
-            var sub = data['subscription'];
-           
-           }
-         });
- // console.log(product)
-}
+            if(data.agentEnable != 1) {//Check if Product quantity to be shown or No. of Agents
+              document.getElementById("prodquant").disabled = false;
+              document.getElementById("agentquant").disabled = true;
+             
+            } else if(data.agentEnable == 1){
+               document.getElementById("agentquant").disabled = false;
+               document.getElementById("prodquant").disabled = true;
+                      }
+                     }
+                 });
+             }
 </script>
 
 

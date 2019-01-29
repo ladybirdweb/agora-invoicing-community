@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Http\Request;
@@ -87,11 +89,10 @@ class BaseAuthController extends Controller
      */
     public function requestOtpFromAjax(Request $request)
     {
-        // dd($request->allow());
         $this->validate($request, [
-            'email'  => 'required|email',
-            'code'   => 'required|numeric',
-            'mobile' => 'required|numeric',
+            'verify_email'   => 'sometimes|required|verify_email|email',
+            'verify_email'   => 'sometimes|required||verify_country_code|numeric',
+            'verify_email'   => 'sometimes|required|verify_number|numeric',
         ]);
         $email = $request->oldemail;
         $newEmail = $request->newemail;
@@ -106,23 +107,34 @@ class BaseAuthController extends Controller
             $email = $request->input('email');
             $pass = $request->input('password');
             $number = $code.$mobile;
-
-            $result = $this->sendOtp($mobile, $code);
-            $method = 'POST';
-
-            $this->sendActivation($email, $method, $pass);
-            $response = ['type' => 'success',
-            'message'           => 'Activation link has been sent to '.$email.'.
-            <br>OTP has been sent to '.$number.'.<br>Please enter the 
+            $mobileStatus = StatusSetting::pluck('msg91_status')->first();
+            $companyEmail = Setting::find(1)->company_email;
+            $msg1 = '';
+            $msg2 = '';
+            if ($mobileStatus == 1) {
+                $result = $this->sendOtp($mobile, $code);
+                $msg1 = 'OTP has been sent to '.$number.'.<br>Please enter the 
             OTP received on your mobile No below. Incase you did not recieve OTP,
-            please get in touch with us on <a href="mailto:support@faveohelpdesk.com">
-            support@faveohelpdesk.com</a>', ];
+            please get in touch with us on <a href="mailto:'.$companyEmail.'>
+            '.$companyEmail.'</a>';
+            }
+            $method = 'POST';
+            $emailStatus = StatusSetting::pluck('emailverification_status')->first();
+            if ($emailStatus == 1) {
+                $this->sendActivation($email, $method, $pass);
+                $msg2 = 'Activation link has been sent to '.$email;
+            }
+
+            $response = ['type' => 'success',
+            'message'           => $msg1.'<br>'.$msg2, ];
 
             return response()->json($response);
         } catch (\Exception $ex) {
+            $response = ['type' => 'fail',
+            'message'           => $ex->getMessage(), ];
             $result = [$ex->getMessage()];
 
-            return response()->json(compact('result'), 500);
+            return response()->json(compact('response'), 500);
         }
     }
 
@@ -156,13 +168,12 @@ class BaseAuthController extends Controller
             $temp_id = $settings->where('id', 1)->first()->welcome_mail;
             $template = $template->where('id', $temp_id)->first();
             $from = $settings->email;
-            // var_dump($temp_id);
-            //  die();
             $to = $user->email;
+            $website_url = url('/');
             $subject = $template->name;
             $data = $template->data;
             $replace = ['name' => $user->first_name.' '.$user->last_name,
-            'username'         => $user->email, 'password' => $str, 'url' => $url, ];
+            'username'         => $user->email, 'password' => $str, 'url' => $url, 'website_url'=>$website_url, ];
             $type = '';
 
             if ($template) {

@@ -106,6 +106,10 @@ Generate An Invoice
           
                 <div id="fields1">
                 </div>
+                 <div id="qty">
+                </div>
+                 <div id="agents">
+                </div>
                 <div id="fields">
                 </div>
 
@@ -118,6 +122,7 @@ Generate An Invoice
                     {!! Form::label('code',Lang::get('message.promotion-code')) !!}
                     {!! Form::text('code',null,['class'=>'form-control']) !!}
                 </div>
+           
                 <div class="col-md-6 form-group">
                     {!! Form::label('send_mail',Lang::get('message.send-mail')) !!}
                     <p>{!! Form::checkbox('client',1) !!} To Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{!! Form::checkbox('agent',1) !!} To Agent</p>
@@ -157,12 +162,16 @@ Generate An Invoice
             data: {'product': product, 'user': user, 'plan': val},
             //data: 'product=' + val+'user='+user,
             success: function (data) {
-
+                
                 var price = data['price'];
                 var field = data['field'];
+                 var qty = data['quantity'];
+                var agents = data['agents'];
                 //console.log(field);
                 $("#price").val(price);
                 $("#fields").replaceWith(field);
+                $("#qty").replaceWith(qty);
+                $("#agents").replaceWith(agents);
             }
         });
     }
@@ -172,12 +181,15 @@ Generate An Invoice
             type: "GET",
             url: "{{url('get-subscription')}}" + '/' + val,
             success: function (data) {
-
+                console.log(data);
+                   console.log('sds');
                 var price = data['price'];
                 var field = data['field'];
+               
                 
                 $("#price").val(price);
                 $("#fields1").replaceWith(field);
+                
 
             }
         });
@@ -214,7 +226,10 @@ Generate An Invoice
             if ($('#quantity').length > 0) {
                 var quantity = document.getElementsByName('quantity')[0].value;
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&quantity=' + quantity + '&user=' + user;
-            } else {
+            } else if ($('#agents').length > 0) {
+                 var agents = document.getElementsByName('agents')[0].value;
+                 var data = $("#formoid").serialize() + '&domain=' + domain + '&agents=' + agents + '&user=' + user;
+            } else{
                 var data = $("#formoid").serialize() + '&domain=' + domain + '&user=' + user;
             }
         } else {

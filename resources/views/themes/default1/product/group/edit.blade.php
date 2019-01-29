@@ -4,9 +4,15 @@
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
-            @if (count($errors) > 0)
+
+
+            <div class="box-body">
+                {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch']) !!}
+
+                <div class="box-header">
+                                @if (count($errors) > 0)
             <div class="alert alert-danger">
                 <strong>Whoops!</strong> There were some problems with your input.<br><br>
                 <ul>
@@ -34,13 +40,8 @@
                 {{Session::get('fails')}}
             </div>
             @endif
-
-            <div class="box-body">
-                {!! Form::model($group,['url'=>'groups/'.$group->id,'method'=>'patch']) !!}
-
-                <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
-                    {!! Form::submit(Lang::get('message.save'),['class'=>'btn btn-primary pull-right'])!!}
+                    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 </div>
 
                 <table class="table table-condensed">
@@ -54,7 +55,7 @@
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('name',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -72,7 +73,7 @@
                             <div class="form-group {{ $errors->has('headline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('headline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -89,7 +90,7 @@
                             <div class="form-group {{ $errors->has('tagline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('tagline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -99,42 +100,7 @@
                         </td>
 
                     </tr>
-                    <tr>
 
-                        <td><b>{!! Form::label('features',Lang::get('message.features'),['class'=>'required']) !!}</b></td>
-                        <td>
-
-                            <div class="form-group {{ $errors->has('features.0.name') ? 'has-error' : '' }}">
-
-
-
-                                <div class="input_fields_wrap ">
-                                    <div class='row form-group'>
-
-                                        <div class="col-md-6 ">
-                                            <div class="form-group">
-                                                <input type="text" name="features[][name]" class="form-control" value="{{$features[0]->features}}">
-                                            </div>
-                                            @for($i=1;$i<count($features);$i++)
-                                                <div class="form-group">
-                                                    <input type="text" name="features[][name]" class="form-control" value="{{$features[$i]->features}}">
-                                                    <a href="#" class="remove_field">Remove</a>
-                                                </div>
-                                                @endfor
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a href="#" class="add_field_button btn btn-primary">Add More Features</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
 
 
                     <tr>
@@ -143,16 +109,16 @@
                         <td>
                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
 
-                                <?php
-                                $hidden = $group->hidden;
-                                if ($hidden == 1) {
-                                    $value = true;
-                                } else {
-                                    $value = '';
-                                }
-                                ?>
+                                                {!! Form::hidden('hidden', 0) !!}
+                                                <?php 
+                                                $value=  "";
+                                                if($group->hidden==1){
+                                                 $value = 'true';   
+                                                }
+                                                ?>
+                                                <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
 
-                                <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
+                               
 
 
                             </div>
@@ -161,34 +127,18 @@
                     </tr>
 
                     <tr>
-
+                     <td><b>{!! Form::label('link',Lang::get('message.group_link')) !!}</b></td>
                         <td>
+                            <div class="form-group">
 
-                            <div class="box-header">
-                                <h3 class="box-title">{{Lang::get('message.configurable-options')}}</h3>
-                            </div>
 
-                        </td>
-
-                        <td>
-
-                        </td>
-
-                    </tr>
-
-                    <tr>
-
-                        <td><b>{!! Form::label('title',Lang::get('message.title'),['class'=>'required']) !!}</b></td>
-
-                        <td>
-                            <div class="form-group {{ $errors->has('title') ? 'has-error' : '' }}">
-
-                                <div class='row'>
-                                    <div class="col-md-6">
-                                        {!! Form::text('title',$title,['class' => 'form-control']) !!}
+                                 <div class='row'>
+                                    <div class="col-md-10">
+                                        {!! Form::text('cart_link',null,['class' => 'form-control','id'=>'groupslug']) !!}
                                     </div>
 
                                 </div>
+
 
                             </div>
                         </td>
@@ -196,89 +146,32 @@
                     </tr>
 
                     <tr>
-
-                        <td><b>{!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}</b></td>
-
+                          
+                        <td><b>{!! Form::label('design',Lang::get('message.select_design')) !!}</b></td>
                         <td>
-                            <div class="form-group {{ $errors->has('type') ? 'has-error' : '' }}">
 
-                                <div class='row'>
-                                    <div class="col-md-6">
-                                        {!! Form::select('type',[''=>'select a type','1'=>'dropdown','2'=>'radio'],$type,['class' => 'form-control','id'=>'type']) !!}
-                                    </div>
+                           <div class="form-group">
+                            @foreach($pricingTemplates as $template)
+                            <div class="col-md-4">
+                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <br/>
+                             @if($template->id == $selectedTemplate)
+                             <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" checked style="text-align: center;">
+                             @else
+                             <input type="radio" id="template" name= 'pricing_templates_id' value="{{$template->id}}" style="text-align: center;">
+                             @endif
+                            {{$template->name}}
 
-                                </div>
-
-                            </div>
+                             <br/><br/>
+                        </div>
+                   
+                            @endforeach
+                            </div> 
                         </td>
 
                     </tr>
 
-                    <tr>
 
-                        <td><b>{!! Form::label('options',Lang::get('message.options')) !!}</b></td>
-
-                        <td>
-                            <div class='row form-group'>
-                                <div class="col-md-4">
-                                    <b>{!! Form::label('value',Lang::get('message.value'),['class'=>'required']) !!}</b>
-
-                                </div>
-                                <div class="col-md-4">
-                                    <b>{!! Form::label('price',Lang::get('message.price'),['class'=>'required']) !!}</b>
-
-                                </div>
-                            </div>
-
-
-
-
-                            <div class="input_fields_wrap2">
-
-
-                                <div class='row'>
-
-                                    <div class="col-md-4 form-group">
-
-                                        <input type="text" name="value[][name]" class="form-control" value="{{ $configs[0]->options }}">
-                                    </div>
-                                    <div class="col-md-4 form-group">
-
-                                        <input type="text" name="price[][name]" class="form-control" value="{{ $configs[0]->price }}">
-                                    </div>
-                                    <div class="col-md-4 form-group">
-
-                                        <a href="#" class="add_field_button2 btn btn-primary">Add More Options</a>
-                                    </div>
-                                    @for($i=1;$i<count($configs); $i++)
-
-
-                                      <div class="form-group">
-                                   
-                                        <div class="col-md-4">
-
-                                            <input type="text" name="value[][name]" class="form-control" value="{{ $configs[$i]->options }}">
-                                        </div>
-                                        <div class="col-md-4">
-
-                                            <input type="text" name="price[][name]" class="form-control" value="{{ $configs[$i]->price }}">
-                                        </div>
-                                        
-                                        <a href="#" class="remove_field2">Remove</a>
-                                       
-                                        
-                                   
-                                </div>
-                                
-                                    @endfor
-
-                                </div>
-
-                                
-
-                        </td>
-
-                    </tr>
 
                     {!! Form::close() !!}
                 </table>
@@ -319,6 +212,8 @@ $(document).ready(function () {
         x--;
     })
 });
+
+
 </script>
 
 <script>

@@ -298,7 +298,7 @@ class TemplateController extends BaseTemplateController
                 }
             });
             \DB::table('email_log')->insert([
-                'date' => date('Y-m-d H:i:s'),
+            'date'     => date('Y-m-d H:i:s'),
             'from'     => $from,
             'to'       => $to,
              'subject' => $subject,
@@ -353,7 +353,6 @@ class TemplateController extends BaseTemplateController
         $plan_form = 'Free'; //No Subscription
         $plans = $plan->where('product', '=', $id)->pluck('name', 'id')->toArray();
         $plans = $this->prices($id);
-        // $planName = Plan::where()
         if ($plans) {
             $plan_form = \Form::select('subscription', ['Plans' => $plans], null);
         }
@@ -368,68 +367,18 @@ class TemplateController extends BaseTemplateController
     {
         try {
             $cost = 'Free';
-            $symbol = '';
             $price = '';
             $plan = new Plan();
             $plans = $plan->where('product', $id)->get();
             $cart_controller = new \App\Http\Controllers\Front\CartController();
             $currencyAndSymbol = $cart_controller->currency();
-            $currency = $currencyAndSymbol['currency'];
-            $symbol = $currencyAndSymbol['symbol'];
             $prices = [];
-            $priceVal[] = [];
             if ($plans->count() > 0) {
                 foreach ($plans as $value) {
-                    $days = $value->min('days');
-                    $month = round($days / 30);
-                    $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
+                    $prices[] = $value->planPrice()->where('currency', $currencyAndSymbol['currency'])->min('add_price');
                 }
-                foreach ($prices as $key => $value) {
-                    $duration = $this->getDuration($value);
-                    $priceVal[] = intval($value);
-                }
-                $price = min($priceVal).' '.$duration;
-                $cost = "$symbol$price";
-            } else {
-                $cost = 'Free';
-            }
-
-            return $cost;
-        } catch (\Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    public function leastAmountService($id)
-    {
-        try {
-            $cost = 'Free';
-            $symbol = '';
-            $price = '';
-            $plan = new Plan();
-            $plans = $plan->where('product', $id)->get();
-            $cart_controller = new \App\Http\Controllers\Front\CartController();
-            $currencyAndSymbol = $cart_controller->currency();
-            $currency = $currencyAndSymbol['currency'];
-            $symbol = $currencyAndSymbol['symbol'];
-            $prices = [];
-            $priceVal[] = [];
-            if ($plans->count() > 0) {
-                foreach ($plans as $value) {
-                    $days = $value->min('days');
-                    $month = round($days / 30);
-                    $prices[] = $value->planPrice()->where('currency', $currency)->min('add_price');
-                }
-                foreach ($prices as $key => $value) {
-                    $duration = $this->getDuration($value);
-                    $priceVal[] = intval($value);
-                }
-                $price = min($priceVal).' '.$duration;
-                $cost = "$symbol$price";
-            } else {
-                $cost = 'Free';
+                $price = min($prices);
+                $cost = '<span class="price-unit">'.$currencyAndSymbol['symbol'].'</span>'.$price;
             }
 
             return $cost;

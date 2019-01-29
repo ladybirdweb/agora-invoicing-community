@@ -83,7 +83,7 @@ Edit Plan
                    <div class="col-md-4 form-group plandays {{ $errors->has('days') ? 'has-error' : '' }}">
                         <!-- last name -->
                         {!! Form::label('days','Periods',['class'=>'required']) !!}
-                      <select name="days" id="plan" class="form-control" onchange="myFunction()">
+                      <select name="days" id="plan" class="form-control">
                           <option value="">Choose</option>
                              
                             @foreach($periods as $key=>$period)
@@ -143,11 +143,30 @@ Edit Plan
                                     </table>
 
                                 </td>
-                            </tr>
+                            </tr>  
                         </table>
-                    </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                        <!-- last name -->
+                        {!! Form::label('description','Price Description') !!}
+                        {!! Form::text("price_description",$priceDescription,['class' => 'form-control' ,'placeholder'=>'Enter Price Description to be Shown on Pricing Page. eg: Yearly,Monthly,One-Time']) !!}
+                           <h6 id="dayscheck"></h6>
                     
-                  
+                         </div>
+                        <div class="col-md-4 form-group">
+                        <!-- last name -->
+                        {!! Form::label('product_quantity','Product Quantity') !!}
+                        {!! Form::number("product_quantity",$productQunatity,['class' => 'form-control','disabled'=>'disabled','id'=>'prodquant','placeholder'=>'Pricing for No. of Products']) !!}
+                    
+                         </div>
+                        
+                        <div class="col-md-4 form-group">
+                        <!-- last name -->
+                        <label data-toggle="tooltip" data-placement="top" title="If '0' Agents Selected, Plan will be for Unlimited Agents">
+                         {!! Form::label('agents','No. of Agents') !!}</label>
+                        {!! Form::number("no_of_agents",$agentQuantity,['class' => 'form-control' ,'disabled'=>'disabled','id'=>'agentquant','placeholder'=>'Pricing for No. of Agents']) !!}
+                    
+                         </div>
 
 
                 </div>
@@ -168,46 +187,27 @@ Edit Plan
 {!! Form::close() !!}
 
 <script>
-   function myFunction(){
-    var period = document.getElementById('plan').value;
-   if (period == 365){
-
-     period = '/One-Time' ; 
-   }
-    else if (period >= 30 && period < 365){
-    period = '/Month' ;
-   }
-  else if (period > 365){
-    period= '/Year';
-  }
-  else{
-    period= '';
-  }
-    $('.periodChange').val(period);
-  
-  }
-</script>
-<script>
     $( document ).ready(function() {
-
          var product = document.getElementById('planproduct').value;
-         // console.log(product)
          $.ajax({
             type: 'get',
             url : "{{url('get-period')}}",
             data: {'product_id':product},
            success: function (data){
-            console.log(data.subscription);
-
             if(data.subscription != 1 ){
               $('.plandays').hide();
             }
             else{
                $('.plandays').show();
             }
-
-            var sub = data['subscription'];
-           
+            if(data.agentEnable != 1) {//Check if Product quantity to be sh`own or No. of Agents
+              document.getElementById("prodquant").disabled = false;
+              document.getElementById("agentquant").disabled = true;
+             
+            } else if(data.agentEnable == 1){
+               document.getElementById("agentquant").disabled = false;
+               document.getElementById("prodquant").disabled = true;
+            }
            }
          });
  // console.log(product)
@@ -232,12 +232,19 @@ Edit Plan
             else{
                $('.plandays').show();
             }
+            if(data.agentEnable != 1) {//Check if Product quantity to be shown or No. of Agents
+              document.getElementById("prodquant").disabled = false;
+              document.getElementById("agentquant").disabled = true;
+             
+            } else if(data.agentEnable == 1){
+               document.getElementById("agentquant").disabled = false;
+               document.getElementById("prodquant").disabled = true;
+            }
 
             var sub = data['subscription'];
            
            }
          });
- // console.log(product)
 }
 </script>
 

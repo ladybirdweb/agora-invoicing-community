@@ -104,7 +104,7 @@ class WidgetController extends Controller
             'name'    => 'required',
             'publish' => 'required',
             // 'content' => 'required',
-            'type'    => 'required|unique:widgets',
+            'type'    => 'required',
         ]);
 
         try {

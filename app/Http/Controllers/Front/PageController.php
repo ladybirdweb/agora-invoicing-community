@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Front;
 
+use App\DefaultPage;
+use App\Model\Common\PricingTemplate;
 use App\Model\Front\FrontendPage;
+use App\Model\Product\ProductGroup;
 use Bugsnag;
 use Illuminate\Http\Request;
 
@@ -12,8 +15,8 @@ class PageController extends GetPageTemplateController
 
     public function __construct()
     {
-        $this->middleware('auth');
-        $this->middleware('admin');
+        // $this->middleware('auth');
+        // $this->middleware('admin');
 
         $page = new FrontendPage();
         $this->page = $page;
@@ -36,8 +39,7 @@ class PageController extends GetPageTemplateController
             return $location;
         } catch (Exception $ex) {
             app('log')->error($ex->getMessage());
-            Bugsnag::notifyException($ex);
-            $error = $ex->getMessage();
+            Bugsnag::notifyException($ex->getMessage());
             $location = \Config::get('geoip.default_location');
 
             return $location;
@@ -96,8 +98,14 @@ class PageController extends GetPageTemplateController
         try {
             $page = $this->page->where('id', $id)->first();
             $parents = $this->page->where('id', '!=', $id)->pluck('name', 'id')->toArray();
+            $selectedDefault = DefaultPage::value('page_id');
+            $date = $this->page->where('id', $id)->pluck('created_at')->first();
+            $publishingDate = date('d/m/Y', strtotime($date));
+            $selectedParent = $this->page->where('id', $id)->pluck('parent_page_id')->toArray();
+            $parentName = $this->page->where('id', $selectedParent)->pluck('name', 'id')->toArray();
 
-            return view('themes.default1.front.page.edit', compact('parents', 'page'));
+            return view('themes.default1.front.page.edit', compact('parents', 'page', 'default', 'selectedDefault', 'publishingDate','selectedParent',
+                'parentName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -128,16 +136,23 @@ class PageController extends GetPageTemplateController
     public function update($id, Request $request)
     {
         $this->validate($request, [
-            'name'    => 'required',
-            'publish' => 'required',
-            'slug'    => 'required',
-            'url'     => 'required',
-            'content' => 'required',
+            'name'           => 'required',
+            'publish'        => 'required',
+            'slug'           => 'required',
+            'url'            => 'required',
+            'content'        => 'required',
+            'default_page_id'=> 'required',
+            'created_at'     => 'required',
         ]);
 
         try {
             $page = $this->page->where('id', $id)->first();
-            $page->fill($request->input())->save();
+            $page->fill($request->except('created_at'))->save();
+            $date = \DateTime::createFromFormat('d/m/Y', $request->input('created_at'));
+            $page->created_at = $date->format('Y-m-d H:i:s');
+            $page->save();
+            $defaultUrl = $this->page->where('id', $request->input('default_page_id'))->pluck('url')->first();
+            DefaultPage::find(1)->update(['page_id'=>$request->input('default_page_id'), 'page_url'=>$defaultUrl]);
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
@@ -191,7 +206,7 @@ class PageController extends GetPageTemplateController
     {
         try {
             $page = $this->page->where('slug', $slug)->where('publish', 1)->first();
-            if ($page->type == 'cart') {
+            if ($page && $page->type == 'cart') {
                 return $this->cart();
             }
 
@@ -212,14 +227,16 @@ class PageController extends GetPageTemplateController
     {
         try {
             $ids = $request->input('select');
+            $defaultPageId = DefaultPage::pluck('page_id')->first();
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                    $page = $this->page->where('id', $id)->first();
-                    if ($page) {
-                        // dd($page);
-                        $page->delete();
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
+                    if ($id != $defaultPageId) {
+                        $page = $this->page->where('id', $id)->first();
+                        if ($page) {
+                            // dd($page);
+                            $page->delete();
+                        } else {
+                            echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */
@@ -227,10 +244,9 @@ class PageController extends GetPageTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
-                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                    }
-                }
-                echo "<div class='alert alert-success alert-dismissable'>
+                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                        }
+                        echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
 
                     <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
@@ -240,6 +256,16 @@ class PageController extends GetPageTemplateController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
+                    <i class='fa fa-ban'></i>
+                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
+                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
+                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
+                        './* @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default-page').'
+                </div>';
+                    }
+                }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
@@ -298,78 +324,34 @@ class PageController extends GetPageTemplateController
         }
     }
 
-    public function cart()
+    /**
+     * Get Page Template when Group in Store Dropdown is
+     * selected on the basis of Group id.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-10T01:20:52+0530
+     *
+     * @param int $groupid    Group id
+     * @param int $templateid Id of the Template
+     *
+     * @return longtext The Template to be displayed
+     */
+    public function pageTemplates(int $templateid, int $groupid)
     {
         try {
-            $location = $this->getLocation();
-            $country = \App\Http\Controllers\Front\CartController::findCountryByGeoip($location['iso_code']);
-            $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($location['iso_code']);
-            $states = \App\Model\Common\State::pluck('state_subdivision_name', 'state_subdivision_code')->toArray();
-            $state_code = $location['iso_code'].'-'.$location['state'];
-            $state = \App\Http\Controllers\Front\CartController::getStateByCode($state_code);
-            $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($location['iso_code']);
-            $cont = new \App\Http\Controllers\Front\CartController();
+            $cont = new CartController();
             $currency = $cont->currency();
             \Session::put('currency', $currency);
             if (!\Session::has('currency')) {
                 \Session::put('currency', 'INR');
             }
-            $pages = $this->page->find(1);
-            $data = $pages->content;
-            //Helpdesk
-            $product = new \App\Model\Product\Product();
-            $helpdesk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'Helpdesk')
-        ->where('hidden', '=', '0')
-        ->orderBy('created_at', 'asc')
-        ->get()
-        ->toArray();
-            $temp_controller = new \App\Http\Controllers\Common\TemplateController();
+            $data = PricingTemplate::find($templateid)->data;
+            $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)->get(); //Get ALL the Products Related to the Group
             $trasform = [];
-            $template = $this->getHelpdeskTemplate($helpdesk_products, $data, $trasform);
+            $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 
-            //Helpdesk VPS
-            $helpdesk_vps_product = $product->where('id', '!=', 1)
-
-        ->where('category', '=', 'Helpdesk VPS')
-
-        ->where('hidden', '=', '0')
-        ->get()
-        ->toArray();
-            $trasform3 = [];
-            $helpdesk_vps_template = $this->getHelpdeskVpsTemplate($helpdesk_vps_product, $data, $trasform3);
-
-            //ServiceDesk Vps
-            $servicedesk_vps_product = $product->where('id', '!=', 1)
-        ->where('category', '=', 'Servicedesk vps')
-        ->where('hidden', '=', '0')
-        ->get()
-        ->toArray();
-            $trasform4 = [];
-            $servicedesk_vps_template = $this->getServicedeskVpsTemplate($servicedesk_vps_product, $data, $trasform4);
-
-            //servicedesk
-            $sevice_desk_products = $product->where('id', '!=', 1)
-        ->where('category', '=', 'Servicedesk')
-         ->where('hidden', '=', '0')
-        ->orderBy('created_at', 'asc')
-        ->get()
-        ->toArray();
-            $trasform1 = [];
-            $servicedesk_template = $this->getServiceDeskdeskTemplate($sevice_desk_products, $data, $trasform1);
-
-            //Service
-            $service = $product->where('id', '!=', 1)
-        ->where('category', '=', 'Service')
-        ->where('hidden', '=', '0')
-        ->get()
-        ->toArray();
-            $trasform2 = [];
-            $service_template = $this->getServiceTemplate($service, $data, $trasform2);
-
-            return view('themes.default1.common.template.shoppingcart',
-            compact('template', 'trasform', 'servicedesk_template', 'trasform1',
-                'service_template', 'trasform2', 'helpdesk_vps_template', 'trasform3', 'servicedesk_vps_template', 'trasform4'));
+            return view('themes.default1.common.template.shoppingcart', compact('templates'));
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);

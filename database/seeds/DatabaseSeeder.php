@@ -1,10 +1,12 @@
 <?php
 
 use App\ApiKey;
+use App\Model\Common\PricingTemplate;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
+use App\Model\License\LicensePermission;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\Condition;
 use App\Model\Payment\Currency;
@@ -30,9 +32,6 @@ class DatabaseSeeder extends Seeder
     {
         //Model::unguard();
 
-        $this->call('PlanTableSeeder');
-        $this->command->info('Plan table seeded!');
-
         $this->call('TemplateTypeTableSeeder');
         $this->command->info('Template Type table seeded!');
 
@@ -42,8 +41,11 @@ class DatabaseSeeder extends Seeder
         $this->call('TemplateTableSeeder');
         $this->command->info('Template table seeded!');
 
-        $this->call('GroupTableSeeder');
-        $this->command->info('Product Group table seeded!');
+        $this->call('LicensePermissionTableSeeder');
+        $this->command->info('License Permission table seeded');
+
+        // $this->call('GroupTableSeeder');
+        // $this->command->info('Product Group table seeded!');
 
         $this->call('ProductTypesTableSeeder');
         $this->command->info('Product Types table seeded!');
@@ -69,6 +71,9 @@ class DatabaseSeeder extends Seeder
         $this->call('StatusSettingSeeder');
         $this->command->info('Status Setting table seeded!');
 
+        $this->call('PricingTemplateSeeder');
+        $this->command->info('Pricing Template Table Seeded!');
+
         $this->call('UserTableSeeder');
         $this->command->info('User table seeded!');
 
@@ -90,28 +95,28 @@ class DatabaseSeeder extends Seeder
     }
 }
 
-class PlanTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('plans')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $subcriptions = [
-            0 => ['name' => 'no subcription', 'days' => 0],
-            1 => ['name' => 'one week', 'days' => 7],
-            2 => ['name' => 'one month', 'days' => 30],
-            3 => ['name' => 'three months', 'days' => 90],
-            4 => ['name' => 'six months', 'days' => 180],
-            5 => ['name' => 'one year', 'days' => 365],
-            6 => ['name' => 'three year', 'days' => 1095],
-            ];
-        //var_dump($subcriptions);
-        for ($i = 0; $i < count($subcriptions); $i++) {
-            Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
-        }
-    }
-}
+// class PlanTableSeeder extends Seeder
+// {
+//     public function run()
+//     {
+//         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+//         \DB::table('plans')->truncate();
+//         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+//         $subcriptions = [
+//             0 => ['name' => 'no subcription', 'days' => 0],
+//             1 => ['name' => 'one week', 'days' => 7],
+//             2 => ['name' => 'one month', 'days' => 30],
+//             3 => ['name' => 'three months', 'days' => 90],
+//             4 => ['name' => 'six months', 'days' => 180],
+//             5 => ['name' => 'one year', 'days' => 365],
+//             6 => ['name' => 'three year', 'days' => 1095],
+//             ];
+//         //var_dump($subcriptions);
+//         for ($i = 0; $i < count($subcriptions); $i++) {
+//             Plan::create(['name' => $subcriptions[$i]['name'], 'product'=>'1', 'allow_tax'=>'1', 'days' => $subcriptions[$i]['days']]);
+//         }
+//     }
+// }
 
 class ProductTypesTableSeeder extends Seeder
 {
@@ -267,7 +272,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="https://www.billing.faveohelpdesk.com/">https://www.billing.faveohelpdesk.com</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="https://www.billing.faveohelpdesk.com/public/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
+<p>Dear {{name}}, <br /><br /> Before you can login, you must active your account. Click <a href="{{url}}">{{url}}</a> to activate your account.<br /><br /> <strong>Your Profile & Control Panel Login</strong><br /><br /> You can start exploring our feature-rich Control Panel, which will allow you to manage all your Products, buy new Products, check all your transactions and more.<br /><br /> <strong>Login Details:</strong><br /> <strong>URL: </strong><a href="{{website_url}}">{{website_url}}</a> <br /> <strong>Username:</strong> {{username}}<br /> <strong>Password:</strong> If you can not recall your current password, <a href="{{website_url}}/password/email">click here</a> to request a new password to login.<br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk</p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;"> </td>
 </tr>
@@ -359,7 +364,7 @@ class TemplateTableSeeder extends Seeder
 </tbody>
 </table>
 <p><a class="moz-txt-link-abbreviated" href="{{serialkeyurl}}" target="_blank" rel="noopener"> Click Here</a> to get your Serial Key.</p>
-<p><a class="moz-txt-link-abbreviated" href="https://www.support.faveohelpdesk.com/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
+<p><a class="moz-txt-link-abbreviated" href="{{knowledge_base}}/category-list/installation-and-upgrade-guide"> Refer To Our Knowledge Base</a> for further installation assistance</p>
 <p style="color: #333; font-family: Arial,sans-serif; font-size: 14px; line-height: 20px; text-align: left;">Click below to login to your Control Panel to view invoice or to pay for any pending invoice.</p>
 </td>
 <td style="background: #fff; border-right: 1px solid                      #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
@@ -421,7 +426,7 @@ class TemplateTableSeeder extends Seeder
 <tr>
 <td style="background: #fff; border-left: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 <td style="background: #fff; border-top: 1px solid #ccc; padding: 40px 0 10px 0; width: 560px;" align="left">
-<p>Dear {{name}},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{{url}}">{{url}}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="https://www.faveohelpdesk.com/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
+<p>Dear {{name}},<br /><br /> A request to reset password was received from your account.&nbsp; Use the link below to reset your password and login.<br /><br /> <strong>Link:</strong>&nbsp; <a href="{{url}}">{{url}}</a><br /><br /> Thank You.<br /> Regards,<br /> Faveo Helpdesk<br /><br /> <strong>IMP:</strong> If you have not initiated this request, <a href="{{contact-us}}/contact-us/">report it to us immediately</a>.<br /><br /> <em>This is an automated email, please do not reply.</em></p>
 </td>
 <td style="background: #fff; border-right: 1px solid #ccc; border-top: 1px solid #ccc; width: 40px; padding-top: 10px; padding-bottom: 10px;">&nbsp;</td>
 </tr>
@@ -727,14 +732,61 @@ class TemplateTableSeeder extends Seeder
     }
 }
 
+class LicensePermissionTableSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('license_permissions')->truncate();
+        LicensePermission::create(['id'=>1, 'permissions'=> 'Can be Downloaded']);
+        LicensePermission::create(['id'=>2, 'permissions'=> 'Generate License Expiry Date']);
+        LicensePermission::create(['id'=>3, 'permissions'=> 'Generate Updates Expiry Date']);
+        LicensePermission::create(['id'=>4, 'permissions'=> 'Generate Support Expiry Date']);
+        LicensePermission::create(['id'=>5, 'permissions'=> 'No Permissions']);
+        LicensePermission::create(['id'=>6, 'permissions'=> 'Allow Downloads Before Updates Expire']);
+    }
+}
+
 class StatusSettingSeeder extends Seeder
 {
     public function run()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+    }
+}
+
+class PricingTemplateSeeder extends Seeder
+{
+    public function run()
+    {
+        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        \DB::table('pricing_templates')->truncate();
+        PricingTemplate::create(['id'=> 1, 'data'=>'<div class="col-md-3 col-sm-6">
+                            <div class="plan">
+                                <div class="plan-header">
+                                    <h3>{{name}}</h3>
+                                </div>
+                                <div class="plan-price">
+                                    <span class="price">{{price}}</span>
+                                    
+                                    <label class="price-label">{{price-description}}</label>
+                                </div>
+                                <div class="plan-features">
+                                    <ul>
+                                    <li>{{feature}}</li>
+                                </ul>
+                                     
+                                </div>
+                                <div class="plan-footer">
+                                <div class="subscription">{{subscription}}</div><br/>
+                                <div>{{url}} </div>
+                                </div>
+                                
+                            </div>
+                        </div>', 'image'=> 'pricing_template1.png', 'name'=>'Porto Theme(With Gap Style)']);
     }
 }
 
@@ -745,7 +797,7 @@ class GitHubTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'client_id'=>'', 'client_secret'=>'', 'username'=>'', 'password'=>'']);
+        Github::create(['id' => 1, 'client_id'=>null, 'client_secret'=>null, 'username'=>null, 'password'=>null]);
     }
 }
 

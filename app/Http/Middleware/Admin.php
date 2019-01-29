@@ -2,8 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use Closure;
+use App\DefaultPage;
 //use Illuminate\Routing\Middleware;
+use Cart;
+use Closure;
 use Illuminate\Contracts\Auth\Guard;
 
 class Admin
@@ -37,19 +39,29 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        // dd(\Auth::user()->role);
+        $defaulturl = DefaultPage::pluck('page_url')->first();
         if (\Auth::user()->role == 'admin') {
             return $next($request);
         } elseif (\Auth::user()->role == 'user') {
             $url = \Session::get('session-url');
             if ($url) {
-                $content = \Session::get('content');
+                $content = \Cart::getContent();
+                $currency = (\Session::get('currency'));
+                if (\Auth::user()->currency != $currency['currency']) {//If user currency is not equal to the cart currency then redirect to default url and clear his cart items and let the customer add the Product again so that the tax could be calculated properly
+                    foreach ($content as $key => $item) {
+                        $id = $item->id;
+                        Cart::remove($id);
+                    }
+                    \Session::forget('content');
+
+                    return redirect($defaulturl);
+                }
                 $domain = \Session::get('domain');
 
                 return redirect($url);
             }
 
-            return redirect('/home');
+            return redirect($defaulturl);
         } else {
             \Auth::logout();
             if ($request->ajax()) {

@@ -4,11 +4,11 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\License\LicenseController;
 use App\Http\Requests\User\ClientRequest;
-use App\Model\Common\StatusSetting;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
+use App\Traits\PaymentsAndInvoices;
 use App\Model\User\AccountActivate;
 use App\User;
 use Bugsnag;
@@ -19,6 +19,8 @@ use Log;
 
 class ClientController extends AdvanceSearchController
 {
+    use PaymentsAndInvoices;
+
     public $user;
     public $activate;
     public $product;
@@ -190,10 +192,6 @@ class ClientController extends AdvanceSearchController
             $this->sendWelcomeMail($user);
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $r = $mailchimp->addSubscriber($user->email);
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $addUserToLicensing = $this->licensing->addNewUser($request->first_name, $request->last_name, $request->email);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {
@@ -220,9 +218,10 @@ class ClientController extends AdvanceSearchController
             $invoiceSum = $this->getTotalInvoice($invoices);
             $amountReceived = $this->getAmountPaid($id);
             $pendingAmount = $invoiceSum - $amountReceived;
-            if ($pendingAmount < 0) {
-                $pendingAmount = 0;
-            }
+            // $pendingAmount = $invoiceSum - $amountReceived;
+            // if ($pendingAmount < 0) {
+            //     $pendingAmount = 0;
+            // }
             $extraAmt = $this->getExtraAmt($id);
             $client = $this->user->where('id', $id)->first();
 
@@ -260,13 +259,13 @@ class ClientController extends AdvanceSearchController
         return $responseData;
     }
 
-    //Get Paymetn Details on Invoice Page
+    //Get Payment Details on Invoice Page
     public function getPaymentDetail($id)
     {
         $client = $this->user->where('id', $id)->first();
         $invoice = new Invoice();
         $invoices = $invoice->where('user_id', $id)->orderBy('created_at', 'desc')->get();
-        $extraAmt = $this->getExtraAmt($id);
+        $extraAmt = $this->getExtraAmtPaid($id);
         $date = '';
         $responseData = [];
         if ($invoices) {
@@ -308,17 +307,18 @@ class ClientController extends AdvanceSearchController
     public function getExtraAmt($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)
-            ->where('invoice_id', 0)
-            ->select('amt_to_credit')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                $paidSum = $paidSum + $amount->amt_to_credit;
+
+                $amounts = Payment::where('user_id', $userId)->where('invoice_id',0)->select('amt_to_credit')->get();
+                 $balance = 0;
+                foreach ($amounts as $amount) {
+                    if ($amount) {
+                        $balance = $balance + $amount->amt_to_credit ;
+                    }
+                }
             }
 
-            return $paidSum;
+            return $balance;
         } catch (\Exception $ex) {
-            app('log')->useDailyFiles(storage_path().'/logs/laravel.log');
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
 
@@ -332,14 +332,14 @@ class ClientController extends AdvanceSearchController
     public function getAmountPaid($userId)
     {
         try {
-            $amounts = Payment::where('user_id', $userId)->select('amount')->get();
+            $amounts = Payment::where('user_id', $userId)->select('amount', 'amt_to_credit')->get();
             $paidSum = 0;
             foreach ($amounts as $amount) {
                 if ($amount) {
                     $paidSum = $paidSum + $amount->amount;
+                   // $credit = $paidSum + $amount->amt_to_credit;
                 }
             }
-
             return $paidSum;
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
@@ -427,10 +427,6 @@ class ClientController extends AdvanceSearchController
             $symbol = Currency::where('code', $request->input('currency'))->pluck('symbol')->first();
             $user->currency_symbol = $symbol;
             $user->fill($request->input())->save();
-            $licenseStatus = StatusSetting::pluck('license_status')->first();
-            if ($licenseStatus == 1) {
-                $editUserInLicensing = $this->licensing->editUserInLicensing($user->first_name, $user->last_name, $user->email);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

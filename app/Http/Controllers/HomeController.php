@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Model\Order\Order;
 use App\Model\Product\Product;
+use Crypt;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -151,7 +152,6 @@ class HomeController extends BaseHomeController
     public static function decryptByFaveoPrivateKeyold($encrypted)
     {
         try {
-
             // Get the private Key
             $path = storage_path('app'.DIRECTORY_SEPARATOR.'private.key');
             $key_content = file_get_contents($path);
@@ -344,14 +344,12 @@ class HomeController extends BaseHomeController
     public function downloadForFaveo(Request $request, Order $order)
     {
         try {
-            $faveo_encrypted_order_number = self::decryptByFaveoPrivateKey($request->input('order_number'));
-            // $faveo_encrypted_key = self::decryptByFaveoPrivateKey($request->input('serial_key'));
-            // $faveo_encrypted_domain = self::decryptByFaveoPrivateKey($request->input('domain'));
+            $faveo_encrypted_order_number = $request->input('order_number');
+            $faveo_serial_key = $request->input('serial_key');
+            $encrypted_serial = Crypt::encrypt($faveo_serial_key);
             $this_order = $order
                      ->where('number', $faveo_encrypted_order_number)
-                    // ->where('number', $request->input('order_number'))
-                    //->where('serial_key', $faveo_encrypted_key)
-                    //->where('domain', $faveo_encrypted_domain)
+                    ->where('serial_key', $encrypted_serial)
                     ->first();
             if ($this_order) {
                 $product_id = $this_order->product;
@@ -389,5 +387,30 @@ class HomeController extends BaseHomeController
         }
 
         return response()->json($message);
+    }
+
+    /*
+     * Check if the Product is valid For Auto Updates
+    * @params string Serial Key in encrypted
+    * @return array
+    */
+
+    public function checkUpdatesExpiry(Request $request)
+    {
+        $v = \Validator::make($request->all(), [
+          'order_number' => 'required',
+        ]);
+        if ($v->fails()) {
+            $error = $v->errors();
+
+            return response()->json(compact('error'));
+        }
+
+        try {
+            $licenseCode = $request->input('licenseCode');
+            $encryptedCode = \Crypt::encrypt($licenseCode);
+            $orderId = Order::where('serial_key', $$encryptedCode)->pluck('id')->first();
+        } catch (\Exception $e) {
+        }
     }
 }

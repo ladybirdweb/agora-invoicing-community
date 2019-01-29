@@ -40,12 +40,13 @@ class RazorpayController extends Controller
         return view('themes.default1.front.checkout', compact('api'));
     }
 
+    /*
+    * Create Order And Payment for invoice paid with Razorpay
+     */
     public function payment($invoice, Request $request)
     {
-
         //Input items of form
         $input = Input::all();
-
         $success = true;
         $error = 'Payment Failed';
         $rzp_key = ApiKey::where('id', 1)->value('rzp_key');
@@ -53,7 +54,6 @@ class RazorpayController extends Controller
 
         $api = new Api($rzp_key, $rzp_secret);
         $payment = $api->payment->fetch($input['razorpay_payment_id']);
-
         if (count($input) && !empty($input['razorpay_payment_id'])) { //Verify Razorpay Payment Id and Signature
 
             //Fetch payment information by razorpay_payment_id
@@ -81,7 +81,6 @@ class RazorpayController extends Controller
                     $view = $this->getViewMessageAfterPayment($invoice, $state, $currency);
                     $status = $view['status'];
                     $message = $view['message'];
-
                     \Session::forget('items');
                 } else {
                     //Afer Renew
@@ -128,7 +127,6 @@ class RazorpayController extends Controller
         $date1->setTimezone(new DateTimeZone($tz));
         $date = $date1->format('M j, Y, g:i a ');
         $product = Product::where('id', $order->product)->select('id', 'name')->first();
-
         \Cart::clear();
         $status = 'success';
         $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','order',

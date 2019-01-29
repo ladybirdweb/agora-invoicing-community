@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
 use App\Model\Payment\Plan;
-use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
 use App\Model\Product\Product;
@@ -116,79 +115,43 @@ class ExtendedBaseCartController extends Controller
     }
 
     /**
-     * @param type $productid
-     * @param type $userid
+     * Get Cost For a particular Plan.
+     *
+     * @param int $productid
+     * @param int $userid
+     * @param int $planid
      *
      * @throws \Exception
      *
-     * @return type
-     */
-    public function productCost($productid, $userid = '')
-    {
-        try {
-            $sales = 0;
-            $currency = $this->currency($userid);
-            $product = Product::find($productid);
-
-            // $price = $product->price()->where('currency', $currency)->first();
-            $plan_id = Plan::where('product', $productid)->pluck('id')->first();
-            $price = PlanPrice::where('plan_id', $plan_id)->where('currency', $currency)->pluck('add_price')->first();
-            if ($price) {
-                $sales = $price;
-                // if ($sales == 0) {
-                //     $sales = $price->price;
-                // }
-            }
-            //}
-
-            return intval($sales);
-        } catch (\Exception $ex) {
-            throw new \Exception($ex->getMessage());
-        }
-    }
-
-    /**
-     * @param type $productid
-     * @param type $userid
-     * @param type $planid
-     *
-     * @throws \Exception
-     *
-     * @return type
+     * @return int
      */
     public function planCost($productid, $userid, $planid = '')
     {
         try {
             $cost = 0;
-            $subscription = $this->allowSubscription($productid);
+            $months = 0;
             if ($this->checkPlanSession() === true) {
                 $planid = Session::get('plan');
             }
-
-            if ($subscription === true) {
-                $plan = new \App\Model\Payment\Plan();
-                $plan = $plan->where('id', $planid)->where('product', $productid)->first();
-                $items = (\Session::get('items'));
-
-                if ($plan) {
-                    $currency = $this->currency($userid);
-                    $price = $plan->planPrice()
-                                    ->where('currency', $currency)
-                                    ->first()
-                            ->add_price;
-                    $price = intval($price);
-                    $days = $plan->days;
-                    $months = $days / 30 / 12;
-                    if ($items != null) {
-                        $cost = $items[$productid]['price'];
-                    } else {
-                        $cost = round($months) * $price;
-                    }
+            $plan = Plan::where('id', $planid)->where('product', $productid)->first();
+            if ($plan) { //Get the Total Plan Cost if the Plan Exists For a Product
+                $months = 1;
+                $cont = new CartController();
+                $currency = $cont->currency($userid);
+                $product = Product::find($productid);
+                $days = $plan->periods->pluck('days')->first();
+                $price = ($product->planRelation->find($planid)->planPrice->where('currency', $currency['currency'])->first()->add_price);
+                if ($days) { //If Period Is defined for a Particular Plan ie no. of Days Generated
+                    $months = $days >= '365' ? $days / 30 / 12 : $days / 30;
                 }
+                $finalPrice = str_replace(',', '', $price);
+                $cost = round($months) * $finalPrice;
             }
 
             return $cost;
         } catch (\Exception $ex) {
+            dd($ex);
+
             throw new \Exception($ex->getMessage());
         }
     }
@@ -234,20 +197,17 @@ class ExtendedBaseCartController extends Controller
     /**
      * When from same Indian State.
      */
-    public function getTaxWhenIndianSameState($user_state, $origin_state,
-        $productid, $c_gst, $s_gst, $state_code, $status)
+    public function getTaxWhenIndianSameState($user_state, $origin_state, $productid, $c_gst, $s_gst, $state_code, $status)
     {
+        $taxes = [0];
+        $value = '';
         $taxClassId = TaxClass::where('name', 'Intra State GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
             $taxes = $this->getTaxByPriority($taxClassId);
             $value = $this->getValueForSameState($productid, $c_gst, $s_gst, $taxClassId, $taxes);
-
-            if ($value == '') {
+            if ($value == 0) {
                 $status = 0;
             }
-        } else {
-            $taxes = [0];
-            $value = '';
         }
 
         return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
@@ -258,6 +218,8 @@ class ExtendedBaseCartController extends Controller
      */
     public function getTaxWhenIndianOtherState($user_state, $origin_state, $productid, $i_gst, $state_code, $status)
     {
+        $taxes = [0];
+        $value = '';
         $taxClassId = TaxClass::where('name', 'Inter State GST')->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {
             $taxes = $this->getTaxByPriority($taxClassId);
@@ -265,9 +227,6 @@ class ExtendedBaseCartController extends Controller
             if ($value == '') {
                 $status = 0;
             }
-        } else {
-            $taxes = [0];
-            $value = '';
         }
 
         return ['taxes'=>$taxes, 'status'=>$status, 'value'=>$value];
@@ -276,9 +235,15 @@ class ExtendedBaseCartController extends Controller
     /**
      * When from Union Territory.
      */
-    public function getTaxWhenUnionTerritory($user_state, $origin_state,
-        $productid, $c_gst, $ut_gst, $state_code, $status)
-    {
+    public function getTaxWhenUnionTerritory(
+        $user_state,
+        $origin_state,
+        $productid,
+        $c_gst,
+        $ut_gst,
+        $state_code,
+        $status
+    ) {
         $taxClassId = TaxClass::where('name', 'Union Territory GST')
         ->pluck('id')->toArray(); //Get the class Id  of state
         if ($taxClassId) {

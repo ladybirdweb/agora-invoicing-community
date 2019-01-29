@@ -5,34 +5,38 @@ return[
      * Cart page
      */
     'cart' => [
-        'name'         => '{{name}}',
-        'price'        => '{{price}}',
-        'feature'      => '<li>{{feature}}</li>',
-        'subscription' => '{{subscription}}',
-        'url'          => '{{url}}',
+        'group'             => '{{group}}',
+        'name'              => '{{name}}',
+        'price'             => '{{price}}',
+        'price-description' => '{{price-description}}',
+        'feature'           => '<li>{{feature}}</li>',
+        'subscription'      => '{{subscription}}',
+        'url'               => '{{url}}',
     ],
     /*
      * This is for welcome mail content
      */
     'welcome_mail' => [
-        'name'     => '{{name}}',
-        'username' => '{{username}}',
-        'password' => '{{password}}',
-        'url'      => '{{url}}',
+        'website_url'=> '{{website_url}}',
+        'name'       => '{{name}}',
+        'username'   => '{{username}}',
+        'password'   => '{{password}}',
+        'url'        => '{{url}}',
     ],
 
     /*
      * This is for order mail content
      */
     'order_mail' => [
-        'name'        => '{{name}}',
-        'downloadurl' => '{{downloadurl}}',
-        'invoiceurl'  => '{{invoiceurl}}',
-        'product'     => '{{product}}',
-        'number'      => '{{number}}',
-        'expiry'      => '{{expiry}}',
-        'url'         => '{{url}}',
-        'serialkeyurl'=> '{{serialkeyurl}}',
+        'name'          => '{{name}}',
+        'downloadurl'   => '{{downloadurl}}',
+        'invoiceurl'    => '{{invoiceurl}}',
+        'product'       => '{{product}}',
+        'number'        => '{{number}}',
+        'expiry'        => '{{expiry}}',
+        'url'           => '{{url}}',
+        'serialkeyurl'  => '{{serialkeyurl}}',
+        'knowledge_base'=> '{{knowledge_base}}',
     ],
 
     /*
@@ -52,8 +56,9 @@ return[
      * This is for forgot password mail content
      */
     'forgot_password_mail' => [
-        'name' => '{{name}}',
-        'url'  => '{{url}}',
+        'name'      => '{{name}}',
+        'url'       => '{{url}}',
+        'contact-us'=> '{{contact-us}}',
 
     ],
 

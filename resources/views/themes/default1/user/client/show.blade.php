@@ -95,7 +95,7 @@ User Details
             <h6 class="rupee colorblack margintopzero"><span class="font18">Invoice Total </span><br>{{$client->currency_symbol }} {{$invoiceSum}}</h6> 
             <h6 class="rupee colorgreen" style="color:green;"><span class="font18">Paid </span><br>{{$client->currency_symbol }} {{$amountReceived}}</h6> 
             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.balance')}} </span><br>{{$client->currency_symbol }} {{$pendingAmount}}</h6> 
-             <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6> 
+           <!--   <h6 class="rupee colorred"><span class="font18">{{Lang::get('message.extra')}} </span><br>{{$client->currency_symbol }} {{$extraAmt}}</h6>  -->
           
         </div>
      
@@ -288,7 +288,7 @@ User Details
                             <tbody>
                                 @if(count($invoices)>0)
                                 @forelse($client->payment()->orderBy('created_at','desc')->get() as $payment)
-                                <tr>
+                                 <tr>
                                     <td class="invoice-no invoice">
                                        
                                     </td>
@@ -306,10 +306,12 @@ User Details
                                     <td class="payment_status"></td>
                                     <td>
                                         <input type="hidden" class="paymentid" value="{{$payment->id}}">
-                                        @if($payment->invoice_id == 0)
+                                      
+                                         @if($payment->invoice_id == 0)
                                           <a href="{{url('payments/'.$payment->id.'/edit')}}" class="btn btn-primary btn-xs" value="{{$payment->id}}"><i class="fa fa-edit"></i>
                                           {{Lang::get('message.edit')}}</a>
                                           @endif
+                                         
                                           <a href="{{url('payments/'.$payment->id.'/delete')}}" class="btn btn-danger btn-xs" onclick = "return myFunction()" ><i class="fa fa-trash">&nbsp;</i>{{Lang::get('message.delete')}}</a>
                                   
                                     </td>

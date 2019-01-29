@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Common;
 
 use App\ApiKey;
-use App\Http\Controllers\Controller;
 use App\Http\Controllers\Order\ExtendedOrderController;
 use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\ExpiryMailDay;
+use App\Traits\ApiKeySettings;
 use DateTime;
 use DateTimeZone;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
-class BaseSettingsController extends Controller
+class BaseSettingsController extends PaymentSettingsController
 {
+    use ApiKeySettings;
+
     /**
      * Get the logged activity.
      */
@@ -153,8 +155,16 @@ class BaseSettingsController extends Controller
             $join->whereBetween('created_at', [$fromDate, $till])->delete();
         }
         $join = $join->orderBy('created_at', 'desc')
-        ->select('id', 'log_name', 'description',
-                'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at');
+        ->select(
+            'id',
+            'log_name',
+            'description',
+            'subject_id',
+            'subject_type',
+            'causer_id',
+            'properties',
+            'created_at'
+        );
 
         return $join;
     }
@@ -180,7 +190,6 @@ class BaseSettingsController extends Controller
         $warn = '';
         $condition = new \App\Model\Mailjob\Condition();
 
-        // $job = $condition->checkActiveJob();
         $commands = [
             'everyMinute'        => 'Every Minute',
             'everyFiveMinutes'   => 'Every Five Minute',
@@ -214,12 +223,23 @@ class BaseSettingsController extends Controller
                 $selectedDays[] = $daysList;
             }
         }
-        $delLogDays = ['720'=> '720 Days', '365'=>'365 days', '180'=>'180 Days',
-       '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
+        $delLogDays = ['720' => '720 Days', '365'=>'365 days', '180'=>'180 Days',
+        '150'                => '150 Days', '60'=>'60 Days', '30'=>'30 Days', '15'=>'15 Days', '5'=>'5 Days', '2'=>'2 Days', '0'=>'Delete All Logs', ];
         $beforeLogDay[] = ActivityLogDay::first()->days;
 
-        return view('themes.default1.common.cron.cron', compact('cronPath','warn', 'commands', 'condition',
-             'status', 'expiryDays', 'selectedDays', 'delLogDays', 'beforeLogDay', 'execEnabled', 'paths'));
+        return view('themes.default1.common.cron.cron', compact(
+            'cronPath',
+            'warn',
+            'commands',
+            'condition',
+            'status',
+            'expiryDays',
+            'selectedDays',
+            'delLogDays',
+            'beforeLogDay',
+            'execEnabled',
+            'paths'
+        ));
     }
 
     public function postSchedular(StatusSetting $status, Request $request)
@@ -352,31 +372,20 @@ class BaseSettingsController extends Controller
         $daysList = new \App\Model\Mailjob\ExpiryMailDay();
         $lists = $daysList->get();
         if ($lists->count() > 0) {
-            foreach ($lists  as $list) {
+            foreach ($lists as $list) {
                 $list->delete();
             }
         }
         if ($request['expiryday'] != null) {
             foreach ($request['expiryday'] as $key => $value) {
                 $daysList->create([
-          'days'=> $value,
-           ]);
+                'days'=> $value,
+                ]);
             }
         }
         ActivityLogDay::findorFail(1)->update(['days'=>$request->logdelday]);
 
         return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-    }
-
-    public function licenseDetails(Request $request)
-    {
-        $status = $request->input('status');
-        $licenseApiSecret = $request->input('license_api_secret');
-        $licenseApiUrl = $request->input('license_api_url');
-        StatusSetting::where('id', 1)->update(['license_status'=>$status]);
-        ApiKey::where('id', 1)->update(['license_api_secret'=>$licenseApiSecret, 'license_api_url'=>$licenseApiUrl]);
-
-        return ['message' => 'success', 'update'=>'Licensing Settings Updated'];
     }
 
     //Save Google recaptch site key and secret in Database

@@ -17,7 +17,7 @@ class CreateCurrenciesTable extends Migration
             $table->string('code')->nullable();
             $table->string('symbol')->nullable();
             $table->string('name')->nullable();
-            $table->string('base_conversion')->nullable();
+            $table->boolean('dashboard_currency')->nullable();
             $table->timestamps();
         });
     }

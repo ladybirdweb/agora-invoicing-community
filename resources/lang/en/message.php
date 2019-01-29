@@ -17,42 +17,43 @@ return [
     /*
      * Common for all
      */
-    'dashboard'              => 'Dashboard',
-    'home'                   => 'Home',
-    'choose'                 => 'Choose',
-    'delmultiple'            => 'Delete Selected',
-    'delete'                 => 'Delete',
-    'save'                   => 'Save',
-    'city'                   => 'City',
-    'state'                  => 'State',
-    'country'                => 'Country',
-    'update'                 => 'Update',
-    'edit'                   => 'Edit',
-    'alert'                  => 'Alert',
-    'success'                => 'Success',
-    'failed'                 => 'Failed',
-    'updated-successfully'   => 'Updated Successfully',
-    'saved-successfully'     => 'Saved Successfully',
-    'deleted-successfully'   => 'Deleted Successfully',
-    'not-updated'            => 'Not Updated',
-    'failed'                 => 'Failed',
-    'yes'                    => 'Yes',
-    'no'                     => 'No',
-    'select-a-row'           => 'Select a row',
-    'no-record'              => 'No records',
-    'create'                 => 'Create',
-    'name'                   => 'Name',
-    'description'            => 'Description',
-    'can-not-delete-default' => 'Can not delete default',
-    'no-payment'             => 'No Payment',
-    'add-new'                => 'Add New',
-    'all-users'              => 'All Users',
-    'all-invoices'           => 'All invoices',
-    'users'                  => 'Users',
-    'all-orders'             => 'All Orders',
-    'timezone'               => 'Timezone',
-    'created-successfully'   => 'Created Successfully',
-    'ccavanue'               => 'Ccavanue',
+    'dashboard'                   => 'Dashboard',
+    'home'                        => 'Home',
+    'choose'                      => 'Choose',
+    'delmultiple'                 => 'Delete Selected',
+    'delete'                      => 'Delete',
+    'save'                        => 'Save',
+    'city'                        => 'City',
+    'state'                       => 'State',
+    'country'                     => 'Country',
+    'update'                      => 'Update',
+    'edit'                        => 'Edit',
+    'alert'                       => 'Alert',
+    'success'                     => 'Success',
+    'failed'                      => 'Failed',
+    'updated-successfully'        => 'Updated Successfully',
+    'saved-successfully'          => 'Saved Successfully',
+    'deleted-successfully'        => 'Deleted Successfully',
+    'not-updated'                 => 'Not Updated',
+    'failed'                      => 'Failed',
+    'yes'                         => 'Yes',
+    'no'                          => 'No',
+    'select-a-row'                => 'Select a row',
+    'no-record'                   => 'No records',
+    'create'                      => 'Create',
+    'name'                        => 'Name',
+    'description'                 => 'Description',
+    'can-not-delete-default'      => 'Can not delete default',
+    'can-not-delete-default-page' => 'Can not delete default Page',
+    'no-payment'                  => 'No Payment',
+    'add-new'                     => 'Add New',
+    'all-users'                   => 'All Users',
+    'all-invoices'                => 'All invoices',
+    'users'                       => 'Users',
+    'all-orders'                  => 'All Orders',
+    'timezone'                    => 'Timezone',
+    'created-successfully'        => 'Created Successfully',
+    'ccavanue'                    => 'Ccavanue',
     /*
      * Profile Page
      */
@@ -179,6 +180,15 @@ return [
       'verify-and-copy-command'                                    => 'Click to Verify Command and copy to Clipboard',
       'lic_api_secret'                                             => 'API Secret',
       'lic_api_url'                                                => 'API URL',
+      'msg91_key'                                                  => 'Msg91 Auth Key',
+      'consumer_key'                                               => 'Twitter Consumer Key',
+      'consumer_secret'                                            => 'Twitter Consumer Secret',
+      'access_token'                                               => 'Twitter Access Token',
+      'token_secret'                                               => 'Twitter Access Tken Secret',
+      'rzp_key'                                                    => 'Razorpay Key',
+      'rzp_secret'                                                 => 'Razorpay Secret',
+      'apilayer_key'                                               => 'ApiLayer Access Key(For Exchange Rate Conversion)',
+      'zoho_crm'                                                   => 'Zoho CRM',
 
     /*
      * Clients
@@ -210,6 +220,7 @@ return [
     'updates'              => 'Updates',
     'regular-price'        => 'Regular Price',
     'renew-price'          => 'Renewal Price',
+    'price-description'    => 'Price Description',
     /*
      * Products
      */
@@ -222,7 +233,7 @@ return [
     'product'                                                                                         => 'Product',
     'all-products'                                                                                    => 'All Products',
     'add-products'                                                                                    => 'Add Products',
-    'type'                                                                                            => 'Type',
+    'lic_type'                                                                                        => 'License Type',
     'related-services'                                                                                => 'Related Services',
     'related-addons'                                                                                  => 'Related Addons',
     'file'                                                                                            => 'File',
@@ -249,6 +260,8 @@ return [
     'allow-multiple-quantities'                                                                       => 'Allow Multiple Quantities',
     'auto-terminate'                                                                                  => 'Auto Terminate',
     'tick-this-box-to-allow-customers-to-specify-if-they-want-more-than-1-of-this-item-when-ordering' => 'Tick this box to allow customers to specify if they want more than 1 of this item when ordering',
+    'allow_multiple_agents_quantity'                                                                  => 'Check this box if you want to allow customers to modify No. of Agents',
+    'allow_multiple_product_quantity'                                                                 => 'Check this if you want to allow customers to modify Quantity of the Product',
     'enter-the-number-of-days-after-activation-to-automatically-terminate'                            => 'Enter the number of days after activation to automatically terminate',
     'details'                                                                                         => 'Details',
     'price'                                                                                           => 'Price',
@@ -276,6 +289,8 @@ return [
     'auto-active-payment'                                                                 => 'Auto Activate on Payment',
     'suspend-parent-product'                                                              => 'Suspend Parent Product',
     'applicable-products'                                                                 => 'Applicable Products',
+    'select_design'                                                                       => 'Pricing Form Template',
+    'group_link'                                                                          => 'Group Url',
     /*
      * Services
      */
@@ -368,9 +383,13 @@ return [
     'domain'                         => 'Domain',
     'price-override'                 => 'Price Override',
     'quantity'                       => 'Quantity',
+    'agent'                          => 'No. of Agents',
     'place-an-order'                 => 'Place an Order',
     'generate'                       => 'Generate',
     'invoice-generated-successfully' => 'Invoice generated successfully',
+    'update_end'                     => 'Update Ends At',
+    'license_end'                    => 'License Ends At',
+    'support_end'                    => 'Support Ends At',
     /*
      * Groups
      */
@@ -446,16 +465,21 @@ return [
     /*
      * Pages
      */
-    'page'        => 'Page',
-    'pages'       => 'Pages',
-    'publish'     => 'Publish',
-    'slug'        => 'Slug',
-    'parent-page' => 'Parent Page',
+    'page'         => 'Page',
+    'pages'        => 'Pages',
+    'publish'      => 'Publish',
+    'slug'         => 'Slug',
+    'parent-page'  => 'Parent Page',
+    'default-page' => 'Default Page',
+    'publish-date' => 'Publishing Date',
+    'page_type'    => 'Page Type',
     /*
      * Widgets
      */
-    'widget'  => 'Widget',
-    'widgets' => 'Widgets',
+    'widget'          => 'Widget',
+    'widgets'         => 'Widgets',
+    'allow_tweets'    => 'Allow Tweets',
+    'allow_mailchimp' => 'Allow Mailchimp Textbox',
     /*
      * Service Provider
      */
@@ -591,5 +615,16 @@ return [
      'cleanup_log'      => 'Cleanup Logs',
      'nocaptcha_secret' => 'NOCAPTCHA_SECRET',
      'nocaptcha_sitekey'=> 'NOCAPTCHA_SITEKEY',
+
+     /*
+     * License
+     */
+
+     'create-license-type' => 'Create New License Type',
+     'edit-license-type'   => 'Edit License Type',
+     'license-type'        => 'License Type',
+     'license-type-name'   => 'License Type Name',
+     'add-permissions'     => 'Add Permissions',
+     'permissions'         => 'Permissions',
 
 ];

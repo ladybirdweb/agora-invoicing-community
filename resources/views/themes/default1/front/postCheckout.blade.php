@@ -26,16 +26,8 @@ Checkout
     return $randomString;
 }
      $api = new Api($rzp_key, $rzp_secret);
-
-    $displayCurrency=$invoice->currency;;
-    $symbol = $invoice->currency;
- if ($symbol !== 'INR')
-{
-    $data['display_currency']  = 'USD';
-    // $data['display_amount']    = $_POST['amount'];
-    
-}
-
+    $displayCurrency = $invoice->currency;
+    $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
     if ($symbol == 'INR'){
 
 
@@ -52,9 +44,8 @@ $orderData = [
 ];
 
 
-}
-else
-{
+} else {
+ 
      $url = "http://apilayer.net/api/live?access_key=$apilayer_key";
      $exchange = json_decode(file_get_contents($url));
 
@@ -336,22 +327,24 @@ $json = json_encode($data);
                         <strong><span class="amount">{{$symbol}} {{$subtotal}}</span></strong>
                     </td>
                 </tr>
-
-                @if ($attributes != null)
-                 @foreach($attributes[0]['tax'] as $attribute)
-                  
-                  
-                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
-                 @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
+                @foreach($content as $attributes)
+                <?php
+                    $tax_attribute =  $attributes['attributes']['tax'];
+                    $currency = $attributes['attributes']['currency']['currency'];
+                    $symbol = $attributes['attributes']['currency']['symbol'];
+                   ?>
+                    @if ($tax_attribute[0]['name'] != null)
+                @if($tax_attribute[0]['name']!='null' &&  $currency == "INR" && $tax_attribute[0]['tax_enable'] ==1)
+                 @if($tax_attribute[0]['state']==$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']=='NULL' && $tax_attribute[0]['status'] ==1)
                 <tr class="Taxes">
                     <th>
-                        <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
-                        <strong>SGST<span>@</span>{{$attribute['s_gst']}}%</strong><br/>
+                        <strong>CGST<span>@</span>{{$tax_attribute[0]['c_gst']}}%</strong><br/>
+                        <strong>SGST<span>@</span>{{$tax_attribute[0]['s_gst']}}%</strong><br/>
                        
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['s_gst'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['s_gst'],$subtotal)}} <br/>
                        
                        
                     </td>
@@ -360,15 +353,15 @@ $json = json_encode($data);
                 </tr>
                 @endif
                
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
+                @if ($tax_attribute[0]['state']!=$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']=='NULL' && $tax_attribute[0]['status'] ==1)
                
                 <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['i_gst']}}%</strong>
+                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['i_gst']}}%</strong>
                      
                     </th>
                     <td>
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['i_gst'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['i_gst'],$subtotal)}} <br/>
                       
                     </td>
 
@@ -376,17 +369,17 @@ $json = json_encode($data);
                 </tr>
                 @endif
 
-                @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']!='NULL' && $attribute['status'] ==1)
+                @if ($tax_attribute[0]['state']!=$tax_attribute[0]['origin_state'] && $tax_attribute[0]['ut_gst']!='NULL' && $tax_attribute[0]['status'] ==1)
               
                 <tr class="Taxes">
                     <th>
-                       <strong>CGST<span>@</span>{{$attribute['c_gst']}}%</strong><br/>
-                        <strong>UTGST<span>@</span>{{$attribute['ut_gst']}}%</strong>
+                       <strong>CGST<span>@</span>{{$tax_attribute[0]['c_gst']}}%</strong><br/>
+                        <strong>UTGST<span>@</span>{{$tax_attribute[0]['ut_gst']}}%</strong>
                        
                     </th>
                     <td>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['c_gst'],$subtotal)}} <br/>
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['ut_gst'],$subtotal)}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['c_gst'],$subtotal)}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['ut_gst'],$subtotal)}} <br/>
                        
                     </td>
 
@@ -395,63 +388,62 @@ $json = json_encode($data);
                 @endif
                 @endif
 
-                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+                 @if($tax_attribute[0]['name']!='null' && ($currency == "INR" && $tax_attribute[0]['tax_enable'] ==0 && $tax_attribute[0]['status'] ==1))
                  <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
                        
                          
                     </th>
                     <td>
                        
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal)}} <br/>
                          
                        
                     </td>
                   </tr>
                  @endif
            
-                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
+                @if($tax_attribute[0]['name']!='null' && ($currency != "INR" && $tax_attribute[0]['tax_enable']==1 && $tax_attribute[0]['status'] ==1))
                   <tr class="Taxes">
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
                        
                          
                     </th>
                     <td>
                       
-                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
+                         {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],Cart::getSubTotalWithoutConditions())}} <br/>
                          
                        
                     </td>
                   </tr>
                  @endif
-                  @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+                  @if($tax_attribute[0]['name']!='null' && ($currency != "INR" && $tax_attribute[0]['tax_enable'] ==0 && $tax_attribute[0]['status'] ==1))
 
                   <tr class="Taxes">
                 
                     <th>
-                        <strong>{{$attribute['name']}}<span>@</span>{{$attribute['rate']}}</strong><br/>
+                        <strong>{{$tax_attribute[0]['name']}}<span>@</span>{{$tax_attribute[0]['rate']}}</strong><br/>
                        
                          
                     </th>
                     <td>
                        
-                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($attribute['rate'],$subtotal)}} <br/>
+                        {{$symbol}} {{App\Http\Controllers\Front\CartController::taxValue($tax_attribute[0]['rate'],$subtotal)}} <br/>
                          
                        
                     </td>
                   
                   </tr>
                  @endif
-
+                 @endif
                 @endforeach
-                @endif
                 <?php
                 $items=$invoice->invoiceItem()->get();
                 ?>
-                    
-                @if ($attributes == null)
+                     
+                @if ($attributes['attributes']['tax'][0]['name'] == null)
                  
                 @foreach ($items as $item)
                  @if($item['tax_name']!='null,' )

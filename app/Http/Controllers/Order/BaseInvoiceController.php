@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Order;
 
 use App\Http\Controllers\Front\CartController;
+use App\Model\Order\Invoice;
+use App\Model\Order\InvoiceItem;
+use App\Model\Order\Payment;
 use App\Model\Payment\Promotion;
 use App\Model\Payment\Tax;
 use App\Model\Payment\TaxClass;
@@ -185,5 +188,20 @@ class BaseInvoiceController extends ExtendedBaseInvoiceController
         } catch (\Exception $ex) {
             throw new \Exception(\Lang::get('message.check-expiry'));
         }
+    }
+
+    /*
+    *Edit Invoice Total.
+    */
+    public function invoiceTotalChange(Request $request)
+    {
+        $total = $request->input('total');
+        if ($total == '') {
+            $total = 0;
+        }
+        $number = $request->input('number');
+        $invoiceId = Invoice::where('number', $number)->value('id');
+        $invoiceItem = InvoiceItem::where('invoice_id', $invoiceId)->update(['subtotal'=>$total]);
+        $invoices = Invoice::where('number', $number)->update(['grand_total'=>$total]);
     }
 }

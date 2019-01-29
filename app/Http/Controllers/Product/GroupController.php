@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Product\GroupRequest;
+use App\Model\Common\PricingTemplate;
 use App\Model\Product\ConfigurableOption;
 use App\Model\Product\GroupFeatures;
 use App\Model\Product\ProductGroup;
@@ -83,7 +84,9 @@ class GroupController extends Controller
     public function create()
     {
         try {
-            return view('themes.default1.product.group.create');
+            $pricingTemplates = PricingTemplate::select('image', 'id', 'name')->get();
+
+            return view('themes.default1.product.group.create', compact('pricingTemplates'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -96,40 +99,22 @@ class GroupController extends Controller
      */
     public function store(GroupRequest $request)
     {
+        $this->validate($request, [
+            'name'                 => 'required',
+            'headline'             => 'required',
+            'cart_link'            => 'required',
+            'pricing_templates_id' => 'required',
+            ], [
+                'pricing_templates_id.required'=> 'Please Select a Template',
+          ]);
+
         try {
             $this->group->fill($request->input())->save();
-
-            $features = $request->input('features');
-            foreach ($features as $feature) {
-                $this->feature->create(['group_id' => $this->group->id, 'features' => $feature['name']]);
-            }
-
-            $values = $request->input('value');
-            $prices = $request->input('price');
-            $title = $request->input('title');
-            $type = $request->input('type');
-            $c = count($prices);
-            for ($i = 0; $i < $c; $i++) {
-                $this->config->create(['group_id' => $this->group->id, 'type' => $type,
-                    'title'                       => $title, 'options' => $values[$i]['name'],
-                    'price'                       => $prices[$i]['name'], ]);
-            }
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     *
-     * @return \Response
-     */
-    public function show($id)
-    {
     }
 
     /**
@@ -143,12 +128,29 @@ class GroupController extends Controller
     {
         try {
             $group = $this->group->where('id', $id)->first();
-            $features = $this->feature->select('id', 'group_id', 'features')->where('group_id', $id)->get();
-            $configs = $this->config->select('price', 'options')->where('group_id', $id)->get();
-            $title = $this->config->where('group_id', $id)->first()->title;
-            $type = $this->config->where('group_id', $id)->first()->type;
+            $selectedTemplate = $group->pricing_templates_id;
+            $pricingTemplates = PricingTemplate::get();
 
-            return view('themes.default1.product.group.edit', compact('group', 'features', 'configs', 'title', 'type'));
+            return view('themes.default1.product.group.edit', compact('group', 'selectedTemplate', 'pricingTemplates'));
+        } catch (\Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function update($id, GroupRequest $request)
+    {
+        try {
+            $group = $this->group->where('id', $id)->first();
+            $group->fill($request->input())->save();
+
+            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -209,5 +211,31 @@ class GroupController extends Controller
                         '.$e->getMessage().'
                 </div>';
         }
+    }
+
+    /**
+     * Generate Slug url for A group.
+     *
+     * @author Ashutosh Pathak <ashutosh.pathak@ladybirdweb.com>
+     *
+     * @date   2019-01-09T18:20:16+0530
+     *
+     * @param Request $request Slug Url that is sent
+     *
+     * @return string The Group Url
+     */
+    public function generateGroupUrl(Request $request)
+    {
+        if ($request->has('url')) {
+            $url = $request->input('url');
+
+            return $this->getGroupUrl($url);
+        }
+    }
+
+    protected function getGroupUrl($url)
+    {
+        $slug = url('/').'/group/'.str_slug($url, '-');
+        echo $slug;
     }
 }

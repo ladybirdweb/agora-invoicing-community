@@ -108,16 +108,25 @@ Edit Product
                    
                                 <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type')) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
-
+                                <?php
+                               $groups = DB::table('product_groups')->pluck('name', 'id')->toarray();
+                                ?>
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
                                     {!! Form::label('group',Lang::get('message.group')) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
-
+                                        <select name="group"  class="form-control">
+                            <option>Choose</option>
+                            @foreach($groups as $key=>$group)
+                                   <option value="{{$key}}" <?php  if (in_array($group, $selectedGroup)) {
+                                    echo "selected";
+                                } ?>>{{$group}}</option>
+                           
+                             @endforeach
+                              </select>
                                 </div>
                                 <?php
                                $types = DB::table('product_categories')->pluck('category_name')->toarray();
@@ -130,7 +139,9 @@ Edit Product
                             <select name="category"  class="form-control">
                             <option value="">Choose</option>
                             @foreach($types as $key=>$type)
-                                   <option value="{{$type}}" <?php  if(in_array($type, $selectedCategory) ) { echo "selected";} ?>>{{$type}}</option>
+                                   <option value="{{$type}}" <?php  if (in_array($type, $selectedCategory)) {
+                                    echo "selected";
+                                } ?>>{{$type}}</option>
                            
                              @endforeach
                               </select>
@@ -250,8 +261,8 @@ Edit Product
                                                 {!! Form::hidden('hidden', 0) !!}
                                                 <?php 
                                                 $value=  "";
-                                                if($product->hidden==1){
-                                                 $value = 'true';   
+                                                if ($product->hidden==1) {
+                                                    $value = 'true';
                                                 }
                                                 ?>
                                                 <p>{!! Form::checkbox('hidden',1,$value) !!}  {{Lang::get('message.tick-to-hide-from-order-form')}}</p>
@@ -272,67 +283,42 @@ Edit Product
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">
 
-                                <tr>
-                                    <td><b>{!! Form::label('subscription',Lang::get('message.subscription')) !!}</b></td>
+                                    <br/>
+                                <span>Show on Cart Page</span>
+                                 <tr>
+                                    <div class="row">
                                     <td>
-                                        <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                                             <div class="row">
-                                                <div class="col-md-4">
-                                                    {!! Form::hidden('subscription',0) !!}
-                                                    {!! Form::checkbox('subscription') !!}
-                                                     <label data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.limited-subscription-description') !!}">
-                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
-                                                </div>
-                                            
-                                                
-                                                 <div class="col-md-4">
-                                                     {!! Form::radio('deny_after_subscription',1) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
-                                                </div>
+                                          
+                                        <div><label>
+                                             {!! Form::radio('show_agent',1,null,['id'=>'agent']) !!}
+                                              <!-- <input type ="radio" id="agent" value="0" name="cartquantity" hidden>   -->
+                                            Agents
+                                        </label></div>
+                                   
+                                    <br/> 
+                                    <div class="col-md-10" id="allowmulagent" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_agent',1,null,['id'=>'agent_multiple_quantity']) !!} {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
+                                    </div>
 
-                                                <div class="col-md-4">
-                                                    {!! Form::radio('deny_after_subscription',0) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
-                                                </div>
-                                                   <div class="col-md-4">
-                                                    {!! Form::hidden('perpetual_license',0) !!}
-                                                     {!! Form::checkbox('perpetual_license') !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual_license-detail') !!}">
-                                                    {!! Form::label('perpetual_license',Lang::get('message.perpetual_license')) !!}
-                                                </div>
-
-                                          </div>
-                                        </div>
-                                    </td>
+                                   </td>
+                                  </div>
                                 </tr>
-
-                               
                                 <tr>
-                                    <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
                                     <td>
-                                        <div class="form-group {{ $errors->has('multiple_qty') ? 'has-error' : '' }}">
-                                            <?php
-                                            if ($product) {
-                                                $multiple = $product->multiple_qty;
-                                                if ($multiple == 1) {
-                                                    $value = true;
-                                                } else {
-                                                    $value = '';
-                                                }
-                                            } else {
-                                                $value = '';
-                                            }
-                                            //dd($multiple);
-                                            ?>
-
-                                            <p>{!! Form::checkbox('multiple_qty',1,$value) !!}  {{Lang::get('message.tick-this-box-to-allow-customers-to-specify-if-they-want-more-than-1-of-this-item-when-ordering')}} </p>
-
-                                        </div>
+                                        <div><label>
+                                             {!! Form::radio('show_agent',0,null,['id'=>'quantity']) !!}
+                                            Product Quantity
+                                         </label>
+                                     </div>
+                                         <br/>
+                                     <div class="col-md-10" id="allowmulproduct" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_quantity',1,null,['id'=>'product_multiple_quantity']) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
+                                    </div>
+                                  
                                     </td>
-                                 </tr>
-
+                                      </div>
+                                </tr>
+                                  </table>
                                 
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
@@ -342,24 +328,19 @@ Edit Product
                                                 <?php
                                                 if (count($saved_taxes) > 0) {
                                                     foreach ($saved_taxes as $tax) {
-
                                                         $saved[$tax->tax_class_id] = 'true';
                                                     }
-                                                }
-                                                else{
+                                                } else {
                                                     $saved=[];
                                                 }
                                                
                                                 if (count($saved) > 0) {
-                                               foreach ($saved as $key => $value) {
-                                                // dd($key);
-                                                   $savedkey[]=$key;
-                                               }
-                                               $saved1=$savedkey?$savedkey:[];
-
-                                                   }
-                                                   else{
-                                                    $saved1=[];
+                                                    foreach ($saved as $key => $value) {
+                                                        $savedkey[]=$key;
+                                                    }
+                                                    $saved1=$savedkey?$savedkey:[];
+                                                } else {
+                                                       $saved1=[];
                                                    }
                                                   
                                         
@@ -386,7 +367,7 @@ Edit Product
                                     </td>
                                 </tr>
 
-                            </table>
+                           
                       
                 <!-- nav-tabs-custom -->
 
@@ -409,7 +390,10 @@ Edit Product
                                 <tr>
                                     <td>{{$product->plan()->name}}</td> 
                                     <?php
-                                    $months = $product->plan()->days / 30;
+                                    if($product->plan()->days != '') {
+                                         $months = $product->plan()->days / 30;
+                                    }
+                                    $months = 'No Period Selected';
                                     ?>
                                     <td>{{round($months)}}</td> 
                                     <td><a href="{{url('plans/'.$product->plan()->id.'/edit')}}" class="btn btn-primary btn-xs"><i class='fa fa-edit' style='color:white;'></i>&nbsp;&nbsp;Edit</a></td> 
@@ -472,25 +456,81 @@ Edit Product
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
-    $(function(){
-                                    tinymce.init({
-                                        selector: '#product-description',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
-
+                                           $(function(){
+                                          tinymce.init({
+                                         selector: '#product-description',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
+                                          });
+                                          tinymce.init({
+                                         selector: '#textarea1',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
                                     });
-                                     tinymce.init({
-                                            selector: '#textarea1',
-                                            plugins: "code",
-                                            toolbar: "code",
-                                            menubar: "tools"
-                                        });
-                                     tinymce.init({
-                                        selector: '#textarea3',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
+                                              tinymce.init({
+                                         selector: '#textarea3',
+                                         height: 200,
+                                       //  theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
                                     });
                                 });
                                     </script>
@@ -541,8 +581,6 @@ Edit Product
          var title = $(e).data('title')
         
         var version= $(e).data('version')
-        console.log(title,description,version)
-
         var description = $(e).data('description') 
         tinymce.get('product-description').setContent(description);
          $("#product-title").val(title)
@@ -551,10 +589,7 @@ Edit Product
          
           $("#upload-edit-form").attr('action', url)
 
-
-
-
-     }
+    }
         </script>
         <script>
         function checking(e){
@@ -658,6 +693,50 @@ Edit Product
     });
 </script>
 
+<script>
+    $(document).ready(function(){
+        if( $("input[type=radio][name='show_agent']:checked").val() == 1) {
+            $('#agent').prop('checked',true);
+            $('#allowmulagent').show();
+             if($('#agent_multiple_qty').val() == 1) {
+                $('#agent_multiple_qty').prop('checked',true);
+             }
+        }
+           if($("input[type=radio][name='show_agent']:checked").val() == 0) {
+            $('#quantity').prop('checked',true);
+            $('#allowmulproduct').show();
+             if($('#product_multiple_qty').val() == 1) {
+                $('#product_multiple_qty').prop('checked',true);
+             }
+        }
+
+    // })
+
+});
+
+
+       $(function() {
+        $('#agent').click(function(){
+            console.log('hiiiii');
+            if($('#agent').is(":checked")) {
+               $("#allowmulagent").show();
+               $("#allowmulproduct").hide();
+            } 
+        })
+
+    })
+
+    $(function() {
+        $('#quantity').click(function(){
+            if($('#quantity').is(":checked")) {
+               $("#allowmulagent").hide();
+               $("#allowmulproduct").show();
+            } 
+        })
+
+    })
+
+</script>
 
 
 <script>

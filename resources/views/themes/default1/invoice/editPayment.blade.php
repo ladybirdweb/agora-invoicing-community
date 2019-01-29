@@ -109,7 +109,7 @@
                                 <table id="payment-table" class="table table-bordered table-hover">
                                     <thead>
                                         <tr>
-                                          
+                                          <th></th>
                                             <th>{{Lang::get('message.date')}}</th>
                                             <th>{{Lang::get('message.invoice_number')}}</th>
                                             <th>{{Lang::get('message.total')}}</th>

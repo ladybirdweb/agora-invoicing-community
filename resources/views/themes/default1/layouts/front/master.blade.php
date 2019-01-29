@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html>
 <?php $setting = \App\Model\Common\Setting::where('id', 1)->first();
 $script = \App\Model\Common\ChatScript::where('id', 1)->first(); 
 if($script){
@@ -5,12 +7,7 @@ if($script){
 }else{
   $script = null;
 }
-
-
  ?>
-<!DOCTYPE html>
-<html>
-
 
     <head>
   
@@ -67,17 +64,13 @@ if($script){
           <!-- Head Libs -->
           <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
 
-             <script type="text/javascript"> //<![CDATA[ 
+             <script> //<![CDATA[ 
 
         var tlJsHost = ((window.location.protocol == "https:") ? "https://secure.comodo.com/" : "https://www.trustlogo.com/");
         document.write(unescape("%3Cscript src='" + tlJsHost + "trustlogo/javascript/trustlogo.js' type='text/javascript'%3E%3C/script%3E"));
         //]]>
        </script>
-
-         
-    
-  
-      </head>
+   </head>
 
     <body>
 
@@ -141,34 +134,55 @@ if($script){
                                        <div class="header-nav-main header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                             <nav class="collapse">
                                                 <ul class="nav nav-pills" id="mainNav">
-                                                    <li class="dropdown">
-                                                        <a  class="nav-link" href="{{url('home')}}">
-                                                            pricing
-                                                        </a>
-
+                                              <?php 
+                                                $groups = \App\Model\Product\ProductGroup::where('hidden','!=', 1)->get();
+                                              
+                                              ?>
+                                                    
+                                                     <li class="dropdown">
+                                                      <a class="dropdown-item dropdown-toggle" href="#">
+                                                        Store
+                                                      </a>
+                                                      <ul class="dropdown-menu">
+                                                        @if(count($groups)>0)
+                                                        @foreach($groups as $group)
+                                                        <li><a class="dropdown-item" href="{{url('group/'.$group->pricing_templates_id.'/'.$group->id)}}">{{$group->name}}</a></li>
+                                                        @endforeach
+                                                        @else
+                                                         <li><a class="dropdown-item">No Groups Added</a></li>
+                                                         @endif
+                                                      </ul>
                                                     </li>
-                                                    <li class="dropdown dropdown-mega">
+
+
+                                               <!--      <li class="dropdown dropdown-mega">
                                                         <a class="nav-link" href="{{url('contact-us')}}">
                                                             contact us
                                                         </a>
 
                                                     </li>
+ -->
+                                                
  
-                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->where('hidden','!=',1)->get(); ?>
+                                                    <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
 
                                                     @foreach($pages as $page)
-                                                    <li class="dropdown">
 
+                                                    <li class="dropdown">
                                                         @if($page->parent_page_id==0)
                                                         <?php
                                                         $ifdrop = \App\Model\Front\FrontendPage::where('publish', 1)->where('parent_page_id', $page->id)->count();
                                                         if ($ifdrop > 0) {
-                                                            $class = 'dropdown-toggle';
+                                                            $class = 'nav-link dropdown-toggle';
                                                         } else {
-                                                            $class = '';
+                                                            $class = 'nav-link';
                                                         }
                                                         ?>
+                                                        @if($page->type == 'contactus')
+                                                         <a class="nav-link" href="{{url('contact-us')}}">
+                                                        @else
                                                         <a class="{{$class}}" href="{{$page->url}}">
+                                                          @endif
                                                             {{ucfirst($page->name)}}
                                                         </a>
                                                         @endif
@@ -361,24 +375,28 @@ if($script){
             <footer id="footer">
                 <div class="container">
                     <div class="row">
-                        <!-- <div class="footer-ribbon" style="background-color:#E9EFF2 !important">
-                            <span>Get in Touch</span>
-                        </div> -->
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->first(); ?>
+                         <?php
+                         
+                        
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer1')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                            $tweetDetails = $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                           }
+                            $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                            
                           <div class="newsletter">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 <p> {!! $widgets->content !!}</p>
-
+                                  {!! $tweetDetails !!}
                                 <div class="alert alert-success d-none" id="newsletterSuccess">
                                     <strong>Success!</strong> You've been added to our email list.
                                 </div>
-
                                 <div class="alert alert-danger d-none" id="newsletterError"></div>
-                                <?php $mailchimpKey = \App\Model\Common\Mailchimp\MailchimpSetting::find(1);?>
-                                @if($mailchimpKey != null)
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
                                 {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
                                 <div class="input-group">
                                     <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
@@ -387,40 +405,109 @@ if($script){
                                     </span>
                                 </div>
                                 {!! Form::close() !!}
+                               
                                 @endif
                             </div>
                         </div>
                         @endif
-                          <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->first(); ?>
+                          <?php 
+                       
+                          $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer2')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                          if ($widgets) {
+                           $tweetDetails =  $widgets->allow_tweets ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                            @if($widgets != null)
                         <div class="col-md-3">
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
-                            <div id="tweets" class="twitter" >
-                            <p>Please wait...</p>
-                            </div>
+                               {!! $tweetDetails !!}  
+                                   <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                         </div>
+                        
                         @endif
-                        <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->first(); ?>
+                        <?php
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer3')->select('name','content','allow_tweets','allow_mailchimp')->first(); 
+                        if ($widgets) {
+                           $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                        }
+
+                        
+                            ?>
                        @if($widgets != null)
                         <div class="col-md-3">
                             <div class="contact-details">
                                 <h4>{{ucfirst($widgets->name)}}</h4>
                                 {!! $widgets->content !!}
+                                
+                                 {!! $tweetDetails !!}
+                                 <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                  @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                             </div>
                         </div>
+                        
                          @endif
-                         <?php $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->first(); ?>
+                         <?php 
+                        
+                         $widgets = \App\Model\Front\Widgets::where('publish', 1)->where('type', 'footer4')->select('name','content','allow_tweets','allow_mailchimp')->first();
+                         if ($widgets) {
+                          $tweetDetails = $widgets->allow_tweets   ==1 ?  '<div id="tweets" class="twitter" >
+                            </div>' : '';
+                          }
+                            ?>
                          
                         <div class="col-md-2">
                           @if($widgets != null)
                             <h4>{{ucfirst($widgets->name)}}</h4>
                              <p> {!! $widgets->content !!}</p>
+                               <p>{!! $tweetDetails !!}   </p>
+                               <div class="alert alert-success d-none" id="newsletterSuccess">
+                                    <strong>Success!</strong> You've been added to our email list.
+                                </div>
+                                <div class="alert alert-danger d-none" id="newsletterError"></div>
+                                @if($mailchimpKey != null && $widgets->allow_mailchimp ==1)
+                                {!! Form::open(['url'=>'mail-chimp/subcribe','method'=>'GET']) !!}
+                                <div class="input-group">
+                                    <input class="form-control" placeholder="Email Address" name="email" id="newsletterEmail" type="text">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="submit">Go!</button>
+                                    </span>
+                                </div>
+                                {!! Form::close() !!}
+                                 @endif
                             <ul class="social-icons">
                                 @foreach($social as $media)
                                 <li class="{{$media->class}}"><a href="{{$media->link}}" target="_blank" title="{{ucfirst($media->name)}}"><i class="{{$media->fa_class}}"></i></a></li>
                                 @endforeach
                             </ul>
+                           
                           @endif
                             <br>
                        
@@ -449,7 +536,6 @@ if($script){
 
         <!-- Vendor -->
     </script>
-         <script>{!! NoCaptcha::renderJs('fr', true, 'recaptchaCallback') !!}  </script>
         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
           <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
@@ -465,10 +551,9 @@ if($script){
           <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
           <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
           <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
-              <script src="{{asset('css/jquery/jquery.min.js')}}"></script>
-          <script src="{{asset('css/bootstrap/js/bootstrap.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
+          <!-- <script src="{{asset('js/views/view.shop.js')}}"></script> -->
           <!-- Theme Custom -->
           <script src="{{asset('js/custom.js')}}"></script>
           
@@ -491,17 +576,17 @@ if($script){
                       
 
         
-         function removeItem(id) {
+                             function removeItem(id) {
 
-                         $.ajax({
-                        type: "GET",
-                     data:"id=" + id,
-                url: "{{url('cart/remove/')}}",
-                        success: function (data) {
-                            location.reload();
-                                                 }
-                                });
-                                }
+                                             $.ajax({
+                                            type: "GET",
+                                         data:"id=" + id,
+                                    url: "{{url('cart/remove/')}}",
+                                            success: function (data) {
+                                                location.reload();
+                                                                     }
+                                                    });
+                                                    }
 
 
         </script>

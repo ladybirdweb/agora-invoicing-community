@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\ApiKey;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\License\LicenseController;
-use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -70,30 +69,28 @@ class AuthController extends BaseAuthController
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
+                $zohoStatus = StatusSetting::pluck('zoho_status')->first();
+                if ($zohoStatus) {
+                    $zoho = $this->reqFields($user, $email);
+                    $auth = ApiKey::where('id', 1)->value('zoho_api_key');
+                    $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
+                    $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $zohoUrl);
+                    /* allow redirects */
+                    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+                    /* return a response into a variable */
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    /* times out after 30s */
+                    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+                    /* set POST method */
+                    curl_setopt($ch, CURLOPT_POST, 1);
+                    /* add POST fields parameters */
+                    curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
 
-                $zoho = $this->reqFields($user, $email);
-                $auth = ApiKey::where('id', 1)->value('zoho_api_key');
-                $zohoUrl = 'https://crm.zoho.com/crm/private/xml/Leads/insertRecords??duplicateCheck=1&';
-                $query = 'authtoken='.$auth.'&scope=crmapi&xmlData='.$zoho;
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, $zohoUrl);
-                /* allow redirects */
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-                /* return a response into a variable */
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                /* times out after 30s */
-                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-                /* set POST method */
-                curl_setopt($ch, CURLOPT_POST, 1);
-                /* add POST fields parameters */
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $query); // Set the request as a POST FIELD for curl.
-
-                //Execute cUrl session
-                $response = curl_exec($ch);
-                curl_close($ch);
-                $licenseStatus = StatusSetting::pluck('license_status')->first();
-                if ($licenseStatus == 1) {
-                    $addUserToLicensing = $this->licensing->addNewUser($user->first_name, $user->last_name, $user->email);
+                    //Execute cUrl session
+                    $response = curl_exec($ch);
+                    curl_close($ch);
                 }
 
                 $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
@@ -208,9 +205,10 @@ class AuthController extends BaseAuthController
     public function verifyOtp($mobile, $code, $otp)
     {
         $client = new \GuzzleHttp\Client();
+        $key = ApiKey::where('id', 1)->value('msg91_auth_key');
         $number = $code.$mobile;
         $response = $client->request('GET', 'https://control.msg91.com/api/verifyRequestOTP.php', [
-            'query' => ['authkey' => '54870AO9t5ZB1IEY5913f8e2', 'mobile' => $number, 'otp' => $otp],
+            'query' => ['authkey' => $key, 'mobile' => $number, 'otp' => $otp],
         ]);
 
         return $response->getBody()->getContents();

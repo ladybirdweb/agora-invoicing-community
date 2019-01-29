@@ -4,9 +4,15 @@
 <div class="row">
 
     <div class="col-md-12">
-        <div class="box">
+        <div class="box box-primary">
 
-            @if (count($errors) > 0)
+          
+
+            <div class="box-body">
+                {!! Form::open(['url'=>'groups']) !!}
+        
+                <div class="box-header">
+                      @if (count($errors) > 0)
             <div class="alert alert-danger">
                 <strong>Whoops!</strong> There were some problems with your input.<br><br>
                 <ul>
@@ -34,13 +40,8 @@
                 {{Session::get('fails')}}
             </div>
             @endif
-
-            <div class="box-body">
-                {!! Form::open(['url'=>'groups']) !!}
-
-                <div class="box-header">
                     <h3 class="box-title">{{Lang::get('message.groups')}}</h3>
-                    {!! Form::submit(Lang::get('message.save'),['class'=>'btn btn-primary pull-right'])!!}
+                     <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 </div>
 
                 <table class="table table-condensed">
@@ -54,8 +55,8 @@
                             <div class="form-group {{ $errors->has('name') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
-                                        {!! Form::text('name',null,['class' => 'form-control']) !!}
+                                    <div class="col-md-10">
+                                        {!! Form::text('name',null,['class' => 'form-control','id'=>'name']) !!}
                                     </div>
 
                                 </div>
@@ -67,12 +68,12 @@
                     </tr>
                     <tr>
 
-                        <td><b>{!! Form::label('type',Lang::get('message.headline')) !!}</b></td>
+                        <td><b>{!! Form::label('headline',Lang::get('message.headline')) !!}</b></td>
                         <td>
                             <div class="form-group {{ $errors->has('headline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('headline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -89,7 +90,7 @@
                             <div class="form-group {{ $errors->has('tagline') ? 'has-error' : '' }}">
 
                                 <div class='row'>
-                                    <div class="col-md-6">
+                                    <div class="col-md-10">
                                         {!! Form::text('tagline',null,['class' => 'form-control']) !!}
                                     </div>
 
@@ -99,42 +100,17 @@
                         </td>
 
                     </tr>
-                    <tr>
-
-                        <td><b>{!! Form::label('features',Lang::get('message.features'),['class'=>'required']) !!}</b></td>
-                        <td>
-                            <div class="form-group {{ $errors->has('features.0.name') ? 'has-error' : '' }}">
-
-
-
-                                <div class="input_fields_wrap ">
-                                    <div class='row form-group'>
-                                        
-                                        <div class="col-md-6 ">
-                                            <input type="text" name="features[][name]" class="form-control" value="{{ old('features.0.name') }}">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a href="#" class="add_field_button btn btn-primary">Add More Features</a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-
-                            </div>
-                        </td>
-
-                    </tr>
+  
 
 
                     <tr>
 
                         <td><b>{!! Form::label('hidden',Lang::get('message.hidden')) !!}</b></td>
                         <td>
+                             <p>{!! Form::hidden('hidden',0) !!}</p>
                             <div class="form-group {{ $errors->has('hidden') ? 'has-error' : '' }}">
 
-
+                               
                                 <p>{!! Form::checkbox('hidden',1) !!}  {{Lang::get('message.check-this-box-if-this-is-a-hidden-group')}}</p>
 
 
@@ -143,7 +119,51 @@
 
                     </tr>
 
-                    <tr>
+                     <tr>
+
+                    <td><b>{!! Form::label('link',Lang::get('message.group_link')) !!}</b></td>
+                        <td>
+                            <div class="form-group">
+
+
+                                 <div class='row'>
+                                    <div class="col-md-10">
+                                        {!! Form::text('cart_link',null,['class' => 'form-control','id'=>'groupslug']) !!}
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                     <tr>
+                          
+                        <td><b>{!! Form::label('design',Lang::get('message.select_design')) !!}</b></td>
+                        <td>
+
+                           <div class="form-group">
+                            @foreach($pricingTemplates as $template)
+                            <div class="col-md-4">
+                             <img src='{{ asset("images/$template->image")}}' class="img-thumbnail" style="height: 150;">
+                             <br/>
+                            <input type="radio" name= 'pricing_templates_id' value='{{$template->id}}' style="text-align: center;">
+                            {{$template->name}}
+
+                             <br/><br/>
+                        </div>
+                   
+                            @endforeach
+                            </div> 
+                        </td>
+
+                    </tr>
+
+
+
+                   <!--  <tr>
 
                         <td>
 
@@ -228,7 +248,7 @@
 
                         </td>
 
-                    </tr>
+                    </tr> -->
 
                     {!! Form::close() !!}
                 </table>
@@ -249,26 +269,20 @@
 <script src="{{asset('plugins/jQuery/jquery.js')}}"></script>
 
 <script>
-$(document).ready(function () {
-    var max_fields = 10; //maximum input boxes allowed
-    var wrapper = $(".input_fields_wrap"); //Fields wrapper
-    var add_button = $(".add_field_button"); //Add button ID
+    $(function(){
+       $(document).on('input','#name',function(){
 
-    var x = 1; //initlal text box count
-    $(add_button).click(function (e) { //on add input button click
-        e.preventDefault();
-        if (x < max_fields) { //max input box allowed
-            x++; //text box increment
-            $(wrapper).append('<div class="row"><div class="col-md-6 form-group"><input type="text" name="features[][name]" class="form-control" /></div><a href="#" class="remove_field">Remove</a></div>'); //add input box
-        }
-    });
-
-    $(wrapper).on("click", ".remove_field", function (e) { //user click on remove text
-        e.preventDefault();
-        $(this).parent('div').remove();
-        x--;
+         $.ajax ({
+            type: "get",
+            data : {'url' : this.value},
+            url : "{{url('get-group-url')}}",
+            success : function(data) {
+                $('#groupslug').val(data);
+            }
+         })
+        }); 
     })
-});
+
 </script>
 
 <script>

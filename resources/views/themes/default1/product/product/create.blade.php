@@ -49,7 +49,7 @@ Create New Product
         </div>
         @endif
         {!! Form::open(['url'=>'products','method'=>'post','files' => true,'id'=>'createproduct']) !!}
-        <h4>{{Lang::get('message.product')}}	<button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
+        <h4>{{Lang::get('message.product')}}    <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></h4>
 
     </div>
 
@@ -81,7 +81,7 @@ Create New Product
 
                                  <div class="col-md-3 form-group {{ $errors->has('type') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('type',Lang::get('message.type'),['class'=>'required']) !!}
+                                    {!! Form::label('type',Lang::get('message.lic_type'),['class'=>'required']) !!}
                                     {!! Form::select('type',['Types'=>$type],null,['class' => 'form-control']) !!}
 
                                 </div>
@@ -89,8 +89,14 @@ Create New Product
 
                                 <div class="col-md-3 form-group {{ $errors->has('group') ? 'has-error' : '' }}">
                                     <!-- last name -->
-                                    {!! Form::label('group',Lang::get('message.group'),['class'=>'required']) !!}
-                                    {!! Form::select('group',['Groups'=>$group],null,['class' => 'form-control']) !!}
+                                    {!! Form::label('group',Lang::get('message.group')) !!}
+                          <select name="group" value= "Choose" class="form-control">
+                             <option>Choose</option>
+                           @foreach($group as $key=>$value)
+
+                             <option value={{$key}}>{{$value}}</option>
+                          @endforeach
+                          </select>
   
                                 </div>
                                 <div class="col-md-3 form-group {{ $errors->has('category') ? 'has-error' : '' }}">
@@ -122,10 +128,29 @@ Create New Product
                                     <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
                                     <script>
                                     tinymce.init({
-                                        selector: 'textarea',
-                                        plugins: "code",
-                                        toolbar: "code",
-                                        menubar: "tools"
+                                         selector: 'textarea',
+                                         height: 200,
+                                         theme: 'modern',
+                                         relative_urls: true,
+                                         remove_script_host: false,
+                                         convert_urls: false,
+                                         plugins: [
+                                          'advlist autolink lists link image charmap print preview hr anchor pagebreak',
+                                          'searchreplace wordcount visualblocks visualchars code fullscreen',
+                                          'insertdatetime media nonbreaking save table contextmenu directionality',
+                                          'emoticons template paste textcolor colorpicker textpattern imagetools'
+                                          ],
+                                         toolbar1: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
+                                          toolbar2: 'print preview media | forecolor backcolor emoticons',
+                                          image_advtab: true,
+                                          templates: [
+                                              {title: 'Test template 1', content: 'Test 1'},
+                                              {title: 'Test template 2', content: 'Test 2'}
+                                          ],
+                                          content_css: [
+                                              '//fast.fonts.net/cssapi/e6dc9b99-64fe-4292-ad98-6974f93cd2a2.css',
+                                              '//www.tinymce.com/css/codepen.min.css'
+                                          ]
                                     });
                                     </script>
 
@@ -200,63 +225,42 @@ Create New Product
                         <!-- /.tab-pane -->
                         <div class="tab-pane" id="tab_2">
                             <table class="table table-responsive">
-
-                                <tr>
-                                    <td><b>{!! Form::label('subscription',Lang::get('message.subscription')) !!}</b></td>
+                                <br/>
+                                <span>Show on Cart Page</span>
+                                 <tr>
+                                      <div class="row">
                                     <td>
-                                        <div class="form-group {{ $errors->has('subscription') ? 'has-error' : '' }}">
-                                            <div class="row">
-                                                <div class="col-md-4">
-                                                    {!! Form::hidden('subscription',0) !!}
-                                                    {!! Form::checkbox('subscription',1,true) !!}
-                                                     <label data-toggle="tooltip" data-placement="top" title="If checked the product if purchased will have an expiry date, else, unlimited subscription">
-                                                    {!! Form::label('subscription',Lang::get('message.limited-subscription')) !!}</label>
-                                                </div>
-                                            
-
-
-                                         
-
-
-
-                                                <div class="col-md-4">
-                                                     {!! Form::radio('deny_after_subscription',1) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.perpetual-download')) !!}
-                                                </div>
-
-                                                <div class="col-md-4">
-                                                    {!! Form::radio('deny_after_subscription',0) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.retired-description') !!}">
-                                                    {!! Form::label('deny_after_subscription',Lang::get('message.retired-download')) !!}
-                                                </div>
-                                                <div class="col-md-4">
-                                                     {!! Form::hidden('perpetual_license',0) !!}
-                                                    {!! Form::checkbox('perpetual_license',1,true) !!}
-                                                      <label name="subscription" data-toggle="tooltip" data-placement="top" title="{!!Lang::get('message.perpetual_license-detail') !!}">
-                                                    {!! Form::label('perpetual_license',Lang::get('message.perpetual_license')) !!}
-                                                </div>
-                                               
-
-                                            </div>
+                                        <div>
+                                        <label>
+                                            {!! Form::radio('show_agent',1,false,['id'=>'agent']) !!}
+                                           <!-- <input type ="radio" id="agent" value="1" name="cartquantity">   -->
+                                           {!! Form::hidden('can_modify_agent',0) !!}
+                                            <!-- <input type ="radio" id="agent" value="0" name="cartquantity" hidden>   -->
+                                            Agents
+                                        </label>
                                         </div>
+                                    <br/> 
+                                    <div class="col-md-10" id="allowmulagent" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_agent',1) !!}  {{Lang::get('message.allow_multiple_agents_quantity')}} </p>
+                                    </div>
+                                   </td>
+                                 </div>
+                                </tr>
+                                <tr>
+                                    <td><label>
+                                         {!! Form::radio('show_agent',0,false,['id'=>'quantity']) !!}
+                                        <!-- <input type="radio" id="quantity" value="0" name="cartquantity"> -->
+                                        {!! Form::hidden('can_modify_quantity',0) !!}
+                                            Product Quantity
+                                         </label>
+                                         <br/>
+                                     <div class="col-md-10" id="allowmulproduct" style="display:none">
+                                       <p>{!! Form::checkbox('can_modify_quantity',1) !!}  {{Lang::get('message.allow_multiple_product_quantity')}} </p>
+                                    </div>
+                                
                                     </td>
                                 </tr>
-
-                               
-
-                                <tr>
-                                    <td><b>{!! Form::label('multiple_qty',Lang::get('message.allow-multiple-quantities')) !!}</b></td>
-                                    <td>
-                                        <div class="form-group {{ $errors->has('multiple_qty') ? 'has-error' : '' }}">
-
-                                            <p>{!! Form::checkbox('multiple_qty',1) !!}  {{Lang::get('message.tick-this-box-to-allow-customers-to-specify-if-they-want-more-than-1-of-this-item-when-ordering')}} </p>
-
-                                        </div>
-                                    </td>
-                                </tr>
-
-                               
+                              </table>
 
                                 <tr>
                                     <td><b>{!! Form::label('tax',Lang::get('message.taxes')) !!}</b></td>
@@ -284,7 +288,6 @@ Create New Product
                                
                                 </tr>
 
-                            </table>
 
                        
         {!! Form::close() !!}
@@ -310,64 +313,26 @@ Create New Product
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
 
 
-<!-- <script>
-=======
 <script>
->>>>>>> parent of 58a3ffa4... update
-    // Jquery validation for Product Creation
-    $(document).ready(function(){
-        $('#namecheck').hide();
-        $('#descheck').hide();
+    $(function() {
+        $('#agent').click(function(){
+            if($('#agent').is(":checked")) {
+               $("#allowmulagent").show();
+               $("#allowmulproduct").hide();
+            } 
+        })
 
-        var nameErr= true;
-        var desErr = true;
+    })
 
-        $('#createproduct').submit(function(){
-            function name_check(){
-                var name = $('#productname').val();
-                if (name.length == ''){
-                   $('#namecheck').show(); 
-                   $('#namecheck').html('This field is required'); 
-                   $('#namecheck').focus();
-                   $('#productname').css("border-color","red");
-                   $('#namecheck').css({"color":"red","margin-top":"5px"});
-                }
-                 else{
-                     $('#namecheck').hide();
-                      $('#productname').css("border-color","");
-                     return true;
-                     }
-            }
+    $(function() {
+        $('#quantity').click(function(){
+            if($('#quantity').is(":checked")) {
+               $("#allowmulagent").hide();
+               $("#allowmulproduct").show();
+            } 
+        })
 
-            function des_check(){
-                var des = $('#textarea').val();
-                if (des.length == ''){
-                    $('#descheck').show();
-                    $('#descheck').html('This field is required');
-                    $('#descheck').focus();
-                    $('#textarea').css("border-color","red");
-                    $('#descheck').css({"color":"red","margin-top":"5px"});
-                }
-                else{
-                     $('#descheck').hide();
-                     $('#textarea').css("border-color","");
-                     return true;
-                }
-            }
-            name_check();
-            des_check();
-             if(name_check() && des_check()){
-                return true;
-             }
-            else{
-            return false;
-          }
-        });
-    });
-<<<<<<< HEAD
-</script> -->
-
-
+    })
 </script>
 
 <script>

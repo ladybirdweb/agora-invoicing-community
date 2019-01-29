@@ -146,28 +146,26 @@ class TaxController extends Controller
     {
         try {
             $tax = $this->tax->where('id', $id)->first();
+            $taxClassName[] = $tax->taxClass()->find($tax->tax_classes_id)->name; //Find the Tax Class Name related to the tax
             $txClass = $this->tax_class->where('id', $tax->tax_classes_id)->first();
-            if ($txClass->name == 'Others') {
-                $classes = 0;
-            } elseif ($txClass->name == 'Intra State GST') {
-                $classes = 1;
-            } elseif ($txClass->name == 'Inter State GST') {
-                $classes = 2;
-            } else {
-                $classes = 3;
-            }
-            $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
-
+            // if ($txClass->name == 'Others') {
+            //     $classes = 0;
+            // } elseif ($txClass->name == 'CGST+SGST') {
+            //     $classes = 1;
+            // } elseif ($txClass->name == 'IGST') {
+            //     $classes = 2;
+            // } else {
+            //     $classes = 3;
+            // }
             $state = \App\Http\Controllers\Front\CartController::getStateByCode($tax->state);
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($tax->country);
-            if ($classes) {
-                $classes = $this->tax_class->get();
-            }
+            // if ($classes) {
+            //     $classes = $this->tax_class->get();
+            // }
 
             return view('themes.default1.payment.tax.edit',
-                compact('tax', 'classes', 'txClass', 'states', 'state',
-
-                    'defaultValue'));
+                compact('tax', 'txClass', 'states', 'state',
+                'defaultValue', 'taxClassName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -183,39 +181,24 @@ class TaxController extends Controller
     public function update($id, Request $request)
     {
         try {
-            // dd($request->all());
+            $taxClassesName = $request->tax_classes_id;
             $defaultValue = ['Others', 'Intra State GST', 'Inter State GST', 'Union Territory GST'];
-
-            if ($request->tax_classes_id == 0) {
-                $taxClassesName = 'Others';
-            } elseif ($request->tax_classes_id == 1) {
-                $taxClassesName = 'Intra State GST';
-            } elseif ($request->tax_classes_id == 2) {
-                $taxClassesName = 'Inter State GST';
-            } else {
-                $taxClassesName = 'Union Territory GST';
-            }
-
-            $TaxClass = TaxClass::where('name', $taxClassesName)->first();
+            $TaxClass = TaxClass::where('name', $request->tax_classes_id)->first();
             if ($TaxClass == null) {
                 $TaxClass = $this->tax_class->create(['name'=>$taxClassesName]);
             }
             $taxId = $TaxClass->id;
-
             $tax = $this->tax->where('id', $id)->first();
-            // dd($tax);
             $tax->fill($request->except('tax_classes_id'))->save();
 
             $this->tax->where('id', $id)->update(['tax_classes_id'=> $taxId]);
             if ($taxClassesName != 'Others') {
                 $country = 'IN';
-                $state = '';
+                $state = 'Any State';
                 $rate = '';
                 $this->tax->where('id', $id)
                 ->update(['tax_classes_id'=> $taxId, 'country'=>$country, 'state'=>$state, 'rate'=>$rate]);
             }
-
-            // $tax->fill($request->input())->save();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
         } catch (\Exception $ex) {

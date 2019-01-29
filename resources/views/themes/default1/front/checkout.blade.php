@@ -17,11 +17,7 @@ Checkout
 @if (!\Cart::isEmpty())
 
 <?php
-if ($attributes[0]['currency'][0]['symbol'] == '') {
-    $symbol = $attributes[0]['currency'][0]['code'];
-} else {
-    $symbol = $attributes[0]['currency'][0]['symbol'];
-}
+
 $tax=  0;
 
 
@@ -106,6 +102,8 @@ $sum = 0;
 
                                 <td class="product-thumbnail">
                                     <?php
+                                    $currency = $item->attributes['currency']['currency'] ;
+                                    $symbol = $item->attributes['currency']['symbol'];
                                     $product = App\Model\Product\Product::where('id', $item->id)->first();
                                     $price = 0;
                                     $cart_controller = new App\Http\Controllers\Front\CartController();
@@ -133,7 +131,7 @@ $sum = 0;
                                 </td>
 
                                 <td class="product-price">
-                                    <?php $subtotals[] = \App\Http\Controllers\Front\CartController::calculateTax($product->id, $attributes[0]['currency'][0]['code'], 1, 1, 0); ?>
+                                  
                                    
                                     <span class="amount">{!! $symbol !!}    {{\App\Http\Controllers\Front\CartController::rounding($item->getPriceSum())}}</span>
 
@@ -162,18 +160,27 @@ $sum = 0;
                 {!! Form::open(['url'=>'checkout','method'=>'post']) !!}
                 @if(Cart::getTotal()>0)
                 
-                <?php 
-                
-                $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($attributes[0]['currency'][0]['code']);
+                 <?php 
+                $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
                 $total = Cart::getSubTotal();
-                                                        $sum = $item->getPriceSum();
-                                                        $tax = $total-$sum;
+                  // 
                 ?>
+                @if($gateways) {
+                  <div class="form-group">
+
+                    <div class="col-md-6">
+                        {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
+                    </div>
+                </div>
+            }
+            @endif
+                
                 <div class="form-group">
 
 
                    <div class="form-row">
                     <div class="col-md-6">
+                        {!! Form::radio('payment_gateway',strtolower('Razorpay')) !!}
                        <img alt="Porto" width="111"  data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/Razorpay.png')}}"><br><br>
                     </div>
                 </div>
@@ -209,21 +216,19 @@ $sum = 0;
                         <strong>Cart Subtotal</strong>
                     </th>
                     <td>
+                   
 
-
-                        <strong><span class="amount"> {{$symbol}}  @if($attributes[0]['currency'][0]['code'] == "INR")
+                        <strong><span class="amount"> {{$symbol}}  @if($currency == "INR")
 
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
                                             @else
                                             {{App\Http\Controllers\Front\CartController::rounding(Cart::getSubTotalWithoutConditions())}}
-                                            <!--  {{\App\Http\Controllers\Front\CartController::calculateTax($item->id,$item->getPriceSum(),1,1,0)}} -->
+                                           
                                             @endif
                     </td>
                 </tr>
-               
                 @foreach($item->attributes['tax'] as $attribute)
-                  
-                    @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==1))
+                    @if($attribute['name']!='null' && ($currency == "INR" && $attribute['tax_enable'] ==1))
                  @if($attribute['state']==$attribute['origin_state'] && $attribute['ut_gst']=='NULL' && $attribute['status'] ==1)
 
                 <tr class="Taxes">
@@ -244,7 +249,7 @@ $sum = 0;
 
                 </tr>
                 @endif
-               
+                
                 @if ($attribute['state']!=$attribute['origin_state'] && $attribute['ut_gst']=='NULL' &&$attribute['status'] ==1)
                
 
@@ -283,7 +288,7 @@ $sum = 0;
                 @endif
                 @endif
 
-                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+                 @if($attribute['name']!='null' && ($currency == "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
 
                  <tr class="Taxes">
                     <th>
@@ -300,7 +305,7 @@ $sum = 0;
                   </tr>
                  @endif
            
-                @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
+                @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==1 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
                     <th>
@@ -317,7 +322,7 @@ $sum = 0;
                     </td>
                   </tr>
                  @endif
-                 @if($attribute['name']!='null' && ($attributes[0]['currency'][0]['code'] != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
+                 @if($attribute['name']!='null' && ($currency != "INR" && $attribute['tax_enable'] ==0 && $attribute['status'] ==1))
 
                   <tr class="Taxes">
                   
@@ -344,7 +349,7 @@ $sum = 0;
 
 
 
-                         @if($attributes[0]['currency'][0]['code'] == "INR")
+                         @if($currency == "INR")
                            
                                           {{$symbol}}  {{App\Http\Controllers\Front\CartController::rounding(Cart::getTotal())}}
                                             @else

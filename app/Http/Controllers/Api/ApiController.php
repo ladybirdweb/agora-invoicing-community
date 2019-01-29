@@ -20,10 +20,11 @@ class ApiController extends Controller
             //            }
 
             $url_info = parse_url($url);
-            $domain = $url_info['host'];
-
+            $domain1 = $url_info['host'];
+            $domain2 = 'www.'.$domain1;
+            $domain = $domain1.','.$domain2;
             $orders = new Order();
-            $order = $orders->where('domain', $domain)->first();
+            $order = $orders->where('domain', $domain)->orWhere('domain', $domain1)->first();
             if ($order) {
                 $result = 'success';
             }

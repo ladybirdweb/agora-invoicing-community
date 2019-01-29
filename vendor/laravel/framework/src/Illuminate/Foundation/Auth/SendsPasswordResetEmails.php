@@ -117,9 +117,10 @@ trait SendsPasswordResetEmails {
         $from = $setting->email;
         
         $to = $user->email;
+        $contactUs = $setting->website;
         $subject = $template->name;
         $data = $template->data;
-        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'url' => $url];
+        $replace = ['name' => $user->first_name . ' ' . $user->last_name, 'url' => $url,'contact_us'=>$contactUs];
         $type = '';
 
 

@@ -18,14 +18,18 @@ use Spatie\Activitylog\Models\Activity;
 class SettingsController extends BaseSettingsController
 {
     public $apikey;
+    public $statusSetting;
 
     public function __construct()
     {
         $this->middleware('auth', ['except' => 'checkPaymentGateway']);
-        $this->middleware('admin', ['except' => 'checkPaymentGateway']);
+        // $this->middleware('admin', ['except' => 'checkPaymentGateway']);
 
         $apikey = new ApiKey();
         $this->apikey = $apikey;
+
+        $status = new StatusSetting();
+        $this->statusSetting = $status;
     }
 
     public function settings(Setting $settings)
@@ -43,6 +47,11 @@ class SettingsController extends BaseSettingsController
         return view('themes.default1.common.plugins');
     }
 
+    /**
+     * Get the Status and Api Keys for Settings Module.
+     *
+     * @param ApiKey $apikeys
+     */
     public function getKeys(ApiKey $apikeys)
     {
         try {
@@ -50,11 +59,24 @@ class SettingsController extends BaseSettingsController
             $licenseUrl = $apikeys->pluck('license_api_url')->first();
             $status = StatusSetting::pluck('license_status')->first();
             $captchaStatus = StatusSetting::pluck('recaptcha_status')->first();
+            $updateStatus = StatusSetting::pluck('update_settings')->first();
+            $mobileStatus = StatusSetting::pluck('msg91_status')->first();
             $siteKey = $apikeys->pluck('nocaptcha_sitekey')->first();
             $secretKey = $apikeys->pluck('captcha_secretCheck')->first();
+            $updateSecret = $apikeys->pluck('update_api_secret')->first();
+            $mobileauthkey = $apikeys->pluck('msg91_auth_key')->first();
+            $updateUrl = $apikeys->pluck('update_api_url')->first();
+            $emailStatus = StatusSetting::pluck('emailverification_status')->first();
+            $twitterKeys = $apikeys->select('twitter_consumer_key','twitter_consumer_secret',
+                'twitter_access_token', 'access_tooken_secret')->first();
+            $twitterStatus = $this->statusSetting->pluck('twitter_status')->first();
+            $zohoStatus = $this->statusSetting->pluck('zoho_status')->first();
+            $zohoKey = $apikeys->pluck('zoho_api_key')->first();
+            $rzpStatus = $this->statusSetting->pluck('rzp_status')->first();
+            $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -72,14 +94,38 @@ class SettingsController extends BaseSettingsController
         }
     }
 
+    /**
+     * PAyment Gateway that is shown on the basis of currency.
+     *
+     * @param string $currency The currency of the Product Selected
+     *
+     * @return string Name of the Payment Gateway
+     */
     public static function checkPaymentGateway($currency)
     {
         try {
             $plugins = new Plugin();
             $models = [];
-            $gateways = 'Razorpay';
+            $gateways = '';
+            $name = '';
+            $active_plugins = $plugins->where('status', 1)->get(); //get the plugins that are active
+            if ($active_plugins->count() > 0) {
+                foreach ($active_plugins as $plugin) {
+                    $models[] = \DB::table(strtolower($plugin->name))->first(); //get the table of the active plugin
+                    $pluginName[] = $plugin->name; //get the name of active plugin
+                }
 
-            return $gateways;
+                if (count($models) > 0) {//If more than 1 plugin is active it will check the currencies allowed for that plugin.If the currencies allowed matches the passed arguement(currency),that plugin name is returned
+                    for ($i = 0; $i < count($pluginName); $i++) {
+                        $currencies = explode(',', $models[$i]->currencies);
+                        if (in_array($currency, $currencies)) {
+                            $name = $pluginName[$i];
+                        }
+                    }
+                }
+            }
+
+            return $name;
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -96,8 +142,10 @@ class SettingsController extends BaseSettingsController
             ->pluck('name', 'symbol')->toArray();
             $states = \App\Http\Controllers\Front\CartController::findStateByRegionId($set->country);
 
-            return view('themes.default1.common.setting.system',
-                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency'));
+            return view(
+                'themes.default1.common.setting.system',
+                compact('set', 'selectedCountry', 'state', 'states', 'selectedCurrency')
+            );
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -248,8 +296,6 @@ class SettingsController extends BaseSettingsController
             $delFrom = $request->input('delFrom');
             $delTill = $request->input('delTill');
             $query = $this->advanceSearch($from, $till, $delFrom, $delTill);
-            // $activity_log = Activity::select('id', 'log_name', 'description',
-            //     'subject_id', 'subject_type', 'causer_id', 'properties', 'created_at')->orderBy('id', 'desc');
 
             return \DataTables::of($query->take(50))
              ->setTotalRecords($query->count())

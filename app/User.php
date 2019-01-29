@@ -53,9 +53,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function getDescriptionForEvent(string $eventName): string
     {
         $lastActivity = Activity::all()->last(); //returns the last logged activity
-        // if ($lastActivity->description == 'Logged In') {
-        //     $this->disableLogging();
-        // }
         if ($eventName == 'updated') {
             $this->enableLogging();
 
@@ -67,9 +64,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         }
 
         return '';
-
-        // return "Product  has been {$eventName}";
-         // \Auth::user()->activity;
     }
 
     /**

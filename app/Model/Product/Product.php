@@ -10,7 +10,7 @@ class Product extends BaseModel
     use LogsActivity;
     protected $table = 'products';
     protected $fillable = ['name', 'description', 'type', 'group', 'file', 'image', 'require_domain', 'category',
-        'stock_control',  'stock_qty', 'sort_order', 'tax_apply', 'retired', 'hidden',  'auto_terminate',
+        'can_modify_agent',  'can_modify_quantity', 'show_agent', 'tax_apply', 'show_product_quantity', 'hidden',  'auto_terminate',
         'setup_order_placed', 'setup_first_payment', 'setup_accept_manually',
         'no_auto_setup', 'shoping_cart_link', 'process_url', 'github_owner',
         'github_repository',
@@ -52,9 +52,9 @@ class Product extends BaseModel
         return $this->hasMany('App\Model\Product\Subscription');
     }
 
-    public function type()
+    public function licenseType()
     {
-        return $this->belongsTo('App\Model\Product\Type', 'type');
+        return $this->belongsTo('App\Model\License\LicenseType', 'type');
     }
 
     public function price()
@@ -115,6 +115,11 @@ class Product extends BaseModel
         $related = "App\Model\Payment\Plan";
 
         return $this->hasMany($related, 'product');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo("App\Model\Product\ProductGroup");
     }
 
     public function plan()

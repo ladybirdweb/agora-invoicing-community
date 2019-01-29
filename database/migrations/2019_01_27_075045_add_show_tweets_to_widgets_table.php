@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddShowTweetsToWidgetsTable extends Migration
 {
@@ -14,8 +14,8 @@ class AddShowTweetsToWidgetsTable extends Migration
     public function up()
     {
         Schema::table('widgets', function (Blueprint $table) {
-        $table->boolean('allow_tweets')->nullable();
-        $table->boolean('allow_mailchimp')->nullable();
+            $table->boolean('allow_tweets')->nullable();
+            $table->boolean('allow_mailchimp')->nullable();
         });
     }
 
@@ -27,7 +27,7 @@ class AddShowTweetsToWidgetsTable extends Migration
     public function down()
     {
         Schema::table('widgets', function (Blueprint $table) {
-              Schema::dropIfExists('widgets');
+            Schema::dropIfExists('widgets');
         });
     }
 }

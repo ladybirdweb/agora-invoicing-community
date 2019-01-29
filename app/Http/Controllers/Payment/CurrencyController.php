@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
-use App\Model\Payment\Currency;
 use App\Model\Common\Setting;
+use App\Model\Payment\Currency;
 use Form;
 use Illuminate\Http\Request;
 use Lang;
@@ -35,7 +35,7 @@ class CurrencyController extends Controller
     public function getCurrency()
     {
         $defaultCurrency = Setting::pluck('default_currency')->first();
-        $model = Currency::where('name', '!=', null)->where('code','!=',$defaultCurrency)->
+        $model = Currency::where('name', '!=', null)->where('code', '!=', $defaultCurrency)->
         select('id', 'name', 'code', 'symbol', 'status')
         ->orderBy('id', 'desc')->get();
 
@@ -54,11 +54,12 @@ class CurrencyController extends Controller
                           })
 
                           ->addColumn('dashboard', function ($model) {
-                              if($model->status == 1)  {
-                                $showButton = $this->getButtonColor($model->id);
-                                return $showButton;
+                              if ($model->status == 1) {
+                                  $showButton = $this->getButtonColor($model->id);
+
+                                  return $showButton;
                               } else {
-                                return  '<a class="btn btn-sm btn-primary btn-xs disabled"><i class="fa fa-eye"
+                                  return  '<a class="btn btn-sm btn-primary btn-xs disabled"><i class="fa fa-eye"
                                 style="color:white;"> </i>&nbsp;&nbsp;Show on Dashboard</a>';
                               }
                           })
@@ -84,47 +85,48 @@ class CurrencyController extends Controller
                         ->rawColumns(['name', 'code', 'symbol', 'dashboard', 'status'])
                         ->make(true);
     }
-    
-   /**
-    * Get the Color of the button when the currency is allowed to show on dashboard
-    *
-    * @param  string $id  Currrency id
-    *
-    * @return string
-    */
+
+    /**
+     * Get the Color of the button when the currency is allowed to show on dashboard.
+     *
+     * @param string $id Currrency id
+     *
+     * @return string
+     */
     public function getButtonColor($id)
-    {  
-          $defaultCurrency = Setting::pluck('default_currency')->first();
-           $currencyCode = Currency::where('id',$id)->pluck('code')->first();//If default currency is equal to the currency ode then make that button as Disabled as it would always be shown on dashboard and cannt be modified
-           if($defaultCurrency ==  $currencyCode) {
-              return  '<a class="btn btn-sm btn-warning btn-xs disabled" style="background-color:#f39c12;">&nbsp;&nbsp;System Default Currency</a>';
-           }
-          $currency = Currency::where('id',$id)->pluck('dashboard_currency')->first();
-          if ($currency == 1) {
-           return '<a href='.url('dashboard-currency/'.$id)." 
+    {
+        $defaultCurrency = Setting::pluck('default_currency')->first();
+        $currencyCode = Currency::where('id', $id)->pluck('code')->first(); //If default currency is equal to the currency ode then make that button as Disabled as it would always be shown on dashboard and cannt be modified
+        if ($defaultCurrency == $currencyCode) {
+            return  '<a class="btn btn-sm btn-warning btn-xs disabled" style="background-color:#f39c12;">&nbsp;&nbsp;System Default Currency</a>';
+        }
+        $currency = Currency::where('id', $id)->pluck('dashboard_currency')->first();
+        if ($currency == 1) {
+            return '<a href='.url('dashboard-currency/'.$id)." 
                 class='btn btn-sm btn-success btn-xs'><i class='fa fa-check'
                 style='color:white;'> </i>&nbsp;&nbsp;Show on Dashboard</a>";
-          } else {
+        } else {
             return '<a href='.url('dashboard-currency/'.$id)." 
                 class='btn btn-sm btn-danger btn-xs'><i class='fa fa-close'
                 style='color:white;'> </i>&nbsp;&nbsp;Show on Dashboard</a>";
-          }
+        }
     }
 
     /**
      * Activate the Currency to be Shown on Dsshboard.
      *
-     * 
+     *
      * @return \Response
      */
     public function setDashboardCurrency($id)
     {
-        Currency::where('id',$id)->update(['dashboard_currency' => 1]);
-        $dashboardStatus = Currency::where('id', '!=' ,$id)->select('dashboard_currency','id')->get();
-        foreach ($dashboardStatus as $status ) {
-          $status =  Currency::where('id',$status->id)->update(['dashboard_currency'=>0]);
+        Currency::where('id', $id)->update(['dashboard_currency' => 1]);
+        $dashboardStatus = Currency::where('id', '!=', $id)->select('dashboard_currency', 'id')->get();
+        foreach ($dashboardStatus as $status) {
+            $status = Currency::where('id', $status->id)->update(['dashboard_currency'=>0]);
         }
-        return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 
     /**

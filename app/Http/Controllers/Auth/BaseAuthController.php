@@ -131,8 +131,9 @@ class BaseAuthController extends Controller
             return response()->json($response);
         } catch (\Exception $ex) {
             $response = ['type' => 'fail',
-            'message'           =>  $ex->getMessage() ];
+            'message'           => $ex->getMessage(), ];
             $result = [$ex->getMessage()];
+
             return response()->json(compact('response'), 500);
         }
     }

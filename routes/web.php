@@ -226,7 +226,7 @@
         Route::get('currency-delete', 'Payment\CurrencyController@destroy')->name('currency-delete');
 
           Route::post('change/currency/status', ['as' => 'change.currency.status', 'uses' => 'Payment\CurrencyController@updatecurrency']);
-        Route::get('dashboard-currency/{id}','Payment\CurrencyController@setDashboardCurrency');
+        Route::get('dashboard-currency/{id}', 'Payment\CurrencyController@setDashboardCurrency');
 
         /*
          * Tax

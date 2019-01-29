@@ -3,9 +3,8 @@
 namespace App\Http\Controllers\Github;
 
 use App\Http\Controllers\Controller;
-use App\Model\Github\Github;
-use App\ApiKey;
 use App\Model\Common\StatusSetting;
+use App\Model\Github\Github;
 use App\Model\Product\Subscription;
 use Auth;
 use Bugsnag;
@@ -265,8 +264,9 @@ class GithubController extends Controller
         try {
             $model = $this->github;
             $githubStatus = StatusSetting::first()->github_status;
-            $githubFileds = $model->select('client_id','client_secret','username','password')->first();
-            return view('themes.default1.github.settings', compact('model','githubStatus','githubFileds'));
+            $githubFileds = $model->select('client_id', 'client_secret', 'username', 'password')->first();
+
+            return view('themes.default1.github.settings', compact('model', 'githubStatus', 'githubFileds'));
         } catch (Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }
@@ -274,13 +274,12 @@ class GithubController extends Controller
 
     public function postSettings(Request $request)
     {
-
         try {
             $status = $request->input('status');
             StatusSetting::find(1)->update(['github_status'=>$status]);
-            Github::find(1)->update(['username'=>$request->input('git_username'), 
-                'password'=>$request->input('git_password'), 'client_id'=>$request->input('git_client'),
-                 'client_secret'=>$request->input('git_secret')]);
+            Github::find(1)->update(['username'=> $request->input('git_username'),
+                'password'                     => $request->input('git_password'), 'client_id'=>$request->input('git_client'),
+                 'client_secret'               => $request->input('git_secret'), ]);
 
             return ['message' => 'success', 'update'=>'Github Settings Updated'];
         } catch (Exception $ex) {

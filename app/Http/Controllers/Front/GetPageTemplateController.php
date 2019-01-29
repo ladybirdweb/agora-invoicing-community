@@ -50,7 +50,8 @@ class GetPageTemplateController extends Controller
         try {
             $plan = Product::find($productid)->plan();
             $description = $plan ? $plan->planPrice->first() : '';
-            $priceDescription = $description ? $description->price_description  : '';
+            $priceDescription = $description ? $description->price_description : '';
+
             return  $priceDescription;
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex->getMessage());

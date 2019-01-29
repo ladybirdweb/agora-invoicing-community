@@ -6,7 +6,6 @@ use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use Illuminate\Http\Request;
 use App\Traits\Order\UpdateDates;
 use App\User;
 use Bugsnag;
@@ -338,6 +337,4 @@ class BaseOrderController extends ExtendedOrderController
 
         return $url;
     }
-
-  
 }

@@ -35,5 +35,4 @@ class TaxClass extends BaseModel
     {
         return $this->hasMany('App\Model\Payment\Tax');
     }
-
 }

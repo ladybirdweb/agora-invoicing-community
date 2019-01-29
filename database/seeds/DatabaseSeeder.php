@@ -1,10 +1,12 @@
 <?php
 
 use App\ApiKey;
+use App\Model\Common\PricingTemplate;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
 use App\Model\Common\TemplateType;
 use App\Model\Github\Github;
+use App\Model\License\LicensePermission;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\Condition;
 use App\Model\Payment\Currency;
@@ -16,9 +18,7 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
-use App\Model\License\LicensePermission;
 use Illuminate\Database\Eloquent\Model;
-use App\Model\Common\PricingTemplate;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -732,19 +732,18 @@ class TemplateTableSeeder extends Seeder
     }
 }
 
-
 class LicensePermissionTableSeeder extends Seeder
 {
     public function run()
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('license_permissions')->truncate();
-        LicensePermission::create(['id'=>1 , 'permissions'=> 'Can be Downloaded']);
-        LicensePermission::create(['id'=>2 , 'permissions'=> 'Generate License Expiry Date']);
-        LicensePermission::create(['id'=>3 , 'permissions'=> 'Generate Updates Expiry Date']);
-        LicensePermission::create(['id'=>4 , 'permissions'=> 'Generate Support Expiry Date']);
-        LicensePermission::create(['id'=>5 , 'permissions'=> 'No Permissions']);
-        LicensePermission::create(['id'=>6 , 'permissions'=> 'Allow Downloads Before Updates Expire']);
+        LicensePermission::create(['id'=>1, 'permissions'=> 'Can be Downloaded']);
+        LicensePermission::create(['id'=>2, 'permissions'=> 'Generate License Expiry Date']);
+        LicensePermission::create(['id'=>3, 'permissions'=> 'Generate Updates Expiry Date']);
+        LicensePermission::create(['id'=>4, 'permissions'=> 'Generate Support Expiry Date']);
+        LicensePermission::create(['id'=>5, 'permissions'=> 'No Permissions']);
+        LicensePermission::create(['id'=>6, 'permissions'=> 'Allow Downloads Before Updates Expire']);
     }
 }
 
@@ -754,7 +753,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0,'zoho_status'=>0,'rzp_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
@@ -765,7 +764,7 @@ class PricingTemplateSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('pricing_templates')->truncate();
-        PricingTemplate::create(['id'=>1 ,'data'=>'<div class="col-md-3 col-sm-6">
+        PricingTemplate::create(['id'=> 1, 'data'=>'<div class="col-md-3 col-sm-6">
                             <div class="plan">
                                 <div class="plan-header">
                                     <h3>{{name}}</h3>
@@ -787,7 +786,7 @@ class PricingTemplateSeeder extends Seeder
                                 </div>
                                 
                             </div>
-                        </div>', 'image'=>'pricing_template1.png' ,'name'=>'Porto Theme(With Gap Style)']);
+                        </div>', 'image'=> 'pricing_template1.png', 'name'=>'Porto Theme(With Gap Style)']);
     }
 }
 
@@ -798,7 +797,7 @@ class GitHubTableSeeder extends Seeder
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('githubs')->truncate();
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        Github::create(['id' => 1, 'client_id'=>NULL, 'client_secret'=>NULL, 'username'=>NULL, 'password'=>NULL]);
+        Github::create(['id' => 1, 'client_id'=>null, 'client_secret'=>null, 'username'=>null, 'password'=>null]);
     }
 }
 

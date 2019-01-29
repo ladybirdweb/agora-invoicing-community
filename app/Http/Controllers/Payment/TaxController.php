@@ -146,7 +146,7 @@ class TaxController extends Controller
     {
         try {
             $tax = $this->tax->where('id', $id)->first();
-            $taxClassName[] = $tax->taxClass()->find($tax->tax_classes_id)->name;//Find the Tax Class Name related to the tax
+            $taxClassName[] = $tax->taxClass()->find($tax->tax_classes_id)->name; //Find the Tax Class Name related to the tax
             $txClass = $this->tax_class->where('id', $tax->tax_classes_id)->first();
             // if ($txClass->name == 'Others') {
             //     $classes = 0;
@@ -165,7 +165,7 @@ class TaxController extends Controller
 
             return view('themes.default1.payment.tax.edit',
                 compact('tax', 'txClass', 'states', 'state',
-                'defaultValue','taxClassName'));
+                'defaultValue', 'taxClassName'));
         } catch (\Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }

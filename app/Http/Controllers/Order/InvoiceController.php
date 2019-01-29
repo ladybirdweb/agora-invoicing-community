@@ -219,7 +219,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return view('themes.default1.invoice.show', compact('invoiceItems', 'invoice', 'user', 'currency', 'symbol'));
         } catch (\Exception $ex) {
-             app('log')->warning($ex->getMessage());
+            app('log')->warning($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect()->back()->with('fails', $ex->getMessage());

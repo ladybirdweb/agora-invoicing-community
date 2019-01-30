@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use Bugsnag;
@@ -31,9 +30,9 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             }
             foreach ($plans as $value) {
                 $cost = $value->planPrice()->where('currency', $currency)->first();
-                if ($cost) {    
+                if ($cost) {
                     $cost = $cost->add_price;
-                } 
+                }
                 $priceDescription = $value->planPrice->first();
                 $priceDescription = $priceDescription ? $priceDescription->price_description : '';
                 $cost = \App\Http\Controllers\Front\CartController::rounding($cost);

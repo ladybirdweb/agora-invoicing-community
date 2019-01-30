@@ -33,7 +33,12 @@ class BaseTemplateController extends ExtendedBaseTemplateController
                 $cost = $value->planPrice()->where('currency', $currency)->first();
                 if ($cost) {    
                     $cost = $cost->add_price;
-                } 
+                } else {
+                    $def_currency = Setting::find(1)->default_currency;
+                    $def_currency_symbol = Setting::find(1)->default_symbol;
+                    $currency = \Auth::user()->update(['currency' => $def_currency]);
+                    $symbol = \Auth::user()->update(['currency_symbol'=>$def_currency_symbol]);
+                }
                 $priceDescription = $value->planPrice->first();
                 $priceDescription = $priceDescription ? $priceDescription->price_description : '';
                 $cost = \App\Http\Controllers\Front\CartController::rounding($cost);
@@ -44,7 +49,6 @@ class BaseTemplateController extends ExtendedBaseTemplateController
 
             return $price;
         } catch (\Exception $ex) {
-            dd($ex);
             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 

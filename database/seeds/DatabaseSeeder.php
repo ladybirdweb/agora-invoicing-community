@@ -47,8 +47,8 @@ class DatabaseSeeder extends Seeder
         // $this->call('GroupTableSeeder');
         // $this->command->info('Product Group table seeded!');
 
-        $this->call('ProductTypesTableSeeder');
-        $this->command->info('Product Types table seeded!');
+        // $this->call('ProductTypesTableSeeder');
+        // $this->command->info('Product Types table seeded!');
 
         $this->call('PromotionTypeTableSeeder');
         $this->command->info('Promotion Types table seeded!');
@@ -118,23 +118,7 @@ class DatabaseSeeder extends Seeder
 //     }
 // }
 
-class ProductTypesTableSeeder extends Seeder
-{
-    public function run()
-    {
-        \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        \DB::table('product_types')->truncate();
-        \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
-        $types = [
-            1 => ['name' => 'download'],
-            0 => ['name' => 'SaaS'],
-            ];
-        //var_dump($subcriptions);
-        for ($i = 0; $i < count($types); $i++) {
-            Type::create(['id' => $i + 1, 'name' => $types[$i]['name'], 'description'=>'null']);
-        }
-    }
-}
+
 
 class TaxOptionTableSeeder extends Seeder
 {

@@ -163,8 +163,8 @@ class PageController extends GetPageTemplateController
     public function getPageUrl($slug)
     {
         $productController = new \App\Http\Controllers\Product\ProductController();
-      //  $url = url('/');
-      //  $segment = $this->addSegment(['public/pages']);
+        //  $url = url('/');
+        //  $segment = $this->addSegment(['public/pages']);
         $url = url('/');
 
         $slug = str_slug($slug, '-');

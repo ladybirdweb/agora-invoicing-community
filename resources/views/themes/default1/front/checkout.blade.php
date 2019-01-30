@@ -384,9 +384,7 @@ $sum = 0;
 
                 @if(Session::has('success'))
                 <div>
-                    <!-- {{Lang::get('message.success')}}. -->
-                    
-                    {!!Session::get('success')!!}
+                  {!!Session::get('success')!!}
                 </div>
                 @endif
                 <!-- fail message -->

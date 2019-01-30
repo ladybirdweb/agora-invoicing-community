@@ -22,7 +22,6 @@ if($script){
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <!-- <img src='{{ asset("images/$setting->logo")}}' class="img-rounded" alt="Admin-Logo"  height="45"> -->
           <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
@@ -553,7 +552,6 @@ if($script){
           <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
           <script src="{{asset('js/theme.js')}}"></script>
-          <!-- <script src="{{asset('js/views/view.shop.js')}}"></script> -->
           <!-- Theme Custom -->
           <script src="{{asset('js/custom.js')}}"></script>
           

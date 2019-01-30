@@ -162,6 +162,25 @@ class TaxRatesAndCodeExpiryController extends BaseInvoiceController
         return $content;
     }
 
+    public function currency($invoiceid)
+    {
+        $invoice = Invoice::find($invoiceid);
+        $currency_code = $invoice->currency;
+        $cur = ' ';
+        if ($invoice->grand_total == 0) {
+            return $cur;
+        }
+        $currency = Currency::where('code', $currency_code)->first();
+        if ($currency) {
+            $cur = $currency->symbol;
+            if (!$cur) {
+                $cur = $currency->code;
+            }
+        }
+
+        return $cur;
+    }
+
     public function sendInvoiceMail($userid, $number, $total, $invoiceid)
     {
 

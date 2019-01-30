@@ -329,7 +329,7 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             $tax_name = '';
             $tax_percentage = '';
-
+            
             foreach ($cart->attributes['tax'] as $tax) {
                 $tax_name .= $tax['name'].',';
                 $tax_percentage .= $tax['rate'].',';
@@ -349,8 +349,8 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
 
             return $invoiceItem;
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
-
             throw new \Exception('Can not create Invoice Items');
         }
     }

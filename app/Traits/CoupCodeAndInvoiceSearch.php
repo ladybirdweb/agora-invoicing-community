@@ -99,7 +99,7 @@ trait CoupCodeAndInvoiceSearch
         $this->name($name, $join);
         $this->invoice_no($invoice_no, $join);
         $this->status($status, $join);
-        $this->currency($currency, $join);
+        $this->searchcurrency($currency, $join);
 
         $this->invoice_from($from, $till, $join);
         $this->till_date($till, $from, $join);
@@ -147,7 +147,7 @@ trait CoupCodeAndInvoiceSearch
         }
     }
 
-    public function currency($currency, $join)
+    public function searchcurrency($currency, $join)
     {
         if ($currency) {
             $join = $join->where('invoices.currency', $currency);

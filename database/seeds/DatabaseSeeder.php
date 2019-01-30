@@ -118,8 +118,6 @@ class DatabaseSeeder extends Seeder
 //     }
 // }
 
-
-
 class TaxOptionTableSeeder extends Seeder
 {
     public function run()

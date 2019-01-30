@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Model\Common\Setting;
 use App\Model\Payment\Currency;
 use App\Model\Payment\Plan;
 use Bugsnag;
@@ -31,13 +30,15 @@ class BaseTemplateController extends ExtendedBaseTemplateController
             }
             foreach ($plans as $value) {
                 $cost = $value->planPrice()->where('currency', $currency)->first();
-                if ($cost) {    
+                if ($cost) {
                     $cost = $cost->add_price;
+
                 } else {
                     $def_currency = Setting::find(1)->default_currency;
                     $def_currency_symbol = Setting::find(1)->default_symbol;
                     $currency = \Auth::user()->update(['currency' => $def_currency]);
                     $symbol = \Auth::user()->update(['currency_symbol'=>$def_currency_symbol]);
+
                 }
                 $priceDescription = $value->planPrice->first();
                 $priceDescription = $priceDescription ? $priceDescription->price_description : '';

@@ -8,8 +8,8 @@ use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
 use App\Model\Payment\Currency;
-use App\Traits\PaymentsAndInvoices;
 use App\Model\User\AccountActivate;
+use App\Traits\PaymentsAndInvoices;
 use App\User;
 use Bugsnag;
 use DateTime;
@@ -128,12 +128,12 @@ class ClientController extends AdvanceSearchController
                          })
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
-                            if ($ends) {
-                                $date1 = new DateTime($ends);
-                                $tz = \Auth::user()->timezone()->first()->name;
-                                $date1->setTimezone(new DateTimeZone($tz));
-                                $end = $date1->format('M j, Y, g:i a ');
-                            }
+                              if ($ends) {
+                                  $date1 = new DateTime($ends);
+                                  $tz = \Auth::user()->timezone()->first()->name;
+                                  $date1->setTimezone(new DateTimeZone($tz));
+                                  $end = $date1->format('M j, Y, g:i a ');
+                              }
 
                               return $end;
                           })
@@ -353,10 +353,11 @@ class ClientController extends AdvanceSearchController
             $balance = 0;
             foreach ($amounts as $amount) {
                 if ($amount) {
-                    $balance = $balance + $amount->amt_to_credit ;
+                    $balance = $balance + $amount->amt_to_credit;
                 }
             }
-        return $balance;
+
+            return $balance;
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -379,6 +380,7 @@ class ClientController extends AdvanceSearchController
                     // $credit = $paidSum + $amount->amt_to_credit;
                 }
             }
+
             return $paidSum;
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
@@ -557,7 +559,7 @@ class ClientController extends AdvanceSearchController
             $formatted_tags = [];
 
             foreach ($users as $user) {
-                $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
+                $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
                 'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
             }
 

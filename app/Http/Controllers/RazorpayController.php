@@ -96,6 +96,7 @@ class RazorpayController extends Controller
                 return redirect()->back()->with($status, $message);
             } catch (\Exception $ex) {
                 dd($ex);
+
                 throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
             }
         }
@@ -123,12 +124,11 @@ class RazorpayController extends Controller
     {
         $orders = Order::where('invoice_id', $invoice->id)->get();
         $invoiceItems = InvoiceItem::where('invoice_id', $invoice->id)->get();
-        
+
         \Cart::clear();
         $status = 'success';
         $message = view('themes.default1.front.postPaymentTemplate', compact('invoice','date','orders',
              'invoiceItems', 'state', 'currency'))->render();
-    
 
         return ['status'=>$status, 'message'=>$message];
     }

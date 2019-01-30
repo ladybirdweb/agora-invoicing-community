@@ -60,9 +60,24 @@ class ClientController extends AdvanceSearchController
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
 
-        return view('themes.default1.user.client.index',
-            compact('name', 'username', 'company', 'mobile', 'email',
-                'country', 'industry', 'company_type', 'company_size', 'role', 'position', 'reg_from', 'reg_till'));
+        return view(
+            'themes.default1.user.client.index',
+            compact(
+                'name',
+                'username',
+                'company',
+                'mobile',
+                'email',
+                'country',
+                'industry',
+                'company_type',
+                'company_size',
+                'role',
+                'position',
+                'reg_from',
+                'reg_till'
+            )
+        );
     }
 
     /**
@@ -83,8 +98,21 @@ class ClientController extends AdvanceSearchController
         $position = $request->input('position');
         $reg_from = $request->input('reg_from');
         $reg_till = $request->input('reg_till');
-        $user = $this->advanceSearch($name, $username, $company,
-         $mobile, $email, $country, $industry, $company_type, $company_size, $role, $position, $reg_from, $reg_till);
+        $user = $this->advanceSearch(
+            $name,
+            $username,
+            $company,
+            $mobile,
+            $email,
+            $country,
+            $industry,
+            $company_type,
+            $company_size,
+            $role,
+            $position,
+            $reg_from,
+            $reg_till
+        );
 
         return\ DataTables::of($user->get())
                          ->addColumn('checkbox', function ($model) {
@@ -100,12 +128,12 @@ class ClientController extends AdvanceSearchController
                          })
                           ->addColumn('created_at', function ($model) {
                               $ends = $model->created_at;
-                              if ($ends) {
-                                  $date1 = new DateTime($ends);
-                                  $tz = \Auth::user()->timezone()->first()->name;
-                                  $date1->setTimezone(new DateTimeZone($tz));
-                                  $end = $date1->format('M j, Y, g:i a ');
-                              }
+                            if ($ends) {
+                                $date1 = new DateTime($ends);
+                                $tz = \Auth::user()->timezone()->first()->name;
+                                $date1->setTimezone(new DateTimeZone($tz));
+                                $end = $date1->format('M j, Y, g:i a ');
+                            }
 
                               return $end;
                           })
@@ -230,9 +258,23 @@ class ClientController extends AdvanceSearchController
             $orders = $order->where('client', $id)->get();
             $comments = $client->comments()->where('user_id', $client->id)->get();
 
-            return view('themes.default1.user.client.show',
-                compact('id', 'client', 'invoices', 'model_popup', 'orders',
-                 'payments', 'invoiceSum', 'amountReceived', 'pendingAmount', 'currency', 'extraAmt', 'comments'));
+            return view(
+                'themes.default1.user.client.show',
+                compact(
+                    'id',
+                    'client',
+                    'invoices',
+                    'model_popup',
+                    'orders',
+                    'payments',
+                    'invoiceSum',
+                    'amountReceived',
+                    'pendingAmount',
+                    'currency',
+                    'extraAmt',
+                    'comments'
+                )
+            );
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -307,17 +349,14 @@ class ClientController extends AdvanceSearchController
     public function getExtraAmt($userId)
     {
         try {
-
-                $amounts = Payment::where('user_id', $userId)->where('invoice_id',0)->select('amt_to_credit')->get();
-                 $balance = 0;
-                foreach ($amounts as $amount) {
-                    if ($amount) {
-                        $balance = $balance + $amount->amt_to_credit ;
-                    }
+            $amounts = Payment::where('user_id', $userId)->where('invoice_id', 0)->select('amt_to_credit')->get();
+            $balance = 0;
+            foreach ($amounts as $amount) {
+                if ($amount) {
+                    $balance = $balance + $amount->amt_to_credit ;
                 }
             }
-
-            return $balance;
+        return $balance;
         } catch (\Exception $ex) {
             app('log')->info($ex->getMessage());
             Bugsnag::notifyException($ex);
@@ -337,7 +376,7 @@ class ClientController extends AdvanceSearchController
             foreach ($amounts as $amount) {
                 if ($amount) {
                     $paidSum = $paidSum + $amount->amount;
-                   // $credit = $paidSum + $amount->amt_to_credit;
+                    // $credit = $paidSum + $amount->amt_to_credit;
                 }
             }
             return $paidSum;
@@ -402,10 +441,21 @@ class ClientController extends AdvanceSearchController
 
             $bussinesses = \App\Model\Common\Bussiness::pluck('name', 'short')->toArray();
 
-            return view('themes.default1.user.client.edit',
-                compact('bussinesses', 'user', 'timezones', 'state',
-                    'states', 'managers', 'selectedCurrency', 'selectedCompany',
-                     'selectedIndustry', 'selectedCompanySize'));
+            return view(
+                'themes.default1.user.client.edit',
+                compact(
+                    'bussinesses',
+                    'user',
+                    'timezones',
+                    'state',
+                    'states',
+                    'managers',
+                    'selectedCurrency',
+                    'selectedCompany',
+                    'selectedIndustry',
+                    'selectedCompanySize'
+                )
+            );
         } catch (\Exception $ex) {
             app('log')->error($ex->getMessage());
 
@@ -508,7 +558,7 @@ class ClientController extends AdvanceSearchController
 
             foreach ($users as $user) {
                 $formatted_users[] = ['id' => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-            'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
+                'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
             }
 
             return \Response::json($formatted_users);
@@ -518,10 +568,21 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-    public function advanceSearch($name = '', $username = '', $company = '',
-     $mobile = '', $email = '', $country = '', $industry = '',
-      $company_type = '', $company_size = '', $role = '', $position = '', $reg_from = '', $reg_till = '')
-    {
+    public function advanceSearch(
+        $name = '',
+        $username = '',
+        $company = '',
+        $mobile = '',
+        $email = '',
+        $country = '',
+        $industry = '',
+        $company_type = '',
+        $company_size = '',
+        $role = '',
+        $position = '',
+        $reg_from = '',
+        $reg_till = ''
+    ) {
         $join = \DB::table('users');
         $join = $this->getNamUserCom($join, $name, $username, $company);
         $join = $this->getMobEmCoun($join, $mobile, $email, $country);
@@ -530,8 +591,17 @@ class ClientController extends AdvanceSearchController
         $join = $this->getregFromTill($join, $reg_from, $reg_till);
 
         $join = $join->orderBy('created_at', 'desc')
-        ->select('id', 'first_name', 'last_name', 'email', 'created_at',
-         'active', 'mobile_verified', 'role', 'position');
+        ->select(
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'created_at',
+            'active',
+            'mobile_verified',
+            'role',
+            'position'
+        );
 
         return $join;
     }

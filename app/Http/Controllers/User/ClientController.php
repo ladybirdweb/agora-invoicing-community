@@ -370,9 +370,6 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-
-
-
     /**
      * Show the form for editing the specified resource.
      *

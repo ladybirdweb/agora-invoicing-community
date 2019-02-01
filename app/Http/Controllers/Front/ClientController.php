@@ -148,7 +148,7 @@ class ClientController extends BaseClientController
             if ($updatesEndDate) {
                 foreach ($versions as $version) {
                     if ($version->created_at->toDateTimeString()
-                    < $updatesEndDate->update_ends_at || $updatesEndDate->update_ends_at =='0000-00-00 00:00:00') {
+                    < $updatesEndDate->update_ends_at || $updatesEndDate->update_ends_at == '0000-00-00 00:00:00') {
                         $countExpiry = $countExpiry + 1;
                     }
                 }
@@ -174,7 +174,7 @@ class ClientController extends BaseClientController
                                 $downloadPermission = LicensePermissionsController::getPermissionsForProduct($productid);
                                 $updateEndDate = Subscription::select('update_ends_at')
                                 ->where('product_id', $productid)->where('order_id', $order_id)->first();
-                                
+
                                 //if product has Update expiry date ie subscription is generated
                                 if ($updateEndDate) {
                                     if ($downloadPermission['allowDownloadTillExpiry'] == 1) {//Perpetual download till expiry permission selected
@@ -257,7 +257,7 @@ class ClientController extends BaseClientController
                         ->where('product_id', $productid)->where('order_id', $order_id)->first();
             if ($orderEndDate) {
                 foreach ($link as $lin) {
-                    if (strtotime($lin['created_at']) < strtotime($orderEndDate->update_ends_at) || $orderEndDate->update_ends_at =='0000-00-00 00:00:00') {
+                    if (strtotime($lin['created_at']) < strtotime($orderEndDate->update_ends_at) || $orderEndDate->update_ends_at == '0000-00-00 00:00:00') {
                         $countExpiry = $countExpiry + 1;
                     }
                 }

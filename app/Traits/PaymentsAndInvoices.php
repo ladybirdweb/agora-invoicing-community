@@ -343,17 +343,16 @@ use Illuminate\Http\Request;
             }
         }
 
-            /**
-     * Get total of the Invoices for a User.
-     */
-    public function getTotalInvoice($invoices)
-    {
-        $sum = 0;
-        foreach ($invoices as $invoice) {
-            $sum = $sum + $invoice->grand_total;
-        }
+        /**
+         * Get total of the Invoices for a User.
+         */
+        public function getTotalInvoice($invoices)
+        {
+            $sum = 0;
+            foreach ($invoices as $invoice) {
+                $sum = $sum + $invoice->grand_total;
+            }
 
-        return $sum;
-    }
-    
+            return $sum;
+        }
     }

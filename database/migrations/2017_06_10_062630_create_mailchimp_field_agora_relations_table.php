@@ -14,19 +14,20 @@ class CreateMailchimpFieldAgoraRelationsTable extends Migration
     {
         Schema::create('mailchimp_field_agora_relations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('first_name');
-            $table->string('last_name');
-            $table->string('company');
-            $table->string('mobile');
-            $table->string('address');
-            $table->string('town');
-            $table->string('state');
-            $table->string('zip');
-            $table->string('active', 225);
-            $table->string('role');
-            $table->string('source');
-            $table->string('is_paid_yes');
-            $table->string('is_paid_no');
+            $table->string('first_name')->nullble();
+            $table->string('last_name')->nullble();
+            $table->string('company')->nullble();
+            $table->string('mobile')->nullble();
+            $table->string('address')->nullble();
+            $table->string('country')->nullble();
+            $table->string('town')->nullble();
+            $table->string('state')->nullble();
+            $table->string('zip')->nullble();
+            $table->string('active', 225)->nullble();
+            $table->string('role')->nullble();
+            $table->string('source')->nullble();
+            $table->string('is_paid_yes')->nullble();
+            $table->string('is_paid_no')->nullble();
             $table->timestamps();
         });
     }

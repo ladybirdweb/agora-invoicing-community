@@ -49,6 +49,7 @@
         Route::patch('mailchimp', 'Common\MailChimpController@postMailChimpSettings');
         Route::get('mail-chimp/mapping', 'Common\MailChimpController@mapField');
         Route::patch('mail-chimp/mapping', 'Common\MailChimpController@postMapField');
+        Route::patch('mailchimp-ispaid/mapping', 'Common\MailChimpController@postIsPaidMapField');
         Route::patch('mailchimp-group/mapping', 'Common\MailChimpController@postGroupMapField');
         Route::get('get-group-field/{value}', 'Common\MailChimpController@addInterestFieldsToAgora');
         Route::get('contact-us', 'Front\CartController@contactUs');
@@ -154,8 +155,12 @@
             Route::get('updatemobileDetails', 'Common\BaseSettingsController@updateMobileDetails')->name('updatemobileDetails');
             Route::get('updateemailDetails', 'Common\BaseSettingsController@updateEmailDetails')->name('updateemailDetails');
             Route::get('updatetwitterDetails', 'Common\BaseSettingsController@updateTwitterDetails')->name('updatetwitterDetails');
+            Route::get('updateMailchimpDetails', 'Common\BaseSettingsController@updateMailchimpDetails')->name('updateMailchimpDetails');
             Route::get('updaterzpDetails', 'Common\BaseSettingsController@updateRazorpayDetails')->name('updaterzpDetails');
              Route::get('updatezohoDetails', 'Common\BaseSettingsController@updateZohoDetails')->name('updatezohoDetails');
+              Route::get('mailchimp-prod-status', 'Common\BaseSettingsController@updateMailchimpProductStatus')->name('mailchimp-prod-status');
+               Route::get('mailchimp-paid-status', 'Common\BaseSettingsController@updateMailchimpIsPaidStatus')->name('mailchimp-paid-status');
+
 
         /*
          * Client

@@ -285,6 +285,10 @@ Application Settings
                 </div>
                 <!--/.col-md-2-->
                 <!--col-md-2-->
+                <?php
+                $mailchimpStatus = \App\Model\Common\StatusSetting::first()->value('mailchimp_status');
+                ?>
+                @if($mailchimpStatus ==1)
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
                         <div class="settingdivblue">
@@ -297,6 +301,7 @@ Application Settings
                         <p class="box-title" >Mail Chimp</p>
                     </div>
                 </div>
+                @endif
                 <!--/.col-md-2-->
                 <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">

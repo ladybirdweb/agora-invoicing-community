@@ -237,7 +237,7 @@ API Keys
                     </label>
  
                   </td>
-                      <td class="col-md-4 mobileverify">
+                   <td class="col-md-4 mobileverify">
                     
                        <input type ="hidden" id="hiddenMobValue" value="{{$mobileauthkey}}">
                         <!-- last name -->
@@ -250,7 +250,33 @@ API Keys
                   </td>
                   <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit3"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
                 </tr>
+               
 
+                <tr>
+                 
+                  <td class="col-md-2">Mailchimp</td>
+                  <td class="col-md-2">
+                    <label class="switch toggle_event_editing">
+                          
+                         <input type="checkbox" value="{{$mailchimpSetting}}"  name="mobile_settings" 
+                          class="checkbox9" id="mailchimp">
+                          <span class="slider round"></span>
+                    </label>
+ 
+                  </td>
+                   <td class="col-md-4 mailchimpverify">
+                    
+                       <input type ="hidden" id="hiddenMailChimpValue" value="{{$mailchimpKey}}">
+                        <!-- last name -->
+                        {!! Form::label('mailchimp',Lang::get('message.mailchimp_key')) !!}
+                        {!! Form::text('mailchimp',$mailchimpKey,['class' => 'form-control mailchimp_authkey','id'=>'mailchimp_authkey']) !!}
+                         <h6 id="mailchimp_check"></h6>
+                         <br/>
+                  
+                   
+                  </td>
+                  <td style="padding-left: 230px;"><button type="submit" class="form-group btn btn-primary"  id="submit9"><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button></td>
+                </tr>
 
    
 
@@ -1021,6 +1047,70 @@ if ($('#update').prop("checked")) {
             var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
             $('#alertMessage').html(result+ ".");
             $("#submit7").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+              setInterval(function(){ 
+                $('#alertMessage').slideUp(3000); 
+            }, 1000);
+          },
+    })
+  });
+ <!--------------------------------------------------------------------------------------------->
+  /*
+ *Mailchimp
+  */
+   $(document).ready(function (){
+  var mailchimpstatus =  $('.checkbox9').val();
+    if(mailchimpstatus ==1)
+     {
+        $('#mailchimp').prop('checked',true);
+       $('.mailchimp_authkey').attr('enabled', true);
+     } else if(mailchimpstatus ==0){
+      $('#mailchimp').prop('checked',false);
+        $('.mailchimp_authkey').attr('disabled', true);
+     }
+  });
+ $("#mailchimp").on('change',function (){
+    if($(this).prop('checked')) {
+      var mailchimpkey =  $('#hiddenMailChimpValue').val();
+      $('.mailchimp_authkey').attr('disabled', false);
+       $('#mailchimp_authkey').val(mailchimpkey);
+
+     } else {
+        $('.mailchimp_authkey').attr('disabled', true);
+         $('.mailchimp_authkey').val('');
+
+
+    }
+ });
+ //Validate and pass value through ajax
+  $("#submit9").on('click',function (){ //When Submit button is checked
+     if ($('#mailchimp').prop('checked')) {//if button is on
+             var chimpstatus = 1;
+           if ($('#mailchimp_authkey').val() == "") { //if value is not entered
+            $('#mailchimp_check').show();
+            $('#mailchimp_check').html("Please Enter Mailchimp Api Key");
+            $('#mailchimp_authkey').css("border-color","red");
+            $('#mailchimp_check').css({"color":"red","margin-top":"5px"});
+            return false;
+          }
+    } else {
+       $('#mailchimp_check').html("");
+       $('#mailchimp_authkey').css("border-color","");
+         var chimpstatus = 0;
+        
+  }
+    $("#submit9").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");   
+    $.ajax ({
+      url: '{{url("updateMailchimpDetails")}}',
+      type : 'get',
+      data: {
+       "status": chimpstatus,
+       "mailchimp_auth_key": $('#mailchimp_authkey').val(),
+      },
+       success: function (data) {
+            $('#alertMessage').show();
+            var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="fa fa-check"></i> Success! </strong>'+data.update+'.</div>';
+            $('#alertMessage').html(result+ ".");
+            $("#submit9").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
               setInterval(function(){ 
                 $('#alertMessage').slideUp(3000); 
             }, 1000);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
+    use App\Http\Controllers\License\LicensePermissionsController;
     use App\Model\Common\StatusSetting;
     use App\Model\License\LicenseType;
     use App\Model\Order\Order;
@@ -110,7 +111,6 @@ class ProductController extends BaseProductController
     {
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
-
             return\ DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
@@ -141,8 +141,9 @@ class ProductController extends BaseProductController
                             })
 
                             ->addColumn('Action', function ($model) {
-                                $url = '';
-                                if ($model->type == 2) {
+                               $permissions = LicensePermissionsController::getPermissionsForProduct($model->id);
+                               $url = '';
+                                if ($permissions['downloadPermission'] == 1) {
                                     $url = '<a href='.url('product/download/'.$model->id).
                                     " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' 
                                     style='color:white;'> </i>&nbsp;&nbsp;Download</a>";
@@ -156,6 +157,7 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
+            dd($e);
             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
@@ -449,7 +451,6 @@ class ProductController extends BaseProductController
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                    if ($id != 1) {
                         $product = $this->product->where('id', $id)->first();
                         if ($product) {
                             $product->delete();
@@ -470,15 +471,7 @@ class ProductController extends BaseProductController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */ \Lang::get('message.can-not-delete-default').'
-                </div>';
-                    }
+                   
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
@@ -577,11 +570,10 @@ class ProductController extends BaseProductController
                 ->where('id', $version_id)->select('file')->first();
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
             $order_id = $order->id;
-            if ($type == 2) {
                 $relese = $this->getRelease($owner, $repository, $order_id, $file);
 
                 return $relese;
-            }
+            
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

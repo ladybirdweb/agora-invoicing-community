@@ -7,6 +7,7 @@ use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
 use Illuminate\Http\Request;
+use App\Http\Controllers\License\LicensePermissionsController;
 
 class BaseProductController extends ExtendedBaseProductController
 {
@@ -251,8 +252,8 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            $relese = '/home/faveo/products/'.$file->file;
+            $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
+            // $relese = '/home/faveo/products/'.$file->file;
 
             return $relese;
         }
@@ -266,26 +267,12 @@ class BaseProductController extends ExtendedBaseProductController
 
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file->file) {
-            // $relese = storage_path().'\products'.'\\'.$file->file;
-            $relese = '/home/faveo/products/'.$file->file;
+            $relese = storage_path().'\products'.'\\'.$file->file;
+            // $relese = '/home/faveo/products/'.$file->file;
 
             return $relese;
         }
     }
-
-    // public function getLinkToDownload($role, $invoice, $id)
-    // {
-    //      if ($role == 'user') {
-    //         // dd($invoice);
-    //         if ($invoice && $invoice != '') {
-    //             return $this->downloadProductAdmin($id);
-    //         } else {
-    //             throw new \Exception('This user has no permission for this action');
-    //         }
-    //     }
-
-    //     return $this->downloadProductAdmin($id);
-    // }
 
     public function downloadProductAdmin($id)
     {
@@ -297,8 +284,8 @@ class BaseProductController extends ExtendedBaseProductController
             $file = ProductUpload::where('product_id', '=', $id)->select('file')
             ->orderBy('created_at', 'desc')
             ->first();
-
-            if ($type == 2) {
+            $permissions = LicensePermissionsController::getPermissionsForProduct($id);
+            if ($permissions['downloadPermission'] == 1) {
                 $relese = $this->getReleaseAdmin($owner, $repository, $file);
 
                 return $relese;

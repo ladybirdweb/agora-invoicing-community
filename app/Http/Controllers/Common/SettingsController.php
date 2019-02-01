@@ -11,6 +11,7 @@ use App\Model\Plugin;
 use App\User;
 use Bugsnag;
 use GrahamCampbell\Markdown\Facades\Markdown;
+use App\Model\Common\Mailchimp\MailchimpSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Spatie\Activitylog\Models\Activity;
@@ -74,9 +75,11 @@ class SettingsController extends BaseSettingsController
             $zohoKey = $apikeys->pluck('zoho_api_key')->first();
             $rzpStatus = $this->statusSetting->pluck('rzp_status')->first();
             $rzpKeys = $apikeys->select('rzp_key', 'rzp_secret', 'apilayer_key')->first();
+            $mailchimpSetting = StatusSetting::pluck('mailchimp_status')->first();
+            $mailchimpKey = MailchimpSetting::pluck('api_key')->first();
             $model = $apikeys->find(1);
 
-            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys'));
+            return view('themes.default1.common.apikey', compact('model', 'status', 'licenseSecret', 'licenseUrl', 'siteKey', 'secretKey', 'captchaStatus', 'updateStatus', 'updateSecret', 'updateUrl', 'mobileStatus', 'mobileauthkey', 'emailStatus', 'twitterStatus', 'twitterKeys', 'zohoStatus', 'zohoKey', 'rzpStatus', 'rzpKeys','mailchimpSetting','mailchimpKey'));
         } catch (\Exception $ex) {
             return redirect('/')->with('fails', $ex->getMessage());
         }

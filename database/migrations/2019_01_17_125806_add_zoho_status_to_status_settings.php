@@ -16,6 +16,8 @@ class AddZohoStatusToStatusSettings extends Migration
         Schema::table('status_settings', function (Blueprint $table) {
             $table->boolean('zoho_status')->nullable();
             $table->boolean('rzp_status')->nullable();
+            $table->boolean('mailchimp_product_status')->nullable();
+            $table->boolean('mailchimp_ispaid_status')->nullable();
         });
     }
 

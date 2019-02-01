@@ -189,6 +189,7 @@ return [
       'rzp_secret'                                                 => 'Razorpay Secret',
       'apilayer_key'                                               => 'ApiLayer Access Key(For Exchange Rate Conversion)',
       'zoho_crm'                                                   => 'Zoho CRM',
+      'mailchimp_key'                                              => 'Mailchimp Api Key',
 
     /*
      * Clients

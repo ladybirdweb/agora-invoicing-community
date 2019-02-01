@@ -2,8 +2,10 @@
 
 namespace App\Traits;
 
+use DateTime;
 use App\ApiKey;
 use App\Model\Common\StatusSetting;
+use App\Model\Common\Mailchimp\MailchimpSetting;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////
@@ -101,5 +103,92 @@ trait ApiKeySettings
         ApiKey::find(1)->update(['rzp_key'=>$rzp_key, 'rzp_secret'=>$rzp_secret, 'apilayer_key'=>$apilayer_key]);
 
         return ['message' => 'success', 'update'=>'Razorpay Settings Updated'];
+    }
+
+    public function updateMailchimpProductStatus(Request $request)
+    {
+        StatusSetting::first()->update(['mailchimp_product_status'=>$request->input('status')]);
+        return ['message' => 'success', 'update'=>'Mailchimp Products Group Status Updated'];
+    }
+
+    public function updateMailchimpIsPaidStatus(Request $request)
+    {
+        StatusSetting::first()->update(['mailchimp_ispaid_status'=>$request->input('status')]);
+        return ['message' => 'success', 'update'=>'Mailchimp is Paid Status Updated'];
+    }
+
+    public function updateMailchimpDetails(Request $request)
+    {
+       $chimp_auth_key =  $request->input('mailchimp_auth_key');
+       $status =  $request->input('status');
+       StatusSetting::find(1)->update(['mailchimp_status'=>$status]);
+       MailchimpSetting::find(1)->update(['api_key'=>$chimp_auth_key]);
+       return ['message' => 'success', 'update'=>'Mailchimp Settings Updated'];
+    }
+
+     /**
+     * Get Date.
+     */
+    public function getDate($dbdate)
+    {
+        $created = new DateTime($dbdate);
+        $tz = \Auth::user()->timezone()->first()->name;
+        $created->setTimezone(new DateTimeZone($tz));
+        $date = $created->format('M j, Y, g:i a '); //5th October, 2018, 11:17PM
+        $newDate = $date;
+
+        return $newDate;
+    }
+
+    public function getDateFormat($dbdate = '')
+    {
+        $created = new DateTime($dbdate);
+        $tz = \Auth::user()->timezone()->first()->name;
+        $created->setTimezone(new DateTimeZone($tz));
+        $date = $created->format('Y-m-d H:m:i');
+
+        return $date;
+    }
+
+    public function saveConditions()
+    {
+        if (\Input::get('expiry-commands') && \Input::get('activity-commands')) {
+            $expiry_commands = \Input::get('expiry-commands');
+            $expiry_dailyAt = \Input::get('expiry-dailyAt');
+            $activity_commands = \Input::get('activity-commands');
+            $activity_dailyAt = \Input::get('activity-dailyAt');
+            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
+            $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
+            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
+            $this->storeCommand($jobs);
+        }
+    }
+
+    public function getCommand($command, $daily_at)
+    {
+        if ($command == 'dailyAt') {
+            $command = "dailyAt,$daily_at";
+        }
+
+        return $command;
+    }
+
+    public function storeCommand($array = [])
+    {
+        $command = new \App\Model\Mailjob\Condition();
+        $commands = $command->get();
+        if ($commands->count() > 0) {
+            foreach ($commands as $condition) {
+                $condition->delete();
+            }
+        }
+        if (count($array) > 0) {
+            foreach ($array as $key => $save) {
+                $command->create([
+                    'job'   => $key,
+                    'value' => $save,
+                ]);
+            }
+        }
     }
 }

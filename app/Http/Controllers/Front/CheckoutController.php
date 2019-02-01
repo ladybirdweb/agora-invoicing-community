@@ -16,7 +16,6 @@ use App\Model\Payment\Plan;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
-use App\Model\Status\StatusSetting;
 use App\User;
 use Bugsnag;
 use Cart;

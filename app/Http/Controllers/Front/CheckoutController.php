@@ -205,7 +205,7 @@ class CheckoutController extends InfoController
                 /*
                  * Do order, invoicing etc
                  */
-                
+
                 $invoice = $invoice_controller->generateInvoice();
 
                 $pay = $this->payment($payment_method, $status = 'pending');

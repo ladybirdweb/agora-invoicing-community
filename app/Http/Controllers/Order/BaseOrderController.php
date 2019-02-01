@@ -120,6 +120,7 @@ class BaseOrderController extends ExtendedOrderController
         }
       }
         } catch (\Exception $ex) {
+            dd($ex);
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 

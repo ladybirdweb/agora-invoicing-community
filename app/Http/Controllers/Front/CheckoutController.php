@@ -10,7 +10,7 @@ use App\Model\Common\State;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use App\Model\Status\StatusSetting;
+use App\Model\Common\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Price;

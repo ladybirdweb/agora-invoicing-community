@@ -342,4 +342,18 @@ use Illuminate\Http\Request;
                 return redirect()->back()->with('fails', $ex->getMessage());
             }
         }
+
+            /**
+     * Get total of the Invoices for a User.
+     */
+    public function getTotalInvoice($invoices)
+    {
+        $sum = 0;
+        foreach ($invoices as $invoice) {
+            $sum = $sum + $invoice->grand_total;
+        }
+
+        return $sum;
+    }
+    
     }

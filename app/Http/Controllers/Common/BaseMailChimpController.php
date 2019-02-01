@@ -42,7 +42,7 @@ class BaseMailChimpController extends Controller
             $hash = md5($email);
             $isPaidStatus = StatusSetting::select()->value('mailchimp_ispaid_status');
             $productStatusStatus = StatusSetting::select()->value('mailchimp_product_status');
-            if ($isPaidStatus ==1) {
+           if ($isPaidStatus ==1) {
                 $interestGroupIdForNo = $this->relation->is_paid_no; //Interest GroupId for IsPaid Is No
                 $interestGroupIdForYes = $this->relation->is_paid_yes; //Interest GroupId for IsPaid Is Yes
             }
@@ -53,15 +53,18 @@ class BaseMailChimpController extends Controller
             if ($interestGroupIdForNo  &&  $productGroupId) {
                  $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                  'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false, $productGroupId =>true],
+                  ]);
                  //refer to https://us7.api.mailchimp.com/playground
-                 ]);
+                
             } elseif ($interestGroupIdForNo  &&  $productGroupId ==null) {
                  $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                  'interests'         => [$interestGroupIdForNo => true, $interestGroupIdForYes=>false],
+                  ]);
                  //refer to https://us7.api.mailchimp.com/playground
             } elseif ($productGroupId && $interestGroupIdForNo==null || $interestGroupIdForYes==null) {
                   $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                  'interests'         => [$productGroupId =>true],
+                  ]);
             }
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
@@ -91,13 +94,15 @@ class BaseMailChimpController extends Controller
             } elseif ($interestGroupIdForNo && $productGroupId ==null) {
                  $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                  'interests'         => [$interestGroupIdForNo => false, $interestGroupIdForYes=>true],
+                  ]);
                  //refer to https://us7.api.mailchimp.com/playground
             } elseif ($productGroupId && $interestGroupIdForNo==null || $interestGroupIdForYes==null) {
                   $result = $this->mailchimp->patch("lists/$this->list_id/members/$hash", [
                  'interests'         => [$productGroupId =>true],
+                  ]);
             }
                  //refer to https://us7.api.mailchimp.com/playground
-              ]);
+            
         } catch (Exception $ex) {
             $exe = json_decode($ex->getMessage(), true);
         }

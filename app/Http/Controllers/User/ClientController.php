@@ -371,42 +371,8 @@ class ClientController extends AdvanceSearchController
         }
     }
 
-    /**
-     * Get total Amount paid for a particular invoice.
-     */
-    public function getAmountPaid($userId)
-    {
-        try {
-            $amounts = Payment::where('user_id', $userId)->select('amount', 'amt_to_credit')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                if ($amount) {
-                    $paidSum = $paidSum + $amount->amount;
-                    // $credit = $paidSum + $amount->amt_to_credit;
-                }
-            }
 
-            return $paidSum;
-        } catch (\Exception $ex) {
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
-
-    /**
-     * Get total of the Invoices for a User.
-     */
-    public function getTotalInvoice($invoices)
-    {
-        $sum = 0;
-        foreach ($invoices as $invoice) {
-            $sum = $sum + $invoice->grand_total;
-        }
-
-        return $sum;
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -538,79 +504,6 @@ class ClientController extends AdvanceSearchController
                         './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
                 </div>';
         }
-    }
-
-    public function getUsers(Request $request)
-    {
-        $options = $this->user
-//->where('email','LIKE','%'.$s.'%')
-                ->select('email AS text', 'id AS value')
-                ->get();
-
-        return response()->json(compact('options'));
-    }
-
-    public function search(Request $request)
-    {
-        try {
-            $term = trim($request->q);
-            if (empty($term)) {
-                return \Response::json([]);
-            }
-            $users = User::where('email', 'LIKE', '%'.$term.'%')
-             ->orWhere('first_name', 'LIKE', '%'.$term.'%')
-             ->orWhere('last_name', 'LIKE', '%'.$term.'%')
-             ->select('id', 'email', 'profile_pic', 'first_name', 'last_name')->get();
-            $formatted_tags = [];
-
-            foreach ($users as $user) {
-                $formatted_users[] = ['id'     => $user->id, 'text' => $user->email, 'profile_pic' => $user->profile_pic,
-                'first_name'                   => $user->first_name, 'last_name' => $user->last_name, ];
-            }
-
-            return \Response::json($formatted_users);
-        } catch (\Exception $e) {
-            // returns if try fails with exception meaagse
-            return redirect()->back()->with('fails', $e->getMessage());
-        }
-    }
-
-    public function advanceSearch(
-        $name = '',
-        $username = '',
-        $company = '',
-        $mobile = '',
-        $email = '',
-        $country = '',
-        $industry = '',
-        $company_type = '',
-        $company_size = '',
-        $role = '',
-        $position = '',
-        $reg_from = '',
-        $reg_till = ''
-    ) {
-        $join = \DB::table('users');
-        $join = $this->getNamUserCom($join, $name, $username, $company);
-        $join = $this->getMobEmCoun($join, $mobile, $email, $country);
-        $join = $this->getInCtCs($join, $industry, $company_type, $company_size);
-        $join = $this->getRolPos($join, $role, $position);
-        $join = $this->getregFromTill($join, $reg_from, $reg_till);
-
-        $join = $join->orderBy('created_at', 'desc')
-        ->select(
-            'id',
-            'first_name',
-            'last_name',
-            'email',
-            'created_at',
-            'active',
-            'mobile_verified',
-            'role',
-            'position'
-        );
-
-        return $join;
     }
 
     public function sendWelcomeMail($user)

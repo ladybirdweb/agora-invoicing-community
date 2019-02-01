@@ -79,7 +79,7 @@ Order Details
                                     $licdate = "--";
                                     $supdate= "--";
                                     if ($subscription) {
-                                        if ($subscription->update_ends_at != '' || $subscription->update_ends_at != '0000-00-00 00:00:00') {
+                                        if (strtotime($subscription->update_ends_at) >1) {
                                              $date1 = new DateTime($subscription->update_ends_at);
                                                 $tz = \Auth::user()->timezone()->first()->name;
                                                 $date1->setTimezone(new DateTimeZone($tz));
@@ -87,16 +87,14 @@ Order Details
                                                 $updatesEnd = date('d/m/Y', strtotime($subscription->update_ends_at));
                                                 
                                              }
-
-                                             if ($subscription->ends_at != '' || $subscription->ends_at != '0000-00-00 00:00:00') {
+                                             if ((strtotime($subscription->ends_at) > 1)) {
                                              $date2 = new DateTime($subscription->ends_at);
                                                 $tz = \Auth::user()->timezone()->first()->name;
                                                 $date2->setTimezone(new DateTimeZone($tz));
                                                 $licdate = $date2->format('M j, Y, g:i a ');
                                                 $licenseEnd =  date('d/m/Y', strtotime($subscription->ends_at));
-                                                
                                              }
-                                            if ($subscription->support_ends_at != '' || $subscription->support_ends_at != '0000-00-00 00:00:00') {
+                                            if (strtotime($subscription->support_ends_at) > 1) {
                                              $date3 = new DateTime($subscription->support_ends_at);
                                                 $tz = \Auth::user()->timezone()->first()->name;
                                                 $date3->setTimezone(new DateTimeZone($tz));
@@ -107,18 +105,24 @@ Order Details
                                     }
                                     ?>
                                     <tr><td><b>Updates Expiry Date:</b></td><td>{{$date}}
+                                      @if($date != '--')
                                     <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="updates_end" updates-id="{{$order->id}}" data-date="{{$updatesEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
+                                @endif
                               </td></tr>
 
                                 <tr><td><b>License Expiry Date:</b></td><td>{{$licdate}}
+                                  @if($licdate != '--')
                                     <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="license_end" license-id="{{$order->id}}" license-date="{{$licenseEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
+                                @endif
                               </td></tr>
 
                               <tr><td><b>Support Expiry Date:</b></td><td>{{$supdate}}
+                                @if($supdate != '')
                                     <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{$supportEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
+                                @endif
                               </td></tr>
 
                                 </tbody></table>

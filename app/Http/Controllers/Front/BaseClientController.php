@@ -266,7 +266,7 @@ class BaseClientController extends Controller
         }
     }
 
-    public function s($updateEndDate, $productid, $versions, $clientid, $invoiceid)
+    public function whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid)
     {
         if ($versions->created_at->toDateTimeString()
         < $updateEndDate->update_ends_at) {

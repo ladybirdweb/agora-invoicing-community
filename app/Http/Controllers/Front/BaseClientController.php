@@ -240,25 +240,71 @@ class BaseClientController extends Controller
         }
     }
 
-    // public function getSubscriptions()
-    // {
-    //     try {
-    //         $subscriptions = Subscription::where('user_id', \Auth::user()->id)->get();
+    public function getInvoice($id)
+    {
+        try {
+            $invoice = $this->invoice->findOrFail($id);
+            $items = $invoice->invoiceItem()->get();
+            $user = \Auth::user();
 
-    //         return \Datatable::collection($subscriptions)
-    //                         ->addColumn('id', function ($model) {
-    //                             return $model->id;
-    //                         })
-    //                         ->showColumns('created_at')
-    //                         ->addColumn('ends_at', function ($model) {
-    //                             return $model->subscription()->first()->ends_at;
-    //                         })
-    //                         ->searchColumns('id', 'created_at', 'ends_at')
-    //                         ->orderColumns('created_at', 'ends_at')
-    //                         ->make();
-    //     } catch (Exception $ex) {
-    //         Bugsnag::notifyException($ex);
-    //         echo $ex->getMessage();
-    //     }
-    // }
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function subscriptions()
+    {
+        try {
+            return view('themes.default1.front.clients.subscription');
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
+
+    public function s($updateEndDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($versions->created_at->toDateTimeString()
+        < $updateEndDate->update_ends_at) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
+        }
+    }
+
+    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updatesEndDate, $productid, $versions, $clientid, $invoiceid)
+    {
+        if ($countExpiry == $countVersions) {
+            return '<p><a href='.url('download/'.$productid.'/'
+            .$clientid.'/'.$invoiceid.'/'.$versions->id).
+            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
+            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
+
+       </p>';
+        } else {
+            return '<button class="btn btn-danger 
+        btn-sm disabled">Please Renew </button>';
+        }
+    }
+
+    public function orders()
+    {
+        try {
+            return view('themes.default1.front.clients.order1');
+        } catch (Exception $ex) {
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
+    }
 }

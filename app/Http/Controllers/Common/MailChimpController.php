@@ -174,60 +174,11 @@ class MailChimpController extends BaseMailChimpController
         }
     }
 
-    public function addListsToAgora()
-    {
-        try {
-            $lists = $this->getLists();
-            $agora_lists = $this->lists->get();
-            if (count($agora_lists) > 0) {
-                foreach ($agora_lists as $agora) {
-                    $agora->delete();
-                }
-            }
-            foreach ($lists['lists'] as $list) {
-                $name = $list->name;
-                $list_id = $list->id;
-                $this->lists->create([
-                    'name'    => $name,
-                    'list_id' => $list_id,
-                ]);
-            }
-            //return redirect()->back()->with('success', \Lang::get('message.mailchimp-list-added-to-agora'));
-        } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
-    public function mailChimpSettings()
-    {
-        try {
-            $set = $this->mailchimp_set;
-            $allists = $this->mailchimp->get('lists?count=20')['lists'];
-            $selectedList[] = $set->list_id;
-            return view('themes.default1.common.mailchimp.settings', compact('set','allists','selectedList'));
-        } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
-    public function postMailChimpSettings(Request $request)
-    {
-        $this->validate($request, [
-            'api_key' => 'required',
-            'list_id'=>'required',
-        ]);
+   
 
-        try {
-
-            $this->mailchimp_set->first()->update(['subscribe_status'=>$request->input('subscribe_status'),
-                'list_id'=>$request->input('list_id')]);
-            $this->addListsToAgora();
-
-            return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
-        } catch (Exception $ex) {
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
+ 
 
     public function mapField()
     {

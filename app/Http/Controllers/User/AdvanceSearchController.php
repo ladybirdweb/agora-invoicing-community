@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Controller;
 use App\User;
+use App\Model\Order\Payment;
+use App\Http\Controllers\Controller;
 
 class AdvanceSearchController extends Controller
 {
@@ -173,5 +174,39 @@ class AdvanceSearchController extends Controller
                 ->get();
 
         return response()->json(compact('options'));
+    }
+
+    public function getClientDetail($id)
+    {
+        $client = $this->user->where('id', $id)->first();
+        $currency = $client->currency;
+        if (array_key_exists('name', \App\Http\Controllers\Front\CartController::getStateByCode($client->state))) {
+            $client->state = \App\Http\Controllers\Front\CartController::getStateByCode($client->state)['name'];
+        }
+        $client->country = ucwords(strtolower(\App\Http\Controllers\Front\CartController::getCountryByCode($client->country)));
+
+        $displayData = (['currency'=>$currency, 'client'=> $client]);
+
+        return $displayData;
+    }
+
+    public function getExtraAmt($userId)
+    {
+        try {
+            $amounts = Payment::where('user_id', $userId)->where('invoice_id', 0)->select('amt_to_credit')->get();
+            $balance = 0;
+            foreach ($amounts as $amount) {
+                if ($amount) {
+                    $balance = $balance + $amount->amt_to_credit;
+                }
+            }
+
+            return $balance;
+        } catch (\Exception $ex) {
+            app('log')->info($ex->getMessage());
+            Bugsnag::notifyException($ex);
+
+            return redirect()->back()->with('fails', $ex->getMessage());
+        }
     }
 }

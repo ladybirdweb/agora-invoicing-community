@@ -196,36 +196,6 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function whenDownloadTillExpiry($updateEndDate, $productid, $versions, $clientid, $invoiceid)
-    {
-        if ($versions->created_at->toDateTimeString()
-        < $updateEndDate->update_ends_at) {
-            return '<p><a href='.url('download/'.$productid.'/'
-            .$clientid.'/'.$invoiceid.'/'.$versions->id).
-            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
-
-       </p>';
-        } else {
-            return '<button class="btn btn-danger 
-        btn-sm disabled">Please Renew </button>';
-        }
-    }
-
-    public function whenDownloadExpiresAfterExpiry($countExpiry, $countVersions, $updatesEndDate, $productid, $versions, $clientid, $invoiceid)
-    {
-        if ($countExpiry == $countVersions) {
-            return '<p><a href='.url('download/'.$productid.'/'
-            .$clientid.'/'.$invoiceid.'/'.$versions->id).
-            " class='btn btn-sm btn-primary'><i class='fa fa-download'>
-            </i>&nbsp;&nbsp;Download</a>".'&nbsp;
-
-       </p>';
-        } else {
-            return '<button class="btn btn-danger 
-        btn-sm disabled">Please Renew </button>';
-        }
-    }
 
     /**
      * Get list of all the versions from Github.
@@ -301,16 +271,7 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function orders()
-    {
-        try {
-            return view('themes.default1.front.clients.order1');
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     /*
      * Show all the orders for User
@@ -363,16 +324,7 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function subscriptions()
-    {
-        try {
-            return view('themes.default1.front.clients.subscription');
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function profile()
     {
@@ -407,20 +359,6 @@ class ClientController extends BaseClientController
         }
     }
 
-    public function getInvoice($id)
-    {
-        try {
-            $invoice = $this->invoice->findOrFail($id);
-            $items = $invoice->invoiceItem()->get();
-            $user = \Auth::user();
-
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
-        } catch (Exception $ex) {
-            Bugsnag::notifyException($ex);
-
-            return redirect()->back()->with('fails', $ex->getMessage());
-        }
-    }
 
     public function getOrder($id)
     {

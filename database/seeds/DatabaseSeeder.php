@@ -1,6 +1,8 @@
 <?php
 
 use App\ApiKey;
+use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
+use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\PricingTemplate;
 use App\Model\Common\StatusSetting;
 use App\Model\Common\Template;
@@ -18,8 +20,6 @@ use App\Model\Payment\TaxOption;
 use App\Model\Product\Product;
 use App\Model\Product\ProductGroup;
 use App\Model\Product\Type;
-use App\Model\Common\Mailchimp\MailchimpSetting;
-use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
 
@@ -59,7 +59,7 @@ class DatabaseSeeder extends Seeder
         $this->command->info('Mailchimp Field Agora Relation table seeded!');
 
         $this->call('mailchimpSettingSeeder');
-         $this->command->info('Mailchimp Settings table seeded!');
+        $this->command->info('Mailchimp Settings table seeded!');
 
         $this->call('PromotionTableSeeder');
         $this->command->info('Promotion table seeded!');
@@ -765,7 +765,7 @@ class StatusSettingSeeder extends Seeder
     {
         \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         \DB::table('status_settings')->truncate();
-        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0,'mailchimp_product_status'=>0,'mailchimp_ispaid_status'=>0]);
+        StatusSetting::create(['id' => 1, 'expiry_mail'=>0, 'activity_log_delete'=>0, 'license_status'=>0, 'github_status'=>0, 'mailchimp_status'=>0, 'twitter_status'=>0, 'msg91_status'=>0, 'emailverification_status'=>0, 'recaptcha_status'=>0, 'update_settings'=>0, 'zoho_status'=>0, 'rzp_status'=>0, 'mailchimp_product_status'=>0, 'mailchimp_ispaid_status'=>0]);
         \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

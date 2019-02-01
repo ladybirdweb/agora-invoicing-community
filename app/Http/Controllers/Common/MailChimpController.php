@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Common;
 
-use App\Http\Controllers\Controller;
 use App\Model\Common\Country;
 use App\Model\Common\Mailchimp\MailchimpField;
 use App\Model\Common\Mailchimp\MailchimpFieldAgoraRelation;
@@ -10,8 +9,8 @@ use App\Model\Common\Mailchimp\MailchimpGroup;
 use App\Model\Common\Mailchimp\MailchimpGroupAgoraRelation;
 use App\Model\Common\Mailchimp\MailchimpLists;
 use App\Model\Common\Mailchimp\MailchimpSetting;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use App\Model\Product\Product;
 use App\User;
 use Exception;
@@ -54,9 +53,6 @@ class MailChimpController extends BaseMailChimpController
         $this->mailchimp = new \Mailchimp\Mailchimp($this->mail_api_key);
     }
 
-    
-    
-
     public function addSubscriber($email)
     {
         try {
@@ -81,10 +77,8 @@ class MailChimpController extends BaseMailChimpController
         }
     }
 
-
-
     //Update to Mailchimp For Paid Product
-     public function addSubscriberByClientPanel(Request $request)
+    public function addSubscriberByClientPanel(Request $request)
     {
         $this->validate($request, [
             'email' => 'required|email',
@@ -138,8 +132,6 @@ class MailChimpController extends BaseMailChimpController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
-   
 
     public function addFieldsToAgora()
     {
@@ -204,7 +196,8 @@ class MailChimpController extends BaseMailChimpController
             $set = $this->mailchimp_set;
             $allists = $this->mailchimp->get('lists?count=20')['lists'];
             $selectedList[] = $set->list_id;
-            return view('themes.default1.common.mailchimp.settings', compact('set','allists','selectedList'));
+
+            return view('themes.default1.common.mailchimp.settings', compact('set', 'allists', 'selectedList'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -214,13 +207,12 @@ class MailChimpController extends BaseMailChimpController
     {
         $this->validate($request, [
             'api_key' => 'required',
-            'list_id'=>'required',
+            'list_id' => 'required',
         ]);
 
         try {
-
-            $this->mailchimp_set->first()->update(['subscribe_status'=>$request->input('subscribe_status'),
-                'list_id'=>$request->input('list_id')]);
+            $this->mailchimp_set->first()->update(['subscribe_status'=> $request->input('subscribe_status'),
+                'list_id'                                            => $request->input('list_id'), ]);
             $this->addListsToAgora();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
@@ -262,10 +254,11 @@ class MailChimpController extends BaseMailChimpController
                     $productList[] = Product::where('id', $value['agora_product_id'])->pluck('name')->first();
                 }
             }
-           $isPaidYesId = MailchimpFieldAgoraRelation::first()->pluck('is_paid_yes')->toArray();
-           $selectedIsPaid[] =  $isPaidYesId ? MailchimpGroup::where('category_option_id',$isPaidYesId)->pluck('category_id')->first() :'';
-            $status = StatusSetting::select('mailchimp_product_status','mailchimp_ispaid_status')->first();
-            return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'display', 'selectedProducts', 'relations', 'group_fields', 'categoryList', 'productList','status','selectedIsPaid'));
+            $isPaidYesId = MailchimpFieldAgoraRelation::first()->pluck('is_paid_yes')->toArray();
+            $selectedIsPaid[] = $isPaidYesId ? MailchimpGroup::where('category_option_id', $isPaidYesId)->pluck('category_id')->first() : '';
+            $status = StatusSetting::select('mailchimp_product_status', 'mailchimp_ispaid_status')->first();
+
+            return view('themes.default1.common.mailchimp.map', compact('mailchimp_fields', 'model2', 'model', 'agoraProducts', 'display', 'selectedProducts', 'relations', 'group_fields', 'categoryList', 'productList', 'status', 'selectedIsPaid'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -286,36 +279,33 @@ class MailChimpController extends BaseMailChimpController
             foreach ($fields as $field) {
                 $selectedCategory = MailchimpGroupAgoraRelation::where('mailchimp_group_cat_id', $field['category_option_id'])->pluck('mailchimp_group_cat_id')->first();
                 echo '<option value='.$field['category_option_id'].'>'.$field['category_option_name'].'</option>';
-           }
+            }
         }
-
     }
 
     public function addProductInterestFieldsToAgora()
     {
-    $checkCategory = ($this->mailchimp->get("lists/$this->list_id/interest-categories")['categories']);
-    if(count($checkCategory) > 0) {
-        foreach ($checkCategory as $interest) {
-        $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$interest->id/interests?count=20"); 
-          if (count($groupInterests['interests']) > 0) {
-        foreach ($groupInterests['interests'] as $key => $value) {
-                $category_id = $value->category_id;
-                $list_id = $value->list_id;
-                $category_option_id = $value->id;
-                $category_option_name = $value->name;
-                $this->groups->updateOrCreate([
+        $checkCategory = ($this->mailchimp->get("lists/$this->list_id/interest-categories")['categories']);
+        if (count($checkCategory) > 0) {
+            foreach ($checkCategory as $interest) {
+                $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$interest->id/interests?count=20");
+                if (count($groupInterests['interests']) > 0) {
+                    foreach ($groupInterests['interests'] as $key => $value) {
+                        $category_id = $value->category_id;
+                        $list_id = $value->list_id;
+                        $category_option_id = $value->id;
+                        $category_option_name = $value->name;
+                        $this->groups->updateOrCreate([
                 'category_id'        => $category_id,
                 'list_id'            => $list_id,
                 'category_option_id' => $category_option_id,
                 'category_name'      => $category_option_name,
             ]);
-       
-         }
-       }
-     } 
+                    }
+                }
+            }
+        }
     }
-   }
-
 
     public function postMapField(Request $request)
     {
@@ -347,20 +337,21 @@ class MailChimpController extends BaseMailChimpController
     {
         try {
             $group = $request->input('group');
-            $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$group/interests?count=20")['interests']; 
+            $groupInterests = $this->mailchimp->get("lists/$this->list_id/interest-categories/$group/interests?count=20")['interests'];
             foreach ($groupInterests as $interest) {
-            //IS Paid Should be either Yes/No or True/False
-            if((strcasecmp($interest->name , 'Yes') == 0) || (strcasecmp($interest->name , 'True') == 0)) {
-                MailchimpFieldAgoraRelation::find(1)->update(['is_paid_yes'=>$interest->id]);
-            } elseif((strcasecmp($interest->name , 'No') == 0) || (strcasecmp($interest->name , 'False') == 0)) {
-                MailchimpFieldAgoraRelation::find(1)->update(['is_paid_no'=>$interest->id]);
-            } else {
-                return redirect()->back()->with('fails','The Group Should have Dropdown with values either Yes/No or True/False');
+                //IS Paid Should be either Yes/No or True/False
+                if ((strcasecmp($interest->name, 'Yes') == 0) || (strcasecmp($interest->name, 'True') == 0)) {
+                    MailchimpFieldAgoraRelation::find(1)->update(['is_paid_yes'=>$interest->id]);
+                } elseif ((strcasecmp($interest->name, 'No') == 0) || (strcasecmp($interest->name, 'False') == 0)) {
+                    MailchimpFieldAgoraRelation::find(1)->update(['is_paid_no'=>$interest->id]);
+                } else {
+                    return redirect()->back()->with('fails', 'The Group Should have Dropdown with values either Yes/No or True/False');
+                }
             }
-        }
-        return redirect()->back()->with('success','Settings Updated Successfully');
-        } catch(Exception $ex) {
-            return redirect()->back()->with('fails',$ex->getMessage());
+
+            return redirect()->back()->with('success', 'Settings Updated Successfully');
+        } catch (Exception $ex) {
+            return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
 }

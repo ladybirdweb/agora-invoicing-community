@@ -191,7 +191,9 @@ class AdvanceSearchController extends Controller
     }
 
     public function getExtraAmt($userId)
-    {dd('fds');
+    {
+        dd('fds');
+
         try {
             $amounts = Payment::where('user_id', $userId)->where('invoice_id', 0)->select('amt_to_credit')->get();
             $balance = 0;

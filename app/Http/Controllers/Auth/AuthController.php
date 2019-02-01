@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
-use App\Model\Common\StatusSetting;
 use App\Http\Controllers\License\LicenseController;
+use App\Model\Common\StatusSetting;
 use App\Model\User\AccountActivate;
 use App\User;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
@@ -93,11 +93,10 @@ class AuthController extends BaseAuthController
                     $response = curl_exec($ch);
                     curl_close($ch);
                 }
-                if($mailchimpStatus ==1) {
+                if ($mailchimpStatus == 1) {
                     $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                     $r = $mailchimp->addSubscriber($user->email);
                 }
-               
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');

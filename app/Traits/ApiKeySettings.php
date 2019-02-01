@@ -2,10 +2,10 @@
 
 namespace App\Traits;
 
-use DateTime;
 use App\ApiKey;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Mailchimp\MailchimpSetting;
+use App\Model\Common\StatusSetting;
+use DateTime;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////
@@ -108,25 +108,28 @@ trait ApiKeySettings
     public function updateMailchimpProductStatus(Request $request)
     {
         StatusSetting::first()->update(['mailchimp_product_status'=>$request->input('status')]);
+
         return ['message' => 'success', 'update'=>'Mailchimp Products Group Status Updated'];
     }
 
     public function updateMailchimpIsPaidStatus(Request $request)
     {
         StatusSetting::first()->update(['mailchimp_ispaid_status'=>$request->input('status')]);
+
         return ['message' => 'success', 'update'=>'Mailchimp is Paid Status Updated'];
     }
 
     public function updateMailchimpDetails(Request $request)
     {
-       $chimp_auth_key =  $request->input('mailchimp_auth_key');
-       $status =  $request->input('status');
-       StatusSetting::find(1)->update(['mailchimp_status'=>$status]);
-       MailchimpSetting::find(1)->update(['api_key'=>$chimp_auth_key]);
-       return ['message' => 'success', 'update'=>'Mailchimp Settings Updated'];
+        $chimp_auth_key = $request->input('mailchimp_auth_key');
+        $status = $request->input('status');
+        StatusSetting::find(1)->update(['mailchimp_status'=>$status]);
+        MailchimpSetting::find(1)->update(['api_key'=>$chimp_auth_key]);
+
+        return ['message' => 'success', 'update'=>'Mailchimp Settings Updated'];
     }
 
-     /**
+    /**
      * Get Date.
      */
     public function getDate($dbdate)

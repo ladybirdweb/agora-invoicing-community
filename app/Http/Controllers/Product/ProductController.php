@@ -111,6 +111,7 @@ class ProductController extends BaseProductController
     {
         try {
             $new_product = Product::select('id', 'name', 'type', 'image', 'group', 'image')->get();
+
             return\ DataTables::of($new_product)
 
                             ->addColumn('checkbox', function ($model) {
@@ -141,8 +142,8 @@ class ProductController extends BaseProductController
                             })
 
                             ->addColumn('Action', function ($model) {
-                               $permissions = LicensePermissionsController::getPermissionsForProduct($model->id);
-                               $url = '';
+                                $permissions = LicensePermissionsController::getPermissionsForProduct($model->id);
+                                $url = '';
                                 if ($permissions['downloadPermission'] == 1) {
                                     $url = '<a href='.url('product/download/'.$model->id).
                                     " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-download' 
@@ -451,27 +452,26 @@ class ProductController extends BaseProductController
             $ids = $request->input('select');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                        $product = $this->product->where('id', $id)->first();
-                        if ($product) {
-                            $product->delete();
-                        } else {
-                            echo "<div class='alert alert-danger alert-dismissable'>
+                    $product = $this->product->where('id', $id)->first();
+                    if ($product) {
+                        $product->delete();
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
                     /* @scrutinizer ignore-type */\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
                 </div>';
-                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                        }
-                        echo "<div class='alert alert-success alert-dismissable'>
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
+                    echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>"./* @scrutinizer ignore-type */
                         \Lang::get('message.alert').'!</b> './* @scrutinizer ignore-type */ \Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
                 </div>';
-                   
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>
@@ -570,10 +570,9 @@ class ProductController extends BaseProductController
                 ->where('id', $version_id)->select('file')->first();
             $order = Order::where('invoice_id', '=', $invoice_id)->first();
             $order_id = $order->id;
-                $relese = $this->getRelease($owner, $repository, $order_id, $file);
+            $relese = $this->getRelease($owner, $repository, $order_id, $file);
 
-                return $relese;
-            
+            return $relese;
         } catch (\Exception $e) {
             Bugsnag::notifyException($e);
 

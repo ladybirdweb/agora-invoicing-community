@@ -8,8 +8,6 @@ use App\Model\Common\StatusSetting;
 use App\Model\Mailjob\ActivityLogDay;
 use App\Model\Mailjob\ExpiryMailDay;
 use App\Traits\ApiKeySettings;
-use DateTime;
-use DateTimeZone;
 use Illuminate\Http\Request;
 use Spatie\Activitylog\Models\Activity;
 
@@ -62,8 +60,6 @@ class BaseSettingsController extends PaymentSettingsController
             return '--';
         }
     }
-
-   
 
     public function destroyEmail(Request $request)
     {
@@ -156,8 +152,6 @@ class BaseSettingsController extends PaymentSettingsController
 
         return $join;
     }
-
-  
 
     public function getScheduler(StatusSetting $status)
     {
@@ -303,7 +297,7 @@ class BaseSettingsController extends PaymentSettingsController
             return successResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
         }
     }
-    
+
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)
     {

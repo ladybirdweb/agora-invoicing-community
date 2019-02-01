@@ -10,12 +10,12 @@ use App\Model\Common\State;
 use App\Model\Common\Template;
 use App\Model\Order\Invoice;
 use App\Model\Order\InvoiceItem;
-use App\Model\Status\StatusSetting;
 use App\Model\Order\Order;
 use App\Model\Payment\Plan;
 use App\Model\Product\Price;
 use App\Model\Product\Product;
 use App\Model\Product\Subscription;
+use App\Model\Status\StatusSetting;
 use App\User;
 use Bugsnag;
 use Cart;
@@ -274,11 +274,11 @@ class CheckoutController extends InfoController
                 $check_product_category = $this->product($invoiceid);
                 //Update Subscriber To Mailchimp
                 $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
-                if( $mailchimpStatus == 1) {
+                if ($mailchimpStatus == 1) {
                     $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
                     $r = $mailchimp->updateSubscriberForFreeProduct(\Auth::user()->email, $check_product_category->id);
                 }
-               
+
                 $url = '';
                 if ($check_product_category->category) {
                     $url = view('themes.default1.front.postCheckoutTemplate', compact(

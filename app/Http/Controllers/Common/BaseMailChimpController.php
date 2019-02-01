@@ -121,7 +121,8 @@ class BaseMailChimpController extends Controller
             $set = $this->mailchimp_set;
             $allists = $this->mailchimp->get('lists?count=20')['lists'];
             $selectedList[] = $set->list_id;
-            return view('themes.default1.common.mailchimp.settings', compact('set','allists','selectedList'));
+
+            return view('themes.default1.common.mailchimp.settings', compact('set', 'allists', 'selectedList'));
         } catch (Exception $ex) {
             return redirect()->back()->with('fails', $ex->getMessage());
         }
@@ -131,13 +132,12 @@ class BaseMailChimpController extends Controller
     {
         $this->validate($request, [
             'api_key' => 'required',
-            'list_id'=>'required',
+            'list_id' => 'required',
         ]);
 
         try {
-
-            $this->mailchimp_set->first()->update(['subscribe_status'=>$request->input('subscribe_status'),
-                'list_id'=>$request->input('list_id')]);
+            $this->mailchimp_set->first()->update(['subscribe_status'=> $request->input('subscribe_status'),
+                'list_id'                                            => $request->input('list_id'), ]);
             $this->addListsToAgora();
 
             return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));

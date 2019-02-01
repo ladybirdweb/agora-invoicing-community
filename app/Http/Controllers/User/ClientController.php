@@ -336,8 +336,6 @@ class ClientController extends AdvanceSearchController
         return $responseData;
     }
 
-
-
     /**
      * Show the form for editing the specified resource.
      *

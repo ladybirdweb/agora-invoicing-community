@@ -196,7 +196,6 @@ class ClientController extends BaseClientController
         }
     }
 
-
     /**
      * Get list of all the versions from Github.
      *
@@ -271,8 +270,6 @@ class ClientController extends BaseClientController
         }
     }
 
-
-
     /*
      * Show all the orders for User
      */
@@ -324,8 +321,6 @@ class ClientController extends BaseClientController
         }
     }
 
-
-
     public function profile()
     {
         try {
@@ -358,7 +353,6 @@ class ClientController extends BaseClientController
             return redirect()->back()->with('fails', $ex->getMessage());
         }
     }
-
 
     public function getOrder($id)
     {

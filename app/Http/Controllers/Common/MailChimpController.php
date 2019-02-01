@@ -166,9 +166,6 @@ class MailChimpController extends BaseMailChimpController
         }
     }
 
-
- 
-
     public function mapField()
     {
         try {

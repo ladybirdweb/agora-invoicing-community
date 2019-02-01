@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\User;
 
-use App\User;
-use App\Model\Order\Payment;
 use App\Http\Controllers\Controller;
+use App\Model\Order\Payment;
+use App\User;
 
 class AdvanceSearchController extends Controller
 {

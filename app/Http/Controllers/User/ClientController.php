@@ -7,6 +7,7 @@ use App\Http\Requests\User\ClientRequest;
 use App\Model\Order\Invoice;
 use App\Model\Order\Order;
 use App\Model\Order\Payment;
+use App\Model\Status\StatusSetting;
 use App\Model\Payment\Currency;
 use App\Model\User\AccountActivate;
 use App\Traits\PaymentsAndInvoices;
@@ -218,8 +219,12 @@ class ClientController extends AdvanceSearchController
             $user->ip = $location['ip'];
             $user->fill($request->input())->save();
             $this->sendWelcomeMail($user);
+            $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+            if($mailchimpStatus ==1) {
             $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $r = $mailchimp->addSubscriber($user->email);
+            }
+            
 
             return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
         } catch (\Swift_TransportException $e) {

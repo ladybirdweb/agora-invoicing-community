@@ -1495,7 +1495,6 @@ if(first_namecheck() && last_namecheck() && emailcheck() && companycheck()  && m
                
                 $('.wizard-inner').css('display','block');
                    if($("#checkEmailStatus").val() == 0 && $("#checkOtpStatus").val() == 0) {
-                    alert('refd');
                  var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Thank You! </strong>'+response.message+'!!</div>';
                 $('#alertMessage1').html(result);
                  window.scrollTo(0,0);

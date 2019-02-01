@@ -63,19 +63,7 @@ class BaseSettingsController extends PaymentSettingsController
         }
     }
 
-    /**
-     * Get Date.
-     */
-    public function getDate($dbdate)
-    {
-        $created = new DateTime($dbdate);
-        $tz = \Auth::user()->timezone()->first()->name;
-        $created->setTimezone(new DateTimeZone($tz));
-        $date = $created->format('M j, Y, g:i a '); //5th October, 2018, 11:17PM
-        $newDate = $date;
-
-        return $newDate;
-    }
+   
 
     public function destroyEmail(Request $request)
     {
@@ -169,15 +157,7 @@ class BaseSettingsController extends PaymentSettingsController
         return $join;
     }
 
-    public function getDateFormat($dbdate = '')
-    {
-        $created = new DateTime($dbdate);
-        $tz = \Auth::user()->timezone()->first()->name;
-        $created->setTimezone(new DateTimeZone($tz));
-        $date = $created->format('Y-m-d H:m:i');
-
-        return $date;
-    }
+  
 
     public function getScheduler(StatusSetting $status)
     {
@@ -323,49 +303,7 @@ class BaseSettingsController extends PaymentSettingsController
             return successResponse(\Lang::get('message.please_enable_php_exec_for_cronjob_check'));
         }
     }
-
-    public function saveConditions()
-    {
-        if (\Input::get('expiry-commands') && \Input::get('activity-commands')) {
-            $expiry_commands = \Input::get('expiry-commands');
-            $expiry_dailyAt = \Input::get('expiry-dailyAt');
-            $activity_commands = \Input::get('activity-commands');
-            $activity_dailyAt = \Input::get('activity-dailyAt');
-            $activity_command = $this->getCommand($activity_commands, $activity_dailyAt);
-            $expiry_command = $this->getCommand($expiry_commands, $expiry_dailyAt);
-            $jobs = ['expiryMail' => $expiry_command, 'deleteLogs' =>  $activity_command];
-            $this->storeCommand($jobs);
-        }
-    }
-
-    public function getCommand($command, $daily_at)
-    {
-        if ($command == 'dailyAt') {
-            $command = "dailyAt,$daily_at";
-        }
-
-        return $command;
-    }
-
-    public function storeCommand($array = [])
-    {
-        $command = new \App\Model\Mailjob\Condition();
-        $commands = $command->get();
-        if ($commands->count() > 0) {
-            foreach ($commands as $condition) {
-                $condition->delete();
-            }
-        }
-        if (count($array) > 0) {
-            foreach ($array as $key => $save) {
-                $command->create([
-                    'job'   => $key,
-                    'value' => $save,
-                ]);
-            }
-        }
-    }
-
+    
     //Save the Cron Days for expiry Mails and Activity Log
     public function saveCronDays(Request $request)
     {

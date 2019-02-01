@@ -109,13 +109,16 @@ class BaseOrderController extends ExtendedOrderController
             $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             $this->sendOrderMail($user_id, $order->id, $item->id);
             //Update Subscriber To Mailchimp
-            // $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+             $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+              if($mailchimpStatus == 1) {
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
             $email = User::where('id', $user_id)->pluck('email')->first();
-            // if ($item->subtotal > 0) {
-        //     $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
-        // } else {
-        //     $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
-        // }
+            if ($item->subtotal > 0) {
+            $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+        } else {
+            $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+        }
+      }
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());

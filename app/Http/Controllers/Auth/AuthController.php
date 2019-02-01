@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\ApiKey;
 use App\Http\Controllers\Controller;
+use App\Model\Common\StatusSetting;
 use App\Http\Controllers\License\LicenseController;
 use App\Model\User\AccountActivate;
 use App\User;
@@ -63,13 +64,13 @@ class AuthController extends BaseAuthController
             } else {
                 throw new NotFoundHttpException();
             }
-            //dd($email);
             $url = 'auth/login';
             $user = $user->where('email', $email)->first();
             if ($user->where('email', $email)->first()) {
                 $user->active = 1;
                 $user->save();
                 $zohoStatus = StatusSetting::pluck('zoho_status')->first();
+                $mailchimpStatus = StatusSetting::pluck('mailchimp_status')->first();
                 if ($zohoStatus) {
                     $zoho = $this->reqFields($user, $email);
                     $auth = ApiKey::where('id', 1)->value('zoho_api_key');
@@ -92,9 +93,11 @@ class AuthController extends BaseAuthController
                     $response = curl_exec($ch);
                     curl_close($ch);
                 }
-
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $r = $mailchimp->addSubscriber($user->email);
+                if($mailchimpStatus ==1) {
+                    $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+                    $r = $mailchimp->addSubscriber($user->email);
+                }
+               
 
                 if (\Session::has('session-url')) {
                     $url = \Session::get('session-url');

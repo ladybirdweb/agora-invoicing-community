@@ -103,7 +103,7 @@ class AdvanceSearchController extends Controller
         return $join;
     }
 
-        public function advanceSearch(
+    public function advanceSearch(
         $name = '',
         $username = '',
         $company = '',
@@ -140,7 +140,6 @@ class AdvanceSearchController extends Controller
 
         return $join;
     }
-
 
     public function search(Request $request)
     {

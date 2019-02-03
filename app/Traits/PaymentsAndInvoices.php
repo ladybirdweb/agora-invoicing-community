@@ -356,23 +356,24 @@ use Illuminate\Http\Request;
             return $sum;
         }
 
-    public function getAmountPaid($userId)
-    {
-        try {
-            $amounts = Payment::where('user_id', $userId)->select('amount', 'amt_to_credit')->get();
-            $paidSum = 0;
-            foreach ($amounts as $amount) {
-                if ($amount) {
-                    $paidSum = $paidSum + $amount->amount;
-                   // $credit = $paidSum + $amount->amt_to_credit;
+        public function getAmountPaid($userId)
+        {
+            try {
+                $amounts = Payment::where('user_id', $userId)->select('amount', 'amt_to_credit')->get();
+                $paidSum = 0;
+                foreach ($amounts as $amount) {
+                    if ($amount) {
+                        $paidSum = $paidSum + $amount->amount;
+                        // $credit = $paidSum + $amount->amt_to_credit;
+                    }
                 }
-            }
-            return $paidSum;
-        } catch (\Exception $ex) {
-            app('log')->info($ex->getMessage());
-            Bugsnag::notifyException($ex);
 
-            return redirect()->back()->with('fails', $ex->getMessage());
+                return $paidSum;
+            } catch (\Exception $ex) {
+                app('log')->info($ex->getMessage());
+                Bugsnag::notifyException($ex);
+
+                return redirect()->back()->with('fails', $ex->getMessage());
+            }
         }
-     }
     }

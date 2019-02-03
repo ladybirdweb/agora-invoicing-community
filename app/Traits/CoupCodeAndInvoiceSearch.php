@@ -4,10 +4,10 @@ namespace App\Traits;
 
 use App\Model\Order\Invoice;
 use App\Model\Payment\Plan;
-use Bugsnag;
 use App\Model\Payment\PlanPrice;
 use App\Model\Payment\Promotion;
 use App\Model\Product\Product;
+use Bugsnag;
 use Illuminate\Http\Request;
 
 //////////////////////////////////////////////////////////////////////////////

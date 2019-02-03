@@ -236,8 +236,6 @@ use Illuminate\Http\Request;
             }
         }
 
-
-
         public function pdf(Request $request)
         {
             try {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -59,7 +58,7 @@ class BaseClientController extends Controller
     {
         $end = '--';
         if ($orders->subscription()->first()) {
-            if (strtotime($orders->subscription()->first()->update_ends_at) >1) {
+            if (strtotime($orders->subscription()->first()->update_ends_at) > 1) {
                 $ends = new DateTime($orders->subscription()->first()->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $ends->setTimezone(new DateTimeZone($tz));
@@ -251,8 +250,7 @@ class BaseClientController extends Controller
             $currency = CartController::currency($user->id);
             $symbol = $currency['symbol'];
 
-
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user','currency','symbol'));
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user', 'currency', 'symbol'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

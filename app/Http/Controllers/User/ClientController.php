@@ -305,9 +305,6 @@ class ClientController extends AdvanceSearchController
         return $responseData;
     }
 
-
-
-
     //Get Payment Details on Invoice Page
     public function getPaymentDetail($id)
     {

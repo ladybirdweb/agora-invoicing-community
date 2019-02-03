@@ -189,7 +189,7 @@ class BaseProductController extends ExtendedBaseProductController
 
             return response()->json($result);
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
@@ -237,7 +237,7 @@ class BaseProductController extends ExtendedBaseProductController
                 return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
         } catch (\Exception $ex) {
-             app('log')->error($ex->getMessage());
+            app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect('auth/login')->with('fails', $ex->getMessage());

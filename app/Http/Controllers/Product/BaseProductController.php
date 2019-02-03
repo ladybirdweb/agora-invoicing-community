@@ -189,6 +189,7 @@ class BaseProductController extends ExtendedBaseProductController
 
             return response()->json($result);
         } catch (\Exception $ex) {
+             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return $ex->getMessage();
@@ -236,6 +237,7 @@ class BaseProductController extends ExtendedBaseProductController
                 return redirect('auth/login')->with('fails', \Lang::get('please-purcahse-a-product'));
             }
         } catch (\Exception $ex) {
+             app('log')->error($ex->getMessage());
             Bugsnag::notifyException($ex);
 
             return redirect('auth/login')->with('fails', $ex->getMessage());
@@ -252,8 +254,8 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
-            $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            // $relese = '/home/faveo/products/'.$file->file;
+            // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
+            $relese = '/home/faveo/products/'.$file->file;
 
             return $relese;
         }
@@ -267,8 +269,8 @@ class BaseProductController extends ExtendedBaseProductController
 
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file->file) {
-            $relese = storage_path().'\products'.'\\'.$file->file;
-            // $relese = '/home/faveo/products/'.$file->file;
+            // $relese = storage_path().'\products'.'\\'.$file->file;
+            $relese = '/home/faveo/products/'.$file->file;
 
             return $relese;
         }

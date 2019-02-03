@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Http\Requests\User\ProfileRequest;
 use App\Model\Order\Invoice;
@@ -58,8 +59,8 @@ class BaseClientController extends Controller
     {
         $end = '--';
         if ($orders->subscription()->first()) {
-            if ($end != '0000-00-00 00:00:00' || $end != null) {
-                $ends = new DateTime($orders->subscription()->first()->ends_at);
+            if (strtotime($orders->subscription()->first()->update_ends_at) >1) {
+                $ends = new DateTime($orders->subscription()->first()->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $ends->setTimezone(new DateTimeZone($tz));
                 $date = $ends->format('M j, Y, g:i a ');
@@ -245,9 +246,13 @@ class BaseClientController extends Controller
         try {
             $invoice = $this->invoice->findOrFail($id);
             $items = $invoice->invoiceItem()->get();
-            $user = \Auth::user();
 
-            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user'));
+            $user = \Auth::user();
+            $currency = CartController::currency($user->id);
+            $symbol = $currency['symbol'];
+
+
+            return view('themes.default1.front.clients.show-invoice', compact('invoice', 'items', 'user','currency','symbol'));
         } catch (Exception $ex) {
             Bugsnag::notifyException($ex);
 

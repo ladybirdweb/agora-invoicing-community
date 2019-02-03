@@ -57,7 +57,7 @@ active
 
                     <thead><tr>
                             <th>Product Name</th>
-                            <th>Expiry</th>
+                            <th>Updates Expiry Date</th>
                             
                             <th>Action</th>
                         </tr></thead>

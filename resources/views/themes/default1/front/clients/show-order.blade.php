@@ -83,7 +83,7 @@ active
                                       
                                         <table class="table table-hover">
                                             <div class="col-md-6">
-                                            <tbody><tr><td><b>Serial Key:</b></td>         <td>{{$order->serial_key}}</td></tr>
+                                            <tbody><tr><td><b>License Code:</b></td>         <td>{{$order->serial_key}}</td></tr>
                                                 <tr><td><b>Licensed Domain:</b></td>     <td>{{$order->domain}}
                                                     @if ($licenseStatus == 1)
                                                 <button class='class="btn btn-danger mb-2 pull-right' style="border:none;" id="reissueLic" data-id="{{$order->id}}" data-name="{{$order->domain}}">
@@ -95,7 +95,7 @@ active
 
                                                 <?php
                                                 
-                                                if (!$subscription || $subscription->ends_at == '' || $subscription->ends_at == '0000-00-00 00:00:00') {
+                                                if (!$subscription || strtotime($subscription->ends_at) < 1) {
                                                     $sub = "--";
                                                 } else {
                                                     $date = new DateTime($subscription->ends_at);
@@ -107,8 +107,22 @@ active
 
 
                                                 }
+
+                                                if (!$subscription || strtotime($subscription->update_ends_at) < 1) {
+                                                    $update_sub = "--";
+                                                } else {
+                                                    $date1 = new DateTime($subscription->update_ends_at);
+                                                    $tz = \Auth::user()->timezone()->first()->name;
+                                                     $date1->setTimezone(new DateTimeZone($tz));
+                                                      
+                                                    $update_sub = $date1->format('M j, Y, g:i a ');
+                                                     // $sub = $sub2->setTimezone($tz);
+
+
+                                                }
                                                 ?>
-                                                <tr><td><b>Subscription End:</b></td>   <td>{{$sub}}</td></tr>
+                                                <tr><td><b>License Ends:</b></td>   <td>{{$sub}}</td></tr>
+                                                <tr><td><b>Update Ends:</b></td>   <td>{{$update_sub}}</td></tr>
 
                                             </tbody>
                                          </div>

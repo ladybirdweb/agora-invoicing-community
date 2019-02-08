@@ -5,9 +5,9 @@ namespace App\Http\Controllers\Product;
 // use Illuminate\Http\Request;
     use App\Http\Controllers\License\LicenseController;
     use App\Http\Controllers\License\LicensePermissionsController;
+    use App\Model\Common\Setting;
     use App\Model\Common\StatusSetting;
     use App\Model\License\LicenseType;
-    use App\Model\Common\Setting;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -21,11 +21,12 @@ namespace App\Http\Controllers\Product;
     use App\Model\Product\ProductUpload;
     use App\Model\Product\Subscription;
     use App\Model\Product\Type;
+    use App\Traits\Upload\ChunkUpload;
     use Bugsnag\BugsnagLaravel\Facades\Bugsnag;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
-    use App\Traits\Upload\ChunkUpload;
+
     // use Input;
 
 class ProductController extends BaseProductController
@@ -173,10 +174,11 @@ class ProductController extends BaseProductController
         $this->validate($request,[
         'producttitle' => 'required',
         'version'      => 'required',
-        'filename'     => 'required'
+        'filename'     => 'required',
         ],
         ['filename.required' => 'Please Uplaod A file',
         ]);
+
         try {
             $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
 
@@ -184,7 +186,7 @@ class ProductController extends BaseProductController
             $this->product_upload->title = $request->input('producttitle');
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
-             $this->product_upload->file = $request->input('filename');
+            $this->product_upload->file = $request->input('filename');
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
@@ -192,21 +194,19 @@ class ProductController extends BaseProductController
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), '1');
             }
-            $response = ['success'=>'true' , 'message'=>'Product Uploaded Successfully'];
+            $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
+
             return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
-            $response = ['success'=>'false' , 'message'=>$message];
-            return response()->json(compact('response'),500);
+            $response = ['success'=>'false', 'message'=>$message];
+
+            return response()->json(compact('response'), 500);
         }
     }
 
-
-
-
-   
     /**
      * Show the form for creating a new resource.
      *
@@ -513,30 +513,29 @@ class ProductController extends BaseProductController
     {
         try {
             $ids = $request->input('select');
-           $storagePath = Setting::find(1)->value('file_storage');
+            $storagePath = Setting::find(1)->value('file_storage');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                        $product = $this->product_upload->where('id', $id)->first();
-                        if ($product) {
-                            $file = $product->file;
-                            unlink($storagePath.'/'.$file);
-                            $product->delete();
-                        } else {
-                            echo "<div class='alert alert-danger alert-dismissable'>
+                    $product = $this->product_upload->where('id', $id)->first();
+                    if ($product) {
+                        $file = $product->file;
+                        unlink($storagePath.'/'.$file);
+                        $product->delete();
+                    } else {
+                        echo "<div class='alert alert-danger alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.no-record').'
                 </div>';
-                            //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                        }
-                        echo "<div class='alert alert-success alert-dismissable'>
+                        //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
+                    }
+                    echo "<div class='alert alert-success alert-dismissable'>
                     <i class='fa fa-ban'></i>
                     <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.success').'
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
-                    
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>

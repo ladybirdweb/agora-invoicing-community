@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\License\LicensePermissionsController;
-use App\Model\Payment\Plan;
 use App\Model\Common\Setting;
+use App\Model\Payment\Plan;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
@@ -24,7 +24,6 @@ class BaseProductController extends ExtendedBaseProductController
 
         return $server;
     }
-
 
     /*
     * Get Product Qty if Product can be modified
@@ -171,7 +170,7 @@ class BaseProductController extends ExtendedBaseProductController
                 if ($user->active == 1) {
                     $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
-                    $name =  Product::where('id', $product_id)->value('name');
+                    $name = Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
@@ -216,6 +215,7 @@ class BaseProductController extends ExtendedBaseProductController
             // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
             //$relese = '/home/faveo/products/'.$file->file;
             $relese = $path.'/'.$file->file;
+
             return $relese;
         }
     }
@@ -229,7 +229,7 @@ class BaseProductController extends ExtendedBaseProductController
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
-        //    $relese = '/home/faveo/products/'.$file->file;
+            //    $relese = '/home/faveo/products/'.$file->file;
             $path = Setting::find(1)->value('file_storage');
             $relese = $path.'/'.$file->file;
 

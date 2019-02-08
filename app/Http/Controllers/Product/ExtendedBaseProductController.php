@@ -57,22 +57,25 @@ class ExtendedBaseProductController extends Controller
         'producttitle' => 'required',
         'version'      => 'required',
         ]);
+
         try {
             $file_upload = ProductUpload::find($id);
-            $file_upload->update(['title'=>$request->input('producttitle') , 'description'=>$request->input('description') ,'version'=> $request->input('version')]);
+            $file_upload->update(['title'=>$request->input('producttitle'), 'description'=>$request->input('description'), 'version'=> $request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
             if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
                 $productSku = $file_upload->product->product_sku;
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
             }
-            $response = ['success'=>'true' , 'message'=>'Product Uploaded Successfully'];
+            $response = ['success'=>'true', 'message'=>'Product Uploaded Successfully'];
+
             return $response;
         } catch (\Exception $ex) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
             $message = [$e->getMessage()];
-            $response = ['success'=>'false' , 'message'=>$message];
+            $response = ['success'=>'false', 'message'=>$message];
+
             return response()->json(compact('response'), 500);
         }
     }
@@ -122,7 +125,7 @@ class ExtendedBaseProductController extends Controller
         try {
             // $release = $this->getLinkToDownload($role, $invoice, $id);
             $release = $this->downloadProductAdmin($id);
-            $name =  Product::where('id', $id)->value('name');
+            $name = Product::where('id', $id)->value('name');
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
                 exit;

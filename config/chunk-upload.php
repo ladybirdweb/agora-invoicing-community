@@ -9,16 +9,16 @@ return [
          * Returns the folder name of the chunks. The location is in storage/app/{folder_name}
          */
         'chunks' => 'chunks',
-        'disk' => 'local',
+        'disk'   => 'local',
     ],
     'clear' => [
         /*
          * How old chunks we should delete
          */
         'timestamp' => '-3 HOURS',
-        'schedule' => [
+        'schedule'  => [
             'enabled' => true,
-            'cron' => '25 * * * *', // run every hour on the 25th minute
+            'cron'    => '25 * * * *', // run every hour on the 25th minute
         ],
     ],
     'chunk' => [

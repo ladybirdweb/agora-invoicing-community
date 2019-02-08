@@ -348,7 +348,7 @@ class PageController extends GetPageTemplateController
             }
             $data = PricingTemplate::find($templateid)->data;
             $productsRelatedToGroup = ProductGroup::find($groupid)->product()->where('hidden', '!=', 1)
-            ->orderBy('created_at','desc')->get(); //Get ALL the Products Related to the Grou
+            ->orderBy('created_at', 'desc')->get(); //Get ALL the Products Related to the Grou
             $trasform = [];
             $templates = $this->getTemplateOne($productsRelatedToGroup, $data, $trasform);
 

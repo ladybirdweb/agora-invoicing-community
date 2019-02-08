@@ -4,8 +4,8 @@ namespace App\Traits;
 
 use App\ApiKey;
 use App\Model\Common\Mailchimp\MailchimpSetting;
-use App\Model\Common\StatusSetting;
 use App\Model\Common\Setting;
+use App\Model\Common\StatusSetting;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -199,12 +199,14 @@ trait ApiKeySettings
     public function showFileStorage()
     {
         $fileStorage = Setting::first()->value('file_storage');
-        return view('themes.default1.common.setting.file-storage',compact('fileStorage'));
+
+        return view('themes.default1.common.setting.file-storage', compact('fileStorage'));
     }
 
     public function updateStoragePath(Request $request)
     {
-       $updatedPath = Setting::find(1)->update(['file_storage'=>$request->input('fileuploadpath')]);
-       return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
+        $updatedPath = Setting::find(1)->update(['file_storage'=>$request->input('fileuploadpath')]);
+
+        return redirect()->back()->with('success', \Lang::get('message.updated-successfully'));
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Product;
 
 use App\Http\Controllers\License\LicensePermissionsController;
 use App\Model\Payment\Plan;
+use App\Model\Common\Setting;
 use App\Model\Product\Product;
 use App\Model\Product\ProductUpload;
 use Bugsnag;
@@ -24,50 +25,6 @@ class BaseProductController extends ExtendedBaseProductController
         return $server;
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param int $id
-     *
-     * @return \Response
-     */
-    public function fileDestroy(Request $request)
-    {
-        $ids = $request->input('select');
-        if (!empty($ids)) {
-            foreach ($ids as $id) {
-                $product = ProductUpload::where('id', $id)->first();
-                if ($product) {
-                    $product->delete();
-                } else {
-                    echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.no-record').'
-                </div>';
-                    //echo \Lang::get('message.no-record') . '  [id=>' . $id . ']';
-                }
-            }
-            echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */\Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */\Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.deleted-successfully').'
-                </div>';
-        } else {
-            echo "<div class='alert alert-success alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>"./* @scrutinizer ignore-type */ \Lang::get('message.alert').'!</b> '.
-                    /* @scrutinizer ignore-type */ \Lang::get('message.success').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        './* @scrutinizer ignore-type */\Lang::get('message.select-a-row').'
-                </div>';
-            //echo \Lang::get('message.select-a-row');
-        }
-    }
 
     /*
     * Get Product Qty if Product can be modified
@@ -214,6 +171,7 @@ class BaseProductController extends ExtendedBaseProductController
                 if ($user->active == 1) {
                     $order = $invoice->order()->orderBy('id', 'desc')->select('product')->first();
                     $product_id = $order->product;
+                    $name =  Product::where('id', $product_id)->value('name');
                     $invoice_id = $invoice->id;
                     $release = $this->downloadProduct($uploadid, $userid, $invoice_id, $version_id);
                     if (is_array($release) && array_key_exists('type', $release)) {
@@ -223,7 +181,7 @@ class BaseProductController extends ExtendedBaseProductController
                     } else {
                         header('Content-type: Zip');
                         header('Content-Description: File Transfer');
-                        header('Content-Disposition: attachment; filename=Faveo.zip');
+                        header('Content-Disposition: attachment; filename='.$name.'.zip');
                         //header("Content-type: application/zip");
                         header('Content-Length: '.filesize($release));
                         ob_end_clean();
@@ -254,9 +212,10 @@ class BaseProductController extends ExtendedBaseProductController
         } elseif ($file) {
             //If the Product is Downloaded from FileSystem
             $fileName = $file->file;
+            $path = Setting::find(1)->value('file_storage');
             // $relese = storage_path().'/products'.'//'.$fileName; //For Local Server
-            $relese = '/home/faveo/products/'.$file->file;
-
+            //$relese = '/home/faveo/products/'.$file->file;
+            $relese = $path.'/'.$file->file;
             return $relese;
         }
     }
@@ -270,7 +229,9 @@ class BaseProductController extends ExtendedBaseProductController
             return ['release'=>$relese, 'type'=>'github'];
         } elseif ($file->file) {
             // $relese = storage_path().'\products'.'\\'.$file->file;
-            $relese = '/home/faveo/products/'.$file->file;
+        //    $relese = '/home/faveo/products/'.$file->file;
+            $path = Setting::find(1)->value('file_storage');
+            $relese = $path.'/'.$file->file;
 
             return $relese;
         }

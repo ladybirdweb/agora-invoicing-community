@@ -16,6 +16,7 @@ class AddSystemDefaultCurrencyToSettings extends Migration
         Schema::table('settings', function (Blueprint $table) {
             $table->string('default_currency', 255)->nullable();
             $table->string('default_symbol', 255)->nullable();
+             $table->string('file_storage', 255)->nullable();
         });
     }
 

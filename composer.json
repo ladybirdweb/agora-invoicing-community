@@ -24,6 +24,7 @@
         "php-mock/php-mock": "^2.0",
         "phpoffice/phpexcel": "^1.8",
         "pingplusplus/pingpp-php": "dev-master",
+        "pion/laravel-chunk-upload": "^1.2",
         "rachidlaasri/laravel-installer": "^3.2",
         "razorpay/razorpay": "^2.2",
         "shvetsgroup/laravel-email-database-log": "^1.2",

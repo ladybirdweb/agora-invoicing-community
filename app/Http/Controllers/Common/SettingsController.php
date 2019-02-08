@@ -363,7 +363,6 @@ class SettingsController extends BaseSettingsController
                                 'username', 'role', 'new', 'old', 'created_at', ])
                             ->make(true);
         } catch (\Exception $e) {
-            dd($e);
             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());

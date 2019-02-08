@@ -280,7 +280,7 @@ class BaseCartController extends ExtendedBaseCartController
         try {
             $qty = 1;
             $agents = 0; //Unlmited Agents
-            $planid = $this->checkPlanSession() === true ? Session::get('plan') : 0; //Get Plan id From Session
+            $planid = $this->checkPlanSession() === true ? Session::get('plan') : Plan::where('product', $id)->pluck('id')->first(); //Get Plan id From Session
             $product = Product::find($id);
             $plan = $product->planRelation->find($planid);
             if ($plan) { //If Plan For a Product exists

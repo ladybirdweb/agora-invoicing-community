@@ -14,6 +14,7 @@ Edit Product
 @stop
 @section('content')
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+
 <script type="text/javascript">
     $(function () {
         $("#chkYes").click(function () {
@@ -49,7 +50,7 @@ Edit Product
     .select2-container--default .select2-selection--multiple .select2-selection__choice {
     background-color: #1b1818 !important;
 </style>
-
+ @include('themes.default1.product.product.edit-upload-option')
 <div class="box box-primary">
 
     <div class="box-header">
@@ -423,7 +424,7 @@ Edit Product
                 
                  <a href="#create-upload-option" id="create" class="btn btn-primary  btn-sm pull-right" data-toggle="modal" data-target="#create-upload-option"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp;{{Lang::get('message.add-file')}}</a>
                             @include('themes.default1.product.product.create-upload-option')
-                             @include('themes.default1.product.product.edit-upload-option')
+                            
              
             </div>
             <!-- <div id="response"></div> -->
@@ -456,7 +457,7 @@ Edit Product
 <script src="//cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script>
 <script src="//cdn.tinymce.com/4/tinymce.min.js"></script>
 <script>
-                                           $(function(){
+                                        $(function(){
                                           tinymce.init({
                                          selector: '#product-description',
                                          height: 200,
@@ -570,24 +571,51 @@ Edit Product
             },
         });
         
-          $('#edit-upload-option').on('show.bs.modal', function(e){
-        
-    })
+  
+    
      function openEditPopup(e){
-         console.log(e)
         
-         $('#edit-uplaod-option').modal('toggle');
-         var upload_id = $(e).data('id')
-         var title = $(e).data('title')
-        
+        $('#edit-uplaod-option').modal('show');
+        var upload_id = $(e).data('id')
+        var title = $(e).data('title')
         var version= $(e).data('version')
         var description = $(e).data('description') 
         tinymce.get('product-description').setContent(description);
-         $("#product-title").val(title)
-        $("#product-version").val(version)
-         var url = "{{url('upload/')}}"+"/"+upload_id
-         
-          $("#upload-edit-form").attr('action', url)
+         $("#product-title").val(title);
+        $("#product-version").val(version);
+
+         $("#editProductUpload").on('click',function(){
+      $("#editProductUpload").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+    var productname = $('#editName').val();
+    var producttitle = $('#product-title').val();
+    var description = tinyMCE.get('product-description').getContent()
+    var version = $('#product-version').val();
+    $.ajax({
+       type : "PATCH",
+       url  :  "{{url('upload/')}}"+"/"+upload_id,
+       data :  {'productname': productname , 'producttitle': producttitle, 
+       'description': description,'version':version},
+       success: function(response) {
+         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        $('#alertMessage2').show();
+        $('#error1').hide();
+        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
+        $('#alertMessage2').html(result+ ".");
+       } ,
+       error: function(ex) {
+         $("#editProductUpload").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+        for (key in ex.responseJSON.errors) {
+           html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
+        }
+          html += '</ul></div>';
+           $('#error1').show(); 
+           document.getElementById('error1').innerHTML = html;
+       }
+    });
+
+ })
+      
 
     }
         </script>
@@ -616,7 +644,7 @@ Edit Product
                   
                 $('#gif').hide();
                 $('#response').html(data);
-                location.reload();
+                // location.reload();
                 }
                })
             }
@@ -717,7 +745,6 @@ Edit Product
 
        $(function() {
         $('#agent').click(function(){
-            console.log('hiiiii');
             if($('#agent').is(":checked")) {
                $("#allowmulagent").show();
                $("#allowmulproduct").hide();
@@ -746,6 +773,83 @@ Edit Product
         tags:true
     });
 });
+</script>
+<script>
+ $(document).ready(function(){
+ var $ = window.$; // use the global jQuery instance
+    
+var $uploadList = $("#file-upload-list");
+var $fileUpload = $('#fileupload');
+if ($uploadList.length > 0 && $fileUpload.length > 0) {
+    var idSequence = 0;
+    // A quick way setup - url is taken from the html tag
+    $fileUpload.fileupload({
+        maxChunkSize: 1000000,
+        method: "POST",
+        // Not supported
+        sequentialUploads: false,
+        formData: function (form) {
+            // Append token to the request - required for web routes
+            return [{name: '_token', value: $('input[name=_token]').val()}];
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $("#" + data.theId).text('Uploading ' + progress + '%');
+        },
+        add: function (e, data) {
+            data._progress.theId = 'id_' + idSequence;
+            idSequence++;
+            $uploadList.append($('<li id="' + data.theId + '"></li>').text('Uploading'));
+            data.submit();
+        },
+        done: function (e, data) {
+            console.log(data.textStatus);
+            console.log(data.result.path,data.result.name);
+            $uploadList.append($('<li></li>').text('Uploaded: ' + data.result.path + ' ' + data.result.name));
+            if(data.textStatus == 'success') {
+                $("#file_ids").val(data.result.name);
+            }
+        }
+    });
+}
+})
+
+ //------------------------------------------------------------------------------------------------------------//
+ 
+
+
+ $("#uploadVersion").on('click',function(){
+      $("#uploadVersion").html("<i class='fa fa-circle-o-notch fa-spin fa-1x fa-fw'></i>Please Wait...");
+     var filename = $('#file_ids').val();
+    var productname = $('#productname').val();
+    var producttitle = $('#producttitle').val();
+    var description = tinyMCE.get('textarea3').getContent()
+    var version = $('#productver').val();
+    $.ajax({
+       type : "POST",
+       url  :  "{!! route('upload/save') !!}",
+       data :  {'filename': filename , 'productname': productname , 'producttitle': producttitle, 
+       'description': description,'version':version},
+       success: function(response) {
+         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        $('#alertMessage1').show();
+        $('#error').hide();
+        var result =  '<div class="alert alert-success alert-dismissable"><button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button><strong><i class="far fa-check"></i> Success! </strong>'+response.message+'.</div>';
+        $('#alertMessage1').html(result+ ".");
+       } ,
+       error: function(ex) {
+         $("#uploadVersion").html("<i class='fa fa-floppy-o'>&nbsp;&nbsp;</i>Save");
+        var html = '<div class="alert alert-danger"><strong>Whoops! </strong>Something went wrong<br><br><ul>';
+        for (key in ex.responseJSON.errors) {
+           html += '<li>'+ ex.responseJSON.errors[key][0] + '</li>'
+        }
+          html += '</ul></div>';
+           $('#error').show(); 
+           document.getElementById('error').innerHTML = html;
+       }
+    });
+
+ })
 </script>
 
 

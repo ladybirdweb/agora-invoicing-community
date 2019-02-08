@@ -44,7 +44,7 @@ class ExtendedBaseProductController extends Controller
             return '<a href='.('#edit-upload-option/'.$model->id).' 
          class=" btn btn-sm btn-primary " data-title="'.$model->title.'"
           data-description="'.$model->description.'" data-version="'
-              .$model->version.'" data-id="'.$model->id.'" onclick="openEditPopup(this)" >Edit</a>';
+              .$model->version.'" data-id="'.$model->id.'" data-file="'.$model->file.'"onclick="openEditPopup(this)" >Edit</a>';
         })
         ->rawcolumns(['checkbox', 'product_id', 'title', 'description', 'version', 'file', 'action'])
         ->make(true);
@@ -53,26 +53,28 @@ class ExtendedBaseProductController extends Controller
     //Update the File Info
     public function uploadUpdate($id, Request $request)
     {
-        $file_upload = ProductUpload::find($id);
-        $file_upload->title = $request->input('title');
-        $file_upload->description = $request->input('description');
-        $file_upload->version = $request->input('version');
-        $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
-        if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the License Manager
-            $productSku = $file_upload->product->product_sku;
-            $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
-            $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
+        $this->validate($request, [
+        'producttitle' => 'required',
+        'version'      => 'required',
+        ]);
+        try {
+            $file_upload = ProductUpload::find($id);
+            $file_upload->update(['title'=>$request->input('producttitle') , 'description'=>$request->input('description') ,'version'=> $request->input('version')]);
+            $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
+            if ($autoUpdateStatus == 1) { //If License Setting Status is on,Add Product to the AutoUpdate Script
+                $productSku = $file_upload->product->product_sku;
+                $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
+                $addProductToAutoUpdate = $updateClassObj->editVersion($request->input('version'), $productSku);
+            }
+            $response = ['success'=>'true' , 'message'=>'Product Uploaded Successfully'];
+            return $response;
+        } catch (\Exception $ex) {
+            app('log')->error($e->getMessage());
+            Bugsnag::notifyException($e);
+            $message = [$e->getMessage()];
+            $response = ['success'=>'false' , 'message'=>$message];
+            return response()->json(compact('response'), 500);
         }
-        if ($request->file) {
-            $file = $request->file('file')->getClientOriginalName();
-
-            $destination = storage_path().'/products';
-            $request->file('file')->move($destination, $file);
-            $file_upload->file = $file;
-        }
-        $file_upload->save();
-
-        return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
     }
 
     public function saveTax($taxes, $product_id)
@@ -120,14 +122,14 @@ class ExtendedBaseProductController extends Controller
         try {
             // $release = $this->getLinkToDownload($role, $invoice, $id);
             $release = $this->downloadProductAdmin($id);
-
+            $name =  Product::where('id', $id)->value('name');
             if (is_array($release) && array_key_exists('type', $release)) {
                 header('Location: '.$release['release']);
                 exit;
             } else {
                 header('Content-type: Zip');
                 header('Content-Description: File Transfer');
-                header('Content-Disposition: attachment; filename=Faveo.zip');
+                header('Content-Disposition: attachment; filename = '.$name.'.zip');
                 header('Content-Length: '.filesize($release));
                 ob_end_clean();
                 readfile($release);

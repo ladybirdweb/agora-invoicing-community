@@ -91,27 +91,29 @@ trait RegistersUsers
             $user->manager = $account_manager;
             $user->ip = $location['ip'];
             $user->currency = $currency;
+            $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
             $emailMobileSetting = StatusSetting::select('emailverification_status','msg91_status')->first();
             if($emailMobileSetting->emailverification_status == 0 && $emailMobileSetting->msg91_status ==1){
                   $user->mobile_verified=0; 
                  $user->active=1;
+                $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
                  $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Mobile to log into the Website.'];
             } elseif( $emailMobileSetting->emailverification_status ==1 && $emailMobileSetting->msg91_status ==0) {
                 $user->mobile_verified=1; 
                  $user->active=0;
+                  $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
                   $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email to log into the Website.'];
                } elseif($emailMobileSetting->emailverification_status ==0 && $emailMobileSetting->msg91_status ==0) {
                 $user->mobile_verified=1; 
                  $user->active=1;
+                  $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
                  $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your have been Registered Successfully.'];
             } else {
-               $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
                 if ($user) {
+                    $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
                 $response = ['type' => 'success', 'user_id' => $user->id, 'message' => 'Your Submission has been received successfully. Verify your Email and Mobile to log into the Website.'];
                  }
             }
-              $user->timezone_id = \App\Http\Controllers\Front\CartController::getTimezoneByName($location['timezone']);
-             $user->fill($request->except('password','address','first_name','last_name','company','zip','user_name'))->save();
              activity()->log('User <strong>' . $request->input('first_name'). ' '.$request->input('last_name').  '</strong> was created');
             $this->accountManagerMail($user);
              

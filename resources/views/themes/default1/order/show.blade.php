@@ -119,7 +119,7 @@ Order Details
                               </td></tr>
 
                               <tr><td><b>Support Expiry Date:</b></td><td>{{$supdate}}
-                                @if($supdate != '')
+                                @if($supdate != '--')
                                     <a class='class="btn btn-sm btn-primary btn-xs pull-right' id="support_end" support-id="{{$order->id}}" support-date="{{$supportEnd}}" style='color:white;border-radius:0px;'><i class="fa fa-edit">&nbsp;</i>
                                 Edit</a>
                                 @endif

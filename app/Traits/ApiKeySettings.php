@@ -5,6 +5,7 @@ namespace App\Traits;
 use App\ApiKey;
 use App\Model\Common\Mailchimp\MailchimpSetting;
 use App\Model\Common\StatusSetting;
+use App\Model\Common\Setting;
 use DateTime;
 use Illuminate\Http\Request;
 
@@ -136,7 +137,7 @@ trait ApiKeySettings
     {
         $created = new DateTime($dbdate);
         $tz = \Auth::user()->timezone()->first()->name;
-        $created->setTimezone(new DateTimeZone($tz));
+        $created->setTimezone(new \DateTimeZone($tz));
         $date = $created->format('M j, Y, g:i a '); //5th October, 2018, 11:17PM
         $newDate = $date;
 
@@ -193,5 +194,17 @@ trait ApiKeySettings
                 ]);
             }
         }
+    }
+
+    public function showFileStorage()
+    {
+        $fileStorage = Setting::first()->value('file_storage');
+        return view('themes.default1.common.setting.file-storage',compact('fileStorage'));
+    }
+
+    public function updateStoragePath(Request $request)
+    {
+       $updatedPath = Setting::find(1)->update(['file_storage'=>$request->input('fileuploadpath')]);
+       return redirect()->back()->with('success',\Lang::get('message.updated-successfully'));
     }
 }

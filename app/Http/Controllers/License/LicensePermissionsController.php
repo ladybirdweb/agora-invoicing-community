@@ -122,8 +122,6 @@ class LicensePermissionsController extends Controller
 
     public function tickPermission(Request $request)
     {
-
-        //sdfrde
         $licenseTypeInstance = LicenseType::find($request->input('license'));
         $allPermission = $licenseTypeInstance->permissions;
         if (count($allPermission) > 0) {

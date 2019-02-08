@@ -7,12 +7,13 @@
             </div>
             <div class="modal-body">
                 <!-- Form  -->
-                {!! Form::open(['method' => 'patch', 'files' => true ,'id' => 'upload-edit-form']) !!}
-
+              
+               <div id="error1"></div>
+                <div id="alertMessage2"></div>
                 <div class="form-group">
                     <label> Product Name </label>
                  
-                      <input type="text" name="product" class="form-control" value="{{$product->name}}" readonly>
+                      <input type="text" name="product" id="editName" class="form-control" value="{{$product->name}}" readonly>
                    
                     </div>
                
@@ -42,25 +43,11 @@
                     <input type="text" id="product-version" class="form-control" name="version" readonly>
                  </div>
 
-                  <div class="form-group {{ $errors->has('version') ? 'has-error' : '' }}">
-                    <!-- name -->
-                    {!! Form::label('File',Lang::get('File'),['class'=>'required']) !!}
-                    <input type="File" class="form-control" name="file" multiple>
-                 </div>
-                
-
                  
-
-
-
-
-
-               
-
             </div>
             <div class="modal-footer">
                 <button type="button" id="close" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-               <button type="submit" class="btn btn-primary "><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
+               <button type="submit" id="editProductUpload" class="btn btn-primary "><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('Save')!!}</button>
             </div>
            
             <!-- /Form -->

@@ -15,6 +15,7 @@ Create New Product
 @section('content')
 <head>
     <link src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head> 
 <div class="box box-primary">
 
@@ -306,6 +307,7 @@ Create New Product
  @section('icheck')
   <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/js/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+     
     <!-- <script type="text/javascript">
         $("#editTax").select2();
     </script> -->
@@ -333,6 +335,12 @@ Create New Product
         })
 
     })
+   
+
+
+
+
+
 </script>
 
 <script>

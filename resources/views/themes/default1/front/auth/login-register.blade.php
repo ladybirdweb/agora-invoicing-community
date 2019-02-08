@@ -344,7 +344,6 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                                                 if (old('state')) {
                                                                     $value = old('state');
                                                                 }
-                                                                // dd($value);
                                                                 ?>
                                                                 {!! Form::select('state',[$states],$value,['class' => 'form-control input-lg','id'=>'state-list']) !!}
                                                             <h6 id="statecheck"></h6>
@@ -460,7 +459,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
 
                                 <h4 class="heading-primary text-uppercase mb-md">Confirm Email/Mobile</h4>
                                            
-                                <input type="hidden" name="user_id" id="user_id"/>
+                                <input type="text" name="user_id" id="user_id"/>
                                 <input type="hidden" name="email_password" id="email_password"/>
                                 <input type="hidden" id="checkEmailStatus" value="{{$emailStatus}}">
                              @if($emailStatus == 1)
@@ -496,7 +495,7 @@ $mobile_code = \App\Http\Controllers\Front\CartController::getMobileCodeByIso($l
                                   
                                 
                                     <h6 id="conmobile"></h6>
-                                </div>
+                              </div>
                                  
                               </div>
                               @endif
@@ -708,7 +707,7 @@ function verify_otp_check(){
             "mobile":   $('#verify_number').val(),
             "code"  :   $('#verify_country_code').val(),
             "otp"   :   $('#oneTimePassword').val(),
-            'id'    :   $('#hidden_user_id').val()
+            'id'    :   $('#hidden_user_id').val(),
         };
         $.ajax({
             url: '{{url('otp/verify')}}',
@@ -914,13 +913,11 @@ function verify_otp_check(){
             'id': $('#user_id').val(),
             'password': $('#email_password').val()
         };
-          
         $.ajax({
           url: '{{url('otp/sendByAjax')}}',
           type: 'GET',
           data: data,
           success: function (response) {
-            console.log(response)
             var result =  '<div class="alert alert-success"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="far fa-thumbs-up"></i>Almost there! </strong>'+response.message+'</div>';
              if (($("#checkOtpStatus").val()) == 1 ) {
                 $('#successMessage2').html(result);
@@ -937,7 +934,7 @@ function verify_otp_check(){
                 window.scrollTo(0, 10);
                 verify_otp_form.elements['hidden_user_id'].value = $('#user_id').val();
                 $("#sendOtp").html("Send");
-        } else {//Show Only Email Success Message when Mobile Status is Not Active
+            } else {//Show Only Email Success Message when Mobile Status is Not Active
                   $('#emailsuccess').html(result);
                 $('#successMessage1').hide();
                  $("#sendOtp").html("Send");
@@ -1417,11 +1414,8 @@ function verify_otp_check(){
     else{
       $(this).val("false");
     }
-    console.log($(this).val());
  })
 function registerUser() {
-     console.log($('#mobile_code').val());
-
    $('#first_namecheck').hide();
    $('#last_namecheck').hide();
     $('#emailcheck').hide();

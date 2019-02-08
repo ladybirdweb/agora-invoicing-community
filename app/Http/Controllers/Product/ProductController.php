@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Product;
     use App\Http\Controllers\License\LicensePermissionsController;
     use App\Model\Common\StatusSetting;
     use App\Model\License\LicenseType;
+    use App\Model\Common\Setting;
     use App\Model\Order\Order;
     use App\Model\Payment\Currency;
     use App\Model\Payment\Period;
@@ -24,11 +25,13 @@ namespace App\Http\Controllers\Product;
     use Illuminate\Http\Request;
     use Illuminate\Support\Facades\Input;
     use Spatie\Activitylog\Models\Activity;
-
+    use App\Traits\Upload\ChunkUpload;
     // use Input;
 
 class ProductController extends BaseProductController
 {
+    use ChunkUpload;
+
     public $product;
     public $price;
     public $type;
@@ -158,7 +161,6 @@ class ProductController extends BaseProductController
                             ->rawColumns(['checkbox', 'name', 'image', 'type', 'group', 'Action'])
                             ->make(true);
         } catch (\Exception $e) {
-            dd($e);
             Bugsnag::notifyException($e);
 
             return redirect()->back()->with('fails', $e->getMessage());
@@ -168,21 +170,21 @@ class ProductController extends BaseProductController
     // Save file Info in Modal popup
     public function save(Request $request)
     {
+        $this->validate($request,[
+        'producttitle' => 'required',
+        'version'      => 'required',
+        'filename'     => 'required'
+        ],
+        ['filename.required' => 'Please Uplaod A file',
+        ]);
         try {
-            $product_id = Product::where('name', $request->input('product'))->select('id')->first();
+            $product_id = Product::where('name', $request->input('productname'))->select('id')->first();
 
             $this->product_upload->product_id = $product_id->id;
-            $this->product_upload->title = $request->input('title');
+            $this->product_upload->title = $request->input('producttitle');
             $this->product_upload->description = $request->input('description');
             $this->product_upload->version = $request->input('version');
-
-            if ($request->file) {
-                $file = $request->file('file')->getClientOriginalName();
-
-                $destination = storage_path().'/products';
-                $request->file('file')->move($destination, $file);
-                $this->product_upload->file = $file;
-            }
+             $this->product_upload->file = $request->input('filename');
             $this->product_upload->save();
             $this->product->where('id', $product_id->id)->update(['version'=>$request->input('version')]);
             $autoUpdateStatus = StatusSetting::pluck('update_settings')->first();
@@ -190,16 +192,21 @@ class ProductController extends BaseProductController
                 $updateClassObj = new \App\Http\Controllers\AutoUpdate\AutoUpdateController();
                 $addProductToAutoUpdate = $updateClassObj->addNewVersion($product_id->id, $request->input('version'), '1');
             }
-
-            return redirect()->back()->with('success', \Lang::get('message.saved-successfully'));
+            $response = ['success'=>'true' , 'message'=>'Product Uploaded Successfully'];
+            return $response;
         } catch (\Exception $e) {
             app('log')->error($e->getMessage());
             Bugsnag::notifyException($e);
-
-            return redirect()->with('fails', $e->getMessage());
+            $message = [$e->getMessage()];
+            $response = ['success'=>'false' , 'message'=>$message];
+            return response()->json(compact('response'),500);
         }
     }
 
+
+
+
+   
     /**
      * Show the form for creating a new resource.
      *
@@ -506,11 +513,13 @@ class ProductController extends BaseProductController
     {
         try {
             $ids = $request->input('select');
+           $storagePath = Setting::find(1)->value('file_storage');
             if (!empty($ids)) {
                 foreach ($ids as $id) {
-                    if ($id != 1) {
                         $product = $this->product_upload->where('id', $id)->first();
                         if ($product) {
+                            $file = $product->file;
+                            unlink($storagePath.'/'.$file);
                             $product->delete();
                         } else {
                             echo "<div class='alert alert-danger alert-dismissable'>
@@ -527,14 +536,7 @@ class ProductController extends BaseProductController
                     <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
                         '.\Lang::get('message.deleted-successfully').'
                 </div>';
-                    } else {
-                        echo "<div class='alert alert-danger alert-dismissable'>
-                    <i class='fa fa-ban'></i>
-                    <b>".\Lang::get('message.alert').'!</b> '.\Lang::get('message.failed').'
-                    <button type=button class=close data-dismiss=alert aria-hidden=true>&times;</button>
-                        '.\Lang::get('message.can-not-delete-default').'
-                </div>';
-                    }
+                    
                 }
             } else {
                 echo "<div class='alert alert-danger alert-dismissable'>

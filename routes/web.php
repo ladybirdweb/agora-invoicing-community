@@ -189,7 +189,8 @@
         Route::post('get-product-field', 'Product\ProductController@getProductField');
         Route::get('get-subscription/{id}', 'Product\ProductController@getSubscriptionCheck');
         Route::get('get-upload/{id}', 'Product\ProductController@getUpload')->name('get-upload');
-        Route::post('upload/save', 'Product\ProductController@save');
+        Route::post('upload/save', 'Product\ProductController@save')->name('upload/save');
+         Route::post('chunkupload', 'Product\ProductController@uploadFile');
         Route::patch('upload/{id}', 'Product\ProductController@uploadUpdate');
         Route::get('get-group-url', 'Product\GroupController@generateGroupUrl');
 
@@ -476,7 +477,8 @@
          Route::patch('post-scheduler', ['as' => 'post.job.scheduler', 'uses' => 'Common\SettingsController@postSchedular'])->name('post-scheduler'); //to update job scheduler
          Route::patch('cron-days', ['as'=>'cron-days', 'uses'=>'Common\SettingsController@saveCronDays'])->name('cron-days');
          Route::post('verify-php-path', ['as' => 'verify-cron', 'uses' => 'Common\SettingsController@checkPHPExecutablePath']);
-
+        Route::get('file-storage', 'Common\SettingsController@showFileStorage');
+         Route::post('file-storage-path', 'Common\SettingsController@updateStoragePath');
         Route::get('expired-subscriptions', 'Common\CronController@eachSubscription');
 
         /*
@@ -529,7 +531,7 @@
          */
         Route::post('serial', 'HomeController@serial');
         Route::post('v2/serial', 'HomeController@serialV2');
-        Route::post('download/faveo', 'HomeController@downloadForFaveo');
+        Route::get('download/faveo', 'HomeController@downloadForFaveo');
         Route::get('version/latest', 'HomeController@latestVersion');
         Route::get('v1/checkUpdatesExpiry', 'HomeController@checkUpdatesExpiry');
 

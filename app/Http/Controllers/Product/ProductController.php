@@ -332,7 +332,7 @@ class ProductController extends BaseProductController
             $currency = $this->currency->pluck('name', 'code')->toArray();
             $group = $this->group->pluck('name', 'id')->toArray();
             $products = $this->product->pluck('name', 'id')->toArray();
-            $checkowner = Product::where('id',$id)->value('github_owner');
+            $checkowner = Product::where('id', $id)->value('github_owner');
             $periods = $this->period->pluck('name', 'days')->toArray();
             $url = $this->GetMyUrl();
             $cartUrl = $url.'/cart?id='.$id;

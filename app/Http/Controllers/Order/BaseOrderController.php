@@ -22,7 +22,7 @@ class BaseOrderController extends ExtendedOrderController
         $end = '--';
         $ends = $model->subscription()->first();
         if ($ends) {
-            if (strtotime($ends->update_ends_at) >1) {
+            if (strtotime($ends->update_ends_at) > 1) {
                 $date1 = new DateTime($ends->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));
@@ -109,8 +109,7 @@ class BaseOrderController extends ExtendedOrderController
             $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             $this->sendOrderMail($user_id, $order->id, $item->id);
             //Update Subscriber To Mailchimp
-            $this->addtoMailchimp($product,$user_id,$item);
-       
+            $this->addtoMailchimp($product, $user_id, $item);
         } catch (\Exception $ex) {
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
@@ -119,18 +118,18 @@ class BaseOrderController extends ExtendedOrderController
         }
     }
 
-    public function addToMailchimp($product,$user_id,$item)
+    public function addToMailchimp($product, $user_id, $item)
     {
-         $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
-          if ($mailchimpStatus == 1) {
-        $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-        $email = User::where('id', $user_id)->pluck('email')->first();
-        if ($item->subtotal > 0) {
-            $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
-        } else {
-            $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+        $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+        if ($mailchimpStatus == 1) {
+            $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+            $email = User::where('id', $user_id)->pluck('email')->first();
+            if ($item->subtotal > 0) {
+                $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+            } else {
+                $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+            }
         }
-      }
     }
 
     /**

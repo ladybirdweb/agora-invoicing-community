@@ -287,7 +287,7 @@ class ProductController extends BaseProductController
             $addProductToLicensing = $licenseCont->addNewProduct($input['name'], $input['product_sku']);
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'dist/product/images';
+                $imagedestinationPath = 'common/images';
                 $request->file('image')->move($imagedestinationPath, $image);
                 $this->product->image = $image;
             }
@@ -414,7 +414,7 @@ class ProductController extends BaseProductController
             $product = $this->product->where('id', $id)->first();
             if ($request->hasFile('image')) {
                 $image = $request->file('image')->getClientOriginalName();
-                $imagedestinationPath = 'dist/product/images';
+                $imagedestinationPath = 'common/images';
                 $request->file('image')->move($imagedestinationPath, $image);
                 $product->image = $image;
             }

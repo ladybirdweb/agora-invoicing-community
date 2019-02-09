@@ -165,7 +165,7 @@ View All Orders
                             <th>Total</th>
                             
                              <th>Status</th>
-                              <th>Expiry Date</th>
+                              <th>Updates Expiry Date</th>
                             <th>Action</th>
                         </tr></thead>
                      </table>
@@ -205,7 +205,7 @@ View All Orders
                 {data: 'productname', name: 'productname'},
                 {data: 'price_override', name: 'price_override'},
                   {data: 'order_status', name: 'order_status'},
-                  {data: 'ends_at', name: 'ends_at'},
+                  {data: 'update_ends_at', name: 'update_ends_at'},
 
                 {data: 'action', name: 'action'}
             ],

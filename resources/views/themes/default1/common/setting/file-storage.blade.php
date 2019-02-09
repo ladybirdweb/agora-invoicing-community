@@ -4,15 +4,15 @@ License Permission
 @stop
 @section('content-header')
 <h1>
-License Permissions
+File Storage
 </h1>
   <ol class="breadcrumb">
         <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">License Permissions</li>
+        <li><a href="{{url('settings')}}">Settings</a></li>
+        <li class="active">File Storage</li>
       </ol>
 @stop
 @section('content')
-    <link rel="stylesheet" href="{{asset('plugins/iCheck/all.css')}}">
     <div class="box box-primary">
 
     <div class="box-header">
@@ -46,7 +46,7 @@ License Permissions
         </div>
         @endif
         <div id="response"></div>
-        <h4>{{Lang::get('message.permissions')}}
+        <h4>File Storage Path
           </h4>
     </div>
        <div class="box-body">
@@ -61,7 +61,7 @@ License Permissions
                 </div>
                 <button type="submit" class="btn btn-primary pull-right" id="submit" data-loading-text="<i class='fa fa-circle-o-notch fa-spin'>&nbsp;</i> Saving..."><i class="fa fa-floppy-o">&nbsp;&nbsp;</i>{!!Lang::get('message.save')!!}</button>
                 <div class="col-md-4">
-                  <input type="text" class="form-control input-sm" style=" padding:5px;height:34px" name="fileuploadpath" id="fileuploadpath" value="{{$fileStorage}}" placeholder="{{Lang::get('message.specify-php-executable')}}">
+                  <input type="text" class="form-control input-sm" style=" padding:5px;height:34px" name="fileuploadpath" id="fileuploadpath" value="{{$fileStorage}}">
                 </div>
                   
                  {!! Form::close() !!}  

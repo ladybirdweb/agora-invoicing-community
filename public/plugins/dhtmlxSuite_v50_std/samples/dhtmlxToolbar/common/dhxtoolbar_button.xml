@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<toolbar>
-	<item id="open"   type="button"   img="open.gif"  imgdis="open_dis.gif"  text="Open"  />
-	<item id="save"   type="button"   img="save.gif"  imgdis="save_dis.gif"  text="Save"  />
-	<item id="sep2"   type="separator"/>
-	<item id="cut"    type="button"   img="cut.gif"   imgdis="cut_dis.gif"   text="Cut"   />
-	<item id="copy"   type="button"   img="copy.gif"  imgdis="copy_dis.gif"  text="Copy"  />
-	<item id="paste"  type="button"   img="paste.gif" imgdis="paste_dis.gif" text="Paste" />
-</toolbar>

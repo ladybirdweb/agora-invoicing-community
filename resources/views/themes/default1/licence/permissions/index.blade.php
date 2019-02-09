@@ -12,7 +12,7 @@ License Permissions
       </ol>
 @stop
 @section('content')
-    <link rel="stylesheet" href="{{asset('plugins/iCheck/all.css')}}">
+    <link rel="stylesheet" href="{{asset('admin/plugins/iCheck/all.css')}}">
     <div class="box box-primary">
 
     <div class="box-header">

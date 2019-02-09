@@ -100,8 +100,7 @@ class BaseMailChimpController extends Controller
             }
             //refer to https://us7.api.mailchimp.com/playground
         } catch (Exception $ex) {
-            $exe = json_decode($ex->getMessage(), true);
-        }
+         }
     }
 
     public function getMergeFields()

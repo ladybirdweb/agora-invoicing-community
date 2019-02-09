@@ -22,7 +22,7 @@ if($script){
           <meta name="author" content="okler.net">
   
           <!-- Favicon -->
-          <link rel="shortcut icon" href='{{asset("images/favicon/$setting->fav_icon")}}' type="image/x-icon" />
+          <link rel="shortcut icon" href='{{asset("common/images/$setting->fav_icon")}}' type="image/x-icon" />
           <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
   
           <!-- Mobile Metas -->
@@ -33,7 +33,7 @@ if($script){
           
   
           <!-- Vendor CSS -->
-          <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
+         <!--  <link rel="stylesheet" href="{{asset('vendor/bootstrap/css/bootstrap.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/font-awesome/css/fontawesome-all.min.css')}}">
           <link rel="stylesheet" href="{{asset('cart/vendor/font-awesome/css/font-awesome.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/animate/animate.min.css')}}">
@@ -41,27 +41,51 @@ if($script){
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.carousel.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/owl.carousel/assets/owl.theme.default.min.css')}}">
           <link rel="stylesheet" href="{{asset('vendor/magnific-popup/magnific-popup.min.css')}}">
+   -->
+
+
+           <link rel="stylesheet" href="{{asset('client/css/bootstrap.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/fontawesome-all.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/font-awesome.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/animate.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/simple-line-icons.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/owl.carousel.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/owl.theme.default.min.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/magnific-popup.min.css')}}">
   
           <!-- Theme CSS -->
-          <link rel="stylesheet" href="{{asset('css/theme.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/theme.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-elements.css')}}">
           <link rel="stylesheet" href="{{asset('css/theme-blog.css')}}">
-          <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}">
+          <link rel="stylesheet" href="{{asset('css/theme-shop.css')}}"> -->
+
+
+           <link rel="stylesheet" href="{{asset('client/css/theme.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-elements.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-blog.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/theme-shop.css')}}">
           
           <!-- Demo CSS -->
-          <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/demos/demo-construction.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('client/css/demo-construction.css')}}">
   
           <!-- Skin CSS -->
-          <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
+         <!--  <link rel="stylesheet" href="{{asset('css/skins/skin-construction.css')}}"> 
            <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
-          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}">
+          <link rel="stylesheet" href="{{asset('css/skins/default.css')}}"> -->
+
+             <link rel="stylesheet" href="{{asset('client/css/skin-construction.css')}}"> 
+           <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
+          <link rel="stylesheet" href="{{asset('client/css/default.css')}}">
 
   
           <!-- Theme Custom CSS -->
-          <link rel="stylesheet" href="{{asset('css/custom.css')}}">
+          <!-- <link rel="stylesheet" href="{{asset('css/custom.css')}}"> -->
+          <link rel="stylesheet" href="{{asset('client/css/custom.css')}}">
   
           <!-- Head Libs -->
-          <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script>
+          <!-- <script src="{{asset('vendor/modernizr/modernizr.min.js')}}"></script> -->
+          <script src="{{asset('client/js/modernizr.min.js')}}"></script>
 
              <script> //<![CDATA[ 
 
@@ -92,7 +116,7 @@ if($script){
                                       @else
                                       <a href="{{url('login')}}">
                                         @endif
-                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
+                                        <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('common/images/'.$setting->logo)}}">
                                     </a>
                                 </div>
                               </div>
@@ -146,15 +170,6 @@ if($script){
                                                     </li>
 
 
-                                               <!--      <li class="dropdown dropdown-mega">
-                                                        <a class="nav-link" href="{{url('contact-us')}}">
-                                                            contact us
-                                                        </a>
-
-                                                    </li>
- -->
-                                                
- 
                                                     <?php $pages = \App\Model\Front\FrontendPage::where('publish', 1)->orderBy('created_at','asc')->get(); ?>
 
                                                     @foreach($pages as $page)
@@ -515,7 +530,7 @@ if($script){
 
                             <div class="col-md-12">
                               <p>Copyright © <?php echo date('Y') ?> · <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>. All Rights Reserved.Powered by 
-                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a></p>
+                                    <a href="https://www.ladybirdweb.com/" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a></p>
                             </div>
 
 
@@ -527,29 +542,29 @@ if($script){
 
         <!-- Vendor -->
     </script>
-        <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.appear/jquery.appear.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.easing/jquery.easing.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery-cookie/jquery-cookie.min.js')}}"></script>
-          <script src="{{asset('vendor/popper/umd/popper.min.js')}}"></script>
-          <script src="{{asset('vendor/bootstrap/js/bootstrap.min.js')}}"></script>
-          <script src="{{asset('vendor/common/common.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.validation/jquery.validation.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.gmap/jquery.gmap.min.js')}}"></script>
-          <script src="{{asset('vendor/jquery.lazyload/jquery.lazyload.min.js')}}"></script>
-          <script src="{{asset('vendor/isotope/jquery.isotope.min.js')}}"></script>
-          <script src="{{asset('vendor/owl.carousel/owl.carousel.min.js')}}"></script>
-          <script src="{{asset('vendor/magnific-popup/jquery.magnific-popup.min.js')}}"></script>
-          <script src="{{asset('vendor/vide/vide.min.js')}}"></script>
+        <script src="{{asset('client/js/jquery.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.appear.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.easing.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery-cookie.min.js')}}"></script>
+          <script src="{{asset('client/js/popper.min.js')}}"></script>
+          <script src="{{asset('client/js/bootstrap.min.js')}}"></script>
+          <script src="{{asset('client/js/common.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.validation.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.easy-pie-chart.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.gmap.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.lazyload.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.isotope.min.js')}}"></script>
+          <script src="{{asset('client/js/owl.carousel.min.js')}}"></script>
+          <script src="{{asset('client/js/jquery.magnific-popup.min.js')}}"></script>
+          <script src="{{asset('client/js/vide.min.js')}}"></script>
           <!-- Theme Base, Components and Settings -->
-          <script src="{{asset('js/theme.js')}}"></script>
+          <script src="{{asset('client/js/theme.js')}}"></script>
           <!-- Theme Custom -->
-          <script src="{{asset('js/custom.js')}}"></script>
+          <script src="{{asset('client/js/custom.js')}}"></script>
           
           <!-- Theme Initialization Files -->
-          <script src="{{asset('js/theme.init.js')}}"></script>
-          <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+          <script src="{{asset('common/js/theme.init.js')}}"></script>
+          <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
         <script>
          

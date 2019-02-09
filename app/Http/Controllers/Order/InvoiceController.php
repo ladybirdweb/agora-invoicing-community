@@ -289,10 +289,11 @@ class InvoiceController extends TaxRatesAndCodeExpiryController
             foreach ($content as $key => $item) {
                 $attributes[] = $item->attributes;
             }
+            
             $symbol = $attributes[0]['currency']['symbol'];
             $invoice = $this->invoice->create(['user_id' => $user_id, 'number' => $number,
              'date'                                      => $date, 'grand_total' => $grand_total, 'status' => 'pending',
-             'currency'                                  => $symbol, ]);
+             'currency'                                  => \Auth::user()->currency, ]);
             foreach (\Cart::getContent() as $cart) {
                 $this->createInvoiceItems($invoice->id, $cart);
             }

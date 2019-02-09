@@ -137,7 +137,7 @@ class OrderController extends BaseOrderController
                             return ucfirst($model->order_status);
                         })
                         // ->showColumns('number', 'price_override', 'order_status')
-                        ->addColumn('ends_at', function ($model) {
+                        ->addColumn('update_ends_at', function ($model) {
                             $end = $this->getEndDate($model);
 
                             return $end;
@@ -173,13 +173,13 @@ class OrderController extends BaseOrderController
                                  $query->whereRaw($sql, ["%{$keyword}%"]);
                              })
 
-                              ->filterColumn('ends_at', function ($query, $keyword) {
-                                  $sql = 'ends_at like ?';
+                              ->filterColumn('update_ends_at', function ($query, $keyword) {
+                                  $sql = 'update_ends_at like ?';
                                   $query->whereRaw($sql, ["%{$keyword}%"]);
                               })
 
                          ->rawColumns(['checkbox', 'date', 'client', 'number',
-                          'price_override', 'order_status', 'productname', 'ends_at', 'action', ])
+                          'price_override', 'order_status', 'productname', 'update_ends_at', 'action', ])
                         ->make(true);
     }
 

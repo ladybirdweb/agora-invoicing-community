@@ -7,37 +7,37 @@
     <head>
         <meta charset="UTF-8">
         <title>@yield('title') | {{$set->favicon_title}}</title>
-        <link rel="shortcut icon" href='{{asset("images/favicon/$set->fav_icon")}}' type="image/x-icon" />
+        <link rel="shortcut icon" href='{{asset("common/images/$set->fav_icon")}}' type="image/x-icon" />
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.4 -->
-        <link href="{{asset('bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset('admin/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
         <!-- Font Awesome Icons -->
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
         <!-- Ionicons -->
         <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet" type="text/css" />
         <!-- Theme style -->
-        <link href="{{asset('dist/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset('admin/css/AdminLTE.min.css')}}" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/css/bootstrap-select.min.css">
 
         <!-- Custom style -->
-        <link rel="stylesheet" href="{{asset('dist/css/custom.css')}}">
+        <link rel="stylesheet" href="{{asset('admin/css/custom.css')}}">
          <link rel="stylesheet" href="{{asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css')}}">
 
         <!-- AdminLTE Skins. Choose a skin from the css/skins 
              folder instead of downloading all of them to reduce the load. -->
-        <link href="{{asset('dist/css/skins/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{asset('admin/css/_all-skins.min.css')}}" rel="stylesheet" type="text/css" />
 
         <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
 
-        <link href="{!!asset('dist/css/bill.css')!!}" rel="stylesheet" type="text/css" />
-         <link rel="stylesheet" href="{{asset('js/intl/css/intlTelInput.css')}}">
+        <link href="{!!asset('admin/css/bill.css')!!}" rel="stylesheet" type="text/css" />
+         <link rel="stylesheet" href="{{asset('common/css/intlTelInput.css')}}">
 
 
          <!-- jQuery 2.1.4 -->
-        <script src="{{asset("dist/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
-        <script src="{{asset("dist/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
+        <script src="{{asset("common/js/jquery-2.1.4.js")}}" type="text/javascript"></script>
+        <script src="{{asset("common/js/jquery2.1.1.min.js")}}" type="text/javascript"></script>
         <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
 <style>
 
@@ -112,7 +112,7 @@ function move() {
                     <span class="logo-lg"><b>{{$set->title}} </b></span>
                     @else
                     <span class="logo-lg">
-                        <img src='{{ asset("images/admin-logo/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
+                        <img src='{{ asset("admin/images/$set->admin_logo")}}' class="img-rounded" alt="Admin-Logo"  height="45">
                        
 
                     </span>
@@ -319,21 +319,21 @@ function move() {
                 <div class="pull-right hidden-xs">
                     <b>{{Lang::get('message.version')}}</b> {{Config::get('app.version')}}
                 </div>
-                <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>.</strong> All rights reserved. Powered by <a href="https://ladybirdweb.com" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a>
+                <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>.</strong> All rights reserved. Powered by <a href="https://ladybirdweb.com" target="_blank"><img src="{{asset('common/images/Ladybird1.png')}}" alt="Ladybird"></a>
             </footer>
 
 
         </div><!-- ./wrapper -->
        
         <!-- Bootstrap 3.3.2 JS -->
-        <script src="{{asset('js/theme.init.js')}}"></script>
-        <script src="{{asset('js/intl/js/intlTelInput.js')}}"></script>
+        <script src="{{asset('common/js/theme.init.js')}}"></script>
+        <script src="{{asset('common/js/intlTelInput.js')}}"></script>
 
-        <script src="{{asset('plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>   
+        <script src="{{asset('admin/plugins/jquery-file-upload/vendor/jquery.ui.widget.js')}}"></script>   
       
-        <script src="{{asset('plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>   
+        <script src="{{asset('admin/plugins/jquery-file-upload/jquery.fileupload.js')}}"></script>   
          <!-- <script src="{{asset('plugins/jquery-file-upload/main.js')}}"></script> -->
-            <script src="{{asset('plugins/jquery-file-upload/jquery.iframe-transport.js')}}"></script>
+            <script src="{{asset('admin/plugins/jquery-file-upload/jquery.iframe-transport.js')}}"></script>
     
      
           <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script> -->
@@ -341,18 +341,18 @@ function move() {
         <!-- (Optional) Latest compiled and minified JavaScript translation files -->
          <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/i18n/defaults-*.min.js"></script> -->
 
-        <script src="{{asset('bootstrap/js/bootstrap.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('admin/js/bootstrap.min.js')}}" type="text/javascript"></script>
         <!-- SlimScroll -->
-        <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('admin/plugins/slimScroll/jquery.slimscroll.min.js')}}" type="text/javascript"></script>
         <!-- FastClick -->
-        <script src="{{asset('plugins/fastclick/fastclick.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('admin/plugins/fastclick/fastclick.min.js')}}" type="text/javascript"></script>
         <!-- AdminLTE App -->
-        <script src="{{asset('dist/js/app.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('admin/js/app.min.js')}}" type="text/javascript"></script>
         <script src="{{asset('bower_components/datatables.net/js/jquery.dataTables.min.js')}}"></script>
         <script src="{{asset('bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js')}}"></script>
         <script src="{{asset('bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js')}}"></script>
         <!-- icheck -->
-        <script src="{{asset('plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
+        <script src="{{asset('admin/plugins/iCheck/icheck.min.js')}}" type="text/javascript"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.12.4/js/bootstrap-select.min.js"></script>
         <script>
 
@@ -360,12 +360,12 @@ function move() {
         
         @yield('icheck')
         <!-- AdminLTE for demo purposes -->
-        <script src="{{asset('plugins/input-mask/jquery.inputmask.js')}}"></script>
-        <script src="{{asset('plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
-        <script src="{{asset('plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
-        <script src="{{asset('dist/js/demo.js')}}" type="text/javascript"></script>
-        <script src="{{asset("plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
-        <script src="{{asset("plugins/datepicker/bootstrap-datetimepicker4.7.14.min.js")}}" type="text/javascript"></script>
+        <script src="{{asset('admin/plugins/input-mask/jquery.inputmask.js')}}"></script>
+        <script src="{{asset('admin/plugins/input-mask/jquery.inputmask.date.extensions.js')}}"></script>
+        <script src="{{asset('admin/plugins/input-mask/jquery.inputmask.extensions.js')}}"></script>
+        <script src="{{asset('admin/js/demo.js')}}" type="text/javascript"></script>
+        <script src="{{asset("admin/plugins/moment-develop/moment.js")}}" type="text/javascript"></script>
+        <script src="{{asset("admin/plugins/datepicker/bootstrap-datetimepicker4.7.14.min.js")}}" type="text/javascript"></script>
         @yield('datepicker')
     </body>
 </html>

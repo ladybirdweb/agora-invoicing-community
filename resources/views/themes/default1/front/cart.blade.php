@@ -335,7 +335,7 @@ if (count($attributes) > 0) {
 
     </div>
 </div>
-<script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
+ <script src="{{asset('client/js/jquery.min.js')}}"></script>
 <script>
         /*
          * Increase No. Of Agents

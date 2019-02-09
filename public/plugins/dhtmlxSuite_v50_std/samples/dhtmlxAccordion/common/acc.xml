@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<accordion multiMode="false" iconsPath="../common/icons/">
-	<cell id="a1" height="150" icon="flag_red.png">Cell a1</cell>
-	<cell id="a2" open="false" height="150" icon="flag_green.png">Cell a2</cell>
-	<cell id="a3" open="false" icon="flag_blue.png">Cell a3</cell>
-	<cell id="a4" open="false" icon="flag_magenta.png">Cell a4</cell>
-</accordion>

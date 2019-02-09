@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<toolbar>
-	<item id="text1" type="text" text="Ford Focus"/>
-	<item id="sep01" type="separator"/>
-	<item id="text2" type="text" text="Ford Mondeo"/>
-	<item id="sep02" type="separator"/>
-	<item id="text3" type="text" text="Ford Explorer"/>
-</toolbar>

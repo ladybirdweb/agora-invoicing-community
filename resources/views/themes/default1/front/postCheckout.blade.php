@@ -30,8 +30,8 @@ Checkout
     return $randomString;
 }
      $api = new Api($rzp_key, $rzp_secret);
-    $displayCurrency = $invoice->currency;
-    $symbol = \App\Model\Payment\Currency::where('code',$invoice->currency)->pluck('symbol')->first();
+    $displayCurrency = \Auth::user()->currency;
+    $symbol = \Auth::user()->currency;
     if ($symbol == 'INR'){
 
 
@@ -278,28 +278,6 @@ $json = json_encode($data);
                     <div class="col-md-12">
 
 
-                        <!--  <hr class="tall">
-                    <h4 class="heading-primary">Cart Totals</h4> -->
-                       <!--  <table class="cart-totals">
-
-
-                            <tbody>
-
-
-                                <tr class="total">
-                                    <th>
-                                        <strong>Order Total</strong>
-                                    </th>
-                                    <td>
-                                        <strong><span class="amount"><small>{!! $symbol !!} </small> {{$invoice->grand_total}}</span></strong>
-                                    </td>
-                                </tr>
-
-
-
-                            </tbody> -->
-                      <!--   </table>
-                        <hr class="tall"> -->
 
 
                     </div>
@@ -529,7 +507,6 @@ options.theme.image_padding = false;
 
 options.modal = {
     ondismiss: function() {
-        console.log("This code runs when the popup is closed");
     },
     // Boolean indicating whether pressing escape key 
     // should close the checkout form. (default: true)

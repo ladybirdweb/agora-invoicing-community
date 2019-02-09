@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<complete>
-	<option value="1" css="color:red;" selected="true">Walking through the city</option>
-	<option value="2" css="color:green;">Looking oh so pretty</option>
-	<option value="3" css="color:blue;">I've just got to find my way</option>
-	<option value="4" css="color:magenta;">See the ladies flashing</option>
-	<option value="5" css="color:darkorange;">All their legs and lashes</option>
-	<option value="6" css="color:brown;">I've just got to find my way</option>
-</complete>

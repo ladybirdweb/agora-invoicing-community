@@ -1,0 +1,52 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 9 Jan, 2016, 11:19:57 PM
+    Author     : vijaysebastian
+*/
+
+.required:after{ 
+    content:'*'; 
+    color:red; 
+    padding-left:5px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding : 4px;
+    margin-left: 0px;
+    display: inline;
+    border: 0px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    border: 0px;
+}
+
+.dataTables_length select { 
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    color: #555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+};
+.dataTables_filter input {
+    
+       width: 50px;
+
+};
+
+
+
+
+//version id = M3J1PA4UKJ32EL
+//Application Key = c6c392008a194e52b92c798c4a6b861a
+
+

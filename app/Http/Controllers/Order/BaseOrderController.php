@@ -22,8 +22,8 @@ class BaseOrderController extends ExtendedOrderController
         $end = '--';
         $ends = $model->subscription()->first();
         if ($ends) {
-            if ($ends->ends_at != '0000-00-00 00:00:00') {
-                $date1 = new DateTime($ends->ends_at);
+            if (strtotime($ends->update_ends_at) >1) {
+                $date1 = new DateTime($ends->update_ends_at);
                 $tz = \Auth::user()->timezone()->first()->name;
                 $date1->setTimezone(new DateTimeZone($tz));
                 $end = $date1->format('M j, Y, g:i a ');
@@ -109,23 +109,28 @@ class BaseOrderController extends ExtendedOrderController
             $this->addSubscription($order->id, $plan_id, $version, $product, $serial_key);
             $this->sendOrderMail($user_id, $order->id, $item->id);
             //Update Subscriber To Mailchimp
-            $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
-            if ($mailchimpStatus == 1) {
-                $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
-                $email = User::where('id', $user_id)->pluck('email')->first();
-                if ($item->subtotal > 0) {
-                    $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
-                } else {
-                    $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
-                }
-            }
+            $this->addtoMailchimp($product,$user_id,$item);
+       
         } catch (\Exception $ex) {
-            dd($ex);
             Bugsnag::notifyException($ex);
             app('log')->error($ex->getMessage());
 
             throw new \Exception('Can not Generate Order');
         }
+    }
+
+    public function addToMailchimp($product,$user_id,$item)
+    {
+         $mailchimpStatus = StatusSetting::first()->value('mailchimp_status');
+          if ($mailchimpStatus == 1) {
+        $mailchimp = new \App\Http\Controllers\Common\MailChimpController();
+        $email = User::where('id', $user_id)->pluck('email')->first();
+        if ($item->subtotal > 0) {
+            $r = $mailchimp->updateSubscriberForPaidProduct($email, $product);
+        } else {
+            $r = $mailchimp->updateSubscriberForFreeProduct($email, $product);
+        }
+      }
     }
 
     /**

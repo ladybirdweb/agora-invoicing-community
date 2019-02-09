@@ -174,19 +174,19 @@ class SettingsController extends BaseSettingsController
 
             if ($request->hasFile('logo')) {
                 $name = $request->file('logo')->getClientOriginalName();
-                $destinationPath = public_path('cart/img/logo');
+                $destinationPath = public_path('common/images');
                 $request->file('logo')->move($destinationPath, $name);
                 $setting->logo = $name;
             }
             if ($request->hasFile('admin-logo')) {
                 $logoName = $request->file('admin-logo')->getClientOriginalName();
-                $destinationPath = public_path('images/admin-logo');
+                $destinationPath = public_path('admin/images');
                 $request->file('admin-logo')->move($destinationPath, $logoName);
                 $setting->admin_logo = $logoName;
             }
             if ($request->hasFile('fav-icon')) {
                 $iconName = $request->file('fav-icon')->getClientOriginalName();
-                $destinationPath = public_path('images/favicon');
+                $destinationPath = public_path('common/images');
                 $request->file('fav-icon')->move($destinationPath, $iconName);
                 $setting->fav_icon = $iconName;
             }

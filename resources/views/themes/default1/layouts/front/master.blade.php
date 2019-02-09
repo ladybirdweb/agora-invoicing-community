@@ -87,7 +87,11 @@ if($script){
                             <div class="header-column">
                                 <div class="header-row">
                                 <div class="header-logo">
-                                    <a href="{{url('home')}}">
+                                  @if(Auth::check())
+                                    <a href="{{url('my-invoices')}}">
+                                      @else
+                                      <a href="{{url('login')}}">
+                                        @endif
                                         <img alt="Porto" width="111" height="54" data-sticky-width="82" data-sticky-height="40" data-sticky-top="33" src="{{asset('images/logo/'.$setting->logo)}}">
                                     </a>
                                 </div>
@@ -109,19 +113,7 @@ if($script){
                                               @endif
                                           </ul>
                                       </nav>
-                                    <!--                                    <nav class="header-nav-top">
-                                                                            <ul class="nav nav-pills">
-                                                                                <li class="hidden-xs">
-                                                                                    <a href="about-us.html"><i class="fa fa-angle-right"></i> About Us</a>
-                                                                                </li>
-                                                                                <li class="hidden-xs">
-                                                                                    <a href="contact-us.html"><i class="fa fa-angle-right"></i> Contact Us</a>
-                                                                                </li>
-                                                                                <li>
-                                                                                    <span class="ws-nowrap"><i class="fa fa-phone"></i> (123) 456-789</span>
-                                                                                </li>
-                                                                            </ul>
-                                                                        </nav>-->
+                                   
                                 </div>
                                   <div class="header-row">
                                     <div class="header-nav">

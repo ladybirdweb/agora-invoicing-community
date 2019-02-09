@@ -13,7 +13,7 @@ Edit Product
       </ol>
 @stop
 @section('content')
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 <script type="text/javascript">
     $(function () {
@@ -190,6 +190,7 @@ Edit Product
                                       
                                        
                                             <table class="table table-responsive">
+                                                <input type="hidden" value="{{$checkowner}}" id="checkowner">
                                               <span>Where do you want to retrieve your files from?</span>
                                              </br>
                                                 <tr>              
@@ -644,7 +645,7 @@ Edit Product
                   
                 $('#gif').hide();
                 $('#response').html(data);
-                // location.reload();
+                location.reload();
                 }
                })
             }
@@ -738,6 +739,15 @@ Edit Product
              }
         }
 
+        if($('#checkowner').val() != '') {
+            $('#chkYes').prop('checked',true);
+            $('#git').show();
+        } else if($('#checkowner').val() == '') {
+            $('#chkNo').prop('checked',true);
+            document.getElementById("hide").style.display="block";
+            $("#uploads").show();
+        }
+        
     // })
 
 });

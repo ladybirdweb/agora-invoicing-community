@@ -9,7 +9,11 @@ Login | Register
  <h1>Login <span>Sign in or register to use Faveo</span></h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">Login</li>
 @stop
 @section('main-class') 

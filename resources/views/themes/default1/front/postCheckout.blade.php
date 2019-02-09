@@ -6,7 +6,11 @@ Checkout
 Checkout
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">Checkout</li>
 @stop
 @section('main-class') "main shop" @stop

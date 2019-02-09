@@ -319,7 +319,7 @@ function move() {
                 <div class="pull-right hidden-xs">
                     <b>{{Lang::get('message.version')}}</b> {{Config::get('app.version')}}
                 </div>
-                <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>.</strong> All rights reserved. Powered by <a href="http://ladybirdweb.com" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a>
+                <strong>Copyright &copy; {{date('Y')}} <a href="{{$set->website}}" target="_blank">{{$set->company}}</a>.</strong> All rights reserved. Powered by <a href="https://ladybirdweb.com" target="_blank"><img src="{{asset('dist/img/Ladybird1.png')}}" alt="Ladybird"></a>
             </footer>
 
 

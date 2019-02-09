@@ -9,7 +9,11 @@ active
  <h1>My Account </h1>
 @stop
 @section('breadcrumb')
-<li><a href="{{url('home')}}">Home</a></li>
+ @if(Auth::check())
+<li><a href="{{url('my-invoices')}}">Home</a></li>
+  @else
+  <li><a href="{{url('login')}}">Home</a></li>
+  @endif
 <li class="active">My Account</li>
 <li class="active">Invoices</li>
 @stop

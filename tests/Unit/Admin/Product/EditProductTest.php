@@ -17,7 +17,7 @@ class EditProductTest extends TestCase
         $product = factory(Product::class)->create();
         $response = $this->call('PATCH', 'products/'.$product->id, [
         'name'                => 'helpdesk',
-        'type'                => $product->type,
+        'type'                => 1,
         'group'               => $product->group,
         'product_sku'         => 'FAVEO-HD',
         'category'            => $product->category,

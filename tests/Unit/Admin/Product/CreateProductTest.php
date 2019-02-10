@@ -17,7 +17,7 @@ class CreateProductTest extends TestCase
         $product = factory(Product::class)->create();
         $response = $this->call('POST', 'products', [
         'name'                 => 'helpdesk',
-        'type'                 => $product->type,
+        'type'                 => 1,
         'group'                => $product->group,
         'product_sku'          => 'FAVEO-HD',
         'can_modify_agent'     => 1,
@@ -39,7 +39,7 @@ class CreateProductTest extends TestCase
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
         $response = $this->call('POST', 'products', [
-         'type'          => $product->type,
+         'type'          => 1,
         'group'          => $product->group,
         'category'       => $product->category,
         'require_domain' => 1,

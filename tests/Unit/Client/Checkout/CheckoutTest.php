@@ -12,7 +12,7 @@ class CheckoutTest extends DBTestCase
 {
     use DatabaseTransactions;
 
-    /** @group checkout */
+    /* @group checkout */
     // public function test_checkoutForm_movingToCheckoutPageWhenUserIsLoggedIn()
     // {
     //     $this->withoutMiddleware();

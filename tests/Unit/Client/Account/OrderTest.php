@@ -13,13 +13,13 @@ use Tests\DBTestCase;
 
 class OrderTest extends DBTestCase
 {
-    /**
+    /*
      * A basic test example.
      *
      * @return void
      */
 
-    /** @group getOrder */
+    /* @group getOrder */
     // public function test_getOrder_viewingAllTheOrders()
     // {
     //     $this->withoutMiddleware();

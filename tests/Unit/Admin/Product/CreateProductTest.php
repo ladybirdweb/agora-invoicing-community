@@ -10,7 +10,7 @@ class CreateProductTest extends TestCase
 {
     use DatabaseTransactions;
 
-    /** @group ProductController */
+    /* @group ProductController */
     // public function test_productController_storeProduct()
     // {
     //     $this->withoutMiddleware();

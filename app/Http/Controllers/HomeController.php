@@ -394,6 +394,4 @@ class HomeController extends BaseHomeController
     * @params string Serial Key in encrypted
     * @return array
     */
-
-
 }

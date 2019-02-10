@@ -10,7 +10,7 @@ $factory->define(Product::class, function (Faker $faker) {
         'type'             => '2',
         'category'         => 'helpdesk',
         'group'            => 1,
-         'can_modify_agent' => 0,
+        'can_modify_agent' => 0,
         'can_modify_quantity' => 0,
         'require_domain'   => 1,
         'github_owner'     => 'ladybirdweb',

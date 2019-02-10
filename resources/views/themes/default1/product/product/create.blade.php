@@ -295,7 +295,10 @@ Create New Product
 
  
                                         
-                              <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add new</a> </h3>
+                              <h3>  Plans &nbsp;
+                               <!--  <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-plus"></span>&nbsp;&nbsp; Add new</a>  -->
+                                 
+                               </h3>
                            
                                       @include('themes.default1.product.plan.create') 
                                   

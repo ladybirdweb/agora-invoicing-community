@@ -77,18 +77,7 @@ Application Settings
                     </div>
                 </div>
 
-                <div class="col-md-2 col-sm-6">
-                    <div class="settingiconblue">
-                        <div class="settingdivblue">
-                            <a href="{{ url('plugin') }}">
-                                <span class="fa-stack fa-2x">
-                                    <i class="fa fa-credit-card fa-stack-1x"></i>
-                                </span>
-                            </a>
-                        </div>
-                        <p class="box-title" >Payment Gateways</p>
-                    </div>
-                </div>
+              
 
                  <div class="col-md-2 col-sm-6">
                     <div class="settingiconblue">
@@ -121,11 +110,24 @@ Application Settings
                         <div class="settingdivblue">
                             <a href="{{url('file-storage')}}">
                                 <span class="fa-stack fa-2x">
-                                    <i class="fa fa-sitemap fa-stack-1x"></i>
+                                    <i class="fa fa-file-archive-o fa-stack-1x"></i>
                                 </span>
                             </a>
                         </div>
                         <p class="box-title" >File Storage</p>
+                    </div>
+                </div>
+
+                  <div class="col-md-2 col-sm-6">
+                    <div class="settingiconblue">
+                        <div class="settingdivblue">
+                            <a href="{{ url('plugin') }}">
+                                <span class="fa-stack fa-2x">
+                                    <i class="fa fa-credit-card fa-stack-1x"></i>
+                                </span>
+                            </a>
+                        </div>
+                        <p class="box-title" >Payment Gateways</p>
                     </div>
                 </div>
 

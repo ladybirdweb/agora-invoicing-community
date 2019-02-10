@@ -167,18 +167,19 @@ $sum = 0;
                  <?php 
                 $gateways = \App\Http\Controllers\Common\SettingsController::checkPaymentGateway($item['attributes']['currency']['currency']);
                 $total = Cart::getSubTotal();
+                $rzpstatus = \App\Model\Common\StatusSetting::first()->value('rzp_status');
                   // 
                 ?>
-                @if($gateways) {
+                @if($gateways) 
                   <div class="form-group">
 
                     <div class="col-md-6">
                         {{ucfirst($gateways)}} {!! Form::radio('payment_gateway',strtolower($gateways)) !!}<br><br>
                     </div>
                 </div>
-            }
+            
             @endif
-                
+                @if($rzpstatus ==1)
                 <div class="form-group">
 
 
@@ -192,6 +193,7 @@ $sum = 0;
 
                     
                 </div>
+                @endif
                 @endif
 
                 <div class="form-group">

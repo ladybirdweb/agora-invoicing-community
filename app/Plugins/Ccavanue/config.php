@@ -3,7 +3,7 @@
 
 return [
 
-    'name' => 'Ccavanue',
+    'name' => 'Ccavenue',
 
     'author' => 'Ladybird Web Solution',
 
@@ -11,8 +11,8 @@ return [
 
     'version' => '1.0.0',
 
-    'settings' => 'payment-gateway/ccavanue',
+    'settings' => 'payment-gateway/ccavenue',
 
-    'website' => 'http://www.faveohelpdesk.com/',
+    'website' => 'https://www.faveohelpdesk.com/',
 
 ];

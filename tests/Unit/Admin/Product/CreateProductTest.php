@@ -20,8 +20,11 @@ class CreateProductTest extends TestCase
         'type'           => $product->type,
         'group'          => $product->group,
         'product_sku'    => 'FAVEO-HD',
+        'can_modify_agent' => 1,
+         'can_modify_quantity' => 1,
         'category'       => $product->category,
         'description'    => $product->description,
+        'show_agent'     => 1,
         'require_domain' => 1,
 
         ]);

@@ -29,15 +29,14 @@ class ProcessController extends Controller
                 \Cart::clear();
                 \Session::set('invoiceid', $order->id);
             }
-
-            if ($request->input('payment_gateway') == 'ccavanue') {
+            if ($request->input('payment_gateway') == 'ccavenue') {
                 if (!\Schema::hasTable('ccavenue')) {
-                    throw new \Exception('Ccavanue is not configured');
+                    throw new \Exception('Ccavenue is not configured');
                 }
 
                 $ccavanue = $this->ccavanue->where('id', 1)->first();
                 if (!$ccavanue) {
-                    throw new \Exception('Ccavanue Fields not given');
+                    throw new \Exception('Ccavenue Fields not given');
                 }
 
                 $orderid = $order->id;
@@ -61,7 +60,6 @@ class ProcessController extends Controller
                 $ccavanue_url = $ccavanue->ccavanue_url;
                 $working_key = $ccavanue->working_key;
                 $access_code = $ccavanue->access_code;
-
                 $merchant_data = 'order_id'.'='.$orderid.
                         '&amount'.'='.$total.
                         '&merchant_id'.'='.$merchant_id.
@@ -81,8 +79,6 @@ class ProcessController extends Controller
                 $this->middlePage($merchant_data, $ccavanue_url, $access_code, $working_key);
             }
         } catch (\Exception $ex) {
-            dd($ex);
-
             throw new \Exception($ex->getMessage(), $ex->getCode(), $ex->getPrevious());
         }
     }

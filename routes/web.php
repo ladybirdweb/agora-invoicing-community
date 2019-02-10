@@ -322,7 +322,7 @@
 
         Route::resource('groups', 'Product\GroupController');
         Route::get('get-groups', 'Product\GroupController@getGroups')->name('get-groups');
-        Route::get('groups-delete', 'Product\GroupController@destroy');
+        Route::get('groups-delete', 'Product\GroupController@destroy')->name('groups-delete');
 
         /*
          * Templates

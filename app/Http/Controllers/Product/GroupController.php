@@ -50,29 +50,24 @@ class GroupController extends Controller
         $product_group = ProductGroup::select('id', 'name')->get();
 
         return\ DataTables::of($product_group)
-
         // return \Datatable::of($this->group->select('id', 'name')->get())
 
-                        ->editColumn('#', function ($model) {
-                            return "<input type='checkbox' value=".$model->id.' name=select[] id=check>';
+                       ->addColumn('checkbox', function ($model) {
+                              return "<input type='checkbox' class='group_checkbox' 
+                            value=".$model->id.' name=select[] id=check>';
+                        })
+
+                        ->addColumn('name', function ($model) {
+                            return ucfirst($model->name);
                         })
                         // ->showColumns('name')
-                        ->editColumn('features', function ($model) {
-                            $features = $this->feature->select('features')->where('group_id', $model->id)->get();
-                            //dd($features);
-                            $result = [];
-                            foreach ($features as $key => $feature) {
-                                //dd($feature);
-                                $result[$key] = $feature->features;
-                            }
-                            //dd($result);
-                            return implode(',', $result);
-                        })
+             
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('groups/'.$model->id.'/edit').
-                            " class='btn btn-sm btn-primary'>Edit</a>";
+                            " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 
+                            style='color:white;'> </i>&nbsp;&nbsp;Edit</a>";
                         })
-                      ->rawColumns(['name', 'features', 'action'])
+                        ->rawColumns(['checkbox', 'name',  'action'])
                         ->make(true);
     }
 

@@ -22,6 +22,9 @@ class EditProductTest extends TestCase
         'product_sku'    => 'FAVEO-HD',
         'category'       => $product->category,
         'description'    => $product->description,
+        'can_modify_agent' => 0,
+        'can_modify_quantity' => 0,
+        'show_agent'     =>0,
         'require_domain' => 1,
          'subscription'  => 1,
 

@@ -12,21 +12,20 @@ class PaymentSettingsController extends Controller
     public function getPlugin()
     {
         $plugins = $this->fetchConfig();
-
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {
                             if (array_has($model, 'path')) {
                                 if ($model['status'] == 0) {
-                                    $activate = '<a href='.url('plugin/status/'.$model['path']).'>Activate</a>';
+                                    $activate = '<a href='.url('plugin/status/'.$model['name']).'>Activate</a>';
                                     $settings = ' ';
                                 } else {
                                     $settings = '<a href='.url($model['settings']).'>Settings</a> | ';
-                                    $activate = '<a href='.url('plugin/status/'.$model['path']).'>Deactivate</a>';
+                                    $activate = '<a href='.url('plugin/status/'.$model['name']).'>Deactivate</a>';
                                 }
 
-                                $delete = '<a href=  id=delete'.$model['path'].' data-toggle=modal data-target=#del'.$model['path']."><span style='color:red'>Delete</span></a>"
-                                        ."<div class='modal fade' id=del".$model['path'].">
+                                $delete = '<a href=  id=delete'.$model['name'].' data-toggle=modal data-target=#del'.$model['name']."><span style='color:red'>Delete</span></a>"
+                                        ."<div class='modal fade' id=del".$model['name'].">
                                             <div class='modal-dialog'>
                                                 <div class=modal-content>  
                                                     <div class=modal-header>
@@ -36,7 +35,7 @@ class PaymentSettingsController extends Controller
                                                        <p>Are you Sure ?</p>
                                                         <div class=modal-footer>
                                                             <button type=button class='btn btn-default pull-left' data-dismiss=modal id=dismis>".\Lang::get('lang.close').'</button>
-                                                            <a href='.url('plugin/delete/'.$model['path'])."><button class='btn btn-danger'>Delete</button></a>
+                                                            <a href='.url('plugin/delete/'.$model['name'])."><button class='btn btn-danger'>Delete</button></a>
                                                         </div>
 
 

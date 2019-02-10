@@ -13,6 +13,11 @@ Edit Product
       </ol>
 @stop
 @section('content')
+<style>
+    .more-text{
+     display:none;
+}
+</style>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
 <script type="text/javascript">
@@ -377,7 +382,9 @@ Edit Product
 
           {!! Form::close() !!}
 
-           <h3>  Plans &nbsp;<a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> </h3>
+           <h3>  Plans &nbsp;
+            <!-- <a href="#create-plan-option" data-toggle="modal" data-target="#create-plan-option" class="btn btn-default">Add new</a> -->
+        </h3>
                            
                             @include('themes.default1.product.plan.create') 
                             @if($product->plan())
@@ -537,7 +544,24 @@ Edit Product
                                 });
                                     </script>
 <script type="text/javascript">
+        function readmore(){
+                        var maxLength = 300;
+                        $("#upload-table tbody tr td").each(function(){
+                            var myStr = $(this).text();
+                            if($.trim(myStr).length > maxLength){
+                                var newStr = myStr.substring(0, maxLength);
+                                 $(this).empty().html(newStr);
+                                var removedStr = myStr.substring(maxLength, $.trim(myStr).length);
+                                $(this).append('<span class="more-text">' + removedStr + '</span>');
+                                $(this).append(' <a href="javascript:void(0);" class="read-more">read more...</a>');
+                            }
+                          }); 
+                         }
         $('#upload-table').DataTable({
+              destroy: true,
+            "initComplete": function(settings, json) {
+                         readmore();
+            },
             processing: true,
             serverSide: true,
              stateSave: true,
@@ -669,6 +693,15 @@ Edit Product
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
   <link href="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css" rel="stylesheet" />
 <script src="//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js"></script>
+<script>
+        $(document).on('click','#upload-table tbody tr td .read-more',function(){
+        var text=$(this).siblings(".more-text").text().replace('read more...','');
+        console.log(text)
+        $(this).siblings(".more-text").html(text);
+        $(this).siblings(".more-text").contents().unwrap();
+        $(this).remove();
+    });
+</script>
 <script>
        // Jquery validation for Product Creation
     $(document).ready(function(){

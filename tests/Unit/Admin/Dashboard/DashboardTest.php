@@ -21,8 +21,8 @@ class DashboardTest extends DBTestCase
         $user = $this->user;
         $invoice = factory(Invoice::class)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
-        $response = $controller->getTotalSalesInInr();
-
+        $allowedCurrencies2 = 'INR';
+        $response = $controller->getTotalSalesInCur2($allowedCurrencies2);
         $this->assertEquals($response, '10000');
     }
 
@@ -34,7 +34,8 @@ class DashboardTest extends DBTestCase
         $user = $this->user;
         $invoice = factory(Invoice::class, 3)->create(['user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
-        $response = $controller->getYearlySalesInInr();
+        $allowedCurrencies2 = 'INR';
+        $response = $controller->getYearlySalesCur2($allowedCurrencies2);
         $this->assertEquals($response, '30000');
 
         // dd($response);
@@ -48,23 +49,24 @@ class DashboardTest extends DBTestCase
         $user = $this->user;
         $invoice = factory(Invoice::class, 3)->create(['created_at'=>2017, 'user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
-        $response = $controller->getYearlySalesInInr();
+        $allowedCurrencies2  = 'INR';
+        $response = $controller->getYearlySalesCur2($allowedCurrencies2);
         $this->assertEquals($response, '0');
 
         // dd($response);
     }
 
     /** @group Dashboard */
-    public function test_getMonthlySalesInInr_getMonthlySales()
-    {
-        $this->withoutMiddleware();
-        $this->getLoggedInUser();
-        $user = $this->user;
-        $invoice = factory(Invoice::class, 3)->create(['user_id'=>$user->id]);
-        $controller = new \App\Http\Controllers\DashboardController();
-        $response = $controller->getYearlySalesInInr();
-        $this->assertEquals($response, '30000');
-    }
+    // public function test_getMonthlySalesInInr_getMonthlySales()
+    // {
+    //     $this->withoutMiddleware();
+    //     $this->getLoggedInUser();
+    //     $user = $this->user;
+    //     $invoice = factory(Invoice::class, 3)->create(['user_id'=>$user->id]);
+    //     $controller = new \App\Http\Controllers\DashboardController();
+    //     $response = $controller->getYearlySalesInInr();
+    //     $this->assertEquals($response, '30000');
+    // }
 
     /** @group Dashboard */
     public function test_getAllUsers_getListOfRecentUsers()

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Model\Order\Payment;
+use Illuminate\Http\Request;
 use App\User;
 
 class AdvanceSearchController extends Controller

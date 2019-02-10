@@ -11,7 +11,7 @@ class EditProductTest extends TestCase
     use DatabaseTransactions;
 
     /* group ProductController */
-    public function test_productController_updateProductDetails()
+    // public function test_productController_updateProductDetails()
     // {
     //     $this->withoutMiddleware();
     //     $product = factory(Product::class)->create();

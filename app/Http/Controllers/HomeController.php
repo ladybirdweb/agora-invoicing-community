@@ -395,32 +395,5 @@ class HomeController extends BaseHomeController
     * @return array
     */
 
-    public function checkUpdatesExpiry(Request $request)
-    {
-        $v = \Validator::make($request->all(), [
-          'order_number' => 'required',
-        ]);
-        if ($v->fails()) {
-            $error = $v->errors();
 
-            return response()->json(compact('error'));
-        }
-
-        try {
-            $order_number = $request->input('order_number');
-            $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
-            if ($orderId) {
-                $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
-                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate->toDateTimeString()) {
-                    return ['status' => 'success', 'message' => 'allow-auto-update'];
-                }
-            }
-
-            return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
-        } catch (\Exception $e) {
-            $result = ['status'=>'fails', 'error' => $e->getMessage()];
-
-            return $result;
-        }
-    }
 }

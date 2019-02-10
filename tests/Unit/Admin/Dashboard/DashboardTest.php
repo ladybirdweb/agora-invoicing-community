@@ -49,7 +49,7 @@ class DashboardTest extends DBTestCase
         $user = $this->user;
         $invoice = factory(Invoice::class, 3)->create(['created_at'=>2017, 'user_id'=>$user->id]);
         $controller = new \App\Http\Controllers\DashboardController();
-        $allowedCurrencies2  = 'INR';
+        $allowedCurrencies2 = 'INR';
         $response = $controller->getYearlySalesCur2($allowedCurrencies2);
         $this->assertEquals($response, '0');
 

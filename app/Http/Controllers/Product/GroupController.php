@@ -53,15 +53,15 @@ class GroupController extends Controller
         // return \Datatable::of($this->group->select('id', 'name')->get())
 
                        ->addColumn('checkbox', function ($model) {
-                              return "<input type='checkbox' class='group_checkbox' 
+                           return "<input type='checkbox' class='group_checkbox' 
                             value=".$model->id.' name=select[] id=check>';
-                        })
+                       })
 
                         ->addColumn('name', function ($model) {
                             return ucfirst($model->name);
                         })
                         // ->showColumns('name')
-             
+
                         ->addColumn('action', function ($model) {
                             return '<a href='.url('groups/'.$model->id.'/edit').
                             " class='btn btn-sm btn-primary btn-xs'><i class='fa fa-edit' 

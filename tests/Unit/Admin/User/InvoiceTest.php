@@ -238,7 +238,7 @@ class InvoiceTest extends DBTestCase
     // }
 
     /** @group InvoiceController */
-    public function test_checkTax_WhenGstIsEnable_whenUserIsFromOtherCountry()
+    // public function test_checkTax_WhenGstIsEnable_whenUserIsFromOtherCountry()
     // {
     //     $this->withoutMiddleware();
     //     $user = factory(User::class)->create(['currency'=> 'USD', 'state'=> 'AU-QLD', 'country'=>'AU']);

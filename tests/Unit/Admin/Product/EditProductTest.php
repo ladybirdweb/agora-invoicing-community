@@ -16,17 +16,17 @@ class EditProductTest extends TestCase
         $this->withoutMiddleware();
         $product = factory(Product::class)->create();
         $response = $this->call('PATCH', 'products/'.$product->id, [
-        'name'           => 'helpdesk',
-        'type'           => $product->type,
-        'group'          => $product->group,
-        'product_sku'    => 'FAVEO-HD',
-        'category'       => $product->category,
-        'description'    => $product->description,
-        'can_modify_agent' => 0,
+        'name'                => 'helpdesk',
+        'type'                => $product->type,
+        'group'               => $product->group,
+        'product_sku'         => 'FAVEO-HD',
+        'category'            => $product->category,
+        'description'         => $product->description,
+        'can_modify_agent'    => 0,
         'can_modify_quantity' => 0,
-        'show_agent'     =>0,
-        'require_domain' => 1,
-         'subscription'  => 1,
+        'show_agent'          => 0,
+        'require_domain'      => 1,
+         'subscription'       => 1,
 
         ]);
         $response->assertSessionHas('success');

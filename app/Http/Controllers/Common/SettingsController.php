@@ -173,7 +173,7 @@ class SettingsController extends BaseSettingsController
             $setting = $settings->find(1);
             if ($request->hasFile('logo')) {
                 $name = $request->file('logo')->getClientOriginalName();
-                 $destinationPath = public_path('common/images');
+                $destinationPath = public_path('common/images');
                 $request->file('logo')->move($destinationPath, $name);
                 $setting->logo = $name;
             }

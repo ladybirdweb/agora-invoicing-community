@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Model\Order\Order;
 use App\Model\Product\Product;
-use Crypt;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -348,14 +347,14 @@ class HomeController extends BaseHomeController
             $faveo_serial_key = $request->input('serial_key');
             $orderSerialKey = $order->where('number', $faveo_encrypted_order_number)
                     ->value('serial_key');
-                    
+
             $this_order = $order
                      ->where('number', $faveo_encrypted_order_number)
                     ->first();
             if ($this_order && $orderSerialKey == $faveo_serial_key) {
                 $product_id = $this_order->product;
                 $product_controller = new \App\Http\Controllers\Product\ProductController();
-                 
+
                 return $product_controller->adminDownload($product_id, true);
             }
         } catch (\Exception $e) {
@@ -398,28 +397,30 @@ class HomeController extends BaseHomeController
 
     public function checkUpdatesExpiry(Request $request)
     {
-         $v = \Validator::make($request->all(), [
-          'order_number' =>'required',
+        $v = \Validator::make($request->all(), [
+          'order_number' => 'required',
         ]);
         if ($v->fails()) {
             $error = $v->errors();
+
             return response()->json(compact('error'));
         }
+
         try {
             $order_number = $request->input('order_number');
-            $orderId = Order::where('number','LIKE',$order_number)->pluck('id')->first();
-            if($orderId){
-            $expiryDate = Subscription::where('order_id',$orderId)->pluck('update_ends_at')->first();
-            if(\Carbon\Carbon::now()->toDateTimeString() < $expiryDate->toDateTimeString()){
-                return ['status' => 'success', 'message' => 'allow-auto-update'];
-           
+            $orderId = Order::where('number', 'LIKE', $order_number)->pluck('id')->first();
+            if ($orderId) {
+                $expiryDate = Subscription::where('order_id', $orderId)->pluck('update_ends_at')->first();
+                if (\Carbon\Carbon::now()->toDateTimeString() < $expiryDate->toDateTimeString()) {
+                    return ['status' => 'success', 'message' => 'allow-auto-update'];
+                }
             }
-            }
-           return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
+
+            return ['status' => 'fails', 'message' => 'do-not-allow-auto-update'];
         } catch (\Exception $e) {
-            $result = ['status'=>'fails','error' => $e->getMessage()];
+            $result = ['status'=>'fails', 'error' => $e->getMessage()];
+
             return $result;
-            
         }
     }
 }

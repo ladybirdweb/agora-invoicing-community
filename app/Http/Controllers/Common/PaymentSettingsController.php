@@ -12,6 +12,7 @@ class PaymentSettingsController extends Controller
     public function getPlugin()
     {
         $plugins = $this->fetchConfig();
+
         return \DataTables::of(new Collection($plugins))
                         // ->searchColumns('name')
                         ->addColumn('name', function ($model) {

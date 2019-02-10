@@ -8,7 +8,7 @@ $factory->define(Product::class, function (Faker $faker) {
 
         'name'                => 'Helpdesk Advance',
         'description'         => 'Few Lines Of Description',
-        'type'                => 1,
+       // 'type'                => 1,
         'category'            => 'helpdesk',
         'group'               => 1,
         'can_modify_agent'    => 0,
